@@ -665,6 +665,133 @@
   .metric-card.highlight-warn .m-value { color: var(--prf-warn); }
   .metric-card.highlight-bad  .m-value { color: var(--prf-danger); }
 
+  /* ── Option 1: Phenomenological threshold phrase on each card ── */
+  .m-threshold {
+    font-size: .74rem;
+    color: #555;
+    font-style: italic;
+    line-height: 1.4;
+    margin-top: 7px;
+    padding-top: 7px;
+    border-top: 1px solid rgba(0,0,0,.07);
+  }
+
+  .metric-card.highlight-good .m-threshold { color: var(--prf-success); }
+  .metric-card.highlight-warn .m-threshold { color: var(--prf-warn); }
+  .metric-card.highlight-bad  .m-threshold { color: var(--prf-danger); }
+
+  /* ── Option 2: Suppression Gap panel ── */
+  .suppression-gap {
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin-bottom: 22px;
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+    border: 2px solid;
+  }
+
+  .suppression-gap.gap-low  { background: #f0faf4; border-color: var(--prf-success); }
+  .suppression-gap.gap-mid  { background: #fdf8ee; border-color: var(--prf-gold); }
+  .suppression-gap.gap-high { background: #fff5f2; border-color: var(--prf-warn); }
+  .suppression-gap.gap-crit { background: #fff0f0; border-color: var(--prf-danger); }
+
+  .gap-number-block {
+    flex-shrink: 0;
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .gap-number-label {
+    font-family: 'Courier New', monospace;
+    font-size: .62rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-muted);
+    margin-bottom: 4px;
+  }
+
+  .gap-number {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .gap-low  .gap-number { color: var(--prf-success); }
+  .gap-mid  .gap-number { color: var(--prf-gold); }
+  .gap-high .gap-number { color: var(--prf-warn); }
+  .gap-crit .gap-number { color: var(--prf-danger); }
+
+  .gap-number-sublabel {
+    font-size: .68rem;
+    color: var(--prf-muted);
+    font-family: 'Courier New', monospace;
+  }
+
+  .gap-text-block { flex: 1; }
+
+  .gap-title {
+    font-size: .9rem;
+    font-weight: bold;
+    color: var(--prf-navy);
+    margin-bottom: 5px;
+  }
+
+  .gap-low  .gap-title { color: var(--prf-success); }
+  .gap-high .gap-title { color: var(--prf-warn); }
+  .gap-crit .gap-title { color: var(--prf-danger); }
+
+  .gap-desc {
+    font-size: .88rem;
+    line-height: 1.65;
+    color: #444;
+  }
+
+  /* ── Option 3: First-person agent voice narrative ── */
+  .voice-narrative {
+    background: linear-gradient(135deg, #1e2f50 0%, #2a3f6a 100%);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .voice-narrative::before {
+    content: '"';
+    position: absolute;
+    top: -10px; left: 10px;
+    font-size: 7rem;
+    color: rgba(255,255,255,.06);
+    font-family: Georgia, serif;
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .voice-narrative-label {
+    font-family: 'Courier New', monospace;
+    font-size: .66rem;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--prf-amber);
+    margin-bottom: 10px;
+  }
+
+  .voice-narrative-text {
+    font-size: .94rem;
+    line-height: 1.75;
+    color: rgba(255,255,255,.9);
+    font-style: italic;
+  }
+
+  .voice-narrative-attribution {
+    margin-top: 10px;
+    font-size: .74rem;
+    color: rgba(255,255,255,.45);
+    font-family: 'Courier New', monospace;
+  }
+
   /* ── Animated Bar Visualization ── */
   .bar-section { margin-bottom: 22px; }
 
@@ -958,16 +1085,28 @@
           <span class="chip-symbol">λ Raw</span>
           <span class="chip-name">Coordination Capacity</span>
           <span class="chip-desc">The raw potential for agents to work together, based on worldview compatibility and shared cognitive capability.</span>
+          <span class="chip-desc" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--prf-border)">
+            <strong style="color:var(--prf-navy)">Reading the number:</strong>
+            &gt;0.70 = strong capacity · 0.50–0.70 = workable · 0.40–0.50 = fragile · &lt;0.40 = collapsed
+          </span>
         </div>
         <div class="concept-chip">
           <span class="chip-symbol">λ Perceived</span>
           <span class="chip-name">Experienced Coordination</span>
           <span class="chip-desc">How much coordination agents actually experience — reduced by power gaps, fear, and distorted evidence.</span>
+          <span class="chip-desc" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--prf-border)">
+            <strong style="color:var(--prf-navy)">Reading the number:</strong>
+            &gt;0.70 = voice reaching decisions · 0.50–0.70 = speaking carefully · 0.40–0.50 = mostly silenced · &lt;0.40 = effectively mute
+          </span>
         </div>
         <div class="concept-chip">
           <span class="chip-symbol">Friction</span>
           <span class="chip-name">Coordination Loss</span>
           <span class="chip-desc">Energy lost to worldview distance, hierarchy, and mis-aligned incentives. High friction = ethical risk.</span>
+          <span class="chip-desc" style="margin-top:6px;padding-top:6px;border-top:1px solid var(--prf-border)">
+            <strong style="color:var(--prf-navy)">Reading the number:</strong>
+            &lt;0.25 = low drag · 0.25–0.45 = manageable · 0.45–0.65 = heavy load · &gt;0.65 = system consuming itself
+          </span>
         </div>
       </div>
 
@@ -1774,6 +1913,112 @@
   }
 
   // ─────────────────────────────────────────────────
+  // OPTION 1: THRESHOLD PHRASES
+  // Phenomenological one-liners for each metric card.
+  // ─────────────────────────────────────────────────
+
+  function lambdaRawPhrase(v) {
+    if (v > 0.70) return 'Strong natural capacity — this group has real potential to work together.';
+    if (v > 0.55) return 'Workable but taxed — capacity exists, but the system is under load.';
+    if (v > 0.40) return 'Fragile — near the collapse threshold. Small shocks could break coordination.';
+    return 'Collapsed — agents are in survival mode, unable to coordinate effectively.';
+  }
+
+  function lambdaPerceivedPhrase(v) {
+    if (v > 0.70) return 'Feels genuinely able to coordinate — voice is reaching decision-makers.';
+    if (v > 0.55) return 'Partially constrained — people are speaking, but carefully and incompletely.';
+    if (v > 0.40) return 'Significantly silenced — most of what people know stays unsaid.';
+    return 'Effectively mute — critical information cannot safely surface in this system.';
+  }
+
+  function frictionPhrase(v) {
+    if (v < 0.25) return 'Low drag — energy is going to the problem, not to navigating the hierarchy.';
+    if (v < 0.45) return 'Noticeable but manageable — coordination is possible but costs effort.';
+    if (v < 0.65) return 'Heavy load — roughly half of coordination energy is lost before it does anything.';
+    return 'System consuming itself — most energy goes to internal resistance, not the actual work.';
+  }
+
+  // ─────────────────────────────────────────────────
+  // OPTION 2: SUPPRESSION GAP PANEL
+  // Names and contextualizes the λ Raw − λ Perceived gap.
+  // ─────────────────────────────────────────────────
+
+  function buildSuppressionGap(raw, perceived, scenarioName) {
+    const gap = raw - perceived;
+    const gapPct = (gap * 100).toFixed(1);
+
+    let cssClass, title, desc;
+
+    if (gap < 0.05) {
+      cssClass = 'gap-low';
+      title    = 'Minimal Suppression — the room is speaking.';
+      desc     = `Agents are using nearly all of their coordination capacity. What they know is reaching the people who need to know it. This is rare — most real organizations operate with a much larger gap.`;
+    } else if (gap < 0.15) {
+      cssClass = 'gap-mid';
+      title    = 'Mild Suppression — some self-censorship is happening.';
+      desc     = `Agents have a little more capacity than they feel safe using. Concerns surface, but carefully — hedged, softened, routed through the right channels. Some information is being lost to institutional friction.`;
+    } else if (gap < 0.30) {
+      cssClass = 'gap-high';
+      title    = 'Significant Suppression — the room knows more than it says.';
+      desc     = `This group is holding back. Agents can see things that are not being communicated to decision-makers. The gap represents real, consequential information that will never reach the people who need it. This is the zone where institutional harm becomes possible.`;
+    } else {
+      cssClass = 'gap-crit';
+      title    = 'Critical Suppression — Boisjoly-level silencing.';
+      desc     = `Roger Boisjoly knew the O-rings would fail. His λ Raw was high — the engineering knowledge was clear. His λ Perceived was near zero — he could not get that knowledge to the people making the launch decision. This gap is that gap. Decisions are being made without access to what this group actually knows.`;
+    }
+
+    return `
+      <div class="suppression-gap ${cssClass}">
+        <div class="gap-number-block">
+          <div class="gap-number-label">Suppression Gap</div>
+          <div class="gap-number">${gapPct}%</div>
+          <div class="gap-number-sublabel">λ Raw − λ Perceived</div>
+        </div>
+        <div class="gap-text-block">
+          <div class="gap-title">${title}</div>
+          <div class="gap-desc">${desc}</div>
+        </div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // OPTION 3: FIRST-PERSON AGENT VOICE NARRATIVE
+  // Renders what it feels like to be inside this system
+  // at these exact metric values.
+  // ─────────────────────────────────────────────────
+
+  function buildVoiceNarrative(raw, perceived, friction, scenarioName) {
+    const gap = raw - perceived;
+
+    // Pick the most salient combination and render a felt experience
+    let narrative;
+
+    if (friction > 0.65 && gap > 0.25) {
+      narrative = `You are in the meeting. You can see the problem clearly — you have been watching it develop for weeks. But the room has a gravity to it. When you start to speak, you feel the weight of who is at the table, who has already made up their mind, what it would cost you to say the thing you are actually thinking. So you don't. You say something adjacent to it. Softer. Framed as a question. It doesn't land. The decision gets made from the information that was safe to share, not from what was true. You leave the room knowing what you did not say.`;
+    } else if (friction > 0.65 && gap <= 0.15) {
+      narrative = `The pressure is everywhere and everyone can feel it. You're not being silenced — you're being worn down. Every decision takes three times as much energy as it should. You go through the right channels, you follow the protocol, you document everything — and coordination still feels like moving through water. By the time agreement is reached, everyone is exhausted. The problem got solved, but barely, and at a cost that isn't visible in any report.`;
+    } else if (gap > 0.25 && friction < 0.45) {
+      narrative = `The strange thing is that you know what to do. Most people in the room know what to do. The technical knowledge is there. But something about how this organization works makes it feel dangerous to say it directly. So the knowledge circulates — in side conversations, in the hallway after the meeting, in the email you almost sent. The decision gets made. It might even be the right decision. But it was made without the room's full intelligence, and nobody talks about that.`;
+    } else if (raw < 0.40) {
+      narrative = `Something fundamental has broken down. People are protecting themselves first — which makes sense, because the system has made it rational to do so. Trust is gone or nearly gone. You are not thinking about the problem anymore; you are thinking about your position relative to the problem, and whether engaging with it at all is safe. This is what coordination collapse feels like from the inside: not a dramatic failure, just a slow withdrawal of good faith.`;
+    } else if (friction < 0.30 && gap < 0.10) {
+      narrative = `The meeting actually works. You say what you think; other people say what they think. There's disagreement — real disagreement, not performed disagreement — and it sharpens rather than derails the conversation. Not everyone agrees at the end, but everyone understands what was decided and why. You leave feeling like your presence in the room mattered. This is what it's supposed to feel like.`;
+    } else {
+      narrative = `You're managing. You can coordinate with most of the people in the room most of the time, but it takes effort. You've learned which things to say directly and which to soften. The system has a logic and you've mostly internalized it. Whether that's adaptation or suppression is a question you don't always stop to ask.`;
+    }
+
+    const scenarioLabel = scenarioName || 'this scenario';
+    return `
+      <div class="voice-narrative">
+        <div class="voice-narrative-label">What It Feels Like — Inside This System</div>
+        <div class="voice-narrative-text">${narrative}</div>
+        <div class="voice-narrative-attribution">
+          Generated from: λ Raw ${raw.toFixed(3)} · λ Perceived ${perceived.toFixed(3)} · Friction ${friction.toFixed(3)} · ${scenarioLabel}
+        </div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
   // RENDER FULL RESULTS INTO THE DOM
   // ─────────────────────────────────────────────────
   function renderResults(idx, currentData, reformedData, payload, osVal, evVal) {
@@ -1896,6 +2141,13 @@
               λ perceived: <strong>${a.lambda_perceived != null ? a.lambda_perceived.toFixed(3) : '—'}</strong>
               &nbsp;|&nbsp;
               stress: <strong>${a.stress != null ? a.stress.toFixed(3) : '—'}</strong>
+              ${a.lambda_raw != null && a.lambda_perceived != null ? `
+                <div style="font-size:.74rem;color:var(--prf-muted);margin-top:3px;font-style:italic">
+                  ${lambdaPerceivedPhrase(a.lambda_perceived)}
+                  ${(a.lambda_raw - a.lambda_perceived) > 0.15
+                    ? ` Suppression gap: <strong style="color:var(--prf-warn)">${((a.lambda_raw - a.lambda_perceived)*100).toFixed(1)}%</strong>`
+                    : ''}
+                </div>` : ''}
               ${a.response ? `<div class="agent-quote">"${a.response}"</div>` : ''}
             </div>
           `).join('')}
@@ -1931,22 +2183,25 @@
         &nbsp;|&nbsp; Leading evidence: ${topEVStr}
       </div>
 
-      <!-- Three metric cards -->
+      <!-- Three metric cards — with phenomenological threshold phrases -->
       <div class="metrics-row">
         <div class="metric-card ${lambdaColorClass(mC.lambda_raw)}">
           <div class="m-label">λ Raw</div>
           <div class="m-value">${mC.lambda_raw.toFixed(3)}</div>
           <div class="m-name">Coordination Capacity</div>
+          <div class="m-threshold">${lambdaRawPhrase(mC.lambda_raw)}</div>
         </div>
         <div class="metric-card ${lambdaColorClass(mC.lambda_perceived)}">
           <div class="m-label">λ Perceived</div>
           <div class="m-value">${mC.lambda_perceived.toFixed(3)}</div>
           <div class="m-name">Experienced Coordination</div>
+          <div class="m-threshold">${lambdaPerceivedPhrase(mC.lambda_perceived)}</div>
         </div>
         <div class="metric-card ${frictionColorClass(mC.friction)}">
           <div class="m-label">Friction</div>
           <div class="m-value">${mC.friction.toFixed(3)}</div>
           <div class="m-name">Coordination Loss</div>
+          <div class="m-threshold">${frictionPhrase(mC.friction)}</div>
         </div>
       </div>
 
@@ -1971,6 +2226,12 @@
           </div>
         </div>
       </div>
+
+      <!-- Option 2: Suppression Gap -->
+      ${buildSuppressionGap(mC.lambda_raw, mC.lambda_perceived, SCENARIO_DISPLAY_NAMES[idx])}
+
+      <!-- Option 3: First-person voice narrative -->
+      ${buildVoiceNarrative(mC.lambda_raw, mC.lambda_perceived, mC.friction, SCENARIO_DISPLAY_NAMES[idx])}
 
       <!-- Reform comparison -->
       ${reformHTML}
