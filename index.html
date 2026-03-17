@@ -792,6 +792,87 @@
     font-family: 'Courier New', monospace;
   }
 
+  /* ── Combined "Reading Your Results Together" block ── */
+  .combined-reading {
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 22px;
+    border: 1px solid var(--prf-border);
+  }
+
+  /* Four quadrant states */
+  .combined-reading.state-healthy   { background: #f0faf4; border-color: var(--prf-success); }
+  .combined-reading.state-exhausted { background: #fdf3ee; border-color: var(--prf-warn); }
+  .combined-reading.state-blocked   { background: #fdf8ee; border-color: var(--prf-gold); }
+  .combined-reading.state-breakdown { background: #fff0f0; border-color: var(--prf-danger); }
+  .combined-reading.state-mixed     { background: #f4f7fc; border-color: var(--prf-slate); }
+
+  .combined-reading-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,.07);
+  }
+
+  .combined-reading-label {
+    font-family: 'Courier New', monospace;
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--prf-muted);
+  }
+
+  .combined-reading-pattern {
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--prf-navy);
+    flex: 1;
+  }
+
+  .state-healthy   .combined-reading-pattern { color: var(--prf-success); }
+  .state-exhausted .combined-reading-pattern { color: var(--prf-warn); }
+  .state-blocked   .combined-reading-pattern { color: #8a6a20; }
+  .state-breakdown .combined-reading-pattern { color: var(--prf-danger); }
+
+  .combined-reading-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .combined-reading-cell {
+    background: rgba(255,255,255,.7);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: .82rem;
+  }
+
+  .combined-reading-cell .cell-metric {
+    font-family: 'Courier New', monospace;
+    font-size: .66rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--prf-muted);
+    margin-bottom: 4px;
+  }
+
+  .combined-reading-cell .cell-reading {
+    font-size: .84rem;
+    color: var(--prf-ink);
+    line-height: 1.4;
+  }
+
+  .combined-reading-synthesis {
+    font-size: .9rem;
+    line-height: 1.7;
+    color: #333;
+  }
+
+  .combined-reading-synthesis strong { color: var(--prf-navy); }
+
   /* ── Animated Bar Visualization ── */
   .bar-section { margin-bottom: 22px; }
 
@@ -1868,103 +1949,135 @@
 
   // ─────────────────────────────────────────────────
   // BUILD INTERPRETATION TEXT
+  // Owns: FRICTION only — coordination cost/drag.
+  // Never uses suppression language (that belongs to
+  // the gap panel). Never references voice or silence.
   // ─────────────────────────────────────────────────
   function buildInterpretation(metrics, scenarioName) {
     const raw  = metrics.lambda_raw;
     const perc = metrics.lambda_perceived;
     const fric = metrics.friction;
-    const gap  = raw - perc;
 
     let level, advice;
 
     if (fric > 0.65) {
-      level  = 'High-friction collapse zone';
-      advice = `This system is losing most of its coordination capacity to worldview distance,
-                evidence distortion, and hierarchical suppression. Agents with critical information
-                cannot safely surface it. This is the UCP signature of conditions like the Challenger
-                launch decision — the engineering knowledge existed, but the coordination structure
-                could not transmit it to the people with decision authority.`;
+      level  = 'Severe coordination drag';
+      advice = `The system is expending most of its available energy just to function —
+                navigating role boundaries, reconciling conflicting evidence streams, and
+                maintaining basic institutional coherence. Very little energy remains for
+                the actual ethical problem at hand. This level of drag is not sustainable;
+                it typically precedes either collapse or a structural intervention.`;
     } else if (fric > 0.38) {
-      level  = 'Moderate friction — coordination is fragile';
-      advice = `The system is working but at significant cost. Some voices are suppressed, some
-                evidence filtered before it reaches decision-makers. Decisions made here carry
-                real ethical cost — the cost of incomplete information. OS2 scaffolding (BioBond)
-                typically reduces friction by 15–30% from this zone.`;
+      level  = 'Moderate coordination drag';
+      advice = `Coordination is happening, but it costs more than it should. Agents are
+                spending meaningful energy on process — managing relationships, aligning
+                worldviews, working around structural mismatches — before they can work
+                on the problem itself. This is the zone where BioBond-style interventions
+                have the most impact: a 15–30% friction reduction is typically achievable
+                by improving OS2 scaffolding and evidence quality.`;
     } else {
-      level  = 'Low friction — robust coordination';
-      advice = `Agents can surface dissent, share information, and hold each other accountable.
-                The gap between raw and perceived λ is small, meaning experienced coordination
-                is close to the system's actual potential. This is what healthy institutional
-                ethics looks like in UCP terms.`;
+      level  = 'Low coordination drag';
+      advice = `The system is running efficiently. Agents are spending most of their
+                coordination energy on the actual problem rather than on internal process.
+                Worldview differences are being navigated rather than fought; evidence is
+                being processed rather than distorted. This does not mean the system is
+                perfect — look at the Suppression Gap below to see whether this efficiency
+                is coming at the cost of voice.`;
     }
 
-    const gapNote = gap > 0.22
-      ? `The perception gap is <strong>${gap.toFixed(3)}</strong> — agents have more capacity
-         than they can safely use. This gap represents suppressed voice, unspoken dissent, and
-         coordination potential that the power structure is consuming.`
-      : `The perception gap is <strong>${gap.toFixed(3)}</strong> — agents are operating
-         close to their coordination potential; experienced coordination roughly matches capacity.`;
-
     return `
-      <div class="int-label">UCP Interpretation — ${scenarioName}</div>
+      <div class="int-label">Friction Reading — ${scenarioName}</div>
       <p><strong>${level}.</strong> ${advice}</p>
-      <p>${gapNote}</p>
     `;
   }
 
   // ─────────────────────────────────────────────────
   // OPTION 1: THRESHOLD PHRASES
-  // Phenomenological one-liners for each metric card.
+  // Each function owns exactly one metric dimension.
+  //
+  // λ Raw   → underlying coordination potential (engine size)
+  // λ Perc  → felt experience of coordinating (what it's like)
+  // Friction → energy cost (how hard it is to move)
+  //
+  // NONE of these use suppression language — that belongs
+  // exclusively to buildSuppressionGap.
   // ─────────────────────────────────────────────────
 
   function lambdaRawPhrase(v) {
-    if (v > 0.70) return 'Strong natural capacity — this group has real potential to work together.';
-    if (v > 0.55) return 'Workable but taxed — capacity exists, but the system is under load.';
-    if (v > 0.40) return 'Fragile — near the collapse threshold. Small shocks could break coordination.';
-    return 'Collapsed — agents are in survival mode, unable to coordinate effectively.';
+    // Owns: underlying coordination potential only.
+    // No suppression language — this is about capacity, not access.
+    if (v > 0.70) return 'Strong underlying potential — this group has the capacity to coordinate effectively.';
+    if (v > 0.55) return 'Moderate potential — capacity exists but is operating under structural load.';
+    if (v > 0.40) return 'Fragile potential — near the collapse threshold; coordination is unreliable.';
+    return 'Capacity collapsed — agents cannot sustain coordinated action under current conditions.';
   }
 
   function lambdaPerceivedPhrase(v) {
-    if (v > 0.70) return 'Feels genuinely able to coordinate — voice is reaching decision-makers.';
-    if (v > 0.55) return 'Partially constrained — people are speaking, but carefully and incompletely.';
-    if (v > 0.40) return 'Significantly silenced — most of what people know stays unsaid.';
-    return 'Effectively mute — critical information cannot safely surface in this system.';
+    // Owns: the felt experience of coordination — what agents
+    // actually experience as they try to work together.
+    // Not about suppression (why it feels this way) — about
+    // the felt quality of the coordination itself.
+    if (v > 0.70) return 'Feels genuinely collaborative — the process is responsive and people feel effective.';
+    if (v > 0.55) return 'Feels effortful — people are engaged but the process is straining noticeably.';
+    if (v > 0.40) return 'Feels difficult — coordinating requires significant personal effort to achieve anything.';
+    return 'Feels nearly impossible — the system is not responding to people\'s coordination efforts.';
   }
 
   function frictionPhrase(v) {
-    if (v < 0.25) return 'Low drag — energy is going to the problem, not to navigating the hierarchy.';
-    if (v < 0.45) return 'Noticeable but manageable — coordination is possible but costs effort.';
-    if (v < 0.65) return 'Heavy load — roughly half of coordination energy is lost before it does anything.';
-    return 'System consuming itself — most energy goes to internal resistance, not the actual work.';
+    // Owns: energy cost of coordination — how much effort
+    // the system consumes before any work gets done.
+    // Not about voice or suppression — about drag and resistance.
+    if (v < 0.25) return 'Low drag — coordination energy flows directly to the problem with little resistance.';
+    if (v < 0.45) return 'Moderate drag — extra effort is needed to overcome structural and worldview resistance.';
+    if (v < 0.65) return 'High drag — significant coordination energy is consumed by internal resistance before reaching the problem.';
+    return 'Severe drag — most coordination energy is absorbed by the system itself rather than the work.';
   }
 
   // ─────────────────────────────────────────────────
   // OPTION 2: SUPPRESSION GAP PANEL
-  // Names and contextualizes the λ Raw − λ Perceived gap.
+  // Owns: ALL suppression language. This is the only
+  // panel that talks about voice, silencing, Boisjoly,
+  // information not surfacing, or hidden knowledge.
   // ─────────────────────────────────────────────────
 
   function buildSuppressionGap(raw, perceived, scenarioName) {
-    const gap = raw - perceived;
+    const gap    = raw - perceived;
     const gapPct = (gap * 100).toFixed(1);
 
     let cssClass, title, desc;
 
     if (gap < 0.05) {
       cssClass = 'gap-low';
-      title    = 'Minimal Suppression — the room is speaking.';
-      desc     = `Agents are using nearly all of their coordination capacity. What they know is reaching the people who need to know it. This is rare — most real organizations operate with a much larger gap.`;
+      title    = 'Minimal suppression — agents are using their full voice.';
+      desc     = `What agents know is reaching the people who need to know it.
+                  The gap between raw capacity and experienced coordination is negligible —
+                  this group is not significantly self-censoring. This is genuinely rare;
+                  most real institutional systems operate with a much larger gap than this.`;
     } else if (gap < 0.15) {
       cssClass = 'gap-mid';
-      title    = 'Mild Suppression — some self-censorship is happening.';
-      desc     = `Agents have a little more capacity than they feel safe using. Concerns surface, but carefully — hedged, softened, routed through the right channels. Some information is being lost to institutional friction.`;
+      title    = 'Mild suppression — some self-censorship is present.';
+      desc     = `Agents have slightly more capacity than they feel safe using.
+                  Concerns are surfacing, but carefully — hedged, softened, or routed
+                  through approved channels rather than stated directly. A small but real
+                  amount of information is being lost to institutional pressure.`;
     } else if (gap < 0.30) {
       cssClass = 'gap-high';
-      title    = 'Significant Suppression — the room knows more than it says.';
-      desc     = `This group is holding back. Agents can see things that are not being communicated to decision-makers. The gap represents real, consequential information that will never reach the people who need it. This is the zone where institutional harm becomes possible.`;
+      title    = 'Significant suppression — this room knows more than it says.';
+      desc     = `Agents are holding back. Critical observations and concerns exist
+                  that are not being communicated to decision-makers. The gap number
+                  represents real, consequential knowledge that will not reach the people
+                  who need it. This is the zone where institutional harm becomes likely —
+                  not from bad intentions, but from a structure that makes honesty costly.`;
     } else {
       cssClass = 'gap-crit';
-      title    = 'Critical Suppression — Boisjoly-level silencing.';
-      desc     = `Roger Boisjoly knew the O-rings would fail. His λ Raw was high — the engineering knowledge was clear. His λ Perceived was near zero — he could not get that knowledge to the people making the launch decision. This gap is that gap. Decisions are being made without access to what this group actually knows.`;
+      title    = 'Critical suppression — Boisjoly-level silencing.';
+      desc     = `Roger Boisjoly knew the O-rings would fail before the Challenger launch.
+                  His λ Raw was high — the engineering knowledge was clear and solid.
+                  His λ Perceived was near zero — the coordination structure could not
+                  transmit that knowledge to the people making the decision.
+                  This gap is that gap. Decisions here are being made without access
+                  to what this group actually knows. The system is operating on a
+                  fraction of its available intelligence.`;
     }
 
     return `
@@ -1982,39 +2095,214 @@
   }
 
   // ─────────────────────────────────────────────────
-  // OPTION 3: FIRST-PERSON AGENT VOICE NARRATIVE
-  // Renders what it feels like to be inside this system
-  // at these exact metric values.
+  // OPTION 3: FIRST-PERSON VOICE NARRATIVE
+  // Owns: the synthesis felt experience — what it is
+  // like to be a person inside this exact combination
+  // of capacity, suppression, and friction.
+  // This is the only panel that combines all three.
   // ─────────────────────────────────────────────────
 
   function buildVoiceNarrative(raw, perceived, friction, scenarioName) {
     const gap = raw - perceived;
 
-    // Pick the most salient combination and render a felt experience
+    // Four quadrant logic: gap (suppression) vs friction (drag)
+    // Each quadrant is a genuinely different human experience.
     let narrative;
 
-    if (friction > 0.65 && gap > 0.25) {
-      narrative = `You are in the meeting. You can see the problem clearly — you have been watching it develop for weeks. But the room has a gravity to it. When you start to speak, you feel the weight of who is at the table, who has already made up their mind, what it would cost you to say the thing you are actually thinking. So you don't. You say something adjacent to it. Softer. Framed as a question. It doesn't land. The decision gets made from the information that was safe to share, not from what was true. You leave the room knowing what you did not say.`;
-    } else if (friction > 0.65 && gap <= 0.15) {
-      narrative = `The pressure is everywhere and everyone can feel it. You're not being silenced — you're being worn down. Every decision takes three times as much energy as it should. You go through the right channels, you follow the protocol, you document everything — and coordination still feels like moving through water. By the time agreement is reached, everyone is exhausted. The problem got solved, but barely, and at a cost that isn't visible in any report.`;
-    } else if (gap > 0.25 && friction < 0.45) {
-      narrative = `The strange thing is that you know what to do. Most people in the room know what to do. The technical knowledge is there. But something about how this organization works makes it feel dangerous to say it directly. So the knowledge circulates — in side conversations, in the hallway after the meeting, in the email you almost sent. The decision gets made. It might even be the right decision. But it was made without the room's full intelligence, and nobody talks about that.`;
+    if (gap > 0.22 && friction > 0.55) {
+      // Quadrant: High suppression + High friction
+      // Silenced AND exhausted. The worst combination.
+      narrative = `You are in the meeting. You can see the problem clearly — you've been
+        watching it develop for weeks. But the room has a gravity to it. When you start
+        to speak, you feel the weight of who else is at the table, who has already made
+        up their mind, what it would cost you to say the thing you're actually thinking.
+        So you don't. You say something adjacent to it — softer, framed as a question.
+        It doesn't land. Meanwhile the process itself is exhausting: the right channels
+        require the right language, the right approvals, the right timing. By the time
+        the decision is made, you are tired, and the decision was made from the information
+        that was safe to share, not from what was true. You leave knowing what you did not say.`;
+
+    } else if (gap > 0.22 && friction <= 0.55) {
+      // Quadrant: High suppression + Low/moderate friction
+      // The Boisjoly zone. The process works — but the knowledge is blocked.
+      narrative = `The strange thing is: you know what to do. Most people in this room
+        know what to do. The coordination process itself is not particularly broken —
+        meetings happen, decisions get made, people follow through. But something about
+        how authority is distributed in this system makes it feel dangerous to say the
+        critical thing directly. So the knowledge circulates elsewhere: in side
+        conversations after the meeting, in the email you almost sent, in the question
+        you framed carefully enough that it wouldn't land. The decision gets made. It
+        might even be the right one. But it was made without the room's full intelligence,
+        and the system has no way of knowing what it missed.`;
+
+    } else if (gap <= 0.10 && friction > 0.55) {
+      // Quadrant: Low suppression + High friction
+      // Honest but exhausted. People are speaking; coordination is grinding.
+      narrative = `People are saying what they actually think — there's no shortage of
+        honesty in this room. But getting anything done together takes tremendous effort.
+        The worldview distances are real; aligning on what the problem even is requires
+        negotiating across fundamentally different frameworks. You're not being silenced.
+        You're being worn down. Every decision costs three times what it should. You
+        document everything, follow the protocol, engage in good faith — and coordination
+        still feels like moving through water. The problem eventually gets solved, but
+        barely, and at a cost that won't appear in any report.`;
+
     } else if (raw < 0.40) {
-      narrative = `Something fundamental has broken down. People are protecting themselves first — which makes sense, because the system has made it rational to do so. Trust is gone or nearly gone. You are not thinking about the problem anymore; you are thinking about your position relative to the problem, and whether engaging with it at all is safe. This is what coordination collapse feels like from the inside: not a dramatic failure, just a slow withdrawal of good faith.`;
-    } else if (friction < 0.30 && gap < 0.10) {
-      narrative = `The meeting actually works. You say what you think; other people say what they think. There's disagreement — real disagreement, not performed disagreement — and it sharpens rather than derails the conversation. Not everyone agrees at the end, but everyone understands what was decided and why. You leave feeling like your presence in the room mattered. This is what it's supposed to feel like.`;
+      // Quadrant: Collapsed capacity — survival mode regardless of gap/friction
+      narrative = `Something fundamental has broken down. People are protecting themselves
+        first — which makes sense, because the system has made it rational to do so.
+        You are not thinking about the problem anymore. You are thinking about your
+        position relative to the problem, and whether engaging with it at all is safe.
+        Trust has withdrawn. This is what coordination collapse feels like from the inside:
+        not a dramatic failure, just a slow, rational withdrawal of good faith until
+        the system is running on obligation alone.`;
+
+    } else if (gap <= 0.10 && friction < 0.30) {
+      // Quadrant: Low suppression + Low friction — healthy
+      narrative = `The meeting actually works. You say what you think; other people say
+        what they think. There's real disagreement — not performed disagreement — and it
+        sharpens rather than derails the conversation. Not everyone agrees at the end, but
+        everyone understands what was decided and why. You leave feeling like your presence
+        in the room mattered, like the decision reflects what the room actually knew.
+        This is what it's supposed to feel like. It is rarer than it should be.`;
+
     } else {
-      narrative = `You're managing. You can coordinate with most of the people in the room most of the time, but it takes effort. You've learned which things to say directly and which to soften. The system has a logic and you've mostly internalized it. Whether that's adaptation or suppression is a question you don't always stop to ask.`;
+      // Mixed middle ground
+      narrative = `You're managing. Coordination is possible and mostly happens, but it
+        takes effort. You've learned which things to say directly, which to soften, which
+        to route through someone else first. The system has a logic and you've mostly
+        internalized it. Whether that internalization represents healthy adaptation or
+        a slow accumulation of self-censorship is a question you don't always stop to ask.`;
     }
 
-    const scenarioLabel = scenarioName || 'this scenario';
     return `
       <div class="voice-narrative">
         <div class="voice-narrative-label">What It Feels Like — Inside This System</div>
         <div class="voice-narrative-text">${narrative}</div>
         <div class="voice-narrative-attribution">
-          Generated from: λ Raw ${raw.toFixed(3)} · λ Perceived ${perceived.toFixed(3)} · Friction ${friction.toFixed(3)} · ${scenarioLabel}
+          λ Raw ${raw.toFixed(3)} · λ Perceived ${perceived.toFixed(3)} · Friction ${friction.toFixed(3)} · ${scenarioName || 'this scenario'}
         </div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // COMBINED READING BLOCK
+  // Names the quadrant, summarizes each metric in plain
+  // English, and synthesizes what they mean together.
+  // This is the "reading your results together" panel —
+  // shown first so students have a frame before they
+  // encounter the detailed panels below.
+  // ─────────────────────────────────────────────────
+
+  function buildCombinedReading(raw, perceived, friction, scenarioName) {
+    const gap = raw - perceived;
+
+    // Determine quadrant state
+    let stateClass, patternName, synthesis;
+
+    const highGap  = gap > 0.18;
+    const highFric = friction > 0.45;
+
+    if (!highGap && !highFric) {
+      stateClass  = 'state-healthy';
+      patternName = 'Pattern: The Room Is Working';
+      synthesis   = `Both suppression and friction are low. Agents are using most of their coordination
+        capacity, and that capacity is moving through the system without significant drag.
+        <strong>What to notice:</strong> This is the rare healthy baseline. Explore what happens
+        when you push the OS dial toward hierarchy — watch which metric degrades first.`;
+
+    } else if (highGap && !highFric) {
+      stateClass  = 'state-blocked';
+      patternName = 'Pattern: Knowledge Blocked by Hierarchy';
+      synthesis   = `Friction is low — the coordination process itself runs reasonably well.
+        But there is a significant gap between what agents are capable of and what they feel
+        safe expressing. This system is operating on less than its full intelligence.
+        <strong>This is the Boisjoly pattern:</strong> the engineering knowledge existed and the
+        process was functioning, but the structure prevented the knowledge from reaching the
+        decision. Low friction does not mean ethical health — it can mean a well-oiled machine
+        running on incomplete information.`;
+
+    } else if (!highGap && highFric) {
+      stateClass  = 'state-exhausted';
+      patternName = 'Pattern: Honest but Exhausted';
+      synthesis   = `Suppression is low — agents are saying what they know, and it's reaching
+        decision-makers. But friction is high, meaning coordination requires enormous effort.
+        The worldview and evidence distances in this system are being navigated honestly but at
+        great cost. <strong>What to notice:</strong> High friction without suppression is
+        typically a diversity challenge, not a power challenge. The fix is better OS2
+        scaffolding — structured processes for coordinating across difference — not more
+        psychological safety.`;
+
+    } else if (highGap && highFric) {
+      stateClass  = 'state-breakdown';
+      patternName = 'Pattern: Full Coordination Breakdown';
+      synthesis   = `Both suppression and friction are elevated. Agents are silenced
+        <em>and</em> worn down — the system is consuming itself. The information that
+        decision-makers receive is filtered through power and distortion before it arrives.
+        This combination is the UCP signature of the most serious institutional ethical failures:
+        not one mechanism failing, but two reinforcing each other. <strong>Try BioBond:</strong>
+        enable the scaffold and re-run to see how much of this is recoverable.`;
+
+    } else {
+      stateClass  = 'state-mixed';
+      patternName = 'Pattern: Mixed Signals';
+      synthesis   = `The metrics are telling a nuanced story — neither clearly healthy nor clearly
+        broken. Look at the individual panels below to see which specific mechanism is driving
+        the outcome. Start with the Suppression Gap (is knowledge reaching decision-makers?)
+        and the Friction reading (how much energy is the process consuming?). They may be
+        pointing in different directions, which itself is pedagogically interesting.`;
+    }
+
+    // Plain English readings for each metric in the grid
+    const rawReading  = raw  > 0.65 ? 'Strong underlying potential'
+                      : raw  > 0.50 ? 'Moderate potential, under load'
+                      : raw  > 0.40 ? 'Fragile — near collapse threshold'
+                      :               'Capacity collapsed';
+
+    const percReading = perceived > 0.65 ? 'Feels genuinely collaborative'
+                      : perceived > 0.50 ? 'Feels effortful but workable'
+                      : perceived > 0.40 ? 'Feels difficult — high personal cost'
+                      :                    'Feels nearly impossible';
+
+    const fricReading = friction < 0.25 ? 'Low drag — energy reaches the problem'
+                      : friction < 0.45 ? 'Moderate drag — extra effort required'
+                      : friction < 0.65 ? 'High drag — significant energy consumed'
+                      :                   'Severe drag — system consuming itself';
+
+    const gapReading  = gap < 0.05 ? 'Minimal — agents using full voice'
+                      : gap < 0.15 ? 'Mild — some self-censorship present'
+                      : gap < 0.30 ? 'Significant — room knows more than it says'
+                      :              'Critical — Boisjoly-level silencing';
+
+    return `
+      <div class="combined-reading ${stateClass}">
+        <div class="combined-reading-header">
+          <div>
+            <div class="combined-reading-label">Reading Your Results Together</div>
+            <div class="combined-reading-pattern">${patternName}</div>
+          </div>
+        </div>
+
+        <div class="combined-reading-grid">
+          <div class="combined-reading-cell">
+            <div class="cell-metric">λ Raw — Underlying Capacity</div>
+            <div class="cell-reading">${rawReading}</div>
+          </div>
+          <div class="combined-reading-cell">
+            <div class="cell-metric">λ Perceived — Felt Experience</div>
+            <div class="cell-reading">${percReading}</div>
+          </div>
+          <div class="combined-reading-cell">
+            <div class="cell-metric">Friction — Coordination Cost</div>
+            <div class="cell-reading">${fricReading}</div>
+          </div>
+          <div class="combined-reading-cell" style="grid-column: 1 / -1; background: rgba(255,255,255,.5)">
+            <div class="cell-metric">Suppression Gap (λ Raw − λ Perceived) — Voice Reaching Decisions</div>
+            <div class="cell-reading">${gapReading}</div>
+          </div>
+        </div>
+
+        <div class="combined-reading-synthesis">${synthesis}</div>
       </div>`;
   }
 
@@ -2182,6 +2470,9 @@
         Top worldviews: ${topWV}
         &nbsp;|&nbsp; Leading evidence: ${topEVStr}
       </div>
+
+      <!-- Combined reading — shown first to frame the detailed panels below -->
+      ${buildCombinedReading(mC.lambda_raw, mC.lambda_perceived, mC.friction, SCENARIO_DISPLAY_NAMES[idx])}
 
       <!-- Three metric cards — with phenomenological threshold phrases -->
       <div class="metrics-row">
