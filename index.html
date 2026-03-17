@@ -399,6 +399,116 @@
   }
 
   /* ══════════════════════════════════════════════════
+     LIVE "WHO'S IN THE ROOM" PREVIEW PANEL
+     ══════════════════════════════════════════════════ */
+  .preview-panel {
+    background: #f4f7fc;
+    border: 1px solid var(--prf-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+
+  .preview-panel-title {
+    font-family: 'Courier New', monospace;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-slate);
+    margin-bottom: 10px;
+  }
+
+  .preview-framework-note {
+    font-size: .74rem;
+    color: #555;
+    line-height: 1.5;
+    padding: 8px 11px;
+    background: rgba(201,168,76,.13);
+    border-left: 3px solid var(--prf-gold);
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 14px;
+  }
+
+  .preview-section-label {
+    font-family: 'Courier New', monospace;
+    font-size: .67rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-muted);
+    margin-bottom: 8px;
+    margin-top: 12px;
+  }
+
+  .preview-section-label:first-of-type { margin-top: 0; }
+
+  .fw-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .fw-bar-wrap {
+    flex-shrink: 0;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    padding-top: 3px;
+  }
+
+  .fw-bar-track {
+    width: 100%;
+    height: 10px;
+    background: var(--prf-border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+
+  .fw-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  .fw-pct {
+    font-family: 'Courier New', monospace;
+    font-size: .64rem;
+    color: var(--prf-muted);
+  }
+
+  /* Worldview framework colors */
+  .fw-bar-fill.fw-role-order            { background: #7a6fb5; }
+  .fw-bar-fill.fw-sacred-boundary       { background: #b56f4a; }
+  .fw-bar-fill.fw-liberal-individualist { background: #4a7fb5; }
+  .fw-bar-fill.fw-ubuntu-relational     { background: #3a8a5c; }
+  .fw-bar-fill.fw-indigenous-custodial  { background: #8a703a; }
+
+  /* Evidence policy colors */
+  .fw-bar-fill.fw-alternative-facts     { background: #b84444; }
+  .fw-bar-fill.fw-authority-weighted    { background: #7a6fb5; }
+  .fw-bar-fill.fw-tradition-weighted    { background: #8a703a; }
+  .fw-bar-fill.fw-empirical-calibrated  { background: #3a8a5c; }
+
+  .fw-text { flex: 1; }
+
+  .fw-name {
+    font-size: .83rem;
+    font-weight: bold;
+    color: var(--prf-navy);
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+
+  .fw-desc {
+    font-size: .75rem;
+    color: #556;
+    line-height: 1.45;
+  }
+
+  /* ══════════════════════════════════════════════════
      BIOBOND TOGGLE
      ══════════════════════════════════════════════════ */
   .biobond-toggle {
@@ -862,14 +972,15 @@
       </div>
 
       <div class="slider-explainer">
-        <strong>What the sliders actually control:</strong> Each scenario has two sliders that build real inputs for the simulation engine.
-        The <strong>OS1 → OS2 dial</strong> shifts the agent population from OS1 hierarchy-dominant
-        (role_order + sacred_boundary + authority_weighted evidence) toward OS2 capability-relational
-        (ubuntu_relational + empirical_calibrated evidence).
-        The <strong>Evidence Quality dial</strong> moves from distorted filtering (alternative_facts dominant)
-        to calibrated empiricism. Different inputs always produce different outputs.
-        The <strong>Reform Run</strong> automatically re-runs with OS2 pushed up and evidence quality improved,
-        so you can compare the current configuration to a structurally reformed one.
+        <strong>What the sliders actually control:</strong> Each scenario has two sliders that build real agent population inputs for the simulation engine.
+        The <strong>OS1 → OS2 dial</strong> shifts the mix of reasoning frameworks from OS1 hierarchy-dominant
+        (Hierarchical / Role-Based + Boundary / Integrity-Centered) toward OS2 capability-relational
+        (Relational / We-Centered + Custodial / Stewardship). The <strong>Evidence Quality dial</strong>
+        moves from distorted or filtered information processing toward calibrated, open empiricism.
+        The <strong>Reform Run</strong> automatically re-runs the simulation with OS2 pushed up and
+        evidence quality improved, so you can compare the current configuration to a structurally
+        reformed one side-by-side. A live preview below each scenario's sliders shows you exactly
+        which reasoning frameworks are in the room before you run.
       </div>
 
     </div>
@@ -921,13 +1032,13 @@
 
           <div class="param-group">
             <label class="param-label" for="s0-os">
-              OS1 → OS2 (Worldview Mix)
+              OS1 → OS2 (Reasoning Mix)
               <span class="param-val" id="v0-os">0.30</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.30" id="s0-os"
-                   oninput="updateVal('v0-os', this.value)">
-            <div class="slider-pole-labels"><span>OS1 Hierarchy</span><span>OS2 Relational</span></div>
-            <span class="param-hint">0 = role_order + authority dominant · 1 = ubuntu_relational + empirical dominant</span>
+                   oninput="updateVal('v0-os', this.value); updatePreview(0)">
+            <div class="slider-pole-labels"><span>OS1 Hierarchy-Dominant</span><span>OS2 Relational-Dominant</span></div>
+            <span class="param-hint">0 = Hierarchical / Boundary-Centered dominant · 1 = Relational / Custodial dominant</span>
           </div>
 
           <div class="param-group">
@@ -936,9 +1047,9 @@
               <span class="param-val" id="v0-ev">0.25</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.25" id="s0-ev"
-                   oninput="updateVal('v0-ev', this.value)">
+                   oninput="updateVal('v0-ev', this.value); updatePreview(0)">
             <div class="slider-pole-labels"><span>Distorted / Suppressed</span><span>Calibrated / Open</span></div>
-            <span class="param-hint">0 = alternative_facts heavy · 1 = empirical_calibrated heavy</span>
+            <span class="param-hint">0 = Dismissive / Authority-Filtered heavy · 1 = Empirically Calibrated heavy</span>
           </div>
 
           <div class="param-group">
@@ -962,6 +1073,9 @@
           </div>
 
         </div>
+
+        <!-- Live "Who's in the room" preview -->
+        <div class="preview-panel" id="preview-0"></div>
 
         <div class="biobond-toggle">
           <input type="checkbox" id="c0-bb">
@@ -1007,9 +1121,9 @@
               <span class="param-val" id="v1-os">0.35</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.35" id="s1-os"
-                   oninput="updateVal('v1-os', this.value)">
+                   oninput="updateVal('v1-os', this.value); updatePreview(1)">
             <div class="slider-pole-labels"><span>Attending-Physician Dominant</span><span>Multidisciplinary Team</span></div>
-            <span class="param-hint">0 = role_order / authority_weighted · 1 = ubuntu_relational / empirical</span>
+            <span class="param-hint">0 = Hierarchical / Role-Based dominant · 1 = Relational / We-Centered dominant</span>
           </div>
 
           <div class="param-group">
@@ -1018,7 +1132,7 @@
               <span class="param-val" id="v1-ev">0.35</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.35" id="s1-ev"
-                   oninput="updateVal('v1-ev', this.value)">
+                   oninput="updateVal('v1-ev', this.value); updatePreview(1)">
             <div class="slider-pole-labels"><span>Conflicting / Filtered</span><span>Transparent / Calibrated</span></div>
             <span class="param-hint">Move this slider to see the largest effect in this scenario</span>
           </div>
@@ -1044,6 +1158,9 @@
           </div>
 
         </div>
+
+        <!-- Live "Who's in the room" preview -->
+        <div class="preview-panel" id="preview-1"></div>
 
         <div class="biobond-toggle">
           <input type="checkbox" id="c1-bb">
@@ -1089,9 +1206,9 @@
               <span class="param-val" id="v2-os">0.40</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.40" id="s2-os"
-                   oninput="updateVal('v2-os', this.value)">
+                   oninput="updateVal('v2-os', this.value); updatePreview(2)">
             <div class="slider-pole-labels"><span>PI-Dominant Hierarchy</span><span>Collaborative / Peer</span></div>
-            <span class="param-hint">0 = role_order / authority dominant · 1 = ubuntu_relational / empirical</span>
+            <span class="param-hint">0 = Hierarchical / Role-Based dominant · 1 = Relational / We-Centered dominant</span>
           </div>
 
           <div class="param-group">
@@ -1100,9 +1217,9 @@
               <span class="param-val" id="v2-ev">0.40</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.40" id="s2-ev"
-                   oninput="updateVal('v2-ev', this.value)">
+                   oninput="updateVal('v2-ev', this.value); updatePreview(2)">
             <div class="slider-pole-labels"><span>Data Siloed / Opaque</span><span>Open Data / Transparent</span></div>
-            <span class="param-hint">0 = alternative_facts / authority_weighted · 1 = empirical_calibrated</span>
+            <span class="param-hint">0 = Dismissive / Authority-Filtered · 1 = Empirically Calibrated</span>
           </div>
 
           <div class="param-group">
@@ -1126,6 +1243,9 @@
           </div>
 
         </div>
+
+        <!-- Live "Who's in the room" preview -->
+        <div class="preview-panel" id="preview-2"></div>
 
         <div class="biobond-toggle">
           <input type="checkbox" id="c2-bb">
@@ -1167,13 +1287,13 @@
 
           <div class="param-group">
             <label class="param-label" for="s3-os">
-              OS1 → OS2 (Worldview Composition)
+              OS1 → OS2 (Reasoning Mix)
               <span class="param-val" id="v3-os">0.35</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.35" id="s3-os"
-                   oninput="updateVal('v3-os', this.value)">
-            <div class="slider-pole-labels"><span>Sacred Boundary / Role Order</span><span>Indigenous Custodial / Ubuntu</span></div>
-            <span class="param-hint">0 = sacred_boundary + authority dominant · 1 = indigenous_custodial + relational dominant</span>
+                   oninput="updateVal('v3-os', this.value); updatePreview(3)">
+            <div class="slider-pole-labels"><span>Boundary / Hierarchy-Centered</span><span>Custodial / Relational</span></div>
+            <span class="param-hint">0 = Boundary / Role-Based dominant · 1 = Custodial / Stewardship dominant</span>
           </div>
 
           <div class="param-group">
@@ -1182,9 +1302,9 @@
               <span class="param-val" id="v3-ev">0.40</span>
             </label>
             <input type="range" min="0" max="1" step="0.05" value="0.40" id="s3-ev"
-                   oninput="updateVal('v3-ev', this.value)">
+                   oninput="updateVal('v3-ev', this.value); updatePreview(3)">
             <div class="slider-pole-labels"><span>Tradition / Authority Filtered</span><span>Empirically Calibrated</span></div>
-            <span class="param-hint">0 = tradition_weighted / authority_weighted · 1 = empirical_calibrated</span>
+            <span class="param-hint">0 = Tradition-Weighted / Authority-Filtered · 1 = Empirically Calibrated</span>
           </div>
 
           <div class="param-group">
@@ -1208,6 +1328,9 @@
           </div>
 
         </div>
+
+        <!-- Live "Who's in the room" preview -->
+        <div class="preview-panel" id="preview-3"></div>
 
         <div class="biobond-toggle">
           <input type="checkbox" id="c3-bb">
@@ -1251,6 +1374,129 @@
 <script>
 
   const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+  // Human-readable names for each scenario tab (index matches tab order)
+  const SCENARIO_DISPLAY_NAMES = [
+    'Factory Safety Reporting',
+    'Hospital Ethics Committee',
+    'Academic Research Lab',
+    'Land and Stewardship Conflict',
+  ];
+
+  // ─────────────────────────────────────────────────
+  // WORLDVIEW FRAMEWORK DISPLAY DATA
+  // Keys match engine keys exactly. Display names and
+  // descriptions are student-facing plain language.
+  // ─────────────────────────────────────────────────
+  const WV_DISPLAY = {
+    role_order: {
+      name:    'Hierarchical / Role-Based',
+      css:     'fw-role-order',
+      desc:    'Agents follow institutional roles and authority structures. They believe stable hierarchy is what keeps organizations functional. Think: "My job is to follow the protocol; dissent goes through channels."',
+    },
+    sacred_boundary: {
+      name:    'Boundary / Integrity-Centered',
+      css:     'fw-sacred-boundary',
+      desc:    'Agents protect certain values, rules, or identities as non-negotiable. Crossing those lines is categorically wrong, regardless of outcomes. Think: "Some things you simply do not compromise on."',
+    },
+    liberal_individualist: {
+      name:    'Individual / Rights-Based',
+      css:     'fw-liberal-individualist',
+      desc:    'Agents prioritize personal autonomy, procedural fairness, and individual rights. They reason from rules that should apply equally to everyone. Think: "Every person deserves the same fair process."',
+    },
+    ubuntu_relational: {
+      name:    'Relational / We-Centered',
+      css:     'fw-ubuntu-relational',
+      desc:    'Agents reason from mutual recognition and communal dignity. Decisions require that everyone\'s voice is genuinely heard. Think: "I am because we are — harm to one damages the whole."',
+    },
+    indigenous_custodial: {
+      name:    'Custodial / Stewardship',
+      css:     'fw-indigenous-custodial',
+      desc:    'Agents hold obligations to past and future generations, not just the people in the room. Think: "We are stewards, not owners — our choices must account for what we inherited and what we leave behind."',
+    },
+  };
+
+  // ─────────────────────────────────────────────────
+  // EVIDENCE POLICY DISPLAY DATA
+  // ─────────────────────────────────────────────────
+  const EV_DISPLAY = {
+    alternative_facts: {
+      name:    'Dismissive Processing',
+      css:     'fw-alternative-facts',
+      desc:    'Agents actively reinterpret evidence to match what they already believe. Contradictory data is ignored or explained away. High distortion — coordination is working with different versions of reality.',
+    },
+    authority_weighted: {
+      name:    'Authority-Filtered',
+      css:     'fw-authority-weighted',
+      desc:    'Agents trust official sources and institutional hierarchy over independent observation. Evidence from those with lower rank is discounted, even if it is more accurate.',
+    },
+    tradition_weighted: {
+      name:    'Tradition-Weighted',
+      css:     'fw-tradition-weighted',
+      desc:    'Agents weight past precedent and inherited practice heavily. New evidence must overcome the prior of "this is how it has always been done."',
+    },
+    empirical_calibrated: {
+      name:    'Empirically Calibrated',
+      css:     'fw-empirical-calibrated',
+      desc:    'Agents update their beliefs based on observable evidence with minimal distortion. They seek disconfirmation as well as confirmation. Lowest friction for coordination.',
+    },
+  };
+
+  // ─────────────────────────────────────────────────
+  // BUILD & RENDER THE LIVE "WHO'S IN THE ROOM" PREVIEW
+  // Called on slider input and once on page load for
+  // each panel's default values.
+  // ─────────────────────────────────────────────────
+  function updatePreview(idx) {
+    const container = document.getElementById(`preview-${idx}`);
+    if (!container) return;
+
+    const osVal = parseFloat(document.getElementById(`s${idx}-os`).value);
+    const evVal = parseFloat(document.getElementById(`s${idx}-ev`).value);
+
+    const wvDist = buildWorldviewDist(osVal);
+    const evDist = buildEvidenceDist(evVal);
+
+    // Sort each distribution descending by proportion
+    const wvSorted = Object.entries(wvDist).sort((a, b) => b[1] - a[1]);
+    const evSorted = Object.entries(evDist).sort((a, b) => b[1] - a[1]);
+
+    const buildRows = (entries, displayMap) =>
+      entries.map(([key, pct]) => {
+        const info  = displayMap[key] || { name: key, css: '', desc: '' };
+        const pctPx = Math.round(pct * 100);
+        return `
+          <div class="fw-row">
+            <div class="fw-bar-wrap">
+              <div class="fw-bar-track">
+                <div class="fw-bar-fill ${info.css}" style="width:${pctPx}%"></div>
+              </div>
+              <span class="fw-pct">${pctPx}%</span>
+            </div>
+            <div class="fw-text">
+              <div class="fw-name">${info.name}</div>
+              <div class="fw-desc">${info.desc}</div>
+            </div>
+          </div>`;
+      }).join('');
+
+    container.innerHTML = `
+      <div class="preview-panel-title">👥 Who's in the Room — live preview</div>
+
+      <div class="preview-framework-note">
+        <strong>These are reasoning styles, not demographic groups.</strong>
+        Each label describes <em>how agents reason about obligations</em> — not who they are
+        culturally, ethnically, or politically. Any person, in any role, can reason in any of
+        these modes depending on context, training, and institutional pressure.
+      </div>
+
+      <div class="preview-section-label">Moral Reasoning Frameworks (Worldview Mix)</div>
+      ${buildRows(wvSorted, WV_DISPLAY)}
+
+      <div class="preview-section-label">Evidence Processing Styles</div>
+      ${buildRows(evSorted, EV_DISPLAY)}
+    `;
+  }
 
   // ─────────────────────────────────────────────────
   // SLIDER DISPLAY UPDATE
@@ -1550,14 +1796,14 @@
     const cPercPct = (mC.lambda_perceived * 100).toFixed(1);
     const cFricPct = (mC.friction * 100).toFixed(1);
 
-    // Top worldview & evidence labels for display
+    // Top worldview & evidence labels for display — use friendly names
     const topWV = Object.entries(payload.worldview_distribution)
       .sort((a, b) => b[1] - a[1]).slice(0, 2)
-      .map(([k, v]) => `${k.replace(/_/g, ' ')} (${(v * 100).toFixed(0)}%)`).join(', ');
+      .map(([k, v]) => `${(WV_DISPLAY[k] || {name: k}).name} (${(v * 100).toFixed(0)}%)`).join(', ');
 
     const topEV = Object.entries(payload.evidence_distribution)
       .sort((a, b) => b[1] - a[1])[0];
-    const topEVStr = `${topEV[0].replace(/_/g, ' ')} (${(topEV[1] * 100).toFixed(0)}%)`;
+    const topEVStr = `${(EV_DISPLAY[topEV[0]] || {name: topEV[0]}).name} (${(topEV[1] * 100).toFixed(0)}%)`;
 
     // Reform comparison panel (only if we have valid reformed metrics)
     let reformHTML = '';
@@ -1642,8 +1888,8 @@
             <div class="agent-reading">
               <div class="agent-name">
                 ${a.name}
-                &nbsp;·&nbsp; ${(a.worldview || '').replace(/_/g, ' ')}
-                &nbsp;·&nbsp; ${(a.evidence_policy || '').replace(/_/g, ' ')}
+                &nbsp;·&nbsp; ${(WV_DISPLAY[a.worldview] || {name: a.worldview}).name.replace(/_/g,' ')}
+                &nbsp;·&nbsp; ${(EV_DISPLAY[a.evidence_policy] || {name: a.evidence_policy}).name.replace(/_/g,' ')}
               </div>
               λ raw: <strong>${a.lambda_raw != null ? a.lambda_raw.toFixed(3) : '—'}</strong>
               &nbsp;|&nbsp;
@@ -1671,7 +1917,7 @@
     panel.innerHTML = `
 
       <div class="results-section-title">
-        Simulation Results — ${currentData.scenario || payload.scenario_name}
+        Simulation Results — ${SCENARIO_DISPLAY_NAMES[idx]}
         &nbsp;·&nbsp; ${payload.num_agents} agents
         &nbsp;·&nbsp; ${payload.steps} steps
         &nbsp;·&nbsp; seed ${payload.seed}
@@ -1737,7 +1983,7 @@
 
       <!-- Interpretation -->
       <div class="interpretation">
-        ${buildInterpretation(mC, currentData.scenario || payload.scenario_name)}
+        ${buildInterpretation(mC, SCENARIO_DISPLAY_NAMES[idx])}
       </div>
 
     `;
@@ -1869,6 +2115,12 @@
   // INIT
   // ─────────────────────────────────────────────────
   checkHealth();
+  // Render previews for all panels on page load so students
+  // see the default population before touching any slider.
+  updatePreview(0);
+  updatePreview(1);
+  updatePreview(2);
+  updatePreview(3);
 
 </script>
 </body>
