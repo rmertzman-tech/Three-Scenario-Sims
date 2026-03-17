@@ -1,505 +1,1074 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UCP Scenario Runner - Week 1</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            margin-bottom: 24px;
-        }
-        
-        .card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: #1a202c;
-        }
-        
-        .scenario-grid {
-            display: grid;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        
-        .scenario-option {
-            padding: 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .scenario-option:hover {
-            border-color: #667eea;
-            background: #f7fafc;
-        }
-        
-        .scenario-option.selected {
-            border-color: #667eea;
-            background: #edf2f7;
-        }
-        
-        .scenario-title {
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #2d3748;
-            margin-bottom: 6px;
-        }
-        
-        .scenario-desc {
-            color: #718096;
-            font-size: 0.95rem;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        
-        .spinner {
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .results {
-            display: none;
-        }
-        
-        .results.show {
-            display: block;
-        }
-        
-        .metric-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-        
-        .metric-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-        }
-        
-        .metric-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-        
-        .metric-value {
-            font-size: 2rem;
-            font-weight: 700;
-        }
-        
-        .chart-container {
-            margin-bottom: 32px;
-        }
-        
-        .response-list {
-            display: grid;
-            gap: 16px;
-        }
-        
-        .response-card {
-            background: #f7fafc;
-            border-left: 4px solid #667eea;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        
-        .response-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        
-        .response-name {
-            font-weight: 600;
-            color: #2d3748;
-        }
-        
-        .response-worldview {
-            background: #667eea;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-        }
-        
-        .response-text {
-            color: #4a5568;
-            line-height: 1.6;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .error {
-            background: #feb2b2;
-            border-left: 4px solid #f56565;
-            padding: 16px;
-            border-radius: 8px;
-            color: #742a2a;
-            margin-bottom: 16px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCP Scenario Runner — Ethics Beyond Boundaries</title>
+<style>
+  /* ── PRF Color Palette ── */
+  :root {
+    --prf-deep:     #1a2744;
+    --prf-navy:     #243560;
+    --prf-slate:    #3a5080;
+    --prf-sky:      #4a7fb5;
+    --prf-ice:      #7fb3d3;
+    --prf-gold:     #c9a84c;
+    --prf-amber:    #e8c56a;
+    --prf-warm:     #f5edd8;
+    --prf-paper:    #faf8f4;
+    --prf-ink:      #1e2433;
+    --prf-muted:    #6b7a9a;
+    --prf-success:  #3a8a5c;
+    --prf-warn:     #c87843;
+    --prf-danger:   #b84444;
+    --prf-border:   #d0d8e8;
+
+    --radius:       10px;
+    --shadow-sm:    0 2px 8px rgba(26,39,68,.10);
+    --shadow-md:    0 4px 20px rgba(26,39,68,.15);
+    --shadow-lg:    0 8px 40px rgba(26,39,68,.22);
+    --transition:   all .25s ease;
+
+    --backend: https://ucp-backend-4dig.onrender.com;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--prf-paper);
+    color: var(--prf-ink);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--prf-deep) 0%, var(--prf-navy) 60%, var(--prf-slate) 100%);
+    color: #fff;
+    padding: 28px 32px 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -55deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,.025) 40px,
+      rgba(255,255,255,.025) 80px
+    );
+    pointer-events: none;
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .course-tag {
+    font-family: 'Courier New', monospace;
+    font-size: .72rem;
+    letter-spacing: .12em;
+    color: var(--prf-amber);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 1.75rem;
+    font-weight: normal;
+    letter-spacing: -.01em;
+    line-height: 1.2;
+  }
+  header h1 span { color: var(--prf-amber); }
+  header p {
+    margin-top: 8px;
+    font-size: .92rem;
+    color: rgba(255,255,255,.72);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ── Status Bar ── */
+  .status-bar {
+    background: var(--prf-deep);
+    color: rgba(255,255,255,.6);
+    font-family: 'Courier New', monospace;
+    font-size: .72rem;
+    padding: 6px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #888;
+    display: inline-block;
+    transition: background .4s;
+  }
+  .status-dot.connected { background: #4cba7f; box-shadow: 0 0 6px #4cba7f; }
+  .status-dot.error     { background: var(--prf-danger); }
+  .status-dot.checking  { background: var(--prf-amber); animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  /* ── Main Layout ── */
+  main {
+    max-width: 900px;
+    margin: 32px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: #fff;
+    border: 1px solid var(--prf-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  .card-header {
+    background: linear-gradient(90deg, var(--prf-navy), var(--prf-slate));
+    color: #fff;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-header h2 {
+    font-size: 1rem;
+    font-weight: normal;
+    letter-spacing: .02em;
+  }
+  .card-num {
+    background: var(--prf-gold);
+    color: var(--prf-deep);
+    font-family: 'Courier New', monospace;
+    font-size: .78rem;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .card-body { padding: 20px; }
+
+  /* ── Intro / Instructions ── */
+  .intro {
+    font-size: .95rem;
+    line-height: 1.7;
+    color: #444;
+  }
+  .intro strong { color: var(--prf-navy); }
+  .concept-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .concept-chip {
+    background: var(--prf-warm);
+    border: 1px solid var(--prf-border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: .82rem;
+    line-height: 1.5;
+  }
+  .concept-chip .label {
+    display: block;
+    font-family: 'Courier New', monospace;
+    font-size: .7rem;
+    color: var(--prf-slate);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    margin-bottom: 4px;
+  }
+  .concept-chip .value { font-weight: bold; color: var(--prf-navy); font-size: .9rem; }
+  .concept-chip .desc { font-size: .78rem; color: var(--prf-muted); margin-top: 2px; }
+
+  /* ── Scenario Selector ── */
+  .scenario-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--prf-border);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: .88rem;
+    color: var(--prf-muted);
+    transition: var(--transition);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .tab-btn:hover { background: var(--prf-warm); color: var(--prf-navy); }
+  .tab-btn.active {
+    color: var(--prf-navy);
+    border-bottom-color: var(--prf-gold);
+    background: #fff;
+    font-weight: bold;
+  }
+  .tab-btn .tab-icon { font-size: 1.3em; display: block; margin-bottom: 2px; }
+
+  /* ── Scenario Panel ── */
+  .scenario-panel { display: none; }
+  .scenario-panel.active { display: block; }
+
+  .scenario-desc {
+    font-size: .9rem;
+    line-height: 1.65;
+    color: #444;
+    background: var(--prf-warm);
+    border-left: 4px solid var(--prf-gold);
+    padding: 14px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+  }
+  .scenario-desc .scenario-title {
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--prf-navy);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  /* ── Parameter Controls ── */
+  .params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .param-group { display: flex; flex-direction: column; gap: 6px; }
+  .param-label {
+    font-size: .8rem;
+    font-family: 'Courier New', monospace;
+    color: var(--prf-slate);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .param-label .param-val {
+    background: var(--prf-deep);
+    color: var(--prf-amber);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: .78rem;
+  }
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--prf-border);
+    outline: none;
+    transition: var(--transition);
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--prf-sky);
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { background: var(--prf-navy); transform: scale(1.15); }
+  .param-hint { font-size: .74rem; color: var(--prf-muted); font-style: italic; }
+
+  /* ── Run Button ── */
+  .run-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--prf-navy), var(--prf-sky));
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    letter-spacing: .02em;
+  }
+  .run-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); filter: brightness(1.08); }
+  .run-btn:active { transform: translateY(0); }
+  .run-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .run-btn.loading .spinner { display: block; }
+  .run-btn.loading .btn-text { opacity: .7; }
+
+  /* ── Results Panel ── */
+  .results-panel {
+    margin-top: 24px;
+    display: none;
+  }
+  .results-panel.visible { display: block; }
+  .results-title {
+    font-size: .8rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--prf-muted);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--prf-border);
+  }
+
+  /* ── Metric Cards ── */
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .metric-card {
+    background: var(--prf-warm);
+    border: 1px solid var(--prf-border);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+    transition: var(--transition);
+  }
+  .metric-card:hover { box-shadow: var(--shadow-sm); }
+  .metric-card .m-label {
+    font-family: 'Courier New', monospace;
+    font-size: .65rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-muted);
+    margin-bottom: 6px;
+  }
+  .metric-card .m-value {
+    font-size: 1.9rem;
+    font-weight: bold;
+    color: var(--prf-navy);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .metric-card .m-name {
+    font-size: .78rem;
+    color: var(--prf-slate);
+    font-style: italic;
+  }
+  .metric-card.highlight-good .m-value { color: var(--prf-success); }
+  .metric-card.highlight-warn .m-value { color: var(--prf-warn); }
+  .metric-card.highlight-bad  .m-value { color: var(--prf-danger); }
+
+  /* ── Bar Visualization ── */
+  .bar-section { margin-bottom: 20px; }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .bar-label {
+    font-size: .78rem;
+    font-family: 'Courier New', monospace;
+    color: var(--prf-slate);
+    width: 130px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+  .bar-track {
+    flex: 1;
+    height: 20px;
+    background: var(--prf-border);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+    position: relative;
+  }
+  .bar-fill::after {
+    content: attr(data-pct);
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: .65rem;
+    color: rgba(255,255,255,.9);
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+  }
+  .bar-fill.lambda-raw      { background: linear-gradient(90deg, var(--prf-sky), var(--prf-navy)); }
+  .bar-fill.lambda-perceived { background: linear-gradient(90deg, var(--prf-gold), var(--prf-amber)); }
+  .bar-fill.friction         { background: linear-gradient(90deg, var(--prf-warn), var(--prf-danger)); }
+
+  /* ── Interpretation ── */
+  .interpretation {
+    background: linear-gradient(135deg, var(--prf-deep) 0%, var(--prf-navy) 100%);
+    color: #fff;
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-size: .9rem;
+    line-height: 1.65;
+  }
+  .interpretation .int-label {
+    font-family: 'Courier New', monospace;
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--prf-amber);
+    margin-bottom: 8px;
+  }
+  .interpretation p { color: rgba(255,255,255,.88); }
+
+  /* ── Comparison Panel ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .compare-col {
+    border: 1px solid var(--prf-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .compare-col-header {
+    padding: 10px 14px;
+    font-size: .82rem;
+    font-weight: bold;
+    color: #fff;
+  }
+  .compare-col:nth-child(1) .compare-col-header { background: var(--prf-slate); }
+  .compare-col:nth-child(2) .compare-col-header { background: var(--prf-navy); }
+  .compare-col-body { padding: 12px 14px; }
+  .compare-metric {
+    display: flex;
+    justify-content: space-between;
+    font-size: .83rem;
+    padding: 5px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .compare-metric:last-child { border-bottom: none; }
+  .compare-metric .cm-label { color: var(--prf-muted); font-family: 'Courier New', monospace; font-size: .75rem; }
+  .compare-metric .cm-val { font-weight: bold; color: var(--prf-navy); }
+  .cm-val.better { color: var(--prf-success); }
+  .cm-val.worse  { color: var(--prf-danger); }
+
+  /* ── Error State ── */
+  .error-box {
+    background: #fff5f5;
+    border: 1px solid #fcc;
+    border-left: 4px solid var(--prf-danger);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: .88rem;
+    color: var(--prf-danger);
+    margin-top: 16px;
+    display: none;
+  }
+  .error-box.visible { display: block; }
+  .error-box code { font-family: 'Courier New', monospace; font-size: .82rem; background: #ffe8e8; padding: 2px 5px; border-radius: 3px; }
+
+  /* ── Reflection Prompts ── */
+  .reflection-box {
+    background: var(--prf-warm);
+    border: 1px solid var(--prf-border);
+    border-top: 3px solid var(--prf-gold);
+    border-radius: 0 0 8px 8px;
+    padding: 16px 20px;
+  }
+  .reflection-box h3 {
+    font-size: .82rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-slate);
+    margin-bottom: 10px;
+  }
+  .reflection-box ol {
+    padding-left: 20px;
+    color: #444;
+    font-size: .88rem;
+    line-height: 1.7;
+  }
+  .reflection-box li { margin-bottom: 4px; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    font-size: .75rem;
+    color: var(--prf-muted);
+    padding: 20px;
+    font-family: 'Courier New', monospace;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    header { padding: 20px 16px; }
+    header h1 { font-size: 1.35rem; }
+    main { padding: 0 12px; margin: 16px auto; gap: 16px; }
+    .params-grid { grid-template-columns: 1fr; }
+    .metrics-row { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .concept-row { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🎯 UCP Scenario Runner</h1>
-            <p>Explore how coordination collapses and recovers under ethical pressure</p>
-        </div>
-        
-        <div class="card">
-            <h2>Choose an Ethical Scenario</h2>
-            <div class="scenario-grid" id="scenarioGrid">
-                <div class="scenario-option" onclick="selectScenario('procedural_vs_relational_whistleblower')">
-                    <div class="scenario-title">🔔 Whistleblower Dilemma</div>
-                    <div class="scenario-desc">Institutional misconduct where fairness, loyalty, and authority clash</div>
-                </div>
-                
-                <div class="scenario-option" onclick="selectScenario('custodial_land_conflict')">
-                    <div class="scenario-title">🌳 Land & Stewardship Conflict</div>
-                    <div class="scenario-desc">Custodial continuity versus rights-based property frameworks</div>
-                </div>
-                
-                <div class="scenario-option" onclick="selectScenario('misinformation_and_repair')">
-                    <div class="scenario-title">📰 Misinformation Crisis</div>
-                    <div class="scenario-desc">Competing evidence streams cause coordination breakdown</div>
-                </div>
-            </div>
-            
-            <button class="btn" onclick="runSimulation()" id="runBtn" disabled>
-                Select a Scenario First
-            </button>
-        </div>
-        
-        <div class="card loading hidden" id="loadingCard">
-            <div class="spinner"></div>
-            <p style="color: #718096; text-align: center;">Running simulation...</p>
-        </div>
-        
-        <div class="card results" id="resultsCard">
-            <div class="error hidden" id="errorMessage"></div>
-            
-            <h2>Simulation Results</h2>
-            
-            <div class="metric-grid">
-                <div class="metric-card">
-                    <div class="metric-label">Final λ (Lambda)</div>
-                    <div class="metric-value" id="finalLambda">--</div>
-                </div>
-                
-                <div class="metric-card">
-                    <div class="metric-label">Coordination Status</div>
-                    <div class="metric-value" style="font-size: 1.5rem;" id="status">--</div>
-                </div>
-                
-                <div class="metric-card">
-                    <div class="metric-label">Friction</div>
-                    <div class="metric-value" id="friction">--</div>
-                </div>
-            </div>
-            
-            <div class="chart-container">
-                <h3 style="margin-bottom: 16px;">λ Over Time</h3>
-                <canvas id="lambdaChart" width="800" height="300"></canvas>
-            </div>
-            
-            <h3 style="margin-bottom: 16px;">How Different Worldviews See This Scenario</h3>
-            <div class="response-list" id="responseList"></div>
-            
-            <button class="btn" onclick="reset()" style="margin-top: 24px; background: #4a5568;">
-                Try Another Scenario
-            </button>
-        </div>
+
+<header>
+  <div class="header-inner">
+    <div class="course-tag">Ethics Beyond Boundaries · UCP Scenario Runner v2.0</div>
+    <h1>Universal Coordination <span>Protocol</span> Simulator</h1>
+    <p>Explore how trust, power, and friction shape coordination — and what ethics looks like at the system level.</p>
+  </div>
+</header>
+
+<div class="status-bar">
+  <span class="status-dot checking" id="statusDot"></span>
+  <span id="statusText">Connecting to UCP engine…</span>
+  <span style="margin-left:auto; opacity:.5">backend: ucp-backend-4dig.onrender.com</span>
+</div>
+
+<main>
+
+  <!-- Concept Reference -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">KEY</span>
+      <h2>UCP Metrics Reference</h2>
     </div>
-    
-    <script>
-        // Configuration - UPDATED with your Render URL
-        const API_URL = 'https://ucp-backend-4dig.onrender.com';
-        
-        // State
-        let selectedScenario = null;
-        
-        // Select scenario
-        function selectScenario(key) {
-            selectedScenario = key;
-            
-            // Update UI
-            document.querySelectorAll('.scenario-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            event.target.closest('.scenario-option').classList.add('selected');
-            
-            // Enable button
-            const btn = document.getElementById('runBtn');
-            btn.disabled = false;
-            btn.textContent = 'Run Simulation';
-        }
-        
-        // Run simulation
-        async function runSimulation() {
-            if (!selectedScenario) return;
-            
-            // Show loading
-            document.getElementById('loadingCard').classList.remove('hidden');
-            document.getElementById('resultsCard').classList.remove('show');
-            document.getElementById('errorMessage').classList.add('hidden');
-            
-            try {
-                const response = await fetch(`${API_URL}/api/simulate/comparison`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        scenario_key: selectedScenario,
-                        seed: Math.floor(Math.random() * 1000),
-                        steps: 8
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Simulation failed');
-                }
-                
-                const data = await response.json();
-                displayResults(data);
-                
-            } catch (error) {
-                console.error('Error:', error);
-                showError('Failed to run simulation. Make sure the backend is running at ' + API_URL);
-            } finally {
-                document.getElementById('loadingCard').classList.add('hidden');
-            }
-        }
-        
-        // Display results - FIXED to use snake_case field names
-        function displayResults(data) {
-            const resultsCard = document.getElementById('resultsCard');
-            resultsCard.classList.add('show');
-            
-            // Final metrics - UPDATED: lambda_raw instead of lambdaRaw
-            const finalMetrics = data.metrics;
-            const finalLambda = finalMetrics.lambda_raw.toFixed(2);
-            
-            document.getElementById('finalLambda').textContent = finalLambda;
-            document.getElementById('friction').textContent = finalMetrics.friction.toFixed(2);
-            
-            // Status
-            let status = '✓ Robust';
-            if (finalLambda < 0.4) {
-                status = '✗ Collapsed';
-            } else if (finalLambda < 0.6) {
-                status = '⚠ Fragile';
-            }
-            document.getElementById('status').textContent = status;
-            
-            // Draw chart
-            drawLambdaChart(data.timeline);
-            
-            // Display sample responses
-            const responseList = document.getElementById('responseList');
-            responseList.innerHTML = '';
-            
-            (data.sample_readings || []).forEach(reading => {
-                const card = document.createElement('div');
-                card.className = 'response-card';
-                card.innerHTML = `
-                    <div class="response-header">
-                        <div class="response-name">${reading.name || reading.agent || 'Agent'}</div>
-                        <div class="response-worldview">${formatLabel(reading.worldview)}</div>
-                    </div>
-                    <div class="response-text">${reading.interpretation || 'No interpretation available'}</div>
-                `;
-                responseList.appendChild(card);
-            });
-        }
-        
-        // Draw lambda chart - UPDATED: lambda_raw instead of lambdaRaw
-        function drawLambdaChart(timeline) {
-            const canvas = document.getElementById('lambdaChart');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            const padding = 40;
-            
-            // Clear canvas
-            ctx.clearRect(0, 0, width, height);
-            
-            // Draw axes
-            ctx.strokeStyle = '#cbd5e0';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(padding, padding);
-            ctx.lineTo(padding, height - padding);
-            ctx.lineTo(width - padding, height - padding);
-            ctx.stroke();
-            
-            // Draw threshold lines
-            ctx.strokeStyle = '#f56565';
-            ctx.lineWidth = 1;
-            ctx.setLineDash([5, 5]);
-            const y04 = height - padding - (0.4 * (height - 2 * padding));
-            ctx.beginPath();
-            ctx.moveTo(padding, y04);
-            ctx.lineTo(width - padding, y04);
-            ctx.stroke();
-            
-            ctx.strokeStyle = '#48bb78';
-            const y06 = height - padding - (0.6 * (height - 2 * padding));
-            ctx.beginPath();
-            ctx.moveTo(padding, y06);
-            ctx.lineTo(width - padding, y06);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            
-            // Draw lambda line - UPDATED: lambda_raw instead of lambdaRaw
-            ctx.strokeStyle = '#667eea';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            
-            timeline.forEach((point, i) => {
-                const x = padding + (i / (timeline.length - 1)) * (width - 2 * padding);
-                const y = height - padding - (point.lambda_raw * (height - 2 * padding));
-                
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            });
-            
-            ctx.stroke();
-            
-            // Draw points
-            timeline.forEach((point, i) => {
-                const x = padding + (i / (timeline.length - 1)) * (width - 2 * padding);
-                const y = height - padding - (point.lambda_raw * (height - 2 * padding));
-                
-                ctx.fillStyle = '#667eea';
-                ctx.beginPath();
-                ctx.arc(x, y, 5, 0, 2 * Math.PI);
-                ctx.fill();
-            });
-            
-            // Labels
-            ctx.fillStyle = '#4a5568';
-            ctx.font = '14px Inter';
-            ctx.textAlign = 'center';
-            ctx.fillText('Time Steps', width / 2, height - 10);
-            
-            ctx.save();
-            ctx.translate(15, height / 2);
-            ctx.rotate(-Math.PI / 2);
-            ctx.fillText('λ (Lambda)', 0, 0);
-            ctx.restore();
-        }
-        
-        // Show error
-        function showError(message) {
-            const errorEl = document.getElementById('errorMessage');
-            errorEl.textContent = message;
-            errorEl.classList.remove('hidden');
-            document.getElementById('resultsCard').classList.add('show');
-        }
-        
-        // Reset
-        function reset() {
-            selectedScenario = null;
-            document.querySelectorAll('.scenario-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            document.getElementById('runBtn').disabled = true;
-            document.getElementById('runBtn').textContent = 'Select a Scenario First';
-            document.getElementById('resultsCard').classList.remove('show');
-            document.getElementById('errorMessage').classList.add('hidden');
-        }
-        
-        // Utility
-        function formatLabel(str) {
-            return str.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        }
-    </script>
+    <div class="card-body">
+      <p class="intro">
+        The UCP engine measures coordination health using three core metrics. Adjust scenario parameters below to see how organizational structures affect each one.
+      </p>
+      <div class="concept-row">
+        <div class="concept-chip">
+          <span class="label">λ Raw</span>
+          <span class="value">Coordination Capacity</span>
+          <span class="desc">Raw potential for agents to work together, based on trust and shared capability.</span>
+        </div>
+        <div class="concept-chip">
+          <span class="label">λ Perceived</span>
+          <span class="value">Experienced Coordination</span>
+          <span class="desc">How much coordination agents actually experience — reduced by power gaps and fear.</span>
+        </div>
+        <div class="concept-chip">
+          <span class="label">Friction</span>
+          <span class="value">Coordination Loss</span>
+          <span class="desc">Energy lost to hierarchy, distrust, and mis-aligned incentives. High friction = ethical risk.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario Runner -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">01</span>
+      <h2>Select &amp; Configure a Scenario</h2>
+    </div>
+    <div class="card-body" style="padding:0;">
+
+      <div class="scenario-tabs" role="tablist">
+        <button class="tab-btn active" role="tab" aria-selected="true" data-tab="0" onclick="selectTab(0)">
+          <span class="tab-icon">🏥</span>Hospital Ethics Committee
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="1" onclick="selectTab(1)">
+          <span class="tab-icon">🏭</span>Factory Safety Reporting
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="2" onclick="selectTab(2)">
+          <span class="tab-icon">🎓</span>Academic Research Lab
+        </button>
+      </div>
+
+      <!-- Scenario 0: Hospital -->
+      <div class="scenario-panel active" id="panel-0" style="padding:20px;">
+        <div class="scenario-desc">
+          <span class="scenario-title">Hospital Ethics Committee</span>
+          A large hospital's ethics committee must decide whether to continue aggressive treatment for a non-responsive patient. Junior nurses have critical bedside observations but fear contradicting senior physicians. Adjust the power differential and trust levels to see how coordination changes.
+        </div>
+        <div class="params-grid">
+          <div class="param-group">
+            <label class="param-label">Trust Level <span class="param-val" id="v0-trust">0.70</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.70" id="s0-trust"
+                   oninput="updateVal('v0-trust', this.value)">
+            <span class="param-hint">How much do junior staff trust the process?</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Power Differential <span class="param-val" id="v0-power">0.80</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.80" id="s0-power"
+                   oninput="updateVal('v0-power', this.value)">
+            <span class="param-hint">Gap between attending physicians and nurses</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Shared Protocol <span class="param-val" id="v0-proto">0.50</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.50" id="s0-proto"
+                   oninput="updateVal('v0-proto', this.value)">
+            <span class="param-hint">Clarity of decision-making procedures</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Information Asymmetry <span class="param-val" id="v0-info">0.65</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.65" id="s0-info"
+                   oninput="updateVal('v0-info', this.value)">
+            <span class="param-hint">How unevenly is clinical information distributed?</span>
+          </div>
+        </div>
+        <button class="run-btn" id="run-0" onclick="runScenario(0)">
+          <div class="spinner" id="spin-0"></div>
+          <span class="btn-text">▶ Run UCP Simulation</span>
+        </button>
+        <div class="error-box" id="err-0"></div>
+        <div class="results-panel" id="results-0"></div>
+      </div>
+
+      <!-- Scenario 1: Factory -->
+      <div class="scenario-panel" id="panel-1" style="padding:20px;">
+        <div class="scenario-desc">
+          <span class="scenario-title">Factory Safety Reporting</span>
+          Workers at a manufacturing plant notice a recurring safety hazard but fear retaliation if they report it. Management has financial incentives to keep production running. This mirrors Roger Boisjoly's situation at Morton Thiokol before Challenger. Explore how fear and incentive misalignment create ethical breakdown.
+        </div>
+        <div class="params-grid">
+          <div class="param-group">
+            <label class="param-label">Trust Level <span class="param-val" id="v1-trust">0.35</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.35" id="s1-trust"
+                   oninput="updateVal('v1-trust', this.value)">
+            <span class="param-hint">Worker trust in management's responsiveness</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Power Differential <span class="param-val" id="v1-power">0.90</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.90" id="s1-power"
+                   oninput="updateVal('v1-power', this.value)">
+            <span class="param-hint">Management vs. worker decision authority</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Shared Protocol <span class="param-val" id="v1-proto">0.25</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.25" id="s1-proto"
+                   oninput="updateVal('v1-proto', this.value)">
+            <span class="param-hint">Clarity of safety reporting procedures</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Incentive Misalignment <span class="param-val" id="v1-info">0.80</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.80" id="s1-info"
+                   oninput="updateVal('v1-info', this.value)">
+            <span class="param-hint">Degree to which management rewards silence</span>
+          </div>
+        </div>
+        <button class="run-btn" id="run-1" onclick="runScenario(1)">
+          <div class="spinner" id="spin-1"></div>
+          <span class="btn-text">▶ Run UCP Simulation</span>
+        </button>
+        <div class="error-box" id="err-1"></div>
+        <div class="results-panel" id="results-1"></div>
+      </div>
+
+      <!-- Scenario 2: Lab -->
+      <div class="scenario-panel" id="panel-2" style="padding:20px;">
+        <div class="scenario-desc">
+          <span class="scenario-title">Academic Research Lab</span>
+          A graduate student discovers that a postdoc has falsified data in a shared paper. The PI is up for tenure and the student depends on the lab for their degree. Adjust transparency and institutional accountability to see what coordination looks like when whistleblowing carries personal cost.
+        </div>
+        <div class="params-grid">
+          <div class="param-group">
+            <label class="param-label">Trust Level <span class="param-val" id="v2-trust">0.55</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.55" id="s2-trust"
+                   oninput="updateVal('v2-trust', this.value)">
+            <span class="param-hint">Student's trust in institutional protection</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Power Differential <span class="param-val" id="v2-power">0.75</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.75" id="s2-power"
+                   oninput="updateVal('v2-power', this.value)">
+            <span class="param-hint">PI / institution authority over student's future</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Transparency Norm <span class="param-val" id="v2-proto">0.60</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.60" id="s2-proto"
+                   oninput="updateVal('v2-proto', this.value)">
+            <span class="param-hint">Lab culture around open data sharing</span>
+          </div>
+          <div class="param-group">
+            <label class="param-label">Retaliation Risk <span class="param-val" id="v2-info">0.70</span></label>
+            <input type="range" min="0" max="1" step="0.05" value="0.70" id="s2-info"
+                   oninput="updateVal('v2-info', this.value)">
+            <span class="param-hint">Likelihood of career harm for speaking up</span>
+          </div>
+        </div>
+        <button class="run-btn" id="run-2" onclick="runScenario(2)">
+          <div class="spinner" id="spin-2"></div>
+          <span class="btn-text">▶ Run UCP Simulation</span>
+        </button>
+        <div class="error-box" id="err-2"></div>
+        <div class="results-panel" id="results-2"></div>
+      </div>
+
+    </div>
+
+    <!-- Reflection prompts (always visible) -->
+    <div class="reflection-box">
+      <h3>📝 Discussion Prompts</h3>
+      <ol>
+        <li>What happens to λ Perceived when you increase the Power Differential — even while holding Trust constant? What does this tell us about hierarchy?</li>
+        <li>At what friction level would you say an organization is "ethically compromised"? Defend your threshold.</li>
+        <li>Which parameter most closely maps to what Kant would call a violation of the Categorical Imperative?</li>
+      </ol>
+    </div>
+  </div>
+
+</main>
+
+<footer>UCP Scenario Runner v2.0 · Ethics Beyond Boundaries · Saint Petersburg College · &copy; 2026</footer>
+
+<script>
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ── Scenario names ──
+const SCENARIO_NAMES = [
+  'Hospital Ethics Committee',
+  'Factory Safety Reporting',
+  'Academic Research Lab'
+];
+
+// ── Update slider display ──
+function updateVal(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = parseFloat(val).toFixed(2);
+}
+
+// ── Tab switching ──
+function selectTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+    b.setAttribute('aria-selected', i === idx);
+  });
+  document.querySelectorAll('.scenario-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+}
+
+// ── Health check ──
+async function checkHealth() {
+  const dot  = document.getElementById('statusDot');
+  const text = document.getElementById('statusText');
+  dot.className = 'status-dot checking';
+  text.textContent = 'Connecting to UCP engine…';
+  try {
+    const res = await fetch(`${BACKEND}/api/health`, { signal: AbortSignal.timeout(8000) });
+    if (res.ok) {
+      dot.className = 'status-dot connected';
+      text.textContent = 'UCP engine online — ready to simulate';
+    } else {
+      throw new Error(`HTTP ${res.status}`);
+    }
+  } catch (e) {
+    dot.className = 'status-dot error';
+    text.textContent = `Engine offline (${e.message}) — simulations will fail until backend is reachable`;
+  }
+}
+
+// ── Build interpretation text ──
+function buildInterpretation(scenario, metrics) {
+  const raw  = metrics.lambda_raw;
+  const perc = metrics.lambda_perceived;
+  const fric = metrics.friction;
+  const gap  = raw - perc;
+
+  let level, advice;
+  if (fric > 0.7) {
+    level = 'High-friction zone';
+    advice = 'This system is losing most of its coordination capacity. Agents with critical information cannot safely surface it. This is where ethical disasters — like the Challenger launch decision — are most likely to occur.';
+  } else if (fric > 0.4) {
+    level = 'Moderate friction';
+    advice = 'Coordination is possible but costly. Some voices are suppressed. The gap between raw potential and experienced coordination represents real ethical cost — decisions made with incomplete information.';
+  } else {
+    level = 'Low friction';
+    advice = 'The system is approaching its coordination potential. Agents can surface dissent, share information, and hold each other accountable. This is what ethical organizational culture looks like in UCP terms.';
+  }
+
+  const gapNote = gap > 0.3
+    ? `The perception gap (${gap.toFixed(2)}) is especially large — agents may have the capacity to coordinate but feel unable to act on it.`
+    : `The perception gap (${gap.toFixed(2)}) is manageable, meaning experienced coordination roughly matches potential.`;
+
+  return `<div class="int-label">UCP Interpretation — ${scenario}</div>
+    <p><strong>${level}.</strong> ${advice}</p>
+    <p style="margin-top:8px">${gapNote}</p>`;
+}
+
+// ── Friction color class ──
+function frictionClass(f) {
+  if (f > 0.65) return 'highlight-bad';
+  if (f > 0.35) return 'highlight-warn';
+  return 'highlight-good';
+}
+function lambdaClass(v) {
+  if (v > 0.65) return 'highlight-good';
+  if (v > 0.35) return '';
+  return 'highlight-bad';
+}
+
+// ── Main simulation runner ──
+async function runScenario(idx) {
+  const btn     = document.getElementById(`run-${idx}`);
+  const errBox  = document.getElementById(`err-${idx}`);
+  const resPanel = document.getElementById(`results-${idx}`);
+  const spinner  = document.getElementById(`spin-${idx}`);
+
+  // Get params
+  const trust = parseFloat(document.getElementById(`s${idx}-trust`).value);
+  const power = parseFloat(document.getElementById(`s${idx}-power`).value);
+  const proto = parseFloat(document.getElementById(`s${idx}-proto`).value);
+  const info  = parseFloat(document.getElementById(`s${idx}-info`).value);
+
+  // Build two comparison scenarios: current vs. "reformed" (reduced power, higher trust)
+  const payload = {
+    scenario_a: {
+      name: SCENARIO_NAMES[idx],
+      trust_level:          trust,
+      power_differential:   power,
+      shared_protocol:      proto,
+      information_asymmetry: info
+    },
+    scenario_b: {
+      name: `${SCENARIO_NAMES[idx]} (Reformed)`,
+      trust_level:          Math.min(1, trust + 0.25),
+      power_differential:   Math.max(0, power - 0.30),
+      shared_protocol:      Math.min(1, proto + 0.20),
+      information_asymmetry: Math.max(0, info - 0.25)
+    }
+  };
+
+  // UI: loading state
+  btn.classList.add('loading');
+  btn.disabled = true;
+  spinner.style.display = 'block';
+  errBox.classList.remove('visible');
+  resPanel.classList.remove('visible');
+
+  try {
+    const res = await fetch(`${BACKEND}/api/simulate/comparison`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(15000)
+    });
+
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`HTTP ${res.status}: ${body}`);
+    }
+
+    const data = await res.json();
+
+    // ── FIXED: Use snake_case field names from backend ──
+    // Expected structure: data.scenario_a and data.scenario_b (or data.scenarios[])
+    // Each has: lambda_raw, lambda_perceived, friction
+    let mA, mB;
+
+    if (data.scenario_a && data.scenario_b) {
+      // Flat structure
+      mA = extractMetrics(data.scenario_a);
+      mB = extractMetrics(data.scenario_b);
+    } else if (Array.isArray(data.scenarios) && data.scenarios.length >= 2) {
+      mA = extractMetrics(data.scenarios[0]);
+      mB = extractMetrics(data.scenarios[1]);
+    } else if (Array.isArray(data) && data.length >= 2) {
+      mA = extractMetrics(data[0]);
+      mB = extractMetrics(data[1]);
+    } else {
+      // Single scenario response — use it for A, derive B
+      mA = extractMetrics(data);
+      mB = null;
+    }
+
+    renderResults(idx, mA, mB, payload);
+
+  } catch (e) {
+    errBox.innerHTML = `<strong>Simulation error:</strong> ${e.message}<br>
+      <span style="font-size:.8rem;opacity:.7">Check that the backend is running and CORS is enabled. 
+      Raw error: <code>${e.name}</code></span>`;
+    errBox.classList.add('visible');
+  } finally {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    spinner.style.display = 'none';
+  }
+}
+
+// ── Extract metrics with snake_case keys (backend) falling back to camelCase ──
+function extractMetrics(obj) {
+  if (!obj) return null;
+  // Handle nested .metrics object
+  const src = obj.metrics || obj;
+  return {
+    lambda_raw:       src.lambda_raw       ?? src.lambdaRaw       ?? null,
+    lambda_perceived: src.lambda_perceived ?? src.lambdaPerceived ?? null,
+    friction:         src.friction         ?? null
+  };
+}
+
+// ── Render results HTML ──
+function renderResults(idx, mA, mB, payload) {
+  const panel = document.getElementById(`results-${idx}`);
+  const name  = SCENARIO_NAMES[idx];
+
+  // Validate we have real numbers
+  const valid = m => m && m.lambda_raw !== null;
+
+  if (!valid(mA)) {
+    panel.innerHTML = `<div class="error-box visible">
+      Backend returned unexpected data structure. 
+      Check console for raw response details.
+    </div>`;
+    panel.classList.add('visible');
+    return;
+  }
+
+  const pctA_raw  = (mA.lambda_raw * 100).toFixed(1);
+  const pctA_perc = (mA.lambda_perceived * 100).toFixed(1);
+  const pctA_fric = (mA.friction * 100).toFixed(1);
+
+  let comparisonHTML = '';
+  if (valid(mB)) {
+    const pctB_raw  = (mB.lambda_raw * 100).toFixed(1);
+    const pctB_perc = (mB.lambda_perceived * 100).toFixed(1);
+    const pctB_fric = (mB.friction * 100).toFixed(1);
+
+    const rawClass  = mB.lambda_raw       > mA.lambda_raw       ? 'better' : 'worse';
+    const percClass = mB.lambda_perceived > mA.lambda_perceived ? 'better' : 'worse';
+    const fricClass = mB.friction         < mA.friction         ? 'better' : 'worse';
+
+    comparisonHTML = `
+      <div class="results-title">Reform Comparison</div>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <div class="compare-col-header">Current System</div>
+          <div class="compare-col-body">
+            <div class="compare-metric">
+              <span class="cm-label">λ Raw</span>
+              <span class="cm-val">${pctA_raw}%</span>
+            </div>
+            <div class="compare-metric">
+              <span class="cm-label">λ Perceived</span>
+              <span class="cm-val">${pctA_perc}%</span>
+            </div>
+            <div class="compare-metric">
+              <span class="cm-label">Friction</span>
+              <span class="cm-val">${pctA_fric}%</span>
+            </div>
+          </div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-col-header">Reformed System (+trust, −power)</div>
+          <div class="compare-col-body">
+            <div class="compare-metric">
+              <span class="cm-label">λ Raw</span>
+              <span class="cm-val ${rawClass}">${pctB_raw}%</span>
+            </div>
+            <div class="compare-metric">
+              <span class="cm-label">λ Perceived</span>
+              <span class="cm-val ${percClass}">${pctB_perc}%</span>
+            </div>
+            <div class="compare-metric">
+              <span class="cm-label">Friction</span>
+              <span class="cm-val ${fricClass}">${pctB_fric}%</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  panel.innerHTML = `
+    <div class="results-title">Simulation Results — ${name}</div>
+
+    <div class="metrics-row">
+      <div class="metric-card ${lambdaClass(mA.lambda_raw)}">
+        <div class="m-label">λ Raw</div>
+        <div class="m-value">${mA.lambda_raw.toFixed(3)}</div>
+        <div class="m-name">Coordination Capacity</div>
+      </div>
+      <div class="metric-card ${lambdaClass(mA.lambda_perceived)}">
+        <div class="m-label">λ Perceived</div>
+        <div class="m-value">${mA.lambda_perceived.toFixed(3)}</div>
+        <div class="m-name">Experienced Coordination</div>
+      </div>
+      <div class="metric-card ${frictionClass(mA.friction)}">
+        <div class="m-label">Friction</div>
+        <div class="m-value">${mA.friction.toFixed(3)}</div>
+        <div class="m-name">Coordination Loss</div>
+      </div>
+    </div>
+
+    <div class="bar-section">
+      <div class="bar-row">
+        <span class="bar-label">λ Raw</span>
+        <div class="bar-track">
+          <div class="bar-fill lambda-raw" data-pct="${pctA_raw}%" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">λ Perceived</span>
+        <div class="bar-track">
+          <div class="bar-fill lambda-perceived" data-pct="${pctA_perc}%" style="width:0%"></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">Friction</span>
+        <div class="bar-track">
+          <div class="bar-fill friction" data-pct="${pctA_fric}%" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    ${comparisonHTML}
+
+    <div class="interpretation">
+      ${buildInterpretation(name, mA)}
+    </div>
+  `;
+
+  panel.classList.add('visible');
+
+  // Animate bars
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      panel.querySelectorAll('.bar-fill').forEach(bar => {
+        const pct = parseFloat(bar.getAttribute('data-pct'));
+        bar.style.width = `${pct}%`;
+      });
+    }, 80);
+  });
+}
+
+// ── Init ──
+checkHealth();
+</script>
 </body>
 </html>
