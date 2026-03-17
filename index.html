@@ -222,37 +222,6 @@
             color: #742a2a;
             margin-bottom: 16px;
         }
-        
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: help;
-            border-bottom: 1px dotted #667eea;
-        }
-        
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 300px;
-            background-color: #1a202c;
-            color: #fff;
-            text-align: left;
-            border-radius: 8px;
-            padding: 12px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -150px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
-        
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
@@ -298,17 +267,7 @@
             
             <div class="metric-grid">
                 <div class="metric-card">
-                    <div class="metric-label">
-                        <span class="tooltip">
-                            Final λ (Lambda)
-                            <span class="tooltiptext">
-                                <strong>Coordination Fitness</strong><br>
-                                λ > 0.6: Robust coordination<br>
-                                0.4 < λ < 0.6: Fragile<br>
-                                λ < 0.4: Collapsed
-                            </span>
-                        </span>
-                    </div>
+                    <div class="metric-label">Final λ (Lambda)</div>
                     <div class="metric-value" id="finalLambda">--</div>
                 </div>
                 
@@ -318,14 +277,7 @@
                 </div>
                 
                 <div class="metric-card">
-                    <div class="metric-label">
-                        <span class="tooltip">
-                            Friction
-                            <span class="tooltiptext">
-                                Cost of coordination from identity/worldview mismatch
-                            </span>
-                        </span>
-                    </div>
+                    <div class="metric-label">Friction</div>
                     <div class="metric-value" id="friction">--</div>
                 </div>
             </div>
@@ -345,8 +297,8 @@
     </div>
     
     <script>
-        // Configuration
-        const API_URL = 'https://ucp-backend-4dig.onrender.com'; // Change to your Render URL after deployment
+        // Configuration - UPDATED with your Render URL
+        const API_URL = 'https://ucp-backend-4dig.onrender.com';
         
         // State
         let selectedScenario = null;
@@ -374,6 +326,7 @@
             // Show loading
             document.getElementById('loadingCard').classList.remove('hidden');
             document.getElementById('resultsCard').classList.remove('show');
+            document.getElementById('errorMessage').classList.add('hidden');
             
             try {
                 const response = await fetch(`${API_URL}/api/simulate/comparison`, {
@@ -401,14 +354,14 @@
             }
         }
         
-        // Display results
+        // Display results - FIXED to use snake_case field names
         function displayResults(data) {
             const resultsCard = document.getElementById('resultsCard');
             resultsCard.classList.add('show');
             
-            // Final metrics
+            // Final metrics - UPDATED: lambda_raw instead of lambdaRaw
             const finalMetrics = data.metrics;
-            const finalLambda = finalMetrics.lambdaRaw.toFixed(2);
+            const finalLambda = finalMetrics.lambda_raw.toFixed(2);
             
             document.getElementById('finalLambda').textContent = finalLambda;
             document.getElementById('friction').textContent = finalMetrics.friction.toFixed(2);
@@ -434,16 +387,16 @@
                 card.className = 'response-card';
                 card.innerHTML = `
                     <div class="response-header">
-                        <div class="response-name">${reading.agent || 'Agent'}</div>
+                        <div class="response-name">${reading.name || reading.agent || 'Agent'}</div>
                         <div class="response-worldview">${formatLabel(reading.worldview)}</div>
                     </div>
-                    <div class="response-text">${reading.response}</div>
+                    <div class="response-text">${reading.interpretation || 'No interpretation available'}</div>
                 `;
                 responseList.appendChild(card);
             });
         }
         
-        // Draw lambda chart
+        // Draw lambda chart - UPDATED: lambda_raw instead of lambdaRaw
         function drawLambdaChart(timeline) {
             const canvas = document.getElementById('lambdaChart');
             const ctx = canvas.getContext('2d');
@@ -481,14 +434,14 @@
             ctx.stroke();
             ctx.setLineDash([]);
             
-            // Draw lambda line
+            // Draw lambda line - UPDATED: lambda_raw instead of lambdaRaw
             ctx.strokeStyle = '#667eea';
             ctx.lineWidth = 3;
             ctx.beginPath();
             
             timeline.forEach((point, i) => {
                 const x = padding + (i / (timeline.length - 1)) * (width - 2 * padding);
-                const y = height - padding - (point.lambdaRaw * (height - 2 * padding));
+                const y = height - padding - (point.lambda_raw * (height - 2 * padding));
                 
                 if (i === 0) {
                     ctx.moveTo(x, y);
@@ -502,7 +455,7 @@
             // Draw points
             timeline.forEach((point, i) => {
                 const x = padding + (i / (timeline.length - 1)) * (width - 2 * padding);
-                const y = height - padding - (point.lambdaRaw * (height - 2 * padding));
+                const y = height - padding - (point.lambda_raw * (height - 2 * padding));
                 
                 ctx.fillStyle = '#667eea';
                 ctx.beginPath();
