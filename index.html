@@ -1987,6 +1987,14 @@
 
     return `
       <div class="int-label">Friction Reading — ${scenarioName}</div>
+      <p style="font-size:.78rem;color:rgba(255,255,255,.55);font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.12)">
+        The reading below describes the coordination cost in this system.
+        What this means — whether it represents moral disorder, institutional injustice,
+        a failure of stewardship, or degraded adaptive capacity — depends on the
+        framework through which you interpret it. Use the discussion prompts to
+        develop your own reading.
+        <span style="color:rgba(255,255,255,.3);font-style:normal"> · No PRF profile loaded — showing general interpretation.</span>
+      </p>
       <p><strong>${level}.</strong> ${advice}</p>
     `;
   }
@@ -2070,14 +2078,17 @@
                   not from bad intentions, but from a structure that makes honesty costly.`;
     } else {
       cssClass = 'gap-crit';
-      title    = 'Critical suppression — Boisjoly-level silencing.';
-      desc     = `Roger Boisjoly knew the O-rings would fail before the Challenger launch.
-                  His λ Raw was high — the engineering knowledge was clear and solid.
-                  His λ Perceived was near zero — the coordination structure could not
-                  transmit that knowledge to the people making the decision.
-                  This gap is that gap. Decisions here are being made without access
-                  to what this group actually knows. The system is operating on a
-                  fraction of its available intelligence.`;
+      title    = 'Critical suppression — decisions being made without the room\'s full intelligence.';
+      desc     = `The gap between what agents know and what they can safely surface to
+                  decision-makers is severe. What this means depends on your framework:
+                  from a procedural ethics standpoint, critical information is being
+                  systematically blocked — Roger Boisjoly's situation before Challenger
+                  is one well-documented example of this pattern from that lens.
+                  From a relational standpoint, the network of mutual recognition has
+                  fractured — people cannot speak because they are not being seen.
+                  From a custodial standpoint, inherited knowledge is being dishonored
+                  by a structure that doesn't recognize its source. Each reading points
+                  to the same gap number through a different moral vocabulary.`;
     }
 
     return `
@@ -2217,10 +2228,12 @@
       synthesis   = `Friction is low — the coordination process itself runs reasonably well.
         But there is a significant gap between what agents are capable of and what they feel
         safe expressing. This system is operating on less than its full intelligence.
-        <strong>This is the Boisjoly pattern:</strong> the engineering knowledge existed and the
-        process was functioning, but the structure prevented the knowledge from reaching the
-        decision. Low friction does not mean ethical health — it can mean a well-oiled machine
-        running on incomplete information.`;
+        <strong>One reading of this pattern</strong> — from a procedural ethics standpoint —
+        is the Boisjoly case: the engineering knowledge existed and the process was
+        functioning, but the structure prevented the knowledge from reaching the decision.
+        Other frameworks read the same gap differently: as fractured mutual recognition,
+        as dishonored inherited knowledge, as a rights violation, as role-system corruption.
+        What all readings share is this: low friction does not mean ethical health.`;
 
     } else if (!highGap && highFric) {
       stateClass  = 'state-exhausted';
