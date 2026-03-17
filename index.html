@@ -5,7 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UCP Scenario Runner — Ethics Beyond Boundaries</title>
 <style>
-  /* ── PRF Color Palette ── */
+
+  /* ══════════════════════════════════════════════════
+     PRF COLOR PALETTE & DESIGN TOKENS
+     ══════════════════════════════════════════════════ */
   :root {
     --prf-deep:     #1a2744;
     --prf-navy:     #243560;
@@ -28,8 +31,6 @@
     --shadow-md:    0 4px 20px rgba(26,39,68,.15);
     --shadow-lg:    0 8px 40px rgba(26,39,68,.22);
     --transition:   all .25s ease;
-
-    --backend: https://ucp-backend-4dig.onrender.com;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,7 +43,9 @@
     padding-bottom: 60px;
   }
 
-  /* ── Header ── */
+  /* ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ */
   header {
     background: linear-gradient(135deg, var(--prf-deep) 0%, var(--prf-navy) 60%, var(--prf-slate) 100%);
     color: #fff;
@@ -51,24 +54,25 @@
     position: relative;
     overflow: hidden;
   }
+
   header::before {
     content: '';
     position: absolute; inset: 0;
     background: repeating-linear-gradient(
       -55deg,
-      transparent,
-      transparent 40px,
-      rgba(255,255,255,.025) 40px,
-      rgba(255,255,255,.025) 80px
+      transparent, transparent 40px,
+      rgba(255,255,255,.025) 40px, rgba(255,255,255,.025) 80px
     );
     pointer-events: none;
   }
+
   .header-inner {
-    max-width: 900px;
+    max-width: 920px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
   }
+
   .course-tag {
     font-family: 'Courier New', monospace;
     font-size: .72rem;
@@ -77,13 +81,16 @@
     text-transform: uppercase;
     margin-bottom: 8px;
   }
+
   header h1 {
     font-size: 1.75rem;
     font-weight: normal;
     letter-spacing: -.01em;
     line-height: 1.2;
   }
+
   header h1 span { color: var(--prf-amber); }
+
   header p {
     margin-top: 8px;
     font-size: .92rem;
@@ -92,7 +99,9 @@
     line-height: 1.5;
   }
 
-  /* ── Status Bar ── */
+  /* ══════════════════════════════════════════════════
+     STATUS BAR
+     ══════════════════════════════════════════════════ */
   .status-bar {
     background: var(--prf-deep);
     color: rgba(255,255,255,.6);
@@ -103,21 +112,27 @@
     align-items: center;
     gap: 16px;
   }
+
   .status-dot {
     width: 7px; height: 7px;
     border-radius: 50%;
     background: #888;
     display: inline-block;
     transition: background .4s;
+    flex-shrink: 0;
   }
   .status-dot.connected { background: #4cba7f; box-shadow: 0 0 6px #4cba7f; }
   .status-dot.error     { background: var(--prf-danger); }
   .status-dot.checking  { background: var(--prf-amber); animation: pulse 1s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-  /* ── Main Layout ── */
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes spin  { to { transform: rotate(360deg); } }
+
+  /* ══════════════════════════════════════════════════
+     MAIN LAYOUT
+     ══════════════════════════════════════════════════ */
   main {
-    max-width: 900px;
+    max-width: 920px;
     margin: 32px auto;
     padding: 0 20px;
     display: flex;
@@ -125,7 +140,9 @@
     gap: 28px;
   }
 
-  /* ── Card ── */
+  /* ══════════════════════════════════════════════════
+     CARD COMPONENT
+     ══════════════════════════════════════════════════ */
   .card {
     background: #fff;
     border: 1px solid var(--prf-border);
@@ -133,6 +150,7 @@
     box-shadow: var(--shadow-sm);
     overflow: hidden;
   }
+
   .card-header {
     background: linear-gradient(90deg, var(--prf-navy), var(--prf-slate));
     color: #fff;
@@ -141,11 +159,13 @@
     align-items: center;
     gap: 10px;
   }
+
   .card-header h2 {
     font-size: 1rem;
     font-weight: normal;
     letter-spacing: .02em;
   }
+
   .card-num {
     background: var(--prf-gold);
     color: var(--prf-deep);
@@ -155,30 +175,36 @@
     padding: 2px 8px;
     border-radius: 4px;
   }
+
   .card-body { padding: 20px; }
 
-  /* ── Intro / Instructions ── */
-  .intro {
+  /* ══════════════════════════════════════════════════
+     CONCEPT CHIP REFERENCE CARDS
+     ══════════════════════════════════════════════════ */
+  .intro-text {
     font-size: .95rem;
     line-height: 1.7;
     color: #444;
+    margin-bottom: 16px;
   }
-  .intro strong { color: var(--prf-navy); }
+  .intro-text strong { color: var(--prf-navy); }
+
   .concept-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    margin-top: 16px;
   }
+
   .concept-chip {
     background: var(--prf-warm);
     border: 1px solid var(--prf-border);
     border-radius: 8px;
-    padding: 10px 14px;
+    padding: 12px 14px;
     font-size: .82rem;
     line-height: 1.5;
   }
-  .concept-chip .label {
+
+  .concept-chip .chip-symbol {
     display: block;
     font-family: 'Courier New', monospace;
     font-size: .7rem;
@@ -187,25 +213,55 @@
     letter-spacing: .1em;
     margin-bottom: 4px;
   }
-  .concept-chip .value { font-weight: bold; color: var(--prf-navy); font-size: .9rem; }
-  .concept-chip .desc { font-size: .78rem; color: var(--prf-muted); margin-top: 2px; }
 
-  /* ── Scenario Selector ── */
+  .concept-chip .chip-name {
+    display: block;
+    font-weight: bold;
+    color: var(--prf-navy);
+    font-size: .9rem;
+    margin-bottom: 4px;
+  }
+
+  .concept-chip .chip-desc {
+    font-size: .78rem;
+    color: var(--prf-muted);
+  }
+
+  /* ══════════════════════════════════════════════════
+     HOW THE SLIDERS WORK — EXPLAINER CALLOUT
+     ══════════════════════════════════════════════════ */
+  .slider-explainer {
+    background: var(--prf-warm);
+    border: 1px solid var(--prf-border);
+    border-left: 4px solid var(--prf-sky);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 16px;
+    font-size: .88rem;
+    line-height: 1.65;
+    color: #444;
+    margin-top: 16px;
+  }
+
+  .slider-explainer strong { color: var(--prf-navy); }
+
+  /* ══════════════════════════════════════════════════
+     SCENARIO TABS
+     ══════════════════════════════════════════════════ */
   .scenario-tabs {
     display: flex;
-    gap: 0;
     border-bottom: 2px solid var(--prf-border);
     overflow-x: auto;
   }
+
   .tab-btn {
     flex: 1;
-    min-width: 140px;
-    padding: 12px 16px;
+    min-width: 150px;
+    padding: 12px 14px;
     border: none;
     background: none;
     cursor: pointer;
-    font-family: inherit;
-    font-size: .88rem;
+    font-family: 'Georgia', serif;
+    font-size: .87rem;
     color: var(--prf-muted);
     transition: var(--transition);
     border-bottom: 3px solid transparent;
@@ -213,18 +269,29 @@
     text-align: center;
     line-height: 1.3;
   }
+
   .tab-btn:hover { background: var(--prf-warm); color: var(--prf-navy); }
+
   .tab-btn.active {
     color: var(--prf-navy);
     border-bottom-color: var(--prf-gold);
     background: #fff;
     font-weight: bold;
   }
-  .tab-btn .tab-icon { font-size: 1.3em; display: block; margin-bottom: 2px; }
 
-  /* ── Scenario Panel ── */
+  .tab-btn .tab-icon {
+    font-size: 1.3em;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     SCENARIO PANELS
+     ══════════════════════════════════════════════════ */
   .scenario-panel { display: none; }
   .scenario-panel.active { display: block; }
+
+  .scenario-panel-inner { padding: 20px; }
 
   .scenario-desc {
     font-size: .9rem;
@@ -236,6 +303,7 @@
     border-radius: 0 8px 8px 0;
     margin-bottom: 20px;
   }
+
   .scenario-desc .scenario-title {
     font-size: 1.05rem;
     font-weight: bold;
@@ -244,14 +312,30 @@
     display: block;
   }
 
-  /* ── Parameter Controls ── */
+  .endpoint-tag {
+    display: inline-block;
+    font-family: 'Courier New', monospace;
+    font-size: .68rem;
+    color: var(--prf-muted);
+    background: #f0f4fa;
+    border: 1px solid var(--prf-border);
+    border-radius: 4px;
+    padding: 3px 9px;
+    margin-bottom: 16px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     PARAMETER CONTROLS
+     ══════════════════════════════════════════════════ */
   .params-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: 18px;
+    margin-bottom: 18px;
   }
+
   .param-group { display: flex; flex-direction: column; gap: 6px; }
+
   .param-label {
     font-size: .8rem;
     font-family: 'Courier New', monospace;
@@ -262,13 +346,31 @@
     justify-content: space-between;
     align-items: center;
   }
-  .param-label .param-val {
+
+  .param-val {
     background: var(--prf-deep);
     color: var(--prf-amber);
-    padding: 1px 6px;
+    padding: 1px 7px;
     border-radius: 4px;
     font-size: .78rem;
+    font-family: 'Courier New', monospace;
   }
+
+  .slider-pole-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: .68rem;
+    color: var(--prf-muted);
+    font-family: 'Courier New', monospace;
+    margin-top: 1px;
+  }
+
+  .param-hint {
+    font-size: .73rem;
+    color: var(--prf-muted);
+    font-style: italic;
+  }
+
   input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
@@ -279,6 +381,7 @@
     outline: none;
     transition: var(--transition);
   }
+
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 18px; height: 18px;
@@ -289,10 +392,50 @@
     cursor: pointer;
     transition: var(--transition);
   }
-  input[type="range"]::-webkit-slider-thumb:hover { background: var(--prf-navy); transform: scale(1.15); }
-  .param-hint { font-size: .74rem; color: var(--prf-muted); font-style: italic; }
 
-  /* ── Run Button ── */
+  input[type="range"]::-webkit-slider-thumb:hover {
+    background: var(--prf-navy);
+    transform: scale(1.15);
+  }
+
+  /* ══════════════════════════════════════════════════
+     BIOBOND TOGGLE
+     ══════════════════════════════════════════════════ */
+  .biobond-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--prf-warm);
+    border: 1px solid var(--prf-border);
+    border-radius: 8px;
+    margin-bottom: 18px;
+    font-size: .86rem;
+  }
+
+  .biobond-toggle input[type="checkbox"] {
+    width: 16px; height: 16px;
+    cursor: pointer;
+    accent-color: var(--prf-sky);
+  }
+
+  .biobond-toggle .toggle-label {
+    font-family: 'Courier New', monospace;
+    font-size: .76rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--prf-slate);
+  }
+
+  .biobond-toggle .toggle-desc {
+    font-size: .78rem;
+    color: var(--prf-muted);
+    font-style: italic;
+  }
+
+  /* ══════════════════════════════════════════════════
+     RUN BUTTON
+     ══════════════════════════════════════════════════ */
   .run-btn {
     display: flex;
     align-items: center;
@@ -304,35 +447,58 @@
     color: #fff;
     border: none;
     border-radius: 8px;
-    font-family: inherit;
+    font-family: 'Georgia', serif;
     font-size: 1rem;
     cursor: pointer;
     transition: var(--transition);
     box-shadow: var(--shadow-sm);
     letter-spacing: .02em;
   }
-  .run-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); filter: brightness(1.08); }
+
+  .run-btn:hover  { transform: translateY(-1px); box-shadow: var(--shadow-md); filter: brightness(1.08); }
   .run-btn:active { transform: translateY(0); }
-  .run-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; }
-  .spinner {
+  .run-btn:disabled { opacity: .55; cursor: not-allowed; transform: none; filter: none; }
+
+  .btn-spinner {
     width: 18px; height: 18px;
     border: 2px solid rgba(255,255,255,.3);
     border-top-color: #fff;
     border-radius: 50%;
     animation: spin .7s linear infinite;
     display: none;
+    flex-shrink: 0;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .run-btn.loading .spinner { display: block; }
-  .run-btn.loading .btn-text { opacity: .7; }
 
-  /* ── Results Panel ── */
+  .run-btn.loading .btn-spinner { display: block; }
+  .run-btn.loading .btn-text    { opacity: .7; }
+
+  /* ══════════════════════════════════════════════════
+     ERROR BOX
+     ══════════════════════════════════════════════════ */
+  .error-box {
+    background: #fff5f5;
+    border: 1px solid #fcc;
+    border-left: 4px solid var(--prf-danger);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: .88rem;
+    color: var(--prf-danger);
+    margin-top: 16px;
+    display: none;
+    line-height: 1.55;
+  }
+  .error-box.visible { display: block; }
+
+  /* ══════════════════════════════════════════════════
+     RESULTS PANEL
+     ══════════════════════════════════════════════════ */
   .results-panel {
-    margin-top: 24px;
+    margin-top: 26px;
     display: none;
   }
   .results-panel.visible { display: block; }
-  .results-title {
+
+  .results-section-title {
     font-size: .8rem;
     font-family: 'Courier New', monospace;
     text-transform: uppercase;
@@ -350,86 +516,216 @@
     gap: 12px;
     margin-bottom: 20px;
   }
+
   .metric-card {
     background: var(--prf-warm);
     border: 1px solid var(--prf-border);
     border-radius: 8px;
-    padding: 14px;
+    padding: 16px 14px;
     text-align: center;
     transition: var(--transition);
   }
+
   .metric-card:hover { box-shadow: var(--shadow-sm); }
+
   .metric-card .m-label {
     font-family: 'Courier New', monospace;
     font-size: .65rem;
     text-transform: uppercase;
     letter-spacing: .1em;
     color: var(--prf-muted);
-    margin-bottom: 6px;
+    margin-bottom: 7px;
   }
+
   .metric-card .m-value {
     font-size: 1.9rem;
     font-weight: bold;
     color: var(--prf-navy);
     line-height: 1;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
   }
+
   .metric-card .m-name {
     font-size: .78rem;
     color: var(--prf-slate);
     font-style: italic;
   }
+
   .metric-card.highlight-good .m-value { color: var(--prf-success); }
   .metric-card.highlight-warn .m-value { color: var(--prf-warn); }
   .metric-card.highlight-bad  .m-value { color: var(--prf-danger); }
 
-  /* ── Bar Visualization ── */
-  .bar-section { margin-bottom: 20px; }
+  /* ── Animated Bar Visualization ── */
+  .bar-section { margin-bottom: 22px; }
+
   .bar-row {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 10px;
   }
+
   .bar-label {
     font-size: .78rem;
     font-family: 'Courier New', monospace;
     color: var(--prf-slate);
-    width: 130px;
+    width: 140px;
     flex-shrink: 0;
     text-align: right;
   }
+
   .bar-track {
     flex: 1;
-    height: 20px;
+    height: 22px;
     background: var(--prf-border);
-    border-radius: 10px;
+    border-radius: 11px;
     overflow: hidden;
     position: relative;
   }
+
   .bar-fill {
     height: 100%;
-    border-radius: 10px;
-    transition: width 1s cubic-bezier(.4,0,.2,1);
+    border-radius: 11px;
+    transition: width 1s cubic-bezier(.4, 0, .2, 1);
     width: 0%;
     position: relative;
   }
+
+  /* Percentage label inside bar */
   .bar-fill::after {
     content: attr(data-pct);
     position: absolute;
-    right: 8px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     font-size: .65rem;
-    color: rgba(255,255,255,.9);
+    color: rgba(255,255,255,.92);
     font-family: 'Courier New', monospace;
     white-space: nowrap;
   }
-  .bar-fill.lambda-raw      { background: linear-gradient(90deg, var(--prf-sky), var(--prf-navy)); }
-  .bar-fill.lambda-perceived { background: linear-gradient(90deg, var(--prf-gold), var(--prf-amber)); }
-  .bar-fill.friction         { background: linear-gradient(90deg, var(--prf-warn), var(--prf-danger)); }
 
-  /* ── Interpretation ── */
+  .bar-fill.bar-lambda-raw      { background: linear-gradient(90deg, var(--prf-sky), var(--prf-navy)); }
+  .bar-fill.bar-lambda-perceived { background: linear-gradient(90deg, var(--prf-gold), var(--prf-amber)); }
+  .bar-fill.bar-friction         { background: linear-gradient(90deg, var(--prf-warn), var(--prf-danger)); }
+
+  /* ── Reform Comparison Panel ── */
+  .compare-header {
+    font-size: .8rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--prf-muted);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--prf-border);
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .compare-col {
+    border: 1px solid var(--prf-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .compare-col-header {
+    padding: 10px 14px;
+    font-size: .82rem;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .compare-col:nth-child(1) .compare-col-header { background: var(--prf-slate); }
+  .compare-col:nth-child(2) .compare-col-header { background: linear-gradient(90deg, var(--prf-navy), var(--prf-sky)); }
+
+  .compare-col-body { padding: 12px 14px; }
+
+  .compare-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .83rem;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .compare-row:last-child { border-bottom: none; }
+
+  .compare-row .cr-label {
+    font-family: 'Courier New', monospace;
+    font-size: .72rem;
+    color: var(--prf-muted);
+  }
+
+  .compare-row .cr-val { font-weight: bold; color: var(--prf-navy); }
+  .compare-row .cr-val.better { color: var(--prf-success); }
+  .compare-row .cr-val.worse  { color: var(--prf-danger); }
+  .compare-row .cr-val.same   { color: var(--prf-muted); }
+
+  /* ── Timeline Chart ── */
+  .chart-section { margin-bottom: 22px; }
+
+  .chart-section-title {
+    font-size: .78rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-muted);
+    margin-bottom: 8px;
+  }
+
+  canvas.timeline-chart {
+    width: 100% !important;
+    border-radius: 6px;
+    border: 1px solid var(--prf-border);
+    display: block;
+  }
+
+  /* ── Agent Sample Readings ── */
+  .agents-section { margin-bottom: 22px; }
+
+  .agents-section-title {
+    font-size: .78rem;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-muted);
+    margin-bottom: 10px;
+  }
+
+  .agent-reading {
+    background: #f8f9fc;
+    border: 1px solid var(--prf-border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: .84rem;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 8px;
+  }
+
+  .agent-reading .agent-name {
+    font-family: 'Courier New', monospace;
+    font-size: .7rem;
+    text-transform: uppercase;
+    color: var(--prf-sky);
+    margin-bottom: 4px;
+    letter-spacing: .06em;
+  }
+
+  .agent-reading .agent-quote {
+    font-style: italic;
+    color: #555;
+    margin-top: 5px;
+    font-size: .83rem;
+  }
+
+  /* ── Interpretation Box ── */
   .interpretation {
     background: linear-gradient(135deg, var(--prf-deep) 0%, var(--prf-navy) 100%);
     color: #fff;
@@ -437,638 +733,1143 @@
     padding: 18px 20px;
     font-size: .9rem;
     line-height: 1.65;
+    margin-bottom: 0;
   }
+
   .interpretation .int-label {
     font-family: 'Courier New', monospace;
     font-size: .68rem;
     text-transform: uppercase;
     letter-spacing: .12em;
     color: var(--prf-amber);
-    margin-bottom: 8px;
+    margin-bottom: 9px;
   }
+
   .interpretation p { color: rgba(255,255,255,.88); }
+  .interpretation p + p { margin-top: 8px; }
+  .interpretation strong { color: #fff; }
 
-  /* ── Comparison Panel ── */
-  .compare-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-  .compare-col {
-    border: 1px solid var(--prf-border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .compare-col-header {
-    padding: 10px 14px;
-    font-size: .82rem;
-    font-weight: bold;
-    color: #fff;
-  }
-  .compare-col:nth-child(1) .compare-col-header { background: var(--prf-slate); }
-  .compare-col:nth-child(2) .compare-col-header { background: var(--prf-navy); }
-  .compare-col-body { padding: 12px 14px; }
-  .compare-metric {
-    display: flex;
-    justify-content: space-between;
-    font-size: .83rem;
-    padding: 5px 0;
-    border-bottom: 1px solid #f0f0f0;
-  }
-  .compare-metric:last-child { border-bottom: none; }
-  .compare-metric .cm-label { color: var(--prf-muted); font-family: 'Courier New', monospace; font-size: .75rem; }
-  .compare-metric .cm-val { font-weight: bold; color: var(--prf-navy); }
-  .cm-val.better { color: var(--prf-success); }
-  .cm-val.worse  { color: var(--prf-danger); }
-
-  /* ── Error State ── */
-  .error-box {
-    background: #fff5f5;
-    border: 1px solid #fcc;
-    border-left: 4px solid var(--prf-danger);
-    border-radius: 8px;
-    padding: 14px 16px;
-    font-size: .88rem;
-    color: var(--prf-danger);
-    margin-top: 16px;
-    display: none;
-  }
-  .error-box.visible { display: block; }
-  .error-box code { font-family: 'Courier New', monospace; font-size: .82rem; background: #ffe8e8; padding: 2px 5px; border-radius: 3px; }
-
-  /* ── Reflection Prompts ── */
+  /* ══════════════════════════════════════════════════
+     REFLECTION PROMPTS
+     ══════════════════════════════════════════════════ */
   .reflection-box {
     background: var(--prf-warm);
     border: 1px solid var(--prf-border);
     border-top: 3px solid var(--prf-gold);
-    border-radius: 0 0 8px 8px;
-    padding: 16px 20px;
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 18px 20px;
   }
+
   .reflection-box h3 {
     font-size: .82rem;
     font-family: 'Courier New', monospace;
     text-transform: uppercase;
     letter-spacing: .1em;
     color: var(--prf-slate);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
+
   .reflection-box ol {
-    padding-left: 20px;
+    padding-left: 22px;
     color: #444;
-    font-size: .88rem;
+    font-size: .9rem;
     line-height: 1.7;
   }
-  .reflection-box li { margin-bottom: 4px; }
 
-  /* ── Footer ── */
+  .reflection-box li { margin-bottom: 6px; }
+
+  /* ══════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════ */
   footer {
     text-align: center;
     font-size: .75rem;
     color: var(--prf-muted);
-    padding: 20px;
+    padding: 24px;
     font-family: 'Courier New', monospace;
   }
 
-  /* ── Responsive ── */
+  /* ══════════════════════════════════════════════════
+     RESPONSIVE
+     ══════════════════════════════════════════════════ */
   @media (max-width: 640px) {
     header { padding: 20px 16px; }
     header h1 { font-size: 1.35rem; }
-    main { padding: 0 12px; margin: 16px auto; gap: 16px; }
-    .params-grid { grid-template-columns: 1fr; }
-    .metrics-row { grid-template-columns: 1fr; }
-    .compare-grid { grid-template-columns: 1fr; }
-    .concept-row { grid-template-columns: 1fr; }
+    main { padding: 0 12px; margin: 16px auto; gap: 18px; }
+    .params-grid    { grid-template-columns: 1fr; }
+    .metrics-row    { grid-template-columns: 1fr; }
+    .compare-grid   { grid-template-columns: 1fr; }
+    .concept-row    { grid-template-columns: 1fr; }
+    .bar-label      { width: 100px; font-size: .7rem; }
   }
+
 </style>
 </head>
 <body>
 
+<!-- ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ -->
 <header>
   <div class="header-inner">
-    <div class="course-tag">Ethics Beyond Boundaries · UCP Scenario Runner v2.0</div>
+    <div class="course-tag">Ethics Beyond Boundaries · UCP Scenario Runner v3.1</div>
     <h1>Universal Coordination <span>Protocol</span> Simulator</h1>
-    <p>Explore how trust, power, and friction shape coordination — and what ethics looks like at the system level.</p>
+    <p>Explore how worldview diversity, evidence quality, and power dynamics shape ethical coordination — and what system-level ethics looks like in practice.</p>
   </div>
 </header>
 
 <div class="status-bar">
   <span class="status-dot checking" id="statusDot"></span>
   <span id="statusText">Connecting to UCP engine…</span>
-  <span style="margin-left:auto; opacity:.5">backend: ucp-backend-4dig.onrender.com</span>
+  <span style="margin-left:auto; opacity:.45">backend: ucp-backend-4dig.onrender.com</span>
 </div>
 
+
+<!-- ══════════════════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════════════════ -->
 <main>
 
-  <!-- Concept Reference -->
+  <!-- ── Card 1: UCP Metrics Reference ── -->
   <div class="card">
     <div class="card-header">
       <span class="card-num">KEY</span>
-      <h2>UCP Metrics Reference</h2>
+      <h2>UCP Metrics &amp; How the Sliders Work</h2>
     </div>
     <div class="card-body">
-      <p class="intro">
-        The UCP engine measures coordination health using three core metrics. Adjust scenario parameters below to see how organizational structures affect each one.
+
+      <p class="intro-text">
+        The UCP engine measures coordination health using three core metrics.
+        Adjust the scenario parameters below to see how organizational structures affect each one.
       </p>
+
       <div class="concept-row">
         <div class="concept-chip">
-          <span class="label">λ Raw</span>
-          <span class="value">Coordination Capacity</span>
-          <span class="desc">Raw potential for agents to work together, based on trust and shared capability.</span>
+          <span class="chip-symbol">λ Raw</span>
+          <span class="chip-name">Coordination Capacity</span>
+          <span class="chip-desc">The raw potential for agents to work together, based on worldview compatibility and shared cognitive capability.</span>
         </div>
         <div class="concept-chip">
-          <span class="label">λ Perceived</span>
-          <span class="value">Experienced Coordination</span>
-          <span class="desc">How much coordination agents actually experience — reduced by power gaps and fear.</span>
+          <span class="chip-symbol">λ Perceived</span>
+          <span class="chip-name">Experienced Coordination</span>
+          <span class="chip-desc">How much coordination agents actually experience — reduced by power gaps, fear, and distorted evidence.</span>
         </div>
         <div class="concept-chip">
-          <span class="label">Friction</span>
-          <span class="value">Coordination Loss</span>
-          <span class="desc">Energy lost to hierarchy, distrust, and mis-aligned incentives. High friction = ethical risk.</span>
+          <span class="chip-symbol">Friction</span>
+          <span class="chip-name">Coordination Loss</span>
+          <span class="chip-desc">Energy lost to worldview distance, hierarchy, and mis-aligned incentives. High friction = ethical risk.</span>
         </div>
       </div>
+
+      <div class="slider-explainer">
+        <strong>What the sliders actually control:</strong> Each scenario has two sliders that build real inputs for the simulation engine.
+        The <strong>OS1 → OS2 dial</strong> shifts the agent population from OS1 hierarchy-dominant
+        (role_order + sacred_boundary + authority_weighted evidence) toward OS2 capability-relational
+        (ubuntu_relational + empirical_calibrated evidence).
+        The <strong>Evidence Quality dial</strong> moves from distorted filtering (alternative_facts dominant)
+        to calibrated empiricism. Different inputs always produce different outputs.
+        The <strong>Reform Run</strong> automatically re-runs with OS2 pushed up and evidence quality improved,
+        so you can compare the current configuration to a structurally reformed one.
+      </div>
+
     </div>
   </div>
 
-  <!-- Scenario Runner -->
+
+  <!-- ── Card 2: Scenario Runner ── -->
   <div class="card">
     <div class="card-header">
-      <span class="card-num">01</span>
+      <span class="card-num">SIM</span>
       <h2>Select &amp; Configure a Scenario</h2>
     </div>
-    <div class="card-body" style="padding:0;">
 
-      <div class="scenario-tabs" role="tablist">
-        <button class="tab-btn active" role="tab" aria-selected="true" data-tab="0" onclick="selectTab(0)">
-          <span class="tab-icon">🏥</span>Hospital Ethics Committee
-        </button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="1" onclick="selectTab(1)">
-          <span class="tab-icon">🏭</span>Factory Safety Reporting
-        </button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="2" onclick="selectTab(2)">
-          <span class="tab-icon">🎓</span>Academic Research Lab
-        </button>
-      </div>
-
-      <!-- Scenario 0: Hospital -->
-      <div class="scenario-panel active" id="panel-0" style="padding:20px;">
-        <div class="scenario-desc">
-          <span class="scenario-title">Hospital Ethics Committee</span>
-          A large hospital's ethics committee must decide whether to continue aggressive treatment for a non-responsive patient. Junior nurses have critical bedside observations but fear contradicting senior physicians. Adjust the power differential and trust levels to see how coordination changes.
-        </div>
-        <div class="params-grid">
-          <div class="param-group">
-            <label class="param-label">Trust Level <span class="param-val" id="v0-trust">0.70</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.70" id="s0-trust"
-                   oninput="updateVal('v0-trust', this.value)">
-            <span class="param-hint">How much do junior staff trust the process?</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Power Differential <span class="param-val" id="v0-power">0.80</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.80" id="s0-power"
-                   oninput="updateVal('v0-power', this.value)">
-            <span class="param-hint">Gap between attending physicians and nurses</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Shared Protocol <span class="param-val" id="v0-proto">0.50</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.50" id="s0-proto"
-                   oninput="updateVal('v0-proto', this.value)">
-            <span class="param-hint">Clarity of decision-making procedures</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Information Asymmetry <span class="param-val" id="v0-info">0.65</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.65" id="s0-info"
-                   oninput="updateVal('v0-info', this.value)">
-            <span class="param-hint">How unevenly is clinical information distributed?</span>
-          </div>
-        </div>
-        <button class="run-btn" id="run-0" onclick="runScenario(0)">
-          <div class="spinner" id="spin-0"></div>
-          <span class="btn-text">▶ Run UCP Simulation</span>
-        </button>
-        <div class="error-box" id="err-0"></div>
-        <div class="results-panel" id="results-0"></div>
-      </div>
-
-      <!-- Scenario 1: Factory -->
-      <div class="scenario-panel" id="panel-1" style="padding:20px;">
-        <div class="scenario-desc">
-          <span class="scenario-title">Factory Safety Reporting</span>
-          Workers at a manufacturing plant notice a recurring safety hazard but fear retaliation if they report it. Management has financial incentives to keep production running. This mirrors Roger Boisjoly's situation at Morton Thiokol before Challenger. Explore how fear and incentive misalignment create ethical breakdown.
-        </div>
-        <div class="params-grid">
-          <div class="param-group">
-            <label class="param-label">Trust Level <span class="param-val" id="v1-trust">0.35</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.35" id="s1-trust"
-                   oninput="updateVal('v1-trust', this.value)">
-            <span class="param-hint">Worker trust in management's responsiveness</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Power Differential <span class="param-val" id="v1-power">0.90</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.90" id="s1-power"
-                   oninput="updateVal('v1-power', this.value)">
-            <span class="param-hint">Management vs. worker decision authority</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Shared Protocol <span class="param-val" id="v1-proto">0.25</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.25" id="s1-proto"
-                   oninput="updateVal('v1-proto', this.value)">
-            <span class="param-hint">Clarity of safety reporting procedures</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Incentive Misalignment <span class="param-val" id="v1-info">0.80</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.80" id="s1-info"
-                   oninput="updateVal('v1-info', this.value)">
-            <span class="param-hint">Degree to which management rewards silence</span>
-          </div>
-        </div>
-        <button class="run-btn" id="run-1" onclick="runScenario(1)">
-          <div class="spinner" id="spin-1"></div>
-          <span class="btn-text">▶ Run UCP Simulation</span>
-        </button>
-        <div class="error-box" id="err-1"></div>
-        <div class="results-panel" id="results-1"></div>
-      </div>
-
-      <!-- Scenario 2: Lab -->
-      <div class="scenario-panel" id="panel-2" style="padding:20px;">
-        <div class="scenario-desc">
-          <span class="scenario-title">Academic Research Lab</span>
-          A graduate student discovers that a postdoc has falsified data in a shared paper. The PI is up for tenure and the student depends on the lab for their degree. Adjust transparency and institutional accountability to see what coordination looks like when whistleblowing carries personal cost.
-        </div>
-        <div class="params-grid">
-          <div class="param-group">
-            <label class="param-label">Trust Level <span class="param-val" id="v2-trust">0.55</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.55" id="s2-trust"
-                   oninput="updateVal('v2-trust', this.value)">
-            <span class="param-hint">Student's trust in institutional protection</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Power Differential <span class="param-val" id="v2-power">0.75</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.75" id="s2-power"
-                   oninput="updateVal('v2-power', this.value)">
-            <span class="param-hint">PI / institution authority over student's future</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Transparency Norm <span class="param-val" id="v2-proto">0.60</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.60" id="s2-proto"
-                   oninput="updateVal('v2-proto', this.value)">
-            <span class="param-hint">Lab culture around open data sharing</span>
-          </div>
-          <div class="param-group">
-            <label class="param-label">Retaliation Risk <span class="param-val" id="v2-info">0.70</span></label>
-            <input type="range" min="0" max="1" step="0.05" value="0.70" id="s2-info"
-                   oninput="updateVal('v2-info', this.value)">
-            <span class="param-hint">Likelihood of career harm for speaking up</span>
-          </div>
-        </div>
-        <button class="run-btn" id="run-2" onclick="runScenario(2)">
-          <div class="spinner" id="spin-2"></div>
-          <span class="btn-text">▶ Run UCP Simulation</span>
-        </button>
-        <div class="error-box" id="err-2"></div>
-        <div class="results-panel" id="results-2"></div>
-      </div>
-
+    <!-- Scenario Tab Bar -->
+    <div class="scenario-tabs" role="tablist">
+      <button class="tab-btn active" role="tab" aria-selected="true"  data-tab="0" onclick="selectTab(0)">
+        <span class="tab-icon">🏭</span>Factory Safety
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="1" onclick="selectTab(1)">
+        <span class="tab-icon">🏥</span>Hospital Ethics
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="2" onclick="selectTab(2)">
+        <span class="tab-icon">🎓</span>Research Lab
+      </button>
+      <button class="tab-btn" role="tab" aria-selected="false" data-tab="3" onclick="selectTab(3)">
+        <span class="tab-icon">🌍</span>Land Conflict
+      </button>
     </div>
 
-    <!-- Reflection prompts (always visible) -->
+
+    <!-- ─────────────────────────────────────────────
+         SCENARIO 0: Factory Safety Reporting
+         Engine scenario: whistleblower
+         ───────────────────────────────────────────── -->
+    <div class="scenario-panel active" id="panel-0">
+      <div class="scenario-panel-inner">
+
+        <div class="scenario-desc">
+          <span class="scenario-title">Factory Safety Reporting</span>
+          Workers at a manufacturing plant notice a recurring safety hazard but fear retaliation if they report it.
+          Management has financial incentives to keep production running. This mirrors Roger Boisjoly's situation
+          at Morton Thiokol before Challenger — the engineering knowledge existed, but coordination under
+          hierarchical pressure failed. Adjust who is in the room and how they process evidence.
+        </div>
+
+        <span class="endpoint-tag">POST /api/simulate/custom · scenario_name: "whistleblower"</span>
+
+        <div class="params-grid">
+
+          <div class="param-group">
+            <label class="param-label" for="s0-os">
+              OS1 → OS2 (Worldview Mix)
+              <span class="param-val" id="v0-os">0.30</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.30" id="s0-os"
+                   oninput="updateVal('v0-os', this.value)">
+            <div class="slider-pole-labels"><span>OS1 Hierarchy</span><span>OS2 Relational</span></div>
+            <span class="param-hint">0 = role_order + authority dominant · 1 = ubuntu_relational + empirical dominant</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s0-ev">
+              Evidence Quality
+              <span class="param-val" id="v0-ev">0.25</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.25" id="s0-ev"
+                   oninput="updateVal('v0-ev', this.value)">
+            <div class="slider-pole-labels"><span>Distorted / Suppressed</span><span>Calibrated / Open</span></div>
+            <span class="param-hint">0 = alternative_facts heavy · 1 = empirical_calibrated heavy</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s0-ag">
+              Group Size
+              <span class="param-val" id="v0-ag">14</span>
+            </label>
+            <input type="range" min="6" max="20" step="2" value="14" id="s0-ag"
+                   oninput="updateVal('v0-ag', this.value)">
+            <span class="param-hint">Number of simulated agents (workers + supervisors)</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s0-st">
+              Simulation Steps
+              <span class="param-val" id="v0-st">8</span>
+            </label>
+            <input type="range" min="4" max="16" step="2" value="8" id="s0-st"
+                   oninput="updateVal('v0-st', this.value)">
+            <span class="param-hint">Coordination rounds to run before measuring outcome</span>
+          </div>
+
+        </div>
+
+        <div class="biobond-toggle">
+          <input type="checkbox" id="c0-bb">
+          <span class="toggle-label">Activate BioBond scaffold</span>
+          <span class="toggle-desc"> — inject OS2 coordination support at step 4 (union mediation, whistleblower protection protocol)</span>
+        </div>
+
+        <button class="run-btn" id="run-0" onclick="runScenario(0, 'whistleblower')">
+          <div class="btn-spinner" id="spin-0"></div>
+          <span class="btn-text">▶ Run Factory Safety Simulation</span>
+        </button>
+
+        <div class="error-box" id="err-0"></div>
+        <div class="results-panel" id="results-0"></div>
+
+      </div>
+    </div><!-- /panel-0 -->
+
+
+    <!-- ─────────────────────────────────────────────
+         SCENARIO 1: Hospital Ethics Committee
+         Engine scenario: misinformation_shock
+         ───────────────────────────────────────────── -->
+    <div class="scenario-panel" id="panel-1">
+      <div class="scenario-panel-inner">
+
+        <div class="scenario-desc">
+          <span class="scenario-title">Hospital Ethics Committee</span>
+          A hospital ethics committee must decide whether to continue aggressive treatment for a
+          non-responsive patient. Junior nurses have critical bedside observations but fear
+          contradicting senior physicians. Conflicting clinical evidence streams — lab data,
+          specialist opinions, family testimony — stress the system's ability to coordinate.
+          This maps to the misinformation scenario because the failure is epistemic as much as hierarchical.
+        </div>
+
+        <span class="endpoint-tag">POST /api/simulate/custom · scenario_name: "misinformation_shock"</span>
+
+        <div class="params-grid">
+
+          <div class="param-group">
+            <label class="param-label" for="s1-os">
+              OS1 → OS2 (Committee Structure)
+              <span class="param-val" id="v1-os">0.35</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.35" id="s1-os"
+                   oninput="updateVal('v1-os', this.value)">
+            <div class="slider-pole-labels"><span>Attending-Physician Dominant</span><span>Multidisciplinary Team</span></div>
+            <span class="param-hint">0 = role_order / authority_weighted · 1 = ubuntu_relational / empirical</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s1-ev">
+              Evidence Quality
+              <span class="param-val" id="v1-ev">0.35</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.35" id="s1-ev"
+                   oninput="updateVal('v1-ev', this.value)">
+            <div class="slider-pole-labels"><span>Conflicting / Filtered</span><span>Transparent / Calibrated</span></div>
+            <span class="param-hint">Move this slider to see the largest effect in this scenario</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s1-ag">
+              Committee Size
+              <span class="param-val" id="v1-ag">12</span>
+            </label>
+            <input type="range" min="6" max="20" step="2" value="12" id="s1-ag"
+                   oninput="updateVal('v1-ag', this.value)">
+            <span class="param-hint">Number of committee members simulated</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s1-st">
+              Simulation Steps
+              <span class="param-val" id="v1-st">10</span>
+            </label>
+            <input type="range" min="4" max="16" step="2" value="10" id="s1-st"
+                   oninput="updateVal('v1-st', this.value)">
+            <span class="param-hint">Deliberation rounds before final metric measurement</span>
+          </div>
+
+        </div>
+
+        <div class="biobond-toggle">
+          <input type="checkbox" id="c1-bb">
+          <span class="toggle-label">Activate BioBond scaffold</span>
+          <span class="toggle-desc"> — introduce structured shared decision-making protocol at step 4</span>
+        </div>
+
+        <button class="run-btn" id="run-1" onclick="runScenario(1, 'misinformation_shock')">
+          <div class="btn-spinner" id="spin-1"></div>
+          <span class="btn-text">▶ Run Hospital Ethics Simulation</span>
+        </button>
+
+        <div class="error-box" id="err-1"></div>
+        <div class="results-panel" id="results-1"></div>
+
+      </div>
+    </div><!-- /panel-1 -->
+
+
+    <!-- ─────────────────────────────────────────────
+         SCENARIO 2: Academic Research Lab
+         Engine scenario: whistleblower
+         ───────────────────────────────────────────── -->
+    <div class="scenario-panel" id="panel-2">
+      <div class="scenario-panel-inner">
+
+        <div class="scenario-desc">
+          <span class="scenario-title">Academic Research Lab</span>
+          A graduate student discovers that a postdoc has falsified data in a shared paper.
+          The PI is up for tenure and the student depends on the lab for their degree.
+          Speaking up carries real career risk. Adjust transparency norms and the lab's
+          worldview composition to explore when institutional whistleblowing becomes possible —
+          and what makes it impossible.
+        </div>
+
+        <span class="endpoint-tag">POST /api/simulate/custom · scenario_name: "whistleblower"</span>
+
+        <div class="params-grid">
+
+          <div class="param-group">
+            <label class="param-label" for="s2-os">
+              OS1 → OS2 (Lab Culture)
+              <span class="param-val" id="v2-os">0.40</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.40" id="s2-os"
+                   oninput="updateVal('v2-os', this.value)">
+            <div class="slider-pole-labels"><span>PI-Dominant Hierarchy</span><span>Collaborative / Peer</span></div>
+            <span class="param-hint">0 = role_order / authority dominant · 1 = ubuntu_relational / empirical</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s2-ev">
+              Evidence Quality (Transparency Norm)
+              <span class="param-val" id="v2-ev">0.40</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.40" id="s2-ev"
+                   oninput="updateVal('v2-ev', this.value)">
+            <div class="slider-pole-labels"><span>Data Siloed / Opaque</span><span>Open Data / Transparent</span></div>
+            <span class="param-hint">0 = alternative_facts / authority_weighted · 1 = empirical_calibrated</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s2-ag">
+              Lab Size
+              <span class="param-val" id="v2-ag">10</span>
+            </label>
+            <input type="range" min="6" max="20" step="2" value="10" id="s2-ag"
+                   oninput="updateVal('v2-ag', this.value)">
+            <span class="param-hint">PI, postdoc, grad students, undergrads</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s2-st">
+              Simulation Steps
+              <span class="param-val" id="v2-st">8</span>
+            </label>
+            <input type="range" min="4" max="16" step="2" value="8" id="s2-st"
+                   oninput="updateVal('v2-st', this.value)">
+            <span class="param-hint">Lab interaction rounds before outcome measurement</span>
+          </div>
+
+        </div>
+
+        <div class="biobond-toggle">
+          <input type="checkbox" id="c2-bb">
+          <span class="toggle-label">Activate BioBond scaffold</span>
+          <span class="toggle-desc"> — introduce anonymous reporting channel and institutional protection at step 4</span>
+        </div>
+
+        <button class="run-btn" id="run-2" onclick="runScenario(2, 'whistleblower')">
+          <div class="btn-spinner" id="spin-2"></div>
+          <span class="btn-text">▶ Run Research Lab Simulation</span>
+        </button>
+
+        <div class="error-box" id="err-2"></div>
+        <div class="results-panel" id="results-2"></div>
+
+      </div>
+    </div><!-- /panel-2 -->
+
+
+    <!-- ─────────────────────────────────────────────
+         SCENARIO 3: Land and Stewardship Conflict
+         Engine scenario: land_conflict
+         ───────────────────────────────────────────── -->
+    <div class="scenario-panel" id="panel-3">
+      <div class="scenario-panel-inner">
+
+        <div class="scenario-desc">
+          <span class="scenario-title">Land and Stewardship Conflict</span>
+          Competing claims over land bring custodial, sacred-boundary, communal, and liberal-rights
+          frameworks into direct collision. The question is not just who owns the land — but what
+          "ownership" even means to each worldview. High boundary-stress makes calibrated evidence
+          especially difficult to maintain. This scenario shows friction at its most foundational:
+          agents are not disagreeing about facts but about what counts as a valid claim.
+        </div>
+
+        <span class="endpoint-tag">POST /api/simulate/custom · scenario_name: "land_conflict"</span>
+
+        <div class="params-grid">
+
+          <div class="param-group">
+            <label class="param-label" for="s3-os">
+              OS1 → OS2 (Worldview Composition)
+              <span class="param-val" id="v3-os">0.35</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.35" id="s3-os"
+                   oninput="updateVal('v3-os', this.value)">
+            <div class="slider-pole-labels"><span>Sacred Boundary / Role Order</span><span>Indigenous Custodial / Ubuntu</span></div>
+            <span class="param-hint">0 = sacred_boundary + authority dominant · 1 = indigenous_custodial + relational dominant</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s3-ev">
+              Evidence Quality
+              <span class="param-val" id="v3-ev">0.40</span>
+            </label>
+            <input type="range" min="0" max="1" step="0.05" value="0.40" id="s3-ev"
+                   oninput="updateVal('v3-ev', this.value)">
+            <div class="slider-pole-labels"><span>Tradition / Authority Filtered</span><span>Empirically Calibrated</span></div>
+            <span class="param-hint">0 = tradition_weighted / authority_weighted · 1 = empirical_calibrated</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s3-ag">
+              Negotiating Group Size
+              <span class="param-val" id="v3-ag">14</span>
+            </label>
+            <input type="range" min="6" max="20" step="2" value="14" id="s3-ag"
+                   oninput="updateVal('v3-ag', this.value)">
+            <span class="param-hint">Number of stakeholder agents in the process</span>
+          </div>
+
+          <div class="param-group">
+            <label class="param-label" for="s3-st">
+              Simulation Steps
+              <span class="param-val" id="v3-st">10</span>
+            </label>
+            <input type="range" min="4" max="16" step="2" value="10" id="s3-st"
+                   oninput="updateVal('v3-st', this.value)">
+            <span class="param-hint">Negotiation rounds before outcome measurement</span>
+          </div>
+
+        </div>
+
+        <div class="biobond-toggle">
+          <input type="checkbox" id="c3-bb">
+          <span class="toggle-label">Activate BioBond scaffold</span>
+          <span class="toggle-desc"> — introduce capability-based co-stewardship framework at step 4</span>
+        </div>
+
+        <button class="run-btn" id="run-3" onclick="runScenario(3, 'land_conflict')">
+          <div class="btn-spinner" id="spin-3"></div>
+          <span class="btn-text">▶ Run Land Conflict Simulation</span>
+        </button>
+
+        <div class="error-box" id="err-3"></div>
+        <div class="results-panel" id="results-3"></div>
+
+      </div>
+    </div><!-- /panel-3 -->
+
+
+    <!-- Reflection prompts — always visible below all scenario panels -->
     <div class="reflection-box">
       <h3>📝 Discussion Prompts</h3>
       <ol>
-        <li>What happens to λ Perceived when you increase the Power Differential — even while holding Trust constant? What does this tell us about hierarchy?</li>
-        <li>At what friction level would you say an organization is "ethically compromised"? Defend your threshold.</li>
-        <li>Which parameter most closely maps to what Kant would call a violation of the Categorical Imperative?</li>
+        <li>Push OS1→OS2 to 1.0 and run, then push it to 0.0 and run again with everything else identical. How does λ Perceived change relative to λ Raw? What does the gap between them tell us about hierarchy and voice?</li>
+        <li>Compare the "Current System" and "Reformed System" columns in the results. What does the delta in friction represent in human terms — who bears that cost?</li>
+        <li>At what friction level would you say an organization is "ethically compromised"? Defend your threshold using one of the frameworks from class (Kant, Mill, or care ethics).</li>
+        <li>Turn BioBond on and re-run with the same parameters. Does it improve all three metrics equally, or does it affect λ Perceived more than λ Raw? What does this asymmetry mean?</li>
       </ol>
     </div>
-  </div>
+
+  </div><!-- /card -->
 
 </main>
 
-<footer>UCP Scenario Runner v2.0 · Ethics Beyond Boundaries · Saint Petersburg College · &copy; 2026</footer>
+<footer>UCP Scenario Runner v3.1 · Ethics Beyond Boundaries · Saint Petersburg College · &copy; 2026</footer>
 
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════ -->
 <script>
-const BACKEND = 'https://ucp-backend-4dig.onrender.com';
 
-// ── Scenario names ──
-const SCENARIO_NAMES = [
-  'Hospital Ethics Committee',
-  'Factory Safety Reporting',
-  'Academic Research Lab'
-];
+  const BACKEND = 'https://ucp-backend-4dig.onrender.com';
 
-// ── Update slider display ──
-function updateVal(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = parseFloat(val).toFixed(2);
-}
-
-// ── Tab switching ──
-function selectTab(idx) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', i === idx);
-    b.setAttribute('aria-selected', i === idx);
-  });
-  document.querySelectorAll('.scenario-panel').forEach((p, i) => {
-    p.classList.toggle('active', i === idx);
-  });
-}
-
-// ── Health check ──
-async function checkHealth() {
-  const dot  = document.getElementById('statusDot');
-  const text = document.getElementById('statusText');
-  dot.className = 'status-dot checking';
-  text.textContent = 'Connecting to UCP engine…';
-  try {
-    const res = await fetch(`${BACKEND}/api/health`, { signal: AbortSignal.timeout(8000) });
-    if (res.ok) {
-      dot.className = 'status-dot connected';
-      text.textContent = 'UCP engine online — ready to simulate';
-    } else {
-      throw new Error(`HTTP ${res.status}`);
-    }
-  } catch (e) {
-    dot.className = 'status-dot error';
-    text.textContent = `Engine offline (${e.message}) — simulations will fail until backend is reachable`;
-  }
-}
-
-// ── Build interpretation text ──
-function buildInterpretation(scenario, metrics) {
-  const raw  = metrics.lambda_raw;
-  const perc = metrics.lambda_perceived;
-  const fric = metrics.friction;
-  const gap  = raw - perc;
-
-  let level, advice;
-  if (fric > 0.7) {
-    level = 'High-friction zone';
-    advice = 'This system is losing most of its coordination capacity. Agents with critical information cannot safely surface it. This is where ethical disasters — like the Challenger launch decision — are most likely to occur.';
-  } else if (fric > 0.4) {
-    level = 'Moderate friction';
-    advice = 'Coordination is possible but costly. Some voices are suppressed. The gap between raw potential and experienced coordination represents real ethical cost — decisions made with incomplete information.';
-  } else {
-    level = 'Low friction';
-    advice = 'The system is approaching its coordination potential. Agents can surface dissent, share information, and hold each other accountable. This is what ethical organizational culture looks like in UCP terms.';
+  // ─────────────────────────────────────────────────
+  // SLIDER DISPLAY UPDATE
+  // ─────────────────────────────────────────────────
+  function updateVal(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = parseFloat(val).toFixed(2);
   }
 
-  const gapNote = gap > 0.3
-    ? `The perception gap (${gap.toFixed(2)}) is especially large — agents may have the capacity to coordinate but feel unable to act on it.`
-    : `The perception gap (${gap.toFixed(2)}) is manageable, meaning experienced coordination roughly matches potential.`;
+  // ─────────────────────────────────────────────────
+  // TAB SWITCHING
+  // ─────────────────────────────────────────────────
+  function selectTab(idx) {
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', i === idx);
+      btn.setAttribute('aria-selected', i === idx ? 'true' : 'false');
+    });
+    document.querySelectorAll('.scenario-panel').forEach((panel, i) => {
+      panel.classList.toggle('active', i === idx);
+    });
+  }
 
-  return `<div class="int-label">UCP Interpretation — ${scenario}</div>
-    <p><strong>${level}.</strong> ${advice}</p>
-    <p style="margin-top:8px">${gapNote}</p>`;
-}
-
-// ── Friction color class ──
-function frictionClass(f) {
-  if (f > 0.65) return 'highlight-bad';
-  if (f > 0.35) return 'highlight-warn';
-  return 'highlight-good';
-}
-function lambdaClass(v) {
-  if (v > 0.65) return 'highlight-good';
-  if (v > 0.35) return '';
-  return 'highlight-bad';
-}
-
-// ── Main simulation runner ──
-async function runScenario(idx) {
-  const btn     = document.getElementById(`run-${idx}`);
-  const errBox  = document.getElementById(`err-${idx}`);
-  const resPanel = document.getElementById(`results-${idx}`);
-  const spinner  = document.getElementById(`spin-${idx}`);
-
-  // Get params
-  const trust = parseFloat(document.getElementById(`s${idx}-trust`).value);
-  const power = parseFloat(document.getElementById(`s${idx}-power`).value);
-  const proto = parseFloat(document.getElementById(`s${idx}-proto`).value);
-  const info  = parseFloat(document.getElementById(`s${idx}-info`).value);
-
-  // Build two comparison scenarios: current vs. "reformed" (reduced power, higher trust)
-  const payload = {
-    scenario_a: {
-      name: SCENARIO_NAMES[idx],
-      trust_level:          trust,
-      power_differential:   power,
-      shared_protocol:      proto,
-      information_asymmetry: info
-    },
-    scenario_b: {
-      name: `${SCENARIO_NAMES[idx]} (Reformed)`,
-      trust_level:          Math.min(1, trust + 0.25),
-      power_differential:   Math.max(0, power - 0.30),
-      shared_protocol:      Math.min(1, proto + 0.20),
-      information_asymmetry: Math.max(0, info - 0.25)
+  // ─────────────────────────────────────────────────
+  // BACKEND HEALTH CHECK
+  // ─────────────────────────────────────────────────
+  async function checkHealth() {
+    const dot  = document.getElementById('statusDot');
+    const text = document.getElementById('statusText');
+    dot.className = 'status-dot checking';
+    text.textContent = 'Connecting to UCP engine…';
+    try {
+      const res = await fetch(`${BACKEND}/api/health`, { signal: AbortSignal.timeout(9000) });
+      if (res.ok) {
+        dot.className = 'status-dot connected';
+        text.textContent = 'UCP engine online — ready to simulate';
+      } else {
+        throw new Error(`HTTP ${res.status}`);
+      }
+    } catch (e) {
+      dot.className = 'status-dot error';
+      text.textContent = `Engine offline (${e.message}) — simulations unavailable until backend is reachable`;
     }
-  };
+  }
 
-  // UI: loading state
-  btn.classList.add('loading');
-  btn.disabled = true;
-  spinner.style.display = 'block';
-  errBox.classList.remove('visible');
-  resPanel.classList.remove('visible');
+  // ─────────────────────────────────────────────────
+  // LINEAR INTERPOLATION HELPER
+  // ─────────────────────────────────────────────────
+  function lerp(a, b, t) { return a + (b - a) * t; }
 
-  try {
-    const res = await fetch(`${BACKEND}/api/simulate/comparison`, {
-      method: 'POST',
+  // ─────────────────────────────────────────────────
+  // NORMALIZE A DISTRIBUTION TO SUM TO 1.0
+  // ─────────────────────────────────────────────────
+  function normalise(obj) {
+    const total = Object.values(obj).reduce((sum, v) => sum + v, 0);
+    const out = {};
+    for (const key in obj) {
+      out[key] = parseFloat((obj[key] / total).toFixed(3));
+    }
+    return out;
+  }
+
+  // ─────────────────────────────────────────────────
+  // BUILD WORLDVIEW DISTRIBUTION FROM OS DIAL
+  //   0.0 = OS1 pole: role_order + sacred_boundary heavy
+  //   1.0 = OS2 pole: ubuntu_relational + indigenous_custodial heavy
+  // ─────────────────────────────────────────────────
+  function buildWorldviewDist(osVal) {
+    const o = parseFloat(osVal);
+    return normalise({
+      role_order:             lerp(0.50, 0.05, o),
+      sacred_boundary:        lerp(0.28, 0.05, o),
+      liberal_individualist:  lerp(0.14, 0.18, o),
+      ubuntu_relational:      lerp(0.05, 0.47, o),
+      indigenous_custodial:   lerp(0.03, 0.25, o),
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // BUILD EVIDENCE DISTRIBUTION FROM QUALITY DIAL
+  //   0.0 = distorted: alternative_facts dominant
+  //   1.0 = calibrated: empirical_calibrated dominant
+  // ─────────────────────────────────────────────────
+  function buildEvidenceDist(evVal) {
+    const e = parseFloat(evVal);
+    return normalise({
+      alternative_facts:    lerp(0.55, 0.04, e),
+      authority_weighted:   lerp(0.28, 0.09, e),
+      tradition_weighted:   lerp(0.12, 0.15, e),
+      empirical_calibrated: lerp(0.05, 0.72, e),
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // BUILD REFORMED DISTRIBUTION
+  // Pushes OS2 up by 0.30 and evidence quality up by 0.30,
+  // clamped to [0, 1]. This is the "structural improvement"
+  // shown in the comparison panel.
+  // ─────────────────────────────────────────────────
+  function buildReformedDist(osVal, evVal) {
+    const newOs = Math.min(1, parseFloat(osVal) + 0.30);
+    const newEv = Math.min(1, parseFloat(evVal) + 0.30);
+    return {
+      worldview_distribution: buildWorldviewDist(newOs),
+      evidence_distribution:  buildEvidenceDist(newEv),
+    };
+  }
+
+  // ─────────────────────────────────────────────────
+  // POST A SIMULATION REQUEST TO THE BACKEND
+  // ─────────────────────────────────────────────────
+  async function postSimulation(payload) {
+    const resp = await fetch(`${BACKEND}/api/simulate/custom`, {
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(15000)
+      body:    JSON.stringify(payload),
+      signal:  AbortSignal.timeout(22000)
     });
 
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`HTTP ${res.status}: ${body}`);
+    if (!resp.ok) {
+      const body = await resp.text();
+      throw new Error(`HTTP ${resp.status}: ${body.slice(0, 200)}`);
     }
 
-    const data = await res.json();
+    return resp.json();
+  }
 
-    // ── FIXED: Use snake_case field names from backend ──
-    // Expected structure: data.scenario_a and data.scenario_b (or data.scenarios[])
-    // Each has: lambda_raw, lambda_perceived, friction
-    let mA, mB;
+  // ─────────────────────────────────────────────────
+  // MAIN SCENARIO RUNNER
+  // Fires two API calls: current config + reformed config.
+  // ─────────────────────────────────────────────────
+  async function runScenario(idx, scenarioName) {
 
-    if (data.scenario_a && data.scenario_b) {
-      // Flat structure
-      mA = extractMetrics(data.scenario_a);
-      mB = extractMetrics(data.scenario_b);
-    } else if (Array.isArray(data.scenarios) && data.scenarios.length >= 2) {
-      mA = extractMetrics(data.scenarios[0]);
-      mB = extractMetrics(data.scenarios[1]);
-    } else if (Array.isArray(data) && data.length >= 2) {
-      mA = extractMetrics(data[0]);
-      mB = extractMetrics(data[1]);
+    const runBtn   = document.getElementById(`run-${idx}`);
+    const spinner  = document.getElementById(`spin-${idx}`);
+    const errBox   = document.getElementById(`err-${idx}`);
+    const resPanel = document.getElementById(`results-${idx}`);
+
+    // Read slider values
+    const osVal  = document.getElementById(`s${idx}-os`).value;
+    const evVal  = document.getElementById(`s${idx}-ev`).value;
+    const agents = parseInt(document.getElementById(`s${idx}-ag`).value);
+    const steps  = parseInt(document.getElementById(`s${idx}-st`).value);
+    const biobond = document.getElementById(`c${idx}-bb`).checked;
+
+    // Fresh random seed guarantees different results on each run
+    const seed = Math.floor(Math.random() * 9000) + 1000;
+
+    // Current configuration payload
+    const currentPayload = {
+      num_agents:              agents,
+      scenario_name:           scenarioName,
+      steps:                   steps,
+      seed:                    seed,
+      worldview_distribution:  buildWorldviewDist(osVal),
+      evidence_distribution:   buildEvidenceDist(evVal),
+      activate_biobond_at:     biobond ? 4 : null
+    };
+
+    // Reformed configuration payload (same seed for fair comparison)
+    const reformed = buildReformedDist(osVal, evVal);
+    const reformedPayload = {
+      num_agents:              agents,
+      scenario_name:           scenarioName,
+      steps:                   steps,
+      seed:                    seed,
+      worldview_distribution:  reformed.worldview_distribution,
+      evidence_distribution:   reformed.evidence_distribution,
+      activate_biobond_at:     biobond ? 4 : null
+    };
+
+    // Set loading state
+    runBtn.disabled = true;
+    runBtn.classList.add('loading');
+    errBox.classList.remove('visible');
+    resPanel.classList.remove('visible');
+
+    try {
+      // Fire both requests in parallel for speed
+      const [currentData, reformedData] = await Promise.all([
+        postSimulation(currentPayload),
+        postSimulation(reformedPayload)
+      ]);
+
+      renderResults(idx, currentData, reformedData, currentPayload, osVal, evVal);
+
+    } catch (e) {
+      errBox.innerHTML = `<strong>Simulation error:</strong> ${e.message}`;
+      errBox.classList.add('visible');
+    } finally {
+      runBtn.disabled = false;
+      runBtn.classList.remove('loading');
+    }
+  }
+
+  // ─────────────────────────────────────────────────
+  // SAFELY EXTRACT METRICS FROM BACKEND RESPONSE
+  // Backend returns snake_case. Fallback to camelCase
+  // just in case the backend version changes.
+  // ─────────────────────────────────────────────────
+  function extractMetrics(data) {
+    const src = (data && data.metrics) ? data.metrics : data;
+    if (!src) return null;
+    return {
+      lambda_raw:       src.lambda_raw       ?? src.lambdaRaw       ?? null,
+      lambda_perceived: src.lambda_perceived ?? src.lambdaPerceived ?? null,
+      friction:         src.friction         ?? null,
+    };
+  }
+
+  // ─────────────────────────────────────────────────
+  // COLOR-CLASS HELPERS
+  // ─────────────────────────────────────────────────
+  function lambdaColorClass(v) {
+    if (v > 0.60) return 'highlight-good';
+    if (v > 0.40) return '';
+    return 'highlight-bad';
+  }
+
+  function frictionColorClass(f) {
+    if (f < 0.30) return 'highlight-good';
+    if (f < 0.55) return 'highlight-warn';
+    return 'highlight-bad';
+  }
+
+  function reformClass(current, reformed, higherIsBetter) {
+    const diff = reformed - current;
+    if (Math.abs(diff) < 0.005) return 'same';
+    return (higherIsBetter ? diff > 0 : diff < 0) ? 'better' : 'worse';
+  }
+
+  // ─────────────────────────────────────────────────
+  // BUILD INTERPRETATION TEXT
+  // ─────────────────────────────────────────────────
+  function buildInterpretation(metrics, scenarioName) {
+    const raw  = metrics.lambda_raw;
+    const perc = metrics.lambda_perceived;
+    const fric = metrics.friction;
+    const gap  = raw - perc;
+
+    let level, advice;
+
+    if (fric > 0.65) {
+      level  = 'High-friction collapse zone';
+      advice = `This system is losing most of its coordination capacity to worldview distance,
+                evidence distortion, and hierarchical suppression. Agents with critical information
+                cannot safely surface it. This is the UCP signature of conditions like the Challenger
+                launch decision — the engineering knowledge existed, but the coordination structure
+                could not transmit it to the people with decision authority.`;
+    } else if (fric > 0.38) {
+      level  = 'Moderate friction — coordination is fragile';
+      advice = `The system is working but at significant cost. Some voices are suppressed, some
+                evidence filtered before it reaches decision-makers. Decisions made here carry
+                real ethical cost — the cost of incomplete information. OS2 scaffolding (BioBond)
+                typically reduces friction by 15–30% from this zone.`;
     } else {
-      // Single scenario response — use it for A, derive B
-      mA = extractMetrics(data);
-      mB = null;
+      level  = 'Low friction — robust coordination';
+      advice = `Agents can surface dissent, share information, and hold each other accountable.
+                The gap between raw and perceived λ is small, meaning experienced coordination
+                is close to the system's actual potential. This is what healthy institutional
+                ethics looks like in UCP terms.`;
     }
 
-    renderResults(idx, mA, mB, payload);
+    const gapNote = gap > 0.22
+      ? `The perception gap is <strong>${gap.toFixed(3)}</strong> — agents have more capacity
+         than they can safely use. This gap represents suppressed voice, unspoken dissent, and
+         coordination potential that the power structure is consuming.`
+      : `The perception gap is <strong>${gap.toFixed(3)}</strong> — agents are operating
+         close to their coordination potential; experienced coordination roughly matches capacity.`;
 
-  } catch (e) {
-    errBox.innerHTML = `<strong>Simulation error:</strong> ${e.message}<br>
-      <span style="font-size:.8rem;opacity:.7">Check that the backend is running and CORS is enabled. 
-      Raw error: <code>${e.name}</code></span>`;
-    errBox.classList.add('visible');
-  } finally {
-    btn.classList.remove('loading');
-    btn.disabled = false;
-    spinner.style.display = 'none';
-  }
-}
-
-// ── Extract metrics with snake_case keys (backend) falling back to camelCase ──
-function extractMetrics(obj) {
-  if (!obj) return null;
-  // Handle nested .metrics object
-  const src = obj.metrics || obj;
-  return {
-    lambda_raw:       src.lambda_raw       ?? src.lambdaRaw       ?? null,
-    lambda_perceived: src.lambda_perceived ?? src.lambdaPerceived ?? null,
-    friction:         src.friction         ?? null
-  };
-}
-
-// ── Render results HTML ──
-function renderResults(idx, mA, mB, payload) {
-  const panel = document.getElementById(`results-${idx}`);
-  const name  = SCENARIO_NAMES[idx];
-
-  // Validate we have real numbers
-  const valid = m => m && m.lambda_raw !== null;
-
-  if (!valid(mA)) {
-    panel.innerHTML = `<div class="error-box visible">
-      Backend returned unexpected data structure. 
-      Check console for raw response details.
-    </div>`;
-    panel.classList.add('visible');
-    return;
+    return `
+      <div class="int-label">UCP Interpretation — ${scenarioName}</div>
+      <p><strong>${level}.</strong> ${advice}</p>
+      <p>${gapNote}</p>
+    `;
   }
 
-  const pctA_raw  = (mA.lambda_raw * 100).toFixed(1);
-  const pctA_perc = (mA.lambda_perceived * 100).toFixed(1);
-  const pctA_fric = (mA.friction * 100).toFixed(1);
+  // ─────────────────────────────────────────────────
+  // RENDER FULL RESULTS INTO THE DOM
+  // ─────────────────────────────────────────────────
+  function renderResults(idx, currentData, reformedData, payload, osVal, evVal) {
 
-  let comparisonHTML = '';
-  if (valid(mB)) {
-    const pctB_raw  = (mB.lambda_raw * 100).toFixed(1);
-    const pctB_perc = (mB.lambda_perceived * 100).toFixed(1);
-    const pctB_fric = (mB.friction * 100).toFixed(1);
+    const panel = document.getElementById(`results-${idx}`);
+    const mC = extractMetrics(currentData);
+    const mR = extractMetrics(reformedData);
 
-    const rawClass  = mB.lambda_raw       > mA.lambda_raw       ? 'better' : 'worse';
-    const percClass = mB.lambda_perceived > mA.lambda_perceived ? 'better' : 'worse';
-    const fricClass = mB.friction         < mA.friction         ? 'better' : 'worse';
-
-    comparisonHTML = `
-      <div class="results-title">Reform Comparison</div>
-      <div class="compare-grid">
-        <div class="compare-col">
-          <div class="compare-col-header">Current System</div>
-          <div class="compare-col-body">
-            <div class="compare-metric">
-              <span class="cm-label">λ Raw</span>
-              <span class="cm-val">${pctA_raw}%</span>
-            </div>
-            <div class="compare-metric">
-              <span class="cm-label">λ Perceived</span>
-              <span class="cm-val">${pctA_perc}%</span>
-            </div>
-            <div class="compare-metric">
-              <span class="cm-label">Friction</span>
-              <span class="cm-val">${pctA_fric}%</span>
-            </div>
-          </div>
-        </div>
-        <div class="compare-col">
-          <div class="compare-col-header">Reformed System (+trust, −power)</div>
-          <div class="compare-col-body">
-            <div class="compare-metric">
-              <span class="cm-label">λ Raw</span>
-              <span class="cm-val ${rawClass}">${pctB_raw}%</span>
-            </div>
-            <div class="compare-metric">
-              <span class="cm-label">λ Perceived</span>
-              <span class="cm-val ${percClass}">${pctB_perc}%</span>
-            </div>
-            <div class="compare-metric">
-              <span class="cm-label">Friction</span>
-              <span class="cm-val ${fricClass}">${pctB_fric}%</span>
-            </div>
-          </div>
-        </div>
+    if (!mC || mC.lambda_raw === null) {
+      panel.innerHTML = `<div class="error-box visible">
+        Backend returned unexpected data structure.<br>
+        Raw response: <code>${JSON.stringify(currentData).slice(0, 200)}</code>
       </div>`;
+      panel.classList.add('visible');
+      return;
+    }
+
+    // Percentage strings for bars
+    const cRawPct  = (mC.lambda_raw * 100).toFixed(1);
+    const cPercPct = (mC.lambda_perceived * 100).toFixed(1);
+    const cFricPct = (mC.friction * 100).toFixed(1);
+
+    // Top worldview & evidence labels for display
+    const topWV = Object.entries(payload.worldview_distribution)
+      .sort((a, b) => b[1] - a[1]).slice(0, 2)
+      .map(([k, v]) => `${k.replace(/_/g, ' ')} (${(v * 100).toFixed(0)}%)`).join(', ');
+
+    const topEV = Object.entries(payload.evidence_distribution)
+      .sort((a, b) => b[1] - a[1])[0];
+    const topEVStr = `${topEV[0].replace(/_/g, ' ')} (${(topEV[1] * 100).toFixed(0)}%)`;
+
+    // Reform comparison panel (only if we have valid reformed metrics)
+    let reformHTML = '';
+    if (mR && mR.lambda_raw !== null) {
+      const rawClass  = reformClass(mC.lambda_raw,       mR.lambda_raw,       true);
+      const percClass = reformClass(mC.lambda_perceived, mR.lambda_perceived, true);
+      const fricClass = reformClass(mC.friction,         mR.friction,         false);
+
+      const arrow = cls => cls === 'better' ? ' ▲' : cls === 'worse' ? ' ▼' : '';
+
+      const reformedOs = Math.min(1, parseFloat(osVal) + 0.30).toFixed(2);
+      const reformedEv = Math.min(1, parseFloat(evVal) + 0.30).toFixed(2);
+
+      reformHTML = `
+        <div class="compare-header">Reform Comparison — current vs. OS2 +0.30 / evidence quality +0.30</div>
+        <div class="compare-grid">
+
+          <div class="compare-col">
+            <div class="compare-col-header">Current System</div>
+            <div class="compare-col-body">
+              <div class="compare-row">
+                <span class="cr-label">λ Raw</span>
+                <span class="cr-val">${(mC.lambda_raw * 100).toFixed(1)}%</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">λ Perceived</span>
+                <span class="cr-val">${(mC.lambda_perceived * 100).toFixed(1)}%</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">Friction</span>
+                <span class="cr-val">${(mC.friction * 100).toFixed(1)}%</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">OS Dial</span>
+                <span class="cr-val">${parseFloat(osVal).toFixed(2)}</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">Ev. Quality</span>
+                <span class="cr-val">${parseFloat(evVal).toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="compare-col">
+            <div class="compare-col-header">Reformed System (+OS2, +Evidence Quality)</div>
+            <div class="compare-col-body">
+              <div class="compare-row">
+                <span class="cr-label">λ Raw</span>
+                <span class="cr-val ${rawClass}">${(mR.lambda_raw * 100).toFixed(1)}%${arrow(rawClass)}</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">λ Perceived</span>
+                <span class="cr-val ${percClass}">${(mR.lambda_perceived * 100).toFixed(1)}%${arrow(percClass)}</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">Friction</span>
+                <span class="cr-val ${fricClass}">${(mR.friction * 100).toFixed(1)}%${arrow(fricClass)}</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">OS Dial</span>
+                <span class="cr-val better">${reformedOs}</span>
+              </div>
+              <div class="compare-row">
+                <span class="cr-label">Ev. Quality</span>
+                <span class="cr-val better">${reformedEv}</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      `;
+    }
+
+    // Agent sample readings
+    let agentHTML = '';
+    if (currentData.agents && currentData.agents.length > 0) {
+      const sample = currentData.agents.slice(0, 4);
+      agentHTML = `
+        <div class="agents-section">
+          <div class="agents-section-title">Sample Agent Readings — final state</div>
+          ${sample.map(a => `
+            <div class="agent-reading">
+              <div class="agent-name">
+                ${a.name}
+                &nbsp;·&nbsp; ${(a.worldview || '').replace(/_/g, ' ')}
+                &nbsp;·&nbsp; ${(a.evidence_policy || '').replace(/_/g, ' ')}
+              </div>
+              λ raw: <strong>${a.lambda_raw != null ? a.lambda_raw.toFixed(3) : '—'}</strong>
+              &nbsp;|&nbsp;
+              λ perceived: <strong>${a.lambda_perceived != null ? a.lambda_perceived.toFixed(3) : '—'}</strong>
+              &nbsp;|&nbsp;
+              stress: <strong>${a.stress != null ? a.stress.toFixed(3) : '—'}</strong>
+              ${a.response ? `<div class="agent-quote">"${a.response}"</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Timeline chart
+    const timeline = currentData.timeline || [];
+    const chartId  = `chart-${idx}-${Date.now()}`;
+    const chartHTML = timeline.length > 1
+      ? `<div class="chart-section">
+           <div class="chart-section-title">Coordination trajectory — ${timeline.length} steps (current configuration)</div>
+           <canvas id="${chartId}" class="timeline-chart" height="180"></canvas>
+         </div>`
+      : '';
+
+    // Assemble full results
+    panel.innerHTML = `
+
+      <div class="results-section-title">
+        Simulation Results — ${currentData.scenario || payload.scenario_name}
+        &nbsp;·&nbsp; ${payload.num_agents} agents
+        &nbsp;·&nbsp; ${payload.steps} steps
+        &nbsp;·&nbsp; seed ${payload.seed}
+        ${payload.activate_biobond_at != null
+          ? ' &nbsp;·&nbsp; <span style="color:var(--prf-sky);font-weight:bold">BioBond @ step ' + payload.activate_biobond_at + '</span>'
+          : ''}
+      </div>
+
+      <div style="font-size:.74rem;color:var(--prf-muted);font-family:'Courier New',monospace;margin-bottom:16px">
+        Top worldviews: ${topWV}
+        &nbsp;|&nbsp; Leading evidence: ${topEVStr}
+      </div>
+
+      <!-- Three metric cards -->
+      <div class="metrics-row">
+        <div class="metric-card ${lambdaColorClass(mC.lambda_raw)}">
+          <div class="m-label">λ Raw</div>
+          <div class="m-value">${mC.lambda_raw.toFixed(3)}</div>
+          <div class="m-name">Coordination Capacity</div>
+        </div>
+        <div class="metric-card ${lambdaColorClass(mC.lambda_perceived)}">
+          <div class="m-label">λ Perceived</div>
+          <div class="m-value">${mC.lambda_perceived.toFixed(3)}</div>
+          <div class="m-name">Experienced Coordination</div>
+        </div>
+        <div class="metric-card ${frictionColorClass(mC.friction)}">
+          <div class="m-label">Friction</div>
+          <div class="m-value">${mC.friction.toFixed(3)}</div>
+          <div class="m-name">Coordination Loss</div>
+        </div>
+      </div>
+
+      <!-- Animated bar visualization -->
+      <div class="bar-section">
+        <div class="bar-row">
+          <span class="bar-label">λ Raw</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-lambda-raw" data-pct="${cRawPct}%" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">λ Perceived</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-lambda-perceived" data-pct="${cPercPct}%" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Friction</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-friction" data-pct="${cFricPct}%" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reform comparison -->
+      ${reformHTML}
+
+      <!-- Timeline chart -->
+      ${chartHTML}
+
+      <!-- Agent readings -->
+      ${agentHTML}
+
+      <!-- Interpretation -->
+      <div class="interpretation">
+        ${buildInterpretation(mC, currentData.scenario || payload.scenario_name)}
+      </div>
+
+    `;
+
+    panel.classList.add('visible');
+
+    // Trigger bar animations after a short delay (allows DOM paint first)
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        panel.querySelectorAll('.bar-fill').forEach(bar => {
+          const pct = parseFloat(bar.getAttribute('data-pct'));
+          bar.style.width = `${pct}%`;
+        });
+      }, 80);
+    });
+
+    // Draw timeline chart if we have step data
+    if (timeline.length > 1) {
+      drawTimelineChart(chartId, timeline, payload.activate_biobond_at);
+    }
   }
 
-  panel.innerHTML = `
-    <div class="results-title">Simulation Results — ${name}</div>
+  // ─────────────────────────────────────────────────
+  // DRAW TIMELINE CHART ON CANVAS
+  // ─────────────────────────────────────────────────
+  function drawTimelineChart(canvasId, timeline, biobondAt) {
+    requestAnimationFrame(() => {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
 
-    <div class="metrics-row">
-      <div class="metric-card ${lambdaClass(mA.lambda_raw)}">
-        <div class="m-label">λ Raw</div>
-        <div class="m-value">${mA.lambda_raw.toFixed(3)}</div>
-        <div class="m-name">Coordination Capacity</div>
-      </div>
-      <div class="metric-card ${lambdaClass(mA.lambda_perceived)}">
-        <div class="m-label">λ Perceived</div>
-        <div class="m-value">${mA.lambda_perceived.toFixed(3)}</div>
-        <div class="m-name">Experienced Coordination</div>
-      </div>
-      <div class="metric-card ${frictionClass(mA.friction)}">
-        <div class="m-label">Friction</div>
-        <div class="m-value">${mA.friction.toFixed(3)}</div>
-        <div class="m-name">Coordination Loss</div>
-      </div>
-    </div>
+      const ctx  = canvas.getContext('2d');
+      const W    = canvas.offsetWidth;
+      const H    = 180;
+      canvas.width  = W;
+      canvas.height = H;
 
-    <div class="bar-section">
-      <div class="bar-row">
-        <span class="bar-label">λ Raw</span>
-        <div class="bar-track">
-          <div class="bar-fill lambda-raw" data-pct="${pctA_raw}%" style="width:0%"></div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">λ Perceived</span>
-        <div class="bar-track">
-          <div class="bar-fill lambda-perceived" data-pct="${pctA_perc}%" style="width:0%"></div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <span class="bar-label">Friction</span>
-        <div class="bar-track">
-          <div class="bar-fill friction" data-pct="${pctA_fric}%" style="width:0%"></div>
-        </div>
-      </div>
-    </div>
+      const pad = { t: 20, r: 18, b: 32, l: 46 };
+      const cW  = W - pad.l - pad.r;
+      const cH  = H - pad.t - pad.b;
+      const n   = timeline.length;
 
-    ${comparisonHTML}
+      const xPos = i => pad.l + (i / (n - 1)) * cW;
+      const yPos = v => pad.t + cH - (v * cH);
 
-    <div class="interpretation">
-      ${buildInterpretation(name, mA)}
-    </div>
-  `;
+      // Background
+      ctx.fillStyle = '#f8f9fc';
+      ctx.fillRect(0, 0, W, H);
 
-  panel.classList.add('visible');
-
-  // Animate bars
-  requestAnimationFrame(() => {
-    setTimeout(() => {
-      panel.querySelectorAll('.bar-fill').forEach(bar => {
-        const pct = parseFloat(bar.getAttribute('data-pct'));
-        bar.style.width = `${pct}%`;
+      // Horizontal grid lines at 0, 0.25, 0.5, 0.75, 1.0
+      ctx.strokeStyle = '#dde3ef';
+      ctx.lineWidth = 1;
+      [0, 0.25, 0.5, 0.75, 1].forEach(v => {
+        ctx.beginPath();
+        ctx.moveTo(pad.l, yPos(v));
+        ctx.lineTo(pad.l + cW, yPos(v));
+        ctx.stroke();
+        ctx.fillStyle = '#99a';
+        ctx.font = '10px Courier New';
+        ctx.fillText(v.toFixed(2), 3, yPos(v) + 3.5);
       });
-    }, 80);
-  });
-}
 
-// ── Init ──
-checkHealth();
+      // BioBond vertical marker
+      if (biobondAt != null && biobondAt < n) {
+        const bx = xPos(biobondAt);
+        ctx.save();
+        ctx.strokeStyle = '#4a7fb5';
+        ctx.lineWidth   = 1.5;
+        ctx.setLineDash([4, 3]);
+        ctx.beginPath();
+        ctx.moveTo(bx, pad.t);
+        ctx.lineTo(bx, pad.t + cH);
+        ctx.stroke();
+        ctx.restore();
+        ctx.fillStyle = '#4a7fb5';
+        ctx.font      = '9px Courier New';
+        ctx.fillText('BioBond', bx + 3, pad.t + 11);
+      }
+
+      // Data series
+      const series = [
+        { key: 'lambda_raw',       color: '#4a7fb5', label: 'λ Raw' },
+        { key: 'lambda_perceived', color: '#c9a84c', label: 'λ Perceived' },
+        { key: 'friction',         color: '#b84444', label: 'Friction' },
+      ];
+
+      series.forEach(s => {
+        ctx.beginPath();
+        ctx.strokeStyle = s.color;
+        ctx.lineWidth   = 2.5;
+        ctx.lineJoin    = 'round';
+        timeline.forEach((pt, i) => {
+          const x = xPos(i);
+          const y = yPos(pt[s.key] || 0);
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        // Terminal dot
+        const last = timeline[n - 1];
+        ctx.beginPath();
+        ctx.arc(xPos(n - 1), yPos(last[s.key] || 0), 4, 0, Math.PI * 2);
+        ctx.fillStyle = s.color;
+        ctx.fill();
+      });
+
+      // X-axis step labels
+      ctx.fillStyle = '#889';
+      ctx.font      = '10px Courier New';
+      timeline.forEach((pt, i) => {
+        if (i % Math.max(1, Math.floor(n / 6)) === 0) {
+          ctx.fillText(`s${i}`, xPos(i) - 5, H - 8);
+        }
+      });
+
+      // Legend
+      let lx = pad.l;
+      series.forEach(s => {
+        ctx.fillStyle = s.color;
+        ctx.fillRect(lx, 6, 12, 7);
+        ctx.fillStyle = '#445';
+        ctx.font      = '10px Courier New';
+        ctx.fillText(s.label, lx + 15, 13);
+        lx += ctx.measureText(s.label).width + 28;
+      });
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────────────
+  checkHealth();
+
 </script>
 </body>
 </html>
