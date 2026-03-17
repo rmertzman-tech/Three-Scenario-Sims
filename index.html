@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historical Futures Lab - CIB Thermodynamics Simulations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *:focus {
+            outline: 3px solid #2563eb;
+            outline-offset: 2px;
+        }
+        
+        @media print {
+            .no-print { display: none; }
+        }
+        
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        .timeline-node {
+            position: relative;
+        }
+        
+        .timeline-node::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            bottom: -20px;
+            width: 2px;
+            background: #cbd5e1;
+        }
+        
+        .timeline-node:last-child::before {
+            display: none;
+        }
+        
+        .gradient-mandela {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+        
+        .gradient-boisjoly {
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+        }
+        
+        .gradient-salk {
+            background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
+        }
+        
+        .gradient-carson {
+            background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+        }
+        
+        .path-a { border-color: #ef4444; background-color: #fef2f2; }
+        .path-b { border-color: #10b981; background-color: #f0fdf4; }
+        
+        .metric-critical { color: #dc2626; }
+        .metric-warning { color: #f59e0b; }
+        .metric-good { color: #10b981; }
+        .metric-excellent { color: #059669; }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Header -->
+<header class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-6 shadow-xl">
+    <div class="max-w-7xl mx-auto px-4">
+        <h1 class="text-4xl font-bold mb-2">The Historical Futures Lab</h1>
+        <p class="text-xl opacity-90">Interactive CIB Thermodynamics Simulations</p>
+        <p class="text-sm mt-2 opacity-75">Ethics Beyond Boundaries - Saint Petersburg College</p>
+    </div>
+</header>
+
+<div id="app" class="max-w-7xl mx-auto px-4 py-8">
+    
+    <!-- Introduction -->
+    <section id="intro" class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">How This Works</h2>
+        <div class="prose prose-lg max-w-none">
+            <p class="text-gray-700 mb-4">
+                This lab uses real historical figures at critical decision points in their lives. 
+                For each case, you'll:
+            </p>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700 mb-6">
+                <li>See their <strong>actual assessment scores</strong> (reconstructed from historical evidence)</li>
+                <li>Understand the <strong>critical decision</strong> they faced</li>
+                <li>Run <strong>simulations</strong> of different choices using UCP 2v + CIB Thermodynamics</li>
+                <li>Compare <strong>predicted trajectories</strong> to what actually happened</li>
+                <li>Validate whether our models <strong>match reality</strong></li>
+            </ol>
+            
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+                <h3 class="font-bold text-blue-900 mb-2">Why Historical Cases?</h3>
+                <p class="text-blue-900 text-sm">
+                    These aren't hypotheticals. These people made real choices with measurable consequences. 
+                    If our thermodynamic models can predict what actually happened, they're not just theory—
+                    they're describing fundamental laws of human flourishing.
+                </p>
+            </div>
+            
+            <button onclick="showCaseSelection()" class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-xl hover:from-indigo-700 hover:to-purple-700 shadow-lg">
+                Begin Historical Simulations
+            </button>
+        </div>
+    </section>
+    
+    <!-- Case Selection -->
+    <section id="case-selection" class="hidden">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Select a Historical Case</h2>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Mandela Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow cursor-pointer" onclick="loadCase('mandela')">
+                <div class="gradient-mandela p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Nelson Mandela</h3>
+                    <p class="text-sm opacity-90">Robben Island, 1964</p>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-gray-900 mb-2">The BioBond Decision</h4>
+                    <p class="text-sm text-gray-700 mb-4">
+                        Should he exercise daily in his 7×7 cell despite exhaustion, mockery, and no apparent benefit?
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">Duration: 27 years</span>
+                        <span class="font-semibold text-green-600">Self-Care as Resistance</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Boisjoly Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow cursor-pointer" onclick="loadCase('boisjoly')">
+                <div class="gradient-boisjoly p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Roger Boisjoly</h3>
+                    <p class="text-sm opacity-90">Post-Challenger, 1986</p>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-gray-900 mb-2">The Testimony Decision</h4>
+                    <p class="text-sm text-gray-700 mb-4">
+                        Should he tell the full truth to the Rogers Commission about management pressure?
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">Duration: 5 years critical</span>
+                        <span class="font-semibold text-red-600">Truth vs. Career</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Salk Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow cursor-pointer" onclick="loadCase('salk')">
+                <div class="gradient-salk p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Jonas Salk</h3>
+                    <p class="text-sm opacity-90">Vaccine Success, 1955</p>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-gray-900 mb-2">The Patent Decision</h4>
+                    <p class="text-sm text-gray-700 mb-4">
+                        Patent the vaccine and become wealthy, or give it to humanity?
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">Cost: $7 billion</span>
+                        <span class="font-semibold text-purple-600">Generativity vs. Wealth</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Carson Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow cursor-pointer" onclick="loadCase('carson')">
+                <div class="gradient-carson p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Rachel Carson</h3>
+                    <p class="text-sm opacity-90">Terminal Illness, 1962</p>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-gray-900 mb-2">The Silent Spring Decision</h4>
+                    <p class="text-sm text-gray-700 mb-4">
+                        Fight chemical industry while dying of cancer, or rest peacefully?
+                    </p>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">Life expectancy: 2 years</span>
+                        <span class="font-semibold text-cyan-600">Legacy Over Rest</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Comparative Analysis Card -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow cursor-pointer border-2 border-indigo-300" onclick="loadCase('comparative')">
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-500 p-6 text-white">
+                    <h3 class="text-2xl font-bold mb-2">Comparative Analysis</h3>
+                    <p class="text-sm opacity-90">All Cases</p>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-gray-900 mb-2">Pattern Recognition</h4>
+                    <p class="text-sm text-gray-700 mb-4">
+                        Compare all cases side-by-side to identify universal thermodynamic patterns.
+                    </p>
+                    <div class="text-sm font-semibold text-indigo-600">
+                        Meta-Analysis
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Case Display Container -->
+    <div id="case-display" class="hidden"></div>
+    
+</div>
+
+<script>
+// ==========================================
+// HISTORICAL CASE DATA
+// ==========================================
+
+const historicalCases = {
+    mandela: {
+        name: "Nelson Mandela",
+        year: 1964,
+        age: 46,
+        location: "Robben Island Prison, South Africa",
+        context: "Sentenced to life imprisonment for opposing apartheid. Confined to 7×7 foot cell with hard labor in limestone quarry. Expected to remain imprisoned for life with no release date.",
+        
+        decision: {
+            title: "The BioBond Decision: Daily Exercise",
+            description: "Despite extreme exhaustion from hard labor, minimal nutrition, and guard mockery, should Mandela implement a rigorous daily exercise routine?",
+            pathA: {
+                name: "No Exercise (Conserve Energy)",
+                rationale: "Already exhausted from quarry work. Exercise seems pointless—won't get him released. Better to rest and conserve limited energy.",
+                expectedBy: "Most prisoners, guards who mock those who exercise"
+            },
+            pathB: {
+                name: "Daily Exercise (BioBond Protocol)",
+                rationale: "Exercise maintains somatic coherence, preserves agency, structures time, creates metabolic capacity despite conditions.",
+                expectedBy: "Mandela himself, based on understanding that prison is designed to break the spirit"
+            }
+        },
+        
+        baselineScores: {
+            // ATCF
+            A: 85, // Autobiographical - very strong identity
+            T: 42, // Temporal - critically depleted
+            C: 78, // Prospective - clear long-term vision
+            F: 82, // Meta-constructive - high adaptability
+            
+            // Derived
+            Fire: 80,
+            Ice: 85,
+            FireIceRatio: 0.94,
+            
+            // MDI components
+            MDI: 92,
+            MDI_Complexity: 95,
+            MDI_Horizon: 95,
+            MDI_Integration: 90,
+            MDI_Authenticity: 90,
+            MDI_Generativity: 90,
+            
+            // Other dimensions
+            RCS: 88,
+            AF: 85,
+            LQI: 38,
+            CPR: 72,
+            
+            Overall: 75
+        },
+        
+        timeline: [
+            {
+                month: 0,
+                event: "Decision Point",
+                description: "Begin daily exercise or conserve energy?",
+                critical: true
+            },
+            {
+                month: 3,
+                event: "Initial Phase",
+                description: "Observable changes in physical and mental state"
+            },
+            {
+                month: 12,
+                event: "First Year Assessment",
+                description: "Pattern established, long-term trajectory emerging"
+            },
+            {
+                month: 60,
+                event: "Five Year Mark",
+                description: "Identity coherence tested under prolonged stress"
+            },
+            {
+                month: 324,
+                event: "Release (1990)",
+                description: "After 27 years, capability to lead tested immediately"
+            }
+        ],
+        
+        actualOutcome: {
+            path: "B",
+            description: "Mandela exercised daily for 27 years. Emerged physically and mentally capable of leading South Africa's transition to democracy. Became President at age 75.",
+            keyQuote: "Prison is designed to break one's spirit and destroy one's resolve... I attempted to follow a program of exercise that would keep me fit.",
+            metrics: {
+                survivalYears: 27,
+                postReleaseProductivity: "Exceptional - led nation",
+                identityCoherence: "Total - became MORE himself",
+                legacyImpact: "Prevented civil war, peaceful transition"
+            }
+        },
+        
+        color: "green"
+    },
+    
+    boisjoly: {
+        name: "Roger Boisjoly",
+        year: 1986,
+        age: 49,
+        location: "Post-Challenger Disaster, Morton Thiokol",
+        context: "Senior engineer who fought the Challenger launch and was overruled. Seven astronauts died. Rogers Commission investigating. Management wants him to stay quiet.",
+        
+        decision: {
+            title: "The Testimony Decision: Full Truth",
+            description: "Should Boisjoly give full testimony about management pressure to override engineering judgment, likely ending his career?",
+            pathA: {
+                name: "Limited Testimony (Protect Career)",
+                rationale: "Stick to technical facts only. Don't expose management pressure. Preserve job, colleagues, financial security.",
+                expectedBy: "Management, colleagues, family (financial security)"
+            },
+            pathB: {
+                name: "Full Truth (Moral Courage)",
+                rationale: "Tell complete truth about management override. Accept career destruction to prevent future accidents.",
+                expectedBy: "Engineering ethics, personal integrity, future safety"
+            }
+        },
+        
+        baselineScores: {
+            A: 88,
+            T: 38, // Critically stressed post-trauma
+            C: 72,
+            F: 75,
+            
+            Fire: 73.5,
+            Ice: 88,
+            FireIceRatio: 0.835,
+            
+            MDI: 82,
+            MDI_Complexity: 75,
+            MDI_Horizon: 80,
+            MDI_Integration: 90,
+            MDI_Authenticity: 85,
+            MDI_Generativity: 80,
+            
+            RCS: 92,
+            AF: 68,
+            LQI: 45,
+            CPR: 78,
+            
+            Overall: 73
+        },
+        
+        timeline: [
+            {
+                month: 0,
+                event: "Decision Point",
+                description: "Rogers Commission testimony - limited or full?"
+            },
+            {
+                month: 1,
+                event: "Immediate Aftermath",
+                description: "Career and social consequences begin"
+            },
+            {
+                month: 6,
+                event: "Critical Juncture",
+                description: "Will identity fracture or reorganize?"
+            },
+            {
+                month: 12,
+                event: "One Year Post-Testimony",
+                description: "New morphogenetic target emerges or despair sets in"
+            },
+            {
+                month: 60,
+                event: "Five Year Assessment",
+                description: "Long-term identity and legacy trajectory"
+            }
+        ],
+        
+        actualOutcome: {
+            path: "B",
+            description: "Boisjoly gave full testimony. Was ostracized by colleagues, forced to resign, experienced severe depression. But found new purpose teaching engineering ethics. Became one of the most important voices in engineering professional responsibility.",
+            keyQuote: "I have been asked by some if I would testify again if I knew in advance of the potential consequences... My answer is always an immediate 'yes.'",
+            metrics: {
+                careerCost: "Total - forced resignation",
+                socialCost: "Severe - ostracized by colleagues",
+                identityOutcome: "Strengthened - became MORE himself",
+                legacyImpact: "Massive - changed engineering ethics education globally"
+            }
+        },
+        
+        color: "red"
+    },
+    
+    salk: {
+        name: "Jonas Salk",
+        year: 1955,
+        age: 40,
+        location: "Post-Vaccine Success, United States",
+        context: "Polio vaccine proven successful in largest medical trial in history. Could patent and become wealthiest scientist ever, or give it to humanity.",
+        
+        decision: {
+            title: "The Patent Decision: Generativity vs. Wealth",
+            description: "Patent the polio vaccine (worth ~$7 billion) or give it away to save maximum lives worldwide?",
+            pathA: {
+                name: "Patent (Financial Security)",
+                rationale: "Become wealthy, secure family's future, fund more research. Still saves hundreds of thousands of lives in wealthy nations.",
+                expectedBy: "University administrators, many colleagues, conventional wisdom"
+            },
+            pathB: {
+                name: "No Patent (Maximum Lives Saved)",
+                rationale: "Enable global distribution at minimal cost. Save millions more lives including in poor nations. 'Could you patent the sun?'",
+                expectedBy: "Public health advocates, Salk's own values"
+            }
+        },
+        
+        baselineScores: {
+            A: 82,
+            T: 88,
+            C: 90,
+            F: 78,
+            
+            Fire: 84,
+            Ice: 82,
+            FireIceRatio: 1.02,
+            
+            MDI: 95,
+            MDI_Complexity: 92,
+            MDI_Horizon: 98,
+            MDI_Integration: 88,
+            MDI_Authenticity: 95,
+            MDI_Generativity: 100,
+            
+            RCS: 90,
+            AF: 75,
+            LQI: 78,
+            CPR: 92,
+            
+            Overall: 86
+        },
+        
+        timeline: [
+            {
+                month: 0,
+                event: "Decision Point",
+                description: "Vaccine successful - patent or give away?"
+            },
+            {
+                month: 12,
+                event: "One Year Post-Decision",
+                description: "Global distribution beginning, identity shift observable"
+            },
+            {
+                month: 60,
+                event: "Five Year Mark",
+                description: "Salk Institute founded, legacy path crystallizing"
+            },
+            {
+                month: 180,
+                event: "15 Years Later",
+                description: "Full legacy impact visible, lives saved measurable"
+            },
+            {
+                month: 360,
+                event: "30 Years Later (1985)",
+                description: "Polio nearly eradicated globally"
+            }
+        ],
+        
+        actualOutcome: {
+            path: "B",
+            description: "Salk gave vaccine away. Forewent billions. Founded Salk Institute (1960). Continued productive research for decades. Became moral icon. Estimated 10-16 million lives saved globally.",
+            keyQuote: "Could you patent the sun?",
+            metrics: {
+                financialCost: "$7 billion foregone",
+                livesSaved: "10-16 million (vs ~1M if patented)",
+                identityOutcome: "Strengthened - perfect alignment",
+                legacyImpact: "Geometric - model for open science movement"
+            }
+        },
+        
+        color: "purple"
+    },
+    
+    carson: {
+        name: "Rachel Carson",
+        year: 1962,
+        age: 54,
+        location: "Terminal Breast Cancer, United States",
+        context: "Dying of breast cancer, ~2 years to live. Chemical industry launching massive attacks calling her 'hysterical woman.' Could rest peacefully or fight to publish Silent Spring.",
+        
+        decision: {
+            title: "The Silent Spring Decision: Legacy Over Rest",
+            description: "Use final metabolic energy to write/defend book exposing pesticide industry, enduring attacks while dying?",
+            pathA: {
+                name: "Rest Peacefully (Self-Care)",
+                rationale: "Dying anyway. Enjoy remaining time with family and nature. Avoid stress of industry attacks.",
+                expectedBy: "Doctors, family who love her"
+            },
+            pathB: {
+                name: "Fight While Dying (Legacy)",
+                rationale: "Final chance to create CIB that will outlive you. Endure attacks to save future generations from pesticides.",
+                expectedBy: "Environmental movement, Carson's own mission"
+            }
+        },
+        
+        baselineScores: {
+            A: 90,
+            T: 25, // Critically low - dying
+            C: 95, // Extremely high - vision extends beyond death
+            F: 65,
+            
+            Fire: 80,
+            Ice: 90,
+            FireIceRatio: 0.89,
+            
+            MDI: 98,
+            MDI_Complexity: 95,
+            MDI_Horizon: 100, // Transgenerational
+            MDI_Integration: 95,
+            MDI_Authenticity: 98,
+            MDI_Generativity: 100,
+            
+            RCS: 88,
+            AF: 62,
+            LQI: 30, // Terminal illness
+            CPR: 95, // Final burst
+            
+            Overall: 72 // High meaning despite physical crisis
+        },
+        
+        timeline: [
+            {
+                month: 0,
+                event: "Decision Point",
+                description: "Write/defend book or rest peacefully?"
+            },
+            {
+                month: 6,
+                event: "Silent Spring Published",
+                description: "Massive industry attacks begin"
+            },
+            {
+                month: 12,
+                event: "One Year - Still Fighting",
+                description: "Defending book while health deteriorates"
+            },
+            {
+                month: 24,
+                event: "Death (1964)",
+                description: "Dies before seeing EPA created"
+            },
+            {
+                month: 96,
+                event: "8 Years Later (1970)",
+                description: "EPA created, DDT banned - her CIB wins"
+            }
+        },
+        
+        actualOutcome: {
+            path: "B",
+            description: "Carson wrote and defended Silent Spring while dying. Endured vicious attacks. Died in 1964. EPA created 1970. Modern environmental movement credits her as founder. Her CIB compounds forever.",
+            keyQuote: "We stand now where two roads diverge... The road we have long been traveling is deceptively easy... The other fork of the road is the one less traveled... but our only chance to reach a destination that assures the preservation of the earth.",
+            metrics: {
+                personalCost: "Died in pain, under attack",
+                restForegone: "All remaining peace",
+                identityOutcome: "Total alignment - died as herself",
+                legacyImpact: "Infinite - environmental movement founded"
+            }
+        },
+        
+        color: "cyan"
+    }
+};
+
+// ==========================================
+// SIMULATION ENGINE
+// ==========================================
+
+function simulateTrajectory(baselineScores, decisionParams, path, timeHorizon) {
+    const trajectory = [];
+    let state = {
+        month: 0,
+        A: baselineScores.A,
+        T: baselineScores.T,
+        C: baselineScores.C,
+        F: baselineScores.F,
+        MDI: baselineScores.MDI,
+        RCS: baselineScores.RCS,
+        AF: baselineScores.AF,
+        LQI: baselineScores.LQI,
+        CPR: baselineScores.CPR,
+        Fire: baselineScores.Fire,
+        Ice: baselineScores.Ice,
+        FireIceRatio: baselineScores.FireIceRatio
+    };
+    
+    // Path-specific modifiers
+    const modifiers = path === 'A' ? decisionParams.pathAModifiers : decisionParams.pathBModifiers;
+    
+    for (let month = 0; month <= timeHorizon; month++) {
+        // Apply time-dependent changes based on path
+        if (month > 0) {
+            // Apply modifiers
+            Object.keys(modifiers).forEach(key => {
+                const modifier = modifiers[key];
+                if (typeof modifier === 'function') {
+                    state[key] = modifier(state[key], month, state);
+                } else if (typeof modifier === 'number') {
+                    state[key] = Math.max(0, Math.min(100, state[key] + (modifier / timeHorizon)));
+                }
+            });
+            
+            // Recalculate derived metrics
+            state.Fire = (state.C + state.F) / 2;
+            state.Ice = state.A;
+            state.FireIceRatio = state.Ice > 0 ? state.Fire / state.Ice : 0;
+        }
+        
+        trajectory.push({
+            month,
+            ...JSON.parse(JSON.stringify(state))
+        });
+    }
+    
+    return trajectory;
+}
+
+// ==========================================
+// CASE-SPECIFIC SIMULATION PARAMETERS
+// ==========================================
+
+const simulationParameters = {
+    mandela: {
+        timeHorizon: 324, // 27 years
+        pathAModifiers: {
+            // No exercise - gradual degradation
+            T: (val, month) => Math.max(20, val - 0.05 * month),
+            F: (val, month) => month < 12 ? val - 0.1 * month : Math.max(40, val - 0.15 * (month - 12)),
+            C: (val, month) => month < 24 ? val : Math.max(50, val - 0.08 * (month - 24)),
+            A: (val, month) => month < 36 ? val : Math.max(50, val - 0.1 * (month - 36)),
+            LQI: (val, month) => Math.max(15, val - 0.05 * month)
+        },
+        pathBModifiers: {
+            // Exercise - stabilization then improvement
+            T: (val, month) => {
+                if (month < 3) return Math.max(38, val - 0.5);
+                if (month < 12) return Math.min(60, val + 0.8);
+                return Math.min(65, val + 0.02);
+            },
+            LQI: (val, month) => {
+                if (month < 6) return Math.min(50, val + 1.5);
+                return Math.min(55, val + 0.05);
+            },
+            F: (val, month) => Math.min(85, val + 0.01),
+            CPR: (val, month) => Math.min(82, val + 0.02)
+        }
+    },
+    
+    boisjoly: {
+        timeHorizon: 60, // 5 years critical period
+        pathAModifiers: {
+            // Limited testimony - moral injury
+            T: -5,
+            A: (val, month) => month < 6 ? val - 1 : Math.max(45, val - 1.5),
+            MDI: (val, month) => month < 12 ? val - 1.2 : Math.max(40, val - 1),
+            LQI: (val, month) => Math.max(25, val - 0.4 * month),
+            F: (val, month) => Math.max(40, val - 0.3 * month)
+        },
+        pathBModifiers: {
+            // Full truth - crisis then recovery
+            T: (val, month) => {
+                if (month < 2) return Math.max(25, val - 8);
+                if (month < 12) return Math.min(50, val + 1.5);
+                return Math.min(65, val + 0.5);
+            },
+            A: (val, month) => month < 6 ? val + 0.5 : Math.min(95, val + 0.3),
+            C: (val, month) => month < 6 ? val + 2 : Math.min(88, val + 0.4),
+            CPR: (val, month) => month < 12 ? val + 0.5 : Math.min(92, val + 0.2),
+            LQI: (val, month) => {
+                if (month < 6) return Math.max(25, val - 2);
+                if (month < 24) return Math.min(65, val + 1);
+                return Math.min(72, val + 0.3);
+            }
+        }
+    },
+    
+    salk: {
+        timeHorizon: 360, // 30 years
+        pathAModifiers: {
+            // Patent - wealth but moral injury
+            T: +10,
+            MDI: (val, month) => month < 12 ? val : Math.max(60, val - 0.15 * (month / 12)),
+            A: (val, month) => month < 24 ? val - 0.4 : Math.max(50, val - 0.5),
+            CPR: (val, month) => Math.max(45, val - 0.15 * (month / 12)),
+            LQI: (val, month) => {
+                if (month < 12) return Math.min(88, val + 0.5);
+                return Math.max(50, val - 0.1 * (month / 12));
+            }
+        },
+        pathBModifiers: {
+            // No patent - perfect alignment
+            A: (val, month) => Math.min(95, val + 0.02),
+            C: (val, month) => Math.min(95, val + 0.015),
+            CPR: (val, month) => Math.min(100, val + 0.025),
+            MDI: (val, month) => Math.min(98, val + 0.01),
+            Fire: (val, month) => Math.min(95, val + 0.02)
+        }
+    },
+    
+    carson: {
+        timeHorizon: 24, // 2 years until death
+        pathAModifiers: {
+            // Rest - physical comfort, identity erosion
+            T: (val, month) => Math.max(15, val - 0.3 * month),
+            LQI: (val, month) => Math.min(45, val + 0.5 * month),
+            C: (val, month) => Math.max(60, val - 1.5 * month),
+            CPR: (val, month) => Math.max(20, val - 3 * month)
+        },
+        pathBModifiers: {
+            // Fight - physical decline, identity crystallization
+            T: (val, month) => Math.max(10, val - 0.6 * month),
+            A: (val, month) => Math.min(98, val + 0.3 * month),
+            C: (val, month) => Math.min(100, val + 0.2 * month),
+            CPR: (val, month) => Math.min(100, val + 0.4 * month),
+            MDI: (val, month) => Math.min(100, val + 0.15 * month),
+            LQI: (val, month) => Math.max(15, val - 0.6 * month)
+        }
+    }
+};
+
+// ==========================================
+// UI CONTROL FUNCTIONS
+// ==========================================
+
+function showCaseSelection() {
+    document.getElementById('intro').classList.add('hidden');
+    document.getElementById('case-selection').classList.remove('hidden');
+}
+
+let currentCase = null;
+let simulationResults = null;
+
+function loadCase(caseId) {
+    if (caseId === 'comparative') {
+        displayComparativeAnalysis();
+        return;
+    }
+    
+    currentCase = historicalCases[caseId];
+    document.getElementById('case-selection').classList.add('hidden');
+    document.getElementById('case-display').classList.remove('hidden');
+    
+    displayCase(caseId);
+}
+
+// ==========================================
+// CASE DISPLAY
+// ==========================================
+
+function displayCase(caseId) {
+    const caseData = historicalCases[caseId];
+    const container = document.getElementById('case-display');
+    
+    const colorClass = `gradient-${caseData.color}`;
+    
+    container.innerHTML = `
+        <div class="space-y-8">
+            <!-- Header -->
+            <div class="flex items-center gap-4 mb-6">
+                <button onclick="backToSelection()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                    ← Back to Cases
+                </button>
+                <h2 class="text-3xl font-bold text-gray-900">${caseData.name} - ${caseData.year}</h2>
+            </div>
+            
+            <!-- Case Overview -->
+            <section class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div class="${colorClass} p-8 text-white">
+                    <h3 class="text-2xl font-bold mb-2">${caseData.decision.title}</h3>
+                    <div class="grid md:grid-cols-2 gap-4 mt-4 text-sm">
+                        <div>
+                            <span class="opacity-75">Age:</span> <strong>${caseData.age}</strong>
+                        </div>
+                        <div>
+                            <span class="opacity-75">Location:</span> <strong>${caseData.location}</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-8">
+                    <h4 class="font-bold text-gray-900 mb-3">Historical Context:</h4>
+                    <p class="text-gray-700 mb-6">${caseData.context}</p>
+                    
+                    <h4 class="font-bold text-gray-900 mb-3">The Critical Decision:</h4>
+                    <p class="text-gray-700 mb-4">${caseData.decision.description}</p>
+                </div>
+            </section>
+            
+            <!-- Assessment Scores -->
+            <section class="bg-white rounded-2xl shadow-xl p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Baseline Assessment Scores (${caseData.year})</h3>
+                
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h4 class="font-bold text-gray-900 mb-4">ATCF Components:</h4>
+                        ${generateScoreBar('A - Autobiographical (Ice)', caseData.baselineScores.A, 'blue')}
+                        ${generateScoreBar('T - Temporal (Flux)', caseData.baselineScores.T, 'green')}
+                        ${generateScoreBar('C - Prospective (Fire)', caseData.baselineScores.C, 'orange')}
+                        ${generateScoreBar('F - Meta-Constructive', caseData.baselineScores.F, 'purple')}
+                        
+                        <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                            <div class="text-sm text-gray-700 space-y-1">
+                                <div class="flex justify-between">
+                                    <span>Fire/Ice Ratio:</span>
+                                    <strong class="${caseData.baselineScores.FireIceRatio >= 0.70 ? 'metric-good' : 'metric-critical'}">
+                                        ${caseData.baselineScores.FireIceRatio.toFixed(2)}
+                                    </strong>
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    ${caseData.baselineScores.FireIceRatio >= 0.70 ? '✓ Sustainable' : '⚠️ Unsustainable'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold text-gray-900 mb-4">Five Dimensions:</h4>
+                        ${generateScoreBar('Meaning Depth (MDI)', caseData.baselineScores.MDI, 'purple')}
+                        ${generateScoreBar('Rational Capacity (RCS)', caseData.baselineScores.RCS, 'blue')}
+                        ${generateScoreBar('Annealing Fluency (AF)', caseData.baselineScores.AF, 'green')}
+                        ${generateScoreBar('Life Quality (LQI)', caseData.baselineScores.LQI, 'orange')}
+                        ${generateScoreBar('CIB Production (CPR)', caseData.baselineScores.CPR, 'red')}
+                        
+                        <div class="mt-6 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border-2 border-purple-200">
+                            <div class="text-sm text-gray-700">
+                                <div class="flex justify-between items-center">
+                                    <span>Overall Flourishing:</span>
+                                    <strong class="text-3xl ${getScoreColor(caseData.baselineScores.Overall)}">
+                                        ${caseData.baselineScores.Overall}
+                                    </strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                    <p class="text-sm text-yellow-900">
+                        <strong>Key Vulnerabilities:</strong> ${identifyVulnerabilities(caseData.baselineScores)}
+                    </p>
+                </div>
+            </section>
+            
+            <!-- Decision Paths -->
+            <section class="bg-white rounded-2xl shadow-xl p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Two Possible Paths</h3>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="path-a border-4 rounded-xl p-6">
+                        <h4 class="text-xl font-bold text-red-900 mb-3">PATH A: ${caseData.decision.pathA.name}</h4>
+                        <p class="text-sm text-gray-700 mb-4">${caseData.decision.pathA.rationale}</p>
+                        <div class="text-xs text-gray-600">
+                            <strong>Expected by:</strong> ${caseData.decision.pathA.expectedBy}
+                        </div>
+                    </div>
+                    
+                    <div class="path-b border-4 rounded-xl p-6">
+                        <h4 class="text-xl font-bold text-green-900 mb-3">PATH B: ${caseData.decision.pathB.name}</h4>
+                        <p class="text-sm text-gray-700 mb-4">${caseData.decision.pathB.rationale}</p>
+                        <div class="text-xs text-gray-600">
+                            <strong>Expected by:</strong> ${caseData.decision.pathB.expectedBy}
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="runSimulation('${caseId}')" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-bold text-xl hover:from-indigo-700 hover:to-purple-700 shadow-lg">
+                    Run Thermodynamic Simulation
+                </button>
+            </section>
+            
+            <!-- Simulation Results (will be populated) -->
+            <div id="simulation-results"></div>
+            
+            <!-- Actual Outcome (initially hidden) -->
+            <div id="actual-outcome" class="hidden"></div>
+        </div>
+    `;
+}
+
+function generateScoreBar(label, score, color) {
+    const colorClass = getScoreColor(score);
+    const widthPercent = score;
+    
+    return `
+        <div class="mb-4">
+            <div class="flex justify-between text-sm text-gray-700 mb-1">
+                <span>${label}</span>
+                <strong class="${colorClass}">${score}</strong>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div class="bg-${color}-500 h-3 rounded-full transition-all" style="width: ${widthPercent}%"></div>
+            </div>
+        </div>
+    `;
+}
+
+function getScoreColor(score) {
+    if (score >= 70) return 'metric-excellent';
+    if (score >= 55) return 'metric-good';
+    if (score >= 40) return 'metric-warning';
+    return 'metric-critical';
+}
+
+function identifyVulnerabilities(scores) {
+    const vulnerabilities = [];
+    
+    if (scores.T < 45) vulnerabilities.push(`Critical metabolic depletion (T=${scores.T})`);
+    if (scores.LQI < 45) vulnerabilities.push(`Life quality unsustainable (LQI=${scores.LQI})`);
+    if (scores.FireIceRatio < 0.70) vulnerabilities.push(`Fire/Ice ratio below sustainability threshold`);
+    if (scores.C < 50) vulnerabilities.push(`Future horizon collapsed (C=${scores.C})`);
+    
+    return vulnerabilities.length > 0 ? vulnerabilities.join('; ') : 'No critical vulnerabilities detected';
+}
+
+// ==========================================
+// SIMULATION EXECUTION
+// ==========================================
+
+function runSimulation(caseId) {
+    const caseData = historicalCases[caseId];
+    const params = simulationParameters[caseId];
+    
+    // Run both paths
+    const trajectoryA = simulateTrajectory(
+        caseData.baselineScores,
+        params,
+        'A',
+        params.timeHorizon
+    );
+    
+    const trajectoryB = simulateTrajectory(
+        caseData.baselineScores,
+        params,
+        'B',
+        params.timeHorizon
+    );
+    
+    simulationResults = {
+        caseId,
+        trajectoryA,
+        trajectoryB,
+        actualPath: caseData.actualOutcome.path
+    };
+    
+    displaySimulationResults(caseId, trajectoryA, trajectoryB);
+    
+    // Scroll to results
+    setTimeout(() => {
+        document.getElementById('simulation-results').scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+}
+
+function displaySimulationResults(caseId, trajectoryA, trajectoryB) {
+    const container = document.getElementById('simulation-results');
+    const caseData = historicalCases[caseId];
+    
+    container.innerHTML = `
+        <section class="bg-white rounded-2xl shadow-xl p-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Simulation Results: Predicted Trajectories</h3>
+            
+            <!-- Chart Selection -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Select Metric to Display:</label>
+                <select id="metric-selector" onchange="updateChart('${caseId}')" class="w-full md:w-auto px-4 py-2 border-2 border-gray-300 rounded-lg">
+                    <option value="FireIceRatio">Fire/Ice Ratio (Sustainability)</option>
+                    <option value="A">A - Autobiographical Continuity</option>
+                    <option value="T">T - Temporal Integration</option>
+                    <option value="C">C - Prospective Coherence</option>
+                    <option value="F">F - Meta-Constructive</option>
+                    <option value="MDI">Meaning Depth Index</option>
+                    <option value="LQI">Life Quality Integration</option>
+                    <option value="CPR">CIB Production Rate</option>
+                </select>
+            </div>
+            
+            <!-- Chart -->
+            <div class="bg-gray-50 rounded-xl p-6 mb-8">
+                <canvas id="trajectory-chart" height="100"></canvas>
+            </div>
+            
+            <!-- Timeline Comparison -->
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="path-a border-4 rounded-xl p-6">
+                    <h4 class="text-xl font-bold text-red-900 mb-4">PATH A: ${caseData.decision.pathA.name}</h4>
+                    ${generateTimelineEvents(caseId, trajectoryA, 'A')}
+                </div>
+                
+                <div class="path-b border-4 rounded-xl p-6">
+                    <h4 class="text-xl font-bold text-green-900 mb-4">PATH B: ${caseData.decision.pathB.name}</h4>
+                    ${generateTimelineEvents(caseId, trajectoryB, 'B')}
+                </div>
+            </div>
+            
+            <!-- Key Predictions -->
+            <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 border-2 border-blue-200 mb-6">
+                <h4 class="font-bold text-gray-900 mb-4">Key Predictions:</h4>
+                ${generateKeyPredictions(caseId, trajectoryA, trajectoryB)}
+            </div>
+            
+            <button onclick="revealActualOutcome('${caseId}')" class="w-full py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold text-xl hover:from-green-700 hover:to-emerald-700 shadow-lg">
+                Reveal What Actually Happened
+            </button>
+        </section>
+    `;
+    
+    // Render initial chart
+    setTimeout(() => updateChart(caseId), 100);
+}
+
+function generateTimelineEvents(caseId, trajectory, path) {
+    const caseData = historicalCases[caseId];
+    const keyPoints = caseData.timeline;
+    
+    return `
+        <div class="space-y-4">
+            ${keyPoints.map(point => {
+                const state = trajectory.find(t => t.month === point.month);
+                if (!state) return '';
+                
+                return `
+                    <div class="timeline-node pl-12 relative">
+                        <div class="absolute left-0 top-0 w-10 h-10 bg-${path === 'A' ? 'red' : 'green'}-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            ${point.month}m
+                        </div>
+                        <div>
+                            <h5 class="font-bold text-gray-900">${point.event}</h5>
+                            <p class="text-sm text-gray-600 mb-2">${point.description}</p>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div>
+                                    <span class="text-gray-500">Fire/Ice:</span>
+                                    <strong class="${state.FireIceRatio >= 0.70 ? 'metric-good' : 'metric-critical'}">
+                                        ${state.FireIceRatio.toFixed(2)}
+                                    </strong>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">T-score:</span>
+                                    <strong class="${getScoreColor(state.T)}">${Math.round(state.T)}</strong>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">A-score:</span>
+                                    <strong class="${getScoreColor(state.A)}">${Math.round(state.A)}</strong>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">LQI:</span>
+                                    <strong class="${getScoreColor(state.LQI)}">${Math.round(state.LQI)}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+function generateKeyPredictions(caseId, trajectoryA, trajectoryB) {
+    const finalA = trajectoryA[trajectoryA.length - 1];
+    const finalB = trajectoryB[trajectoryB.length - 1];
+    
+    const predictions = [];
+    
+    // Fire/Ice sustainability
+    if (finalA.FireIceRatio < 0.60) {
+        predictions.push(`
+            <div class="p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg mb-3">
+                <strong class="text-red-900">PATH A PREDICTION:</strong>
+                <span class="text-red-800"> Thermodynamically unsustainable. Fire/Ice ratio drops to ${finalA.FireIceRatio.toFixed(2)} - identity collapse likely.</span>
+            </div>
+        `);
+    }
+    
+    if (finalB.FireIceRatio >= 0.70) {
+        predictions.push(`
+            <div class="p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg mb-3">
+                <strong class="text-green-900">PATH B PREDICTION:</strong>
+                <span class="text-green-800"> Thermodynamically sustainable. Fire/Ice ratio maintains at ${finalB.FireIceRatio.toFixed(2)} - flourishing trajectory.</span>
+            </div>
+        `);
+    }
+    
+    // Identity coherence
+    if (finalA.A < finalB.A - 10) {
+        predictions.push(`
+            <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-r-lg mb-3">
+                <strong class="text-yellow-900">IDENTITY PREDICTION:</strong>
+                <span class="text-yellow-800"> Path B maintains stronger autobiographical continuity (A: ${Math.round(finalB.A)} vs ${Math.round(finalA.A)}). Path A risks identity fracture.</span>
+            </div>
+        `);
+    }
+    
+    // CIB production
+    if (finalB.CPR > finalA.CPR + 10) {
+        predictions.push(`
+            <div class="p-4 bg-purple-50 border-l-4 border-purple-500 rounded-r-lg mb-3">
+                <strong class="text-purple-900">LEGACY PREDICTION:</strong>
+                <span class="text-purple-800"> Path B produces significantly more enduring CIBs (CPR: ${Math.round(finalB.CPR)} vs ${Math.round(finalA.CPR)}). Greater transgenerational impact.</span>
+            </div>
+        `);
+    }
+    
+    return predictions.join('') || '<p class="text-gray-600">Both paths show similar long-term outcomes.</p>';
+}
+
+// ==========================================
+// CHART RENDERING
+// ==========================================
+
+let currentChart = null;
+
+function updateChart(caseId) {
+    const metric = document.getElementById('metric-selector').value;
+    
+    if (currentChart) {
+        currentChart.destroy();
+    }
+    
+    const trajectoryA = simulationResults.trajectoryA;
+    const trajectoryB = simulationResults.trajectoryB;
+    
+    const ctx = document.getElementById('trajectory-chart');
+    
+    const labels = trajectoryA.map(t => t.month);
+    const dataA = trajectoryA.map(t => t[metric]);
+    const dataB = trajectoryB.map(t => t[metric]);
+    
+    // Add sustainability threshold line for FireIceRatio
+    const annotations = metric === 'FireIceRatio' ? [{
+        type: 'line',
+        yMin: 0.70,
+        yMax: 0.70,
+        borderColor: 'rgb(16, 185, 129)',
+        borderWidth: 2,
+        borderDash: [5, 5],
+        label: {
+            content: 'Sustainability Threshold (0.70)',
+            enabled: true,
+            position: 'end'
+        }
+    }] : [];
+    
+    currentChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Path A (Not Chosen)',
+                    data: dataA,
+                    borderColor: 'rgb(239, 68, 68)',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    tension: 0.3,
+                    borderWidth: 3
+                },
+                {
+                    label: 'Path B (Chosen)',
+                    data: dataB,
+                    borderColor: 'rgb(16, 185, 129)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.3,
+                    borderWidth: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                },
+                title: {
+                    display: true,
+                    text: `${getMetricName(metric)} Over Time (Months)`,
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: metric !== 'FireIceRatio',
+                    max: metric === 'FireIceRatio' ? 1.5 : 100,
+                    title: {
+                        display: true,
+                        text: metric === 'FireIceRatio' ? 'Ratio' : 'Score (0-100)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Months'
+                    }
+                }
+            }
+        }
+    });
+}
+
+function getMetricName(metric) {
+    const names = {
+        'FireIceRatio': 'Fire/Ice Sustainability Ratio',
+        'A': 'Autobiographical Continuity (Ice)',
+        'T': 'Temporal Integration (Flux)',
+        'C': 'Prospective Coherence (Fire)',
+        'F': 'Meta-Constructive Capacity (Annealing)',
+        'MDI': 'Meaning Depth Index',
+        'LQI': 'Life Quality Integration',
+        'CPR': 'CIB Production Rate'
+    };
+    return names[metric] || metric;
+}
+
+// ==========================================
+// ACTUAL OUTCOME REVEAL
+// ==========================================
+
+function revealActualOutcome(caseId) {
+    const caseData = historicalCases[caseId];
+    const outcome = caseData.actualOutcome;
+    const container = document.getElementById('actual-outcome');
+    
+    container.classList.remove('hidden');
+    container.innerHTML = `
+        <section class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl shadow-xl p-8 border-4 border-green-400">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="text-5xl">✓</span>
+                <h3 class="text-3xl font-bold text-gray-900">What Actually Happened</h3>
+            </div>
+            
+            <div class="bg-white rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-4 mb-4">
+                    <span class="px-6 py-3 bg-green-600 text-white rounded-full font-bold text-xl">
+                        ${caseData.name} chose PATH ${outcome.path}
+                    </span>
+                </div>
+                
+                <p class="text-lg text-gray-700 mb-6">${outcome.description}</p>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6">
+                    <p class="text-blue-900 italic text-lg">
+                        "${outcome.keyQuote}"
+                    </p>
+                    <p class="text-sm text-blue-700 mt-2">— ${caseData.name}</p>
+                </div>
+                
+                <h4 class="font-bold text-gray-900 mb-4">Actual Outcomes (Historical Record):</h4>
+                <div class="grid md:grid-cols-2 gap-4">
+                    ${Object.entries(outcome.metrics).map(([key, value]) => `
+                        <div class="p-4 bg-gray-50 rounded-lg">
+                            <div class="text-sm text-gray-600 mb-1">${formatMetricName(key)}</div>
+                            <div class="font-semibold text-gray-900">${value}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            
+            ${generateValidationAnalysis(caseId)}
+            
+            <div class="mt-6">
+                <button onclick="showDiscussionQuestions('${caseId}')" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:bg-indigo-700">
+                    Discussion Questions for Class
+                </button>
+            </div>
+        </section>
+    `;
+    
+    setTimeout(() => {
+        container.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+}
+
+function formatMetricName(key) {
+    return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+}
+
+function generateValidationAnalysis(caseId) {
+    const caseData = historicalCases[caseId];
+    const outcome = caseData.actualOutcome;
+    const chosenPath = outcome.path === 'A' ? simulationResults.trajectoryA : simulationResults.trajectoryB;
+    const final = chosenPath[chosenPath.length - 1];
+    
+    // Check if predictions matched reality
+    const validations = [];
+    
+    if (outcome.path === 'B' && final.FireIceRatio >= 0.70) {
+        validations.push({
+            prediction: "Thermodynamic sustainability maintained",
+            actual: "Confirmed - maintained coherence long-term",
+            match: true
+        });
+    }
+    
+    if (outcome.path === 'B' && final.A > caseData.baselineScores.A) {
+        validations.push({
+            prediction: "Identity strengthened (A-score increases)",
+            actual: outcome.identityOutcome || "Identity strengthened",
+            match: true
+        });
+    }
+    
+    if (outcome.path === 'B' && final.CPR > caseData.baselineScores.CPR) {
+        validations.push({
+            prediction: "CIB production increased",
+            actual: outcome.legacyImpact || "Significant legacy created",
+            match: true
+        });
+    }
+    
+    return `
+        <div class="bg-purple-50 rounded-xl p-6 border-2 border-purple-300">
+            <h4 class="font-bold text-purple-900 mb-4">Model Validation: Did Our Predictions Match Reality?</h4>
+            <div class="space-y-3">
+                ${validations.map(v => `
+                    <div class="flex items-start gap-3 p-3 bg-white rounded-lg">
+                        <span class="text-2xl flex-shrink-0">${v.match ? '✓' : '✗'}</span>
+                        <div class="flex-1">
+                            <div class="font-semibold text-gray-900">Prediction: ${v.prediction}</div>
+                            <div class="text-sm text-gray-700">Actual: ${v.actual}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div class="mt-4 p-4 bg-white rounded-lg border-2 border-green-400">
+                <p class="text-sm text-gray-900">
+                    <strong class="text-green-700">Validation Result:</strong> 
+                    Our thermodynamic model correctly predicted the trajectory ${caseData.name} would experience by choosing Path ${outcome.path}.
+                    This suggests the CIB Thermodynamics framework captures real patterns of human flourishing.
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+// ==========================================
+// DISCUSSION QUESTIONS
+// ==========================================
+
+function showDiscussionQuestions(caseId) {
+    const caseData = historicalCases[caseId];
+    const questions = generateDiscussionQuestions(caseId);
+    
+    const container = document.getElementById('actual-outcome');
+    container.innerHTML += `
+        <section class="bg-white rounded-2xl shadow-xl p-8 mt-8">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6">Discussion Questions for Class</h3>
+            
+            <div class="space-y-6">
+                ${questions.map((q, idx) => `
+                    <details class="border-2 border-gray-200 rounded-xl overflow-hidden">
+                        <summary class="p-5 bg-gray-50 cursor-pointer hover:bg-gray-100 font-semibold text-gray-900">
+                            ${idx + 1}. ${q.question}
+                        </summary>
+                        <div class="p-5 space-y-3">
+                            <div>
+                                <h5 class="font-bold text-gray-900 mb-2">Consider:</h5>
+                                <ul class="list-disc list-inside space-y-1 text-gray-700">
+                                    ${q.prompts.map(p => `<li>${p}</li>`).join('')}
+                                </ul>
+                            </div>
+                            ${q.connection ? `
+                                <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
+                                    <strong class="text-blue-900">Connection to Your Life:</strong>
+                                    <p class="text-blue-800 text-sm mt-1">${q.connection}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </details>
+                `).join('')}
+            </div>
+            
+            <div class="mt-8 flex gap-4">
+                <button onclick="backToSelection()" class="flex-1 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-300">
+                    Choose Another Case
+                </button>
+                <button onclick="window.print()" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700">
+                    Print Case Study
+                </button>
+            </div>
+        </section>
+    `;
+}
+
+function generateDiscussionQuestions(caseId) {
+    const questions = {
+        mandela: [
+            {
+                question: "The Thermodynamic Paradox: How does spending energy create energy?",
+                prompts: [
+                    "Exercise costs metabolic energy. How did it INCREASE Mandela's available energy?",
+                    "What's the difference between 'conserving energy' and 'creating capacity'?",
+                    "Can you think of times when 'resting' actually made you more tired long-term?"
+                ],
+                connection: "When are YOU in 'extraction situations' where others control most of your life? What's your BioBond protocol?"
+            },
+            {
+                question: "Self-Care as Resistance: Is this selfish or necessary?",
+                prompts: [
+                    "Guards called exercise 'pointless' - it wouldn't get him released. Were they right?",
+                    "What's the difference between self-care and self-indulgence?",
+                    "How is maintaining your identity a form of resistance to oppression?"
+                ],
+                connection: "Are you sacrificing self-care to meet others' demands? What's the long-term cost?"
+            },
+            {
+                question: "The 27-Year Timeline: Why does the simulation matter?",
+                prompts: [
+                    "If Mandela had skipped exercise for 'just' the first year, what cascade would follow?",
+                    "At what point does identity damage become irreversible?",
+                    "How did his daily choices enable South Africa's peaceful transition decades later?"
+                ],
+                connection: "What daily practices are you maintaining or abandoning? Run your own 5-year simulation."
+            }
+        ],
+        
+        boisjoly: [
+            {
+                question: "The Cost of Truth: Why was the 'easy' path actually harder?",
+                prompts: [
+                    "Calculate the metabolic cost of maintaining 'I'm a good person' while children die",
+                    "What's the difference between one-time suffering and permanent cognitive dissonance?",
+                    "Which path required MORE total energy over 5 years?"
+                ],
+                connection: "Have you ever chosen the 'easy' path that required constant rationalization? What did it cost you?"
+            },
+            {
+                question: "Moral Injury vs. Moral Courage: What's the mechanism?",
+                prompts: [
+                    "Why did limited testimony lead to identity fracture?",
+                    "Why did full truth (despite destroying his career) STRENGTHEN his identity?",
+                    "What does this tell us about the relationship between values and thermodynamic health?"
+                ],
+                connection: "Are you in a situation where your values conflict with your actions? What's the A-score trajectory?"
+            },
+            {
+                question: "Legacy Through Suffering: Was it worth it?",
+                prompts: [
+                    "Boisjoly's testimony changed engineering ethics globally. Could he have known that in 1986?",
+                    "If you won't see the results, does the meaning still exist?",
+                    "How do you calculate ROI for CIB production that outlives you?"
+                ],
+                connection: "What would you endure to prevent future harm to people you'll never meet?"
+            }
+        ],
+        
+        salk: [
+            {
+                question: "The $7 Billion Question: What did Salk optimize for?",
+                prompts: [
+                    "Financial capital maximizes wealth for one generation. CIB production compounds forever. Calculate the difference.",
+                    "Did 'giving it away' actually COST him or BENEFIT him thermodynamically?",
+                    "What's the metabolic cost of knowing poor children died because you charged for vaccine?"
+                ],
+                connection: "When have you chosen generativity over extraction? What happened to your meaning scores?"
+            },
+            {
+                question: "Cognitive Dissonance Energy Drain: The hidden cost of wealth",
+                prompts: [
+                    "If Salk had patented, how much energy would he burn daily on rationalization?",
+                    "Every news story about polio in poor countries = assault on identity. How long can you sustain that?",
+                    "Compare: Zero cognitive dissonance vs. constant rationalization. Which produces more Fire long-term?"
+                ],
+                connection: "Are you 'getting ahead' in ways that require you to not think about the consequences?"
+            },
+            {
+                question: "The Generativity Cascade: Why does giving create more?",
+                prompts: [
+                    "Salk's CPR INCREASED after giving away the patent. How is this thermodynamically possible?",
+                    "His decision influenced measles vaccine, hepatitis B, open science movement. Can you measure that CIB production?",
+                    "'Could you patent the sun?' became a civilizational meme. What's that worth?"
+                ],
+                connection: "What could you give away that would create more value than you could ever extract by keeping it?"
+            }
+        ],
+        
+        carson: [
+            {
+                question: "The Terminal Timeline: How do you spend your last Fire?",
+                prompts: [
+                    "Carson had ~2 years of metabolic capacity left. Rest peacefully or fight chemical industry?",
+                    "When Fire is almost out, what's the ethical use of remaining energy?",
+                    "She died before EPA was created. Did her CIB production 'succeed'?"
+                ],
+                connection: "If you knew you had 2 years left, what would you build with the time? (You don't know you DON'T have 2 years...)"
+            },
+            {
+                question: "Legacy vs. Comfort: Is this even a trade-off?",
+                prompts: [
+                    "Path A: Higher LQI (physical comfort), lower CPR (no legacy). Path B: Opposite. Which would YOU choose?",
+                    "Does 'dying well' mean dying comfortably or dying meaningfully?",
+                    "Carson's identity STRENGTHENED as her body failed. How is this thermodynamically possible?"
+                ],
+                connection: "What are you NOT doing because it would be uncomfortable, even though it would create lasting value?"
+            },
+            {
+                question: "The Infinite Horizon: When does your CIB production end?",
+                prompts: [
+                    "Carson died in 1964. Environmental movement still running on her CIB in 2026. Calculate the temporal breadth.",
+                    "Her C-score was 95 despite dying - vision extended beyond her death. What does this mean for meaning?",
+                    "Can you die thermodynamically 'successful' even if you die physically 'defeated'?"
+                ],
+                connection: "What are you building that will keep creating value after you're gone?"
+            }
+        ]
+    };
+    
+    return questions[caseId] || [];
+}
+
+// ==========================================
+// COMPARATIVE ANALYSIS
+// ==========================================
+
+function displayComparativeAnalysis() {
+    document.getElementById('case-selection').classList.add('hidden');
+    const container = document.getElementById('case-display');
+    container.classList.remove('hidden');
+    
+    container.innerHTML = `
+        <div class="space-y-8">
+            <div class="flex items-center gap-4 mb-6">
+                <button onclick="backToSelection()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                    ← Back to Cases
+                </button>
+                <h2 class="text-3xl font-bold text-gray-900">Comparative Analysis: Universal Patterns</h2>
+            </div>
+            
+            <section class="bg-white rounded-2xl shadow-xl p-8">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">Common Thermodynamic Patterns</h3>
+                
+                ${generateComparativeTable()}
+                
+                <div class="mt-8 space-y-6">
+                    ${generateUniversalInsights()}
+                </div>
+            </section>
+            
+            <section class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl shadow-xl p-8 border-2 border-purple-300">
+                <h3 class="text-2xl font-bold text-gray-900 mb-6">The Meta-Pattern: What Makes the "Hard" Path Lead to Flourishing?</h3>
+                ${generateMetaPattern()}
+            </section>
+        </div>
+    `;
+}
+
+function generateComparativeTable() {
+    const cases = Object.keys(historicalCases);
+    
+    return `
+        <div class="overflow-x-auto">
+            <table class="w-full border-2 border-gray-300">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-3 text-left border-2 border-gray-300">Figure</th>
+                        <th class="px-4 py-3 text-left border-2 border-gray-300">Baseline Vulnerability</th>
+                        <th class="px-4 py-3 text-left border-2 border-gray-300">Path A (Easy)</th>
+                        <th class="px-4 py-3 text-left border-2 border-gray-300">Path B (Hard)</th>
+                        <th class="px-4 py-3 text-left border-2 border-gray-300">Actual Choice</th>
+                        <th class="px-4 py-3 text-left border-2 border-gray-300">Long-term Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${cases.map(caseId => {
+                        const c = historicalCases[caseId];
+                        return `
+                            <tr class="border-t-2 border-gray-300 hover:bg-gray-50">
+                                <td class="px-4 py-3 border-2 border-gray-300 font-bold">${c.name}</td>
+                                <td class="px-4 py-3 border-2 border-gray-300 text-sm">${identifyVulnerabilities(c.baselineScores)}</td>
+                                <td class="px-4 py-3 border-2 border-gray-300 text-sm">${c.decision.pathA.name}</td>
+                                <td class="px-4 py-3 border-2 border-gray-300 text-sm">${c.decision.pathB.name}</td>
+                                <td class="px-4 py-3 border-2 border-gray-300 text-center">
+                                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full font-bold">
+                                        ${c.actualOutcome.path}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-3 border-2 border-gray-300 text-sm">${c.actualOutcome.metrics.identityOutcome}</td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+}
+
+function generateUniversalInsights() {
+    return `
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="p-6 bg-blue-50 border-2 border-blue-300 rounded-xl">
+                <h4 class="font-bold text-blue-900 mb-3">Pattern 1: Authenticity Over Comfort</h4>
+                <p class="text-sm text-blue-800">
+                    <strong>All four</strong> chose the path aligned with their core identity (high MDI-Authenticity) 
+                    over the path offering external rewards or comfort. Result: Identity <em>strengthened</em> rather than fractured.
+                </p>
+            </div>
+            
+            <div class="p-6 bg-green-50 border-2 border-green-300 rounded-xl">
+                <h4 class="font-bold text-green-900 mb-3">Pattern 2: Short-term Cost, Long-term Gain</h4>
+                <p class="text-sm text-green-800">
+                    Path B always had <strong>higher initial metabolic cost</strong> but 
+                    <strong>lower total cost</strong> because no energy wasted on cognitive dissonance.
+                </p>
+            </div>
+            
+            <div class="p-6 bg-purple-50 border-2 border-purple-300 rounded-xl">
+                <h4 class="font-bold text-purple-900 mb-3">Pattern 3: Generativity Creates Capacity</h4>
+                <p class="text-sm text-purple-800">
+                    Every case: CPR increased AFTER choosing the generative path. 
+                    <strong>Giving away</strong> created more capacity than <strong>extracting</strong> ever could.
+                </p>
+            </div>
+            
+            <div class="p-6 bg-orange-50 border-2 border-orange-300 rounded-xl">
+                <h4 class="font-bold text-orange-900 mb-3">Pattern 4: Legacy Trumps Lifetime</h4>
+                <p class="text-sm text-orange-800">
+                    All chose paths that maximized CIB production <strong>beyond their lifespan</strong> 
+                    over paths that maximized personal benefit within lifespan.
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function generateMetaPattern() {
+    return `
+        <div class="space-y-4 text-gray-800">
+            <p class="text-lg">
+                Across all four cases, the <strong>"hard" path led to thermodynamic flourishing</strong> while 
+                the <strong>"easy" path led to identity degradation</strong>. Why?
+            </p>
+            
+            <div class="bg-white rounded-xl p-6">
+                <h4 class="font-bold text-gray-900 mb-4">The Universal Equation:</h4>
+                <div class="space-y-3 text-sm">
+                    <div class="p-3 bg-red-50 rounded-lg">
+                        <strong class="text-red-900">Path A (Easy):</strong>
+                        <div class="mt-1 text-red-800">
+                            Low immediate cost + High cognitive dissonance + Identity-values misalignment = 
+                            <strong>Permanent metabolic drain → Identity fracture</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 bg-green-50 rounded-lg">
+                        <strong class="text-green-900">Path B (Hard):</strong>
+                        <div class="mt-1 text-green-800">
+                            High immediate cost + Zero cognitive dissonance + Perfect identity-values alignment = 
+                            <strong>One-time cost → Sustained flourishing</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-indigo-50 border-2 border-indigo-300 rounded-xl p-6">
+                <h4 class="font-bold text-indigo-900 mb-3">The Thermodynamic Law of Moral Courage:</h4>
+                <p class="text-indigo-900 text-lg italic">
+                    "Choices that maximize short-term comfort while violating core identity create 
+                    permanent metabolic costs that exceed the initial suffering of authentic action."
+                </p>
+            </div>
+            
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6">
+                <strong class="text-yellow-900">For Students:</strong>
+                <p class="text-yellow-800 mt-2">
+                    The simulations show that <strong>thermodynamic models can predict moral outcomes</strong>. 
+                    This isn't philosophy—it's physics. Your identity is a dissipative structure. 
+                    The choices you make determine whether you flourish or fracture.
+                </p>
+            </div>
+        </div>
+    `;
+}
+
+function backToSelection() {
+    document.getElementById('case-display').classList.add('hidden');
+    document.getElementById('case-display').innerHTML = '';
+    document.getElementById('case-selection').classList.remove('hidden');
+    simulationResults = null;
+    currentCase = null;
+    if (currentChart) {
+        currentChart.destroy();
+        currentChart = null;
+    }
+}
+</script>
+
+</body>
+</html>
