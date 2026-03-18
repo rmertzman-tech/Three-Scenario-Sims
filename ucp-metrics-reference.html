@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCP Metrics Reference — Ethics Beyond Boundaries</title>
+<style>
+
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS
+   ══════════════════════════════════════════════════ */
+:root {
+  --prf-deep:    #1a2744;
+  --prf-navy:    #243560;
+  --prf-slate:   #3a5080;
+  --prf-sky:     #4a7fb5;
+  --prf-ice:     #7fb3d3;
+  --prf-gold:    #c9a84c;
+  --prf-amber:   #e8c56a;
+  --prf-warm:    #f5edd8;
+  --prf-paper:   #faf8f4;
+  --prf-ink:     #1e2433;
+  --prf-muted:   #6b7a9a;
+  --prf-success: #3a8a5c;
+  --prf-warn:    #c87843;
+  --prf-danger:  #b84444;
+  --prf-border:  #d0d8e8;
+
+  /* Concept accent colors */
+  --col-raw:      #4a7fb5;
+  --col-perc:     #c9a84c;
+  --col-fric:     #b84444;
+  --col-cpfc:     #3a8a5c;
+
+  --radius: 10px;
+  --shadow-sm: 0 2px 8px rgba(26,39,68,.10);
+  --shadow-md: 0 4px 20px rgba(26,39,68,.16);
+  --shadow-lg: 0 8px 40px rgba(26,39,68,.22);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', serif;
+  background: var(--prf-paper);
+  color: var(--prf-ink);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ══════════════════════════════════════════════════
+   STICKY NAV
+   ══════════════════════════════════════════════════ */
+.sticky-nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--prf-deep);
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+  display: flex; align-items: stretch;
+}
+
+.nav-items {
+  max-width: 960px; margin: 0 auto;
+  display: flex; align-items: stretch;
+  width: 100%; gap: 0;
+}
+
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 8px 10px; text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all .2s;
+  cursor: pointer;
+}
+
+.nav-item:hover { background: rgba(255,255,255,.06); }
+.nav-item.active { border-bottom-color: var(--prf-gold); }
+
+.nav-item .nav-sym {
+  font-family: 'Courier New', monospace;
+  font-size: .82rem; font-weight: bold; margin-bottom: 2px;
+}
+
+.nav-item .nav-lbl {
+  font-family: 'Courier New', monospace; font-size: .58rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: rgba(255,255,255,.5); text-align: center; line-height: 1.2;
+}
+
+.nav-item.ni-raw  .nav-sym { color: var(--col-raw); }
+.nav-item.ni-perc .nav-sym { color: var(--col-perc); }
+.nav-item.ni-fric .nav-sym { color: var(--col-fric); }
+.nav-item.ni-cpfc .nav-sym { color: var(--col-cpfc); }
+.nav-item.ni-loop .nav-sym { color: var(--prf-amber); }
+.nav-item.ni-asm  .nav-sym { color: rgba(255,255,255,.6); font-size:.72rem; }
+
+/* ══════════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════════ */
+header {
+  background: linear-gradient(135deg, var(--prf-deep) 0%, var(--prf-navy) 60%, var(--prf-slate) 100%);
+  color: #fff; padding: 36px 32px 30px;
+  position: relative; overflow: hidden;
+}
+
+header::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -55deg, transparent, transparent 40px,
+    rgba(255,255,255,.022) 40px, rgba(255,255,255,.022) 80px
+  );
+  pointer-events: none;
+}
+
+.header-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+
+.course-tag {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  letter-spacing: .14em; color: var(--prf-amber);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+
+header h1 { font-size: 1.8rem; font-weight: normal; margin-bottom: 8px; }
+header h1 span { color: var(--prf-amber); }
+header p { font-size: .9rem; color: rgba(255,255,255,.72); font-style: italic; line-height: 1.6; max-width: 640px; }
+
+/* ══════════════════════════════════════════════════
+   MAIN LAYOUT
+   ══════════════════════════════════════════════════ */
+main { max-width: 960px; margin: 36px auto; padding: 0 20px; }
+
+/* ══════════════════════════════════════════════════
+   SECTION WRAPPER
+   ══════════════════════════════════════════════════ */
+.ref-section {
+  margin-bottom: 52px; scroll-margin-top: 56px;
+}
+
+.section-title-row {
+  display: flex; align-items: baseline; gap: 16px;
+  margin-bottom: 22px; padding-bottom: 12px;
+  border-bottom: 2px solid var(--prf-border);
+}
+
+.section-symbol {
+  font-family: 'Courier New', monospace;
+  font-size: 1.5rem; font-weight: bold;
+}
+
+.section-title { font-size: 1.35rem; font-weight: normal; color: var(--prf-navy); }
+.section-subtitle { font-size: .84rem; color: var(--prf-muted); font-style: italic; }
+
+/* ══════════════════════════════════════════════════
+   PHENOMOLOGICAL LAYER
+   ══════════════════════════════════════════════════ */
+.phenom-layer {
+  border-radius: 10px; padding: 20px 22px;
+  margin-bottom: 16px; position: relative;
+}
+
+.phenom-layer-label {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .12em;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+
+.phenom-layer-label::after {
+  content: ''; flex: 1; height: 1px;
+  background: currentColor; opacity: .2;
+}
+
+.phenom-raw  { background: #f0f6fc; border-left: 5px solid var(--col-raw); }
+.phenom-perc { background: #fdf8ee; border-left: 5px solid var(--col-perc); }
+.phenom-fric { background: #fff5f5; border-left: 5px solid var(--col-fric); }
+.phenom-cpfc { background: #f0faf4; border-left: 5px solid var(--col-cpfc); }
+.phenom-loop { background: #f4f0fc; border-left: 5px solid #7a5fb5; }
+
+.phenom-raw  .phenom-layer-label { color: var(--col-raw); }
+.phenom-perc .phenom-layer-label { color: #8a6a20; }
+.phenom-fric .phenom-layer-label { color: var(--col-fric); }
+.phenom-cpfc .phenom-layer-label { color: var(--col-cpfc); }
+.phenom-loop .phenom-layer-label { color: #5a3f90; }
+
+.phenom-text {
+  font-size: .95rem; line-height: 1.8; color: #333;
+}
+
+.phenom-text p + p { margin-top: 10px; }
+.phenom-text strong { color: var(--prf-navy); }
+.phenom-text em { color: var(--prf-slate); }
+
+/* Felt-experience quote style */
+.felt-quote {
+  margin: 12px 0 4px;
+  padding: 11px 16px;
+  background: rgba(0,0,0,.04);
+  border-radius: 6px;
+  font-style: italic;
+  font-size: .92rem;
+  line-height: 1.7;
+  color: #444;
+}
+
+.felt-quote::before {
+  content: '"'; font-size: 1.6rem;
+  line-height: 0; vertical-align: -0.4em;
+  color: var(--prf-muted); margin-right: 4px;
+}
+
+.felt-quote::after {
+  content: '"'; font-size: 1.6rem;
+  line-height: 0; vertical-align: -0.4em;
+  color: var(--prf-muted); margin-left: 4px;
+}
+
+/* ══════════════════════════════════════════════════
+   TECHNICAL LAYER (collapsible)
+   ══════════════════════════════════════════════════ */
+.tech-toggle {
+  width: 100%; padding: 11px 16px;
+  background: var(--prf-deep); color: rgba(255,255,255,.7);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: 'Courier New', monospace; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  border-radius: 8px 8px 0 0;
+  transition: background .2s;
+}
+
+.tech-toggle:hover { background: #1e3055; color: #fff; }
+.tech-toggle-arrow { transition: transform .25s; font-size: .8rem; }
+.tech-open .tech-toggle-arrow { transform: rotate(180deg); }
+.tech-open .tech-toggle { border-radius: 8px 8px 0 0; }
+
+.tech-body {
+  display: none;
+  background: #0f1c30; color: #cdd8f0;
+  border-radius: 0 0 8px 8px;
+  padding: 20px 22px;
+  font-size: .88rem; line-height: 1.75;
+  margin-bottom: 0;
+}
+
+.tech-open .tech-body { display: block; }
+
+.tech-section-label {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--prf-amber); margin: 18px 0 8px; display: block;
+}
+
+.tech-section-label:first-child { margin-top: 0; }
+
+.formula-block {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 6px; padding: 12px 16px;
+  font-family: 'Courier New', monospace; font-size: .84rem;
+  line-height: 1.8; color: #e8f0ff;
+  margin: 10px 0;
+  overflow-x: auto;
+}
+
+.formula-block .comment { color: #7a9ab0; font-style: italic; }
+
+.var-table {
+  width: 100%; border-collapse: collapse; margin: 10px 0;
+  font-size: .83rem;
+}
+
+.var-table th {
+  font-family: 'Courier New', monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--prf-amber); text-align: left;
+  padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,.1);
+}
+
+.var-table td {
+  padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,.06);
+  vertical-align: top; color: #cdd8f0;
+}
+
+.var-table td:first-child {
+  font-family: 'Courier New', monospace; color: var(--prf-amber);
+  font-size: .8rem; white-space: nowrap;
+}
+
+.var-table tr:last-child td { border-bottom: none; }
+
+.tech-prose { color: #aac0dc; line-height: 1.7; margin: 8px 0; }
+.tech-prose strong { color: #e8f0ff; }
+.tech-prose em { color: var(--prf-amber); }
+
+/* ══════════════════════════════════════════════════
+   THRESHOLD REFERENCE TABLE
+   ══════════════════════════════════════════════════ */
+.threshold-table {
+  width: 100%; border-collapse: collapse;
+  margin: 16px 0; font-size: .88rem;
+  border-radius: 8px; overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.threshold-table th {
+  background: var(--prf-navy); color: #fff;
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: 9px 14px; text-align: left;
+}
+
+.threshold-table td {
+  padding: 10px 14px; vertical-align: top;
+  font-size: .86rem; border-bottom: 1px solid var(--prf-border);
+  background: #fff; color: #333;
+}
+
+.threshold-table tr:last-child td { border-bottom: none; }
+
+.threshold-table td:first-child {
+  font-family: 'Courier New', monospace; font-weight: bold;
+  width: 110px;
+}
+
+.t-good { color: var(--prf-success); }
+.t-warn { color: var(--prf-warn); }
+.t-danger { color: var(--prf-danger); }
+.t-crit { color: #8a0000; }
+
+.felt-row { background: var(--prf-warm) !important; font-style: italic; }
+
+/* ══════════════════════════════════════════════════
+   CIB LOOP SECTION
+   ══════════════════════════════════════════════════ */
+.loop-diagram-wrap {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 12px; padding: 24px;
+  box-shadow: var(--shadow-sm); margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.loop-diagram-title {
+  font-family: 'Courier New', monospace; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--prf-muted); margin-bottom: 18px; text-align: center;
+}
+
+/* ══════════════════════════════════════════════════
+   ASSEMBLY INSTRUCTIONS
+   ══════════════════════════════════════════════════ */
+.assembly-card {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 10px; padding: 22px;
+  box-shadow: var(--shadow-sm); margin-bottom: 20px;
+}
+
+.assembly-card h3 {
+  font-family: 'Courier New', monospace; font-size: .78rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--prf-slate); margin-bottom: 14px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--prf-border);
+}
+
+.file-list { list-style: none; }
+.file-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--prf-border);
+  font-size: .88rem; line-height: 1.5;
+}
+.file-list li:last-child { border-bottom: none; }
+
+.file-badge {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  background: var(--prf-deep); color: var(--prf-amber);
+  padding: 2px 8px; border-radius: 4px; white-space: nowrap;
+  margin-top: 2px; flex-shrink: 0;
+}
+
+.code-inline {
+  font-family: 'Courier New', monospace; font-size: .82rem;
+  background: #f0f4f8; border: 1px solid var(--prf-border);
+  border-radius: 4px; padding: 1px 6px; color: var(--prf-slate);
+}
+
+.canvas-instructions ol {
+  padding-left: 22px; color: #444; font-size: .9rem; line-height: 1.7;
+}
+.canvas-instructions li { margin-bottom: 6px; }
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  header { padding: 28px 16px 24px; }
+  header h1 { font-size: 1.3rem; }
+  main { padding: 0 12px; margin: 20px auto; }
+  .nav-item .nav-lbl { display: none; }
+  .nav-item { padding: 10px 6px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="course-tag">Ethics Beyond Boundaries · Metrics Reference</div>
+    <h1>What the Simulation <span>Numbers Mean</span></h1>
+    <p>Two layers per concept: what it feels like from the inside, and what the engine
+       is actually computing. Use this reference before and during simulation work.</p>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════
+     STICKY NAV
+     ══════════════════════════════════════════════════ -->
+<div class="sticky-nav">
+  <div class="nav-items">
+    <a class="nav-item ni-raw" href="#lambda-raw">
+      <span class="nav-sym">λ Raw</span>
+      <span class="nav-lbl">Coordination<br>Capacity</span>
+    </a>
+    <a class="nav-item ni-perc" href="#lambda-perceived">
+      <span class="nav-sym">λ Perc</span>
+      <span class="nav-lbl">Experienced<br>Coordination</span>
+    </a>
+    <a class="nav-item ni-fric" href="#friction">
+      <span class="nav-sym">Friction</span>
+      <span class="nav-lbl">Coordination<br>Cost</span>
+    </a>
+    <a class="nav-item ni-cpfc" href="#cpfc">
+      <span class="nav-sym">C_PFC</span>
+      <span class="nav-lbl">The Gate /<br>Manual Mode</span>
+    </a>
+    <a class="nav-item ni-loop" href="#cib-loop">
+      <span class="nav-sym">CIB⟳</span>
+      <span class="nav-lbl">The Full<br>Loop</span>
+    </a>
+    <a class="nav-item ni-asm" href="#assembly">
+      <span class="nav-sym">⚙ Setup</span>
+      <span class="nav-lbl">Assembly<br>Instructions</span>
+    </a>
+  </div>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════
+     λ RAW — COORDINATION CAPACITY
+     ══════════════════════════════════════════════════ -->
+<section class="ref-section" id="lambda-raw">
+
+  <div class="section-title-row">
+    <span class="section-symbol" style="color:var(--col-raw)">λ Raw</span>
+    <div>
+      <div class="section-title">Coordination Capacity</div>
+      <div class="section-subtitle">The group's potential — what it could achieve if nothing were blocking it</div>
+    </div>
+  </div>
+
+  <!-- Phenomenological layer -->
+  <div class="phenom-layer phenom-raw">
+    <div class="phenom-layer-label">🧠 What it feels like — Phenomenological layer</div>
+    <div class="phenom-text">
+
+      <p>When λ Raw is high, you are in what the model calls <strong>Manual mode</strong> —
+      you are thinking clearly, deliberately, with your full cognitive repertoire available.
+      You haven't lost the thread of who you are in this institution. You can hold complexity,
+      sit with ambiguity, consider multiple angles before acting. You feel, in a word,
+      <em>present</em> — genuinely here, capable of exercising the kind of ethical reasoning
+      that the situation requires.</p>
+
+      <div class="felt-quote">
+        Your mind is working the way it's supposed to. You can feel the full weight of the
+        problem, hold competing considerations at once, and still act from something that
+        feels like your actual values rather than just institutional reflex.
+      </div>
+
+      <p>When λ Raw is falling, something shifts. It isn't dramatic at first — you're still
+      functioning, still showing up, still saying the right things. But the thinking gets
+      flatter. The complexity starts to feel like noise. The ethical nuances that used to
+      feel important start to feel like luxuries you can't afford right now. You are moving
+      toward what the model calls <strong>Automatic mode</strong> — reactive, pattern-matching,
+      self-protective.</p>
+
+      <div class="felt-quote">
+        You're not confused. You're not lazy. You've just learned, through accumulated stress,
+        to protect yourself first. The careful, complex thinking hasn't disappeared — it's just
+        become too expensive to access when the environment is this hostile.
+      </div>
+
+      <p>When λ Raw collapses to survival mode, the whole calculation changes.
+      <strong>You are no longer thinking about the problem. You are thinking about your
+      position relative to the problem.</strong> Ethical reasoning requires enough safety
+      and stability to afford deliberation. When that safety is gone, survival takes over —
+      not because you lack integrity, but because the institution has made integrity
+      structurally too costly to maintain.</p>
+
+    </div>
+  </div>
+
+  <!-- Threshold reference -->
+  <table class="threshold-table">
+    <thead>
+      <tr>
+        <th>Value Range</th>
+        <th>Technical Status</th>
+        <th>What It Feels Like</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="t-good">&gt; 0.70</td>
+        <td>Strong capacity — C_PFC high, all modifiers healthy</td>
+        <td>Clear thinking, full deliberative mode available, ethical complexity is navigable</td>
+      </tr>
+      <tr class="felt-row">
+        <td></td>
+        <td colspan="2"><em>"I can hold the full weight of this. I'm not just reacting — I'm thinking."</em></td>
+      </tr>
+      <tr>
+        <td class="t-warn">0.55 – 0.70</td>
+        <td>Moderate — some modifiers degraded, C_PFC stable but strained</td>
+        <td>Thinking is possible but costs more effort; complexity starts to feel taxing</td>
+      </tr>
+      <tr class="felt-row">
+        <td></td>
+        <td colspan="2"><em>"I can do this, but it's taking more out of me than it should."</em></td>
+      </tr>
+      <tr>
+        <td class="t-warn">0.40 – 0.55</td>
+        <td>Fragile — near the critical threshold, survival mode possible</td>
+        <td>Ethical nuance is expensive; defaulting to rules, roles, or self-protection</td>
+      </tr>
+      <tr class="felt-row">
+        <td></td>
+        <td colspan="2"><em>"I know there's more to think about here, but I can't access it right now."</em></td>
+      </tr>
+      <tr>
+        <td class="t-danger">&lt; 0.40</td>
+        <td>Capacity collapsed — survival mode active, v_surv = 1.0</td>
+        <td>Not thinking about the problem; thinking about survival in relation to the problem</td>
+      </tr>
+      <tr class="felt-row">
+        <td></td>
+        <td colspan="2"><em>"Self-preservation has taken over. I'm not reasoning — I'm protecting."</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Technical layer -->
+  <div class="tech-block">
+    <button class="tech-toggle" onclick="toggleTech(this)">
+      <span>⚙ Technical Layer — Engine Formula &amp; Variable Definitions</span>
+      <span class="tech-toggle-arrow">▼</span>
+    </button>
+    <div class="tech-body">
+
+      <span class="tech-section-label">The Formula</span>
+      <div class="formula-block">
+λ_Raw = clamp01( base × modifiers × (1 − penalty) )
+
+base      = C_PFC × (1 − v_surv)
+modifiers = mean( b_int, q_rel, r_repair, h_cont, e_stew,
+                  internal_coherence, energy_stability )
+penalty   = 0.5 × internal_conflict + 0.5 × role_strain
+      </div>
+
+      <span class="tech-section-label">Variable Definitions</span>
+      <table class="var-table">
+        <thead>
+          <tr><th>Variable</th><th>Full Name</th><th>What It Captures</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>C_PFC</td><td>Prefrontal Control Capacity</td><td>The gate variable — deliberate reasoning capacity. Computed via logistic function of glucocorticoid load (L_GC). When L_GC exceeds θ_crit = 0.65, C_PFC collapses. This is the OS1 Manual/Automatic switch.</td></tr>
+          <tr><td>v_surv</td><td>Survival Mode Flag</td><td>= 1.0 if PRF kernel active depth &lt; 3, else 0.5 × L_GC. When survival mode is active, base ≈ 0 regardless of modifiers.</td></tr>
+          <tr><td>b_int</td><td>Boundary Integrity</td><td>= 1 − d_morph. How well the agent's belief system (PRF kernel) aligns with institutional demands (ITA kernel). When identity-role distance is high, b_int falls.</td></tr>
+          <tr><td>q_rel</td><td>Relationship Quality</td><td>0.5 × PRF kernel agreement + 0.5 × spin state agreement with neighbors. How well the agent's reasoning patterns align with its social network.</td></tr>
+          <tr><td>r_repair</td><td>Repair Capacity</td><td>0.30×C_PFC + 0.25×(1−entropy) + 0.20×BioBond_bonus + 0.15×τ_score + 0.10×energy_stability. The agent's capacity to recover from stress. This is where OS2 and BioBond have their primary effect.</td></tr>
+          <tr><td>h_cont</td><td>Historical Continuity</td><td>= prf_kernel.active_depth / total_depth. How much of the agent's inherited PRF kernel is still accessible. High stress truncates this — the agent loses access to deeper layers of its reasoning history.</td></tr>
+          <tr><td>e_stew</td><td>Stewardship Capacity</td><td>0.35×h_cont + 0.25×q_rel + 0.15×b_int + 0.15×energy_stability + worldview_stewardship_bonus. Integrative capacity to act in ways that honor past and future.</td></tr>
+          <tr><td>internal_coherence</td><td>Spin Core Coherence</td><td>From the Ising-model annealing process. How well the agent's internal field configuration has settled into a coherent state.</td></tr>
+          <tr><td>energy_stability</td><td>Thermodynamic Stability</td><td>= 1 / (1 + 0.1 × |spin_energy|). Stability of the internal energy field.</td></tr>
+          <tr><td>role_strain</td><td>Role Strain</td><td>= 0.7 × d_morph + 0.3 × field_conflict. Tension between what the agent believes and what the institution is asking it to do.</td></tr>
+        </tbody>
+      </table>
+
+      <span class="tech-section-label">The OS2 Connection</span>
+      <p class="tech-prose">
+        OS2 capabilities (per-worldview coordination skills: mutual_support, role_scaffolding,
+        stewardship_practice, etc.) do not enter λ Raw directly. They operate through
+        <em>r_repair</em> via the BioBond bonus term (20% weight) and through the
+        OS2 synergy score: <code>synergy = 0.70 × mean(coordination_readiness × C_PFC) + 0.30 × capability_diversity</code>.
+        When BioBond is activated at step 4, it injects this synergy as a bonus that
+        reduces stress accumulation and boosts repair capacity simultaneously.
+      </p>
+      <p class="tech-prose" style="margin-top:8px">
+        <strong>What this means:</strong> OS2 capability amplifies the repair channel.
+        Agents with high coordination_readiness and high C_PFC get the most benefit from
+        OS2 scaffolding. Agents already in survival mode (C_PFC ≈ 0) get almost no benefit —
+        because the BioBond bonus must be multiplied by C_PFC before it has any effect.
+        The intervention must arrive before the collapse, not after.
+      </p>
+
+      <span class="tech-section-label">The PRF Kernel Truncation Mechanism</span>
+      <p class="tech-prose">
+        Under high stress (L_GC → 1.0), the metabolic budget available for identity maintenance shrinks:
+      </p>
+      <div class="formula-block">
+thermal_load = 1 + 20 × max(0.1, L_GC)
+max_depth    = floor( 4.0 / (0.05 × thermal_load) )
+  <span class="comment">  # At L_GC = 0.65 → max_depth ≈ 5 of possible 20</span>
+  <span class="comment">  # At L_GC = 0.90 → max_depth ≈ 3 (survival threshold)</span>
+
+prf_kernel.truncate(max_depth)   <span class="comment">  # Loses access to deeper reasoning layers</span>
+h_cont = active_depth / total_depth   <span class="comment">  # Falls as kernel shrinks</span>
+      </div>
+      <p class="tech-prose">
+        <strong>Pedagogical significance:</strong> This is the institutional memory mechanism.
+        When individuals or populations are under sustained stress, they don't just reason worse —
+        they lose access to the depth of their reasoning history. The accumulated PRF (who I am,
+        what I've learned, what my values ground me in) becomes inaccessible. The generational
+        simulation shows whether institutions are transmitting or truncating this depth.
+      </p>
+
+    </div>
+  </div><!-- /.tech-block -->
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     λ PERCEIVED — EXPERIENCED COORDINATION
+     ══════════════════════════════════════════════════ -->
+<section class="ref-section" id="lambda-perceived">
+
+  <div class="section-title-row">
+    <span class="section-symbol" style="color:var(--col-perc)">λ Perceived</span>
+    <div>
+      <div class="section-title">Experienced Coordination</div>
+      <div class="section-subtitle">What it actually feels like to try to coordinate — after the system has filtered what you're allowed to see and say</div>
+    </div>
+  </div>
+
+  <div class="phenom-layer phenom-perc">
+    <div class="phenom-layer-label">🎭 What it feels like — Phenomenological layer</div>
+    <div class="phenom-text">
+
+      <p>λ Perceived is what coordination feels like from the inside — after the
+      institutional filter has done its work. It is always equal to or lower than λ Raw.
+      When the two are close, you are operating close to your actual capacity. When
+      they diverge, you are performing coordination at a fraction of what you could do
+      if the system weren't filtering what you're allowed to contribute.</p>
+
+      <div class="felt-quote">
+        The difference between λ Raw and λ Perceived is the gap between what you know
+        and what you can safely say. You have the knowledge. The system just makes it
+        costly, dangerous, or structurally impossible to use it.
+      </div>
+
+      <p>The mechanism is <strong>evidence policy distortion</strong> — each agent's
+      evidence policy filters and biases the observation vector before coordination
+      happens. An agent running on authority-weighted evidence treats authoritative
+      sources as more reliable than empirical observation. One running on alternative
+      facts introduces noise into every perception. The result: agents are making
+      decisions about how to coordinate based on a distorted picture of reality,
+      even when their raw capacity to coordinate is high.</p>
+
+      <p>The <strong>Suppression Gap</strong> — λ Raw minus λ Perceived — is the most
+      important derived quantity in the model. A large gap means the system has
+      significant untapped intelligence. Decisions are being made without access to
+      what the people in the room actually know. This is the <em>Boisjoly number</em>:
+      the gap between the engineering knowledge that existed and the knowledge that
+      could reach the decision.</p>
+
+      <div class="felt-quote">
+        You have something important to say. But the room has a structure to it —
+        who speaks first, who's already made up their mind, what it would cost you
+        to contradict them — and that structure makes saying the true thing feel
+        riskier than saying the safe thing. So you say something adjacent. Softer.
+        Framed as a question. It doesn't land.
+      </div>
+
+    </div>
+  </div>
+
+  <table class="threshold-table">
+    <thead>
+      <tr><th>Gap Size</th><th>Suppression Level</th><th>What's Happening</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="t-good">&lt; 5%</td>
+        <td>Minimal — agents using full voice</td>
+        <td>What people know is reaching decisions. Rare in real institutions.</td>
+      </tr>
+      <tr>
+        <td class="t-warn">5 – 15%</td>
+        <td>Mild — some self-censorship</td>
+        <td>Concerns surface carefully, hedged and routed through approved channels.</td>
+      </tr>
+      <tr>
+        <td class="t-warn">15 – 30%</td>
+        <td>Significant — room knows more than it says</td>
+        <td>Consequential knowledge is not reaching decisions. Institutional harm becomes likely.</td>
+      </tr>
+      <tr>
+        <td class="t-danger">&gt; 30%</td>
+        <td>Critical — decisions without full intelligence</td>
+        <td>The Boisjoly pattern. Multiple framework readings apply — see below.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="tech-block">
+    <button class="tech-toggle" onclick="toggleTech(this)">
+      <span>⚙ Technical Layer — Evidence Policy Distortion Mechanism</span>
+      <span class="tech-toggle-arrow">▼</span>
+    </button>
+    <div class="tech-body">
+
+      <span class="tech-section-label">How λ Perceived Is Computed</span>
+      <p class="tech-prose">λ Perceived uses <em>exactly the same formula</em> as λ Raw,
+      but applied to <em>perceived_obs</em> rather than <em>obs</em>:</p>
+      <div class="formula-block">
+perceived_obs = apply_evidence_policy( obs, evidence_policy )
+λ_Perceived   = compute_lambda( perceived_obs )
+      </div>
+
+      <span class="tech-section-label">The Evidence Policy Mechanism</span>
+      <p class="tech-prose">Each agent has an evidence policy that distorts its observation
+      vector before coordination happens. Four policies are implemented:</p>
+      <table class="var-table">
+        <thead><tr><th>Policy</th><th>Mechanism</th><th>Effect on λ Perceived</th></tr></thead>
+        <tbody>
+          <tr><td>empirical_calibrated</td><td>No distortion, no masking, no noise</td><td>λ Perceived ≈ λ Raw — near-full intelligence surfacing</td></tr>
+          <tr><td>authority_weighted</td><td>Biases toward authority-confirming features; masks community signals</td><td>Suppresses relational and repair dimensions; amplifies role conformity</td></tr>
+          <tr><td>tradition_weighted</td><td>Biases toward conservation; masks openness and repair signals</td><td>Suppresses adaptive capacity; amplifies historical continuity</td></tr>
+          <tr><td>alternative_facts</td><td>High disconfirmation_resistance + field_noise injection</td><td>Largest λ Perceived suppression; agents coordinating on distorted reality</td></tr>
+        </tbody>
+      </table>
+
+      <span class="tech-section-label">The Suppression Gap Formula</span>
+      <div class="formula-block">
+gap = λ_Raw − λ_Perceived
+    = compute_lambda(obs) − compute_lambda(perceived_obs)
+
+<span class="comment"># The gap is entirely explained by evidence policy distortion.
+# If all agents ran empirical_calibrated evidence policy:
+#   perceived_obs ≈ obs → gap ≈ 0
+# The gap is not a capacity deficit — it is an access deficit.</span>
+      </div>
+
+      <p class="tech-prose" style="margin-top:10px">
+        <strong>Key insight:</strong> λ Raw measures what the group could achieve if information
+        flowed freely. λ Perceived measures what actually flows through the system's power
+        and evidence structure. The gap between them is the cost of information distortion —
+        which is what suppression, hierarchy, and evidence filtering actually produce in
+        coordination terms. It is a measurable quantity, not a judgment.
+      </p>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     FRICTION — COORDINATION COST
+     ══════════════════════════════════════════════════ -->
+<section class="ref-section" id="friction">
+
+  <div class="section-title-row">
+    <span class="section-symbol" style="color:var(--col-fric)">Friction</span>
+    <div>
+      <div class="section-title">Coordination Cost</div>
+      <div class="section-subtitle">The energy the system consumes just to function — before any of it reaches the actual problem</div>
+    </div>
+  </div>
+
+  <div class="phenom-layer phenom-fric">
+    <div class="phenom-layer-label">⚡ What it feels like — Phenomenological layer</div>
+    <div class="phenom-text">
+
+      <p>Friction is the tax you pay just to work together — before you've done anything useful.
+      It is not the same as the suppression gap. Friction is about <strong>worldview distance</strong>:
+      how much translation work is required before agents who reason differently can actually
+      coordinate. A room with high friction isn't necessarily a room where people are being
+      silenced. It might be a room where everyone is speaking honestly but every sentence
+      requires negotiation before it can be received.</p>
+
+      <div class="felt-quote">
+        The meeting is honest. No one is being silenced. But it still takes three times
+        as long as it should. You're not navigating deception — you're navigating the
+        distance between how you each understand what the problem even is.
+      </div>
+
+      <p>High friction and high suppression are <em>different problems requiring different solutions</em>.
+      Friction is a diversity challenge: people are genuinely far apart in their moral frameworks,
+      and bridging that distance costs coordination energy. The solution is better OS2 scaffolding —
+      structured processes that help different frameworks work together without requiring them to
+      merge. Suppression is a power challenge: people are being prevented from contributing what
+      they know. The solution is structural safety — protected channels for dissent.</p>
+
+      <div class="felt-quote">
+        Confusing these two is expensive. If your problem is suppression and you add more
+        process structure, you've made it harder to speak. If your problem is friction and
+        you increase psychological safety, you've still got agents who can't understand
+        each other's moral vocabulary. Diagnosis precedes prescription.
+      </div>
+
+    </div>
+  </div>
+
+  <table class="threshold-table">
+    <thead>
+      <tr><th>Value</th><th>Drag Level</th><th>What This Costs</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="t-good">&lt; 0.25</td>
+        <td>Low drag</td>
+        <td>Most coordination energy reaches the actual problem. Frameworks are close or well-bridged.</td>
+      </tr>
+      <tr>
+        <td class="t-warn">0.25 – 0.45</td>
+        <td>Moderate drag</td>
+        <td>Noticeable translation cost. Coordination is possible but taxing over time.</td>
+      </tr>
+      <tr>
+        <td class="t-warn">0.45 – 0.65</td>
+        <td>High drag</td>
+        <td>Significant energy consumed internally before any work on the problem begins.</td>
+      </tr>
+      <tr>
+        <td class="t-danger">&gt; 0.65</td>
+        <td>Severe drag</td>
+        <td>System is consuming itself. Most energy goes to internal resistance. Not sustainable.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="tech-block">
+    <button class="tech-toggle" onclick="toggleTech(this)">
+      <span>⚙ Technical Layer — Pairwise Distance and OS2 Synergy</span>
+      <span class="tech-toggle-arrow">▼</span>
+    </button>
+    <div class="tech-body">
+
+      <span class="tech-section-label">Friction Formula (Platform Level)</span>
+      <div class="formula-block">
+friction = mean( _pair_friction(agent_i, agent_j)
+                 for sampled pairs (i, j) )
+
+_pair_friction(a, b) = 0.5 × worldview_distance(a, b)
+                     + 0.5 × evidence_distance(a, b)
+                     − os2_synergy_discount
+
+worldview_distance = Jensen-Shannon divergence of block weight distributions
+evidence_distance  = cosine distance of source weight vectors
+      </div>
+
+      <span class="tech-section-label">OS2 Synergy Discount</span>
+      <div class="formula-block">
+os2_synergy = 0.70 × mean( a.os2.coordination_readiness × a.C_PFC )
+            + 0.30 × capability_diversity
+
+<span class="comment"># capability_diversity = unique top capabilities / total possible
+# High diversity means different frameworks contributing complementary skills
+# This is the mechanism by which pluralism reduces friction rather than increasing it</span>
+      </div>
+
+      <p class="tech-prose">
+        <strong>The crucial insight:</strong> OS2 capability diversity <em>reduces</em> friction
+        when it is present alongside high C_PFC. A room with five different frameworks and high
+        C_PFC in each agent can be lower-friction than a homogeneous room — because each
+        framework brings a complementary coordination skill. This is the empirical case for
+        pluralism in institutional design, expressed as a computable quantity.
+      </p>
+      <p class="tech-prose" style="margin-top:8px">
+        But the same diversity at low C_PFC — survival mode — produces high friction without
+        the synergy discount, because the coordination_readiness term is multiplied by C_PFC.
+        Diversity only reduces friction when the agents have enough capacity to actually
+        use their distinctive capabilities. This is why institutional stress is doubly
+        destructive: it collapses capacity <em>and</em> eliminates the synergy benefit of diversity.
+      </p>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     C_PFC — THE GATE / MANUAL MODE
+     ══════════════════════════════════════════════════ -->
+<section class="ref-section" id="cpfc">
+
+  <div class="section-title-row">
+    <span class="section-symbol" style="color:var(--col-cpfc)">C_PFC</span>
+    <div>
+      <div class="section-title">The Gate — Manual Mode and the Meta-Constructor</div>
+      <div class="section-subtitle">The variable everything depends on: deliberate reasoning capacity, and when it collapses</div>
+    </div>
+  </div>
+
+  <div class="phenom-layer phenom-cpfc">
+    <div class="phenom-layer-label">🔑 What it feels like — Phenomenological layer</div>
+    <div class="phenom-text">
+
+      <p>C_PFC is the prefrontal control capacity — the engine variable that determines
+      whether an agent is in <strong>Manual mode</strong> (deliberate, reflective, capable
+      of ethical reasoning) or <strong>Automatic mode</strong> (reactive, pattern-driven,
+      self-protective). It is the gate through which all seven λ Raw modifiers must pass.
+      When C_PFC is high, the full coordination capacity of the agent is available.
+      When C_PFC collapses, nothing else matters — the formula becomes:
+      <em>λ Raw ≈ 0 regardless of how good the relationships are or how clear the thinking was
+      yesterday.</em></p>
+
+      <div class="felt-quote">
+        Manual mode is when you can actually think. You're not just running your habitual
+        patterns — you're genuinely deliberating. You can catch yourself mid-reflex and ask
+        whether this is actually the right thing to do. This is where ethical reasoning lives.
+        Automatic mode isn't stupidity. It's what happens when the system has made deliberation
+        too expensive to afford.
+      </div>
+
+      <p>C_PFC is driven by <strong>glucocorticoid load (L_GC)</strong> — the model's measure
+      of accumulated biological stress. When L_GC rises above the critical threshold (θ_crit = 0.65),
+      C_PFC collapses via a steep sigmoid function. The transition is not gradual — it is a
+      threshold effect. Below the threshold, you're managing. Above it, the switch flips and
+      deliberative reasoning becomes largely inaccessible.</p>
+
+      <p>This is also the connection to <strong>OS1 and OS2 reasoning</strong> in the UCP model.
+      OS1 is the interpretive framework — the belief/worldview layer that filters perception.
+      OS2 is the capability layer — the coordination skills that allow agents to work together
+      across difference. <strong>Both require C_PFC to function.</strong> OS2 coordination_readiness
+      is multiplied by C_PFC in every calculation — which means that no amount of OS2 capability
+      in the population matters if the institution has driven C_PFC below threshold.</p>
+
+      <div class="felt-quote">
+        This is the cruelest thing institutional stress does: it dismantles the exact capacity
+        you need to recognize that the institution is damaging you. The thinking that would
+        let you see the problem clearly is the thinking the stress has taken away.
+      </div>
+
+      <p>The generational simulation shows something important about what populations that
+      maintain high λ Raw across generations have preserved. They haven't just preserved
+      coordination skill — they have preserved the <em>conditions for deliberate reasoning
+      itself</em>. They have kept C_PFC above threshold, kept the PRF kernel intact,
+      kept the repair channels open. A population that does this across time is one whose
+      institutional culture has found ways to protect the very capacity for ethical thought
+      — not just to exercise it in the present, but to transmit the conditions that make
+      it possible to the next generation.</p>
+
+    </div>
+  </div>
+
+  <div class="tech-block">
+    <button class="tech-toggle" onclick="toggleTech(this)">
+      <span>⚙ Technical Layer — Sigmoid Gate, Atrophy Curve, and the OS1/OS2 Connection</span>
+      <span class="tech-toggle-arrow">▼</span>
+    </button>
+    <div class="tech-body">
+
+      <span class="tech-section-label">The C_PFC Sigmoid Gate</span>
+      <div class="formula-block">
+<span class="comment"># Stress accumulation (exponential moving average)</span>
+current_stress = max(0, scenario.base_entropy + d_morph − biobond_bonus)
+L_GC = 0.8 × L_GC + 0.2 × current_stress
+
+<span class="comment"># C_PFC via logistic gate (K=15, θ=0.65)</span>
+exponent = 15.0 × (L_GC − 0.65)
+C_PFC    = 1 / (1 + exp(exponent))
+
+<span class="comment"># Threshold behavior:</span>
+<span class="comment"># L_GC = 0.50 → C_PFC ≈ 0.90  (well above — full manual mode)</span>
+<span class="comment"># L_GC = 0.65 → C_PFC = 0.50  (critical threshold — mode switch)</span>
+<span class="comment"># L_GC = 0.80 → C_PFC ≈ 0.10  (near collapse)</span>
+<span class="comment"># L_GC = 0.90 → C_PFC ≈ 0.02  (effectively zero)</span>
+      </div>
+
+      <span class="tech-section-label">OS1 Mode Determination</span>
+      <div class="formula-block">
+os1.mode = "MANUAL"    if C_PFC &gt; 0.50
+         = "AUTOMATIC" otherwise
+
+<span class="comment"># MANUAL mode: full deliberative reasoning available
+#   → OS2 capabilities active at full coordination_readiness × C_PFC
+#   → PRF kernel can expand (accretion &gt; ablation when stress is moderate)
+#   → Ethical complexity is navigable
+
+# AUTOMATIC mode: reactive, pattern-driven
+#   → OS2 synergy discount ≈ 0 (C_PFC near zero)
+#   → PRF kernel truncating (ablation &gt; accretion)
+#   → Agent prioritizes self-protection over coordination</span>
+      </div>
+
+      <span class="tech-section-label">The Growth vs. Ablation Competition</span>
+      <div class="formula-block">
+<span class="comment"># PRF Kernel can expand (learning) or contract (stress truncation)</span>
+
+accretion = 0.10 × C_PFC × phi        <span class="comment"># phi = neighbor diversity signal</span>
+ablation  = GAMMA_DECAY × entropy × exp(BETA_STRESS × L_GC)
+delta_L   = accretion − ablation
+
+<span class="comment"># When C_PFC is high AND stress is moderate:
+#   accretion &gt; ablation → PRF kernel expands → h_cont increases → λ Raw ↑
+#   (The institution is building reasoning depth)
+
+# When L_GC is high:
+#   ablation dominates → PRF kernel truncates → h_cont falls → λ Raw ↓
+#   (The institution is eroding reasoning depth faster than it's built)</span>
+      </div>
+
+      <span class="tech-section-label">Why Population-Level λ Raw Matters for OS2</span>
+      <p class="tech-prose">
+        At the population level, OS2 synergy is:
+      </p>
+      <div class="formula-block">
+os2_synergy = 0.70 × mean( a.os2.coordination_readiness × a.C_PFC
+                            for all agents )
+            + 0.30 × capability_diversity
+      </div>
+      <p class="tech-prose">
+        <strong>Key implication:</strong> A population with high OS2 capability scores but low
+        C_PFC produces near-zero OS2 synergy — because every capability is multiplied by C_PFC
+        before it counts. The engine is explicit that capability without capacity is inert.
+        This is the formal statement of your intuition: maintaining high λ Raw across generations
+        is maintaining the population-level C_PFC that makes OS2 reasoning actually available.
+        Without it, all the coordination skills in the world remain unused.
+      </p>
+      <p class="tech-prose" style="margin-top:8px">
+        <strong>The generational simulation makes this visible:</strong> under Top-λ selection,
+        if the scenario's stress conditions are driving L_GC above threshold, the simulation
+        can select for agents who coordinate well despite low C_PFC — agents who have learned
+        to navigate the system in Automatic mode. These agents produce good short-term
+        coordination metrics but transmit a population that is progressively less capable of
+        the deliberate ethical reasoning that Manual mode enables. High λ Raw in Generation 0,
+        falling h_cont and rising v_surv by Generation 4: the institution selected for survivors,
+        not reasoners.
+      </p>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     THE CIB LOOP DIAGRAM
+     ══════════════════════════════════════════════════ -->
+<section class="ref-section" id="cib-loop">
+
+  <div class="section-title-row">
+    <span class="section-symbol" style="color:#7a5fb5">CIB ⟳</span>
+    <div>
+      <div class="section-title">The Full Loop — Coherent Identity Blueprint</div>
+      <div class="section-subtitle">How identity, stress, capacity, and coordination form a closed system</div>
+    </div>
+  </div>
+
+  <div class="phenom-layer phenom-loop">
+    <div class="phenom-layer-label">🔄 The Loop in Plain Language</div>
+    <div class="phenom-text">
+
+      <p>The CIB loop is the engine's model of how identity, stress, and coordination
+      capacity interact across time. It is a closed system with two competing dynamics:</p>
+
+      <p><strong>The Stress Loop (downward spiral):</strong>
+      When who you believe you are (PRF kernel) diverges from what the institution
+      is asking you to be (ITA kernel), the distance between them — d_morph —
+      accumulates as stress (L_GC). Enough accumulated stress collapses C_PFC.
+      Collapsed C_PFC means the repair channels close, learning stops, and the
+      PRF kernel starts to truncate. A truncated PRF kernel deepens the distance
+      from the ITA kernel, generating more stress. The loop feeds itself.</p>
+
+      <p><strong>The Growth Loop (upward spiral):</strong>
+      When L_GC is below the critical threshold — when the institution provides
+      enough safety and alignment — C_PFC stays high. High C_PFC means repair
+      is available, learning can happen, and the PRF kernel can expand.
+      An expanding PRF kernel reduces d_morph (the agent grows into better
+      alignment with its role without losing its identity), which reduces stress,
+      which keeps C_PFC high. This is the virtuous cycle.</p>
+
+      <p><strong>OS2 and BioBond as circuit-breakers:</strong>
+      OS2 coordination scaffolding and BioBond interventions enter the loop as
+      a biobond_bonus that reduces current_stress before it accumulates into L_GC.
+      This is why they work: they interrupt the stress loop <em>at the source</em>
+      rather than trying to restore C_PFC after it has already collapsed.
+      The engine is explicit that agents already in survival mode receive almost
+      no benefit from the intervention — because the bonus is multiplied by C_PFC
+      before it reaches r_repair.</p>
+
+    </div>
+  </div>
+
+  <!-- CIB Loop SVG Diagram -->
+  <div class="loop-diagram-wrap">
+    <div class="loop-diagram-title">CIB Loop — Engine Architecture (Accurate to Source)</div>
+    <svg viewBox="0 0 900 540" xmlns="http://www.w3.org/2000/svg"
+         style="width:100%;max-width:900px;display:block;margin:0 auto">
+
+      <defs>
+        <!-- Arrow markers -->
+        <marker id="arr-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#4a7fb5"/>
+        </marker>
+        <marker id="arr-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#b84444"/>
+        </marker>
+        <marker id="arr-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#3a8a5c"/>
+        </marker>
+        <marker id="arr-gold" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#c9a84c"/>
+        </marker>
+        <marker id="arr-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#7a5fb5"/>
+        </marker>
+        <marker id="arr-gray" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#6b7a9a"/>
+        </marker>
+      </defs>
+
+      <!-- ── Background zones ── -->
+      <!-- Identity zone -->
+      <rect x="10" y="10" width="210" height="230" rx="10"
+            fill="#f0f6fc" stroke="#4a7fb5" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="115" y="28" text-anchor="middle" font-family="Courier New" font-size="9"
+            fill="#4a7fb5" font-weight="bold" letter-spacing="1">IDENTITY ZONE</text>
+
+      <!-- Stress zone -->
+      <rect x="10" y="255" width="210" height="140" rx="10"
+            fill="#fff5f5" stroke="#b84444" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="115" y="273" text-anchor="middle" font-family="Courier New" font-size="9"
+            fill="#b84444" font-weight="bold" letter-spacing="1">STRESS ZONE</text>
+
+      <!-- Capacity zone (C_PFC) -->
+      <rect x="240" y="120" width="180" height="200" rx="10"
+            fill="#f0faf4" stroke="#3a8a5c" stroke-width="2" stroke-dasharray="6,3"/>
+      <text x="330" y="138" text-anchor="middle" font-family="Courier New" font-size="9"
+            fill="#3a8a5c" font-weight="bold" letter-spacing="1">CAPACITY GATE</text>
+
+      <!-- Output zone -->
+      <rect x="450" y="60" width="200" height="420" rx="10"
+            fill="#f8f8fc" stroke="#7a5fb5" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="550" y="78" text-anchor="middle" font-family="Courier New" font-size="9"
+            fill="#7a5fb5" font-weight="bold" letter-spacing="1">COORDINATION OUTPUT</text>
+
+      <!-- Intervention zone -->
+      <rect x="670" y="200" width="210" height="160" rx="10"
+            fill="#fdf8ee" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6,3"/>
+      <text x="775" y="218" text-anchor="middle" font-family="Courier New" font-size="9"
+            fill="#8a6a20" font-weight="bold" letter-spacing="1">INTERVENTION</text>
+
+      <!-- ── Node: PRF Kernel ── -->
+      <rect x="20" y="38" width="130" height="48" rx="8"
+            fill="#4a7fb5" stroke="#2a5090" stroke-width="1.5"/>
+      <text x="85" y="58" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#fff" font-weight="bold">PRF Kernel</text>
+      <text x="85" y="72" text-anchor="middle" font-family="Georgia" font-size="9"
+            fill="rgba(255,255,255,.8)" font-style="italic">Who you believe you are</text>
+
+      <!-- ── Node: ITA Kernel ── -->
+      <rect x="20" y="108" width="130" height="48" rx="8"
+            fill="#3a5080" stroke="#1a3060" stroke-width="1.5"/>
+      <text x="85" y="128" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#fff" font-weight="bold">ITA Kernel</text>
+      <text x="85" y="142" text-anchor="middle" font-family="Georgia" font-size="9"
+            fill="rgba(255,255,255,.8)" font-style="italic">Who the role asks you to be</text>
+
+      <!-- Arrow from PRF + ITA → d_morph -->
+      <line x1="155" y1="62" x2="180" y2="78" stroke="#6b7a9a" stroke-width="1.5"
+            marker-end="url(#arr-gray)"/>
+      <line x1="155" y1="132" x2="180" y2="116" stroke="#6b7a9a" stroke-width="1.5"
+            marker-end="url(#arr-gray)"/>
+
+      <!-- ── Node: d_morph ── -->
+      <rect x="163" y="82" width="52" height="36" rx="8"
+            fill="#c87843" stroke="#a05020" stroke-width="1.5"/>
+      <text x="189" y="97" text-anchor="middle" font-family="Courier New" font-size="9.5"
+            fill="#fff" font-weight="bold">d_morph</text>
+      <text x="189" y="111" text-anchor="middle" font-family="Courier New" font-size="8"
+            fill="rgba(255,255,255,.8)">distance</text>
+
+      <!-- ── Node: PRF Depth/h_cont ── -->
+      <rect x="20" y="178" width="130" height="48" rx="8"
+            fill="#5a7fb5" stroke="#2a5090" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="85" y="198" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#fff" font-weight="bold">PRF Depth</text>
+      <text x="85" y="212" text-anchor="middle" font-family="Georgia" font-size="9"
+            fill="rgba(255,255,255,.8)" font-style="italic">h_cont — reasoning history</text>
+
+      <!-- Arrow: d_morph → L_GC -->
+      <line x1="189" y1="118" x2="115" y2="265" stroke="#b84444" stroke-width="2"
+            marker-end="url(#arr-red)"/>
+
+      <!-- ── Node: L_GC (stress) ── -->
+      <rect x="20" y="280" width="130" height="48" rx="8"
+            fill="#b84444" stroke="#901010" stroke-width="1.5"/>
+      <text x="85" y="300" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#fff" font-weight="bold">L_GC</text>
+      <text x="85" y="314" text-anchor="middle" font-family="Georgia" font-size="9"
+            fill="rgba(255,255,255,.8)" font-style="italic">Glucocorticoid load (stress)</text>
+
+      <!-- Arrow: L_GC → C_PFC gate -->
+      <line x1="150" y1="304" x2="248" y2="238" stroke="#b84444" stroke-width="2.5"
+            marker-end="url(#arr-red)"/>
+      <text x="193" y="268" text-anchor="middle" font-family="Courier New" font-size="8.5"
+            fill="#b84444" font-style="italic">sigmoid gate</text>
+      <text x="193" y="279" text-anchor="middle" font-family="Courier New" font-size="8.5"
+            fill="#b84444" font-style="italic">K=15, θ=0.65</text>
+
+      <!-- ── Node: C_PFC ── -->
+      <rect x="252" y="148" width="156" height="60" rx="10"
+            fill="#3a8a5c" stroke="#1a6a3c" stroke-width="2.5"/>
+      <text x="330" y="172" text-anchor="middle" font-family="Courier New" font-size="12"
+            fill="#fff" font-weight="bold">C_PFC</text>
+      <text x="330" y="188" text-anchor="middle" font-family="Georgia" font-size="9"
+            fill="rgba(255,255,255,.9)" font-style="italic">Manual / Automatic gate</text>
+      <text x="330" y="200" text-anchor="middle" font-family="Courier New" font-size="8"
+            fill="rgba(255,255,255,.7)">MANUAL if C_PFC &gt; 0.5</text>
+
+      <!-- Arrow C_PFC → OS2 synergy / r_repair -->
+      <line x1="330" y1="208" x2="330" y2="260" stroke="#3a8a5c" stroke-width="1.5"
+            marker-end="url(#arr-green)"/>
+
+      <!-- ── Node: OS1 Mode ── -->
+      <rect x="252" y="264" width="156" height="42" rx="8"
+            fill="#5aaa7c" stroke="#2a7a4c" stroke-width="1.5"/>
+      <text x="330" y="282" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#fff" font-weight="bold">OS1 Mode</text>
+      <text x="330" y="296" text-anchor="middle" font-family="Georgia" font-size="8.5"
+            fill="rgba(255,255,255,.85)">MANUAL = deliberate reasoning</text>
+
+      <!-- Arrow C_PFC → PRF growth (learning loop) -->
+      <path d="M252 178 Q190 178 155 200" stroke="#3a8a5c" stroke-width="1.5" fill="none"
+            stroke-dasharray="4,2" marker-end="url(#arr-green)"/>
+      <text x="194" y="172" text-anchor="middle" font-family="Courier New" font-size="7.5"
+            fill="#3a8a5c">accretion</text>
+      <text x="194" y="182" text-anchor="middle" font-family="Courier New" font-size="7.5"
+            fill="#3a8a5c">0.10×C_PFC×φ</text>
+
+      <!-- Arrow L_GC → PRF ablation (stress truncation) -->
+      <path d="M85 280 Q85 240 85 228" stroke="#b84444" stroke-width="1.5" fill="none"
+            stroke-dasharray="4,2" marker-end="url(#arr-red)"/>
+      <text x="65" y="253" text-anchor="middle" font-family="Courier New" font-size="7.5"
+            fill="#b84444">ablation</text>
+      <text x="65" y="263" text-anchor="middle" font-family="Courier New" font-size="7.5"
+            fill="#b84444">truncation</text>
+
+      <!-- ── Node: Observable Vector ── -->
+      <rect x="460" y="88" width="175" height="84" rx="8"
+            fill="#243560" stroke="#1a2744" stroke-width="1.5"/>
+      <text x="548" y="107" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#e8c56a" font-weight="bold">Observable Vector (obs)</text>
+      <text x="548" y="122" text-anchor="middle" font-family="Courier New" font-size="7.5"
+            fill="rgba(255,255,255,.7)">b_int · q_rel · r_repair · h_cont</text>
+      <text x="548" y="134" text-anchor="middle" font-family="Courier New" font-size="7.5"
+            fill="rgba(255,255,255,.7)">e_stew · coherence · energy_stability</text>
+      <text x="548" y="146" text-anchor="middle" font-family="Courier New" font-size="7.5"
+            fill="rgba(255,255,255,.7)">internal_conflict · role_strain</text>
+      <text x="548" y="162" text-anchor="middle" font-family="Courier New" font-size="8"
+            fill="rgba(255,255,255,.5)">all driven by C_PFC and d_morph</text>
+
+      <!-- Arrow C_PFC + d_morph → obs -->
+      <line x1="408" y1="178" x2="458" y2="155" stroke="#3a8a5c" stroke-width="1.5"
+            marker-end="url(#arr-green)"/>
+      <line x1="220" y1="100" x2="458" y2="118" stroke="#c87843" stroke-width="1.5"
+            stroke-dasharray="4,2" marker-end="url(#arr-gold)"/>
+
+      <!-- ── Node: λ Raw ── -->
+      <rect x="460" y="200" width="175" height="52" rx="8"
+            fill="#4a7fb5" stroke="#2a5090" stroke-width="2"/>
+      <text x="548" y="224" text-anchor="middle" font-family="Courier New" font-size="13"
+            fill="#fff" font-weight="bold">λ Raw</text>
+      <text x="548" y="240" text-anchor="middle" font-family="Georgia" font-size="8.5"
+            fill="rgba(255,255,255,.8)">base × modifiers × (1 − penalty)</text>
+
+      <!-- Arrow obs → λ Raw -->
+      <line x1="548" y1="172" x2="548" y2="198" stroke="#4a7fb5" stroke-width="2"
+            marker-end="url(#arr-blue)"/>
+
+      <!-- ── Node: Evidence Policy ── -->
+      <rect x="460" y="278" width="175" height="42" rx="8"
+            fill="#8a5080" stroke="#6a3060" stroke-width="1.5"/>
+      <text x="548" y="296" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#fff" font-weight="bold">Evidence Policy</text>
+      <text x="548" y="310" text-anchor="middle" font-family="Georgia" font-size="8.5"
+            fill="rgba(255,255,255,.8)">distorts obs → perceived_obs</text>
+
+      <!-- Arrow obs → evidence policy → perceived_obs -->
+      <line x1="548" y1="252" x2="548" y2="276" stroke="#8a5080" stroke-width="1.5"
+            marker-end="url(#arr-purple)"/>
+
+      <!-- ── Node: λ Perceived ── -->
+      <rect x="460" y="346" width="175" height="52" rx="8"
+            fill="#c9a84c" stroke="#9a7820" stroke-width="2"/>
+      <text x="548" y="370" text-anchor="middle" font-family="Courier New" font-size="13"
+            fill="#1a2744" font-weight="bold">λ Perceived</text>
+      <text x="548" y="386" text-anchor="middle" font-family="Georgia" font-size="8.5"
+            fill="rgba(26,39,68,.75)">compute_lambda(perceived_obs)</text>
+
+      <!-- Arrow evidence → λ Perceived -->
+      <line x1="548" y1="320" x2="548" y2="344" stroke="#c9a84c" stroke-width="2"
+            marker-end="url(#arr-gold)"/>
+
+      <!-- ── Node: Suppression Gap ── -->
+      <rect x="460" y="420" width="175" height="48" rx="8"
+            fill="#1a2744" stroke="#b84444" stroke-width="2.5"/>
+      <text x="548" y="443" text-anchor="middle" font-family="Courier New" font-size="11"
+            fill="#fff" font-weight="bold">Suppression Gap</text>
+      <text x="548" y="458" text-anchor="middle" font-family="Courier New" font-size="9"
+            fill="#e8c56a">λ Raw − λ Perceived</text>
+
+      <!-- Arrow λ Raw + λ Perceived → Gap -->
+      <line x1="548" y1="252" x2="548" y2="260" stroke="transparent" stroke-width="0"/>
+      <path d="M635 226 Q660 226 660 434 Q660 468 637 468" stroke="#4a7fb5" stroke-width="1.5"
+            fill="none" stroke-dasharray="4,2" marker-end="url(#arr-blue)"/>
+      <line x1="548" y1="398" x2="548" y2="418" stroke="#c9a84c" stroke-width="1.5"
+            marker-end="url(#arr-gold)"/>
+
+      <!-- ── Node: OS2 / BioBond ── -->
+      <rect x="684" y="228" width="185" height="52" rx="8"
+            fill="#c9a84c" stroke="#9a7820" stroke-width="1.5"/>
+      <text x="777" y="250" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#1a2744" font-weight="bold">OS2 Capabilities</text>
+      <text x="777" y="265" text-anchor="middle" font-family="Georgia" font-size="8.5"
+            fill="rgba(26,39,68,.75)">coordination_readiness × C_PFC</text>
+
+      <!-- ── Node: BioBond Bonus ── -->
+      <rect x="684" y="298" width="185" height="42" rx="8"
+            fill="#e8c56a" stroke="#c9a84c" stroke-width="1.5"/>
+      <text x="777" y="317" text-anchor="middle" font-family="Courier New" font-size="10"
+            fill="#1a2744" font-weight="bold">BioBond Bonus</text>
+      <text x="777" y="331" text-anchor="middle" font-family="Georgia" font-size="8.5"
+            fill="rgba(26,39,68,.75)">reduces current_stress → r_repair ↑</text>
+
+      <!-- Arrow OS2 → r_repair in obs -->
+      <path d="M684 268 Q640 268 637 178" stroke="#c9a84c" stroke-width="1.5" fill="none"
+            stroke-dasharray="4,2" marker-end="url(#arr-gold)"/>
+
+      <!-- Arrow BioBond → stress reduction -->
+      <path d="M684 318 Q630 318 170 318 Q150 318 150 340 Q150 352 115 352"
+            stroke="#e8c56a" stroke-width="2" fill="none" marker-end="url(#arr-gold)"/>
+
+      <!-- ── Legend ── -->
+      <rect x="10" y="418" width="200" height="110" rx="6"
+            fill="#f8f9fc" stroke="#d0d8e8" stroke-width="1"/>
+      <text x="20" y="434" font-family="Courier New" font-size="8.5"
+            fill="#6b7a9a" font-weight="bold" letter-spacing="1">LEGEND</text>
+      <!-- Blue: identity/capacity -->
+      <line x1="20" y1="448" x2="46" y2="448" stroke="#4a7fb5" stroke-width="2"
+            marker-end="url(#arr-blue)"/>
+      <text x="52" y="452" font-family="Georgia" font-size="8.5" fill="#333">Identity / Capacity flow</text>
+      <!-- Red: stress -->
+      <line x1="20" y1="465" x2="46" y2="465" stroke="#b84444" stroke-width="2"
+            marker-end="url(#arr-red)"/>
+      <text x="52" y="469" font-family="Georgia" font-size="8.5" fill="#333">Stress / Degradation</text>
+      <!-- Green: growth -->
+      <line x1="20" y1="482" x2="46" y2="482" stroke="#3a8a5c" stroke-width="2"
+            stroke-dasharray="4,2" marker-end="url(#arr-green)"/>
+      <text x="52" y="486" font-family="Georgia" font-size="8.5" fill="#333">Growth / Repair</text>
+      <!-- Gold: intervention -->
+      <line x1="20" y1="499" x2="46" y2="499" stroke="#c9a84c" stroke-width="2"
+            stroke-dasharray="4,2" marker-end="url(#arr-gold)"/>
+      <text x="52" y="503" font-family="Georgia" font-size="8.5" fill="#333">OS2 / BioBond Intervention</text>
+      <!-- Purple: distortion -->
+      <line x1="20" y1="516" x2="46" y2="516" stroke="#8a5080" stroke-width="2"
+            marker-end="url(#arr-purple)"/>
+      <text x="52" y="520" font-family="Georgia" font-size="8.5" fill="#333">Evidence Distortion</text>
+
+    </svg>
+  </div>
+
+  <!-- CIB tech layer -->
+  <div class="tech-block">
+    <button class="tech-toggle" onclick="toggleTech(this)">
+      <span>⚙ Technical Layer — Reading the Loop Step by Step</span>
+      <span class="tech-toggle-arrow">▼</span>
+    </button>
+    <div class="tech-body">
+      <span class="tech-section-label">Per-Step Execution Order</span>
+      <p class="tech-prose">Each time-step executes in this exact sequence:</p>
+      <div class="formula-block">
+1.  d_morph = prf_kernel.metric_distance(ita_kernel)
+    <span class="comment"># Identity vs. role divergence</span>
+
+2.  current_stress = max(0, entropy + d_morph − biobond_bonus)
+    L_GC = 0.8×L_GC + 0.2×current_stress   <span class="comment"># Stress EMA</span>
+
+3.  C_PFC = sigmoid(−15 × (L_GC − 0.65))   <span class="comment"># Gate</span>
+    max_depth = metabolic_budget / thermal_load
+    prf_kernel.truncate(max_depth)           <span class="comment"># Memory constraint</span>
+    is_survival = (prf_kernel.active_depth &lt; 3)
+
+4.  raw_J = build_coupling_matrix()         <span class="comment"># From worldview block weights</span>
+    raw_h = build_raw_field()               <span class="comment"># From scenario + d_morph</span>
+    perceived_h = distort_field(raw_h)      <span class="comment"># Via evidence policy</span>
+    spin_core.anneal(raw_J, perceived_h)    <span class="comment"># Find energy minimum</span>
+
+5.  _update_growth(neighbors, entropy)      <span class="comment"># accretion vs. ablation</span>
+
+6.  _update_observables()                   <span class="comment"># Build obs vector</span>
+    perceived_obs = apply_evidence_policy(obs)
+
+7.  λ_Raw       = compute_lambda(obs)
+    λ_Perceived = compute_lambda(perceived_obs)
+    Suppression_Gap = λ_Raw − λ_Perceived
+      </div>
+
+      <span class="tech-section-label">The Two Attractors</span>
+      <p class="tech-prose">
+        The loop has two stable attractors — states the system tends toward once perturbed in either direction:
+      </p>
+      <p class="tech-prose" style="margin-top:8px">
+        <strong style="color:#3a8a5c">High-C_PFC attractor:</strong>
+        L_GC &lt; θ_crit → C_PFC high → accretion &gt; ablation → PRF expands → d_morph stable or falling → less stress → L_GC stays low → C_PFC stays high.
+        Generates high λ Raw, low friction, shrinking suppression gap over time.
+      </p>
+      <p class="tech-prose" style="margin-top:8px">
+        <strong style="color:#b84444">Survival attractor:</strong>
+        L_GC &gt; θ_crit → C_PFC collapses → ablation &gt; accretion → PRF truncates → h_cont falls → λ Raw falls → survival mode → v_surv = 1.0 → λ Raw ≈ 0.
+        Self-reinforcing. BioBond intervention cannot reach agents already in this attractor because the bonus is multiplied by near-zero C_PFC.
+      </p>
+      <p class="tech-prose" style="margin-top:8px">
+        <strong>Generational implication:</strong> Top-λ selection preserves agents closer to the high-C_PFC attractor — but under severe stress, even high-C_PFC agents drift toward survival mode over generations. The simulation shows whether the scenario's base_entropy is high enough to overwhelm the growth loop. If it is, every generation ends slightly closer to the survival attractor, and the institution's reasoning capacity erodes across time regardless of who is selected.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     ASSEMBLY INSTRUCTIONS
+     ══════════════════════════════════════════════════ -->
+<section class="ref-section" id="assembly">
+
+  <div class="section-title-row">
+    <span class="section-symbol" style="color:var(--prf-muted)">⚙</span>
+    <div>
+      <div class="section-title">Assembly Instructions</div>
+      <div class="section-subtitle">What files go where, how to link, how to embed in Canvas</div>
+    </div>
+  </div>
+
+  <div class="assembly-card">
+    <h3>📁 Files Required in the Same Folder</h3>
+    <ul class="file-list">
+      <li>
+        <span class="file-badge">HTML</span>
+        <div>
+          <strong>index.html</strong> — Scenario Runner (Factory Safety, Hospital Ethics, Research Lab, Land Conflict)<br>
+          <span style="color:var(--prf-muted);font-size:.84rem">Requires prf-loader.js in the same directory</span>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">HTML</span>
+        <div>
+          <strong>worldview-comparison.html</strong> — Framework Comparison with dual radar charts<br>
+          <span style="color:var(--prf-muted);font-size:.84rem">Requires prf-loader.js in the same directory</span>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">HTML</span>
+        <div>
+          <strong>trans-temporal-explorer.html</strong> — Generational Simulation<br>
+          <span style="color:var(--prf-muted);font-size:.84rem">Requires prf-loader.js in the same directory</span>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">JS</span>
+        <div>
+          <strong>prf-loader.js</strong> — PRF personalization module shared by all three apps<br>
+          <span style="color:var(--prf-muted);font-size:.84rem">Must be in the same directory as all HTML files. Do not rename.</span>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">HTML</span>
+        <div>
+          <strong>ucp-metrics-reference.html</strong> — This file<br>
+          <span style="color:var(--prf-muted);font-size:.84rem">Standalone. No external dependencies.</span>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">HTML</span>
+        <div>
+          <strong>ucp-student-guide.html</strong> — Self-paced student guide with quizzes<br>
+          <span style="color:var(--prf-muted);font-size:.84rem">Standalone. No external dependencies.</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="assembly-card">
+    <h3>🌐 Live URLs (GitHub Pages)</h3>
+    <ul class="file-list">
+      <li>
+        <span class="file-badge">LIVE</span>
+        <div>
+          Scenario Runner:<br>
+          <code class="code-inline">https://rmertzman-tech.github.io/Three-Scenario-Sims/</code>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">LIVE</span>
+        <div>
+          Worldview Comparison:<br>
+          <code class="code-inline">https://rmertzman-tech.github.io/Three-Scenario-Sims/worldview-comparison.html</code>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">LIVE</span>
+        <div>
+          Trans-Temporal Explorer:<br>
+          <code class="code-inline">https://rmertzman-tech.github.io/Three-Scenario-Sims/trans-temporal-explorer.html</code>
+        </div>
+      </li>
+      <li>
+        <span class="file-badge">DEPLOY</span>
+        <div>
+          To add this reference page and student guide, copy both HTML files to the repo root and push.
+          They will be immediately available at their respective filenames.
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="assembly-card canvas-instructions">
+    <h3>📚 Embedding in Canvas LMS</h3>
+    <p style="font-size:.88rem;color:#555;margin-bottom:14px;line-height:1.6">
+      Each app can be embedded directly in a Canvas page using an iframe, or linked as an
+      external tool. The simplest approach for each app:
+    </p>
+    <ol>
+      <li>In Canvas, create a new <strong>Page</strong> for each simulation app.</li>
+      <li>Switch the editor to <strong>HTML view</strong> (the &lt;&gt; button).</li>
+      <li>Paste the iframe embed code below, substituting the correct URL.</li>
+      <li>Set the iframe height to at least <code class="code-inline">900px</code>
+          — the apps are tall on first run.</li>
+      <li>To link to this reference page from within an app page, add a standard
+          HTML anchor: <code class="code-inline">&lt;a href="URL" target="_blank"&gt;Open Metrics Reference&lt;/a&gt;</code></li>
+    </ol>
+    <div style="background:#f0f4f8;border:1px solid var(--prf-border);border-radius:6px;
+                padding:12px 14px;margin-top:14px;font-family:'Courier New',monospace;
+                font-size:.8rem;color:var(--prf-slate);line-height:1.8;overflow-x:auto">
+      &lt;iframe<br>
+      &nbsp;&nbsp;src="https://rmertzman-tech.github.io/Three-Scenario-Sims/"<br>
+      &nbsp;&nbsp;width="100%"<br>
+      &nbsp;&nbsp;height="1000"<br>
+      &nbsp;&nbsp;frameborder="0"<br>
+      &nbsp;&nbsp;allowfullscreen<br>
+      &gt;&lt;/iframe&gt;
+    </div>
+    <p style="font-size:.82rem;color:var(--prf-muted);margin-top:10px;font-style:italic">
+      Note: prf-loader.js uses localStorage, which persists across browser sessions but not
+      across different devices. Students loading their PRF profile on a phone will need to
+      reload it when switching to a laptop. Advise students to keep their PRF JSON file
+      accessible (saved to their desktop or a cloud folder).
+    </p>
+  </div>
+
+  <div class="assembly-card">
+    <h3>🔑 PRF JSON File — What Students Need</h3>
+    <p style="font-size:.88rem;color:#555;line-height:1.6;margin-bottom:14px">
+      The PRF loader accepts a JSON file produced by the PRF-22 scoring instrument.
+      The file must have this structure (generated automatically by the PRF-22 scoring app):
+    </p>
+    <div style="background:#0f1c30;border-radius:8px;padding:14px 16px;
+                font-family:'Courier New',monospace;font-size:.8rem;
+                color:#cdd8f0;line-height:1.8;overflow-x:auto">
+{<br>
+&nbsp;&nbsp;"version": "1.0",<br>
+&nbsp;&nbsp;"generated": "2026-03-18T14:30:00Z",<br>
+&nbsp;&nbsp;"respondent_id": "optional-student-code",<br>
+&nbsp;&nbsp;"foundations": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"CareWeight":            0.82,  <span style="color:#7a9ab0">// z(Item1)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;"FairnessWeight":        1.14,  <span style="color:#7a9ab0">// z(Item2)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;"BindingWeight":         0.31,  <span style="color:#7a9ab0">// mean(z(Items 3-5))</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;"IndividualizingWeight": 0.98,  <span style="color:#7a9ab0">// mean(z(Items 1-2))</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Conservation":         -0.22,  <span style="color:#7a9ab0">// mean(z(Items 11-12))</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;"Openness":              0.44   <span style="color:#7a9ab0">// z(Item13) - Conservation</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;"atcf": {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"ConstraintSensitivity": 0.38,  <span style="color:#7a9ab0">// reverse(z(Item20))</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;"DepletionSensitivity":  0.55,  <span style="color:#7a9ab0">// reverse(z(Item21))</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;"SystemResponsibility":  3      <span style="color:#7a9ab0">// 1-4 ordinal from Item22</span><br>
+&nbsp;&nbsp;}<br>
+}
+    </div>
+    <p style="font-size:.82rem;color:var(--prf-muted);margin-top:10px;font-style:italic">
+      Students load this file once using the "⬆ Load PRF JSON" button in any app's
+      header bar. The profile persists in their browser's localStorage and is shared
+      automatically across all three apps.
+    </p>
+  </div>
+
+</section>
+
+</main>
+
+<footer style="text-align:center;font-size:.73rem;color:var(--prf-muted);padding:24px;
+               font-family:'Courier New',monospace;border-top:1px solid var(--prf-border);
+               margin-top:20px">
+  UCP Metrics Reference v1.0 · Ethics Beyond Boundaries · Saint Petersburg College<br>
+  Engine: UCP Backend (Render) · Formulas accurate to ucp_final_singlefile.py
+</footer>
+
+<script>
+  function toggleTech(btn) {
+    const block = btn.parentElement;
+    block.classList.toggle('tech-open');
+  }
+
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('.ref-section');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        navItems.forEach(n => {
+          n.classList.toggle('active', n.getAttribute('href') === `#${id}`);
+        });
+      }
+    });
+  }, { threshold: 0.25 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
