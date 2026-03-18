@@ -1122,6 +1122,7 @@
   }
 
 </style>
+<script src="prf-loader.js"></script>
 </head>
 <body>
 
@@ -1140,6 +1141,37 @@
   <span class="status-dot checking" id="statusDot"></span>
   <span id="statusText">Connecting to UCP engine…</span>
   <span style="margin-left:auto; opacity:.45">backend: ucp-backend-4dig.onrender.com</span>
+</div>
+
+<!-- PRF Profile bar — populated by prf-loader.js -->
+<div id="prf-bar" style="background:#1e2d4a;border-bottom:1px solid rgba(255,255,255,.08);
+     padding:6px 32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+  <span style="font-family:'Courier New',monospace;font-size:.7rem;
+               text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4)">
+    PRF Profile
+  </span>
+  <span id="prf-badge-wrap">
+    <span style="font-family:'Courier New',monospace;font-size:.72rem;
+                 color:rgba(255,255,255,.35);font-style:italic">
+      No PRF profile loaded — interpretations are general.
+    </span>
+  </span>
+  <span style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <label for="prf-file-input-main" style="padding:4px 12px;background:rgba(255,255,255,.08);
+           border:1px solid rgba(255,255,255,.2);border-radius:4px;cursor:pointer;
+           font-family:'Courier New',monospace;font-size:.68rem;color:rgba(255,255,255,.65);
+           text-transform:uppercase;letter-spacing:.08em;transition:all .2s">
+      ⬆ Load PRF JSON
+    </label>
+    <input type="file" id="prf-file-input-main" accept=".json" style="display:none"
+           onchange="loadPRFFile(this)">
+    <button onclick="clearPRFProfile()" id="prf-clear-btn"
+      style="padding:4px 10px;background:transparent;border:1px solid rgba(255,255,255,.15);
+             border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;
+             font-size:.66rem;color:rgba(255,255,255,.4);display:none">
+      ✕ Clear
+    </button>
+  </span>
 </div>
 
 
@@ -2486,6 +2518,9 @@
 
       <!-- Combined reading — shown first to frame the detailed panels below -->
       ${buildCombinedReading(mC.lambda_raw, mC.lambda_perceived, mC.friction, SCENARIO_DISPLAY_NAMES[idx])}
+      ${window.UCPProfile && UCPProfile.isLoaded()
+        ? UCPProfile.personalize('combined', { raw: mC.lambda_raw, perceived: mC.lambda_perceived, friction: mC.friction })
+        : ''}
 
       <!-- Three metric cards — with phenomenological threshold phrases -->
       <div class="metrics-row">
@@ -2533,9 +2568,15 @@
 
       <!-- Option 2: Suppression Gap -->
       ${buildSuppressionGap(mC.lambda_raw, mC.lambda_perceived, SCENARIO_DISPLAY_NAMES[idx])}
+      ${window.UCPProfile && UCPProfile.isLoaded()
+        ? UCPProfile.personalize('gap', { raw: mC.lambda_raw, perceived: mC.lambda_perceived })
+        : ''}
 
       <!-- Option 3: First-person voice narrative -->
       ${buildVoiceNarrative(mC.lambda_raw, mC.lambda_perceived, mC.friction, SCENARIO_DISPLAY_NAMES[idx])}
+      ${window.UCPProfile && UCPProfile.isLoaded()
+        ? UCPProfile.personalize('voice', { raw: mC.lambda_raw, perceived: mC.lambda_perceived, friction: mC.friction })
+        : ''}
 
       <!-- Reform comparison -->
       ${reformHTML}
@@ -2549,6 +2590,9 @@
       <!-- Interpretation -->
       <div class="interpretation">
         ${buildInterpretation(mC, SCENARIO_DISPLAY_NAMES[idx])}
+        ${window.UCPProfile && UCPProfile.isLoaded()
+          ? UCPProfile.personalize('friction', { raw: mC.lambda_raw, perceived: mC.lambda_perceived, friction: mC.friction })
+          : ''}
       </div>
 
     `;
@@ -2675,6 +2719,46 @@
       });
     });
   }
+
+  // ─────────────────────────────────────────────────
+  // PRF PROFILE HELPERS
+  // ─────────────────────────────────────────────────
+  function loadPRFFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const result = window.UCPProfile ? UCPProfile.load(e.target.result) : { ok: false, error: 'PRF loader not available' };
+      if (result.ok) {
+        document.getElementById('prf-badge-wrap').innerHTML = UCPProfile.getBadgeHTML();
+        document.getElementById('prf-clear-btn').style.display = 'inline-block';
+      } else {
+        document.getElementById('prf-badge-wrap').innerHTML =
+          `<span style="font-family:'Courier New',monospace;font-size:.72rem;color:#c87843">
+            Error loading PRF: ${result.error}
+          </span>`;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function clearPRFProfile() {
+    if (window.UCPProfile) UCPProfile.clear();
+    document.getElementById('prf-badge-wrap').innerHTML =
+      `<span style="font-family:'Courier New',monospace;font-size:.72rem;
+               color:rgba(255,255,255,.35);font-style:italic">
+        No PRF profile loaded — interpretations are general.
+       </span>`;
+    document.getElementById('prf-clear-btn').style.display = 'none';
+  }
+
+  // Auto-show badge if profile was loaded in a previous session
+  (function initPRFBadge() {
+    if (window.UCPProfile && UCPProfile.isLoaded()) {
+      document.getElementById('prf-badge-wrap').innerHTML = UCPProfile.getBadgeHTML();
+      document.getElementById('prf-clear-btn').style.display = 'inline-block';
+    }
+  })();
 
   // ─────────────────────────────────────────────────
   // INIT

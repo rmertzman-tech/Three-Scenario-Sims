@@ -1,0 +1,2384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worldview Comparison — Ethics Beyond Boundaries</title>
+<style>
+
+  /* ══════════════════════════════════════════════════
+     PRF COLOR PALETTE & DESIGN TOKENS
+     ══════════════════════════════════════════════════ */
+  :root {
+    --prf-deep:    #1a2744;
+    --prf-navy:    #243560;
+    --prf-slate:   #3a5080;
+    --prf-sky:     #4a7fb5;
+    --prf-ice:     #7fb3d3;
+    --prf-gold:    #c9a84c;
+    --prf-amber:   #e8c56a;
+    --prf-warm:    #f5edd8;
+    --prf-paper:   #faf8f4;
+    --prf-ink:     #1e2433;
+    --prf-muted:   #6b7a9a;
+    --prf-success: #3a8a5c;
+    --prf-warn:    #c87843;
+    --prf-danger:  #b84444;
+    --prf-border:  #d0d8e8;
+
+    /* Framework A = Sky Blue, Framework B = Gold */
+    --fw-a:        #4a7fb5;
+    --fw-a-light:  #ddeaf7;
+    --fw-b:        #c9a84c;
+    --fw-b-light:  #f7edd5;
+    --fw-mix:      #6b7a9a;
+    --fw-mix-light:#edf0f6;
+
+    --radius:      10px;
+    --shadow-sm:   0 2px 8px rgba(26,39,68,.10);
+    --shadow-md:   0 4px 20px rgba(26,39,68,.15);
+    --shadow-lg:   0 8px 40px rgba(26,39,68,.22);
+    --transition:  all .25s ease;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--prf-paper);
+    color: var(--prf-ink);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ */
+  header {
+    background: linear-gradient(135deg, var(--prf-deep) 0%, var(--prf-navy) 60%, var(--prf-slate) 100%);
+    color: #fff;
+    padding: 28px 32px 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -55deg, transparent, transparent 40px,
+      rgba(255,255,255,.025) 40px, rgba(255,255,255,.025) 80px
+    );
+    pointer-events: none;
+  }
+
+  .header-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+
+  .course-tag {
+    font-family: 'Courier New', monospace;
+    font-size: .72rem; letter-spacing: .12em;
+    color: var(--prf-amber); text-transform: uppercase; margin-bottom: 8px;
+  }
+
+  header h1 { font-size: 1.75rem; font-weight: normal; line-height: 1.2; }
+  header h1 span { color: var(--prf-amber); }
+  header p { margin-top: 8px; font-size: .92rem; color: rgba(255,255,255,.72); font-style: italic; line-height: 1.5; }
+
+  /* ══════════════════════════════════════════════════
+     STATUS BAR
+     ══════════════════════════════════════════════════ */
+  .status-bar {
+    background: var(--prf-deep); color: rgba(255,255,255,.55);
+    font-family: 'Courier New', monospace; font-size: .72rem;
+    padding: 6px 32px; display: flex; align-items: center; gap: 16px;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #888; display: inline-block; transition: background .4s;
+  }
+  .status-dot.connected { background: #4cba7f; box-shadow: 0 0 6px #4cba7f; }
+  .status-dot.error     { background: var(--prf-danger); }
+  .status-dot.checking  { background: var(--prf-amber); animation: pulse 1s infinite; }
+
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  @keyframes spin  { to { transform: rotate(360deg); } }
+
+  /* ══════════════════════════════════════════════════
+     MAIN LAYOUT
+     ══════════════════════════════════════════════════ */
+  main {
+    max-width: 960px;
+    margin: 32px auto;
+    padding: 0 20px;
+    display: flex; flex-direction: column; gap: 28px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     CARD COMPONENT
+     ══════════════════════════════════════════════════ */
+  .card {
+    background: #fff;
+    border: 1px solid var(--prf-border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background: linear-gradient(90deg, var(--prf-navy), var(--prf-slate));
+    color: #fff; padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .card-header h2 { font-size: 1rem; font-weight: normal; letter-spacing: .02em; }
+
+  .card-num {
+    background: var(--prf-gold); color: var(--prf-deep);
+    font-family: 'Courier New', monospace; font-size: .78rem;
+    font-weight: bold; padding: 2px 8px; border-radius: 4px;
+  }
+
+  .card-body { padding: 20px; }
+
+  /* ══════════════════════════════════════════════════
+     FRAMEWORK PICKER
+     ══════════════════════════════════════════════════ */
+  .picker-note {
+    font-size: .88rem; line-height: 1.6; color: #555;
+    margin-bottom: 18px; font-style: italic;
+    padding: 10px 14px;
+    background: rgba(201,168,76,.1);
+    border-left: 3px solid var(--prf-gold);
+    border-radius: 0 6px 6px 0;
+  }
+
+  .picker-note strong { color: var(--prf-navy); font-style: normal; }
+
+  .picker-labels {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-bottom: 12px;
+  }
+
+  .picker-label {
+    font-family: 'Courier New', monospace; font-size: .76rem;
+    text-transform: uppercase; letter-spacing: .1em;
+    padding: 6px 12px; border-radius: 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .picker-label.a { background: var(--fw-a-light); color: var(--fw-a); }
+  .picker-label.b { background: var(--fw-b-light); color: #8a6a20; }
+
+  .picker-label .color-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .picker-label.a .color-dot { background: var(--fw-a); }
+  .picker-label.b .color-dot { background: var(--fw-b); }
+
+  .fw-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+
+  .fw-card {
+    border: 2px solid var(--prf-border);
+    border-radius: 8px;
+    padding: 12px 10px;
+    cursor: pointer;
+    transition: var(--transition);
+    background: #fff;
+    text-align: center;
+    position: relative;
+    user-select: none;
+  }
+
+  .fw-card:hover { border-color: var(--prf-sky); box-shadow: var(--shadow-sm); }
+
+  .fw-card.selected-a {
+    border-color: var(--fw-a);
+    background: var(--fw-a-light);
+    box-shadow: 0 0 0 3px rgba(74,127,181,.2);
+  }
+
+  .fw-card.selected-b {
+    border-color: var(--fw-b);
+    background: var(--fw-b-light);
+    box-shadow: 0 0 0 3px rgba(201,168,76,.2);
+  }
+
+  .fw-card .selection-badge {
+    position: absolute; top: -8px; right: -8px;
+    width: 22px; height: 22px; border-radius: 50%;
+    font-size: .72rem; font-weight: bold; color: #fff;
+    display: none; align-items: center; justify-content: center;
+    font-family: 'Courier New', monospace;
+  }
+
+  .fw-card.selected-a .selection-badge { display: flex; background: var(--fw-a); }
+  .fw-card.selected-b .selection-badge { display: flex; background: var(--fw-b); }
+
+  .fw-card .fw-icon { font-size: 1.6em; margin-bottom: 5px; }
+
+  .fw-card .fw-card-name {
+    font-size: .78rem; font-weight: bold;
+    color: var(--prf-navy); line-height: 1.25;
+    margin-bottom: 4px;
+  }
+
+  .fw-card .fw-card-tags {
+    font-size: .65rem; color: var(--prf-muted);
+    font-family: 'Courier New', monospace;
+    line-height: 1.4;
+  }
+
+  /* Selected state text colors */
+  .fw-card.selected-a .fw-card-name { color: var(--fw-a); }
+  .fw-card.selected-b .fw-card-name { color: #8a6a20; }
+
+  /* ══════════════════════════════════════════════════
+     SCENARIO & OPTIONS
+     ══════════════════════════════════════════════════ */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .option-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .option-label {
+    font-family: 'Courier New', monospace; font-size: .76rem;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--prf-slate);
+  }
+
+  .scenario-select {
+    font-family: 'Georgia', serif; font-size: .9rem;
+    padding: 10px 12px; border: 1px solid var(--prf-border);
+    border-radius: 8px; background: #fff; color: var(--prf-ink);
+    cursor: pointer; outline: none; transition: var(--transition);
+    width: 100%;
+  }
+
+  .scenario-select:focus { border-color: var(--prf-sky); box-shadow: 0 0 0 3px rgba(74,127,181,.15); }
+
+  .scenario-desc-text {
+    font-size: .82rem; color: #555; line-height: 1.55;
+    font-style: italic; padding: 8px 10px;
+    background: var(--prf-warm); border-radius: 6px;
+  }
+
+  /* Slider row */
+  .slider-group { display: flex; flex-direction: column; gap: 6px; }
+
+  .slider-label-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Courier New', monospace; font-size: .76rem;
+    text-transform: uppercase; letter-spacing: .08em; color: var(--prf-slate);
+  }
+
+  .slider-val {
+    background: var(--prf-deep); color: var(--prf-amber);
+    padding: 1px 7px; border-radius: 4px; font-size: .76rem;
+  }
+
+  .slider-poles {
+    display: flex; justify-content: space-between;
+    font-size: .67rem; color: var(--prf-muted); font-family: 'Courier New', monospace;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; border-radius: 3px;
+    background: var(--prf-border); outline: none; transition: var(--transition);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--prf-sky); border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.25); cursor: pointer; transition: var(--transition);
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover { background: var(--prf-navy); transform: scale(1.15); }
+
+  .dominance-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--prf-warm);
+    border: 1px solid var(--prf-border); border-radius: 8px;
+    font-size: .84rem; color: var(--prf-ink);
+    margin-bottom: 20px;
+  }
+
+  .dominance-row label { font-family: 'Courier New', monospace; font-size: .76rem; text-transform: uppercase; letter-spacing: .06em; color: var(--prf-slate); }
+  .dominance-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--prf-sky); }
+  .dominance-row .dom-desc { font-size: .78rem; color: var(--prf-muted); font-style: italic; }
+
+  /* ══════════════════════════════════════════════════
+     RUN BUTTON
+     ══════════════════════════════════════════════════ */
+  .run-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--prf-navy), var(--prf-sky));
+    color: #fff; border: none; border-radius: 8px;
+    font-family: 'Georgia', serif; font-size: 1rem;
+    cursor: pointer; transition: var(--transition);
+    box-shadow: var(--shadow-sm); letter-spacing: .02em;
+  }
+
+  .run-btn:hover  { transform: translateY(-1px); box-shadow: var(--shadow-md); filter: brightness(1.08); }
+  .run-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; filter: none; }
+
+  .btn-spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+    border-radius: 50%; animation: spin .7s linear infinite; display: none;
+  }
+
+  .run-btn.loading .btn-spinner { display: block; }
+  .run-btn.loading .btn-text    { opacity: .7; }
+
+  /* ══════════════════════════════════════════════════
+     ERROR BOX
+     ══════════════════════════════════════════════════ */
+  .error-box {
+    background: #fff5f5; border: 1px solid #fcc;
+    border-left: 4px solid var(--prf-danger); border-radius: 8px;
+    padding: 14px 16px; font-size: .88rem; color: var(--prf-danger);
+    margin-top: 16px; display: none; line-height: 1.55;
+  }
+  .error-box.visible { display: block; }
+
+  /* ══════════════════════════════════════════════════
+     RESULTS SECTION
+     ══════════════════════════════════════════════════ */
+  #results { display: none; }
+  #results.visible { display: flex; flex-direction: column; gap: 24px; }
+
+  .results-header {
+    font-family: 'Courier New', monospace; font-size: .72rem;
+    text-transform: uppercase; letter-spacing: .12em; color: var(--prf-muted);
+    padding-bottom: 8px; border-bottom: 1px solid var(--prf-border); margin-bottom: 0;
+  }
+
+  /* ── Three-column metric comparison ── */
+  .comparison-columns {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    gap: 0; align-items: stretch;
+  }
+
+  .comp-col {
+    border: 1px solid var(--prf-border);
+    border-radius: 10px; overflow: hidden;
+  }
+
+  .comp-col.col-a { border-color: var(--fw-a); }
+  .comp-col.col-b { border-color: var(--fw-b); }
+  .comp-col.col-mix { border-color: var(--prf-border); margin: 0 12px; }
+
+  .comp-col-header {
+    padding: 12px 16px; font-weight: bold; font-size: .9rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .col-a .comp-col-header { background: var(--fw-a); color: #fff; }
+  .col-b .comp-col-header { background: var(--fw-b); color: var(--prf-deep); }
+  .col-mix .comp-col-header { background: var(--fw-mix-light); color: var(--prf-slate); }
+
+  .comp-col-header .col-badge {
+    font-family: 'Courier New', monospace; font-size: .7rem; font-weight: normal;
+    opacity: .8;
+  }
+
+  .comp-col-body { padding: 14px 16px; }
+
+  .comp-metric {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+  }
+
+  .comp-metric:last-of-type { border-bottom: none; }
+
+  .comp-metric .cm-label {
+    font-family: 'Courier New', monospace; font-size: .64rem;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--prf-muted); margin-bottom: 4px;
+  }
+
+  .comp-metric .cm-value {
+    font-size: 1.75rem; font-weight: bold; color: var(--prf-navy); line-height: 1;
+  }
+
+  .comp-metric .cm-name { font-size: .72rem; color: var(--prf-slate); font-style: italic; margin-top: 3px; }
+
+  .cm-value.good { color: var(--prf-success); }
+  .cm-value.warn { color: var(--prf-warn); }
+  .cm-value.bad  { color: var(--prf-danger); }
+
+  /* Delta badge between columns */
+  .comp-delta {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; font-family: 'Courier New', monospace;
+    font-size: .68rem; color: var(--prf-muted);
+    min-width: 32px;
+  }
+
+  .comp-delta-row { margin-bottom: 34px; }
+  .comp-delta .delta-val { font-size: .78rem; font-weight: bold; }
+  .comp-delta .delta-val.pos { color: var(--prf-success); }
+  .comp-delta .delta-val.neg { color: var(--prf-danger); }
+
+  /* ── Dual chart layout ── */
+  .charts-intro {
+    font-size: .86rem;
+    line-height: 1.65;
+    color: #555;
+    background: var(--prf-warm);
+    border-left: 3px solid var(--prf-sky);
+    padding: 12px 14px;
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 18px;
+  }
+  .charts-intro strong { color: var(--prf-navy); }
+
+  .charts-dual-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .chart-wrap-titled {
+    background: #f8f9fc;
+    border: 1px solid var(--prf-border);
+    border-radius: var(--radius);
+    padding: 14px 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chart-main-title {
+    font-family: 'Courier New', monospace;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--prf-navy);
+    margin-bottom: 2px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .chart-sub-title {
+    font-size: .72rem;
+    color: var(--prf-muted);
+    font-style: italic;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .chart-note {
+    font-size: .72rem;
+    color: var(--prf-muted);
+    font-style: italic;
+    line-height: 1.45;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--prf-border);
+    text-align: center;
+  }
+
+  /* ── MFQ Callout cards ── */
+  .mfq-callout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .mfq-callout {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--prf-border);
+  }
+
+  .mfq-callout-header {
+    padding: 9px 14px;
+    font-size: .82rem;
+    font-weight: bold;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mfq-callout.callout-a .mfq-callout-header { background: var(--fw-a); }
+  .mfq-callout.callout-b .mfq-callout-header { background: var(--fw-b); color: var(--prf-deep); }
+
+  .mfq-callout-body {
+    padding: 12px 14px;
+    background: #fff;
+  }
+
+  .mfq-callout-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .mfq-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: .75rem;
+  }
+
+  .mfq-bar-label {
+    font-family: 'Courier New', monospace;
+    font-size: .67rem;
+    color: var(--prf-muted);
+    width: 100px;
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .mfq-bar-track {
+    flex: 1;
+    height: 8px;
+    background: var(--prf-border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .mfq-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width .8s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  /* Foundation-specific colors */
+  .mfq-bar-fill.f-care      { background: linear-gradient(90deg, #e06060, #c03030); }
+  .mfq-bar-fill.f-fairness  { background: linear-gradient(90deg, #4a7fb5, #2a5090); }
+  .mfq-bar-fill.f-loyalty   { background: linear-gradient(90deg, #6a9a50, #3a7030); }
+  .mfq-bar-fill.f-authority { background: linear-gradient(90deg, #8a6fb5, #5a3f90); }
+  .mfq-bar-fill.f-purity    { background: linear-gradient(90deg, #c9a84c, #9a7820); }
+
+  .mfq-bar-val {
+    font-family: 'Courier New', monospace;
+    font-size: .64rem;
+    color: var(--prf-muted);
+    width: 28px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .mfq-callout-text {
+    font-size: .82rem;
+    line-height: 1.6;
+    color: #444;
+  }
+
+  /* ── Haidt note ── */
+  .haidt-note {
+    font-size: .76rem;
+    color: var(--prf-muted);
+    background: #f4f7fc;
+    border: 1px solid var(--prf-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .haidt-note strong { color: var(--prf-navy); }
+
+  @media (max-width: 680px) {
+    .charts-dual-row  { grid-template-columns: 1fr; }
+    .mfq-callout-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── Framework Profile Cards ── */
+  .profile-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+
+  .profile-card {
+    border-radius: 8px; overflow: hidden;
+    border: 2px solid;
+  }
+
+  .profile-card.card-a { border-color: var(--fw-a); }
+  .profile-card.card-b { border-color: var(--fw-b); }
+
+  .profile-card-header {
+    padding: 11px 16px; font-weight: bold; font-size: .9rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .card-a .profile-card-header { background: var(--fw-a); color: #fff; }
+  .card-b .profile-card-header { background: var(--fw-b); color: var(--prf-deep); }
+
+  .profile-card-body { padding: 14px 16px; background: #fff; }
+
+  .profile-desc {
+    font-size: .88rem; line-height: 1.65; color: #444; margin-bottom: 12px;
+  }
+
+  .profile-tags {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px;
+  }
+
+  .profile-tag {
+    font-family: 'Courier New', monospace; font-size: .67rem;
+    padding: 2px 7px; border-radius: 12px;
+    background: var(--prf-warm); color: var(--prf-slate);
+    border: 1px solid var(--prf-border);
+  }
+
+  .profile-values { font-size: .8rem; color: var(--prf-muted); line-height: 1.5; font-style: italic; }
+
+  /* ── Agent Voices Panel ── */
+  .voices-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+
+  .voices-col { display: flex; flex-direction: column; gap: 8px; }
+
+  .voices-col-header {
+    font-family: 'Courier New', monospace; font-size: .72rem;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--prf-muted);
+    padding-bottom: 6px; border-bottom: 2px solid;
+  }
+
+  .voices-col.col-a .voices-col-header { border-color: var(--fw-a); color: var(--fw-a); }
+  .voices-col.col-b .voices-col-header { border-color: var(--fw-b); color: #8a6a20; }
+
+  .voice-card {
+    background: #f8f9fc; border: 1px solid var(--prf-border);
+    border-radius: 6px; padding: 10px 12px;
+    font-size: .84rem; line-height: 1.6; color: #444;
+  }
+
+  .voice-card .voice-agent {
+    font-family: 'Courier New', monospace; font-size: .68rem;
+    text-transform: uppercase; letter-spacing: .06em;
+    margin-bottom: 4px;
+  }
+
+  .voices-col.col-a .voice-card .voice-agent { color: var(--fw-a); }
+  .voices-col.col-b .voice-card .voice-agent { color: #8a6a20; }
+
+  .voice-card .voice-stats {
+    font-family: 'Courier New', monospace; font-size: .68rem;
+    color: var(--prf-muted); margin-top: 5px;
+  }
+
+  .voice-card .voice-quote {
+    font-style: italic; color: #555;
+    border-left: 2px solid var(--prf-border);
+    padding-left: 8px; margin-top: 5px;
+    font-size: .82rem;
+  }
+
+  /* ── Interpretation ── */
+  .interpretation {
+    background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+    color: #fff; border-radius: 8px; padding: 20px 22px;
+    font-size: .9rem; line-height: 1.7;
+  }
+
+  .interpretation .int-label {
+    font-family: 'Courier New', monospace; font-size: .68rem;
+    text-transform: uppercase; letter-spacing: .12em;
+    color: var(--prf-amber); margin-bottom: 10px;
+  }
+
+  .interpretation p { color: rgba(255,255,255,.88); }
+  .interpretation p + p { margin-top: 8px; }
+  .interpretation strong { color: #fff; }
+
+  /* ── Threshold phrase under each metric value ── */
+  .cm-threshold {
+    font-size: .74rem;
+    color: #666;
+    font-style: italic;
+    line-height: 1.4;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(0,0,0,.07);
+    text-align: center;
+  }
+
+  /* ── Framework Conflict Diagnosis ── */
+  .conflict-diagnosis {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 4px;
+    border: 1px solid var(--prf-border);
+  }
+
+  .conflict-diagnosis.conflict-authority  { background: #fff5f0; border-color: var(--prf-warn); }
+  .conflict-diagnosis.conflict-value      { background: #fff8f0; border-color: var(--prf-gold); }
+  .conflict-diagnosis.conflict-alignment  { background: #f0faf4; border-color: var(--prf-success); }
+  .conflict-diagnosis.conflict-tension    { background: #f4f0fa; border-color: #8a70b5; }
+  .conflict-diagnosis.conflict-temporal   { background: #f0f6fa; border-color: var(--prf-sky); }
+
+  .conflict-diagnosis-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+  }
+
+  .conflict-diagnosis-label {
+    font-family: 'Courier New', monospace; font-size: .68rem;
+    text-transform: uppercase; letter-spacing: .12em; color: var(--prf-muted);
+  }
+
+  .conflict-diagnosis-pattern {
+    font-size: .98rem; font-weight: bold; color: var(--prf-navy);
+  }
+
+  .conflict-authority .conflict-diagnosis-pattern  { color: var(--prf-warn); }
+  .conflict-value     .conflict-diagnosis-pattern  { color: #8a6a20; }
+  .conflict-alignment .conflict-diagnosis-pattern  { color: var(--prf-success); }
+  .conflict-tension   .conflict-diagnosis-pattern  { color: #5a409a; }
+  .conflict-temporal  .conflict-diagnosis-pattern  { color: var(--prf-sky); }
+
+  .conflict-diagnosis-desc {
+    font-size: .88rem; line-height: 1.65; color: #444;
+  }
+
+  .conflict-prediction-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-top: 12px;
+  }
+
+  .conflict-prediction {
+    background: rgba(255,255,255,.7); border-radius: 6px;
+    padding: 9px 12px; font-size: .82rem;
+  }
+
+  .conflict-prediction .pred-label {
+    font-family: 'Courier New', monospace; font-size: .64rem;
+    text-transform: uppercase; letter-spacing: .08em;
+    color: var(--prf-muted); margin-bottom: 3px;
+  }
+
+  .conflict-prediction .pred-text { color: var(--prf-ink); line-height: 1.4; }
+
+  /* ── Per-framework suppression gap (compact variant) ── */
+  .fw-suppression-row {
+    display: flex; gap: 12px; margin-top: 14px;
+  }
+
+  .fw-gap-card {
+    flex: 1; border-radius: 8px; padding: 12px 14px;
+    border: 2px solid;
+  }
+
+  .fw-gap-card.gap-low  { background: #f0faf4; border-color: var(--prf-success); }
+  .fw-gap-card.gap-mid  { background: #fdf8ee; border-color: var(--prf-gold); }
+  .fw-gap-card.gap-high { background: #fff5f2; border-color: var(--prf-warn); }
+  .fw-gap-card.gap-crit { background: #fff0f0; border-color: var(--prf-danger); }
+
+  .fw-gap-card-header {
+    display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;
+  }
+
+  .fw-gap-card-name {
+    font-family: 'Courier New', monospace; font-size: .7rem;
+    text-transform: uppercase; letter-spacing: .08em; color: var(--prf-muted);
+  }
+
+  .fw-gap-number {
+    font-size: 1.4rem; font-weight: bold; line-height: 1;
+  }
+
+  .gap-low  .fw-gap-number { color: var(--prf-success); }
+  .gap-mid  .fw-gap-number { color: var(--prf-gold); }
+  .gap-high .fw-gap-number { color: var(--prf-warn); }
+  .gap-crit .fw-gap-number { color: var(--prf-danger); }
+
+  .fw-gap-title { font-size: .8rem; font-weight: bold; color: var(--prf-navy); margin-bottom: 4px; }
+  .fw-gap-desc  { font-size: .76rem; line-height: 1.5; color: #555; font-style: italic; }
+
+  /* ── Combined reading (compact for worldview app) ── */
+  .fw-combined-reading {
+    border-radius: 8px; padding: 14px 16px;
+    margin-bottom: 0; border: 1px solid var(--prf-border);
+  }
+
+  .fw-combined-reading.state-healthy   { background: #f0faf4; border-color: var(--prf-success); }
+  .fw-combined-reading.state-exhausted { background: #fdf3ee; border-color: var(--prf-warn); }
+  .fw-combined-reading.state-blocked   { background: #fdf8ee; border-color: var(--prf-gold); }
+  .fw-combined-reading.state-breakdown { background: #fff0f0; border-color: var(--prf-danger); }
+  .fw-combined-reading.state-mixed     { background: #f4f7fc; border-color: var(--prf-slate); }
+
+  .fw-combined-label {
+    font-family: 'Courier New', monospace; font-size: .66rem;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--prf-muted); margin-bottom: 4px;
+  }
+
+  .fw-combined-pattern {
+    font-size: .9rem; font-weight: bold; color: var(--prf-navy); margin-bottom: 6px;
+  }
+
+  .state-healthy   .fw-combined-pattern { color: var(--prf-success); }
+  .state-exhausted .fw-combined-pattern { color: var(--prf-warn); }
+  .state-blocked   .fw-combined-pattern { color: #8a6a20; }
+  .state-breakdown .fw-combined-pattern { color: var(--prf-danger); }
+
+  .fw-combined-synthesis { font-size: .84rem; line-height: 1.6; color: #444; }
+  .fw-combined-synthesis strong { color: var(--prf-navy); }
+
+  /* ── Voice narrative (compact for worldview app) ── */
+  .fw-voice-narrative {
+    background: linear-gradient(135deg, #1e2f50 0%, #2a3f6a 100%);
+    border-radius: 8px; padding: 16px 18px; position: relative; overflow: hidden;
+  }
+
+  .fw-voice-narrative::before {
+    content: '"'; position: absolute; top: -8px; left: 8px;
+    font-size: 5rem; color: rgba(255,255,255,.07);
+    font-family: Georgia, serif; line-height: 1; pointer-events: none;
+  }
+
+  .fw-voice-label {
+    font-family: 'Courier New', monospace; font-size: .64rem;
+    text-transform: uppercase; letter-spacing: .12em;
+    color: var(--prf-amber); margin-bottom: 8px;
+  }
+
+  .fw-voice-text {
+    font-size: .88rem; line-height: 1.7;
+    color: rgba(255,255,255,.88); font-style: italic;
+  }
+
+  .fw-voice-attribution {
+    margin-top: 8px; font-size: .68rem;
+    color: rgba(255,255,255,.4); font-family: 'Courier New', monospace;
+  }
+
+  /* ── Per-framework result block ── */
+  .fw-result-block {
+    border: 1px solid var(--prf-border); border-radius: 8px;
+    overflow: hidden; margin-bottom: 16px;
+  }
+
+  .fw-result-block:last-child { margin-bottom: 0; }
+
+  .fw-result-header {
+    padding: 10px 16px; font-size: .88rem; font-weight: bold;
+    color: #fff; display: flex; align-items: center; gap: 8px;
+  }
+
+  .fw-result-header.header-a { background: var(--fw-a); }
+  .fw-result-header.header-b { background: var(--fw-b); color: var(--prf-deep); }
+  .fw-result-header.header-mix { background: var(--fw-mix-light); color: var(--prf-slate); }
+
+  .fw-result-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+
+  /* ── Reflection Prompts ── */
+  .reflection-box {
+    background: var(--prf-warm); border: 1px solid var(--prf-border);
+    border-top: 3px solid var(--prf-gold); border-radius: 0 0 var(--radius) var(--radius);
+    padding: 18px 20px;
+  }
+
+  .reflection-box h3 {
+    font-size: .82rem; font-family: 'Courier New', monospace;
+    text-transform: uppercase; letter-spacing: .1em; color: var(--prf-slate); margin-bottom: 12px;
+  }
+
+  .reflection-box ol { padding-left: 22px; color: #444; font-size: .9rem; line-height: 1.7; }
+  .reflection-box li { margin-bottom: 6px; }
+
+  /* ══════════════════════════════════════════════════
+     FOOTER
+     ══════════════════════════════════════════════════ */
+  footer {
+    text-align: center; font-size: .75rem; color: var(--prf-muted);
+    padding: 24px; font-family: 'Courier New', monospace;
+  }
+
+  /* ══════════════════════════════════════════════════
+     RESPONSIVE
+     ══════════════════════════════════════════════════ */
+  @media (max-width: 680px) {
+    header { padding: 20px 16px; }
+    header h1 { font-size: 1.3rem; }
+    main { padding: 0 12px; margin: 16px auto; gap: 18px; }
+    .fw-grid             { grid-template-columns: repeat(3, 1fr); }
+    .options-grid        { grid-template-columns: 1fr; }
+    .comparison-columns  { grid-template-columns: 1fr; }
+    .comp-col.col-mix    { margin: 12px 0; }
+    .radar-section       { grid-template-columns: 1fr; }
+    .profile-grid        { grid-template-columns: 1fr; }
+    .voices-grid         { grid-template-columns: 1fr; }
+  }
+
+</style>
+<script src="prf-loader.js"></script>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="course-tag">Ethics Beyond Boundaries · Worldview Comparison App v1.0</div>
+    <h1>How Does Each Framework <span>See</span> This?</h1>
+    <p>Pick two moral reasoning frameworks, choose an ethical scenario, and compare what each framework prioritizes, how it reads the situation, and how well agents within it can coordinate.</p>
+  </div>
+</header>
+
+<div class="status-bar">
+  <span class="status-dot checking" id="statusDot"></span>
+  <span id="statusText">Connecting to UCP engine…</span>
+  <span style="margin-left:auto; opacity:.45">backend: ucp-backend-4dig.onrender.com</span>
+</div>
+
+<!-- PRF Profile bar -->
+<div id="prf-bar" style="background:#1e2d4a;border-bottom:1px solid rgba(255,255,255,.08);
+     padding:6px 32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+  <span style="font-family:'Courier New',monospace;font-size:.7rem;
+               text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4)">
+    PRF Profile
+  </span>
+  <span id="prf-badge-wrap">
+    <span style="font-family:'Courier New',monospace;font-size:.72rem;
+                 color:rgba(255,255,255,.35);font-style:italic">
+      No PRF profile loaded — interpretations are general.
+    </span>
+  </span>
+  <span style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <label for="prf-file-input-wc" style="padding:4px 12px;background:rgba(255,255,255,.08);
+           border:1px solid rgba(255,255,255,.2);border-radius:4px;cursor:pointer;
+           font-family:'Courier New',monospace;font-size:.68rem;color:rgba(255,255,255,.65);
+           text-transform:uppercase;letter-spacing:.08em">
+      ⬆ Load PRF JSON
+    </label>
+    <input type="file" id="prf-file-input-wc" accept=".json" style="display:none"
+           onchange="loadPRFFile(this)">
+    <button onclick="clearPRFProfile()" id="prf-clear-btn"
+      style="padding:4px 10px;background:transparent;border:1px solid rgba(255,255,255,.15);
+             border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;
+             font-size:.66rem;color:rgba(255,255,255,.4);display:none">
+      ✕ Clear
+    </button>
+  </span>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     MAIN
+     ══════════════════════════════════════════════════ -->
+<main>
+
+  <!-- ── Step 1: Pick Two Frameworks ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">01</span>
+      <h2>Choose Two Moral Reasoning Frameworks</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="picker-note">
+        <strong>These are reasoning styles, not demographic groups.</strong>
+        Each framework describes <em>how agents reason about moral obligations</em> —
+        not who they are culturally or ethnically. Any person in any role can reason in any of
+        these modes. Click one card for <strong style="color:var(--fw-a)">Framework A</strong>
+        and a different card for <strong style="color:#8a6a20">Framework B</strong>.
+      </div>
+
+      <div class="picker-labels">
+        <div class="picker-label a">
+          <span class="color-dot"></span>
+          <span id="label-a">Framework A — not selected</span>
+        </div>
+        <div class="picker-label b">
+          <span class="color-dot"></span>
+          <span id="label-b">Framework B — not selected</span>
+        </div>
+      </div>
+
+      <div class="fw-grid" id="fwGrid">
+
+        <div class="fw-card" data-key="hierarchical_role" onclick="selectFramework('hierarchical_role')">
+          <div class="selection-badge" id="badge-hierarchical_role">A</div>
+          <div class="fw-icon">🏛️</div>
+          <div class="fw-card-name">Hierarchical / Role-Based</div>
+          <div class="fw-card-tags">order · roles · structure</div>
+        </div>
+
+        <div class="fw-card" data-key="boundary_integrity" onclick="selectFramework('boundary_integrity')">
+          <div class="selection-badge" id="badge-boundary_integrity">A</div>
+          <div class="fw-icon">🛡️</div>
+          <div class="fw-card-name">Boundary / Integrity-Centered</div>
+          <div class="fw-card-tags">purity · limits · non-negotiable</div>
+        </div>
+
+        <div class="fw-card" data-key="individual_rights" onclick="selectFramework('individual_rights')">
+          <div class="selection-badge" id="badge-individual_rights">A</div>
+          <div class="fw-icon">⚖️</div>
+          <div class="fw-card-name">Individual / Rights-Based</div>
+          <div class="fw-card-tags">autonomy · fairness · procedure</div>
+        </div>
+
+        <div class="fw-card" data-key="relational_we" onclick="selectFramework('relational_we')">
+          <div class="selection-badge" id="badge-relational_we">A</div>
+          <div class="fw-icon">🤝</div>
+          <div class="fw-card-name">Relational / We-Centered</div>
+          <div class="fw-card-tags">reciprocity · dignity · community</div>
+        </div>
+
+        <div class="fw-card" data-key="custodial_stewardship" onclick="selectFramework('custodial_stewardship')">
+          <div class="selection-badge" id="badge-custodial_stewardship">A</div>
+          <div class="fw-icon">🌱</div>
+          <div class="fw-card-name">Custodial / Stewardship</div>
+          <div class="fw-card-tags">stewardship · ancestors · continuity</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── Step 2: Scenario & Options ── -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-num">02</span>
+      <h2>Choose Scenario &amp; Options</h2>
+    </div>
+    <div class="card-body">
+
+      <div class="options-grid">
+
+        <div class="option-group">
+          <label class="option-label" for="scenarioSelect">Ethical Scenario</label>
+          <select class="scenario-select" id="scenarioSelect" onchange="updateScenarioDesc()">
+            <option value="whistleblower">Factory Safety / Whistleblower</option>
+            <option value="misinformation_shock">Hospital Ethics / Epistemic Crisis</option>
+            <option value="land_conflict">Land and Stewardship Conflict</option>
+            <option value="resource_scarcity">Resource Scarcity</option>
+          </select>
+          <div class="scenario-desc-text" id="scenarioDesc">
+            An employee discovers serious misconduct. Reporting risks their career; silence causes institutional harm. High fairness/care stress, strong community-role conflict.
+          </div>
+        </div>
+
+        <div class="option-group">
+          <div class="slider-group">
+            <div class="slider-label-row">
+              <span>Evidence Quality</span>
+              <span class="slider-val" id="ev-val">0.50</span>
+            </div>
+            <input type="range" min="0" max="1" step="0.05" value="0.50" id="ev-slider"
+                   oninput="document.getElementById('ev-val').textContent = parseFloat(this.value).toFixed(2)">
+            <div class="slider-poles"><span>Distorted / Filtered</span><span>Empirically Calibrated</span></div>
+            <div style="font-size:.74rem;color:var(--prf-muted);font-style:italic;margin-top:4px">
+              Applied equally to both Framework A and B agents
+            </div>
+          </div>
+
+          <div class="slider-group" style="margin-top:14px">
+            <div class="slider-label-row">
+              <span>Group Size</span>
+              <span class="slider-val" id="ag-val">14</span>
+            </div>
+            <input type="range" min="6" max="20" step="2" value="14" id="ag-slider"
+                   oninput="document.getElementById('ag-val').textContent = this.value">
+            <div class="slider-poles"><span>6 agents</span><span>20 agents</span></div>
+          </div>
+
+          <div class="slider-group" style="margin-top:14px">
+            <div class="slider-label-row">
+              <span>Simulation Steps</span>
+              <span class="slider-val" id="st-val">8</span>
+            </div>
+            <input type="range" min="4" max="16" step="2" value="8" id="st-slider"
+                   oninput="document.getElementById('st-val').textContent = this.value">
+            <div class="slider-poles"><span>4 steps</span><span>16 steps</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="dominance-row">
+        <input type="checkbox" id="dominance-check" checked>
+        <label for="dominance-check" class="toggle-label">Run Mixed scenario (50 / 50)</label>
+        <span class="dom-desc"> — also runs a third simulation with equal representation of both frameworks, shown in the center column</span>
+      </div>
+
+      <button class="run-btn" id="runBtn" onclick="runComparison()">
+        <div class="btn-spinner" id="btnSpinner"></div>
+        <span class="btn-text">▶ Compare Frameworks</span>
+      </button>
+
+      <div class="error-box" id="errBox"></div>
+
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════
+       RESULTS (hidden until comparison runs)
+       ══════════════════════════════════════════════ -->
+  <div id="results">
+
+    <!-- Results header -->
+    <div class="card">
+      <div class="card-body">
+        <div class="results-header" id="resultsHeader">Comparison Results</div>
+      </div>
+    </div>
+
+    <!-- Framework profiles + dual radar charts -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">A</span>
+        <h2>Framework Profiles — Two Lenses on the Same Frameworks</h2>
+      </div>
+      <div class="card-body">
+
+        <div class="charts-intro">
+          Two charts read each framework through different lenses.
+          <strong>Chart 1 (UCP Coordination Profile)</strong> shows how the framework weights
+          coordination signals in the simulation engine — what it amplifies and what it discounts
+          when agents are trying to work together.
+          <strong>Chart 2 (Moral Foundations Profile)</strong> shows the psychological architecture
+          of the framework using Haidt et al.'s five moral foundations — the emotional and
+          intuitive building blocks from which moral reasoning is constructed.
+          The same framework looks different through each lens, and both lenses are needed
+          to understand why two frameworks produce the simulation numbers they do.
+        </div>
+
+        <!-- Dual chart row -->
+        <div class="charts-dual-row">
+
+          <div class="chart-wrap-titled">
+            <div class="chart-main-title">Chart 1 — UCP Coordination Profile</div>
+            <div class="chart-sub-title">How each framework weights coordination signals in the engine</div>
+            <canvas id="combinedRadar" width="300" height="300" style="display:block;margin:0 auto"></canvas>
+            <div class="radar-legend" style="display:flex;justify-content:center;gap:16px;margin-top:8px">
+              <div style="display:flex;align-items:center;gap:6px;font-size:.76rem">
+                <div style="width:10px;height:10px;border-radius:50%;background:var(--fw-a)"></div>
+                <span id="legendA">Framework A</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:.76rem">
+                <div style="width:10px;height:10px;border-radius:50%;background:var(--fw-b)"></div>
+                <span id="legendB">Framework B</span>
+              </div>
+            </div>
+            <div class="chart-note">
+              Axes show relative weighting of each coordination signal, normalized
+              to the maximum weight used by any framework. A value of 100 means this
+              framework weights this signal more heavily than any other.
+            </div>
+          </div>
+
+          <div class="chart-wrap-titled">
+            <div class="chart-main-title">Chart 2 — Moral Foundations Profile</div>
+            <div class="chart-sub-title">Haidt et al. five foundations — psychological architecture of moral reasoning</div>
+            <canvas id="mfqRadar" width="300" height="300" style="display:block;margin:0 auto"></canvas>
+            <div class="radar-legend" style="display:flex;justify-content:center;gap:16px;margin-top:8px">
+              <div style="display:flex;align-items:center;gap:6px;font-size:.76rem">
+                <div style="width:10px;height:10px;border-radius:50%;background:var(--fw-a)"></div>
+                <span id="legendMFQA">Framework A</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:.76rem">
+                <div style="width:10px;height:10px;border-radius:50%;background:var(--fw-b)"></div>
+                <span id="legendMFQB">Framework B</span>
+              </div>
+            </div>
+            <div class="chart-note">
+              Values derived from MFQ research literature (Graham, Haidt et al.).
+              These are <em>descriptive</em> — they show how people with each reasoning
+              style tend to weight moral intuitions, not which framework is more ethical.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Haidt foundations key -->
+        <div class="haidt-note">
+          <strong>The five moral foundations (Haidt et al.):</strong>
+          <strong style="color:#c03030">Care/Harm</strong> — protecting people from suffering ·
+          <strong style="color:#2a5090">Fairness/Reciprocity</strong> — equal treatment and proportional justice ·
+          <strong style="color:#3a7030">Loyalty/Betrayal</strong> — group solidarity and commitment ·
+          <strong style="color:#5a3f90">Authority/Subversion</strong> — legitimate hierarchy and inherited order ·
+          <strong style="color:#9a7820">Purity/Sanctity</strong> — protecting what is sacred or inviolable
+        </div>
+
+        <!-- Per-framework MFQ callout cards -->
+        <div class="mfq-callout-grid">
+          <div class="mfq-callout callout-a">
+            <div class="mfq-callout-header">
+              <span>A</span>
+              <span id="calloutTitleA">Framework A</span>
+            </div>
+            <div class="mfq-callout-body">
+              <div class="mfq-callout-bars" id="calloutBarsA"></div>
+              <div class="mfq-callout-text" id="calloutTextA">—</div>
+            </div>
+          </div>
+          <div class="mfq-callout callout-b">
+            <div class="mfq-callout-header">
+              <span>B</span>
+              <span id="calloutTitleB">Framework B</span>
+            </div>
+            <div class="mfq-callout-body">
+              <div class="mfq-callout-bars" id="calloutBarsB"></div>
+              <div class="mfq-callout-text" id="calloutTextB">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile cards -->
+        <div class="profile-grid">
+          <div class="profile-card card-a">
+            <div class="profile-card-header">
+              <span>A</span>
+              <span id="profileTitleA">Framework A</span>
+            </div>
+            <div class="profile-card-body">
+              <div class="profile-desc" id="profileDescA">—</div>
+              <div class="profile-tags" id="profileTagsA"></div>
+              <div class="profile-values" id="profileValuesA"></div>
+            </div>
+          </div>
+          <div class="profile-card card-b">
+            <div class="profile-card-header">
+              <span>B</span>
+              <span id="profileTitleB">Framework B</span>
+            </div>
+            <div class="profile-card-body">
+              <div class="profile-desc" id="profileDescB">—</div>
+              <div class="profile-tags" id="profileTagsB"></div>
+              <div class="profile-values" id="profileValuesB"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Framework Conflict Diagnosis — shown before metrics -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">A½</span>
+        <h2>Structural Conflict Analysis — What to Expect Before You See the Numbers</h2>
+      </div>
+      <div class="card-body">
+        <div id="conflictDiagnosis">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- UCP Metric Comparison -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">B</span>
+        <h2>UCP Metrics — Side by Side</h2>
+      </div>
+      <div class="card-body">
+        <div class="comparison-columns" id="compCols">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent Voices -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">C</span>
+        <h2>Agent Voices — How Each Framework Speaks</h2>
+      </div>
+      <div class="card-body">
+        <div class="voices-grid" id="voicesGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Per-framework deep readings -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">C½</span>
+        <h2>Reading Each System — Suppression, Pattern &amp; Felt Experience</h2>
+      </div>
+      <div class="card-body">
+        <div id="perFwReadings">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Interpretation -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-num">D</span>
+        <h2>Friction Reading — Coordination Cost Comparison</h2>
+      </div>
+      <div class="card-body">
+        <div class="interpretation" id="interpBox">
+          <div class="int-label">Friction Reading Only — see Section C½ for suppression and voice</div>
+          <p style="font-size:.76rem;color:rgba(255,255,255,.5);font-style:italic;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.12)">
+            This panel describes coordination cost (drag). What that cost means morally —
+            whether it represents injustice, institutional failure, relational fracture, or
+            degraded stewardship — depends on the framework through which you interpret it.
+            The same numbers carry different significance to different PRFs.
+            <span style="color:rgba(255,255,255,.28)"> · No PRF profile loaded — showing general interpretation.</span>
+          </p>
+          <p id="interpText">—</p>
+        </div>
+      </div>
+
+      <!-- Discussion prompts -->
+      <div class="reflection-box">
+        <h3>📝 Discussion Prompts</h3>
+        <ol id="discussionPrompts">
+          <li>Look at the radar overlay. Which axes diverge most between the two frameworks? What would a disagreement look like in practice when agents with these profiles are in the same room?</li>
+          <li>Compare λ Perceived across the three columns. Does mixing the frameworks increase or decrease experienced coordination? Why might that surprise you?</li>
+          <li>Read the agent voices side by side. Could you identify which framework is speaking if the labels were removed? What language cues give each framework away?</li>
+          <li>Which framework produced lower friction in this scenario? Does that mean it is the more ethical framework — or just the more coordinated one? Is there a difference?</li>
+        </ol>
+      </div>
+    </div>
+
+  </div><!-- /#results -->
+
+</main>
+
+<footer>Worldview Comparison v1.0 · Ethics Beyond Boundaries · Saint Petersburg College · &copy; 2026</footer>
+
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════ -->
+<script>
+
+  const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+  // ─────────────────────────────────────────────────
+  // FRAMEWORK DATA
+  // Display names, descriptions, tags, radar profiles,
+  // and the engine key used in worldview_distribution.
+  // Radar values derived from WORLDVIEW_BLOCK_WEIGHTS
+  // in ucp_final_singlefile.py (scaled 0-100).
+  // ─────────────────────────────────────────────────
+  const FRAMEWORKS = {
+    hierarchical_role: {
+      displayName:  'Hierarchical / Role-Based',
+      engineKey:    'role_order',
+      icon:         '🏛️',
+      description:  'Agents follow institutional roles and authority structures. They believe stable hierarchy is what keeps organizations functional and ethical. Dissent travels upward through proper channels; deviation from role is itself an ethical violation.',
+      tags:         ['order', 'role-responsibility', 'structure', 'institutional-stability'],
+      coreValues:   'Stability, role coherence, institutional order',
+      // UCP coordination weights — normalized to max per axis across all 5 frameworks
+      // Source: WORLDVIEW_BLOCK_WEIGHTS in ucp_final_singlefile.py
+      // care max=0.18, fairness max=0.22, community max=0.24, boundary max=0.28
+      radar: { Care: 22, Fairness: 45, Community: 67, Boundary: 79 },
+      // Haidt MFQ five foundations (0–100)
+      // Grounded in MFQ literature; reviewed against framework descriptions
+      mfq: { Care: 30, Fairness: 45, Loyalty: 70, Authority: 90, Purity: 50 },
+      mfqCallout: `Loads highest on <strong>Authority/Subversion (90)</strong> and moderately on <strong>Loyalty/Betrayal (70)</strong>, with lower Care and Fairness. This is the moral profile of institutional and professional role ethics: you are responsible for doing your role well within legitimate authority structures, and those structures are what make coordinated action possible in the first place. When this framework encounters Individual/Rights-Based reasoning, friction often arises around a fundamental question: must authority justify itself through fairness to everyone, or does authority legitimize itself through its position in the hierarchy?`,
+    },
+    boundary_integrity: {
+      displayName:  'Boundary / Integrity-Centered',
+      engineKey:    'sacred_boundary',
+      icon:         '🛡️',
+      description:  'Agents protect certain values, rules, or identities as non-negotiable. Crossing those lines is categorically wrong regardless of outcomes. The integrity of the boundary is itself the moral good — compromise is not a lesser evil, it is a betrayal.',
+      tags:         ['sacred-boundary', 'integrity', 'containment', 'purity'],
+      coreValues:   'Boundary integrity, purity, sacral respect',
+      radar: { Care: 33, Fairness: 18, Community: 42, Boundary: 100 },
+      mfq: { Care: 35, Fairness: 40, Loyalty: 55, Authority: 65, Purity: 95 },
+      mfqCallout: `Loads highest on <strong>Purity/Sanctity (95)</strong> and moderately on <strong>Authority (65)</strong> and <strong>Loyalty (55)</strong>, with lower Care and Fairness. This is the profile of frameworks built around inviolable limits — things that must not be crossed regardless of consequences. Deontological ethics in its strictest form lives here, as do many religious ethics. When this framework encounters consequentialist or care-based reasoning, the core friction is the difference between "this rule must never be broken" and "we should prevent the worst outcome" — two claims that feel obvious to each framework and mutually unintelligible from the other.`,
+    },
+    individual_rights: {
+      displayName:  'Individual / Rights-Based',
+      engineKey:    'liberal_individualist',
+      icon:         '⚖️',
+      description:  'Agents prioritize personal autonomy, procedural fairness, and individual rights. They reason from rules that should apply equally to everyone regardless of role or group membership. Think Kant\'s Categorical Imperative: act only on principles you could universalize.',
+      tags:         ['autonomy', 'rights', 'procedural-fairness', 'self-authorship'],
+      coreValues:   'Autonomy, fairness, self-authorship',
+      radar: { Care: 67, Fairness: 100, Community: 21, Boundary: 29 },
+      mfq: { Care: 55, Fairness: 90, Loyalty: 25, Authority: 30, Purity: 20 },
+      mfqCallout: `Loads highest on <strong>Fairness/Reciprocity (90)</strong> and moderately on <strong>Care/Harm (55)</strong>, with low Loyalty, Authority, and Purity. This is the signature of Kantian and liberal ethics: everyone deserves equal treatment under a rule that could apply universally, and group membership or hierarchy does not change that calculation. When this framework encounters high-Authority or high-Purity frameworks, friction comes from a foundational disagreement about whether moral rules must be justifiable to every person equally — the rights-based agent says yes, unconditionally.`,
+    },
+    relational_we: {
+      displayName:  'Relational / We-Centered',
+      engineKey:    'ubuntu_relational',
+      icon:         '🤝',
+      description:  'Agents reason from mutual recognition and communal dignity. Decisions require that everyone\'s voice is genuinely heard. Harm to one damages the whole network. Think care ethics: relationships and context matter more than abstract universal rules.',
+      tags:         ['personhood-through-relation', 'restoration', 'mutual-recognition', 'reciprocity'],
+      coreValues:   'Relationality, reciprocity, communal dignity',
+      radar: { Care: 100, Fairness: 27, Community: 100, Boundary: 14 },
+      mfq: { Care: 85, Fairness: 60, Loyalty: 75, Authority: 30, Purity: 25 },
+      mfqCallout: `Loads highest on <strong>Care/Harm (85)</strong> and <strong>Loyalty/Betrayal (75)</strong>, with moderate Fairness (60) and low Authority and Purity. This is the profile of care ethics: the most important moral question is whether people are being hurt and whether relationships of mutual recognition are being honored. Abstract universal rules matter less than the specific needs of specific people in specific relationships. When this framework encounters high-Fairness frameworks, friction often arises around whether context and relationship should modify what equal treatment looks like — care ethics says yes; procedural ethics says that is exactly what fairness must resist.`,
+    },
+    custodial_stewardship: {
+      displayName:  'Custodial / Stewardship',
+      engineKey:    'indigenous_custodial',
+      icon:         '🌱',
+      description:  'Agents hold obligations to past and future generations, not just to the people currently in the room. They are stewards, not owners. Decisions must account for what was inherited and what will be left behind. Long-term coherence over short-term benefit.',
+      tags:         ['custodianship', 'place-continuity', 'ancestral-responsibility', 'stewardship'],
+      coreValues:   'Stewardship, ancestor-accountability, boundary integrity',
+      radar: { Care: 56, Fairness: 27, Community: 67, Boundary: 86 },
+      mfq: { Care: 60, Fairness: 35, Loyalty: 80, Authority: 70, Purity: 75 },
+      mfqCallout: `Loads highest on <strong>Loyalty/Betrayal (80)</strong>, with high <strong>Purity (75)</strong> and <strong>Authority (70)</strong>, and moderate Care (60). This is the moral profile of intergenerational and place-based ethics: you are bound to what was inherited, responsible for what will be passed on, and accountable to communities that extend across time and include the land itself. When this framework encounters Individual/Rights-Based reasoning, the friction is often about whose interests count — the custodial framework includes past and future generations; the rights-based framework focuses on currently-living individuals with claims.`,
+    },
+  };
+
+  // ─────────────────────────────────────────────────
+  // SCENARIO DESCRIPTIONS
+  // ─────────────────────────────────────────────────
+  const SCENARIO_DESCS = {
+    whistleblower:        'An employee discovers serious misconduct. Reporting risks their career; silence causes institutional harm. High fairness/care stress, strong community-role conflict.',
+    misinformation_shock: 'A hospital committee must decide amid conflicting evidence streams. Epistemic distortion is as damaging as value conflict. Evidence quality has its largest effect here.',
+    land_conflict:        'Competing claims over land — but agents disagree on what ownership even means. Boundary and stewardship frameworks collide most sharply in this scenario.',
+    resource_scarcity:    'When resources run short, boundary-protection instincts intensify. Tests whether communal and ordered frameworks can coordinate under competitive pressure.',
+  };
+
+  // ─────────────────────────────────────────────────
+  // SELECTION STATE
+  // ─────────────────────────────────────────────────
+  let selectedA = null;
+  let selectedB = null;
+
+  function selectFramework(key) {
+    if (selectedA === key) {
+      // Deselect A
+      selectedA = null;
+    } else if (selectedB === key) {
+      // Deselect B
+      selectedB = null;
+    } else if (!selectedA) {
+      selectedA = key;
+    } else if (!selectedB) {
+      if (key === selectedA) return; // can't pick same for both
+      selectedB = key;
+    } else {
+      // Both filled — reassign A to this key, keep B unless it's this key
+      if (key === selectedB) return;
+      selectedA = key;
+    }
+    renderPicker();
+  }
+
+  function renderPicker() {
+    // Update cards
+    document.querySelectorAll('.fw-card').forEach(card => {
+      const k = card.dataset.key;
+      card.classList.remove('selected-a', 'selected-b');
+      const badge = document.getElementById(`badge-${k}`);
+      if (k === selectedA) { card.classList.add('selected-a'); badge.textContent = 'A'; }
+      if (k === selectedB) { card.classList.add('selected-b'); badge.textContent = 'B'; }
+    });
+
+    // Update labels
+    document.getElementById('label-a').textContent =
+      selectedA ? `Framework A — ${FRAMEWORKS[selectedA].displayName}` : 'Framework A — not selected';
+    document.getElementById('label-b').textContent =
+      selectedB ? `Framework B — ${FRAMEWORKS[selectedB].displayName}` : 'Framework B — not selected';
+  }
+
+  // ─────────────────────────────────────────────────
+  // SCENARIO DESCRIPTION UPDATE
+  // ─────────────────────────────────────────────────
+  function updateScenarioDesc() {
+    const key = document.getElementById('scenarioSelect').value;
+    document.getElementById('scenarioDesc').textContent = SCENARIO_DESCS[key] || '';
+  }
+
+  // ─────────────────────────────────────────────────
+  // HEALTH CHECK
+  // ─────────────────────────────────────────────────
+  async function checkHealth() {
+    const dot = document.getElementById('statusDot');
+    const txt = document.getElementById('statusText');
+    try {
+      const r = await fetch(`${BACKEND}/api/health`, { signal: AbortSignal.timeout(9000) });
+      if (r.ok) { dot.className = 'status-dot connected'; txt.textContent = 'UCP engine online — ready to compare'; }
+      else throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      dot.className = 'status-dot error';
+      txt.textContent = `Engine offline (${e.message})`;
+    }
+  }
+
+  // ─────────────────────────────────────────────────
+  // DISTRIBUTION BUILDERS
+  // Each framework gets 80% weight; remaining 20%
+  // split evenly across the other four.
+  // ─────────────────────────────────────────────────
+  const ALL_ENGINE_KEYS = ['role_order','sacred_boundary','liberal_individualist','ubuntu_relational','indigenous_custodial'];
+
+  function buildDominantDist(engineKey) {
+    const dist = {};
+    ALL_ENGINE_KEYS.forEach(k => { dist[k] = k === engineKey ? 0.80 : 0.05; });
+    return dist;
+  }
+
+  function buildMixedDist(keyA, keyB) {
+    const dist = {};
+    ALL_ENGINE_KEYS.forEach(k => {
+      if (k === keyA || k === keyB) dist[k] = 0.40;
+      else dist[k] = 0.025;
+    });
+    // Normalize
+    const total = Object.values(dist).reduce((s,v) => s+v, 0);
+    Object.keys(dist).forEach(k => { dist[k] = parseFloat((dist[k]/total).toFixed(3)); });
+    return dist;
+  }
+
+  function buildEvidenceDist(evVal) {
+    const e = parseFloat(evVal);
+    const lerp = (a,b,t) => a + (b-a)*t;
+    const raw = {
+      alternative_facts:    lerp(0.55, 0.04, e),
+      authority_weighted:   lerp(0.28, 0.09, e),
+      tradition_weighted:   lerp(0.12, 0.15, e),
+      empirical_calibrated: lerp(0.05, 0.72, e),
+    };
+    const total = Object.values(raw).reduce((s,v) => s+v, 0);
+    const out = {};
+    Object.keys(raw).forEach(k => { out[k] = parseFloat((raw[k]/total).toFixed(3)); });
+    return out;
+  }
+
+  // ─────────────────────────────────────────────────
+  // POST SIMULATION
+  // ─────────────────────────────────────────────────
+  async function postSim(worldview_distribution, evidence_distribution, scenarioName, agents, steps, seed) {
+    const resp = await fetch(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        num_agents: agents,
+        scenario_name: scenarioName,
+        steps,
+        seed,
+        worldview_distribution,
+        evidence_distribution,
+        activate_biobond_at: null,
+      }),
+      signal: AbortSignal.timeout(25000),
+    });
+    if (!resp.ok) { const t = await resp.text(); throw new Error(`HTTP ${resp.status}: ${t.slice(0,200)}`); }
+    return resp.json();
+  }
+
+  // ─────────────────────────────────────────────────
+  // MAIN COMPARISON RUNNER
+  // ─────────────────────────────────────────────────
+  async function runComparison() {
+    if (!selectedA || !selectedB) {
+      alert('Please select both Framework A and Framework B before running.');
+      return;
+    }
+
+    const runBtn   = document.getElementById('runBtn');
+    const spinner  = document.getElementById('btnSpinner');
+    const errBox   = document.getElementById('errBox');
+    const results  = document.getElementById('results');
+
+    const scenarioName  = document.getElementById('scenarioSelect').value;
+    const evVal         = document.getElementById('ev-slider').value;
+    const agents        = parseInt(document.getElementById('ag-slider').value);
+    const steps         = parseInt(document.getElementById('st-slider').value);
+    const runMixed      = document.getElementById('dominance-check').checked;
+    const seed          = Math.floor(Math.random() * 9000) + 1000;
+
+    const fwA = { ...FRAMEWORKS[selectedA], key: selectedA };
+    const fwB = { ...FRAMEWORKS[selectedB], key: selectedB };
+    const evDist = buildEvidenceDist(evVal);
+    const distA  = buildDominantDist(fwA.engineKey);
+    const distB  = buildDominantDist(fwB.engineKey);
+    const distMix = buildMixedDist(fwA.engineKey, fwB.engineKey);
+
+    runBtn.disabled = true; runBtn.classList.add('loading');
+    errBox.classList.remove('visible');
+    results.classList.remove('visible');
+
+    try {
+      const calls = [postSim(distA, evDist, scenarioName, agents, steps, seed),
+                     postSim(distB, evDist, scenarioName, agents, steps, seed)];
+      if (runMixed) calls.push(postSim(distMix, evDist, scenarioName, agents, steps, seed));
+
+      const [dataA, dataB, dataMix] = await Promise.all(calls);
+      renderResults(fwA, fwB, dataA, dataB, dataMix || null, scenarioName, seed, agents, steps);
+
+    } catch(e) {
+      errBox.innerHTML = `<strong>Comparison error:</strong> ${e.message}`;
+      errBox.classList.add('visible');
+    } finally {
+      runBtn.disabled = false; runBtn.classList.remove('loading');
+    }
+  }
+
+  // ─────────────────────────────────────────────────
+  // METRIC HELPERS
+  // ─────────────────────────────────────────────────
+  function getMetrics(data) {
+    const m = data.metrics || data;
+    return {
+      lambda_raw:       m.lambda_raw,
+      lambda_perceived: m.lambda_perceived,
+      friction:         m.friction,
+    };
+  }
+
+  function lambdaClass(v) {
+    if (v > 0.60) return 'good'; if (v > 0.40) return ''; return 'bad';
+  }
+
+  function frictionClass(f) {
+    if (f < 0.30) return 'good'; if (f < 0.55) return 'warn'; return 'bad';
+  }
+
+  function delta(a, b) {
+    const d = b - a;
+    if (Math.abs(d) < 0.004) return '<span class="delta-val">≈</span>';
+    const cls = d > 0 ? 'pos' : 'neg';
+    const sign = d > 0 ? '+' : '';
+    return `<span class="delta-val ${cls}">${sign}${(d*100).toFixed(1)}%</span>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // THRESHOLD PHRASE FUNCTIONS — strict ownership
+  //
+  // lambdaRawPhrase   → potential only, never suppression
+  // lambdaPercPhrase  → felt quality of coordinating
+  // frictionPhrase    → energy cost/drag only
+  // ─────────────────────────────────────────────────
+
+  function lambdaRawPhrase(v) {
+    if (v > 0.70) return 'Strong underlying potential — real capacity to coordinate.';
+    if (v > 0.55) return 'Moderate potential — capacity exists but under structural load.';
+    if (v > 0.40) return 'Fragile — near the collapse threshold.';
+    return 'Capacity collapsed — coordination is unreliable.';
+  }
+
+  function lambdaPercPhrase(v) {
+    if (v > 0.70) return 'Feels genuinely collaborative — process is responsive.';
+    if (v > 0.55) return 'Feels effortful — engaged but noticeably strained.';
+    if (v > 0.40) return 'Feels difficult — high personal cost to coordinate.';
+    return 'Feels nearly impossible — system not responding to effort.';
+  }
+
+  function frictionPhrase(v) {
+    if (v < 0.25) return 'Low drag — coordination energy reaches the problem.';
+    if (v < 0.45) return 'Moderate drag — extra effort needed before work begins.';
+    if (v < 0.65) return 'High drag — significant energy consumed by internal resistance.';
+    return 'Severe drag — system consuming itself.';
+  }
+
+  // ─────────────────────────────────────────────────
+  // SUPPRESSION GAP — owns ALL suppression language
+  // Compact variant for side-by-side framework display.
+  // ─────────────────────────────────────────────────
+
+  function buildFwGapCard(raw, perceived, fwName, colorHex) {
+    const gap    = raw - perceived;
+    const gapPct = (gap * 100).toFixed(1);
+    let cssClass, title, desc;
+
+    if (gap < 0.05) {
+      cssClass = 'gap-low';
+      title    = 'Minimal suppression';
+      desc     = 'Agents are using their full voice — what they know is reaching decision-makers.';
+    } else if (gap < 0.15) {
+      cssClass = 'gap-mid';
+      title    = 'Mild suppression';
+      desc     = 'Some self-censorship — concerns surface carefully, some information is lost.';
+    } else if (gap < 0.30) {
+      cssClass = 'gap-high';
+      title    = 'Significant suppression';
+      desc     = 'This group knows more than it says. Consequential knowledge is not reaching decisions.';
+    } else {
+      cssClass = 'gap-crit';
+      title    = 'Critical suppression — decisions without full intelligence';
+      desc     = 'What agents know cannot safely reach decision-makers. Boisjoly before Challenger is one procedural-ethics reading of this pattern — other frameworks name the same gap differently.';
+    }
+
+    return `
+      <div class="fw-gap-card ${cssClass}">
+        <div class="fw-gap-card-header">
+          <span class="fw-gap-card-name">${fwName} — Suppression Gap</span>
+          <span class="fw-gap-number">${gapPct}%</span>
+        </div>
+        <div class="fw-gap-title">${title}</div>
+        <div class="fw-gap-desc">${desc}</div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // COMBINED READING — names the quadrant pattern
+  // Compact variant for the worldview app.
+  // ─────────────────────────────────────────────────
+
+  function buildFwCombinedReading(raw, perceived, friction, fwName) {
+    const gap = raw - perceived;
+    const highGap  = gap > 0.18;
+    const highFric = friction > 0.45;
+    let stateClass, patternName, synthesis;
+
+    if (!highGap && !highFric) {
+      stateClass  = 'state-healthy';
+      patternName = 'Pattern: The Room Is Working';
+      synthesis   = `Low suppression and low friction — this framework-dominant group is using most of its coordination capacity efficiently. Voice is reaching decisions and the coordination process itself is not consuming excessive energy.`;
+    } else if (highGap && !highFric) {
+      stateClass  = 'state-blocked';
+      patternName = 'Pattern: Knowledge Blocked by Hierarchy';
+      synthesis   = `The process runs reasonably well, but a significant gap exists between
+        what agents know and what they can safely say. <strong>One reading of this pattern</strong>
+        — from a procedural ethics standpoint — is the Boisjoly case before Challenger: low
+        friction, high suppression, catastrophic outcome. Other frameworks read the same gap
+        as fractured mutual recognition, dishonored inherited knowledge, or corrupted role
+        authority. What all readings share: low friction does not mean ethical health.`;
+    } else if (!highGap && highFric) {
+      stateClass  = 'state-exhausted';
+      patternName = 'Pattern: Honest but Exhausted';
+      synthesis   = `Suppression is low — agents are speaking truthfully. But coordination is expensive. The worldview distances in this framework-dominant group are being navigated honestly but at significant energy cost. This is a diversity challenge, not a power challenge — the fix is better coordination scaffolding.`;
+    } else {
+      stateClass  = 'state-breakdown';
+      patternName = 'Pattern: Silenced and Worn Down';
+      synthesis   = `Both suppression and friction are elevated. Agents are censoring themselves <em>and</em> exhausted by the coordination process. These two mechanisms are reinforcing each other. This is the UCP signature of serious institutional ethical risk.`;
+    }
+
+    return `
+      <div class="fw-combined-reading ${stateClass}">
+        <div class="fw-combined-label">Reading Your Results — ${fwName}</div>
+        <div class="fw-combined-pattern">${patternName}</div>
+        <div class="fw-combined-synthesis">${synthesis}</div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // VOICE NARRATIVE — the felt experience synthesis
+  // Compact variant for per-framework display.
+  // ─────────────────────────────────────────────────
+
+  function buildFwVoiceNarrative(raw, perceived, friction, fwName) {
+    const gap = raw - perceived;
+    let narrative;
+
+    if (gap > 0.22 && friction > 0.55) {
+      narrative = `You are in the meeting. You can see the problem clearly, but the room has a gravity to it. You say something adjacent to what you actually think — softer, framed as a question. It doesn't land. The decision gets made from what was safe to say, not from what was true. You leave knowing what you did not say.`;
+    } else if (gap > 0.22 && friction <= 0.55) {
+      narrative = `The process works — meetings happen, things get decided. But the critical thing stays in the hallway conversation after the meeting, in the email you almost sent. The decision might even be right. But it was made without the room's full intelligence, and no one can see what was missed.`;
+    } else if (gap <= 0.10 && friction > 0.55) {
+      narrative = `You say what you think, and so does everyone else. But getting anything done together takes enormous effort. You follow the protocol, engage in good faith — and coordination still feels like moving through water. Honest, but exhausted.`;
+    } else if (raw < 0.40) {
+      narrative = `Something fundamental has broken down. You are not thinking about the problem anymore. You are thinking about whether engaging with it is safe. Trust has withdrawn. This is what coordination collapse feels like: not a dramatic failure, just a slow rational retreat.`;
+    } else if (gap <= 0.10 && friction < 0.30) {
+      narrative = `The meeting actually works. Real disagreement sharpens rather than derails the conversation. You leave feeling like your presence mattered, like the decision reflects what the room actually knew. This is rarer than it should be.`;
+    } else {
+      narrative = `You're managing. Coordination happens, but it costs effort. You've learned which things to say directly and which to soften. Whether that's healthy adaptation or accumulated self-censorship is a question you don't always stop to ask.`;
+    }
+
+    return `
+      <div class="fw-voice-narrative">
+        <div class="fw-voice-label">Inside This Framework — ${fwName}</div>
+        <div class="fw-voice-text">${narrative}</div>
+        <div class="fw-voice-attribution">
+          λ Raw ${raw.toFixed(3)} · λ Perceived ${perceived.toFixed(3)} · Friction ${friction.toFixed(3)}
+        </div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // FRAMEWORK CONFLICT DIAGNOSIS
+  // Worldview-app specific. Looks at the structural
+  // relationship between the two chosen frameworks
+  // and predicts what type of conflict is most likely —
+  // independently of the simulation results.
+  // ─────────────────────────────────────────────────
+
+  // Lookup table: [keyA, keyB] → diagnosis
+  // Order doesn't matter — sorted alphabetically in lookup.
+  const CONFLICT_DIAGNOSES = {
+    'hierarchical_role|individual_rights': {
+      cssClass: 'conflict-tension',
+      pattern:  'Rule Conflict — Whose Rules Apply?',
+      desc:     `Both frameworks accept the legitimacy of rules, but they disagree on the source. Hierarchical agents defer to institutional authority and role structure; Individual/Rights-Based agents hold that rules must pass a fairness test applicable to everyone equally. When they share a room, the dispute is often not about what to do but about <em>who has the authority to decide</em> — which can masquerade as a factual disagreement.`,
+      frictionPrediction: `Moderate. Both frameworks can work within shared procedures, but friction rises when the procedure itself is perceived as unfair by one side.`,
+      suppressionPrediction: `Moderate to high. The authority asymmetry in hierarchical systems can systematically suppress rights-based objections — especially when the hierarchical agent controls the agenda.`,
+    },
+    'hierarchical_role|relational_we': {
+      cssClass: 'conflict-authority',
+      pattern:  'Power Suppression Risk — Authority vs. Voice',
+      desc:     `This is among the highest-risk pairings for suppression. Hierarchical agents operate through defined roles and upward authority; Relational/We-Centered agents require genuine communal voice to function. In practice, the hierarchical structure tends to determine who speaks and who is heard — often unintentionally crowding out the relational framework's mode of coordination entirely.`,
+      frictionPrediction: `Low to moderate. The hierarchical framework provides clear process structure, which reduces friction — but at a cost.`,
+      suppressionPrediction: `High. The relational framework requires mutual recognition that hierarchical structures structurally undermine. Watch for large suppression gaps when this pairing runs.`,
+    },
+    'hierarchical_role|boundary_integrity': {
+      cssClass: 'conflict-alignment',
+      pattern:  'Conservative Alignment — Shared Constraint Logic',
+      desc:     `Both frameworks operate through constraint and defined structure. Hierarchical agents follow role-based order; Boundary/Integrity-Centered agents protect non-negotiable limits. While their specific commitments differ, both accept the legitimacy of binding rules and both resist improvisation. This pairing tends toward relatively stable coordination — but it can become rigid and slow to respond to genuine ethical novelty.`,
+      frictionPrediction: `Low to moderate. Shared acceptance of structure reduces friction, but disagreements over <em>which</em> boundaries are sacred can be sharp when they arise.`,
+      suppressionPrediction: `Moderate. Neither framework emphasizes open voice; suppression may be low simply because neither side expects or requires it.`,
+    },
+    'hierarchical_role|custodial_stewardship': {
+      cssClass: 'conflict-temporal',
+      pattern:  'Temporal Horizon Gap — Present Order vs. Long Obligation',
+      desc:     `Hierarchical agents are oriented to the current institutional structure and its chain of command. Custodial/Stewardship agents are oriented to obligations inherited from the past and owed to the future — a timeframe that extends far beyond any current hierarchy. This produces a distinctive conflict: the hierarchical agent asks "who has authority now?" and the custodial agent asks "what did we inherit and what are we leaving behind?"`,
+      frictionPrediction: `Moderate. The frameworks can coexist procedurally but tend to talk past each other on questions of long-term consequence.`,
+      suppressionPrediction: `Moderate. Custodial concerns about the future are often treated as abstract or impractical within hierarchical structures, producing a quieter, legitimized form of suppression.`,
+    },
+    'boundary_integrity|individual_rights': {
+      cssClass: 'conflict-alignment',
+      pattern:  'Convergent Protection — Different Reasons, Similar Instinct',
+      desc:     `Both frameworks are protective — one protects sacred limits, the other protects individual rights. They often arrive at similar conclusions through different reasoning. The tension emerges at the edges: Boundary/Integrity-Centered agents resist compromise even when rights-based reasoning would permit it; Individual/Rights-Based agents resist treating any limit as absolutely non-negotiable without a fairness justification.`,
+      frictionPrediction: `Low to moderate. Agreement on outcomes is common; disagreement on justification is frequent but often tolerable.`,
+      suppressionPrediction: `Low. Neither framework structurally silences the other — disagreements tend to surface as explicit principled arguments rather than suppressed voice.`,
+    },
+    'boundary_integrity|relational_we': {
+      cssClass: 'conflict-value',
+      pattern:  'Community vs. Containment — Deep Value Conflict',
+      desc:     `This is one of the deepest structural tensions in ethics. Boundary/Integrity-Centered agents protect something by keeping it separate; Relational/We-Centered agents build something by bringing people together across difference. What one framework calls "protecting integrity," the other may call "exclusion." What one calls "building community," the other may call "dissolving essential distinctions." Both descriptions can be simultaneously accurate.`,
+      frictionPrediction: `High. These frameworks have genuinely opposed logics. Coordination requires explicit bridging — neither can simply extend its own mode to accommodate the other.`,
+      suppressionPrediction: `Variable. Neither structurally dominates the other in authority terms, so suppression depends heavily on context and who controls the agenda.`,
+    },
+    'boundary_integrity|custodial_stewardship': {
+      cssClass: 'conflict-alignment',
+      pattern:  'Protective Alignment — Guardianship Across Time',
+      desc:     `Both frameworks are oriented toward protecting something across time — one protects the integrity of specific limits, the other protects a custodial relationship with land, tradition, and future generations. They share a conservative temporal orientation and both resist change that compromises something held as sacred or inherited. This pairing tends to be complementary, though they may differ on what specifically deserves protection.`,
+      frictionPrediction: `Low. Shared orientation toward long-term protection creates natural alignment.`,
+      suppressionPrediction: `Low to moderate. Neither framework requires the other to suppress its core concerns — though specific contested objects (what is sacred? what was inherited?) can produce sharp localized disagreements.`,
+    },
+    'individual_rights|relational_we': {
+      cssClass: 'conflict-tension',
+      pattern:  'The Classic Tension — Procedure vs. Care',
+      desc:     `This is the central tension in modern ethics — the conflict that divides Kantian ethics from care ethics, universal rules from contextual relationships, procedural fairness from relational responsiveness. Individual/Rights-Based agents ask: "Does this rule apply equally to everyone?" Relational/We-Centered agents ask: "What does this person, in this relationship, actually need?" Neither question is wrong; they produce different answers precisely because they are measuring different things.`,
+      frictionPrediction: `Moderate to high. The frameworks have fundamentally different decision procedures. Agreeing on a process for making decisions requires resolving the meta-question of whose process to use.`,
+      suppressionPrediction: `Moderate. Neither framework structurally silences the other, but procedural frameworks tend to favor explicit arguable claims — which can disadvantage relational reasoning that operates through narrative and context rather than principle.`,
+    },
+    'individual_rights|custodial_stewardship': {
+      cssClass: 'conflict-temporal',
+      pattern:  'Present Rights vs. Inherited Obligation',
+      desc:     `Individual/Rights-Based agents ground authority in the current individual — rights are held by persons living now. Custodial/Stewardship agents ground authority in inherited obligations and future responsibilities — the relevant moral community extends across generations. This produces genuine incommensurability: both frameworks are internally coherent, but they disagree on who counts as a stakeholder and across what timeframe moral accountability runs.`,
+      frictionPrediction: `Moderate. Can coordinate procedurally in many contexts, but deep disagreements emerge on issues of long-term consequence, environmental obligations, or ancestral claims.`,
+      suppressionPrediction: `Moderate. Rights-based frameworks tend to dominate institutional procedures, which can marginalize custodial reasoning that lacks a procedural vocabulary.`,
+    },
+    'relational_we|custodial_stewardship': {
+      cssClass: 'conflict-alignment',
+      pattern:  'Community Alignment — Shared Relational Ground',
+      desc:     `Both frameworks are community-oriented and extend beyond the individual. Relational/We-Centered agents build through mutual recognition in the present; Custodial/Stewardship agents build through accountability to the past and future. They share an orientation toward collective flourishing over individual advantage, and both resist frameworks that treat persons as isolated rights-holders. This is generally the most complementary pairing — though they may differ on what the relevant community is and how far it extends.`,
+      frictionPrediction: `Low. Natural alignment on collective orientation reduces friction substantially.`,
+      suppressionPrediction: `Low. Both frameworks emphasize voice and collective knowing — suppression tends to be low because both value what the other has to say.`,
+    },
+  };
+
+  function getConflictDiagnosis(keyA, keyB) {
+    const sorted = [keyA, keyB].sort();
+    const lookupKey = sorted.join('|');
+    return CONFLICT_DIAGNOSES[lookupKey] || null;
+  }
+
+  function buildFrameworkConflictDiagnosis(fwA, fwB) {
+    const diag = getConflictDiagnosis(fwA.key, fwB.key);
+    if (!diag) return '';
+
+    return `
+      <div class="conflict-diagnosis ${diag.cssClass}">
+        <div class="conflict-diagnosis-header">
+          <div>
+            <div class="conflict-diagnosis-label">Framework Conflict Analysis — ${fwA.displayName} + ${fwB.displayName}</div>
+            <div class="conflict-diagnosis-pattern">${diag.pattern}</div>
+          </div>
+        </div>
+        <div class="conflict-diagnosis-desc">${diag.desc}</div>
+        <div class="conflict-prediction-row">
+          <div class="conflict-prediction">
+            <div class="pred-label">Friction Prediction</div>
+            <div class="pred-text">${diag.frictionPrediction}</div>
+          </div>
+          <div class="conflict-prediction">
+            <div class="pred-label">Suppression Prediction</div>
+            <div class="pred-text">${diag.suppressionPrediction}</div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // ─────────────────────────────────────────────────
+  // RENDER ALL RESULTS
+  // ─────────────────────────────────────────────────
+  function renderResults(fwA, fwB, dataA, dataB, dataMix, scenarioName, seed, agents, steps) {
+    const mA = getMetrics(dataA);
+    const mB = getMetrics(dataB);
+    const mM = dataMix ? getMetrics(dataMix) : null;
+
+    // ── Results header
+    document.getElementById('resultsHeader').textContent =
+      `Comparison: ${fwA.displayName}  vs.  ${fwB.displayName} · ${SCENARIO_DESCS[scenarioName].split('.')[0]} · ${agents} agents · ${steps} steps · seed ${seed}`;
+
+    // ── Profile cards
+    document.getElementById('profileTitleA').textContent = fwA.displayName;
+    document.getElementById('profileDescA').textContent  = fwA.description;
+    document.getElementById('profileTitleB').textContent = fwB.displayName;
+    document.getElementById('profileDescB').textContent  = fwB.description;
+
+    const renderTags = (id, tags) => {
+      document.getElementById(id).innerHTML = tags.map(t =>
+        `<span class="profile-tag">${t}</span>`).join('');
+    };
+    renderTags('profileTagsA', fwA.tags);
+    renderTags('profileTagsB', fwB.tags);
+
+    document.getElementById('profileValuesA').textContent = `Core values: ${fwA.coreValues}`;
+    document.getElementById('profileValuesB').textContent = `Core values: ${fwB.coreValues}`;
+
+    // ── Chart 1: UCP Coordination Profile (4-axis)
+    document.getElementById('legendA').textContent    = fwA.displayName;
+    document.getElementById('legendB').textContent    = fwB.displayName;
+    drawRadar('combinedRadar', fwA.radar, fwB.radar,
+      ['Care', 'Fairness', 'Community', 'Boundary']);
+
+    // ── Chart 2: MFQ Foundations Profile (5-axis)
+    document.getElementById('legendMFQA').textContent = fwA.displayName;
+    document.getElementById('legendMFQB').textContent = fwB.displayName;
+    drawRadar('mfqRadar', fwA.mfq, fwB.mfq,
+      ['Care', 'Fairness', 'Loyalty', 'Authority', 'Purity']);
+
+    // ── MFQ Callout cards
+    renderMFQCallout('A', fwA);
+    renderMFQCallout('B', fwB);
+
+    // ── Metric rows — now with threshold phrases
+    const metricRows = (m) => `
+      <div class="comp-metric">
+        <div class="cm-label">λ Raw</div>
+        <div class="cm-value ${lambdaClass(m.lambda_raw)}">${m.lambda_raw.toFixed(3)}</div>
+        <div class="cm-name">Coordination Capacity</div>
+        <div class="cm-threshold">${lambdaRawPhrase(m.lambda_raw)}</div>
+      </div>
+      <div class="comp-metric">
+        <div class="cm-label">λ Perceived</div>
+        <div class="cm-value ${lambdaClass(m.lambda_perceived)}">${m.lambda_perceived.toFixed(3)}</div>
+        <div class="cm-name">Experienced Coordination</div>
+        <div class="cm-threshold">${lambdaPercPhrase(m.lambda_perceived)}</div>
+      </div>
+      <div class="comp-metric">
+        <div class="cm-label">Friction</div>
+        <div class="cm-value ${frictionClass(m.friction)}">${m.friction.toFixed(3)}</div>
+        <div class="cm-name">Coordination Cost</div>
+        <div class="cm-threshold">${frictionPhrase(m.friction)}</div>
+      </div>`;
+
+    // ── Delta column + mixed column
+    const deltaCol = mM ? `
+      <div class="comp-delta">
+        <div class="comp-delta-row">${delta(mA.lambda_raw, mM.lambda_raw)}<br><span style="font-size:.6rem">vs A</span></div>
+        <div class="comp-delta-row">${delta(mA.lambda_perceived, mM.lambda_perceived)}<br><span style="font-size:.6rem">vs A</span></div>
+        <div class="comp-delta-row">${delta(mA.friction, mM.friction)}<br><span style="font-size:.6rem">vs A</span></div>
+      </div>
+      <div class="comp-col col-mix">
+        <div class="comp-col-header">
+          <span>A+B Mixed</span>
+          <span class="col-badge">50 / 50</span>
+        </div>
+        <div class="comp-col-body">${metricRows(mM)}</div>
+      </div>
+      <div class="comp-delta">
+        <div class="comp-delta-row">${delta(mM.lambda_raw, mB.lambda_raw)}<br><span style="font-size:.6rem">vs Mix</span></div>
+        <div class="comp-delta-row">${delta(mM.lambda_perceived, mB.lambda_perceived)}<br><span style="font-size:.6rem">vs Mix</span></div>
+        <div class="comp-delta-row">${delta(mM.friction, mB.friction)}<br><span style="font-size:.6rem">vs Mix</span></div>
+      </div>` : `
+      <div class="comp-delta" style="justify-content:center">
+        <div class="comp-delta-row" style="text-align:center;margin-bottom:55px">${delta(mA.lambda_raw,mB.lambda_raw)}</div>
+        <div class="comp-delta-row" style="text-align:center;margin-bottom:55px">${delta(mA.lambda_perceived,mB.lambda_perceived)}</div>
+        <div class="comp-delta-row" style="text-align:center">${delta(mA.friction,mB.friction)}</div>
+      </div>`;
+
+    document.getElementById('compCols').innerHTML = `
+      <div class="comp-col col-a">
+        <div class="comp-col-header">
+          <span>A</span>
+          <span>${fwA.displayName}</span>
+          <span class="col-badge">80% dominant</span>
+        </div>
+        <div class="comp-col-body">${metricRows(mA)}</div>
+      </div>
+      ${deltaCol}
+      <div class="comp-col col-b">
+        <div class="comp-col-header">
+          <span>B</span>
+          <span>${fwB.displayName}</span>
+          <span class="col-badge">80% dominant</span>
+        </div>
+        <div class="comp-col-body">${metricRows(mB)}</div>
+      </div>`;
+
+    // ── Agent Voices — with per-agent suppression flag
+    const voicesA = (dataA.agents || []).filter(a => a.worldview === fwA.engineKey).slice(0,3);
+    const voicesB = (dataB.agents || []).filter(a => a.worldview === fwB.engineKey).slice(0,3);
+    const sampleA = voicesA.length ? voicesA : (dataA.agents || []).slice(0,3);
+    const sampleB = voicesB.length ? voicesB : (dataB.agents || []).slice(0,3);
+
+    const voiceCard = (a) => {
+      const agentGap = (a.lambda_raw != null && a.lambda_perceived != null)
+        ? a.lambda_raw - a.lambda_perceived : null;
+      return `
+        <div class="voice-card">
+          <div class="voice-agent">${a.name}</div>
+          <div class="voice-stats">
+            λ raw: ${a.lambda_raw != null ? a.lambda_raw.toFixed(3) : '—'}
+            &nbsp;|&nbsp; λ perceived: ${a.lambda_perceived != null ? a.lambda_perceived.toFixed(3) : '—'}
+            &nbsp;|&nbsp; stress: ${a.stress != null ? a.stress.toFixed(3) : '—'}
+          </div>
+          ${a.lambda_perceived != null ? `
+            <div style="font-size:.72rem;color:var(--prf-muted);margin-top:3px;font-style:italic">
+              ${lambdaPercPhrase(a.lambda_perceived)}
+              ${agentGap != null && agentGap > 0.15
+                ? ` · <strong style="color:var(--prf-warn)">suppression gap ${(agentGap*100).toFixed(1)}%</strong>` : ''}
+            </div>` : ''}
+          ${a.response ? `<div class="voice-quote">"${a.response}"</div>` : ''}
+        </div>`;
+    };
+
+    document.getElementById('voicesGrid').innerHTML = `
+      <div class="voices-col col-a">
+        <div class="voices-col-header">${fwA.displayName} agents</div>
+        ${sampleA.map(voiceCard).join('')}
+      </div>
+      <div class="voices-col col-b">
+        <div class="voices-col-header">${fwB.displayName} agents</div>
+        ${sampleB.map(voiceCard).join('')}
+      </div>`;
+
+    // ── Interpretation — friction only (strict ownership)
+    const frA = mA.friction, frB = mB.friction;
+    const fricDiff = Math.abs(frA - frB);
+    const lowerFricName  = frA < frB ? fwA.displayName : fwB.displayName;
+    const higherFricName = frA < frB ? fwB.displayName : fwA.displayName;
+
+    let frictionReading = `<strong>${lowerFricName}</strong> produced lower coordination drag
+      (${Math.min(frA,frB).toFixed(3)} vs ${Math.max(frA,frB).toFixed(3)}).`;
+
+    if (fricDiff > 0.12) {
+      frictionReading += ` This is a substantial difference — ${higherFricName}-dominant groups
+        are spending significantly more energy on internal coordination before any work on the
+        actual ethical problem can begin. That energy is not recoverable once spent.`;
+    } else if (fricDiff > 0.04) {
+      frictionReading += ` A modest but meaningful difference. Both frameworks can coordinate
+        in this scenario, but ${lowerFricName} does so at lower cost.`;
+    } else {
+      frictionReading += ` Both frameworks produce comparable coordination cost in this scenario.
+        The meaningful differences between them show up in suppression and voice, not in drag.`;
+    }
+
+    if (mM) {
+      const mixFric = mM.friction;
+      const worstPure = Math.max(frA, frB);
+      const bestPure  = Math.min(frA, frB);
+      if (mixFric < bestPure - 0.03) {
+        frictionReading += ` Notably, the mixed (50/50) configuration produced <em>lower</em>
+          friction than either pure framework (${mixFric.toFixed(3)}). These two frameworks
+          appear to be complementary — each compensates for the drag the other produces.`;
+      } else if (mixFric > worstPure + 0.03) {
+        frictionReading += ` The mixed configuration produced <em>more</em> friction than
+          either pure framework (${mixFric.toFixed(3)}). These frameworks have significant
+          moral emphasis conflicts that make coordination harder when both are present at
+          high representation — not easier.`;
+      } else {
+        frictionReading += ` The mixed configuration produced friction (${mixFric.toFixed(3)})
+          between the two pure values — mixing neither substantially helps nor hurts coordination
+          cost in this scenario.`;
+      }
+    }
+
+    document.getElementById('interpText').innerHTML = frictionReading +
+      (window.UCPProfile && UCPProfile.isLoaded()
+        ? UCPProfile.personalize('friction', { raw: mA.lambda_raw, perceived: mA.lambda_perceived, friction: mA.friction })
+        : '');
+
+    // ── Per-framework deep readings (new section E)
+    const _prf = window.UCPProfile && UCPProfile.isLoaded();
+
+    const perFwHTML = `
+      <div class="fw-result-block">
+        <div class="fw-result-header header-a">
+          A &nbsp;·&nbsp; ${fwA.displayName} — Dominant System Reading
+        </div>
+        <div class="fw-result-body">
+          ${buildFwCombinedReading(mA.lambda_raw, mA.lambda_perceived, mA.friction, fwA.displayName)}
+          ${_prf ? UCPProfile.personalize('combined', { raw: mA.lambda_raw, perceived: mA.lambda_perceived, friction: mA.friction }) : ''}
+          <div class="fw-suppression-row">
+            ${buildFwGapCard(mA.lambda_raw, mA.lambda_perceived, fwA.displayName, '#4a7fb5')}
+          </div>
+          ${_prf ? UCPProfile.personalize('gap', { raw: mA.lambda_raw, perceived: mA.lambda_perceived }) : ''}
+          ${buildFwVoiceNarrative(mA.lambda_raw, mA.lambda_perceived, mA.friction, fwA.displayName)}
+          ${_prf ? UCPProfile.personalize('voice', { raw: mA.lambda_raw, perceived: mA.lambda_perceived, friction: mA.friction }) : ''}
+        </div>
+      </div>
+
+      <div class="fw-result-block">
+        <div class="fw-result-header header-b">
+          B &nbsp;·&nbsp; ${fwB.displayName} — Dominant System Reading
+        </div>
+        <div class="fw-result-body">
+          ${buildFwCombinedReading(mB.lambda_raw, mB.lambda_perceived, mB.friction, fwB.displayName)}
+          ${_prf ? UCPProfile.personalize('combined', { raw: mB.lambda_raw, perceived: mB.lambda_perceived, friction: mB.friction }) : ''}
+          <div class="fw-suppression-row">
+            ${buildFwGapCard(mB.lambda_raw, mB.lambda_perceived, fwB.displayName, '#c9a84c')}
+          </div>
+          ${_prf ? UCPProfile.personalize('gap', { raw: mB.lambda_raw, perceived: mB.lambda_perceived }) : ''}
+          ${buildFwVoiceNarrative(mB.lambda_raw, mB.lambda_perceived, mB.friction, fwB.displayName)}
+          ${_prf ? UCPProfile.personalize('voice', { raw: mB.lambda_raw, perceived: mB.lambda_perceived, friction: mB.friction }) : ''}
+        </div>
+      </div>
+
+      ${mM ? `
+      <div class="fw-result-block">
+        <div class="fw-result-header header-mix">
+          A+B Mixed (50/50) — What Happens When Both Are in the Room
+        </div>
+        <div class="fw-result-body">
+          ${buildFwCombinedReading(mM.lambda_raw, mM.lambda_perceived, mM.friction, 'Mixed System')}
+          ${_prf ? UCPProfile.personalize('combined', { raw: mM.lambda_raw, perceived: mM.lambda_perceived, friction: mM.friction }) : ''}
+          <div class="fw-suppression-row">
+            ${buildFwGapCard(mM.lambda_raw, mM.lambda_perceived, 'Mixed', '#6b7a9a')}
+          </div>
+          ${_prf ? UCPProfile.personalize('gap', { raw: mM.lambda_raw, perceived: mM.lambda_perceived }) : ''}
+          ${buildFwVoiceNarrative(mM.lambda_raw, mM.lambda_perceived, mM.friction, 'Mixed System')}
+          ${_prf ? UCPProfile.personalize('voice', { raw: mM.lambda_raw, perceived: mM.lambda_perceived, friction: mM.friction }) : ''}
+        </div>
+      </div>` : ''}
+    `;
+
+    document.getElementById('perFwReadings').innerHTML = perFwHTML;
+
+    // ── Framework conflict diagnosis
+    document.getElementById('conflictDiagnosis').innerHTML =
+      buildFrameworkConflictDiagnosis(fwA, fwB);
+
+    // Show results
+    document.getElementById('results').classList.add('visible');
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  // ─────────────────────────────────────────────────
+  // MFQ CALLOUT RENDERER
+  // Builds the mini bar chart + explanatory text for
+  // each framework's moral foundations profile.
+  // ─────────────────────────────────────────────────
+
+  const MFQ_FOUNDATION_META = {
+    Care:      { label: 'Care / Harm',          cssClass: 'f-care' },
+    Fairness:  { label: 'Fairness / Reciprocity', cssClass: 'f-fairness' },
+    Loyalty:   { label: 'Loyalty / Betrayal',   cssClass: 'f-loyalty' },
+    Authority: { label: 'Authority / Subversion', cssClass: 'f-authority' },
+    Purity:    { label: 'Purity / Sanctity',    cssClass: 'f-purity' },
+  };
+
+  function renderMFQCallout(slot, fw) {
+    // slot is 'A' or 'B'
+    document.getElementById(`calloutTitle${slot}`).textContent = fw.displayName;
+    document.getElementById(`calloutText${slot}`).innerHTML    = fw.mfqCallout;
+
+    const barsEl = document.getElementById(`calloutBars${slot}`);
+    barsEl.innerHTML = Object.entries(fw.mfq)
+      .map(([key, val]) => {
+        const meta = MFQ_FOUNDATION_META[key] || { label: key, cssClass: '' };
+        return `
+          <div class="mfq-bar-row">
+            <span class="mfq-bar-label">${meta.label}</span>
+            <div class="mfq-bar-track">
+              <div class="mfq-bar-fill ${meta.cssClass}"
+                   data-val="${val}" style="width:0%"></div>
+            </div>
+            <span class="mfq-bar-val">${val}</span>
+          </div>`;
+      }).join('');
+
+    // Animate bars after paint
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        barsEl.querySelectorAll('.mfq-bar-fill').forEach(bar => {
+          bar.style.width = `${bar.dataset.val}%`;
+        });
+      }, 80);
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // RADAR CHART — generic, handles any number of axes
+  // axes: array of axis name strings (keys in profileA/B)
+  // profileA, profileB: objects keyed by axis name, values 0–100
+  // ─────────────────────────────────────────────────
+  function drawRadar(canvasId, profileA, profileB, axes) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const ctx    = canvas.getContext('2d');
+    const W      = canvas.width;
+    const H      = canvas.height;
+    const cx     = W / 2;
+    const cy     = H / 2;
+    const nAxes  = axes.length;
+    // More axes = slightly smaller polygon so labels don't overlap
+    const R      = Math.min(W, H) / 2 - (nAxes > 4 ? 42 : 36);
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Angle for axis i — start at top (−π/2), go clockwise
+    const angle = i => (Math.PI * 2 * i / nAxes) - Math.PI / 2;
+
+    // Point on axis i at given value (0–100)
+    const pt = (i, val) => {
+      const a = angle(i);
+      const r = (val / 100) * R;
+      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+    };
+
+    // Background fill
+    ctx.fillStyle = '#f8f9fc';
+    ctx.fillRect(0, 0, W, H);
+
+    // Concentric reference rings at 20, 40, 60, 80, 100
+    [20, 40, 60, 80, 100].forEach(v => {
+      ctx.beginPath();
+      for (let i = 0; i < nAxes; i++) {
+        const p = pt(i, v);
+        i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = v === 100 ? '#b8c4d8' : '#dde3ef';
+      ctx.lineWidth   = v === 100 ? 1.5 : 1;
+      ctx.stroke();
+      // Value label on the rightmost axis (index 1 for 4-axis, index 1 for 5-axis)
+      const lp = pt(1, v);
+      ctx.fillStyle = '#aab';
+      ctx.font      = '9px Courier New';
+      ctx.textAlign = 'left';
+      ctx.fillText(v, lp.x + 3, lp.y + 3);
+    });
+
+    // Axis lines and labels
+    axes.forEach((axisName, i) => {
+      // Axis line from center to edge
+      const tip = pt(i, 100);
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(tip.x, tip.y);
+      ctx.strokeStyle = '#c8d0e0';
+      ctx.lineWidth   = 1;
+      ctx.stroke();
+
+      // Axis label — positioned just beyond the ring
+      const labelDist = nAxes > 4 ? 114 : 118;
+      const lp = pt(i, labelDist);
+
+      // Two-line labels for 5-axis chart (split on ' / ')
+      const parts = axisName.split(' / ');
+      ctx.fillStyle    = '#334';
+      ctx.font         = 'bold 10px Georgia';
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+
+      if (parts.length > 1) {
+        ctx.fillText(parts[0], lp.x, lp.y - 6);
+        ctx.font = '9px Georgia';
+        ctx.fillStyle = '#778';
+        ctx.fillText(parts[1], lp.x, lp.y + 6);
+      } else {
+        ctx.fillText(axisName, lp.x, lp.y);
+      }
+    });
+
+    // Helper: hex to rgb string
+    const hexToRgb = hex => {
+      const r = parseInt(hex.slice(1,3), 16);
+      const g = parseInt(hex.slice(3,5), 16);
+      const b = parseInt(hex.slice(5,7), 16);
+      return `rgb(${r},${g},${b})`;
+    };
+
+    // Draw filled polygon for one profile
+    const drawPoly = (profile, color, alpha) => {
+      ctx.beginPath();
+      axes.forEach((axisName, i) => {
+        const p = pt(i, profile[axisName] || 0);
+        i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y);
+      });
+      ctx.closePath();
+      // Fill with transparency
+      ctx.fillStyle = color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+      ctx.fill();
+      // Stroke
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = 2.5;
+      ctx.lineJoin    = 'round';
+      ctx.stroke();
+      // Vertex dots
+      axes.forEach((axisName, i) => {
+        const p = pt(i, profile[axisName] || 0);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+      });
+    };
+
+    drawPoly(profileA, hexToRgb('#4a7fb5'), 0.18);
+    drawPoly(profileB, hexToRgb('#c9a84c'), 0.18);
+
+    // Reset canvas text state
+    ctx.textAlign    = 'start';
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  // ─────────────────────────────────────────────────
+  // PRF PROFILE HELPERS
+  // ─────────────────────────────────────────────────
+  function loadPRFFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const result = window.UCPProfile ? UCPProfile.load(e.target.result) : { ok: false, error: 'Loader unavailable' };
+      if (result.ok) {
+        document.getElementById('prf-badge-wrap').innerHTML = UCPProfile.getBadgeHTML();
+        document.getElementById('prf-clear-btn').style.display = 'inline-block';
+      } else {
+        document.getElementById('prf-badge-wrap').innerHTML =
+          `<span style="font-family:'Courier New',monospace;font-size:.72rem;color:#c87843">
+            Error: ${result.error}
+           </span>`;
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function clearPRFProfile() {
+    if (window.UCPProfile) UCPProfile.clear();
+    document.getElementById('prf-badge-wrap').innerHTML =
+      `<span style="font-family:'Courier New',monospace;font-size:.72rem;
+               color:rgba(255,255,255,.35);font-style:italic">
+        No PRF profile loaded — interpretations are general.
+       </span>`;
+    document.getElementById('prf-clear-btn').style.display = 'none';
+  }
+
+  (function initPRFBadge() {
+    if (window.UCPProfile && UCPProfile.isLoaded()) {
+      document.getElementById('prf-badge-wrap').innerHTML = UCPProfile.getBadgeHTML();
+      document.getElementById('prf-clear-btn').style.display = 'inline-block';
+    }
+  })();
+
+  // ─────────────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────────────
+  checkHealth();
+  updateScenarioDesc();
+
+</script>
+</body>
+</html>
