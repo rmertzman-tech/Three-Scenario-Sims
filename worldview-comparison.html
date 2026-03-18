@@ -1954,19 +1954,19 @@
     // ── Metric rows — now with threshold phrases
     const metricRows = (m) => `
       <div class="comp-metric">
-        <div class="cm-label">λ Raw</div>
+        <div class="cm-label">λ Raw <a href="ucp-metrics-reference.html#lambda-raw" target="_blank" style="font-size:.6rem;color:var(--prf-sky);text-decoration:none;opacity:.7;margin-left:3px">ⓘ</a></div>
         <div class="cm-value ${lambdaClass(m.lambda_raw)}">${m.lambda_raw.toFixed(3)}</div>
         <div class="cm-name">Coordination Capacity</div>
         <div class="cm-threshold">${lambdaRawPhrase(m.lambda_raw)}</div>
       </div>
       <div class="comp-metric">
-        <div class="cm-label">λ Perceived</div>
+        <div class="cm-label">λ Perceived <a href="ucp-metrics-reference.html#lambda-perceived" target="_blank" style="font-size:.6rem;color:var(--prf-sky);text-decoration:none;opacity:.7;margin-left:3px">ⓘ</a></div>
         <div class="cm-value ${lambdaClass(m.lambda_perceived)}">${m.lambda_perceived.toFixed(3)}</div>
         <div class="cm-name">Experienced Coordination</div>
         <div class="cm-threshold">${lambdaPercPhrase(m.lambda_perceived)}</div>
       </div>
       <div class="comp-metric">
-        <div class="cm-label">Friction</div>
+        <div class="cm-label">Friction <a href="ucp-metrics-reference.html#friction" target="_blank" style="font-size:.6rem;color:var(--prf-sky);text-decoration:none;opacity:.7;margin-left:3px">ⓘ</a></div>
         <div class="cm-value ${frictionClass(m.friction)}">${m.friction.toFixed(3)}</div>
         <div class="cm-name">Coordination Cost</div>
         <div class="cm-threshold">${frictionPhrase(m.friction)}</div>

@@ -2525,19 +2525,19 @@
       <!-- Three metric cards — with phenomenological threshold phrases -->
       <div class="metrics-row">
         <div class="metric-card ${lambdaColorClass(mC.lambda_raw)}">
-          <div class="m-label">λ Raw</div>
+          <div class="m-label">λ Raw <a href="ucp-metrics-reference.html#lambda-raw" target="_blank" title="What λ Raw measures" style="font-size:.65rem;color:var(--prf-sky);margin-left:4px;text-decoration:none;opacity:.7">ⓘ</a></div>
           <div class="m-value">${mC.lambda_raw.toFixed(3)}</div>
           <div class="m-name">Coordination Capacity</div>
           <div class="m-threshold">${lambdaRawPhrase(mC.lambda_raw)}</div>
         </div>
         <div class="metric-card ${lambdaColorClass(mC.lambda_perceived)}">
-          <div class="m-label">λ Perceived</div>
+          <div class="m-label">λ Perceived <a href="ucp-metrics-reference.html#lambda-perceived" target="_blank" title="What λ Perceived measures" style="font-size:.65rem;color:var(--prf-sky);margin-left:4px;text-decoration:none;opacity:.7">ⓘ</a></div>
           <div class="m-value">${mC.lambda_perceived.toFixed(3)}</div>
           <div class="m-name">Experienced Coordination</div>
           <div class="m-threshold">${lambdaPerceivedPhrase(mC.lambda_perceived)}</div>
         </div>
         <div class="metric-card ${frictionColorClass(mC.friction)}">
-          <div class="m-label">Friction</div>
+          <div class="m-label">Friction <a href="ucp-metrics-reference.html#friction" target="_blank" title="What Friction measures" style="font-size:.65rem;color:var(--prf-sky);margin-left:4px;text-decoration:none;opacity:.7">ⓘ</a></div>
           <div class="m-value">${mC.friction.toFixed(3)}</div>
           <div class="m-name">Coordination Loss</div>
           <div class="m-threshold">${frictionPhrase(mC.friction)}</div>
