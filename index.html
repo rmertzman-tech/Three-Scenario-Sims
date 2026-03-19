@@ -2370,6 +2370,13 @@
       return;
     }
 
+    // Cache metrics for PRF refresh after load
+    _renderCache[idx] = {
+      raw:       mC.lambda_raw,
+      perceived: mC.lambda_perceived,
+      friction:  mC.friction,
+    };
+
     // Percentage strings for bars
     const cRawPct  = (mC.lambda_raw * 100).toFixed(1);
     const cPercPct = (mC.lambda_perceived * 100).toFixed(1);
@@ -2724,6 +2731,44 @@
   // ─────────────────────────────────────────────────
   // PRF PROFILE HELPERS
   // ─────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────
+  // PRF PANEL REFRESH
+  // Caches last render data per panel so loading a PRF
+  // file after simulation has run refreshes immediately.
+  // ─────────────────────────────────────────────────
+  const _renderCache = {};  // keyed by panel idx
+
+  function refreshPRFPanels() {
+    const _prf = window.UCPProfile && UCPProfile.isLoaded();
+
+    Object.entries(_renderCache).forEach(([idx, cache]) => {
+      const panel = document.getElementById(`results-${idx}`);
+      if (!panel || !panel.classList.contains('visible')) return;
+
+      const { raw, perceived, friction } = cache;
+
+      // Remove previously injected PRF blocks
+      panel.querySelectorAll('[data-prf="1"]').forEach(el => el.remove());
+      if (!_prf) return;
+
+      // Re-inject after each relevant panel element
+      const inject = (selector, html) => {
+        if (!html) return;
+        const target = panel.querySelector(selector);
+        if (!target) return;
+        const wrapper = document.createElement('div');
+        wrapper.setAttribute('data-prf', '1');
+        wrapper.innerHTML = html;
+        target.insertAdjacentElement('afterend', wrapper);
+      };
+
+      inject('.combined-reading',   UCPProfile.personalize('combined', { raw, perceived, friction }));
+      inject('.suppression-gap',    UCPProfile.personalize('gap',      { raw, perceived }));
+      inject('.voice-narrative',    UCPProfile.personalize('voice',    { raw, perceived, friction }));
+      inject('.interpretation',     UCPProfile.personalize('friction', { raw, perceived, friction }));
+    });
+  }
+
   function loadPRFFile(input) {
     const file = input.files[0];
     if (!file) return;
@@ -2733,6 +2778,7 @@
       if (result.ok) {
         document.getElementById('prf-badge-wrap').innerHTML = UCPProfile.getBadgeHTML();
         document.getElementById('prf-clear-btn').style.display = 'inline-block';
+        refreshPRFPanels();
       } else {
         document.getElementById('prf-badge-wrap').innerHTML =
           `<span style="font-family:'Courier New',monospace;font-size:0.82rem;color:#c87843">
@@ -2751,6 +2797,7 @@
         No PRF profile loaded — interpretations are general.
        </span>`;
     document.getElementById('prf-clear-btn').style.display = 'none';
+    refreshPRFPanels();  // remove injected panels
   }
 
   // Auto-show badge if profile was loaded in a previous session

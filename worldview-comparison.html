@@ -2155,6 +2155,9 @@
       </div>` : ''}
     `;
 
+    // ── Cache metrics for PRF refresh after load
+    _lastRenderCache = { mA, mB, mM };
+
     document.getElementById('perFwReadings').innerHTML = perFwHTML;
 
     // ── Framework conflict diagnosis
@@ -2339,6 +2342,71 @@
   // ─────────────────────────────────────────────────
   // PRF PROFILE HELPERS
   // ─────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────
+  // PRF PANEL REFRESH
+  // Stores the last render's metric data so that loading
+  // a PRF file after the simulation has already run can
+  // re-inject personalized text without a new API call.
+  // ─────────────────────────────────────────────────
+  let _lastRenderCache = null;
+
+  function refreshPRFPanels() {
+    if (!_lastRenderCache) return;  // no results rendered yet
+    const { mA, mB, mM } = _lastRenderCache;
+    const _prf = window.UCPProfile && UCPProfile.isLoaded();
+
+    // ── Friction / interpretation panel
+    const frReading = document.getElementById('interpText');
+    if (frReading) {
+      // Re-run the frictionReading build with current PRF state
+      // We only need to refresh the PRF personalization suffix
+      const existing = frReading.getAttribute('data-base-text') || frReading.innerHTML;
+      frReading.setAttribute('data-base-text', existing.replace(/<div style="margin-top:12px.*$/s, '').trim());
+      const base = frReading.getAttribute('data-base-text') || '';
+      frReading.innerHTML = base +
+        (_prf ? UCPProfile.personalize('friction', { raw: mA.lambda_raw, perceived: mA.lambda_perceived, friction: mA.friction }) : '');
+    }
+
+    // ── Per-framework result blocks — inject into existing DOM elements
+    // We identify each block's panels by their position in perFwReadings
+    const blocks = document.querySelectorAll('#perFwReadings .fw-result-body');
+    if (!blocks.length) return;
+
+    const datasets = [
+      { m: mA },
+      { m: mB },
+      ...(mM ? [{ m: mM }] : []),
+    ];
+
+    blocks.forEach((body, i) => {
+      const d = datasets[i];
+      if (!d) return;
+      const { raw, perceived, friction } = { raw: d.m.lambda_raw, perceived: d.m.lambda_perceived, friction: d.m.friction };
+
+      // Remove any previously injected PRF panels (they have data-prf="1")
+      body.querySelectorAll('[data-prf="1"]').forEach(el => el.remove());
+
+      if (!_prf) return;
+
+      // Insert after combined reading, gap card, and voice narrative
+      const combined = body.querySelector('.fw-combined-reading');
+      const gap      = body.querySelector('.fw-gap-card');
+      const voice    = body.querySelector('.fw-voice-narrative');
+
+      const inject = (after, html) => {
+        if (!after || !html) return;
+        const wrapper = document.createElement('div');
+        wrapper.setAttribute('data-prf', '1');
+        wrapper.innerHTML = html;
+        after.insertAdjacentElement('afterend', wrapper);
+      };
+
+      inject(combined, UCPProfile.personalize('combined', { raw, perceived, friction }));
+      inject(gap,      UCPProfile.personalize('gap',      { raw, perceived }));
+      inject(voice,    UCPProfile.personalize('voice',    { raw, perceived, friction }));
+    });
+  }
+
   function loadPRFFile(input) {
     const file = input.files[0];
     if (!file) return;
@@ -2348,6 +2416,7 @@
       if (result.ok) {
         document.getElementById('prf-badge-wrap').innerHTML = UCPProfile.getBadgeHTML();
         document.getElementById('prf-clear-btn').style.display = 'inline-block';
+        refreshPRFPanels();
       } else {
         document.getElementById('prf-badge-wrap').innerHTML =
           `<span style="font-family:'Courier New',monospace;font-size:0.82rem;color:#c87843">
@@ -2366,6 +2435,7 @@
         No PRF profile loaded — interpretations are general.
        </span>`;
     document.getElementById('prf-clear-btn').style.display = 'none';
+    refreshPRFPanels();  // remove injected panels
   }
 
   (function initPRFBadge() {
