@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coordination Crisis: The CTE Challenge — Ethics Beyond Boundaries</title>
+<style>
+
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS — matches suite palette
+   ══════════════════════════════════════════════════ */
+:root {
+  --deep:    #1a2744;
+  --navy:    #243560;
+  --slate:   #3a5080;
+  --sky:     #4a7fb5;
+  --ice:     #7fb3d3;
+  --gold:    #c9a84c;
+  --amber:   #e8c56a;
+  --warm:    #f5edd8;
+  --paper:   #faf8f4;
+  --ink:     #1e2433;
+  --muted:   #5a6a8a;
+  --light:   #8090a8;
+  --success: #3a8a5c;
+  --warn:    #c87843;
+  --danger:  #b84444;
+  --border:  #d0d8e8;
+  --white:   #ffffff;
+
+  /* role accent colors */
+  --scientist: #3b82f6;
+  --executive: #6b7280;
+  --family:    #dc2626;
+  --journalist:#d97706;
+  --athlete:   #16a34a;
+
+  /* UCP */
+  --ucp-gold:    #c9a84c;
+  --ucp-sky:     #4a7fb5;
+  --ucp-success: #3a8a5c;
+  --ucp-warn:    #c87843;
+  --ucp-danger:  #b84444;
+
+  font-size: 18px;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia','Times New Roman',serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-bottom: 60px;
+  line-height: 1.65;
+}
+
+/* ── Layout ── */
+.page-wrap  { max-width: 860px; margin: 0 auto; padding: 0 18px; }
+.hidden     { display: none !important; }
+
+/* ── Header ── */
+header {
+  background: linear-gradient(135deg, var(--deep) 0%, var(--navy) 60%, var(--slate) 100%);
+  color: #fff; padding: 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,.3);
+  position: sticky; top: 0; z-index: 40;
+}
+
+.header-inner {
+  max-width: 860px; margin: 0 auto;
+  padding: 18px 18px 14px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 14px; flex-wrap: wrap;
+}
+
+.header-titles h1 {
+  font-size: 1.4rem; font-weight: 700; margin-bottom: 3px;
+  font-family: 'Georgia',serif;
+}
+
+.header-titles p {
+  font-size: .8rem; opacity: .7;
+  font-family: 'Courier New',monospace; letter-spacing: .06em;
+}
+
+.header-controls {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+
+.prf-label {
+  padding: 5px 12px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 4px; cursor: pointer;
+  font-family: 'Courier New',monospace; font-size: .76rem;
+  color: rgba(255,255,255,.75);
+  text-transform: uppercase; letter-spacing: .07em;
+  transition: all .2s;
+}
+.prf-label:hover { background: rgba(255,255,255,.2); color: #fff; }
+
+#prfStatusWrap {
+  font-family: 'Courier New',monospace; font-size: .76rem;
+  color: rgba(255,255,255,.5); font-style: italic;
+  align-self: center;
+}
+
+.intro-btn {
+  padding: 7px 16px;
+  background: linear-gradient(135deg, var(--sky), var(--navy));
+  color: #fff; border: none; border-radius: 5px;
+  font-family: 'Georgia',serif; font-size: .85rem;
+  font-weight: 600; cursor: pointer; transition: all .22s;
+}
+.intro-btn:hover { filter: brightness(1.1); }
+
+/* ── Section heading ── */
+.section-heading {
+  text-align: center; padding: 36px 0 28px;
+}
+
+.section-heading h2 {
+  font-family: 'Georgia',serif; font-size: 1.55rem;
+  font-weight: 700; margin-bottom: 8px;
+}
+
+.section-heading p { color: var(--muted); font-size: .92rem; line-height: 1.65; }
+
+/* ── Cards ── */
+.card {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: 0 2px 12px rgba(26,39,68,.1);
+  padding: 22px; margin-bottom: 18px; transition: all .22s;
+}
+
+/* ── Role cards ── */
+.role-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px; margin-bottom: 28px;
+}
+
+.role-card {
+  background: var(--white); border: 3px solid var(--border);
+  border-radius: 12px; padding: 22px; cursor: pointer;
+  transition: all .22s; position: relative;
+}
+
+.role-card:hover, .role-card:focus {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(26,39,68,.15);
+  outline: none;
+}
+
+.role-card:focus-visible { outline: 3px solid var(--sky); outline-offset: 3px; }
+.role-card.prf-match { border-color: var(--success) !important; }
+
+.role-card .role-icon { font-size: 2rem; margin-bottom: 10px; }
+.role-card h3  { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+.role-card p   { font-size: .85rem; color: var(--muted); line-height: 1.55; }
+
+.role-card-scientist  { --role-color: var(--scientist); }
+.role-card-executive  { --role-color: var(--executive); }
+.role-card-family     { --role-color: var(--family); }
+.role-card-journalist { --role-color: var(--journalist); }
+.role-card-athlete    { --role-color: var(--athlete); }
+
+.role-card:hover, .role-card:focus {
+  border-color: var(--role-color, var(--sky));
+}
+
+.prf-match-badge {
+  position: absolute; top: -10px; right: 10px;
+  background: var(--success); color: #fff;
+  font-family: 'Courier New',monospace; font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  padding: 2px 8px; border-radius: 10px;
+  display: none;
+}
+.role-card.prf-match .prf-match-badge { display: block; }
+
+/* ── Simulation screen ── */
+.sim-header {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px 22px; margin-bottom: 16px;
+}
+
+.sim-header-row {
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px; margin-bottom: 16px;
+}
+
+.sim-role-title {
+  font-family: 'Georgia',serif; font-size: 1.3rem; font-weight: 700;
+}
+
+.quit-btn {
+  padding: 8px 18px;
+  background: var(--danger); color: #fff; border: none;
+  border-radius: 6px; font-family: 'Georgia',serif; font-size: .88rem;
+  font-weight: 600; cursor: pointer; transition: all .22s;
+}
+.quit-btn:hover { filter: brightness(1.1); }
+
+.goal-box {
+  background: #eff6ff; border-left: 4px solid var(--sky);
+  border-radius: 0 6px 6px 0; padding: 12px 16px; margin-bottom: 16px;
+  font-size: .9rem; color: #1e3a5f; line-height: 1.6;
+}
+
+/* ── Meters ── */
+.meters { display: flex; flex-direction: column; gap: 10px; }
+
+.meter-row {}
+
+.meter-label {
+  font-weight: 600; font-size: .85rem; color: var(--slate);
+  font-family: 'Courier New',monospace; text-transform: uppercase;
+  letter-spacing: .07em; margin-bottom: 4px;
+  display: flex; justify-content: space-between;
+}
+
+.meter-track {
+  width: 100%; height: 14px; background: var(--border);
+  border-radius: 7px; overflow: hidden;
+}
+
+.meter-fill {
+  height: 100%; border-radius: 7px;
+  transition: width .5s ease-in-out;
+}
+
+.fill-coordination { background: linear-gradient(90deg, var(--success), #5ab87c); }
+.fill-health       { background: linear-gradient(90deg, var(--danger), #e06060); }
+.fill-trust        { background: linear-gradient(90deg, var(--sky), var(--ice)); }
+
+/* ── Scenario card ── */
+.scenario-card {
+  background: #f8f9fc; border: 1px solid var(--border);
+  border-radius: 10px; padding: 24px; margin-bottom: 14px;
+}
+
+.scenario-num {
+  font-family: 'Courier New',monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--light); margin-bottom: 10px;
+}
+
+.scenario-text {
+  font-size: .98rem; line-height: 1.75; color: var(--ink);
+  margin-bottom: 20px;
+}
+
+/* ── Decision buttons ── */
+.decisions { display: flex; flex-direction: column; gap: 10px; }
+
+.decision-btn {
+  background: var(--white); border: 2px solid var(--border);
+  border-radius: 8px; padding: 14px 16px; text-align: left;
+  cursor: pointer; transition: all .22s; width: 100%;
+  font-family: 'Georgia',serif;
+}
+
+.decision-btn:hover  { border-color: var(--sky); background: #f5f8ff; }
+.decision-btn:focus  { outline: 3px solid var(--sky); outline-offset: 2px; }
+.decision-btn[aria-pressed="true"] { border-color: var(--sky); background: #eff6ff; }
+.decision-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.decision-text {
+  font-weight: 600; font-size: .95rem; color: var(--ink);
+  margin-bottom: 5px;
+}
+
+.decision-prf {
+  font-size: .8rem; color: var(--muted); line-height: 1.5;
+  font-style: italic;
+}
+
+/* ── Feedback ── */
+.feedback-box {
+  background: #fefce8; border: 1px solid #fde68a;
+  border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0;
+  padding: 14px 16px; margin-bottom: 14px;
+  display: none;
+  animation: fadeIn .3s ease;
+}
+.feedback-box.visible { display: block; }
+
+.feedback-label {
+  font-weight: 700; font-size: .9rem;
+  color: #78350f; margin-bottom: 5px;
+  font-family: 'Courier New',monospace; text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.feedback-analysis { font-size: .88rem; color: #4b3000; line-height: 1.65; }
+
+.continue-btn {
+  display: none; margin-top: 12px;
+  padding: 9px 22px;
+  background: linear-gradient(135deg, var(--sky), var(--navy));
+  color: #fff; border: none; border-radius: 6px;
+  font-family: 'Georgia',serif; font-size: .9rem; font-weight: 600;
+  cursor: pointer; transition: all .22s;
+}
+.continue-btn.visible { display: inline-flex; align-items: center; gap: 6px; }
+.continue-btn:hover { filter: brightness(1.1); }
+
+/* ── UCP panel in debrief ── */
+.ucp-panel {
+  background: linear-gradient(135deg, var(--deep) 0%, var(--navy) 100%);
+  border-radius: 10px; padding: 20px; margin-top: 14px;
+}
+
+.ucp-panel-header {
+  font-family: 'Courier New',monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--ucp-gold); margin-bottom: 14px;
+}
+
+.ucp-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 14px; margin-bottom: 14px;
+}
+
+.ucp-metric { }
+
+.ucp-metric-label {
+  font-family: 'Courier New',monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: rgba(255,255,255,.45); margin-bottom: 3px;
+}
+
+.ucp-metric-value {
+  font-size: 1.55rem; font-weight: bold;
+  font-family: 'Courier New',monospace; line-height: 1;
+  margin-bottom: 3px;
+}
+
+.ucp-metric-phrase {
+  font-size: .78rem; color: rgba(255,255,255,.55);
+  font-style: italic; line-height: 1.4;
+}
+
+.val-good { color: #7fd8a8; }
+.val-warn { color: var(--ucp-gold); }
+.val-bad  { color: #f08080; }
+.val-great { color: #7fd8a8; }
+
+.ucp-bar-track {
+  width: 100%; height: 13px; background: rgba(255,255,255,.1);
+  border-radius: 7px; overflow: hidden; margin-bottom: 5px;
+}
+
+.ucp-bar-fill {
+  height: 100%; border-radius: 7px;
+  transition: width 1s ease;
+}
+
+.fill-raw  { background: linear-gradient(90deg, var(--ucp-sky), #7fb3d3); }
+.fill-perc { background: linear-gradient(90deg, var(--ucp-gold), #e8c56a); }
+
+.ucp-gap-label {
+  font-family: 'Courier New',monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: rgba(255,255,255,.45); margin-bottom: 6px;
+}
+
+.ucp-bar-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 5px;
+}
+
+.ucp-bar-name {
+  font-family: 'Courier New',monospace; font-size: .68rem;
+  color: rgba(255,255,255,.5); width: 100px; flex-shrink: 0; text-align: right;
+}
+
+.ucp-bar-num {
+  font-family: 'Courier New',monospace; font-size: .68rem;
+  color: rgba(255,255,255,.45); width: 34px; text-align: right;
+}
+
+.ucp-os2 {
+  background: rgba(255,255,255,.05); border-radius: 6px;
+  padding: 10px 14px; margin-top: 12px;
+  font-size: .88rem; line-height: 1.6;
+}
+
+.ucp-os2-label {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ucp-gold); margin-bottom: 5px;
+}
+
+.ucp-os2-text { color: rgba(255,255,255,.8); }
+
+.ucp-narrative {
+  background: rgba(255,255,255,.05); border-left: 3px solid rgba(255,255,255,.2);
+  padding: 11px 14px; margin-top: 12px;
+  font-size: .88rem; color: rgba(255,255,255,.78);
+  font-style: italic; line-height: 1.7;
+}
+
+.ucp-narrative-label {
+  font-family: 'Courier New',monospace; font-size: .64rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ucp-gold); font-style: normal; margin-bottom: 5px;
+}
+
+.ucp-pluralism {
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  font-size: .76rem; color: rgba(255,255,255,.38);
+  font-style: italic; line-height: 1.5;
+}
+
+.ucp-error {
+  color: #f08080; font-family: 'Courier New',monospace;
+  font-size: .82rem; padding: 10px;
+  background: rgba(255,0,0,.1); border-radius: 5px;
+}
+
+.ucp-loading {
+  color: rgba(255,255,255,.55); font-family: 'Courier New',monospace;
+  font-size: .82rem; font-style: italic; padding: 10px;
+}
+
+/* ══════════════════════════════════════════════════
+   MODALS
+   ══════════════════════════════════════════════════ */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75); z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 18px;
+}
+
+.modal-box {
+  background: var(--white); border-radius: 14px;
+  padding: 28px; max-width: 640px; width: 100%;
+  max-height: 88vh; overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0,0,0,.35);
+}
+
+.modal-box h2 {
+  font-family: 'Georgia',serif; font-size: 1.4rem;
+  font-weight: 700; margin-bottom: 14px; color: var(--ink);
+}
+
+.modal-prose {
+  font-size: .9rem; color: var(--muted);
+  line-height: 1.75; margin-bottom: 10px;
+}
+
+.modal-prose strong { color: var(--sky); }
+.modal-prose.green  strong { color: var(--success); }
+.modal-prose.purple strong { color: #7c3aed; }
+
+.modal-btn {
+  width: 100%; padding: 11px;
+  background: linear-gradient(135deg, var(--sky), var(--navy));
+  color: #fff; border: none; border-radius: 6px;
+  font-family: 'Georgia',serif; font-size: .95rem;
+  font-weight: 600; cursor: pointer; transition: all .22s; margin-top: 18px;
+}
+.modal-btn:hover { filter: brightness(1.1); }
+.modal-btn:focus { outline: 3px solid var(--sky); outline-offset: 2px; }
+
+.modal-btn-green {
+  background: linear-gradient(135deg, var(--success), #2a7a50);
+}
+
+/* ══════════════════════════════════════════════════
+   PUZZLE MODAL
+   ══════════════════════════════════════════════════ */
+.puzzle-goal {
+  background: #f0faf4; border: 2px solid var(--success);
+  border-radius: 6px; padding: 10px 14px;
+  text-align: center; font-weight: 700; font-size: .92rem;
+  color: #1a5c35; margin-bottom: 18px;
+}
+
+.puzzle-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-bottom: 14px;
+}
+
+.puzzle-stakeholders { display: flex; flex-direction: column; gap: 10px; }
+.puzzle-actions      { display: flex; flex-direction: column; gap: 8px; }
+
+.dropzone {
+  border: 2px dashed var(--border); border-radius: 8px;
+  min-height: 64px; padding: 8px 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .82rem; color: var(--light);
+  transition: all .2s; background: #fafbfc;
+  text-align: center; line-height: 1.4;
+  cursor: pointer; /* clickable for keyboard users */
+}
+
+.dropzone.drag-over  { background: #eff6ff; border-color: var(--sky); }
+.dropzone.correct    { background: #f0faf4; border-color: var(--success); border-style: solid; }
+.dropzone.wrong      { background: #fff5f5; border-color: var(--danger); }
+.dropzone.selected-target { background: #eff6ff; border-color: var(--sky); border-style: solid; }
+
+.dropzone-name {
+  font-weight: 600; color: var(--slate); font-size: .85rem; margin-bottom: 2px;
+}
+
+.action-chip {
+  background: var(--white); border: 2px solid var(--border);
+  border-radius: 6px; padding: 10px 12px;
+  font-size: .84rem; color: var(--ink);
+  cursor: grab; transition: all .2s; line-height: 1.4;
+  user-select: none;
+}
+
+.action-chip:hover  { border-color: var(--sky); background: #f5f8ff; }
+.action-chip:focus  { outline: 3px solid var(--sky); outline-offset: 2px; }
+.action-chip.dragging  { opacity: .5; }
+.action-chip.selected  { border-color: var(--sky); background: #eff6ff; box-shadow: 0 0 0 3px rgba(74,127,181,.25); }
+.action-chip.placed    { opacity: .35; cursor: default; pointer-events: none; }
+
+.puzzle-feedback {
+  text-align: center; font-weight: 600; font-size: .9rem;
+  min-height: 24px; color: var(--success);
+  font-family: 'Courier New',monospace;
+}
+
+.puzzle-instructions {
+  background: #f0f4fa; border-radius: 6px;
+  padding: 10px 12px; margin-bottom: 12px;
+  font-size: .82rem; color: var(--muted); line-height: 1.55;
+}
+
+/* ══════════════════════════════════════════════════
+   DEBRIEF MODAL
+   ══════════════════════════════════════════════════ */
+.debrief-scores {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;
+}
+
+.score-card {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 14px;
+}
+
+.score-card label {
+  font-family: 'Courier New',monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--light);
+  display: block; margin-bottom: 4px;
+}
+
+.score-card .score-val {
+  font-size: 1.35rem; font-weight: 700; color: var(--sky);
+  font-family: 'Courier New',monospace; margin-bottom: 4px;
+}
+
+.score-card p { font-size: .82rem; color: var(--muted); line-height: 1.5; }
+
+.takeaway-list { list-style: none; padding: 0; }
+.takeaway-list li {
+  padding: 7px 0 7px 16px; position: relative;
+  border-bottom: 1px solid var(--border); font-size: .88rem;
+  color: var(--ink); line-height: 1.6;
+}
+.takeaway-list li::before {
+  content: '→'; position: absolute; left: 0;
+  color: var(--sky); font-weight: bold;
+}
+
+.decision-log-entry {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px; margin-bottom: 10px;
+}
+
+.log-scenario {
+  font-family: 'Courier New',monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-bottom: 5px;
+}
+
+.log-text { font-style: italic; color: var(--ink); font-size: .88rem; margin-bottom: 8px; line-height: 1.55; }
+.log-choice { font-weight: 600; font-size: .88rem; margin-bottom: 4px; }
+.log-prf    { font-size: .8rem; color: var(--muted); font-style: italic; margin-bottom: 6px; }
+.log-outcome {
+  background: #fefce8; border-left: 3px solid var(--gold);
+  padding: 8px 10px; border-radius: 0 4px 4px 0;
+  font-size: .82rem; color: #78350f; line-height: 1.55;
+}
+
+.section-label {
+  font-family: 'Courier New',monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--light);
+  margin: 16px 0 8px;
+}
+
+.restart-btn {
+  width: 100%; padding: 12px;
+  background: linear-gradient(135deg, var(--sky), var(--navy));
+  color: #fff; border: none; border-radius: 6px;
+  font-family: 'Georgia',serif; font-size: .98rem;
+  font-weight: 600; cursor: pointer; transition: all .22s; margin-top: 16px;
+}
+.restart-btn:hover { filter: brightness(1.1); }
+
+/* ── Fade-in ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.fade-in { animation: fadeIn .4s ease both; }
+
+/* ── Spinner ── */
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin .7s linear infinite;
+  vertical-align: middle; margin-right: 5px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Responsive ── */
+@media (max-width: 560px) {
+  .role-grid   { grid-template-columns: 1fr; }
+  .puzzle-grid { grid-template-columns: 1fr; }
+  .debrief-scores { grid-template-columns: 1fr; }
+  .ucp-grid    { grid-template-columns: 1fr; }
+  header h1    { font-size: 1.15rem; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ -->
+<header role="banner">
+  <div class="header-inner">
+    <div class="header-titles">
+      <h1>Coordination Crisis: The CTE Challenge</h1>
+      <p>Ethics Beyond Boundaries · Capability-Based Coordination</p>
+    </div>
+    <div class="header-controls">
+      <span id="prfStatusWrap">No PRF loaded</span>
+      <label class="prf-label" for="prfFileInput" title="Load your PRF-22 JSON">
+        ⬆ Load My PRF
+      </label>
+      <input type="file" id="prfFileInput" accept=".json"
+             aria-label="Load PRF-22 JSON profile" style="display:none">
+      <button class="intro-btn" onclick="openModal('introModal')"
+              aria-haspopup="dialog">
+        What Is Capability-Based Coordination?
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════
+     ROLE SELECTION SCREEN
+     ══════════════════════════════════════════════════ -->
+<div id="roleSelectionScreen">
+  <div class="page-wrap">
+    <div class="section-heading fade-in">
+      <h2>Choose Your Role in the Crisis</h2>
+      <p>Each stakeholder brings unique capabilities to a shared coordination task.
+         Select a perspective to embody — then navigate three scenarios from that position.</p>
+    </div>
+    <div class="role-grid" id="roleGrid" role="list" aria-label="Role selection"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SIMULATION SCREEN
+     ══════════════════════════════════════════════════ -->
+<div id="simulationScreen" class="hidden">
+  <div class="page-wrap">
+    <div style="padding-top:24px"></div>
+
+    <!-- Header card -->
+    <div class="sim-header fade-in">
+      <div class="sim-header-row">
+        <span class="sim-role-title" id="roleTitle"></span>
+        <button class="quit-btn" onclick="showDebrief()" aria-label="End simulation and see debrief">
+          End Simulation
+        </button>
+      </div>
+
+      <div class="goal-box" role="note">
+        <strong>Coordinated Task:</strong> Contribute to the network's goal of
+        <strong>establishing a new, evidence-based understanding of player safety.</strong>
+        Success is measured by the Overall Coordination score — how effectively the distributed
+        network of stakeholders achieves this task together.
+      </div>
+
+      <div class="meters">
+        <div class="meter-row">
+          <div class="meter-label">
+            <span>Overall Coordination</span>
+            <span id="coordVal" aria-live="polite">50/100</span>
+          </div>
+          <div class="meter-track" role="progressbar"
+               aria-label="Overall coordination"
+               aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+            <div class="meter-fill fill-coordination" id="coordMeter" style="width:50%"></div>
+          </div>
+        </div>
+        <div class="meter-row hidden" id="healthRow">
+          <div class="meter-label">
+            <span>Personal Health</span>
+            <span id="healthVal" aria-live="polite">100/100</span>
+          </div>
+          <div class="meter-track" role="progressbar"
+               aria-label="Personal health"
+               aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+            <div class="meter-fill fill-health" id="healthMeter" style="width:100%"></div>
+          </div>
+        </div>
+        <div class="meter-row hidden" id="trustRow">
+          <div class="meter-label">
+            <span>Trust in NFL</span>
+            <span id="trustVal" aria-live="polite">50/100</span>
+          </div>
+          <div class="meter-track" role="progressbar"
+               aria-label="Trust in NFL"
+               aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+            <div class="meter-fill fill-trust" id="trustMeter" style="width:50%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenario card -->
+    <div class="scenario-card fade-in" id="scenarioCard">
+      <div class="scenario-num" id="scenarioNum"></div>
+      <div class="scenario-text" id="scenarioText" aria-live="assertive"></div>
+      <div class="decisions" id="decisionButtons" role="group" aria-label="Decision choices"></div>
+    </div>
+
+    <!-- Feedback -->
+    <div class="feedback-box" id="feedbackBox" role="status" aria-live="polite">
+      <div class="feedback-label" id="feedbackLabel"></div>
+      <div class="feedback-analysis" id="feedbackAnalysis"></div>
+      <button class="continue-btn" id="continueBtn" onclick="advanceScenario()">
+        Continue →
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     MODAL: INTRO
+     ══════════════════════════════════════════════════ -->
+<div id="introModal" class="modal-backdrop hidden"
+     role="dialog" aria-modal="true" aria-labelledby="introTitle">
+  <div class="modal-box">
+    <h2 id="introTitle">What Is Capability-Based Coordination?</h2>
+    <p class="modal-prose">
+      This model suggests that successful coordination doesn't require everyone to agree on
+      <em>values</em>. Instead, it emerges when different groups contribute their unique
+      abilities toward a shared task.
+    </p>
+    <p class="modal-prose">
+      <strong>Personal Reality Frameworks (PRFs):</strong> Each stakeholder sees the world
+      through a unique lens — shaped by beliefs, rules, and values. In this simulation, you'll
+      see the PRF behind every choice.
+    </p>
+    <p class="modal-prose green">
+      <strong>Functional Equivalence:</strong> Different actions can be equivalent because they
+      advance the same coordinated task. A scientist publishing a paper and a family member
+      giving testimony are functionally equivalent — both contribute to establishing the truth
+      about CTE, even though they're driven by completely different values.
+    </p>
+    <p class="modal-prose purple">
+      <strong>Bootstrap Resolution:</strong> Authority is built through demonstrated capability.
+      When a group asks a powerful, evidence-based question, they gain legitimate authority
+      even if they started with no formal power. This is OS2 thinking in action — coordination
+      across PRF difference rather than requiring PRF agreement.
+    </p>
+    <button class="modal-btn" onclick="closeModal('introModal')">Got it!</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     MODAL: INSTRUCTIONS
+     ══════════════════════════════════════════════════ -->
+<div id="instructionsModal" class="modal-backdrop hidden"
+     role="dialog" aria-modal="true" aria-labelledby="instrTitle">
+  <div class="modal-box">
+    <h2 id="instrTitle">Your Mission: Embody a Perspective</h2>
+    <p class="modal-prose">
+      You have chosen your role. For the rest of this simulation, your task is to make
+      judgments from the perspective of that stakeholder.
+    </p>
+    <p class="modal-prose">
+      Your mission reflects that person's <strong>authentic identity</strong> in the face of
+      the CTE crisis. Notice how the same issue creates completely different ethical dilemmas
+      depending on your position.
+    </p>
+    <p class="modal-prose">
+      This is a <strong>perspective-taking exercise.</strong> Do not choose what
+      <em>you</em> would do. Use the <strong>PRF Rationale</strong> for each option as your
+      guide — choose the one that best fits the worldview of the person you are playing.
+    </p>
+    <p class="modal-prose">
+      Your goal is to understand <em>why</em> they act the way they do.
+    </p>
+    <div id="instrRoleDesc"
+         style="background:#f0f4fa;border-radius:6px;padding:12px 14px;margin-top:10px;font-size:.9rem;color:var(--ink);line-height:1.65">
+    </div>
+    <button class="modal-btn modal-btn-green" onclick="beginSim()" id="beginSimBtn">
+      Begin Simulation
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     MODAL: PUZZLE
+     ══════════════════════════════════════════════════ -->
+<div id="puzzleModal" class="modal-backdrop hidden"
+     role="dialog" aria-modal="true" aria-labelledby="puzzleTitle">
+  <div class="modal-box" style="max-width:700px">
+    <h2 id="puzzleTitle">The "Functional Equivalence" Puzzle</h2>
+    <div class="puzzle-instructions">
+      <strong>Mouse users:</strong> Drag each action card onto the correct stakeholder.
+      <strong>Keyboard/touch users:</strong> Click an action to select it (it turns blue),
+      then click the stakeholder where it belongs.
+    </div>
+    <div class="puzzle-goal">
+      🎯 Shared Goal: Establish the Link Between Football and CTE
+    </div>
+    <div class="puzzle-grid">
+      <div class="puzzle-stakeholders" id="puzzleStakeholders"></div>
+      <div class="puzzle-actions" id="puzzleActions"></div>
+    </div>
+    <div class="puzzle-feedback" id="puzzleFeedback" role="status" aria-live="polite"></div>
+    <button class="modal-btn" id="closePuzzleBtn" onclick="closePuzzle()">
+      Continue Simulation
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     MODAL: DEBRIEF
+     ══════════════════════════════════════════════════ -->
+<div id="debriefModal" class="modal-backdrop hidden"
+     role="dialog" aria-modal="true" aria-labelledby="debriefTitle">
+  <div class="modal-box" style="max-width:700px">
+    <h2 id="debriefTitle">Simulation Debrief</h2>
+
+    <!-- Scores -->
+    <div class="debrief-scores" id="debriefScores"></div>
+
+    <!-- Live UCP panel -->
+    <div class="section-label">Live UCP Coordination Analysis</div>
+    <div id="ucpPanel">
+      <div class="ucp-panel">
+        <div class="ucp-panel-header">Running live simulation on this stakeholder ecosystem…</div>
+        <div class="ucp-loading"><span class="spinner"></span> Connecting to UCP engine…</div>
+      </div>
+    </div>
+
+    <!-- Takeaways -->
+    <div class="section-label">Key Theoretical Takeaways</div>
+    <ul class="takeaway-list" id="takeawayList"></ul>
+
+    <!-- Decision log -->
+    <div class="section-label">Your Decision Path</div>
+    <div id="decisionLog"></div>
+
+    <button class="restart-btn" onclick="restartApp()">▶ Play Again — Different Role</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ─────────────────────────────────────────────────
+// PRF MINI-LOADER
+// ─────────────────────────────────────────────────
+const PRF = {
+  _fw: null, _tier: null, _cpfc: null,
+  FW: {
+    individual_rights:     { name:'Individual / Rights-Based',    icon:'⚖️', color:'#4a7fb5' },
+    relational_we:         { name:'Relational / We-Centered',     icon:'🤝', color:'#3a8a5c' },
+    hierarchical_role:     { name:'Hierarchical / Role-Based',    icon:'🏛️', color:'#8a6fb5' },
+    boundary_integrity:    { name:'Boundary / Integrity-Centered',icon:'🛡️', color:'#c9a84c' },
+    custodial_stewardship: { name:'Custodial / Stewardship',      icon:'🌱', color:'#4a9a7a' },
+  },
+  // Which role maps closest to which framework
+  ROLE_FW: {
+    scientist:  ['individual_rights','boundary_integrity'],
+    executive:  ['hierarchical_role'],
+    family:     ['relational_we'],
+    journalist: ['individual_rights'],
+    athlete:    ['relational_we','hierarchical_role'],
+  },
+
+  load(text) {
+    try {
+      const p = JSON.parse(text);
+      let f, a;
+      if (p.prf22?.moralFoundations) {
+        const mf=p.prf22.moralFoundations, vals=p.prf22.values||{};
+        const atcfVal=(p.prf22.resilience||{}).ATCF||3;
+        const z=x=>(x-3.0);
+        f={ CareWeight:z(mf.Care||3), FairnessWeight:z(mf.Fairness||3),
+            BindingWeight:(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3,
+            IndividualizingWeight:(z(mf.Care||3)+z(mf.Fairness||3))/2,
+            Conservation:(z(mf.Authority||3)+z(mf.Purity||3))/2,
+            Openness:z(vals.Openness||3) };
+        const s=(5-atcfVal)/4;
+        a={ConstraintSensitivity:s, DepletionSensitivity:s};
+        this._cpfc=p.derivedMetrics?.C_PFC||null;
+      } else if (p.foundations&&p.atcf) {
+        f=p.foundations; a=p.atcf;
+      } else return {ok:false,error:'Unrecognised PRF format'};
+
+      const sc={
+        individual_rights:     0.40*f.FairnessWeight+0.30*f.IndividualizingWeight-0.30*f.BindingWeight,
+        relational_we:         0.40*f.CareWeight+0.30*f.IndividualizingWeight-0.10*f.BindingWeight,
+        hierarchical_role:     0.40*f.BindingWeight-0.20*f.Openness-0.10*f.Conservation,
+        boundary_integrity:    0.30*f.BindingWeight+0.40*f.Conservation-0.10*f.Openness,
+        custodial_stewardship: 0.30*f.Conservation+0.20*f.BindingWeight+0.05,
+      };
+      this._fw=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0][0];
+      const s=(a.ConstraintSensitivity+a.DepletionSensitivity)/2;
+      this._tier=s<0.20?'low':s<0.60?'medium':'high';
+      return {ok:true};
+    } catch(e) { return {ok:false,error:e.message}; }
+  },
+
+  isLoaded()    { return this._fw!==null; },
+  fw()          { return this._fw; },
+  fwName()      { return this._fw?(this.FW[this._fw]?.name||''):''; },
+  fwIcon()      { return this._fw?(this.FW[this._fw]?.icon||''):''; },
+  fwColor()     { return this._fw?(this.FW[this._fw]?.color||'#888'):'#888'; },
+  tier()        { return this._tier; },
+  cpfc()        { return this._cpfc; },
+
+  // Returns role id whose frameworks best match the loaded PRF
+  closestRole() {
+    if (!this._fw) return null;
+    for (const [role, fws] of Object.entries(this.ROLE_FW)) {
+      if (fws.includes(this._fw)) return role;
+    }
+    return null;
+  },
+};
+
+document.getElementById('prfFileInput').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const res = PRF.load(e.target.result);
+    const wrap = document.getElementById('prfStatusWrap');
+    if (res.ok) {
+      wrap.innerHTML = `${PRF.fwIcon()} <strong style="color:${PRF.fwColor()}">${PRF.fwName()}</strong>`;
+      wrap.style.color = PRF.fwColor();
+      highlightClosestRole();
+    } else {
+      wrap.textContent = `Error: ${res.error}`;
+      wrap.style.color = '#f08080';
+    }
+  };
+  reader.readAsText(file);
+});
+
+function highlightClosestRole() {
+  document.querySelectorAll('.role-card').forEach(c => c.classList.remove('prf-match'));
+  const closest = PRF.closestRole();
+  if (closest) {
+    const card = document.querySelector(`[data-role="${closest}"]`);
+    if (card) card.classList.add('prf-match');
+  }
+}
+
+
+// ─────────────────────────────────────────────────
+// ROLE DATA
+// ─────────────────────────────────────────────────
+const ROLES = {
+  scientist: {
+    name: 'Independent Scientist', icon: '🔬', css: 'role-card-scientist',
+    desc: 'Your mission is to conduct research, publish findings, and establish credibility for the link between CTE and football — despite institutional pressure.',
+    // Worldview distribution: mostly individualist/boundary-focused with some hierarchy pressure
+    wv: { liberal_individualist:0.40, sacred_boundary:0.25, role_order:0.18, ubuntu_relational:0.10, indigenous_custodial:0.07 },
+    ev: { empirical_calibrated:0.55, authority_weighted:0.25, tradition_weighted:0.12, alternative_facts:0.08 },
+  },
+  executive: {
+    name: 'NFL Executive', icon: '💼', css: 'role-card-executive',
+    desc: 'Your mission is to protect the league\'s reputation, financial stability, and cultural standing while navigating the emerging crisis.',
+    wv: { role_order:0.50, sacred_boundary:0.25, liberal_individualist:0.13, ubuntu_relational:0.07, indigenous_custodial:0.05 },
+    ev: { authority_weighted:0.50, tradition_weighted:0.25, empirical_calibrated:0.15, alternative_facts:0.10 },
+  },
+  family: {
+    name: "Player's Family Member", icon: '❤️', css: 'role-card-family',
+    desc: 'Your mission is to advocate for player safety, seek justice for your loved one, and build coalitions to force change.',
+    wv: { ubuntu_relational:0.42, liberal_individualist:0.25, sacred_boundary:0.18, indigenous_custodial:0.10, role_order:0.05 },
+    ev: { empirical_calibrated:0.45, authority_weighted:0.20, tradition_weighted:0.20, alternative_facts:0.15 },
+  },
+  journalist: {
+    name: 'Investigative Journalist', icon: '📰', css: 'role-card-journalist',
+    desc: 'Your mission is to uncover the truth, document the stories of those affected, and inform the public to create pressure for accountability.',
+    wv: { liberal_individualist:0.45, ubuntu_relational:0.22, sacred_boundary:0.15, role_order:0.10, indigenous_custodial:0.08 },
+    ev: { empirical_calibrated:0.55, authority_weighted:0.20, tradition_weighted:0.15, alternative_facts:0.10 },
+  },
+  athlete: {
+    name: 'NFL Athlete', icon: '🏈', css: 'role-card-athlete',
+    desc: 'Your mission is to navigate your career, manage your health, and make difficult decisions about who to trust and when to speak out.',
+    wv: { role_order:0.35, liberal_individualist:0.25, ubuntu_relational:0.22, sacred_boundary:0.13, indigenous_custodial:0.05 },
+    ev: { authority_weighted:0.40, empirical_calibrated:0.30, tradition_weighted:0.20, alternative_facts:0.10 },
+  },
+};
+
+// ─────────────────────────────────────────────────
+// SCENARIO DATA — all original text preserved
+// ─────────────────────────────────────────────────
+const SCENARIOS = {
+  scientist: [
+    { id:1,
+      text: "You are Dr. Bennet Omalu. After examining the brain of a deceased NFL player, you've discovered extensive evidence of a new disease you call CTE. The NFL's medical journal has agreed to publish your findings. The NFL, however, is furious. They send a letter demanding you retract your paper. What do you do?",
+      decisions: [
+        { text: "Stand by your research and refuse to retract.",
+          prf:  "PRF Rationale: (Belief: Empirical evidence is paramount. Rule: Uphold scientific integrity above all. Authenticity: My identity as a scientist is non-negotiable.)",
+          effects: { coordination: -10 },
+          feedback: "Conflict Created",
+          analysis: "By prioritizing scientific integrity, you create an immediate conflict with the NFL. This lowers short-term coordination but establishes your credibility — a necessary first step for 'Bootstrap Resolution'." },
+        { text: "Issue a 'clarification' to appease the NFL.",
+          prf:  "PRF Rationale: (Belief: The institution is powerful. Rule: Avoid direct conflict to keep a seat at the table. Authenticity: Pragmatism is key to long-term influence.)",
+          effects: { coordination: 5 },
+          feedback: "Conflict Avoided",
+          analysis: "You temporarily maintain a channel to the NFL, but at the cost of credibility. This may hinder your ability to coordinate with other independent stakeholders later on." },
+      ]
+    },
+    { id:2,
+      text: "A prominent journalist wants to feature your work in a major exposé. This would bring massive public attention but could also paint a target on your back, inviting more attacks from the league. How do you proceed?",
+      decisions: [
+        { text: "Cooperate fully with the journalist.",
+          prf:  "PRF Rationale: (Belief: Public knowledge is a force for change. Rule: Disseminate findings as widely as possible. Authenticity: My duty is to public health.)",
+          effects: { coordination: 15 },
+          feedback: "Network Expanded",
+          analysis: "You are building a 'distributed coordination network'. By bringing in the media, you create a new, powerful node of authority that is functionally equivalent to your scientific work in its ability to pressure the NFL." },
+        { text: "Decline, preferring to let the science speak for itself in academic circles.",
+          prf:  "PRF Rationale: (Belief: The scientific process is self-contained. Rule: Avoid the messiness of public debate. Authenticity: I am a researcher, not a public figure.)",
+          effects: { coordination: -5 },
+          feedback: "Network Stagnated",
+          analysis: "A missed opportunity. By staying in your silo, you allow the NFL's monopolistic control of the narrative to continue, slowing the growth of a coordinated opposition." },
+      ]
+    },
+    { id:'puzzle', type:'puzzle' },
+    { id:3,
+      text: "You've been invited to testify before Congress. The NFL will have its own doctors there, ready to challenge your credentials and findings. This is a high-risk, high-reward opportunity.",
+      decisions: [
+        { text: "Testify, presenting your evidence clearly and calmly.",
+          prf:  "PRF Rationale: (Belief: Democratic institutions are a key lever for change. Rule: Seize opportunities to formalize evidence. Authenticity: I have a civic duty to inform.)",
+          effects: { coordination: 20 },
+          feedback: "Authority Solidified",
+          analysis: "This is a peak 'Bootstrap Resolution' moment. By capably defending your work in a formal setting, your normative authority becomes undeniable, forcing the NFL to coordinate on more equal terms." },
+        { text: "Submit written testimony only to avoid a direct confrontation.",
+          prf:  "PRF Rationale: (Belief: A direct fight is risky. Rule: Get the facts on record without personal attacks. Authenticity: My work should stand on its own.)",
+          effects: { coordination: 5 },
+          feedback: "Impact Blunted",
+          analysis: "The evidence is recorded, but the performative aspect of demonstrating your capability is lost. This lessens the impact on the NFL's authority and slows down the coordination shift." },
+      ]
+    },
+  ],
+
+  executive: [
+    { id:1,
+      text: "A pathologist, Dr. Omalu, has published a paper linking a former player's death to CTE. Your medical committee calls the research flawed. The media is starting to ask questions. What is your public stance?",
+      decisions: [
+        { text: "Publicly discredit the research and the doctor's credentials.",
+          prf:  "PRF Rationale: (Belief: Any threat to the league must be eliminated. Rule: Control the narrative at all costs. Authenticity: My job is to be the shield for the league.)",
+          effects: { coordination: -15 },
+          feedback: "Coordination Blocked",
+          analysis: "This aggressive, monopolistic response creates a deep rift. It signals you are unwilling to coordinate, galvanizing opposition and forcing other stakeholders to build networks without you." },
+        { text: "State that you take player safety seriously and will form a new committee to 'study the issue further'.",
+          prf:  "PRF Rationale: (Belief: Public perception can be managed. Rule: Use institutional processes to delay and control. Authenticity: We are responsible stewards of the game.)",
+          effects: { coordination: 5 },
+          feedback: "Conflict Delayed",
+          analysis: "A classic tactic to maintain authority. It temporarily eases public pressure and maintains an appearance of coordination, but it's not a genuine attempt to engage with disconfirming evidence." },
+      ]
+    },
+    { id:2,
+      text: "More independent scientists are confirming Omalu's findings. Player families are starting to speak to the media. The narrative is slipping from your control.",
+      decisions: [
+        { text: "Fund your own research that emphasizes the safety of the sport.",
+          prf:  "PRF Rationale: (Belief: We can create our own set of facts. Rule: If you can't beat the evidence, dilute it. Authenticity: We are protecting the game we love.)",
+          effects: { coordination: -10 },
+          feedback: "Trust Eroded",
+          analysis: "This is seen as a biased attempt to control the science. It further damages your credibility and makes genuine coordination with independent groups nearly impossible." },
+        { text: "Acknowledge 'unanswered questions' and donate money to an independent research foundation.",
+          prf:  "PRF Rationale: (Belief: A strategic concession can prevent a larger loss. Rule: Cede ground on science to maintain control over policy. Authenticity: We are part of the solution.)",
+          effects: { coordination: 10 },
+          feedback: "Door Opened",
+          analysis: "A small but significant step toward coordination. By funding an independent body, you signal a potential willingness to engage with outside evidence." },
+      ]
+    },
+    { id:'puzzle', type:'puzzle' },
+    { id:3,
+      text: "A massive class-action lawsuit has been filed by former players. Your lawyers say you could fight it for years, but the PR damage would be immense. They also offer a potential settlement.",
+      decisions: [
+        { text: "Settle the lawsuit for a large sum, without admitting guilt.",
+          prf:  "PRF Rationale: (Belief: This is a business problem, not a moral one. Rule: Minimize financial and reputational damage. Authenticity: We are pragmatists protecting the league's future.)",
+          effects: { coordination: 20 },
+          feedback: "Conflict Resolved",
+          analysis: "The settlement is a massive coordination event. It forces engagement and resource allocation, even without an admission of fault. A pragmatic move that ends a major source of conflict." },
+        { text: "Fight the lawsuit tooth and nail to protect the league's finances and reputation.",
+          prf:  "PRF Rationale: (Belief: We are in the right. Rule: Never admit weakness or fault. Authenticity: We defend the league against all attacks.)",
+          effects: { coordination: -25 },
+          feedback: "War Declared",
+          analysis: "This entrenches all sides and destroys any remaining goodwill. It guarantees a long, painful public fight that prevents any meaningful coordination on the underlying issues for years." },
+      ]
+    },
+  ],
+
+  family: [
+    { id:1,
+      text: "Your husband, a beloved former NFL player, has passed away after years of erratic behavior. You read about Dr. Omalu's work and suspect a connection. What is your first step?",
+      decisions: [
+        { text: "Contact Dr. Omalu and offer to donate your husband's brain to science.",
+          prf:  "PRF Rationale: (Belief: My personal tragedy can have a larger purpose. Rule: Turn grief into action. Authenticity: I must honor my husband's memory by finding the truth.)",
+          effects: { coordination: 10 },
+          feedback: "Bridge Built",
+          analysis: "A courageous act of 'Functional Equivalence'. Your family's lived experience is translated into scientific data, building a bridge between two different stakeholder realities and starting a coordination network." },
+        { text: "Grieve in private, unsure of what to do or who to trust.",
+          prf:  "PRF Rationale: (Belief: My family's pain is a private matter. Rule: Protect my family from more scrutiny. Authenticity: My primary duty is to my grieving family.)",
+          effects: { coordination: 0 },
+          feedback: "Opportunity Paused",
+          analysis: "A completely understandable reaction. However, it keeps the 'lived experience' data point isolated and prevents it from connecting with other stakeholders for now." },
+      ]
+    },
+    { id:2,
+      text: "After confirming your husband had CTE, you feel a mix of grief and anger. You realize other families must be going through the same thing.",
+      decisions: [
+        { text: "Start a support group and begin speaking to the media.",
+          prf:  "PRF Rationale: (Belief: There is strength in numbers. Rule: Amplify our collective voice. Authenticity: We are witnesses who must speak for those who can't.)",
+          effects: { coordination: 15 },
+          feedback: "Coalition Formed",
+          analysis: "You are building a new node in the coordination network. By organizing, you transform individual stories into a collective force, gaining 'Bootstrap' authority through shared, demonstrated capability." },
+        { text: "Focus on your own family's legal options against the NFL.",
+          prf:  "PRF Rationale: (Belief: The legal system is the only path to justice. Rule: Focus on what you can control. Authenticity: I must get justice for my own family.)",
+          effects: { coordination: 5 },
+          feedback: "Action Narrowed",
+          analysis: "Seeking legal recourse is valid, but focusing only on your own case limits the broader network effect. A lawsuit benefits from the pressure of a coordinated public campaign." },
+      ]
+    },
+    { id:'puzzle', type:'puzzle' },
+    { id:3,
+      text: "You've become a prominent advocate. A documentary filmmaker wants to make your family's story the centerpiece of a film about CTE.",
+      decisions: [
+        { text: "Agree, sharing your painful story to maximize public awareness.",
+          prf:  "PRF Rationale: (Belief: My story is a powerful tool for change. Rule: Use emotion and truth to break through denial. Authenticity: This is the most meaningful way to create a legacy.)",
+          effects: { coordination: 20 },
+          feedback: "Narrative Captured",
+          analysis: "Your testimony becomes a cornerstone of the public narrative. This is a powerful demonstration of the 'Functional Equivalence' of personal testimony and scientific data." },
+        { text: "Decline, feeling that your family has been through enough public scrutiny.",
+          prf:  "PRF Rationale: (Belief: My family's well-being comes first. Rule: There is a limit to what we can give. Authenticity: I must protect my loved ones from more pain.)",
+          effects: { coordination: 0 },
+          feedback: "Advocacy Paused",
+          analysis: "A valid personal choice. From a coordination standpoint, it means the network must find another voice to be its public face, potentially slowing momentum." },
+      ]
+    },
+  ],
+
+  journalist: [
+    { id:1,
+      text: "You stumble upon a small scientific paper by a Dr. Omalu about a football player's brain. It contradicts the NFL's official stance. What do you do?",
+      decisions: [
+        { text: "Investigate further. Try to contact Dr. Omalu and find other families.",
+          prf:  "PRF Rationale: (Belief: Where there's smoke, there's fire. Rule: Connect the dots that others miss. Authenticity: My job is to find the story behind the story.)",
+          effects: { coordination: 10 },
+          feedback: "Network Node Activated",
+          analysis: "You are acting as a crucial connector. By linking the scientist with potential family stories, you are actively weaving the threads of a 'distributed coordination network' where none existed before." },
+        { text: "Write a small, balanced article about the paper and the NFL's response.",
+          prf:  "PRF Rationale: (Belief: My job is to report the facts as presented. Rule: 'He said, she said' journalism is safe. Authenticity: I am an objective reporter, not an advocate.)",
+          effects: { coordination: 2 },
+          feedback: "Impact Minimized",
+          analysis: "This 'objective' stance passively reinforces the existing power dynamic. It fails to investigate the capabilities of the new challenger and does little to shift the coordination landscape." },
+      ]
+    },
+    { id:2,
+      text: "Your investigation has uncovered a pattern: the NFL has a history of silencing doctors and controlling research. You have enough for a bombshell story, but your editor is worried about a lawsuit.",
+      decisions: [
+        { text: "Publish the story. It's a public service.",
+          prf:  "PRF Rationale: (Belief: The public has a right to know. Rule: Speak truth to power. Authenticity: This is why I became a journalist.)",
+          effects: { coordination: 20 },
+          feedback: "Power Challenged",
+          analysis: "Your story fundamentally changes the narrative and massively boosts the authority of the emerging network. This is a key event that breaks the NFL's information monopoly." },
+        { text: "Tone down the story to focus only on the science, removing the cover-up accusations.",
+          prf:  "PRF Rationale: (Belief: Legal threats are serious. Rule: Stick to the safest possible claims. Authenticity: My primary duty is to my employer's viability.)",
+          effects: { coordination: 5 },
+          feedback: "Threat Averted, Story Weakened",
+          analysis: "The story is published, but its core argument about a coordination failure is removed. This lessens the impact and allows the NFL to frame it as a simple scientific disagreement." },
+      ]
+    },
+    { id:'puzzle', type:'puzzle' },
+    { id:3,
+      text: "Following your reporting, you and your colleagues are offered a book deal to write 'League of Denial,' a definitive account of the crisis.",
+      decisions: [
+        { text: "Write the book, creating a permanent, detailed record.",
+          prf:  "PRF Rationale: (Belief: History needs a definitive record. Rule: Consolidate the facts for lasting impact. Authenticity: We are the chroniclers of this story.)",
+          effects: { coordination: 15 },
+          feedback: "History Written",
+          analysis: "The book solidifies the new, distributed network's narrative. It becomes a permanent resource that prevents the old monopoly from re-establishing control." },
+        { text: "Decline the book deal and move on to the next story.",
+          prf:  "PRF Rationale: (Belief: The news cycle moves on. Rule: Always look for the next big story. Authenticity: I am a news reporter, not a historian.)",
+          effects: { coordination: 0 },
+          feedback: "Momentum Risked",
+          analysis: "Your reporting was impactful, but without this consolidating effort, the narrative could fragment over time, potentially allowing the NFL to slowly reclaim its authority." },
+      ]
+    },
+  ],
+
+  athlete: [
+    { id:1,
+      text: "You're a veteran linebacker. You just took a huge hit and are seeing stars. The team doctor says you're 'good to go.' The coach is waving you back in. What do you do?",
+      decisions: [
+        { text: "Go back in the game. You have to be tough.",
+          prf:  "PRF Rationale: (Belief: My team needs me. Rule: Play through the pain. Authenticity: My identity is as a warrior who never quits.)",
+          effects: { health: -15, trust: 5 },
+          feedback: "Health Sacrificed",
+          analysis: "Your PRF aligns with the NFL's desired framework. You coordinate with the team's immediate goal, but at a direct cost to your health and by ignoring the conflicting evidence of your own body." },
+        { text: "Take yourself out of the game, despite the pressure.",
+          prf:  "PRF Rationale: (Belief: My body is telling me something is wrong. Rule: Prioritize long-term health. Authenticity: I am more than just a player; I have a future.)",
+          effects: { health: 5, trust: -10 },
+          feedback: "Self-Advocacy",
+          analysis: "You are choosing to trust your own 'lived experience' over the team's authority. This is a small act of de-coordination with the team, but a crucial step in asserting your own agency." },
+      ]
+    },
+    { id:2,
+      text: "You've been having uncharacteristic mood swings and memory lapses. You read a news article about CTE. Your family is concerned.",
+      decisions: [
+        { text: "Talk to the team doctor, who you've known for years.",
+          prf:  "PRF Rationale: (Belief: The team has my best interests at heart. Rule: Work within the system. Authenticity: Loyalty is important.)",
+          effects: { health: -5, trust: 5 },
+          feedback: "System Trusted",
+          analysis: "You are choosing to coordinate with the established, monopolistic authority. The team doctor's PRF is aligned with the league's, leading to a response that prioritizes your availability to play." },
+        { text: "Secretly contact an independent neurologist mentioned in the article.",
+          prf:  "PRF Rationale: (Belief: The team might not be telling me the whole truth. Rule: Seek outside, unbiased information. Authenticity: I have to take control of my own health.)",
+          effects: { health: 10, trust: -15 },
+          feedback: "Outside Network Engaged",
+          analysis: "A major step. You are actively choosing to coordinate with the emerging independent network over the league's internal one. This provides vital information at the cost of trust within the old system." },
+      ]
+    },
+    { id:'puzzle', type:'puzzle' },
+    { id:3,
+      text: "You've decided to retire due to your neurological concerns. A journalist asks for an on-the-record interview about your symptoms.",
+      decisions: [
+        { text: "Go on the record, sharing your personal story.",
+          prf:  "PRF Rationale: (Belief: My experience can protect others. Rule: Use my platform to create change. Authenticity: My legacy can be more than just my stats.)",
+          effects: { health: 0, trust: 0, coordination: 20 },
+          feedback: "Powerful Testimony",
+          analysis: "This is a peak 'Functional Equivalence' moment for an athlete. Your lived experience becomes powerful public evidence, adding immense credibility to the claims of scientists and families." },
+        { text: "Retire quietly, citing 'personal reasons'.",
+          prf:  "PRF Rationale: (Belief: A public fight will only bring more pain. Rule: Protect my family's privacy. Authenticity: I just want to live a quiet life now.)",
+          effects: { health: 0, trust: 0, coordination: -5 },
+          feedback: "Voice Withheld",
+          analysis: "You protect your privacy, but a crucial piece of evidence — your personal story — is withheld from the distributed network, slowing its momentum and the pressure for change." },
+      ]
+    },
+  ],
+};
+
+// ─────────────────────────────────────────────────
+// PUZZLE DATA
+// ─────────────────────────────────────────────────
+const PUZZLE = {
+  stakeholders: [
+    { id:'scientist', label:'Independent Scientist' },
+    { id:'family',    label:"Player's Family Member" },
+    { id:'journalist',label:'Investigative Journalist' },
+    { id:'athlete',   label:'NFL Athlete' },
+  ],
+  actions: [
+    { id:'a1', text:'Publishes a peer-reviewed study.',       correct:'scientist'  },
+    { id:'a2', text:'Shares a personal story with the media.',correct:'family'     },
+    { id:'a3', text:'Publishes an investigative report.',     correct:'journalist' },
+    { id:'a4', text:'Goes on record about daily symptoms.',   correct:'athlete'    },
+  ],
+};
+
+// ─────────────────────────────────────────────────
+// GAME STATE
+// ─────────────────────────────────────────────────
+let currentRole    = null;
+let scenarioIndex  = 0;
+let state = {};
+
+function resetState() {
+  state = { coordination:50, health:100, trust:50,
+            takeaways: new Set(), log: [] };
+}
+
+// ─────────────────────────────────────────────────
+// MODAL HELPERS
+// ─────────────────────────────────────────────────
+const _modalFocusPrev = {};
+const _firstFocusable = modal => {
+  return modal.querySelectorAll(
+    'button,input,textarea,select,a,[tabindex]:not([tabindex="-1"])'
+  )[0];
+};
+
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (!m) return;
+  _modalFocusPrev[id] = document.activeElement;
+  m.classList.remove('hidden');
+  const f = _firstFocusable(m);
+  if (f) f.focus();
+}
+
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (!m) return;
+  m.classList.add('hidden');
+  if (_modalFocusPrev[id]) _modalFocusPrev[id].focus();
+}
+
+// Escape key closes any open modal
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  ['introModal','instructionsModal','puzzleModal','debriefModal'].forEach(id => {
+    const m = document.getElementById(id);
+    if (m && !m.classList.contains('hidden')) closeModal(id);
+  });
+});
+
+// Click backdrop to close (except debrief — you must use Play Again)
+['introModal','instructionsModal','puzzleModal'].forEach(id => {
+  document.getElementById(id)?.addEventListener('click', e => {
+    if (e.target === document.getElementById(id)) closeModal(id);
+  });
+});
+
+// ─────────────────────────────────────────────────
+// ROLE SELECTION
+// ─────────────────────────────────────────────────
+function renderRoleCards() {
+  const grid = document.getElementById('roleGrid');
+  grid.innerHTML = '';
+  for (const [id, role] of Object.entries(ROLES)) {
+    const card = document.createElement('div');
+    card.className = `role-card ${role.css}`;
+    card.setAttribute('data-role', id);
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'listitem button');
+    card.setAttribute('aria-label', `Select role: ${role.name}`);
+
+    card.innerHTML = `
+      <div class="prf-match-badge">Closest to your PRF</div>
+      <div class="role-icon">${role.icon}</div>
+      <h3>${role.name}</h3>
+      <p>${role.desc}</p>`;
+
+    card.addEventListener('click',   () => selectRole(id));
+    card.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); selectRole(id); } });
+    grid.appendChild(card);
+  }
+  if (PRF.isLoaded()) highlightClosestRole();
+}
+
+function selectRole(id) {
+  currentRole   = id;
+  scenarioIndex = 0;
+  resetState();
+
+  const role = ROLES[id];
+  document.getElementById('roleTitle').textContent = `Role: ${role.icon} ${role.name}`;
+  document.getElementById('healthRow').classList.toggle('hidden', id !== 'athlete');
+  document.getElementById('trustRow').classList.toggle('hidden', id !== 'athlete');
+
+  document.getElementById('instrRoleDesc').innerHTML =
+    `<strong>${role.icon} ${role.name}</strong><br>${role.desc}`;
+
+  document.getElementById('roleSelectionScreen').classList.add('hidden');
+  document.getElementById('simulationScreen').classList.remove('hidden');
+  updateMeters();
+
+  openModal('instructionsModal');
+}
+
+function beginSim() {
+  closeModal('instructionsModal');
+  loadScenario();
+}
+
+// ─────────────────────────────────────────────────
+// SCENARIO LOADER
+// ─────────────────────────────────────────────────
+function loadScenario() {
+  if (scenarioIndex >= SCENARIOS[currentRole].length) {
+    showDebrief();
+    return;
+  }
+
+  const sc = SCENARIOS[currentRole][scenarioIndex];
+  if (sc.type === 'puzzle') { showPuzzle(); return; }
+
+  // Hide feedback
+  const fb = document.getElementById('feedbackBox');
+  fb.classList.remove('visible');
+  document.getElementById('continueBtn').classList.remove('visible');
+
+  const total   = SCENARIOS[currentRole].filter(s=>!s.type).length;
+  const current = SCENARIOS[currentRole].slice(0, scenarioIndex).filter(s=>!s.type).length + 1;
+
+  document.getElementById('scenarioNum').textContent  = `Scenario ${current} of ${total}`;
+  document.getElementById('scenarioText').textContent = sc.text;
+
+  const btns = document.getElementById('decisionButtons');
+  btns.innerHTML = '';
+  sc.decisions.forEach((d, i) => {
+    const btn = document.createElement('button');
+    btn.className   = 'decision-btn';
+    btn.setAttribute('aria-pressed', 'false');
+    btn.innerHTML   = `
+      <div class="decision-text">${d.text}</div>
+      <div class="decision-prf">${d.prf}</div>`;
+    btn.addEventListener('click', () => makeDecision(d, sc.text));
+    btns.appendChild(btn);
+  });
+}
+
+// ─────────────────────────────────────────────────
+// DECISION HANDLER
+// ─────────────────────────────────────────────────
+function makeDecision(decision, scenarioText) {
+  // Update ARIA state
+  document.querySelectorAll('.decision-btn').forEach(b => {
+    b.setAttribute('aria-pressed', 'false');
+    b.disabled = true;
+  });
+  event.currentTarget?.setAttribute('aria-pressed', 'true');
+
+  // Apply effects
+  applyEffects(decision.effects);
+
+  // Show feedback
+  document.getElementById('feedbackLabel').textContent    = decision.feedback;
+  document.getElementById('feedbackAnalysis').textContent = decision.analysis;
+  const fb = document.getElementById('feedbackBox');
+  fb.classList.add('visible');
+  fb.focus();
+
+  // Show continue button (replaces 4-second timer)
+  const cb = document.getElementById('continueBtn');
+  cb.classList.add('visible');
+
+  // Log
+  state.log.push({
+    scenario: scenarioText,
+    choice:   decision.text,
+    prf:      decision.prf,
+    outcome:  decision.analysis,
+  });
+
+  // Takeaways
+  if (decision.analysis.includes('coordination network'))
+    state.takeaways.add("Your actions helped build a distributed coordination network by bringing in new stakeholders.");
+  if (decision.analysis.includes('Functional Equivalence') || decision.analysis.includes('functionally equivalent'))
+    state.takeaways.add("You demonstrated Functional Equivalence — your unique capabilities contributed evidence just as powerfully as a scientist's paper.");
+  if (decision.analysis.includes('Bootstrap Resolution') || decision.analysis.includes('Bootstrap'))
+    state.takeaways.add("By asking tough questions and presenting evidence, you engaged in Bootstrap Resolution — building normative authority from the ground up.");
+  if (decision.analysis.includes('monopolistic'))
+    state.takeaways.add("Attempts to maintain monopolistic control often backfire, destroying trust and preventing effective coordination.");
+
+  scenarioIndex++;
+}
+
+function advanceScenario() {
+  loadScenario();
+}
+
+function applyEffects(effects) {
+  if (effects.coordination) state.coordination += effects.coordination;
+  if (effects.health)       state.health       += effects.health;
+  if (effects.trust)        state.trust        += effects.trust;
+  state.coordination = clamp(state.coordination);
+  state.health       = clamp(state.health);
+  state.trust        = clamp(state.trust);
+  updateMeters();
+}
+
+function clamp(v) { return Math.max(0, Math.min(100, v)); }
+
+function updateMeters() {
+  set('coordMeter',  state.coordination, 'coordVal');
+  set('healthMeter', state.health,       'healthVal');
+  set('trustMeter',  state.trust,        'trustVal');
+}
+
+function set(fillId, val, labelId) {
+  const fill  = document.getElementById(fillId);
+  const label = document.getElementById(labelId);
+  if (fill)  { fill.style.width = `${val}%`; fill.parentElement.setAttribute('aria-valuenow', val); }
+  if (label) label.textContent = `${val}/100`;
+}
+
+// ─────────────────────────────────────────────────
+// PUZZLE
+// ─────────────────────────────────────────────────
+let _selectedAction = null;
+
+function showPuzzle() {
+  // Reset
+  _selectedAction = null;
+  document.getElementById('puzzleFeedback').textContent = '';
+  document.getElementById('closePuzzleBtn').disabled = false;
+
+  // Render dropzones
+  const sz = document.getElementById('puzzleStakeholders');
+  sz.innerHTML = '';
+  PUZZLE.stakeholders.forEach(s => {
+    const dz = document.createElement('div');
+    dz.className     = 'dropzone';
+    dz.dataset.stakeholder = s.id;
+    dz.id            = `dz-${s.id}`;
+    dz.setAttribute('role', 'button');
+    dz.setAttribute('tabindex', '0');
+    dz.setAttribute('aria-label', `Drop zone: ${s.label}`);
+    dz.innerHTML     = `<div class="dropzone-name">${s.label}</div>`;
+    // Click-to-place (keyboard)
+    dz.addEventListener('click',   () => placeAction(s.id));
+    dz.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); placeAction(s.id); } });
+    // Drag-and-drop
+    dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault();
+      dz.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      dropAction(id, s.id, dz);
+    });
+    sz.appendChild(dz);
+  });
+
+  // Render actions (shuffled)
+  const ac = document.getElementById('puzzleActions');
+  ac.innerHTML = '';
+  const shuffled = [...PUZZLE.actions].sort(() => Math.random() - .5);
+  shuffled.forEach(a => {
+    const chip = document.createElement('div');
+    chip.className  = 'action-chip';
+    chip.id         = `chip-${a.id}`;
+    chip.dataset.correct = a.correct;
+    chip.draggable  = true;
+    chip.setAttribute('tabindex', '0');
+    chip.setAttribute('role', 'button');
+    chip.setAttribute('aria-label', `Action: ${a.text}. Press Enter to select.`);
+    chip.textContent = a.text;
+
+    // Click-to-select (keyboard)
+    chip.addEventListener('click', () => selectAction(a.id));
+    chip.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') { e.preventDefault(); selectAction(a.id); } });
+    // Drag
+    chip.addEventListener('dragstart', e => {
+      chip.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', a.id);
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    ac.appendChild(chip);
+  });
+
+  openModal('puzzleModal');
+}
+
+// Click-to-select an action
+function selectAction(actionId) {
+  // Deselect previous
+  document.querySelectorAll('.action-chip').forEach(c => c.classList.remove('selected'));
+  const chip = document.getElementById(`chip-${actionId}`);
+  if (!chip || chip.classList.contains('placed')) { _selectedAction = null; return; }
+  _selectedAction = actionId;
+  chip.classList.add('selected');
+}
+
+// Click-to-place on a dropzone
+function placeAction(stakeholderId) {
+  if (!_selectedAction) return;
+  const action = PUZZLE.actions.find(a => a.id === _selectedAction);
+  if (!action) return;
+  dropAction(_selectedAction, stakeholderId, document.getElementById(`dz-${stakeholderId}`));
+  _selectedAction = null;
+  document.querySelectorAll('.action-chip').forEach(c => c.classList.remove('selected'));
+}
+
+// Core placement logic (used by both drag-drop and click-to-place)
+function dropAction(actionId, stakeholderId, dz) {
+  const chip = document.getElementById(`chip-${actionId}`);
+  const action = PUZZLE.actions.find(a => a.id === actionId);
+  if (!chip || !action || chip.classList.contains('placed')) return;
+
+  if (action.correct === stakeholderId) {
+    // Correct
+    chip.classList.add('placed', 'correct');
+    chip.draggable = false;
+    chip.removeAttribute('tabindex');
+    // Show inside the dropzone
+    dz.innerHTML = '';
+    dz.classList.add('correct');
+    dz.appendChild(chip.cloneNode(true));
+    chip.style.display = 'none';
+    checkPuzzleComplete();
+  } else {
+    // Wrong
+    dz.classList.add('wrong');
+    setTimeout(() => dz.classList.remove('wrong'), 500);
+  }
+}
+
+function checkPuzzleComplete() {
+  const done = document.querySelectorAll('.dropzone.correct').length;
+  if (done === PUZZLE.actions.length) {
+    document.getElementById('puzzleFeedback').textContent =
+      '✓ Correct! Each action is functionally equivalent — all advance the same shared goal through different PRF lenses.';
+    applyEffects({ coordination: 10 });
+    state.takeaways.add("You correctly identified Functionally Equivalent actions from different stakeholders contributing to the same coordinated goal.");
+  }
+}
+
+function closePuzzle() {
+  closeModal('puzzleModal');
+  scenarioIndex++;
+  loadScenario();
+}
+
+// ─────────────────────────────────────────────────
+// DEBRIEF
+// ─────────────────────────────────────────────────
+async function showDebrief() {
+  document.getElementById('simulationScreen').classList.add('hidden');
+  openModal('debriefModal');
+
+  const role = ROLES[currentRole];
+
+  // ── Score cards
+  const scoresEl = document.getElementById('debriefScores');
+  let scoresHTML = `
+    <div class="score-card">
+      <label>Overall Coordination</label>
+      <div class="score-val">${state.coordination}/100</div>
+      <p>${state.coordination > 70
+          ? 'Excellent. You helped build a strong distributed coordination network.'
+          : state.coordination < 40
+          ? 'Coordination broke down. Conflict and mistrust prevented stakeholders from working together.'
+          : 'Mixed result. Progress was made but significant friction remains.'}</p>
+    </div>`;
+
+  if (currentRole === 'athlete') {
+    scoresHTML += `
+      <div class="score-card">
+        <label>Personal Health</label>
+        <div class="score-val">${state.health}/100</div>
+        <p>${state.health < 50
+            ? 'Your health suffered significantly due to choices made under pressure.'
+            : 'You successfully prioritized your long-term health in a difficult environment.'}</p>
+      </div>
+      <div class="score-card">
+        <label>Trust in NFL</label>
+        <div class="score-val">${state.trust}/100</div>
+        <p>${state.trust < 40
+            ? 'Your trust in the league\'s structures was shattered by your experiences.'
+            : 'You maintained a level of trust with the league, for better or worse.'}</p>
+      </div>`;
+  }
+
+  scoresEl.innerHTML = scoresHTML;
+
+  // ── Takeaways
+  const tl = document.getElementById('takeawayList');
+  if (state.takeaways.size === 0) {
+    tl.innerHTML = '<li>No specific theoretical takeaways were triggered. Try different choices to see how they connect to the core concepts.</li>';
+  } else {
+    tl.innerHTML = [...state.takeaways].map(t => `<li>${t}</li>`).join('');
+  }
+
+  // ── Decision log
+  const dl = document.getElementById('decisionLog');
+  dl.innerHTML = state.log.map((entry, i) => `
+    <div class="decision-log-entry">
+      <div class="log-scenario">Scenario ${i+1}</div>
+      <div class="log-text">"${entry.scenario}"</div>
+      <div class="log-choice">Your Choice: ${entry.choice}</div>
+      <div class="log-prf">${entry.prf}</div>
+      <div class="log-outcome"><strong>Outcome:</strong> ${entry.outcome}</div>
+    </div>`).join('');
+
+  // ── Live UCP simulation
+  await runUCPForDebrief();
+}
+
+// ─────────────────────────────────────────────────
+// UCP DEBRIEF SIMULATION
+// ─────────────────────────────────────────────────
+function rawPhrase(v)  {
+  if (v > .70) return 'Strong underlying capacity';
+  if (v > .55) return 'Moderate capacity — under load';
+  if (v > .40) return 'Fragile — near threshold';
+  return 'Capacity collapsed';
+}
+function percPhrase(v) {
+  if (v > .70) return 'Feels genuinely collaborative';
+  if (v > .55) return 'Effortful — noticeably strained';
+  if (v > .40) return 'Difficult — high personal cost';
+  return 'Feels nearly impossible';
+}
+function os2Phrase(v) {
+  if (v > .75) return 'Very high OS2 synergy — diverse capabilities are bridging effectively.';
+  if (v > .55) return 'Moderate OS2 synergy — some capability-based coordination is occurring.';
+  if (v > .35) return 'Low OS2 synergy — stakeholders are siloed despite overlapping goals.';
+  return 'Minimal OS2 synergy — no effective cross-PRF coordination is occurring.';
+}
+function vc(v, hi) {
+  if (hi) return v > .60 ? 'val-good' : v > .40 ? 'val-warn' : 'val-bad';
+  return v < .30 ? 'val-good' : v < .55 ? 'val-warn' : 'val-bad';
+}
+
+function getVoiceNarrative(raw, perceived, os2, roleName) {
+  const gap = raw - perceived;
+  if (os2 > .70 && gap < .12) {
+    return `The room is actually working. Different people are saying very different things for very different reasons — and it's producing rather than destroying clarity. This is capability-based coordination in operation: not agreement on values, but convergence on a shared task through different competencies. You don't have to understand each other's reasons to trust each other's contributions.`;
+  } else if (os2 > .55 && gap < .20) {
+    return `There's friction in the room, but it's productive. The scientist's language and the family member's language don't quite translate — but they're both being heard, and the task is moving forward. This is what partial OS2 coordination looks like: imperfect, effortful, but real. The network is building capacity faster than the opposition can erode it.`;
+  } else if (gap > .25) {
+    return `You can see the problem clearly. So can others. But different parts of the network are not reaching each other — information that exists in one stakeholder's possession cannot surface to the decision-makers who need it. The coordination capacity is there. The structural channels that would let it flow are not. This is the Boisjoly pattern at the network scale.`;
+  } else {
+    return `Coordination is happening, but it's costly. Each stakeholder is contributing from their own PRF lens, and the translation between them requires effort that slows the network down. Progress is real but slower than it needs to be. The question is whether the network can maintain this friction long enough for the coordination to compound.`;
+  }
+}
+
+async function runUCPForDebrief() {
+  const panelEl = document.getElementById('ucpPanel');
+  const role    = ROLES[currentRole];
+
+  // Adjust wv distribution based on final coordination score
+  // Higher coordination = more distributed; lower = more role_order dominant
+  const coordBoost = (state.coordination - 50) / 100;
+  const wv = { ...role.wv };
+  if (coordBoost > 0.1) {
+    wv.ubuntu_relational = Math.min(.35, (wv.ubuntu_relational||0) + coordBoost * .12);
+    wv.liberal_individualist = Math.min(.40, (wv.liberal_individualist||0) + coordBoost * .08);
+    const excess = (wv.ubuntu_relational + wv.liberal_individualist) - .70;
+    if (excess > 0) wv.role_order = Math.max(.05, (wv.role_order||0) - excess);
+  }
+  // Normalize
+  const total = Object.values(wv).reduce((a,b)=>a+b,0);
+  Object.keys(wv).forEach(k => wv[k] = parseFloat((wv[k]/total).toFixed(3)));
+
+  // Activate BioBond if coordination is strong (they built the network)
+  const biobond = state.coordination > 65 ? 4 : null;
+
+  try {
+    const resp = await fetch(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        scenario_name:          'whistleblower',
+        num_agents:             16,
+        steps:                  8,
+        seed:                   Math.floor(Math.random()*9000)+1000,
+        worldview_distribution: wv,
+        evidence_distribution:  role.ev,
+        activate_biobond_at:    biobond,
+      }),
+      signal: AbortSignal.timeout(22000),
+    });
+
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data  = await resp.json();
+    const m     = data.metrics || data;
+    const raw   = m.lambda_raw;
+    const perc  = m.lambda_perceived;
+    const fric  = m.friction;
+    const os2   = m.os2_synergy;
+    const gap   = raw - perc;
+
+    let prfNote = '';
+    if (PRF.isLoaded()) {
+      const fw = PRF.fw();
+      const closest = PRF.closestRole();
+      if (closest === currentRole) {
+        prfNote = `<div class="ucp-narrative" style="border-left-color:${PRF.fwColor()}">
+          <div class="ucp-narrative-label" style="color:${PRF.fwColor()}">${PRF.fwIcon()} Your ${PRF.fwName()} lens on this result</div>
+          ${gap > .20
+            ? `From your ${PRF.fwName()} standpoint, the suppression gap in this simulation describes what happens when your specific framework for reading the situation cannot safely surface to where decisions are being made. Your C_PFC (${PRF.cpfc()?.toFixed(3) || 'n/a'}) suggests ${(PRF.cpfc()||0) > 0.7 ? 'you have the deliberate reasoning capacity to navigate this — the structural problem is not in you, it is in the channels.' : 'capacity for deliberate reasoning is under load — the friction is taking a measurable toll.'}`
+            : `From your ${PRF.fwName()} standpoint, this network's relatively low suppression gap suggests your type of reasoning can reach the decisions that need it. This is the structural condition for meaningful coordination across PRF difference.`}
+        </div>`;
+      }
+    }
+
+    panelEl.innerHTML = `
+      <div class="ucp-panel">
+        <div class="ucp-panel-header">
+          Live UCP Simulation — ${ROLES[currentRole].name} Ecosystem
+          ${biobond ? ' · OS2 Scaffold Active' : ' · No OS2 Scaffold'}
+        </div>
+        <div class="ucp-grid">
+          <div class="ucp-metric">
+            <div class="ucp-metric-label">λ Raw — Coordination Capacity</div>
+            <div class="ucp-metric-value ${vc(raw,true)}">${raw.toFixed(3)}</div>
+            <div class="ucp-metric-phrase">${rawPhrase(raw)}</div>
+          </div>
+          <div class="ucp-metric">
+            <div class="ucp-metric-label">λ Perceived — Experienced</div>
+            <div class="ucp-metric-value ${vc(perc,true)}">${perc.toFixed(3)}</div>
+            <div class="ucp-metric-phrase">${percPhrase(perc)}</div>
+          </div>
+          <div class="ucp-metric">
+            <div class="ucp-metric-label">Friction — Coordination Cost</div>
+            <div class="ucp-metric-value ${vc(fric,false)}">${fric.toFixed(3)}</div>
+            <div class="ucp-metric-phrase">${fric < .30 ? 'Low drag' : fric < .55 ? 'Moderate drag' : 'High drag'}</div>
+          </div>
+          <div class="ucp-metric">
+            <div class="ucp-metric-label">OS2 Synergy — Cross-PRF Bridge</div>
+            <div class="ucp-metric-value ${os2 > .60 ? 'val-great' : os2 > .40 ? 'val-warn' : 'val-bad'}">${os2.toFixed(3)}</div>
+            <div class="ucp-metric-phrase">${os2 > .60 ? 'Capability bridge functioning' : os2 > .40 ? 'Partial bridge' : 'Bridge absent'}</div>
+          </div>
+        </div>
+        <div>
+          <div class="ucp-gap-label">Suppression Gap — ${(gap*100).toFixed(1)}% of capacity not reaching decisions</div>
+          <div class="ucp-bar-row">
+            <span class="ucp-bar-name">λ Raw</span>
+            <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${(raw*100).toFixed(1)}%"></div></div>
+            <span class="ucp-bar-num">${raw.toFixed(2)}</span>
+          </div>
+          <div class="ucp-bar-row">
+            <span class="ucp-bar-name">λ Perceived</span>
+            <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perc" style="width:${(perc*100).toFixed(1)}%"></div></div>
+            <span class="ucp-bar-num">${perc.toFixed(2)}</span>
+          </div>
+        </div>
+        <div class="ucp-os2">
+          <div class="ucp-os2-label">OS2 Synergy — What This Measures</div>
+          <div class="ucp-os2-text">${os2Phrase(os2)}</div>
+        </div>
+        <div class="ucp-narrative">
+          <div class="ucp-narrative-label">What It Feels Like — Inside This Network</div>
+          ${getVoiceNarrative(raw, perc, os2, ROLES[currentRole].name)}
+        </div>
+        ${prfNote}
+        <div class="ucp-pluralism">
+          Note: These numbers measure structural coordination features — they do not adjudicate
+          which stakeholder's values are correct. The suppression gap describes what cannot
+          be safely said; what that silence means morally depends on the framework through
+          which you read it.
+        </div>
+      </div>`;
+
+  } catch(e) {
+    panelEl.innerHTML = `
+      <div class="ucp-panel">
+        <div class="ucp-panel-header">UCP Engine</div>
+        <div class="ucp-error">Could not connect to UCP engine: ${e.message}. The debrief is still complete above.</div>
+      </div>`;
+  }
+}
+
+// ─────────────────────────────────────────────────
+// RESTART
+// ─────────────────────────────────────────────────
+function restartApp() {
+  closeModal('debriefModal');
+  document.getElementById('simulationScreen').classList.add('hidden');
+  document.getElementById('roleSelectionScreen').classList.remove('hidden');
+  currentRole = null;
+  if (PRF.isLoaded()) highlightClosestRole();
+}
+
+// ─────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────
+renderRoleCards();
+
+</script>
+</body>
+</html>
