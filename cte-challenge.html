@@ -604,6 +604,112 @@ header {
 }
 .restart-btn:hover { filter: brightness(1.1); }
 
+/* ── Metrics explainer button ── */
+.metrics-explainer-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 16px; margin-bottom: 12px;
+  background: rgba(74,127,181,.1);
+  border: 1px solid var(--sky); border-radius: 6px;
+  color: var(--sky); font-family: 'Georgia',serif;
+  font-size: .85rem; font-weight: 600; cursor: pointer;
+  transition: all .22s;
+}
+.metrics-explainer-btn:hover { background: rgba(74,127,181,.18); }
+.metrics-explainer-btn:focus { outline: 3px solid var(--sky); outline-offset: 2px; }
+
+/* ── ⓘ link on metric labels ── */
+.metric-info-link {
+  display: inline-block; margin-left: 5px;
+  font-size: .72rem; color: rgba(255,255,255,.35);
+  text-decoration: none; cursor: pointer;
+  vertical-align: middle; transition: color .15s;
+  background: none; border: none; padding: 0;
+  font-family: 'Courier New',monospace;
+}
+.metric-info-link:hover { color: var(--ucp-gold); }
+.metric-info-link:focus { outline: 2px solid var(--ucp-gold); outline-offset: 2px; border-radius: 2px; }
+
+/* ── Metrics explainer modal content ── */
+.metric-explainer-section {
+  margin-bottom: 22px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+.metric-explainer-section:last-of-type { border-bottom: none; margin-bottom: 0; }
+
+.metric-explainer-name {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+
+.metric-symbol {
+  font-family: 'Courier New',monospace; font-size: 1.1rem;
+  font-weight: bold; padding: 3px 10px;
+  border-radius: 5px; flex-shrink: 0;
+}
+
+.metric-explainer-name h3 {
+  font-family: 'Georgia',serif; font-size: 1rem;
+  font-weight: 700; color: var(--ink);
+}
+
+.metric-felt-states {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 8px; margin: 10px 0;
+}
+
+.felt-state {
+  border-radius: 7px; padding: 10px 11px;
+  border: 1px solid var(--border);
+  position: relative; overflow: hidden;
+}
+
+.felt-state::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+}
+
+.felt-state.high::before  { background: var(--success); }
+.felt-state.mid::before   { background: var(--warn); }
+.felt-state.low::before   { background: var(--danger); }
+.felt-state.high          { background: #f2faf5; }
+.felt-state.mid           { background: #fdf6ee; }
+.felt-state.low           { background: #fef3f2; }
+
+.felt-range {
+  font-family: 'Courier New',monospace; font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .07em;
+  margin-bottom: 4px;
+}
+.felt-state.high .felt-range { color: var(--success); }
+.felt-state.mid  .felt-range { color: var(--warn); }
+.felt-state.low  .felt-range { color: var(--danger); }
+
+.felt-title { font-size: .83rem; font-weight: 700; color: var(--navy); margin-bottom: 4px; line-height: 1.2; }
+.felt-desc  { font-size: .78rem; line-height: 1.55; color: #444; }
+
+.metric-key-insight {
+  background: #f0faf4; border-left: 3px solid var(--success);
+  border-radius: 0 6px 6px 0; padding: 10px 13px;
+  font-size: .84rem; color: #1a5c35; line-height: 1.6; margin-top: 8px;
+}
+
+.metric-key-insight .ki-label {
+  font-family: 'Courier New',monospace; font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px;
+}
+
+.metric-ref-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 8px; font-size: .78rem; color: var(--sky);
+  text-decoration: none; font-family: 'Courier New',monospace;
+}
+.metric-ref-link:hover { text-decoration: underline; }
+
+@media (max-width: 520px) {
+  .metric-felt-states { grid-template-columns: 1fr; }
+}
+
 /* ── Fade-in ── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
@@ -860,6 +966,11 @@ header {
 
     <!-- Live UCP panel -->
     <div class="section-label">Live UCP Coordination Analysis</div>
+    <button class="metrics-explainer-btn"
+            onclick="openModal('metricsModal')"
+            aria-haspopup="dialog">
+      🧠 What do λ Raw, λ Perceived, Friction and OS2 Synergy actually mean?
+    </button>
     <div id="ucpPanel">
       <div class="ucp-panel">
         <div class="ucp-panel-header">Running live simulation on this stakeholder ecosystem…</div>
@@ -883,6 +994,204 @@ header {
 <!-- ══════════════════════════════════════════════════
      JAVASCRIPT
      ══════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════
+     MODAL: METRICS EXPLAINER
+     ══════════════════════════════════════════════════ -->
+<div id="metricsModal" class="modal-backdrop hidden"
+     role="dialog" aria-modal="true" aria-labelledby="metricsTitle">
+  <div class="modal-box" style="max-width:680px">
+    <h2 id="metricsTitle">What Do These Numbers Actually Measure?</h2>
+    <p style="font-size:.88rem;color:var(--muted);line-height:1.65;margin-bottom:20px">
+      Each metric has a felt, human meaning — not just a score.
+      These are not performance ratings. They describe the structural conditions
+      inside which coordination is or isn't possible for the people in this crisis.
+    </p>
+
+    <!-- ── λ Raw ── -->
+    <div class="metric-explainer-section">
+      <div class="metric-explainer-name">
+        <span class="metric-symbol" style="background:#1e3a5f;color:#7fb3d3">λ Raw</span>
+        <h3>Coordination Capacity — the upper ceiling of what this network could achieve</h3>
+      </div>
+      <p style="font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+        λ Raw is not a measure of effort, goodwill, or motivation. It is a measure of
+        <em>cognitive access</em> — whether the kind of thinking required for careful,
+        principled coordination is structurally available to the people in this network.
+        In the CTE crisis, λ Raw degrades when institutional pressure consumes the
+        cognitive bandwidth that would otherwise go toward deliberate, reflective action.
+      </p>
+      <div class="metric-felt-states">
+        <div class="felt-state high">
+          <div class="felt-range">High — &gt; 0.70</div>
+          <div class="felt-title">Manual mode. Clear thinking available.</div>
+          <div class="felt-desc">Dr. Omalu can hold the full complexity of the evidence, the institutional pressure, and his professional obligations simultaneously — and act on all three. The scientist, the family, the journalist can coordinate deliberately.</div>
+        </div>
+        <div class="felt-state mid">
+          <div class="felt-range">Degrading — 0.40–0.70</div>
+          <div class="felt-title">Still possible but it costs more.</div>
+          <div class="felt-desc">The family member knows something is wrong but keeps second-guessing herself. The journalist has the story but keeps pulling punches. The capacity is there — the institutional drag is consuming it before it reaches action.</div>
+        </div>
+        <div class="felt-state low">
+          <div class="felt-range">Collapsed — &lt; 0.40</div>
+          <div class="felt-title">Survival mode. Principled coordination unavailable.</div>
+          <div class="felt-desc">The athlete isn't thinking about the long-term health problem anymore. He's thinking about whether raising it is safe. The infrastructure for deliberate ethical reasoning has been spent on self-protection.</div>
+        </div>
+      </div>
+      <div class="metric-key-insight">
+        <div class="ki-label">🔑 In the CTE context</div>
+        High λ Raw does not mean everyone agrees or that coordination is easy.
+        It means the conditions under which deliberate, principled action is
+        <em>possible</em> are intact. Low λ Raw means those conditions have been
+        structurally consumed — by contract pressure, career risk, institutional
+        gaslighting — regardless of anyone's intentions.
+      </div>
+      <a class="metric-ref-link" href="ucp-metrics-reference.html#lambda-raw" target="_blank" rel="noopener">
+        ⓘ Full technical explanation in UCP Metrics Reference →
+      </a>
+    </div>
+
+    <!-- ── λ Perceived ── -->
+    <div class="metric-explainer-section">
+      <div class="metric-explainer-name">
+        <span class="metric-symbol" style="background:#3a2a0a;color:#e8c56a">λ Perceived</span>
+        <h3>Experienced Coordination — what people actually feel they can safely do</h3>
+      </div>
+      <p style="font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+        λ Raw asks: <em>what could this network do?</em>
+        λ Perceived asks: <em>what does it feel safe to actually do?</em>
+        The gap between the two is the most ethically significant number in the simulation.
+        It is the Boisjoly number — high capacity, near-zero perceived ability to surface it.
+        In the CTE crisis, every stakeholder who self-censors, softens their story,
+        or "decides not to make it a big deal" is living inside that gap.
+      </p>
+      <div class="metric-felt-states">
+        <div class="felt-state high">
+          <div class="felt-range">High — &gt; 0.70</div>
+          <div class="felt-title">Voice is reaching decisions.</div>
+          <div class="felt-desc">When the scientist testifies and the family speaks publicly and the journalist publishes — and it changes something. What people know is reaching the people who need to act on it. The room is using its full intelligence.</div>
+        </div>
+        <div class="felt-state mid">
+          <div class="felt-range">Constrained — 0.40–0.70</div>
+          <div class="felt-title">Participation requires constant calibration.</div>
+          <div class="felt-desc">The athlete mentions his headaches but not his memory loss. The family member speaks to one journalist but not another. You're still in the conversation — but a version of you that has already filtered itself. Some of what you know is circulating in the hallway after the meeting.</div>
+        </div>
+        <div class="felt-state low">
+          <div class="felt-range">Blocked — &lt; 0.40</div>
+          <div class="felt-title">Presence without voice. Effectively mute.</div>
+          <div class="felt-desc">The family knows exactly what happened. The scientist has the data. But the structural conditions make surfacing it genuinely dangerous. They are physically present and functionally absent. This is what the NFL's suppression campaign was designed to produce.</div>
+        </div>
+      </div>
+      <div class="metric-key-insight">
+        <div class="ki-label">🔑 The suppression gap</div>
+        λ Raw − λ Perceived = the gap. In the CTE crisis this gap was not produced
+        by explicit silencing alone — it emerged from accumulated institutional
+        learning. Stakeholders correctly understood what the NFL's system rewarded
+        and punished, and adjusted accordingly. The structure did the work silently.
+      </div>
+      <a class="metric-ref-link" href="ucp-metrics-reference.html#lambda-perceived" target="_blank" rel="noopener">
+        ⓘ Full technical explanation in UCP Metrics Reference →
+      </a>
+    </div>
+
+    <!-- ── Friction ── -->
+    <div class="metric-explainer-section">
+      <div class="metric-explainer-name">
+        <span class="metric-symbol" style="background:#3a1a0a;color:#f0a060">Friction</span>
+        <h3>Coordination Cost — energy consumed before any work reaches the problem</h3>
+      </div>
+      <p style="font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+        Friction is not the same as suppression. Suppression is about voice —
+        what can safely be said. Friction is about drag — how much energy the
+        coordination process itself consumes before any of it reaches the
+        actual problem. In the CTE network, friction comes from the genuine
+        worldview distance between stakeholders: the scientist and the family
+        member and the journalist are trying to coordinate across radically
+        different frameworks for what counts as evidence, what counts as authority,
+        and what counts as a legitimate claim.
+      </p>
+      <div class="metric-felt-states">
+        <div class="felt-state high">
+          <div class="felt-range">Low — &lt; 0.25</div>
+          <div class="felt-title">Energy reaches the problem directly.</div>
+          <div class="felt-desc">The distributed network has found its shared language. The scientist's data, the family's testimony, and the journalist's investigation are reinforcing each other without requiring constant translation. This is OS2 coordination functioning.</div>
+        </div>
+        <div class="felt-state mid">
+          <div class="felt-range">Moderate-High — 0.25–0.65</div>
+          <div class="felt-title">Coordination costs more than it should.</div>
+          <div class="felt-desc">The scientist and the family member are trying to work together, but their frameworks for what's important keep colliding. Every meeting requires translating between "the p-value is 0.003" and "my husband was a different person." Both are true. Getting them to reinforce each other takes work.</div>
+        </div>
+        <div class="felt-state low">
+          <div class="felt-range">Severe — &gt; 0.65</div>
+          <div class="felt-title">Most energy consumed before work begins.</div>
+          <div class="felt-desc">The network is spending more energy navigating its internal differences than it is applying to the NFL. Each stakeholder is starting to wonder whether the coalition is worth the cost. The NFL doesn't need to suppress anything — the friction is doing it for them.</div>
+        </div>
+      </div>
+      <div class="metric-key-insight">
+        <div class="ki-label">🔑 Friction vs suppression — why the distinction matters</div>
+        Suppression is produced by power asymmetry — fixing it requires changing
+        power dynamics. Friction is produced by worldview distance — fixing it
+        requires better coordination scaffolding: shared protocols, structured
+        dialogue, OS2 bridge-building. BioBond in the simulation reduces both,
+        but through different mechanisms. Treating them as the same problem
+        leads to interventions that fail.
+      </div>
+      <a class="metric-ref-link" href="ucp-metrics-reference.html#friction" target="_blank" rel="noopener">
+        ⓘ Full technical explanation in UCP Metrics Reference →
+      </a>
+    </div>
+
+    <!-- ── OS2 Synergy ── -->
+    <div class="metric-explainer-section">
+      <div class="metric-explainer-name">
+        <span class="metric-symbol" style="background:#1a3a2a;color:#7fd8a8">OS2 Synergy</span>
+        <h3>Cross-PRF Bridge — the app's central concept made visible</h3>
+      </div>
+      <p style="font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:10px">
+        OS2 Synergy is the metric most specific to what this app is teaching.
+        It measures whether agents with <em>different worldviews</em> are successfully
+        using their distinct capabilities to advance a <em>shared task</em> —
+        without needing to agree on why the task matters.
+        This is capability-based coordination. This is the CTE network at its best:
+        a scientist who believes in empirical truth, a family who believes in justice,
+        a journalist who believes in accountability, and an athlete who believes in
+        his teammates — all advancing the same goal through completely different PRF lenses.
+      </p>
+      <div class="metric-felt-states">
+        <div class="felt-state high">
+          <div class="felt-range">High — &gt; 0.70</div>
+          <div class="felt-title">Capability bridge functioning.</div>
+          <div class="felt-desc">The network is doing something remarkable: people who disagree about everything are producing the same outcome together. The scientist doesn't need to share the family's grief. The family doesn't need to understand the p-value. Each contributes their capability; the task advances. This is OS2 coordination.</div>
+        </div>
+        <div class="felt-state mid">
+          <div class="felt-range">Partial — 0.40–0.70</div>
+          <div class="felt-title">Some cross-PRF bridging occurring.</div>
+          <div class="felt-desc">Some stakeholders are coordinating across worldview difference effectively. Others are still siloed. The network is working, but it's leaving capability on the table — some contributions that could reinforce others aren't connecting yet.</div>
+        </div>
+        <div class="felt-state low">
+          <div class="felt-range">Absent — &lt; 0.40</div>
+          <div class="felt-title">No effective cross-PRF coordination.</div>
+          <div class="felt-desc">Each stakeholder is doing their own thing for their own reasons, but the contributions aren't building on each other. The scientist publishes; the family grieves; the journalist reports — but they're not yet a network. The NFL doesn't need to fight them. They're not yet fighting together.</div>
+        </div>
+      </div>
+      <div class="metric-key-insight">
+        <div class="ki-label">🔑 This is why PRF agreement is not required</div>
+        High OS2 Synergy is the engine's confirmation of the app's core claim:
+        coordination does not require shared values. It requires shared task
+        and compatible capabilities. The CTE network eventually forced a $1 billion
+        settlement not because everyone agreed on why player safety matters —
+        but because enough different stakeholders contributed their distinct
+        capabilities to the same coordinated goal that the NFL could no longer
+        ignore any of them.
+      </div>
+      <a class="metric-ref-link" href="ucp-metrics-reference.html#cib-loop" target="_blank" rel="noopener">
+        ⓘ CIB Loop — how OS2 enters the coordination formula →
+      </a>
+    </div>
+
+    <button class="modal-btn" onclick="closeModal('metricsModal')">Close</button>
+  </div>
+</div>
+
 <script>
 'use strict';
 
@@ -1336,14 +1645,14 @@ function closeModal(id) {
 // Escape key closes any open modal
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  ['introModal','instructionsModal','puzzleModal','debriefModal'].forEach(id => {
+  ['introModal','instructionsModal','puzzleModal','debriefModal','metricsModal'].forEach(id => {
     const m = document.getElementById(id);
     if (m && !m.classList.contains('hidden')) closeModal(id);
   });
 });
 
 // Click backdrop to close (except debrief — you must use Play Again)
-['introModal','instructionsModal','puzzleModal'].forEach(id => {
+['introModal','instructionsModal','puzzleModal','metricsModal'].forEach(id => {
   document.getElementById(id)?.addEventListener('click', e => {
     if (e.target === document.getElementById(id)) closeModal(id);
   });
@@ -1813,22 +2122,30 @@ async function runUCPForDebrief() {
         </div>
         <div class="ucp-grid">
           <div class="ucp-metric">
-            <div class="ucp-metric-label">λ Raw — Coordination Capacity</div>
+            <div class="ucp-metric-label">λ Raw — Coordination Capacity
+              <button class="metric-info-link" onclick="openModal('metricsModal')" title="What does λ Raw measure?" aria-label="What does λ Raw measure?">ⓘ</button>
+            </div>
             <div class="ucp-metric-value ${vc(raw,true)}">${raw.toFixed(3)}</div>
             <div class="ucp-metric-phrase">${rawPhrase(raw)}</div>
           </div>
           <div class="ucp-metric">
-            <div class="ucp-metric-label">λ Perceived — Experienced</div>
+            <div class="ucp-metric-label">λ Perceived — Experienced
+              <button class="metric-info-link" onclick="openModal('metricsModal')" title="What does λ Perceived measure?" aria-label="What does λ Perceived measure?">ⓘ</button>
+            </div>
             <div class="ucp-metric-value ${vc(perc,true)}">${perc.toFixed(3)}</div>
             <div class="ucp-metric-phrase">${percPhrase(perc)}</div>
           </div>
           <div class="ucp-metric">
-            <div class="ucp-metric-label">Friction — Coordination Cost</div>
+            <div class="ucp-metric-label">Friction — Coordination Cost
+              <button class="metric-info-link" onclick="openModal('metricsModal')" title="What does Friction measure?" aria-label="What does Friction measure?">ⓘ</button>
+            </div>
             <div class="ucp-metric-value ${vc(fric,false)}">${fric.toFixed(3)}</div>
             <div class="ucp-metric-phrase">${fric < .30 ? 'Low drag' : fric < .55 ? 'Moderate drag' : 'High drag'}</div>
           </div>
           <div class="ucp-metric">
-            <div class="ucp-metric-label">OS2 Synergy — Cross-PRF Bridge</div>
+            <div class="ucp-metric-label">OS2 Synergy — Cross-PRF Bridge
+              <button class="metric-info-link" onclick="openModal('metricsModal')" title="What does OS2 Synergy measure?" aria-label="What does OS2 Synergy measure?">ⓘ</button>
+            </div>
             <div class="ucp-metric-value ${os2 > .60 ? 'val-great' : os2 > .40 ? 'val-warn' : 'val-bad'}">${os2.toFixed(3)}</div>
             <div class="ucp-metric-phrase">${os2 > .60 ? 'Capability bridge functioning' : os2 > .40 ? 'Partial bridge' : 'Bridge absent'}</div>
           </div>
