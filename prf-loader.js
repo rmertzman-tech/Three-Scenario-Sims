@@ -739,31 +739,48 @@
       try {
         const parsed = typeof input === 'string' ? JSON.parse(input) : input;
 
-        // Validate required fields
-        if (!parsed.foundations) throw new Error('Missing "foundations" key in PRF JSON');
-        if (!parsed.atcf)        throw new Error('Missing "atcf" key in PRF JSON');
+        let f, a;
 
-        const f = parsed.foundations;
-        const a = parsed.atcf;
-
-        if (f.CareWeight          === undefined) throw new Error('Missing CareWeight');
-        if (f.FairnessWeight      === undefined) throw new Error('Missing FairnessWeight');
-        if (f.BindingWeight       === undefined) throw new Error('Missing BindingWeight');
-        if (f.IndividualizingWeight===undefined) throw new Error('Missing IndividualizingWeight');
-        if (a.ConstraintSensitivity===undefined) throw new Error('Missing ConstraintSensitivity');
-        if (a.DepletionSensitivity === undefined) throw new Error('Missing DepletionSensitivity');
+        if (parsed.prf22 && parsed.prf22.moralFoundations) {
+          const mf   = parsed.prf22.moralFoundations;
+          const vals = parsed.prf22.values             || {};
+          const atcf = (parsed.prf22.resilience || {}).ATCF;
+          const z = x => (x - 3.0);
+          f = {
+            CareWeight:            z(mf.Care      || 3),
+            FairnessWeight:        z(mf.Fairness   || 3),
+            BindingWeight:         ( z(mf.Loyalty   || 3) + z(mf.Authority || 3) + z(mf.Purity    || 3) ) / 3,
+            IndividualizingWeight: ( z(mf.Care      || 3) + z(mf.Fairness  || 3) ) / 2,
+            Conservation:          ( z(mf.Authority || 3) + z(mf.Purity    || 3) ) / 2,
+            Openness:              z(vals.Openness  || 3),
+          };
+          const atcfVal = atcf != null ? atcf : 3;
+          const sensitivity = (5 - atcfVal) / 4.0;
+          a = { ConstraintSensitivity: sensitivity, DepletionSensitivity: sensitivity, SystemResponsibility: 2 };
+          if (parsed.derivedMetrics && parsed.derivedMetrics.C_PFC != null) parsed._cpfc = parsed.derivedMetrics.C_PFC;
+          parsed.foundations = f; parsed.atcf = a;
+        } else if (parsed.foundations && parsed.atcf) {
+          f = parsed.foundations; a = parsed.atcf;
+          if (f.CareWeight           === undefined) throw new Error('Missing CareWeight');
+          if (f.FairnessWeight       === undefined) throw new Error('Missing FairnessWeight');
+          if (f.BindingWeight        === undefined) throw new Error('Missing BindingWeight');
+          if (f.IndividualizingWeight=== undefined) throw new Error('Missing IndividualizingWeight');
+          if (a.ConstraintSensitivity=== undefined) throw new Error('Missing ConstraintSensitivity');
+          if (a.DepletionSensitivity  === undefined) throw new Error('Missing DepletionSensitivity');
+        } else {
+          throw new Error('Unrecognised PRF JSON format. Expected a PRF-22 Digital E-Twin file (with "prf22" key) or theory-first file (with "foundations" key).');
+        }
 
         _profile  = parsed;
         const scores = _scoreFrameworks(f);
         _framework   = _pickFramework(scores);
         _atcfTier    = _computeATCFTier(a);
 
-        // Persist to localStorage for cross-app sharing
         try {
           localStorage.setItem('ucp-prf-profile', JSON.stringify(parsed));
           localStorage.setItem('ucp-prf-framework', _framework);
           localStorage.setItem('ucp-prf-tier', _atcfTier);
-        } catch(e) { /* ignore storage errors */ }
+        } catch(e) {}
 
         return { ok: true, error: null };
 

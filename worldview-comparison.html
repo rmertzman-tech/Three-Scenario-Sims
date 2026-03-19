@@ -1663,19 +1663,73 @@
       try {
         const parsed = typeof input === 'string' ? JSON.parse(input) : input;
 
-        // Validate required fields
-        if (!parsed.foundations) throw new Error('Missing "foundations" key in PRF JSON');
-        if (!parsed.atcf)        throw new Error('Missing "atcf" key in PRF JSON');
+        // ── Auto-detect format ──────────────────────────────────────────────
+        // Format A: PRF-22 Digital E-Twin Builder output
+        //   { prf22: { moralFoundations, values, resilience }, derivedMetrics, agentParameters }
+        // Format B: Legacy theory-first format
+        //   { foundations: { CareWeight, ... }, atcf: { ConstraintSensitivity, ... } }
 
-        const f = parsed.foundations;
-        const a = parsed.atcf;
+        let f, a;  // normalized foundations and atcf objects
 
-        if (f.CareWeight          === undefined) throw new Error('Missing CareWeight');
-        if (f.FairnessWeight      === undefined) throw new Error('Missing FairnessWeight');
-        if (f.BindingWeight       === undefined) throw new Error('Missing BindingWeight');
-        if (f.IndividualizingWeight===undefined) throw new Error('Missing IndividualizingWeight');
-        if (a.ConstraintSensitivity===undefined) throw new Error('Missing ConstraintSensitivity');
-        if (a.DepletionSensitivity === undefined) throw new Error('Missing DepletionSensitivity');
+        if (parsed.prf22 && parsed.prf22.moralFoundations) {
+          // ── Format A: actual PRF-22 app output ──────────────────────────
+          const mf   = parsed.prf22.moralFoundations;
+          const vals = parsed.prf22.values             || {};
+          const atcf = (parsed.prf22.resilience || {}).ATCF;
+
+          // Normalize MFQ 1-5 scale to z-like scores (mean=3, sd=1)
+          const z = x => (x - 3.0);
+
+          f = {
+            CareWeight:            z(mf.Care      || 3),
+            FairnessWeight:        z(mf.Fairness   || 3),
+            BindingWeight:         ( z(mf.Loyalty   || 3)
+                                   + z(mf.Authority || 3)
+                                   + z(mf.Purity    || 3) ) / 3,
+            IndividualizingWeight: ( z(mf.Care      || 3)
+                                   + z(mf.Fairness  || 3) ) / 2,
+            Conservation:          ( z(mf.Authority || 3)
+                                   + z(mf.Purity    || 3) ) / 2,
+            Openness:              z(vals.Openness  || 3),
+          };
+
+          // ATCF resilience: higher score = more resilient = lower sensitivity
+          // Scale 1-5 → sensitivity 1.0 (max) to 0.0 (min)
+          const atcfVal = atcf != null ? atcf : 3;
+          const sensitivity = (5 - atcfVal) / 4.0;
+          a = {
+            ConstraintSensitivity: sensitivity,
+            DepletionSensitivity:  sensitivity,
+            SystemResponsibility:  2,
+          };
+
+          // If C_PFC is pre-computed, store it for display
+          if (parsed.derivedMetrics && parsed.derivedMetrics.C_PFC != null) {
+            parsed._cpfc = parsed.derivedMetrics.C_PFC;
+          }
+
+          // Store normalized fields back for scoring
+          parsed.foundations = f;
+          parsed.atcf = a;
+
+        } else if (parsed.foundations && parsed.atcf) {
+          // ── Format B: legacy theory-first format ────────────────────────
+          f = parsed.foundations;
+          a = parsed.atcf;
+
+          if (f.CareWeight           === undefined) throw new Error('Missing CareWeight');
+          if (f.FairnessWeight       === undefined) throw new Error('Missing FairnessWeight');
+          if (f.BindingWeight        === undefined) throw new Error('Missing BindingWeight');
+          if (f.IndividualizingWeight=== undefined) throw new Error('Missing IndividualizingWeight');
+          if (a.ConstraintSensitivity=== undefined) throw new Error('Missing ConstraintSensitivity');
+          if (a.DepletionSensitivity  === undefined) throw new Error('Missing DepletionSensitivity');
+
+        } else {
+          throw new Error(
+            'Unrecognised PRF JSON format. Expected either a PRF-22 Digital E-Twin ' +
+            'file (with "prf22" key) or a theory-first file (with "foundations" key).'
+          );
+        }
 
         _profile  = parsed;
         const scores = _scoreFrameworks(f);
