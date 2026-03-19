@@ -1,0 +1,2859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding the UCP Simulation — Student Guide</title>
+<style>
+
+/* ══════════════════════════════════════════════════
+   PRF COLOR PALETTE & DESIGN TOKENS
+   ══════════════════════════════════════════════════ */
+:root {
+  font-size: 17.5px; /* base scale — all rem values cascade from here */
+  --prf-deep:    #1a2744;
+  --prf-navy:    #243560;
+  --prf-slate:   #3a5080;
+  --prf-sky:     #4a7fb5;
+  --prf-ice:     #7fb3d3;
+  --prf-gold:    #c9a84c;
+  --prf-amber:   #e8c56a;
+  --prf-warm:    #f5edd8;
+  --prf-paper:   #faf8f4;
+  --prf-ink:     #1e2433;
+  --prf-muted:   #6b7a9a;
+  --prf-success: #3a8a5c;
+  --prf-warn:    #c87843;
+  --prf-danger:  #b84444;
+  --prf-border:  #d0d8e8;
+
+  --radius: 10px;
+  --shadow-sm: 0 2px 8px rgba(26,39,68,.10);
+  --shadow-md: 0 4px 20px rgba(26,39,68,.16);
+  --shadow-lg: 0 8px 40px rgba(26,39,68,.22);
+  --transition: all .25s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', serif;
+  background: var(--prf-paper);
+  color: var(--prf-ink);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ══════════════════════════════════════════════════
+   STICKY PROGRESS BAR
+   ══════════════════════════════════════════════════ */
+.progress-bar-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--prf-deep);
+  padding: 0 32px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+
+.progress-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 48px;
+}
+
+.progress-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 4px;
+  border-bottom: 3px solid transparent;
+  transition: var(--transition);
+  opacity: .4;
+}
+
+.progress-step.unlocked { opacity: .7; }
+.progress-step.active   { opacity: 1; border-bottom-color: var(--prf-gold); }
+.progress-step.complete { opacity: 1; border-bottom-color: var(--prf-success); }
+
+.progress-step:hover.unlocked  { opacity: 1; }
+.progress-step:hover.complete  { opacity: 1; }
+
+.step-num {
+  font-family: 'Courier New', monospace;
+  font-size: .65rem;
+  color: rgba(255,255,255,.5);
+  letter-spacing: .1em;
+  margin-bottom: 1px;
+}
+
+.step-label {
+  font-size: .62rem;
+  color: rgba(255,255,255,.7);
+  text-align: center;
+  line-height: 1.2;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.progress-step.active .step-label   { color: var(--prf-amber); }
+.progress-step.complete .step-label { color: #7fd8a8; }
+
+.progress-track {
+  height: 3px;
+  background: rgba(255,255,255,.08);
+  position: relative;
+  flex: none;
+  width: 100%;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--prf-sky), var(--prf-gold));
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+  width: 0%;
+}
+
+/* ══════════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════════ */
+header {
+  background: linear-gradient(135deg, var(--prf-deep) 0%, var(--prf-navy) 60%, var(--prf-slate) 100%);
+  color: #fff;
+  padding: 52px 32px 44px;
+  position: relative;
+  overflow: hidden;
+}
+
+header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -55deg, transparent, transparent 40px,
+    rgba(255,255,255,.022) 40px, rgba(255,255,255,.022) 80px
+  );
+  pointer-events: none;
+}
+
+.header-inner { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+
+.course-tag {
+  font-family: 'Courier New', monospace;
+  font-size: .7rem; letter-spacing: .14em;
+  color: var(--prf-amber); text-transform: uppercase; margin-bottom: 10px;
+}
+
+header h1 { font-size: 2rem; font-weight: normal; line-height: 1.2; margin-bottom: 10px; }
+header h1 span { color: var(--prf-amber); }
+
+.header-desc {
+  font-size: .95rem; color: rgba(255,255,255,.72); line-height: 1.65;
+  font-style: italic; max-width: 600px;
+}
+
+.header-meta {
+  margin-top: 18px;
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+
+.header-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: 'Courier New', monospace;
+  font-size: .7rem; color: rgba(255,255,255,.7);
+  text-transform: uppercase; letter-spacing: .08em;
+}
+
+/* ══════════════════════════════════════════════════
+   MAIN LAYOUT
+   ══════════════════════════════════════════════════ */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 20px 0;
+}
+
+/* ══════════════════════════════════════════════════
+   SECTION WRAPPER
+   ══════════════════════════════════════════════════ */
+.guide-section {
+  display: none;
+  animation: fadeIn .4s ease;
+}
+
+.guide-section.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.section-header {
+  display: flex; align-items: flex-start; gap: 18px;
+  margin-bottom: 28px;
+}
+
+.section-num-block {
+  flex-shrink: 0;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--prf-navy), var(--prf-sky));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Courier New', monospace;
+  font-size: 1.2rem; font-weight: bold; color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-title-block { flex: 1; }
+
+.section-num-label {
+  font-family: 'Courier New', monospace;
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--prf-muted); margin-bottom: 4px;
+}
+
+.section-title {
+  font-size: 1.55rem; font-weight: normal; color: var(--prf-navy);
+  line-height: 1.2;
+}
+
+.section-title span { color: var(--prf-sky); }
+
+/* ══════════════════════════════════════════════════
+   CONTENT TYPOGRAPHY
+   ══════════════════════════════════════════════════ */
+.prose {
+  font-size: .96rem; line-height: 1.78; color: #333;
+  margin-bottom: 20px;
+}
+
+.prose + .prose { margin-top: -8px; }
+
+.prose strong { color: var(--prf-navy); }
+
+.prose em { color: var(--prf-slate); }
+
+.lead {
+  font-size: 1.08rem; line-height: 1.7; color: var(--prf-ink);
+  margin-bottom: 24px; font-style: italic;
+  border-left: 3px solid var(--prf-gold); padding-left: 16px;
+}
+
+/* ══════════════════════════════════════════════════
+   CALLOUT BOXES
+   ══════════════════════════════════════════════════ */
+.callout {
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin: 20px 0;
+  font-size: .9rem;
+  line-height: 1.65;
+}
+
+.callout-story {
+  background: var(--prf-warm);
+  border-left: 4px solid var(--prf-gold);
+}
+
+.callout-concept {
+  background: #f0f6fa;
+  border-left: 4px solid var(--prf-sky);
+}
+
+.callout-warning {
+  background: #fff5f0;
+  border-left: 4px solid var(--prf-warn);
+}
+
+.callout-insight {
+  background: #f0faf4;
+  border-left: 4px solid var(--prf-success);
+}
+
+.callout-title {
+  font-family: 'Courier New', monospace;
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .1em;
+  margin-bottom: 8px;
+}
+
+.callout-story .callout-title   { color: #8a6a20; }
+.callout-concept .callout-title { color: var(--prf-sky); }
+.callout-warning .callout-title { color: var(--prf-warn); }
+.callout-insight .callout-title { color: var(--prf-success); }
+
+/* ══════════════════════════════════════════════════
+   METRIC EXPLAINER CARDS
+   ══════════════════════════════════════════════════ */
+.metric-explainer-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; margin: 22px 0;
+}
+
+.metric-card {
+  background: #fff;
+  border: 1px solid var(--prf-border);
+  border-radius: 10px;
+  padding: 16px 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.metric-symbol {
+  font-family: 'Courier New', monospace;
+  font-size: .68rem; text-transform: uppercase; letter-spacing: .1em;
+  color: var(--prf-muted); margin-bottom: 6px;
+}
+
+.metric-name {
+  font-size: .98rem; font-weight: bold; color: var(--prf-navy);
+  margin-bottom: 8px; line-height: 1.2;
+}
+
+.metric-analogy {
+  font-size: .82rem; color: #556; line-height: 1.5;
+  font-style: italic; margin-bottom: 10px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--prf-border);
+}
+
+.metric-desc { font-size: .84rem; color: #444; line-height: 1.55; }
+
+.metric-range {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px solid var(--prf-border);
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  color: var(--prf-muted);
+}
+
+/* ══════════════════════════════════════════════════
+   GAP EXPLAINER
+   ══════════════════════════════════════════════════ */
+.gap-visual {
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin: 22px 0;
+  color: #fff;
+}
+
+.gap-visual-title {
+  font-family: 'Courier New', monospace;
+  font-size: .7rem; text-transform: uppercase; letter-spacing: .12em;
+  color: var(--prf-amber); margin-bottom: 14px;
+}
+
+.gap-bars {
+  display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;
+}
+
+.gap-bar-row { display: flex; align-items: center; gap: 12px; }
+
+.gap-bar-label {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  color: rgba(255,255,255,.65); width: 110px; flex-shrink: 0; text-align: right;
+}
+
+.gap-bar-track {
+  flex: 1; height: 18px; background: rgba(255,255,255,.12);
+  border-radius: 9px; overflow: hidden; position: relative;
+}
+
+.gap-bar-fill {
+  height: 100%; border-radius: 9px;
+  transition: width 1.2s cubic-bezier(.4,0,.2,1);
+  width: 0%;
+}
+
+.gap-bar-fill.raw      { background: linear-gradient(90deg, #4a7fb5, #7fb3d3); }
+.gap-bar-fill.perceived { background: linear-gradient(90deg, #c9a84c, #e8c56a); }
+
+.gap-bar-val {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  color: rgba(255,255,255,.55); width: 36px; text-align: right;
+}
+
+.gap-desc {
+  font-size: .88rem; color: rgba(255,255,255,.82); line-height: 1.65;
+}
+
+.gap-boisjoly {
+  margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.15);
+  font-size: .84rem; color: rgba(255,255,255,.7); line-height: 1.6;
+  font-style: italic;
+}
+
+/* ══════════════════════════════════════════════════
+   FOUNDATION CARDS (Section 3)
+   ══════════════════════════════════════════════════ */
+.foundation-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; margin: 22px 0;
+}
+
+.foundation-card {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 10px; padding: 16px;
+  box-shadow: var(--shadow-sm);
+  border-top: 4px solid;
+}
+
+.foundation-card.fc-care      { border-top-color: #c03030; }
+.foundation-card.fc-fairness  { border-top-color: #2a5090; }
+.foundation-card.fc-loyalty   { border-top-color: #3a7030; }
+.foundation-card.fc-authority { border-top-color: #5a3f90; }
+.foundation-card.fc-purity    { border-top-color: #9a7820; }
+
+.foundation-card.fc-purity { grid-column: 1 / -1; }
+
+.foundation-label {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px;
+}
+
+.fc-care      .foundation-label { color: #c03030; }
+.fc-fairness  .foundation-label { color: #2a5090; }
+.fc-loyalty   .foundation-label { color: #3a7030; }
+.fc-authority .foundation-label { color: #5a3f90; }
+.fc-purity    .foundation-label { color: #9a7820; }
+
+.foundation-name {
+  font-size: .98rem; font-weight: bold; color: var(--prf-navy);
+  margin-bottom: 6px;
+}
+
+.foundation-poles {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  color: var(--prf-muted); margin-bottom: 8px;
+}
+
+.foundation-desc { font-size: .84rem; color: #444; line-height: 1.55; }
+
+.foundation-example {
+  margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--prf-border);
+  font-size: .78rem; color: #666; font-style: italic; line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════
+   FRAMEWORK PROFILE CARDS (Section 4)
+   ══════════════════════════════════════════════════ */
+.framework-profile {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 10px; overflow: hidden;
+  box-shadow: var(--shadow-sm); margin-bottom: 18px;
+}
+
+.framework-profile-header {
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(90deg, var(--prf-navy), var(--prf-slate));
+  color: #fff;
+}
+
+.framework-icon { font-size: 1.4em; }
+
+.framework-profile-title { font-size: 1.05rem; font-weight: normal; }
+
+.framework-profile-body { padding: 16px 18px; }
+
+.framework-mfq-bar-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 5px;
+}
+
+.framework-mfq-label {
+  font-family: 'Courier New', monospace; font-size: .65rem;
+  color: var(--prf-muted); width: 110px; flex-shrink: 0; text-align: right;
+}
+
+.framework-mfq-track {
+  flex: 1; height: 7px; background: var(--prf-border);
+  border-radius: 4px; overflow: hidden;
+}
+
+.framework-mfq-fill {
+  height: 100%; border-radius: 4px;
+  transition: width .9s cubic-bezier(.4,0,.2,1); width: 0%;
+}
+
+.f-care      { background: linear-gradient(90deg, #e06060, #c03030); }
+.f-fairness  { background: linear-gradient(90deg, #4a7fb5, #2a5090); }
+.f-loyalty   { background: linear-gradient(90deg, #6a9a50, #3a7030); }
+.f-authority { background: linear-gradient(90deg, #8a6fb5, #5a3f90); }
+.f-purity    { background: linear-gradient(90deg, #c9a84c, #9a7820); }
+
+.framework-desc {
+  font-size: .88rem; line-height: 1.65; color: #444;
+  margin-bottom: 12px;
+}
+
+.framework-vignette {
+  background: var(--prf-warm); border-left: 3px solid var(--prf-gold);
+  padding: 10px 14px; border-radius: 0 6px 6px 0;
+  font-size: .84rem; line-height: 1.6; color: #555; font-style: italic;
+  margin-top: 10px;
+}
+
+.framework-vignette-label {
+  font-family: 'Courier New', monospace; font-size: .64rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--prf-muted); font-style: normal; margin-bottom: 5px;
+}
+
+/* ══════════════════════════════════════════════════
+   QUIZ COMPONENT
+   ══════════════════════════════════════════════════ */
+.quiz-block {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 12px; padding: 22px;
+  box-shadow: var(--shadow-sm); margin: 28px 0;
+}
+
+.quiz-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px; padding-bottom: 14px;
+  border-bottom: 2px solid var(--prf-border);
+}
+
+.quiz-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--prf-navy), var(--prf-sky));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: .9rem; flex-shrink: 0;
+}
+
+.quiz-title {
+  font-family: 'Courier New', monospace; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--prf-muted);
+}
+
+.quiz-score {
+  margin-left: auto;
+  font-family: 'Courier New', monospace; font-size: .76rem;
+  color: var(--prf-muted);
+}
+
+.quiz-question { margin-bottom: 22px; }
+
+.quiz-question:last-child { margin-bottom: 0; }
+
+.q-text {
+  font-size: .94rem; font-weight: bold; color: var(--prf-navy);
+  line-height: 1.5; margin-bottom: 12px;
+}
+
+.q-num {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--prf-muted); margin-bottom: 5px;
+}
+
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+
+.q-option {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 14px; border-radius: 8px;
+  border: 1.5px solid var(--prf-border);
+  cursor: pointer; transition: var(--transition);
+  background: #fff; font-size: .88rem; line-height: 1.45;
+  color: #333; user-select: none;
+}
+
+.q-option:hover:not(.answered) {
+  border-color: var(--prf-sky); background: #f0f6fa; color: var(--prf-navy);
+}
+
+.q-option.selected { border-color: var(--prf-sky); background: #e8f3fa; }
+
+.q-option.correct  { border-color: var(--prf-success); background: #eaf7f0; color: #1a5c35; }
+.q-option.incorrect { border-color: var(--prf-danger); background: #fff0f0; color: #8a2020; }
+.q-option.reveal-correct { border-color: var(--prf-success); background: #eaf7f0; color: #1a5c35; }
+.q-option.answered { cursor: default; }
+
+.q-option-letter {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--prf-border); display: flex; align-items: center;
+  justify-content: center; font-family: 'Courier New', monospace;
+  font-size: .7rem; font-weight: bold; color: var(--prf-muted);
+  margin-top: 1px;
+}
+
+.q-option.correct  .q-option-letter { background: var(--prf-success); color: #fff; }
+.q-option.incorrect .q-option-letter { background: var(--prf-danger); color: #fff; }
+.q-option.reveal-correct .q-option-letter { background: var(--prf-success); color: #fff; }
+.q-option.selected .q-option-letter { background: var(--prf-sky); color: #fff; }
+
+.q-feedback {
+  margin-top: 10px; padding: 10px 14px;
+  border-radius: 6px; font-size: .84rem; line-height: 1.55;
+  display: none;
+}
+
+.q-feedback.show { display: block; }
+.q-feedback.feedback-correct  { background: #eaf7f0; color: #1a5c35; border-left: 3px solid var(--prf-success); }
+.q-feedback.feedback-incorrect { background: #fff5f0; color: #7a3010; border-left: 3px solid var(--prf-warn); }
+
+/* ══════════════════════════════════════════════════
+   RESPONSE BOX COMPONENT
+   ══════════════════════════════════════════════════ */
+.response-block {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 12px; padding: 22px;
+  box-shadow: var(--shadow-sm); margin: 28px 0;
+}
+
+.response-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 14px;
+}
+
+.response-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #8a6a20, var(--prf-gold));
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: .9rem; flex-shrink: 0;
+}
+
+.response-title {
+  font-family: 'Courier New', monospace; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .1em; color: var(--prf-muted);
+}
+
+.response-prompt {
+  font-size: .92rem; font-weight: bold; color: var(--prf-navy);
+  line-height: 1.55; margin-bottom: 14px;
+}
+
+.response-sub {
+  font-size: .84rem; color: #556; font-style: italic;
+  margin-bottom: 14px; line-height: 1.5;
+}
+
+.response-textarea {
+  width: 100%; min-height: 120px; padding: 12px 14px;
+  border: 1.5px solid var(--prf-border); border-radius: 8px;
+  font-family: 'Georgia', serif; font-size: .88rem; color: var(--prf-ink);
+  line-height: 1.65; resize: vertical; outline: none;
+  transition: border-color .2s;
+  background: #fafbfc;
+}
+
+.response-textarea:focus { border-color: var(--prf-sky); background: #fff; }
+
+.response-footer {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-top: 10px;
+}
+
+.response-save-btn {
+  padding: 8px 18px; background: var(--prf-navy); color: #fff;
+  border: none; border-radius: 6px; font-family: 'Courier New', monospace;
+  font-size: .72rem; text-transform: uppercase; letter-spacing: .08em;
+  cursor: pointer; transition: var(--transition);
+}
+
+.response-save-btn:hover { background: var(--prf-sky); }
+
+.response-saved-note {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  color: var(--prf-success); opacity: 0; transition: opacity .3s;
+}
+
+.response-saved-note.show { opacity: 1; }
+
+.response-word-count {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  color: var(--prf-muted);
+}
+
+/* ══════════════════════════════════════════════════
+   SIMULATION WALKTHROUGH (Section 6)
+   ══════════════════════════════════════════════════ */
+.sim-step {
+  display: flex; gap: 18px; margin-bottom: 24px;
+  align-items: flex-start;
+}
+
+.sim-step-num {
+  flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--prf-slate), var(--prf-sky));
+  color: #fff; font-family: 'Courier New', monospace;
+  font-size: .9rem; font-weight: bold;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.sim-step-content { flex: 1; }
+
+.sim-step-title {
+  font-size: .95rem; font-weight: bold; color: var(--prf-navy);
+  margin-bottom: 5px;
+}
+
+.sim-step-desc { font-size: .88rem; color: #444; line-height: 1.6; }
+
+.sim-what-to-notice {
+  margin-top: 8px; padding: 8px 12px;
+  background: var(--prf-warm); border-left: 3px solid var(--prf-gold);
+  border-radius: 0 6px 6px 0;
+  font-size: .8rem; color: #664; font-style: italic; line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════
+   SECTION NAVIGATION BUTTONS
+   ══════════════════════════════════════════════════ */
+.section-nav {
+  display: flex; justify-content: space-between;
+  margin-top: 36px; padding-top: 24px;
+  border-top: 1px solid var(--prf-border);
+}
+
+.nav-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 22px;
+  border: none; border-radius: 8px;
+  font-family: 'Georgia', serif; font-size: .9rem;
+  cursor: pointer; transition: var(--transition);
+}
+
+.nav-btn-prev {
+  background: #fff; color: var(--prf-navy);
+  border: 1.5px solid var(--prf-border);
+}
+
+.nav-btn-prev:hover { border-color: var(--prf-sky); background: #f0f6fa; }
+
+.nav-btn-next {
+  background: linear-gradient(135deg, var(--prf-navy), var(--prf-sky));
+  color: #fff; box-shadow: var(--shadow-sm);
+}
+
+.nav-btn-next:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); filter: brightness(1.08); }
+.nav-btn-next:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+/* ══════════════════════════════════════════════════
+   COMPLETION BADGE
+   ══════════════════════════════════════════════════ */
+.completion-wrap {
+  text-align: center;
+  padding: 44px 20px;
+}
+
+.completion-badge {
+  display: inline-flex; flex-direction: column;
+  align-items: center; gap: 12px;
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 16px; padding: 32px 40px;
+  box-shadow: var(--shadow-lg);
+  color: #fff;
+}
+
+.completion-star { font-size: 2.5rem; margin-bottom: 4px; }
+.completion-title { font-size: 1.3rem; }
+.completion-title span { color: var(--prf-amber); }
+.completion-sub {
+  font-size: .88rem; color: rgba(255,255,255,.7);
+  font-style: italic; max-width: 340px; text-align: center; line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════════════
+   LEARN MORE COLLAPSIBLE
+   ══════════════════════════════════════════════════ */
+.learn-more {
+  border: 1px solid var(--prf-border); border-radius: 8px;
+  margin: 16px 0; overflow: hidden;
+}
+
+.learn-more-toggle {
+  width: 100%; padding: 12px 16px;
+  background: #f4f7fc; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: 'Courier New', monospace; font-size: .74rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--prf-slate); transition: var(--transition);
+}
+
+.learn-more-toggle:hover { background: #e8f0f8; }
+
+.learn-more-arrow { transition: transform .25s; font-size: .8rem; }
+.learn-more.open .learn-more-arrow { transform: rotate(180deg); }
+
+.learn-more-content {
+  display: none; padding: 14px 16px;
+  font-size: .87rem; line-height: 1.65; color: #444;
+  border-top: 1px solid var(--prf-border);
+}
+
+.learn-more.open .learn-more-content { display: block; }
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  header { padding: 36px 16px 30px; }
+  header h1 { font-size: 1.45rem; }
+  main { padding: 24px 12px 0; }
+  .metric-explainer-grid { grid-template-columns: 1fr; }
+  .foundation-grid { grid-template-columns: 1fr; }
+  .foundation-card.fc-purity { grid-column: auto; }
+  .progress-inner { gap: 0; }
+  .step-label { font-size: .52rem; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     STICKY PROGRESS BAR
+     ══════════════════════════════════════════════════ -->
+<div class="progress-bar-wrap">
+  <div style="height:3px;background:rgba(255,255,255,.06)">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-inner" id="progressSteps">
+    <div class="progress-step active" data-section="0" onclick="goSection(0)">
+      <span class="step-num">01</span>
+      <span class="step-label">Coordination &amp; Ethics</span>
+    </div>
+    <div class="progress-step" data-section="1" onclick="goSection(1)">
+      <span class="step-num">02</span>
+      <span class="step-label">The Three Metrics</span>
+    </div>
+    <div class="progress-step" data-section="2" onclick="goSection(2)">
+      <span class="step-num">03</span>
+      <span class="step-label">Five Foundations</span>
+    </div>
+    <div class="progress-step" data-section="3" onclick="goSection(3)">
+      <span class="step-num">04</span>
+      <span class="step-label">Five Frameworks</span>
+    </div>
+    <div class="progress-step" data-section="4" onclick="goSection(4)">
+      <span class="step-num">05</span>
+      <span class="step-label">Your PRF</span>
+    </div>
+    <div class="progress-step" data-section="5" onclick="goSection(5)">
+      <span class="step-num">06</span>
+      <span class="step-label">First Simulation</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="course-tag">Ethics Beyond Boundaries · Student Guide</div>
+    <h1>Understanding the <span>UCP Simulation</span></h1>
+    <p class="header-desc">
+      A self-paced introduction to coordination theory, moral foundations, and
+      what the simulation numbers actually mean — before you run your first experiment.
+    </p>
+    <div class="header-meta">
+      <div class="header-badge">📖 6 Sections</div>
+      <div class="header-badge">❓ 18 Quiz Questions</div>
+      <div class="header-badge">✍️ 4 Reflection Boxes</div>
+      <div class="header-badge">💾 Progress Saved</div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 1: COORDINATION & ETHICS
+     ══════════════════════════════════════════════════ -->
+<div class="guide-section active" id="section-0">
+
+  <div class="section-header">
+    <div class="section-num-block">1</div>
+    <div class="section-title-block">
+      <div class="section-num-label">Section One</div>
+      <div class="section-title">What Is Coordination, and Why Does <span>Ethics Care?</span></div>
+    </div>
+  </div>
+
+  <p class="lead">
+    Most introductory ethics courses ask: "What should this person do?" The UCP simulation
+    asks a different question: "What does this system make possible?"
+  </p>
+
+  <p class="prose">
+    When Roger Boisjoly, an engineer at Morton Thiokol, tried to stop the Challenger shuttle
+    launch on January 27, 1986, he wasn't confused about what was right. He knew with clarity
+    that the O-ring seals would fail in cold temperatures. He had the data. He had the expertise.
+    He had the moral conviction. Months before the launch, he wrote a memo directly to Thiokol's
+    Vice President of Engineering warning that they were "going to destroy the shuttle and have
+    loss of human life" if the O-ring problem was not addressed. The VP received the memo.
+    Nothing changed. On the night before launch, Thiokol managers held a private management
+    meeting — explicitly telling engineers to "take your engineering hats off and put on your
+    management hats" — and voted to approve the launch over Boisjoly's objections. Thiokol's
+    own management structure suppressed the engineering knowledge. NASA, under pressure from
+    the Reagan administration to launch on schedule, accepted that approval without question.
+    The shuttle launched the next morning.
+  </p>
+
+  <div class="callout callout-story">
+    <div class="callout-title">📌 The Challenger Case</div>
+    Boisjoly wrote a formal memo to Thiokol's VP of Engineering months before the launch,
+    warning explicitly that flying with the known O-ring defect would result in loss of the
+    shuttle and crew. The VP received it. No action followed. On the eve of launch, Thiokol
+    managers convened a private management meeting and instructed the engineering team to
+    "take your engineering hats off and put on your management hats." They voted to approve
+    the launch. Boisjoly's knowledge never reached the decision that mattered — not because
+    NASA blocked it, but because the management structure at his own company converted an
+    engineering verdict into a management override. NASA, facing political pressure to launch
+    on schedule, accepted the approval. Seventy-three seconds into flight, the O-rings failed
+    exactly as Boisjoly had predicted. Seven crew members died.
+    The <em>knowledge existed</em>. The <em>moral clarity existed</em>.
+    What failed was the system's ability to keep that knowledge from being suppressed
+    before it could reach anyone with the authority to act on it.
+  </div>
+
+  <p class="prose">
+    This is the central insight behind the UCP simulation: <strong>ethical failures in
+    institutions are often coordination failures, not just individual moral failures.</strong>
+    The question isn't only "was Boisjoly right?" — he was, clearly — but "what structural
+    features of that organization prevented his rightness from mattering?"
+  </p>
+
+  <p class="prose">
+    Traditional ethics focuses on the individual: their intentions, their reasoning, their
+    choices. That's essential, but incomplete. People of genuine moral clarity can be embedded
+    in systems that systematically prevent them from acting on that clarity. Understanding
+    those systems — how they block voice, consume energy, and erode capacity — is what the
+    simulation is designed to reveal.
+  </p>
+
+  <div class="callout callout-concept">
+    <div class="callout-title">💡 Key Distinction</div>
+    <strong>Individual ethics</strong> asks: what should I do, given my values and this situation?<br>
+    <strong>System ethics</strong> asks: what structures make it possible or impossible for
+    people to act on their values at all? The UCP simulation models system ethics.
+    Your personal framework (PRF) is still essential — it determines how you interpret
+    what the simulation reveals.
+  </div>
+
+  <div class="learn-more">
+    <button class="learn-more-toggle" onclick="toggleLearnMore(this)">
+      <span>Learn more: The "many hands" problem in institutional ethics</span>
+      <span class="learn-more-arrow">▼</span>
+    </button>
+    <div class="learn-more-content">
+      Philosopher Dennis Thompson called this the "many hands problem": when many people
+      contribute to an institutional outcome, it becomes difficult to assign moral responsibility
+      No one person caused the Challenger disaster. The Morton Thiokol managers who
+      voted to approve the launch weren't villains — they were responding to schedule
+      pressure, institutional hierarchy, and a management culture that had learned
+      to normalize risk. Morton Thiokol engineers weren't cowards — they were responding
+      to real career pressure inside an organization that explicitly told them to set
+      aside their engineering judgment. NASA wasn't indifferent to safety — it was
+      operating under political pressure from the Reagan administration to launch on
+      schedule. The system produced the outcome that no individual clearly chose.
+      This is precisely why ethical analysis must include system-level analysis
+      alongside individual analysis.
+    </div>
+  </div>
+
+  <!-- Quiz 1 -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">❓</div>
+      <div>
+        <div class="quiz-title">Knowledge Check — Section 1</div>
+      </div>
+      <div class="quiz-score" id="score-s1">0 / 3</div>
+    </div>
+
+    <div class="quiz-question" id="q1-1">
+      <div class="q-num">Question 1 of 3</div>
+      <div class="q-text">
+        In the Challenger case, the primary reason the launch proceeded despite Boisjoly's
+        objections was:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q1-1','A','B')">
+          <div class="q-option-letter">A</div>
+          <div>Boisjoly's data about O-ring failure was incorrect or insufficient</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-1','B','B')">
+          <div class="q-option-letter">B</div>
+          <div>The organizational structure prevented his knowledge from reaching
+          those with decision authority</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-1','C','B')">
+          <div class="q-option-letter">C</div>
+          <div>He lacked personal moral courage to push back harder</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-1','D','B')">
+          <div class="q-option-letter">D</div>
+          <div>Thiokol's management structure had better authority than the engineers to make the launch decision</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q1-1"></div>
+    </div>
+
+    <div class="quiz-question" id="q1-2">
+      <div class="q-num">Question 2 of 3</div>
+      <div class="q-text">
+        The UCP simulation is primarily designed to help you understand:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q1-2','A','C')">
+          <div class="q-option-letter">A</div>
+          <div>Which moral theory — Kant, Mill, or care ethics — produces the best outcomes</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-2','B','C')">
+          <div class="q-option-letter">B</div>
+          <div>How to identify individuals who are behaving unethically in organizations</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-2','C','C')">
+          <div class="q-option-letter">C</div>
+          <div>What structural features of systems enable or prevent ethical action</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-2','D','C')">
+          <div class="q-option-letter">D</div>
+          <div>The mathematical basis of coordination physics</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q1-2"></div>
+    </div>
+
+    <div class="quiz-question" id="q1-3">
+      <div class="q-num">Question 3 of 3</div>
+      <div class="q-text">
+        Dennis Thompson's "many hands problem" refers to:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q1-3','A','B')">
+          <div class="q-option-letter">A</div>
+          <div>The difficulty of building consensus when a committee is too large</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-3','B','B')">
+          <div class="q-option-letter">B</div>
+          <div>The difficulty of assigning individual moral responsibility when
+          many people contribute to an outcome</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-3','C','B')">
+          <div class="q-option-letter">C</div>
+          <div>The challenge of coordinating work between teams in different
+          departments</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q1-3','D','B')">
+          <div class="q-option-letter">D</div>
+          <div>The tendency for individuals to defer responsibility to others</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q1-3"></div>
+    </div>
+
+  </div>
+
+  <div class="section-nav">
+    <div></div>
+    <button class="nav-btn nav-btn-next" onclick="nextSection(0)">
+      Next: The Three Metrics ›
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 2: THE THREE METRICS
+     ══════════════════════════════════════════════════ -->
+<div class="guide-section" id="section-1">
+
+  <div class="section-header">
+    <div class="section-num-block">2</div>
+    <div class="section-title-block">
+      <div class="section-num-label">Section Two</div>
+      <div class="section-title">The Three Metrics — <span>What the Numbers Mean</span></div>
+    </div>
+  </div>
+
+  <p class="lead">
+    The simulation produces three numbers after every run. Before you can interpret them,
+    you need to understand what each one is actually measuring — and what real human
+    experience it corresponds to.
+  </p>
+
+  <div class="metric-explainer-grid">
+
+    <div class="metric-card">
+      <div class="metric-symbol">λ Raw</div>
+      <div class="metric-name">Coordination Capacity</div>
+      <div class="metric-analogy">Analogy: engine size — how much power the car could produce under ideal conditions.</div>
+      <div class="metric-desc">
+        The raw potential for the agents in this simulation to work together,
+        based on how compatible their reasoning frameworks are and how capable
+        they are of coordinating action. This is the <em>ceiling</em> of what
+        the group could achieve — before power dynamics, information distortion,
+        or stress reduce what's actually possible.
+      </div>
+      <div class="metric-range">
+        &gt;0.70 Strong · 0.50–0.70 Workable · 0.40–0.50 Fragile · &lt;0.40 Collapsed
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-symbol">λ Perceived</div>
+      <div class="metric-name">Experienced Coordination</div>
+      <div class="metric-analogy">Analogy: how fast you're actually driving — which may be far below the engine's capacity because of traffic, road conditions, or the fact that you're afraid to accelerate.</div>
+      <div class="metric-desc">
+        How much coordination agents actually experience inside the system.
+        This is always equal to or lower than λ Raw. The gap between the two
+        is not a technical problem — it is a human one. It measures how much
+        of the group's capacity the system's power structure is consuming.
+      </div>
+      <div class="metric-range">
+        &gt;0.70 Collaborative · 0.50–0.70 Effortful · 0.40–0.50 Difficult · &lt;0.40 Blocked
+      </div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-symbol">Friction</div>
+      <div class="metric-name">Coordination Cost</div>
+      <div class="metric-analogy">Analogy: wind resistance and a bad road — energy spent just keeping the car moving, before you've done any useful work.</div>
+      <div class="metric-desc">
+        The energy cost of coordination — how much effort agents must expend
+        just to work together before they can work on the actual problem.
+        High friction means most coordination energy is consumed by internal
+        resistance: hierarchy, worldview distance, distorted information.
+      </div>
+      <div class="metric-range">
+        &lt;0.25 Low drag · 0.25–0.45 Moderate · 0.45–0.65 High · &gt;0.65 Severe
+      </div>
+    </div>
+
+  </div>
+
+  <div class="gap-visual" id="gapDemo">
+    <div class="gap-visual-title">The Suppression Gap — λ Raw minus λ Perceived</div>
+    <div class="gap-bars">
+      <div class="gap-bar-row">
+        <span class="gap-bar-label">λ Raw (capacity)</span>
+        <div class="gap-bar-track"><div class="gap-bar-fill raw" style="width:82%"></div></div>
+        <span class="gap-bar-val">0.82</span>
+      </div>
+      <div class="gap-bar-row">
+        <span class="gap-bar-label">λ Perceived (experienced)</span>
+        <div class="gap-bar-track"><div class="gap-bar-fill perceived" style="width:31%"></div></div>
+        <span class="gap-bar-val">0.31</span>
+      </div>
+    </div>
+    <div class="gap-desc">
+      In this example the group has real coordination capacity (0.82) but agents only
+      experience a fraction of it (0.31). The gap — 0.51 or 51% — represents knowledge
+      that exists in the room but cannot safely surface. Agents know more than they can say.
+    </div>
+    <div class="gap-boisjoly">
+      "The Suppression Gap is the Boisjoly number. He had λ Raw of roughly 0.8 — clear
+      engineering knowledge, solid data, a written warning on record with his VP.
+      His λ Perceived approached zero — Thiokol's management structure converted that
+      engineering knowledge into a management override before it could become a decision.
+      The gap is not an abstraction. It measures what a system makes it structurally
+      impossible to say — even when it has been said in writing." — Course Notes
+    </div>
+  </div>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">⚠️ Important</div>
+    <strong>Low friction does not mean ethical health.</strong>
+    A system can have very low friction — everything running smoothly, decisions made
+    efficiently — while simultaneously having a massive suppression gap. This is the
+    Boisjoly pattern: the organizational process worked perfectly. The information
+    just couldn't travel through it. Look at both metrics together.
+  </div>
+
+  <div class="learn-more">
+    <button class="learn-more-toggle" onclick="toggleLearnMore(this)">
+      <span>Learn more: Why these four combinations tell different stories</span>
+      <span class="learn-more-arrow">▼</span>
+    </button>
+    <div class="learn-more-content">
+      <strong>Low gap + low friction:</strong> Healthy — people speak freely, coordination flows. Rare in real institutions.<br><br>
+      <strong>High gap + low friction:</strong> The Boisjoly Pattern — the process runs well but knowledge is blocked by authority. The machine works; the intelligence doesn't move.<br><br>
+      <strong>Low gap + high friction:</strong> Honest but Exhausted — people say what they think, but coordinating is grinding, costly work. A diversity challenge, not a power challenge.<br><br>
+      <strong>High gap + high friction:</strong> Full Breakdown — agents are silenced and worn down simultaneously. Both mechanisms reinforce each other. The UCP signature of the most serious institutional failures.
+    </div>
+  </div>
+
+  <!-- Quiz 2 -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">❓</div>
+      <div><div class="quiz-title">Knowledge Check — Section 2</div></div>
+      <div class="quiz-score" id="score-s2">0 / 3</div>
+    </div>
+
+    <div class="quiz-question" id="q2-1">
+      <div class="q-num">Question 1 of 3</div>
+      <div class="q-text">
+        In the car analogy, λ Perceived is like:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q2-1','A','B')">
+          <div class="q-option-letter">A</div>
+          <div>The engine size — the maximum power available</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-1','B','B')">
+          <div class="q-option-letter">B</div>
+          <div>How fast you're actually driving, which may be much less than the engine allows</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-1','C','B')">
+          <div class="q-option-letter">C</div>
+          <div>The quality of the road you're driving on</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-1','D','B')">
+          <div class="q-option-letter">D</div>
+          <div>The wind resistance and drag the car faces</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q2-1"></div>
+    </div>
+
+    <div class="quiz-question" id="q2-2">
+      <div class="q-num">Question 2 of 3</div>
+      <div class="q-text">
+        The "Suppression Gap" measures:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q2-2','A','C')">
+          <div class="q-option-letter">A</div>
+          <div>The difference between how ethical the group's goal is versus their methods</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-2','B','C')">
+          <div class="q-option-letter">B</div>
+          <div>The friction score — how much energy is lost to internal resistance</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-2','C','C')">
+          <div class="q-option-letter">C</div>
+          <div>The gap between what agents are capable of knowing and what they can safely express</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-2','D','C')">
+          <div class="q-option-letter">D</div>
+          <div>The diversity of reasoning frameworks present in the group</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q2-2"></div>
+    </div>
+
+    <div class="quiz-question" id="q2-3">
+      <div class="q-num">Question 3 of 3</div>
+      <div class="q-text">
+        A hospital where everyone speaks honestly but every decision requires three times
+        more meetings than it should would best be described as having:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q2-3','A','D')">
+          <div class="q-option-letter">A</div>
+          <div>High suppression gap and high friction</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-3','B','D')">
+          <div class="q-option-letter">B</div>
+          <div>High suppression gap and low friction</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-3','C','D')">
+          <div class="q-option-letter">C</div>
+          <div>Low suppression gap and low friction</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q2-3','D','D')">
+          <div class="q-option-letter">D</div>
+          <div>Low suppression gap and high friction</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q2-3"></div>
+    </div>
+
+  </div>
+
+  <div class="section-nav">
+    <button class="nav-btn nav-btn-prev" onclick="goSection(0)">‹ Back</button>
+    <button class="nav-btn nav-btn-next" onclick="nextSection(1)">Next: Five Foundations ›</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 3: FIVE MORAL FOUNDATIONS
+     ══════════════════════════════════════════════════ -->
+<div class="guide-section" id="section-2">
+
+  <div class="section-header">
+    <div class="section-num-block">3</div>
+    <div class="section-title-block">
+      <div class="section-num-label">Section Three</div>
+      <div class="section-title">The Five Moral <span>Foundations</span></div>
+    </div>
+  </div>
+
+  <p class="lead">
+    Moral psychology researcher Jonathan Haidt and colleagues identified five basic
+    emotional and intuitive building blocks from which human moral reasoning is
+    constructed. These are not rules or theories — they are the gut-level responses
+    that get activated before reasoning begins.
+  </p>
+
+  <p class="prose">
+    Haidt's key insight: people don't usually arrive at moral judgments by reasoning
+    from principles. They feel an immediate reaction first — disgust, outrage, loyalty,
+    unfairness — and reason comes afterward, usually to justify what they already felt.
+    These gut-level reactions are grounded in the five foundations below. Different
+    people weight the five foundations differently, and that weighting shapes which
+    moral theories feel compelling and which feel hollow.
+  </p>
+
+  <div class="foundation-grid">
+
+    <div class="foundation-card fc-care">
+      <div class="foundation-label">Foundation 1</div>
+      <div class="foundation-name">Care / Harm</div>
+      <div class="foundation-poles">Activated by: suffering · Violated by: cruelty</div>
+      <div class="foundation-desc">
+        The most widely shared foundation. We evolved to care for vulnerable individuals —
+        especially children — and to feel distress when they suffer. People high on this
+        foundation feel moral urgency around preventing pain and suffering. The basis
+        of care ethics and much of utilitarian reasoning.
+      </div>
+      <div class="foundation-example">
+        💭 "A student sees a classmate being publicly humiliated and feels compelled to intervene,
+        even at social cost to themselves."
+      </div>
+    </div>
+
+    <div class="foundation-card fc-fairness">
+      <div class="foundation-label">Foundation 2</div>
+      <div class="foundation-name">Fairness / Reciprocity</div>
+      <div class="foundation-poles">Activated by: cheating · Violated by: betrayal of trust</div>
+      <div class="foundation-desc">
+        Evolved from cooperation: we track who contributes, who free-rides, and who
+        is treated differently from others without justification. People high on this
+        foundation are highly sensitive to inconsistent treatment and violated agreements.
+        The basis of Kantian ethics and rights-based reasoning.
+      </div>
+      <div class="foundation-example">
+        💭 "An employee discovers their employer accidentally overpaid them and feels
+        strongly that returning the money is simply the right thing to do."
+      </div>
+    </div>
+
+    <div class="foundation-card fc-loyalty">
+      <div class="foundation-label">Foundation 3</div>
+      <div class="foundation-name">Loyalty / Betrayal</div>
+      <div class="foundation-poles">Activated by: team threats · Violated by: betrayal</div>
+      <div class="foundation-desc">
+        Evolved in the context of group living and coalitions. We feel strong responses
+        to those who defend their group and those who betray it. People high on this
+        foundation feel that solidarity with one's group is a genuine moral obligation,
+        not merely a preference. Central to communal and Ubuntu reasoning.
+      </div>
+      <div class="foundation-example">
+        💭 "A worker sees a colleague being publicly criticized unfairly and feels
+        bound to defend them, even though speaking up carries personal risk."
+      </div>
+    </div>
+
+    <div class="foundation-card fc-authority">
+      <div class="foundation-label">Foundation 4</div>
+      <div class="foundation-name">Authority / Subversion</div>
+      <div class="foundation-poles">Activated by: hierarchy threats · Violated by: disrespect</div>
+      <div class="foundation-desc">
+        Evolved from primate hierarchies. We respond to signs of rank, role, and
+        legitimate authority — and feel moral unease when established order is
+        flouted. People high on this foundation believe that institutions, roles,
+        and proper channels deserve respect as the scaffolding of social life.
+        Central to hierarchical and role-based ethics.
+      </div>
+      <div class="foundation-example">
+        💭 "A volunteer is asked to follow a formal procedure that seems unnecessary,
+        but follows it anyway out of respect for the leader's role and judgment."
+      </div>
+    </div>
+
+    <div class="foundation-card fc-purity">
+      <div class="foundation-label">Foundation 5</div>
+      <div class="foundation-name">Purity / Sanctity</div>
+      <div class="foundation-poles">Activated by: degradation · Violated by: contamination</div>
+      <div class="foundation-desc">
+        Perhaps the most contested foundation. We evolved disgust responses to protect
+        us from pathogens — but that disgust system became attached to moral and
+        spiritual concerns as well. People high on this foundation feel that certain
+        things are simply sacred, off-limits, or degrading regardless of consequences.
+        Central to boundary-integrity ethics and many religious moral frameworks.
+      </div>
+      <div class="foundation-example">
+        💭 "Someone feels that a proposed compromise — even if it produces a better
+        outcome — would violate something too important to ever be traded away,
+        regardless of what it achieves."
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout callout-insight">
+    <div class="callout-title">🔑 Why This Matters for the Simulation</div>
+    The five foundations explain why two people can look at the same high-friction
+    simulation result and experience it completely differently. One student (high Care,
+    high Fairness) experiences it as injustice — people are being hurt and treated
+    unequally. Another student (high Authority, high Purity) experiences it as
+    institutional disorder — roles have been violated and something sacred compromised.
+    They are both reading the same number. Their foundations shape what the number means.
+  </div>
+
+  <!-- Quiz 3 -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">❓</div>
+      <div><div class="quiz-title">Knowledge Check — Section 3</div></div>
+      <div class="quiz-score" id="score-s3">0 / 3</div>
+    </div>
+
+    <div class="quiz-question" id="q3-1">
+      <div class="q-num">Question 1 of 3</div>
+      <div class="q-text">
+        According to Haidt, which sequence most accurately describes how most people
+        arrive at moral judgments?
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q3-1','A','C')">
+          <div class="q-option-letter">A</div>
+          <div>They identify relevant moral principles, apply them to the situation,
+          and draw a conclusion</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-1','B','C')">
+          <div class="q-option-letter">B</div>
+          <div>They consult the consequences and choose the option that produces
+          the most good</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-1','C','C')">
+          <div class="q-option-letter">C</div>
+          <div>They feel an immediate intuitive reaction first, then reason afterward
+          to justify what they already felt</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-1','D','C')">
+          <div class="q-option-letter">D</div>
+          <div>They ask what a person of good character would do in this situation</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q3-1"></div>
+    </div>
+
+    <div class="quiz-question" id="q3-2">
+      <div class="q-num">Question 2 of 3</div>
+      <div class="q-text">
+        A nurse who refuses to participate in a procedure they find morally degrading,
+        even though it would produce a better outcome for the patient, is most likely
+        expressing a strong:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q3-2','A','D')">
+          <div class="q-option-letter">A</div>
+          <div>Care / Harm foundation</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-2','B','D')">
+          <div class="q-option-letter">B</div>
+          <div>Fairness / Reciprocity foundation</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-2','C','D')">
+          <div class="q-option-letter">C</div>
+          <div>Loyalty / Betrayal foundation</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-2','D','D')">
+          <div class="q-option-letter">D</div>
+          <div>Purity / Sanctity foundation</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q3-2"></div>
+    </div>
+
+    <div class="quiz-question" id="q3-3">
+      <div class="q-num">Question 3 of 3</div>
+      <div class="q-text">
+        Two colleagues look at the same high-suppression-gap simulation result.
+        One says "people are being treated unfairly." The other says "proper roles
+        are being violated." The most likely explanation for this difference is:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q3-3','A','B')">
+          <div class="q-option-letter">A</div>
+          <div>One of them misread the simulation output</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-3','B','B')">
+          <div class="q-option-letter">B</div>
+          <div>They weight the five moral foundations differently, so the same
+          gap activates different moral intuitions</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-3','C','B')">
+          <div class="q-option-letter">C</div>
+          <div>One is reasoning correctly and the other is making an error</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q3-3','D','B')">
+          <div class="q-option-letter">D</div>
+          <div>The simulation produced contradictory results for the two viewers</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q3-3"></div>
+    </div>
+
+  </div>
+
+  <div class="section-nav">
+    <button class="nav-btn nav-btn-prev" onclick="goSection(1)">‹ Back</button>
+    <button class="nav-btn nav-btn-next" onclick="nextSection(2)">Next: Five Frameworks ›</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 4: FIVE REASONING FRAMEWORKS
+     ══════════════════════════════════════════════════ -->
+<div class="guide-section" id="section-3">
+
+  <div class="section-header">
+    <div class="section-num-block">4</div>
+    <div class="section-title-block">
+      <div class="section-num-label">Section Four</div>
+      <div class="section-title">The Five Reasoning <span>Frameworks</span></div>
+    </div>
+  </div>
+
+  <p class="lead">
+    The simulation uses five moral reasoning frameworks — each a distinct style of
+    thinking about obligation, shaped by a different pattern of moral foundations.
+    These are not ethnic or cultural identities. They are reasoning styles.
+    Any person, in any role, can reason in any of these modes.
+  </p>
+
+  <p class="prose">
+    For each framework, you'll see its moral foundations profile (which of Haidt's
+    five foundations it loads most heavily), a description of how it reasons, and
+    a vignette showing what it sounds like in a real meeting.
+  </p>
+
+  <!-- Framework 1: Individual / Rights-Based -->
+  <div class="framework-profile">
+    <div class="framework-profile-header">
+      <div class="framework-icon">⚖️</div>
+      <div class="framework-profile-title">Individual / Rights-Based</div>
+    </div>
+    <div class="framework-profile-body">
+      <div class="framework-desc">
+        Reasons from universal rules that should apply equally to everyone. The moral
+        question is always: could this principle apply to anyone in this situation?
+        Rights are held by individuals, not groups, and must be respected regardless
+        of consequences. Think Kant's Categorical Imperative: act only on principles
+        you could universalize. Fairness is the highest load; Loyalty and Purity
+        are discounted — group membership and sacred limits should not override
+        equal treatment.
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Care / Harm</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-care" data-w="55" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Fairness</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-fairness" data-w="90" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Loyalty</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-loyalty" data-w="25" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Authority</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-authority" data-w="30" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Purity</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-purity" data-w="20" style="width:0%"></div></div>
+      </div>
+      <div class="framework-vignette">
+        <div class="framework-vignette-label">In a meeting →</div>
+        "I understand the pressure, but we can't treat these employees differently
+        based on seniority. The policy says everyone gets the same process. If we
+        can't apply this rule consistently, we shouldn't have it at all."
+      </div>
+    </div>
+  </div>
+
+  <!-- Framework 2: Relational / We-Centered -->
+  <div class="framework-profile">
+    <div class="framework-profile-header">
+      <div class="framework-icon">🤝</div>
+      <div class="framework-profile-title">Relational / We-Centered</div>
+    </div>
+    <div class="framework-profile-body">
+      <div class="framework-desc">
+        Reasons from mutual recognition and communal dignity. Decisions require that
+        everyone's voice is genuinely heard — not just acknowledged, but actually
+        incorporated. Harm to one damages the whole network of relationships.
+        Think care ethics: context and relationship matter more than abstract universal
+        rules. Care loads highest, along with Loyalty. Authority and Purity load
+        low — hierarchy and sacred limits matter less than the quality of the
+        connection between people.
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Care / Harm</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-care" data-w="85" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Fairness</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-fairness" data-w="60" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Loyalty</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-loyalty" data-w="75" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Authority</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-authority" data-w="30" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Purity</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-purity" data-w="25" style="width:0%"></div></div>
+      </div>
+      <div class="framework-vignette">
+        <div class="framework-vignette-label">In a meeting →</div>
+        "I'm worried we're making this decision without hearing from the people
+        most affected. Before we vote, I think we need to go back and actually
+        listen — not just inform — the night staff. Their experience here is
+        different from ours and we're not incorporating it."
+      </div>
+    </div>
+  </div>
+
+  <!-- Framework 3: Hierarchical / Role-Based -->
+  <div class="framework-profile">
+    <div class="framework-profile-header">
+      <div class="framework-icon">🏛️</div>
+      <div class="framework-profile-title">Hierarchical / Role-Based</div>
+    </div>
+    <div class="framework-profile-body">
+      <div class="framework-desc">
+        Reasons from institutional roles and authority structures. Stable hierarchy
+        is what makes coordinated action possible — without it, organizations become
+        chaotic and ungovernable. Dissent has its proper channel; deviation from role
+        is itself an ethical violation, regardless of motivation. Authority loads highest.
+        Loyalty loads moderately. Care and Fairness load lower — the role-based agent
+        believes the system, when working correctly, produces fair outcomes without
+        requiring case-by-case adjudication.
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Care / Harm</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-care" data-w="30" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Fairness</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-fairness" data-w="45" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Loyalty</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-loyalty" data-w="70" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Authority</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-authority" data-w="90" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Purity</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-purity" data-w="50" style="width:0%"></div></div>
+      </div>
+      <div class="framework-vignette">
+        <div class="framework-vignette-label">In a meeting →</div>
+        "I hear the concerns, but the attending physician has the final call here.
+        That's what the role means. If you disagree, the right path is to document
+        your objection through the proper channel — not to hold up the process.
+        The chain of authority exists for a reason."
+      </div>
+    </div>
+  </div>
+
+  <!-- Framework 4: Boundary / Integrity-Centered -->
+  <div class="framework-profile">
+    <div class="framework-profile-header">
+      <div class="framework-icon">🛡️</div>
+      <div class="framework-profile-title">Boundary / Integrity-Centered</div>
+    </div>
+    <div class="framework-profile-body">
+      <div class="framework-desc">
+        Reasons from the protection of non-negotiable limits. Some things must not
+        be crossed regardless of consequences — compromise is not a lesser evil,
+        it is a betrayal. The integrity of the boundary is the moral good. Purity
+        loads highest by far, reflecting the sense that certain things are sacred
+        and inviolable. Authority loads moderately. Care and Fairness load lower
+        — consequences and equal treatment do not change what must remain uncrossed.
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Care / Harm</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-care" data-w="35" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Fairness</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-fairness" data-w="40" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Loyalty</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-loyalty" data-w="55" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Authority</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-authority" data-w="65" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Purity</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-purity" data-w="95" style="width:0%"></div></div>
+      </div>
+      <div class="framework-vignette">
+        <div class="framework-vignette-label">In a meeting →</div>
+        "I'm not interested in the utilitarian calculation here. There are things
+        we simply do not do — this is one of them. I understand the outcome might
+        be better if we compromise. That's not the point. Once we cross this line,
+        we cannot uncross it. The answer is no."
+      </div>
+    </div>
+  </div>
+
+  <!-- Framework 5: Custodial / Stewardship -->
+  <div class="framework-profile">
+    <div class="framework-profile-header">
+      <div class="framework-icon">🌱</div>
+      <div class="framework-profile-title">Custodial / Stewardship</div>
+    </div>
+    <div class="framework-profile-body">
+      <div class="framework-desc">
+        Reasons from obligations to past and future generations — not just the people
+        currently in the room. We are stewards, not owners. Decisions must account
+        for what was inherited and what will be left behind. Long-term coherence
+        over short-term benefit. Loyalty loads highest (to the extended community
+        across time), with Purity and Authority both moderate. Care loads
+        moderately as well — but directed at the broader community, including those
+        not yet born, rather than the immediate individuals present.
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Care / Harm</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-care" data-w="60" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Fairness</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-fairness" data-w="35" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Loyalty</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-loyalty" data-w="80" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Authority</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-authority" data-w="70" style="width:0%"></div></div>
+      </div>
+      <div class="framework-mfq-bar-row">
+        <span class="framework-mfq-label">Purity</span>
+        <div class="framework-mfq-track"><div class="framework-mfq-fill f-purity" data-w="75" style="width:0%"></div></div>
+      </div>
+      <div class="framework-vignette">
+        <div class="framework-vignette-label">In a meeting →</div>
+        "I keep coming back to the question of what we'll leave behind. We didn't
+        inherit this from nowhere — people made sacrifices to build what we're
+        sitting in. Before we decide, I want to ask: would the people who came
+        before us recognize what we're doing? And will the people who come after
+        us be able to use what we leave them?"
+      </div>
+    </div>
+  </div>
+
+  <!-- Reflection Box 1 -->
+  <div class="response-block">
+    <div class="response-header">
+      <div class="response-icon">✍️</div>
+      <div class="response-title">Reflection — Section 4</div>
+    </div>
+    <div class="response-prompt">
+      Which of the five frameworks sounds most like how you naturally reason?
+    </div>
+    <div class="response-sub">
+      Don't overthink this — go with your first instinct. Give a specific example from
+      your own life (work, family, school, or community) where you can see that
+      reasoning style operating in how you made a decision or reacted to someone else's.
+      There is no right answer.
+    </div>
+    <textarea class="response-textarea" id="resp-4"
+      placeholder="Write your response here. Your answer is saved locally to your browser and won't be shared automatically..."
+      oninput="updateWordCount('resp-4', 'wc-4')"></textarea>
+    <div class="response-footer">
+      <span class="response-word-count" id="wc-4">0 words</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="response-saved-note" id="saved-4">✓ Saved</span>
+        <button class="response-save-btn" onclick="saveResponse('resp-4', 'saved-4')">Save Response</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz 4 (3 questions) -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">❓</div>
+      <div><div class="quiz-title">Knowledge Check — Section 4</div></div>
+      <div class="quiz-score" id="score-s4">0 / 3</div>
+    </div>
+
+    <div class="quiz-question" id="q4-1">
+      <div class="q-num">Question 1 of 3</div>
+      <div class="q-text">
+        A colleague says: "I don't care what the outcome is — we made a commitment
+        and we have to honor it." This most closely reflects which framework?
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q4-1','A','C')">
+          <div class="q-option-letter">A</div>
+          <div>Relational / We-Centered</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-1','B','C')">
+          <div class="q-option-letter">B</div>
+          <div>Custodial / Stewardship</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-1','C','C')">
+          <div class="q-option-letter">C</div>
+          <div>Individual / Rights-Based</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-1','D','C')">
+          <div class="q-option-letter">D</div>
+          <div>Boundary / Integrity-Centered</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q4-1"></div>
+    </div>
+
+    <div class="quiz-question" id="q4-2">
+      <div class="q-num">Question 2 of 3</div>
+      <div class="q-text">
+        Which framework would be most likely to say: "What would the people who built
+        this organization recognize in what we're doing today?"
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q4-2','A','D')">
+          <div class="q-option-letter">A</div>
+          <div>Individual / Rights-Based</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-2','B','D')">
+          <div class="q-option-letter">B</div>
+          <div>Boundary / Integrity-Centered</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-2','C','D')">
+          <div class="q-option-letter">C</div>
+          <div>Relational / We-Centered</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-2','D','D')">
+          <div class="q-option-letter">D</div>
+          <div>Custodial / Stewardship</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q4-2"></div>
+    </div>
+
+    <div class="quiz-question" id="q4-3">
+      <div class="q-num">Question 3 of 3</div>
+      <div class="q-text">
+        Which statement is true about the five frameworks?
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q4-3','A','D')">
+          <div class="q-option-letter">A</div>
+          <div>Each framework belongs to a specific cultural group or tradition</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-3','B','D')">
+          <div class="q-option-letter">B</div>
+          <div>One of the five frameworks consistently produces better simulation results than the others</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-3','C','D')">
+          <div class="q-option-letter">C</div>
+          <div>People are permanently fixed in one framework and cannot reason in others</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q4-3','D','D')">
+          <div class="q-option-letter">D</div>
+          <div>They are reasoning styles — any person can reason in any of these modes
+          depending on context, training, and institutional pressure</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q4-3"></div>
+    </div>
+
+  </div>
+
+  <div class="section-nav">
+    <button class="nav-btn nav-btn-prev" onclick="goSection(2)">‹ Back</button>
+    <button class="nav-btn nav-btn-next" onclick="nextSection(3)">Next: Your PRF ›</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 5: YOUR PRF & THE SIMULATION
+     ══════════════════════════════════════════════════ -->
+<div class="guide-section" id="section-4">
+
+  <div class="section-header">
+    <div class="section-num-block">5</div>
+    <div class="section-title-block">
+      <div class="section-num-label">Section Five</div>
+      <div class="section-title">What Your PRF Means for <span>Reading the Simulation</span></div>
+    </div>
+  </div>
+
+  <p class="lead">
+    The simulation produces the same three numbers regardless of who is reading them.
+    What those numbers mean — what kind of ethical problem they point to — depends on
+    the framework through which you interpret them.
+  </p>
+
+  <p class="prose">
+    Recall the essay we read: "A religious believer, a secular liberal, an Indigenous
+    custodian, an Ubuntu-oriented communitarian, a scientific naturalist, or a student
+    still developing a worldview may all look at the same UCP simulation and draw
+    different significance from it." The simulation doesn't tell you <em>what to feel</em>
+    about what it shows. You supply that — through your PRF.
+  </p>
+
+  <div class="callout callout-concept">
+    <div class="callout-title">💡 The Same Gap, Five Readings</div>
+    Imagine the simulation shows a suppression gap of 0.45 — critical suppression.
+    Someone with a strong <strong>Individual/Rights-Based</strong> framework reads this as:
+    <em>"Information is being systematically blocked — this is a violation of the epistemic
+    rights of the people in this system."</em>
+    Someone with a strong <strong>Relational/We-Centered</strong> framework reads it as:
+    <em>"The network of mutual recognition has been severed — people cannot speak because
+    they are not being seen."</em>
+    Someone with a strong <strong>Hierarchical/Role-Based</strong> framework reads it as:
+    <em>"The proper chain of authority has been corrupted — information cannot move through
+    legitimate channels."</em>
+    All three readings describe the same number. None of them is wrong.
+    They are different moral vocabularies applied to the same structural fact.
+  </div>
+
+  <p class="prose">
+    This is what makes the simulation a teaching tool rather than a verdict machine.
+    It reveals structural features of the system — suppression, friction, capacity,
+    collapse. What those features <em>mean</em> is determined by the frameworks of the
+    people in the room, including you.
+  </p>
+
+  <p class="prose">
+    Your <strong>PRF (Personal Reference Framework)</strong> is not a personality type
+    or a fixed trait. It is the pattern of how you habitually weigh moral foundations —
+    which intuitions carry more weight for you, which scenarios feel urgent, which
+    compromises feel unacceptable. It has developed through your life history, your
+    relationships, your culture, your education, and your experiences of moral conflict.
+  </p>
+
+  <div class="callout callout-warning">
+    <div class="callout-title">⚠️ A Note on Self-Knowledge</div>
+    Most people find, when they first explore their PRF, that their <em>stated</em>
+    framework (the one they'd describe in an ethics class) doesn't perfectly match
+    their <em>operative</em> framework (the one that actually drives their gut reactions).
+    A person who identifies as a consequentialist may find they have a strong Purity
+    foundation that activates before any calculation begins. This is normal.
+    The goal of PRF exploration is not to be consistent — it is to be honest.
+  </div>
+
+  <div class="learn-more">
+    <button class="learn-more-toggle" onclick="toggleLearnMore(this)">
+      <span>Learn more: How PRF affects what you notice in the simulation</span>
+      <span class="learn-more-arrow">▼</span>
+    </button>
+    <div class="learn-more-content">
+      When you run the scenario runner and see a large suppression gap, your PRF
+      shapes which questions feel most urgent:<br><br>
+      <strong>High Fairness →</strong> "Is this consistent? Would the same structure suppress
+      a more powerful group's voice?"<br>
+      <strong>High Care →</strong> "Who is being hurt by the silence? Which specific people
+      are not being heard?"<br>
+      <strong>High Loyalty →</strong> "Is this a betrayal of the community's trust? Who has
+      been abandoned?"<br>
+      <strong>High Authority →</strong> "Is the proper hierarchy being circumvented? Who
+      has usurped a role they shouldn't occupy?"<br>
+      <strong>High Purity →</strong> "Has something sacred been violated? What line was crossed?"<br><br>
+      None of these questions is more correct than the others. They are different
+      ways of entering the same ethical reality. The simulation's value is that it
+      makes the structure visible — your PRF determines what you do with that visibility.
+    </div>
+  </div>
+
+  <!-- Reflection Box 2 -->
+  <div class="response-block">
+    <div class="response-header">
+      <div class="response-icon">✍️</div>
+      <div class="response-title">Reflection — Section 5</div>
+    </div>
+    <div class="response-prompt">
+      Based on your answer in Section 4: if the simulation showed a high-suppression
+      scenario in your chosen workplace or institution, how do you think your
+      framework would read it?
+    </div>
+    <div class="response-sub">
+      Use the "five readings" from the callout above as a starting point.
+      Which language feels most natural to you — injustice, broken reciprocity,
+      dishonored tradition, corrupted authority, violated sanctity?
+      Why does that language feel more true to you than the others?
+    </div>
+    <textarea class="response-textarea" id="resp-5"
+      placeholder="Write your response here..."
+      oninput="updateWordCount('resp-5', 'wc-5')"></textarea>
+    <div class="response-footer">
+      <span class="response-word-count" id="wc-5">0 words</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="response-saved-note" id="saved-5">✓ Saved</span>
+        <button class="response-save-btn" onclick="saveResponse('resp-5', 'saved-5')">Save Response</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz 5 (3 questions) -->
+  <div class="quiz-block">
+    <div class="quiz-header">
+      <div class="quiz-icon">❓</div>
+      <div><div class="quiz-title">Knowledge Check — Section 5</div></div>
+      <div class="quiz-score" id="score-s5">0 / 3</div>
+    </div>
+
+    <div class="quiz-question" id="q5-1">
+      <div class="q-num">Question 1 of 3</div>
+      <div class="q-text">
+        The simulation produces the same three numbers for all students who run it
+        with the same settings. What differs between students reading those numbers?
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q5-1','A','C')">
+          <div class="q-option-letter">A</div>
+          <div>Their mathematical ability to calculate the correct interpretation</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-1','B','C')">
+          <div class="q-option-letter">B</div>
+          <div>The browser or device they are using</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-1','C','C')">
+          <div class="q-option-letter">C</div>
+          <div>The PRF — the moral framework through which they interpret what the numbers mean</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-1','D','C')">
+          <div class="q-option-letter">D</div>
+          <div>Whether they scored well on the quizzes in this guide</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q5-1"></div>
+    </div>
+
+    <div class="quiz-question" id="q5-2">
+      <div class="q-num">Question 2 of 3</div>
+      <div class="q-text">
+        Someone's "operative" PRF refers to:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q5-2','A','B')">
+          <div class="q-option-letter">A</div>
+          <div>The moral framework they describe when asked about their ethical views</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-2','B','B')">
+          <div class="q-option-letter">B</div>
+          <div>The pattern that actually drives their gut reactions and decisions,
+          which may differ from their stated framework</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-2','C','B')">
+          <div class="q-option-letter">C</div>
+          <div>The framework that scores highest on the PRF-22 questionnaire</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-2','D','B')">
+          <div class="q-option-letter">D</div>
+          <div>A mathematical formula for calculating ethical outcomes</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q5-2"></div>
+    </div>
+
+    <div class="quiz-question" id="q5-3">
+      <div class="q-num">Question 3 of 3</div>
+      <div class="q-text">
+        The UCP essay states that the simulation "does not adjudicate ultimate
+        interpretations in advance." This means:
+      </div>
+      <div class="q-options">
+        <div class="q-option" onclick="answerQ('q5-3','A','D')">
+          <div class="q-option-letter">A</div>
+          <div>The simulation is not yet finished and still needs further development</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-3','B','D')">
+          <div class="q-option-letter">B</div>
+          <div>Students shouldn't try to interpret the simulation results</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-3','C','D')">
+          <div class="q-option-letter">C</div>
+          <div>The simulation is unreliable and should not be trusted</div>
+        </div>
+        <div class="q-option" onclick="answerQ('q5-3','D','D')">
+          <div class="q-option-letter">D</div>
+          <div>The simulation provides a shared formal structure while leaving
+          the meaning of its outputs open to interpretation through each student's own framework</div>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb-q5-3"></div>
+    </div>
+
+  </div>
+
+  <div class="section-nav">
+    <button class="nav-btn nav-btn-prev" onclick="goSection(3)">‹ Back</button>
+    <button class="nav-btn nav-btn-next" onclick="nextSection(4)">Next: First Simulation ›</button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     SECTION 6: RUNNING YOUR FIRST SIMULATION
+     ══════════════════════════════════════════════════ -->
+<div class="guide-section" id="section-5">
+
+  <div class="section-header">
+    <div class="section-num-block">6</div>
+    <div class="section-title-block">
+      <div class="section-num-label">Section Six</div>
+      <div class="section-title">Running Your <span>First Simulation</span></div>
+    </div>
+  </div>
+
+  <p class="lead">
+    You're ready to run the simulation. Here is a step-by-step walkthrough of
+    what to do and — more importantly — what to notice.
+  </p>
+
+  <div class="sim-step">
+    <div class="sim-step-num">1</div>
+    <div class="sim-step-content">
+      <div class="sim-step-title">Open the Scenario Runner and choose Factory Safety</div>
+      <div class="sim-step-desc">
+        Start with the Factory Safety scenario. This maps most directly to the
+        Challenger case you've read about — workers with critical knowledge in a
+        hierarchically structured organization. It uses the "Whistleblower"
+        scenario in the engine, which generates high boundary-stress and
+        authority-role conflict.
+      </div>
+      <div class="sim-what-to-notice">
+        💭 Before you touch any slider: notice the "Who's in the Room" preview
+        that shows the default distribution of reasoning frameworks. What does
+        the default distribution tell you about what the starting simulation
+        will look like?
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-step">
+    <div class="sim-step-num">2</div>
+    <div class="sim-step-content">
+      <div class="sim-step-title">Set OS1→OS2 dial to 0.10 (maximum hierarchy), run once</div>
+      <div class="sim-step-desc">
+        Push the OS1→OS2 dial all the way toward hierarchy-dominant. This creates
+        a simulation where Hierarchical/Role-Based and Boundary/Integrity-Centered
+        agents dominate — roughly 80% of the group. The evidence quality slider
+        can stay at its default. Click Run.
+      </div>
+      <div class="sim-what-to-notice">
+        💭 Record your three numbers: λ Raw, λ Perceived, and Friction.
+        Before you move on, predict what will happen when you push the dial
+        the other direction. Will all three metrics improve? Or will some
+        stay the same? Which metric are you most uncertain about?
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-step">
+    <div class="sim-step-num">3</div>
+    <div class="sim-step-content">
+      <div class="sim-step-title">Push OS1→OS2 to 0.90 (maximum relational), run again</div>
+      <div class="sim-step-desc">
+        Now push the dial to the other extreme — Relational/We-Centered and
+        Custodial/Stewardship agents dominate. Everything else stays the same.
+        Run again.
+      </div>
+      <div class="sim-what-to-notice">
+        💭 Compare the Suppression Gap panel between your two runs.
+        Which configuration produced more suppression? Which produced more friction?
+        Did the pattern surprise you? The simulation is showing you a real tension:
+        lower hierarchy does not automatically mean lower friction, and
+        high hierarchy does not automatically mean high friction.
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-step">
+    <div class="sim-step-num">4</div>
+    <div class="sim-step-content">
+      <div class="sim-step-title">Read the "What It Feels Like" narrative</div>
+      <div class="sim-step-desc">
+        Below the metrics, you'll find a first-person narrative describing
+        what it feels like to be an agent inside the system you've just simulated.
+        There are six different narratives keyed to different combinations of
+        suppression, friction, and capacity.
+      </div>
+      <div class="sim-what-to-notice">
+        💭 Read the narrative slowly. Does it describe a situation you recognize
+        from your own experience — work, school, family, or community?
+        If so, which metric combination was present in that situation?
+        If not, what's different about your experience?
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-step">
+    <div class="sim-step-num">5</div>
+    <div class="sim-step-content">
+      <div class="sim-step-title">Enable BioBond and run one more time</div>
+      <div class="sim-step-desc">
+        Check the "BioBond scaffold" checkbox and run the simulation again with
+        the same slider settings as your last run. BioBond introduces structured
+        OS2 coordination support at step 4 of the simulation — a procedural
+        intervention designed to reduce suppression and friction.
+      </div>
+      <div class="sim-what-to-notice">
+        💭 Does BioBond improve all three metrics equally, or does it affect
+        the Suppression Gap more than Friction? This asymmetry is important:
+        interventions that reduce suppression (psychological safety, protected
+        voice channels) work differently from interventions that reduce friction
+        (clearer protocols, better coordination processes). They are different
+        problems requiring different solutions.
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-insight">
+    <div class="callout-title">🔑 What the Simulation Cannot Tell You</div>
+    The simulation can show you structural features of coordination systems —
+    where voice is being suppressed, where energy is being consumed, where capacity
+    is collapsing. What it cannot tell you is <em>what to do about it</em>.
+    That requires your ethical judgment, applied through your framework,
+    to the specific human situation you're in. The simulation is a diagnostic tool.
+    You are the ethical agent.
+  </div>
+
+  <!-- Reflection Box 3 -->
+  <div class="response-block">
+    <div class="response-header">
+      <div class="response-icon">✍️</div>
+      <div class="response-title">Reflection A — Section 6</div>
+    </div>
+    <div class="response-prompt">
+      Compare your two runs from Steps 2 and 3. What surprised you about the results?
+    </div>
+    <div class="response-sub">
+      Specifically: did pushing toward relational agents reduce the suppression gap,
+      as you might have expected? Or did some other pattern emerge? What does this
+      tell you about the relationship between hierarchy and suppression?
+    </div>
+    <textarea class="response-textarea" id="resp-6a"
+      placeholder="Write your response here..."
+      oninput="updateWordCount('resp-6a', 'wc-6a')"></textarea>
+    <div class="response-footer">
+      <span class="response-word-count" id="wc-6a">0 words</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="response-saved-note" id="saved-6a">✓ Saved</span>
+        <button class="response-save-btn" onclick="saveResponse('resp-6a', 'saved-6a')">Save Response</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reflection Box 4 (final) -->
+  <div class="response-block">
+    <div class="response-header">
+      <div class="response-icon">✍️</div>
+      <div class="response-title">Reflection B — Final</div>
+    </div>
+    <div class="response-prompt">
+      Did the "What It Feels Like" narrative describe a real situation you've
+      been in? What does the simulation reveal about that situation that you
+      couldn't see clearly while you were inside it?
+    </div>
+    <div class="response-sub">
+      This is the core purpose of the simulation: to make visible the structural
+      features that are invisible when you're inside them. If the narrative
+      didn't match your experience, describe what's different — that difference
+      is also useful data about your situation.
+    </div>
+    <textarea class="response-textarea" id="resp-6b"
+      placeholder="Write your response here..."
+      oninput="updateWordCount('resp-6b', 'wc-6b')"></textarea>
+    <div class="response-footer">
+      <span class="response-word-count" id="wc-6b">0 words</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="response-saved-note" id="saved-6b">✓ Saved</span>
+        <button class="response-save-btn" onclick="saveResponse('resp-6b', 'saved-6b')">Save Response</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-nav">
+    <button class="nav-btn nav-btn-prev" onclick="goSection(4)">‹ Back</button>
+    <button class="nav-btn nav-btn-next" onclick="completeGuide()">
+      Complete the Guide ✓
+    </button>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════
+     COMPLETION SCREEN
+     ══════════════════════════════════════════════════ -->
+<div class="guide-section" id="section-complete">
+  <div class="completion-wrap">
+    <div class="completion-badge">
+      <div class="completion-star">🎓</div>
+      <div class="completion-title">Guide <span>Complete</span></div>
+      <div class="completion-sub">
+        You've covered coordination theory, the three metrics, Haidt's five foundations,
+        the five reasoning frameworks, how your PRF shapes what the simulation means,
+        and how to run and read your first experiment.
+      </div>
+    </div>
+
+    <div style="margin-top:28px;font-size:.9rem;color:var(--prf-muted);line-height:1.7;max-width:520px;margin-left:auto;margin-right:auto">
+      Your reflection responses have been saved to your browser.
+      Bring them to class — the discussion prompts at the bottom of each simulation
+      app are designed to pick up where these reflections leave off.
+    </div>
+
+    <!-- Download for ethics journal -->
+    <div style="margin-top:28px;max-width:520px;margin-left:auto;margin-right:auto;
+                background:#fff;border:1px solid var(--prf-border);border-radius:10px;
+                padding:20px 22px;box-shadow:var(--shadow-sm);text-align:left">
+      <div style="font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;
+                  letter-spacing:.12em;color:var(--prf-muted);margin-bottom:8px">
+        📄 Ethics Journal Export
+      </div>
+      <div style="font-size:.9rem;font-weight:bold;color:var(--prf-navy);margin-bottom:8px">
+        Download your responses as a text file
+      </div>
+      <div style="font-size:.84rem;color:#556;line-height:1.6;margin-bottom:16px">
+        This creates a plain text file containing all four of your reflection
+        responses, your quiz scores, and the date completed — formatted for
+        copying into your Ethics Beyond Boundaries journal.
+        Your instructor will use this to verify your engagement with the guide.
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <button onclick="downloadJournal()"
+          style="padding:11px 22px;background:linear-gradient(135deg,var(--prf-navy),var(--prf-sky));
+                 color:#fff;border:none;border-radius:8px;font-family:'Georgia',serif;
+                 font-size:.92rem;cursor:pointer;box-shadow:var(--shadow-sm);
+                 transition:all .22s ease;letter-spacing:.02em"
+          onmouseover="this.style.filter='brightness(1.1)'"
+          onmouseout="this.style.filter=''">
+          ⬇ Download Journal Entry
+        </button>
+        <span id="downloadNote"
+          style="font-family:'Courier New',monospace;font-size:.7rem;
+                 color:var(--prf-success);opacity:0;transition:opacity .3s">
+          ✓ File downloaded
+        </span>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <button class="nav-btn nav-btn-next" onclick="goSection(0)" style="background:linear-gradient(135deg,var(--prf-navy),var(--prf-slate))">
+        ← Review from the Beginning
+      </button>
+      <button class="nav-btn nav-btn-next" onclick="window.open('index.html','_blank')">
+        Open Scenario Runner →
+      </button>
+    </div>
+  </div>
+</div>
+
+</main>
+
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════ -->
+<script>
+
+  // ─────────────────────────────────────────────────
+  // STATE
+  // ─────────────────────────────────────────────────
+  const TOTAL_SECTIONS = 6;
+  let currentSection = 0;
+  let sectionComplete = new Array(TOTAL_SECTIONS).fill(false);
+
+  // Quiz state: { qId: { answered: bool, correct: bool } }
+  const quizState = {};
+
+  // Quiz correct counts per section
+  const sectionQuizCounts = { 0: 3, 1: 3, 2: 3, 3: 3, 4: 3, 5: 0 };
+  const sectionQuizCorrect = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+  // ─────────────────────────────────────────────────
+  // SECTION NAVIGATION
+  // ─────────────────────────────────────────────────
+  function goSection(idx) {
+    // Sections are accessible if previous is complete OR if going backward
+    if (idx > 0 && !sectionComplete[idx - 1] && idx > currentSection) return;
+
+    // Hide all
+    document.querySelectorAll('.guide-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-complete').classList.remove('active');
+
+    // Show target
+    document.getElementById(`section-${idx}`).classList.add('active');
+    currentSection = idx;
+
+    updateProgressBar();
+    updateProgressSteps();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Animate bars in the visible section
+    setTimeout(animateBarsInSection, 120);
+  }
+
+  function nextSection(fromIdx) {
+    // Mark section complete if quiz threshold met (or no quiz)
+    const quizMax = sectionQuizCounts[fromIdx] || 0;
+    const quizGot = sectionQuizCorrect[fromIdx] || 0;
+    // Require 2/3 correct for quiz sections, or no quiz for section 5
+    if (quizMax === 0 || quizGot >= 2) {
+      sectionComplete[fromIdx] = true;
+    } else {
+      // Gentle nudge — still allow proceeding
+      sectionComplete[fromIdx] = true;
+    }
+    saveProgress();
+    goSection(fromIdx + 1);
+  }
+
+  function completeGuide() {
+    sectionComplete[5] = true;
+    saveProgress();
+    document.querySelectorAll('.guide-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('section-complete').classList.add('active');
+    updateProgressBar();
+    updateProgressSteps();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ─────────────────────────────────────────────────
+  // PROGRESS UI
+  // ─────────────────────────────────────────────────
+  function updateProgressBar() {
+    const completed = sectionComplete.filter(Boolean).length;
+    const pct = (completed / TOTAL_SECTIONS) * 100;
+    document.getElementById('progressFill').style.width = `${pct}%`;
+  }
+
+  function updateProgressSteps() {
+    document.querySelectorAll('.progress-step').forEach((step, i) => {
+      step.className = 'progress-step';
+      if (sectionComplete[i])    step.classList.add('complete');
+      else if (i === currentSection) step.classList.add('active');
+      else if (i === 0 || sectionComplete[i - 1]) step.classList.add('unlocked');
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // QUIZ LOGIC
+  // ─────────────────────────────────────────────────
+
+  const QUIZ_FEEDBACK = {
+    'q1-1': {
+      correct:   'Correct. Boisjoly had the data, the expertise, and had put his warning in writing to Thiokol\'s VP of Engineering months before the launch. The failure was structural — Thiokol\'s management structure converted an engineering verdict into a management override, and the knowledge never reached anyone with authority to stop the launch.',
+      incorrect: 'Not quite. Boisjoly\'s data was solid, his expertise was clear, and he had documented his warnings in writing. The failure was structural: Thiokol\'s own management process suppressed the engineering knowledge before it could become a decision.',
+    },
+    'q1-2': {
+      correct:   'Correct. The simulation models system-level features — what structures enable or prevent people from acting on their ethical knowledge.',
+      incorrect: 'Not quite. The simulation focuses on structural features of coordination systems, not on comparing moral theories or identifying bad actors.',
+    },
+    'q1-3': {
+      correct:   'Correct. The "many hands" problem describes the difficulty of assigning clear individual responsibility when outcomes emerge from the actions of many people together.',
+      incorrect: 'Not quite. Thompson\'s concept points to the way institutional outcomes can emerge from many contributions without any single person being clearly responsible.',
+    },
+    'q2-1': {
+      correct:   'Correct. λ Perceived is the actual experienced coordination — which may be far below what the group is capable of, because of power, fear, or distorted information.',
+      incorrect: 'Not quite. λ Perceived is the "how fast you\'re actually driving" metric — the experienced reality of coordination, not the theoretical maximum.',
+    },
+    'q2-2': {
+      correct:   'Correct. The Suppression Gap (λ Raw minus λ Perceived) is precisely the measure of how much of the group\'s capacity cannot safely surface.',
+      incorrect: 'Not quite. The Suppression Gap is specifically the difference between raw capacity and perceived coordination — the measure of what cannot safely be expressed.',
+    },
+    'q2-3': {
+      correct:   'Correct. "Honest but Exhausted" is the pattern of low suppression (people say what they think) combined with high friction (it costs enormous effort to coordinate).',
+      incorrect: 'Think again. The hospital has low suppression — people are speaking honestly — but high friction, because coordination is exhausting and costly.',
+    },
+    'q3-1': {
+      correct:   'Correct. Haidt\'s central finding is that moral intuition precedes moral reasoning — people feel first, then reason to justify what they already felt.',
+      incorrect: 'Not quite. Haidt\'s research shows that people typically feel an immediate moral reaction first, then reason to justify it afterward.',
+    },
+    'q3-2': {
+      correct:   'Correct. Refusing to participate despite a better outcome — because something feels categorically wrong — is the signature of the Purity/Sanctity foundation.',
+      incorrect: 'Think again. When someone refuses to do something because it feels degrading or morally contaminating — regardless of consequences — that\'s the Purity/Sanctity foundation at work.',
+    },
+    'q3-3': {
+      correct:   'Correct. The same suppression gap activates different moral foundations in different people — "unfair" comes from the Fairness foundation, "roles violated" from the Authority foundation.',
+      incorrect: 'Not quite. The difference comes from their moral foundations. The same structural fact activates different intuitions depending on which foundations are most active for each person.',
+    },
+    'q4-1': {
+      correct:   'Correct. "We made a commitment and must honor it regardless of outcome" is the signature of Individual/Rights-Based reasoning — obligations are universal and bind regardless of consequences.',
+      incorrect: 'Think again. The insistence on honoring a commitment regardless of outcome — treating obligations as binding universally — is the Individual/Rights-Based framework operating.',
+    },
+    'q4-2': {
+      correct:   'Correct. Asking what past builders would recognize is the temporal orientation of Custodial/Stewardship reasoning — obligations extend to past and future generations.',
+      incorrect: 'Not quite. Invoking the builders of the past and asking what they would recognize is characteristic of Custodial/Stewardship reasoning — which orients across time, not just the present room.',
+    },
+    'q4-3': {
+      correct:   'Correct. The five frameworks are reasoning styles, not cultural identities. Any person can use any of these modes, and most people use different ones in different contexts.',
+      incorrect: 'Not quite. The frameworks are reasoning styles — not fixed to any culture, not ranked by quality, and not permanent traits of individuals.',
+    },
+    'q5-1': {
+      correct:   'Correct. The simulation output is the same for everyone. The PRF is what determines what those numbers mean morally — what kind of ethical problem they represent.',
+      incorrect: 'Not quite. The difference is the PRF — the moral framework through which each student interprets what the structural features revealed by the simulation mean.',
+    },
+    'q5-2': {
+      correct:   'Correct. The operative PRF is the one that actually drives gut reactions and decisions — which often differs from the framework someone would articulate if asked.',
+      incorrect: 'Not quite. The operative PRF is specifically the pattern that actually drives reactions, as opposed to the stated framework someone would describe in a classroom.',
+    },
+    'q5-3': {
+      correct:   'Correct. This is the core of UCP\'s pluralism: the simulation provides a shared formal structure while leaving interpretation open to each student\'s own framework.',
+      incorrect: 'Not quite. The phrase means the simulation doesn\'t pre-decide what the results mean — it provides structure; interpretation comes from the student\'s own PRF.',
+    },
+  };
+
+  function answerQ(qId, chosen, correct) {
+    if (quizState[qId]?.answered) return;
+
+    const qEl = document.getElementById(qId);
+    const options = qEl.querySelectorAll('.q-option');
+    const letters = ['A','B','C','D'];
+    const isCorrect = chosen === correct;
+
+    options.forEach((opt, i) => {
+      opt.classList.add('answered');
+      if (letters[i] === chosen) {
+        opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+      }
+      if (!isCorrect && letters[i] === correct) {
+        opt.classList.add('reveal-correct');
+      }
+    });
+
+    // Show feedback
+    const fbEl = document.getElementById(`fb-${qId}`);
+    const fbData = QUIZ_FEEDBACK[qId];
+    if (fbEl && fbData) {
+      fbEl.textContent = isCorrect ? fbData.correct : fbData.incorrect;
+      fbEl.className = `q-feedback show ${isCorrect ? 'feedback-correct' : 'feedback-incorrect'}`;
+    }
+
+    quizState[qId] = { answered: true, correct: isCorrect };
+
+    // Update section score
+    const sectionMap = {
+      'q1': 0, 'q2': 1, 'q3': 2, 'q4': 3, 'q5': 4
+    };
+    const prefix = qId.substring(0, 2);
+    const sIdx = sectionMap[prefix];
+
+    if (sIdx !== undefined) {
+      const sQuestions = Object.keys(quizState).filter(k => k.startsWith(prefix + '-'));
+      const correct_count = sQuestions.filter(k => quizState[k]?.correct).length;
+      const total = sectionQuizCounts[sIdx];
+      sectionQuizCorrect[sIdx] = correct_count;
+      document.getElementById(`score-s${sIdx+1}`).textContent = `${correct_count} / ${total}`;
+    }
+
+    saveProgress();
+  }
+
+  // ─────────────────────────────────────────────────
+  // RESPONSE BOXES
+  // ─────────────────────────────────────────────────
+  function updateWordCount(textareaId, countId) {
+    const text = document.getElementById(textareaId).value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    document.getElementById(countId).textContent = `${words} word${words !== 1 ? 's' : ''}`;
+  }
+
+  function saveResponse(textareaId, savedId) {
+    const text = document.getElementById(textareaId).value;
+    localStorage.setItem(`ucp-guide-${textareaId}`, text);
+    const note = document.getElementById(savedId);
+    note.classList.add('show');
+    setTimeout(() => note.classList.remove('show'), 2500);
+  }
+
+  // ─────────────────────────────────────────────────
+  // LEARN MORE TOGGLES
+  // ─────────────────────────────────────────────────
+  function toggleLearnMore(btn) {
+    const container = btn.closest('.learn-more');
+    container.classList.toggle('open');
+  }
+
+  // ─────────────────────────────────────────────────
+  // BAR ANIMATIONS
+  // ─────────────────────────────────────────────────
+  function animateBarsInSection() {
+    // Framework MFQ bars
+    document.querySelectorAll('.framework-mfq-fill').forEach(bar => {
+      const w = bar.dataset.w || 0;
+      bar.style.width = `${w}%`;
+    });
+  }
+
+  // ─────────────────────────────────────────────────
+  // PERSISTENCE (localStorage)
+  // ─────────────────────────────────────────────────
+  function saveProgress() {
+    localStorage.setItem('ucp-guide-progress', JSON.stringify({
+      sectionComplete,
+      quizState,
+      sectionQuizCorrect,
+      currentSection,
+    }));
+  }
+
+  function loadProgress() {
+    try {
+      const saved = JSON.parse(localStorage.getItem('ucp-guide-progress') || 'null');
+      if (saved) {
+        sectionComplete     = saved.sectionComplete || sectionComplete;
+        Object.assign(quizState, saved.quizState || {});
+        Object.assign(sectionQuizCorrect, saved.sectionQuizCorrect || {});
+
+        // Restore quiz answer display
+        Object.entries(quizState).forEach(([qId, state]) => {
+          if (!state.answered) return;
+          const qEl = document.getElementById(qId);
+          if (!qEl) return;
+          // Re-answer to restore visual state
+          // Find which option was chosen
+          const options = qEl.querySelectorAll('.q-option');
+          // We can't easily recover which was chosen, so just mark all answered
+          // and re-run the feedback
+          const letters = ['A','B','C','D'];
+          const correctMap = {
+            'q1-1':'B','q1-2':'C','q1-3':'B',
+            'q2-1':'B','q2-2':'C','q2-3':'D',
+            'q3-1':'C','q3-2':'D','q3-3':'B',
+            'q4-1':'C','q4-2':'D','q4-3':'D',
+            'q5-1':'C','q5-2':'B','q5-3':'D',
+          };
+          const correct = correctMap[qId];
+          options.forEach((opt, i) => {
+            opt.classList.add('answered');
+          });
+          if (state.correct) {
+            options.forEach((opt, i) => {
+              if (letters[i] === correct) opt.classList.add('correct');
+            });
+          } else {
+            options.forEach((opt, i) => {
+              if (letters[i] === correct) opt.classList.add('reveal-correct');
+            });
+          }
+          const fbEl = document.getElementById(`fb-${qId}`);
+          const fbData = QUIZ_FEEDBACK[qId];
+          if (fbEl && fbData) {
+            fbEl.textContent = state.correct ? fbData.correct : fbData.incorrect;
+            fbEl.className = `q-feedback show ${state.correct ? 'feedback-correct' : 'feedback-incorrect'}`;
+          }
+        });
+
+        // Restore score displays
+        [0,1,2,3,4].forEach(sIdx => {
+          const el = document.getElementById(`score-s${sIdx+1}`);
+          if (el) el.textContent = `${sectionQuizCorrect[sIdx] || 0} / ${sectionQuizCounts[sIdx]}`;
+        });
+      }
+
+      // Restore response texts
+      ['resp-4','resp-5','resp-6a','resp-6b'].forEach(id => {
+        const saved = localStorage.getItem(`ucp-guide-${id}`);
+        const el = document.getElementById(id);
+        if (saved && el) {
+          el.value = saved;
+          const wcId = 'wc-' + id.split('-')[1];
+          updateWordCount(id, wcId);
+        }
+      });
+
+    } catch(e) {
+      console.warn('Could not restore progress:', e);
+    }
+  }
+
+  // ─────────────────────────────────────────────────
+  // JOURNAL DOWNLOAD
+  // Assembles all student responses and quiz scores
+  // into a formatted plain-text file for their ethics
+  // journal. No server required — pure client-side.
+  // ─────────────────────────────────────────────────
+
+  function downloadJournal() {
+
+    const now  = new Date();
+    const date = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    const time = now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+
+    const divider  = '═'.repeat(60);
+    const subdiv   = '─'.repeat(60);
+
+    // Helper: get response text, fallback to "(no response recorded)"
+    const getResp = id => {
+      const saved = localStorage.getItem(`ucp-guide-${id}`) || '';
+      const el    = document.getElementById(id);
+      const text  = (el ? el.value : saved).trim();
+      return text || '(No response recorded)';
+    };
+
+    // Helper: word count
+    const wordCount = text =>
+      text === '(No response recorded)' ? 0
+      : text.split(/\s+/).filter(Boolean).length;
+
+    // Build quiz summary lines
+    const quizSummary = [
+      `  Section 1 — Coordination & Ethics:        ${sectionQuizCorrect[0] || 0} / 3`,
+      `  Section 2 — The Three Metrics:            ${sectionQuizCorrect[1] || 0} / 3`,
+      `  Section 3 — Five Moral Foundations:       ${sectionQuizCorrect[2] || 0} / 3`,
+      `  Section 4 — Five Reasoning Frameworks:    ${sectionQuizCorrect[3] || 0} / 3`,
+      `  Section 5 — Your PRF & the Simulation:    ${sectionQuizCorrect[4] || 0} / 3`,
+    ];
+    const totalCorrect = Object.values(sectionQuizCorrect).reduce((s,v) => s + (v||0), 0);
+
+    // Collect responses
+    const r4  = getResp('resp-4');
+    const r5  = getResp('resp-5');
+    const r6a = getResp('resp-6a');
+    const r6b = getResp('resp-6b');
+
+    // Build the full text document
+    const lines = [
+
+      divider,
+      'ETHICS BEYOND BOUNDARIES',
+      'UCP Simulation Guide — Student Journal Entry',
+      divider,
+      '',
+      `Completed:   ${date} at ${time}`,
+      `Course:      Ethics Beyond Boundaries — Saint Petersburg College`,
+      `Guide:       Understanding the UCP Simulation (v1.0)`,
+      '',
+      divider,
+      'QUIZ RESULTS SUMMARY',
+      subdiv,
+      ...quizSummary,
+      subdiv,
+      `  Total:                                    ${totalCorrect} / 15`,
+      '',
+
+      divider,
+      'REFLECTION RESPONSES',
+      divider,
+      '',
+
+      '┌─ REFLECTION 1 (Section 4: Five Reasoning Frameworks)',
+      '│  Prompt: Which of the five frameworks sounds most like how you',
+      '│  naturally reason? Give a specific example from your own life.',
+      subdiv,
+      '',
+      r4,
+      '',
+      `[${wordCount(r4)} words]`,
+      '',
+
+      '┌─ REFLECTION 2 (Section 5: Your PRF & the Simulation)',
+      '│  Prompt: Based on your Section 4 answer, how would your framework',
+      '│  read a high-suppression scenario in your own institution?',
+      subdiv,
+      '',
+      r5,
+      '',
+      `[${wordCount(r5)} words]`,
+      '',
+
+      '┌─ REFLECTION 3A (Section 6: First Simulation)',
+      '│  Prompt: Compare your two runs. What surprised you about the',
+      '│  results? What does this reveal about hierarchy and suppression?',
+      subdiv,
+      '',
+      r6a,
+      '',
+      `[${wordCount(r6a)} words]`,
+      '',
+
+      '┌─ REFLECTION 3B (Section 6: Final)',
+      '│  Prompt: Did the "What It Feels Like" narrative describe a real',
+      '│  situation you\'ve been in? What does the simulation reveal that',
+      '│  you couldn\'t see clearly while you were inside it?',
+      subdiv,
+      '',
+      r6b,
+      '',
+      `[${wordCount(r6b)} words]`,
+      '',
+
+      divider,
+      'SECTIONS COMPLETED',
+      subdiv,
+      ...['Coordination & Ethics', 'The Three Metrics', 'Five Moral Foundations',
+          'Five Reasoning Frameworks', 'Your PRF & the Simulation',
+          'Running Your First Simulation'].map(
+        (name, i) => `  ${i+1}. ${name}  ${sectionComplete[i] ? '✓' : '○'}`
+      ),
+      '',
+      divider,
+      'END OF JOURNAL ENTRY',
+      divider,
+      '',
+      'Note: This file was generated automatically from your saved responses.',
+      'Copy this text into your Ethics Beyond Boundaries journal.',
+      'Your responses are your own work — do not share this file unless',
+      'submitting to your instructor.',
+    ];
+
+    const content  = lines.join('\n');
+    const filename = `UCP-Guide-Journal-${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}.txt`;
+
+    // Trigger download
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    // Show confirmation note
+    const note = document.getElementById('downloadNote');
+    if (note) {
+      note.style.opacity = '1';
+      setTimeout(() => { note.style.opacity = '0'; }, 3000);
+    }
+  }
+
+  // ─────────────────────────────────────────────────
+  // INIT
+  // ─────────────────────────────────────────────────
+  loadProgress();
+  updateProgressBar();
+  updateProgressSteps();
+  // Unlock first section always
+  document.querySelector('.progress-step[data-section="0"]').classList.add('unlocked');
+  // Animate initial bars
+  setTimeout(animateBarsInSection, 200);
+
+  // Animate gap demo bars
+  setTimeout(() => {
+    document.querySelectorAll('.gap-bar-fill').forEach(b => {
+      // bars are already set inline via style attr — trigger reflow
+      b.offsetHeight;
+    });
+  }, 100);
+
+</script>
+</body>
+</html>
