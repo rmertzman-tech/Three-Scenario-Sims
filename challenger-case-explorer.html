@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challenger Case Explorer — Ethics Beyond Boundaries</title>
+  <style>
+
+/* ══════════════════════════════════════════════════
+   DESIGN TOKENS
+   Uses Georgia + system serif — no external font
+   dependency. Preserves dramatic purple aesthetic.
+   ══════════════════════════════════════════════════ */
+:root {
+  --accent:      #667eea;
+  --accent-dark: #4f5fd6;
+  --accent2:     #764ba2;
+  --accent3:     #9333ea;
+  --danger:      #dc2626;
+  --danger-light:#fee2e2;
+  --warn:        #f59e0b;
+  --warn-light:  #fef3c7;
+  --success:     #16a34a;
+  --info:        #3b82f6;
+  --info-light:  #dbeafe;
+  --ink:         #1f2937;
+  --muted:       #4b5563;
+  --light:       #6b7280;
+  --border:      #e5e7eb;
+  --paper:       #f9fafb;
+  --white:       #ffffff;
+
+  /* UCP colors */
+  --ucp-navy:    #1a2744;
+  --ucp-sky:     #4a7fb5;
+  --ucp-gold:    #c9a84c;
+  --ucp-success: #3a8a5c;
+  --ucp-warn:    #c87843;
+  --ucp-danger:  #b84444;
+
+  font-size: 18px;
+}
+
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding-bottom: 3rem;
+  color: var(--ink);
+  line-height: 1.65;
+}
+
+/* ── Glass cards ── */
+.glass {
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.4);
+}
+
+.glass-dark {
+  background: rgba(26,27,50,.96);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.12);
+  color: #fff;
+}
+
+/* ── Fade-in animation ── */
+.fade-in { animation: fadeIn .6s ease-out both; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ══════════════════════════════════════════════════
+   HEADER
+   ══════════════════════════════════════════════════ */
+header {
+  position: sticky; top: 0; z-index: 50;
+  box-shadow: 0 4px 24px rgba(0,0,0,.35);
+}
+
+.header-inner {
+  max-width: 72rem; margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 1rem; flex-wrap: wrap;
+}
+
+.header-titles h1 {
+  font-family: 'Georgia', serif;
+  font-size: 1.65rem; font-weight: 700; margin-bottom: .2rem;
+}
+
+.header-titles p {
+  font-size: .88rem; opacity: .8;
+  font-family: 'Courier New', monospace; letter-spacing: .06em;
+}
+
+/* ── PRF status in header ── */
+.prf-status-wrap {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+
+.prf-status-text {
+  font-family: 'Courier New', monospace; font-size: .78rem;
+  color: rgba(255,255,255,.5); font-style: italic;
+}
+
+.prf-file-label {
+  padding: 5px 14px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 4px; cursor: pointer;
+  font-family: 'Courier New', monospace; font-size: .76rem;
+  color: rgba(255,255,255,.75);
+  text-transform: uppercase; letter-spacing: .07em;
+  transition: all .2s;
+}
+
+.prf-file-label:hover { background: rgba(255,255,255,.2); color: #fff; }
+
+.btn-progress {
+  padding: .55rem 1.1rem;
+  background: linear-gradient(135deg, var(--accent3), var(--info));
+  color: #fff; border: none; border-radius: .4rem;
+  font-family: 'Georgia', serif; font-size: .88rem;
+  font-weight: 600; cursor: pointer;
+  transition: all .25s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+.btn-progress:hover { transform: translateY(-1px); filter: brightness(1.1); }
+
+/* ══════════════════════════════════════════════════
+   MAIN LAYOUT
+   ══════════════════════════════════════════════════ */
+main { max-width: 72rem; margin: 0 auto; padding: 2rem 1.5rem; }
+
+.card {
+  border-radius: 1rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,.2);
+  padding: 2rem;
+  margin-bottom: 1.75rem;
+}
+
+/* ══════════════════════════════════════════════════
+   TIMELINE
+   ══════════════════════════════════════════════════ */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute; left: .5rem; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--accent), #f093fb);
+}
+
+.timeline-item {
+  position: relative; padding-bottom: 1.75rem;
+  cursor: pointer; transition: transform .25s;
+}
+
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-item:hover    { transform: translateX(5px); }
+.timeline-item:focus    { outline: 3px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+
+.timeline-dot {
+  position: absolute; left: -1.5rem; top: .45rem;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; border: 4px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(102,126,234,.2);
+  transition: all .25s;
+}
+
+.timeline-item.active .timeline-dot { background: var(--accent); transform: scale(1.3); }
+.timeline-item.critical .timeline-dot { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(220,38,38,.2); }
+.timeline-item.critical.active .timeline-dot { background: var(--danger); }
+
+.timeline-date { font-weight: 700; color: var(--accent); font-size: 1rem; margin-bottom: .2rem; }
+.timeline-item.critical .timeline-date { color: var(--danger); }
+.timeline-title { font-weight: 600; color: var(--ink); font-size: .95rem; line-height: 1.3; }
+
+/* ══════════════════════════════════════════════════
+   TABS
+   ══════════════════════════════════════════════════ */
+.tab-buttons {
+  display: flex; gap: .5rem;
+  margin-bottom: 1rem; flex-wrap: wrap;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: .75rem;
+}
+
+.tab-btn {
+  padding: .65rem 1.25rem;
+  border: 2px solid var(--border);
+  background: var(--white); border-radius: .5rem;
+  font-family: 'Georgia', serif;
+  font-weight: 600; font-size: .88rem;
+  cursor: pointer; transition: all .25s;
+  color: var(--muted);
+}
+
+.tab-btn:hover { border-color: var(--accent); color: var(--accent); background: #f5f6ff; }
+.tab-btn:focus { outline: 3px solid var(--accent); outline-offset: 2px; }
+.tab-btn.active {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff; border-color: transparent;
+}
+
+.tab-content { padding: 1.25rem 0; }
+
+/* ══════════════════════════════════════════════════
+   CONTENT BLOCKS
+   ══════════════════════════════════════════════════ */
+.section-title {
+  font-family: 'Georgia', serif;
+  font-size: 1.4rem; font-weight: 700;
+  margin-bottom: 1rem; color: var(--ink);
+}
+
+.prose { color: var(--muted); line-height: 1.75; margin-bottom: 1rem; font-size: .95rem; }
+
+.memo-text {
+  background: var(--warn-light);
+  border-left: 4px solid var(--warn);
+  padding: 1.1rem 1.25rem; margin: 1rem 0;
+  font-family: 'Courier New', monospace;
+  font-size: .88rem; line-height: 1.65;
+  white-space: pre-wrap; border-radius: 0 .4rem .4rem 0;
+}
+
+.warning-box {
+  background: var(--danger-light); border-left: 4px solid var(--danger);
+  padding: 1rem 1.25rem; margin: 1rem 0; border-radius: 0 .5rem .5rem 0;
+}
+
+.warning-box h4 { color: #991b1b; font-weight: 700; margin-bottom: .5rem; font-size: .95rem; }
+.warning-box p  { color: #7f1d1d; font-size: .9rem; line-height: 1.65; }
+.warning-box p + p { margin-top: .5rem; }
+
+.info-box {
+  background: var(--info-light); border-left: 4px solid var(--info);
+  padding: 1rem 1.25rem; margin: 1rem 0; border-radius: 0 .5rem .5rem 0;
+}
+
+.info-box p  { color: #1e3a5f; font-size: .9rem; line-height: 1.65; }
+.info-box p + p { margin-top: .35rem; }
+
+.quote {
+  font-style: italic; padding: 1rem 1.25rem;
+  border-left: 4px solid var(--accent); background: #f3f4f6;
+  margin: 1rem 0; border-radius: 0 .4rem .4rem 0;
+  color: var(--muted); font-size: .93rem; line-height: 1.7;
+}
+
+.prf-box {
+  background: var(--paper); border: 2px solid var(--border);
+  border-radius: .6rem; padding: 1.25rem 1.4rem; margin: 1rem 0;
+}
+
+.prf-box h4 { font-weight: 700; color: var(--ink); margin-bottom: .65rem; font-size: 1rem; }
+.prf-box p  { color: var(--muted); line-height: 1.65; font-size: .9rem; }
+.prf-box p + p { margin-top: .5rem; }
+
+.stat-badge {
+  display: inline-block;
+  background: var(--danger); color: #fff;
+  padding: .3rem .9rem; border-radius: .4rem;
+  font-weight: 700; font-size: 1.1rem; margin: .35rem 0;
+}
+
+/* ══════════════════════════════════════════════════
+   REFLECTION PROMPTS
+   ══════════════════════════════════════════════════ */
+.reflection-prompt {
+  background: #faf5ff; border: 2px solid #9333ea;
+  border-radius: .6rem; padding: 1.4rem; margin-top: 1.5rem;
+}
+
+.reflection-prompt h3 { color: #581c87; font-weight: 700; margin-bottom: .85rem; font-size: 1rem; }
+.reflection-prompt ul { margin-left: 1.5rem; color: var(--muted); line-height: 1.85; font-size: .9rem; }
+.reflection-prompt li { margin-bottom: .35rem; }
+
+/* ══════════════════════════════════════════════════
+   INTERACTIVE BOXES
+   ══════════════════════════════════════════════════ */
+.interactive-box {
+  background: #fefce8; border: 2px solid #facc15;
+  border-radius: .6rem; padding: 1.4rem; margin-top: 1rem;
+}
+
+.interactive-box h4 { color: #854d0e; font-weight: 700; margin-bottom: .85rem; font-size: .95rem; }
+.interactive-box p  { color: #78350f; font-size: .88rem; margin-bottom: .75rem; line-height: 1.6; }
+
+.student-input {
+  width: 100%; padding: .8rem 1rem;
+  border: 2px solid #d1d5db; border-radius: .5rem;
+  font-family: 'Georgia', serif; font-size: .9rem;
+  margin-top: .5rem; min-height: 110px; resize: vertical;
+  line-height: 1.65; background: #fff;
+  transition: border-color .2s;
+}
+
+.student-input:focus { outline: none; border-color: #facc15; box-shadow: 0 0 0 3px rgba(250,204,21,.2); }
+
+.save-indicator {
+  font-size: .8rem; color: var(--success);
+  margin-top: .3rem; font-style: italic;
+  font-family: 'Courier New', monospace;
+  display: none;
+}
+
+.save-indicator.show { display: block; }
+
+/* ══════════════════════════════════════════════════
+   DECISION SIMULATOR CHOICES
+   ══════════════════════════════════════════════════ */
+.choice-label { font-weight: 600; font-size: .93rem; color: var(--ink); }
+.choice-desc  { font-size: .84rem; color: var(--light); margin-top: .35rem; line-height: 1.55; }
+
+.scenario-choice {
+  background: #fff; border: 2px solid var(--border);
+  border-radius: .5rem; padding: 1rem; margin: .6rem 0;
+  cursor: pointer; transition: all .25s;
+}
+
+.scenario-choice:hover  { border-color: var(--accent); background: #f9fafb; }
+.scenario-choice:focus  { outline: 3px solid var(--accent); outline-offset: 2px; }
+.scenario-choice.selected { border-color: var(--accent); background: #eff6ff; }
+
+.scenario-feedback {
+  background: #f0f9ff; border-left: 4px solid var(--info);
+  padding: 1rem 1.25rem; margin-top: 1rem;
+  border-radius: 0 .5rem .5rem 0; display: none;
+  font-size: .88rem; line-height: 1.65;
+}
+
+.scenario-feedback.show { display: block; }
+.scenario-feedback h4   { font-weight: 700; margin-bottom: .5rem; font-size: .92rem; color: #0c4a6e; }
+.scenario-feedback p    { color: #1e3a5f; }
+.scenario-feedback p + p { margin-top: .5rem; }
+
+/* ══════════════════════════════════════════════════
+   UCP SIMULATION PANEL
+   ══════════════════════════════════════════════════ */
+.ucp-sim-panel {
+  background: linear-gradient(135deg, var(--ucp-navy) 0%, #243560 100%);
+  border-radius: .75rem; padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.ucp-sim-header {
+  font-family: 'Courier New', monospace; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--ucp-gold); margin-bottom: 1rem;
+}
+
+.ucp-sim-intro {
+  font-size: .9rem; color: rgba(255,255,255,.78); line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.ucp-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+
+.ucp-btn {
+  padding: 10px 20px;
+  border: none; border-radius: 6px;
+  font-family: 'Georgia', serif; font-size: .88rem;
+  font-weight: 600; cursor: pointer; transition: all .22s;
+}
+
+.ucp-btn-run {
+  background: linear-gradient(135deg, var(--ucp-sky), #243560);
+  color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+.ucp-btn-run:hover  { filter: brightness(1.12); transform: translateY(-1px); }
+.ucp-btn-run:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+.ucp-btn-biobond {
+  background: linear-gradient(135deg, var(--ucp-success), #2a6040);
+  color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+
+.ucp-btn-biobond:hover  { filter: brightness(1.12); transform: translateY(-1px); }
+.ucp-btn-biobond:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+.ucp-spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin .7s linear infinite;
+  vertical-align: middle; margin-right: 6px; display: none;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.ucp-results {
+  display: none;
+  animation: fadeIn .4s ease;
+}
+
+.ucp-results.visible { display: block; }
+
+.ucp-compare-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  margin-bottom: 14px;
+}
+
+.ucp-col-header {
+  font-family: 'Courier New', monospace; font-size: .72rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  margin-bottom: 8px; padding-bottom: 6px;
+  border-bottom: 2px solid rgba(255,255,255,.15);
+}
+
+.ucp-col-header.col-a { color: var(--ucp-sky); }
+.ucp-col-header.col-b { color: var(--ucp-success); }
+
+.ucp-metric-row { margin-bottom: 10px; }
+
+.ucp-metric-label {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: rgba(255,255,255,.5); margin-bottom: 3px;
+}
+
+.ucp-metric-value {
+  font-size: 1.5rem; font-weight: bold;
+  font-family: 'Courier New', monospace; line-height: 1;
+  margin-bottom: 3px;
+}
+
+.ucp-metric-phrase {
+  font-size: .78rem; color: rgba(255,255,255,.6);
+  font-style: italic; line-height: 1.4;
+}
+
+.val-good { color: #7fd8a8; }
+.val-warn { color: var(--ucp-gold); }
+.val-bad  { color: #f08080; }
+
+.ucp-gap-bar-wrap { margin: 14px 0 0; }
+.ucp-gap-label {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: rgba(255,255,255,.5); margin-bottom: 5px;
+}
+
+.ucp-bar-container {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+
+.ucp-bar-name {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  color: rgba(255,255,255,.6); width: 110px; flex-shrink: 0; text-align: right;
+}
+
+.ucp-bar-track {
+  flex: 1; height: 16px; background: rgba(255,255,255,.1);
+  border-radius: 8px; overflow: hidden;
+}
+
+.ucp-bar-fill {
+  height: 100%; border-radius: 8px;
+  transition: width 1s cubic-bezier(.4,0,.2,1); width: 0%;
+}
+
+.fill-raw      { background: linear-gradient(90deg, var(--ucp-sky), #7fb3d3); }
+.fill-perceived{ background: linear-gradient(90deg, var(--ucp-gold), #e8c56a); }
+
+.ucp-gap-number {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  color: rgba(255,255,255,.55); width: 36px; text-align: right;
+}
+
+.ucp-narrative {
+  background: rgba(255,255,255,.05); border-radius: 6px;
+  padding: 12px 14px; margin-top: 14px;
+  font-size: .88rem; color: rgba(255,255,255,.82);
+  line-height: 1.7; font-style: italic;
+  border-left: 3px solid rgba(255,255,255,.2);
+}
+
+.ucp-narrative-label {
+  font-family: 'Courier New', monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ucp-gold); margin-bottom: 6px;
+  font-style: normal;
+}
+
+.ucp-pluralism {
+  margin-top: 12px; padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,.12);
+  font-size: .78rem; color: rgba(255,255,255,.45);
+  font-style: italic; line-height: 1.55;
+}
+
+.ucp-error {
+  color: #f08080; font-family: 'Courier New', monospace;
+  font-size: .82rem; padding: 10px; background: rgba(255,0,0,.1);
+  border-radius: 5px; margin-top: 10px;
+}
+
+/* ══════════════════════════════════════════════════
+   WORLDVIEW LINK PANEL
+   ══════════════════════════════════════════════════ */
+.wv-link-panel {
+  background: #f0f6fa; border: 2px solid var(--ucp-sky);
+  border-radius: .6rem; padding: 1.25rem; margin-top: 1rem;
+}
+
+.wv-link-title {
+  font-family: 'Courier New', monospace; font-size: .7rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ucp-sky); margin-bottom: 8px;
+}
+
+.wv-link-desc { font-size: .88rem; color: var(--muted); line-height: 1.6; margin-bottom: 12px; }
+
+.wv-link-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--ucp-sky), #243560);
+  color: #fff; text-decoration: none; border-radius: 6px;
+  font-family: 'Georgia', serif; font-size: .88rem; font-weight: 600;
+  transition: all .22s; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+
+.wv-link-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+.conflict-diagnosis-inline {
+  background: #fff8f0; border: 1px solid var(--ucp-warn);
+  border-radius: .5rem; padding: 1rem; margin-top: 10px;
+  font-size: .88rem; color: var(--ink); line-height: 1.65;
+}
+
+.conflict-diagnosis-inline .cd-label {
+  font-family: 'Courier New', monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--ucp-warn); margin-bottom: 5px;
+}
+
+.conflict-diagnosis-inline .cd-pattern {
+  font-weight: bold; color: #7a4010; margin-bottom: 6px; font-size: .92rem;
+}
+
+/* ══════════════════════════════════════════════════
+   PRF IDENTITY BUILDER
+   ══════════════════════════════════════════════════ */
+.prf-builder-panel {
+  background: var(--warn-light); border: 2px solid var(--warn);
+  border-radius: .6rem; padding: 1.4rem; margin-top: 1rem;
+}
+
+.prf-builder-panel h4 { color: #92400e; font-weight: 700; margin-bottom: .85rem; font-size: .95rem; }
+.prf-builder-panel p  { color: #78350f; font-size: .88rem; margin-bottom: .75rem; line-height: 1.6; }
+
+.prf-field { margin-bottom: 1rem; }
+.prf-field label {
+  display: block; font-weight: 600;
+  color: #92400e; margin-bottom: .4rem; font-size: .88rem;
+}
+
+/* PRF result panel */
+.prf-result-panel {
+  background: linear-gradient(135deg, #1a2744, #243560);
+  border-radius: .6rem; padding: 1.25rem;
+  margin-top: 1rem; display: none;
+}
+
+.prf-result-panel.visible { display: block; animation: fadeIn .4s ease; }
+
+.prf-result-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 20px; padding: 5px 14px;
+  margin-bottom: 12px;
+}
+
+.prf-result-badge-name {
+  font-family: 'Courier New', monospace; font-size: .78rem;
+  color: var(--ucp-gold); font-weight: bold;
+}
+
+.prf-result-text {
+  font-size: .88rem; color: rgba(255,255,255,.82); line-height: 1.7;
+}
+
+.prf-result-atcf {
+  margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.15);
+  font-size: .82rem; color: rgba(255,255,255,.55);
+  font-style: italic;
+}
+
+/* Comparison grid */
+.comparison-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1rem; margin-top: 1rem;
+}
+
+.comparison-col { background: #fff; border: 2px solid var(--border); border-radius: .5rem; padding: 1rem; }
+.comparison-col-title { font-weight: 700; font-size: .9rem; margin-bottom: .75rem; }
+.comparison-col p { font-size: .84rem; color: var(--muted); line-height: 1.6; margin-bottom: .5rem; }
+.comparison-col-a .comparison-col-title { color: var(--accent); }
+.comparison-col-b .comparison-col-title { color: #b45309; }
+
+/* ══════════════════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════════════════ */
+.btn {
+  padding: .7rem 1.6rem; border-radius: .5rem;
+  font-family: 'Georgia', serif; font-size: .92rem;
+  font-weight: 600; border: none; cursor: pointer; transition: all .25s;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #9333ea, #3b82f6);
+  color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.2);
+}
+
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-secondary {
+  background: var(--border); color: var(--ink);
+}
+.btn-secondary:hover { background: #d1d5db; }
+
+/* ══════════════════════════════════════════════════
+   MODAL
+   ══════════════════════════════════════════════════ */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75); z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+
+.modal-box {
+  background: #fff; border-radius: 1rem;
+  padding: 2rem; max-width: 600px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+}
+
+.modal-title {
+  font-family: 'Georgia', serif; font-size: 1.5rem;
+  font-weight: 700; margin-bottom: 1rem;
+}
+
+.progress-bar-track {
+  height: 1.75rem; background: #e5e7eb;
+  border-radius: .5rem; overflow: hidden; margin-bottom: 1rem;
+}
+
+.progress-bar-fill {
+  height: 100%; background: linear-gradient(90deg, #48bb78, #38a169);
+  border-radius: .5rem; transition: width .5s;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: .88rem;
+}
+
+.progress-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .45rem 0; font-size: .9rem;
+}
+
+.progress-check { font-size: 1.1rem; }
+
+/* ══════════════════════════════════════════════════
+   FOOTER
+   ══════════════════════════════════════════════════ */
+footer {
+  text-align: center; color: rgba(255,255,255,.7);
+  padding: 1.5rem; font-size: .82rem;
+  font-family: 'Courier New', monospace; letter-spacing: .04em;
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .ucp-compare-grid  { grid-template-columns: 1fr; }
+  .comparison-grid   { grid-template-columns: 1fr; }
+  main               { padding: 1rem .75rem; }
+  .card              { padding: 1.25rem; }
+  .header-inner      { padding: 1rem; }
+}
+
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════
+     HEADER
+     ══════════════════════════════════════════════════ -->
+<header class="glass-dark" role="banner">
+  <div class="header-inner">
+    <div class="header-titles">
+      <h1>Challenger Case Explorer</h1>
+      <p>Ethics Beyond Boundaries · The Boisjoly Case</p>
+    </div>
+    <div class="prf-status-wrap">
+      <span class="prf-status-text" id="prfStatusText">No PRF loaded</span>
+      <label class="prf-file-label" for="prfFileInput" title="Load your PRF-22 JSON for personalized analysis">
+        ⬆ Load My PRF
+      </label>
+      <input type="file" id="prfFileInput" accept=".json" style="display:none"
+             aria-label="Load PRF-22 JSON profile">
+      <button class="btn-progress" onclick="showProgress()" aria-label="View my learning progress">
+        📊 Progress
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════
+     MAIN
+     ══════════════════════════════════════════════════ -->
+<main>
+
+  <!-- Intro card -->
+  <div class="card glass fade-in" role="region" aria-label="Case introduction">
+    <h2 style="font-family:'Georgia',serif;font-size:1.75rem;margin-bottom:.85rem">
+      The Challenger Disaster: A Case Study in Institutional Failure
+    </h2>
+    <p class="prose" style="font-size:1rem">
+      On January 28, 1986, the Space Shuttle Challenger broke apart 73 seconds after launch,
+      killing all seven crew members. This was not an accident — it was a predicted catastrophe.
+      Engineer Roger Boisjoly had warned for months that the shuttle's design was unsafe.
+      This case explores what happens when institutional systems destroy
+      the people trying to protect us, and what ethics requires of you when you see what others refuse to.
+    </p>
+  </div>
+
+  <!-- Timeline card -->
+  <div class="card glass fade-in" role="region" aria-label="Interactive timeline">
+    <h2 style="font-family:'Georgia',serif;font-size:1.35rem;margin-bottom:1rem">📍 Interactive Timeline</h2>
+    <p style="color:var(--light);margin-bottom:1.25rem;font-size:.9rem">
+      Click or press Enter on any event to explore what happened and analyze the ethical dimensions.
+    </p>
+    <div class="timeline" id="timeline" role="list" aria-label="Challenger disaster timeline"></div>
+  </div>
+
+  <!-- Detail panel (hidden until event selected) -->
+  <div class="card glass fade-in" id="detailSection"
+       style="display:none" role="region" aria-live="polite" aria-label="Event detail panel">
+    <div class="tab-buttons" id="tabButtons" role="tablist" aria-label="Event tabs"></div>
+    <div class="tab-content" id="tabContent" role="tabpanel"></div>
+  </div>
+
+</main>
+
+<footer role="contentinfo">
+  Ethics Beyond Boundaries © 2025 · The Boisjoly Lesson: Examine AND Defend
+</footer>
+
+
+<!-- ══════════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════════ -->
+<script>
+
+'use strict';
+
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ─────────────────────────────────────────────────
+// PRF PROFILE — simplified inline loader
+// Accepts PRF-22 Digital E-Twin JSON format
+// ─────────────────────────────────────────────────
+const PRF = {
+  _profile: null,
+  _framework: null,
+  _atcfTier: null,
+  _cpfc: null,
+
+  FW_META: {
+    individual_rights:     { name: 'Individual / Rights-Based',    icon: '⚖️', color: '#4a7fb5' },
+    relational_we:         { name: 'Relational / We-Centered',     icon: '🤝', color: '#3a8a5c' },
+    hierarchical_role:     { name: 'Hierarchical / Role-Based',    icon: '🏛️', color: '#8a6fb5' },
+    boundary_integrity:    { name: 'Boundary / Integrity-Centered',icon: '🛡️', color: '#c9a84c' },
+    custodial_stewardship: { name: 'Custodial / Stewardship',      icon: '🌱', color: '#4a9a7a' },
+  },
+
+  load(jsonText) {
+    try {
+      const p = JSON.parse(jsonText);
+      let f, a;
+      if (p.prf22 && p.prf22.moralFoundations) {
+        const mf = p.prf22.moralFoundations;
+        const vals = p.prf22.values || {};
+        const atcfVal = ((p.prf22.resilience || {}).ATCF) || 3;
+        const z = x => (x - 3.0);
+        f = {
+          CareWeight:            z(mf.Care      || 3),
+          FairnessWeight:        z(mf.Fairness  || 3),
+          BindingWeight:        (z(mf.Loyalty   || 3) + z(mf.Authority || 3) + z(mf.Purity || 3)) / 3,
+          IndividualizingWeight:(z(mf.Care      || 3) + z(mf.Fairness  || 3)) / 2,
+          Conservation:         (z(mf.Authority || 3) + z(mf.Purity    || 3)) / 2,
+          Openness:              z(vals.Openness || 3),
+        };
+        const sens = (5 - atcfVal) / 4.0;
+        a = { ConstraintSensitivity: sens, DepletionSensitivity: sens };
+        this._cpfc = p.derivedMetrics?.C_PFC || null;
+      } else if (p.foundations && p.atcf) {
+        f = p.foundations; a = p.atcf;
+      } else {
+        return { ok: false, error: 'Unrecognised format — expected PRF-22 Digital E-Twin JSON' };
+      }
+
+      // Score frameworks
+      const scores = {
+        individual_rights:     0.40*f.FairnessWeight + 0.30*f.IndividualizingWeight - 0.30*f.BindingWeight,
+        relational_we:         0.40*f.CareWeight     + 0.30*f.IndividualizingWeight - 0.10*f.BindingWeight,
+        hierarchical_role:     0.40*f.BindingWeight  - 0.20*f.Openness - 0.10*f.Conservation,
+        boundary_integrity:    0.30*f.BindingWeight  + 0.40*f.Conservation - 0.10*f.Openness,
+        custodial_stewardship: 0.30*f.Conservation   + 0.20*f.BindingWeight + 0.05,
+      };
+      this._framework = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+      const sens = (a.ConstraintSensitivity + a.DepletionSensitivity) / 2;
+      this._atcfTier = sens < 0.20 ? 'low' : sens < 0.60 ? 'medium' : 'high';
+      this._profile  = p;
+      return { ok: true };
+    } catch(e) {
+      return { ok: false, error: e.message };
+    }
+  },
+
+  isLoaded() { return this._profile !== null; },
+  getFramework() { return this._framework; },
+  getFrameworkName() { return this._framework ? this.FW_META[this._framework]?.name || '' : ''; },
+  getFrameworkIcon() { return this._framework ? this.FW_META[this._framework]?.icon || '' : ''; },
+  getFrameworkColor(){ return this._framework ? this.FW_META[this._framework]?.color || '#888' : '#888'; },
+  getATCFTier() { return this._atcfTier; },
+  getCPFC()     { return this._cpfc; },
+
+  getBadgeHTML() {
+    if (!this._profile) return '';
+    const meta = this.FW_META[this._framework] || {};
+    const tierLabel = { low: 'Low ATCF', medium: 'Medium ATCF', high: 'High ATCF' }[this._atcfTier] || '';
+    return `${meta.icon || ''} <strong>${meta.name || ''}</strong> · ${tierLabel} sensitivity`;
+  },
+
+  // Personalized reading for the suppression gap in UCP simulation context
+  getGapReading(gap) {
+    if (!this._profile) return '';
+    const fw = this._framework;
+    const band = gap < 0.05 ? 'low' : gap < 0.15 ? 'mid' : gap < 0.30 ? 'high' : 'crit';
+    const readings = {
+      individual_rights: {
+        high: 'From your rights-based standpoint: this gap is a structural rights violation — agents with equal stakes cannot contribute equally to the decision.',
+        crit: 'From your rights-based standpoint: this is the Boisjoly pattern. The process works; the rights of agents to contribute what they know have been systematically nullified.',
+      },
+      relational_we: {
+        high: 'From your relational standpoint: the network of mutual recognition has fractured. People are present but not genuinely heard.',
+        crit: 'From your relational standpoint: the community of mutual attention has collapsed. Voice has been replaced by formal presence.',
+      },
+      hierarchical_role: {
+        high: 'From your role-based standpoint: legitimate authority is being used as a filter rather than a channel. The hierarchy is working against its own purpose.',
+        crit: 'From your role-based standpoint: the chain of command has been corrupted — decision-makers are being shielded from what the institution actually knows.',
+      },
+      boundary_integrity: {
+        high: 'From your boundary standpoint: something that should be inviolable — the integrity of the knowledge — is being systematically suppressed.',
+        crit: 'From your boundary standpoint: the institution has formalized a process for making decisions without the truth. The sanctity of honest knowledge has been violated.',
+      },
+      custodial_stewardship: {
+        high: 'From your custodial standpoint: inherited knowledge is not reaching the present decision. The accumulated expertise of those who came before is being dishonored.',
+        crit: 'From your custodial standpoint: this is ancestral silencing — the institution\'s memory is being cut off from the decisions that need it.',
+      },
+    };
+    const r = readings[fw];
+    if (!r) return '';
+    return r[band] || r['high'] || '';
+  },
+};
+
+// PRF file input handler
+document.getElementById('prfFileInput').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const result = PRF.load(e.target.result);
+    const statusEl = document.getElementById('prfStatusText');
+    if (result.ok) {
+      statusEl.innerHTML = PRF.getBadgeHTML();
+      statusEl.style.color = PRF.getFrameworkColor();
+    } else {
+      statusEl.textContent = `Error: ${result.error}`;
+      statusEl.style.color = '#f08080';
+    }
+  };
+  reader.readAsText(file);
+});
+
+
+// ─────────────────────────────────────────────────
+// TIMELINE DATA
+// ─────────────────────────────────────────────────
+const TIMELINE = [
+  {
+    id: 'discovery',
+    date: 'January 24, 1985',
+    title: 'Discovery of the Fatal Flaw',
+    critical: false,
+    tabs: {
+      'What Happened': () => `
+        <h3 class="section-title">The Cold Launch</h3>
+        <p class="prose">Space Shuttle mission STS-51-C launched on January 24, 1985, in 53°F weather — the coldest launch to date. Roger Boisjoly was part of the team that inspected the recovered solid rocket boosters.</p>
+        <div class="warning-box">
+          <h4>What Boisjoly Found</h4>
+          <p>Severe primary O-ring erosion and evidence of hot gas blow-by in the field joints. This wasn't just O-ring damage — it revealed a <strong>fundamental design flaw</strong> in how the booster segments connected.</p>
+        </div>
+        <p class="prose">The field joint design allowed the metal casing to rotate under pressure, creating gaps that the O-rings couldn't seal. Hot combustion gases (5,000°F) had bypassed the primary seal and damaged the secondary seal.</p>
+        <div class="info-box">
+          <p><strong>Critical Realization:</strong> The design was unsafe at ANY temperature. Cold weather made it worse, but the fundamental problem was the joint design itself. Every launch was Russian roulette.</p>
+        </div>`,
+
+      "Boisjoly's PRF": () => `
+        <div class="prf-box">
+          <h4>🔍 His Interpretive Lens: Engineering Reality</h4>
+          <p><strong>Belief:</strong> "The laws of physics are indifferent to schedules, budgets, and political pressures."</p>
+          <p><strong>Rule:</strong> "Honor the data. When the data shows a risk, you must act on it."</p>
+          <p><strong>What's Real:</strong> Physical properties and mechanical stress are the fundamental reality. While managers saw "launch schedules" as real, Boisjoly saw "material properties at temperature" as more fundamentally true.</p>
+          <p><strong>Professional Identity:</strong> "An engineer's primary duty is to public safety. This duty must override any loyalty to a manager or corporation."</p>
+        </div>
+        <div class="quote">"For me, a system that ignores physical reality in favor of organizational reality is a system doomed to catastrophic failure."</div>
+        <p class="prose" style="margin-top:1rem">Boisjoly's framework loaded heavily on Individual/Rights-Based reasoning (equal epistemic rights — the data applies to everyone equally regardless of role) with strong Custodial/Stewardship elements (the accumulated engineering knowledge was an inherited obligation to public safety). This made the danger immediately visible to him — his PRF was calibrated to physical reality, not organizational reality.</p>
+        ${buildWorldviewLink('individual_rights', 'hierarchical_role',
+          'See how Individual/Rights-Based and Hierarchical/Role-Based frameworks compare in the Worldview Comparison App — this is the exact pairing that defined the teleconference conflict.')}`,
+
+      "Management's PRF": () => `
+        <div class="prf-box">
+          <h4>🏢 Their Interpretive Lens: Organizational Reality</h4>
+          <p><strong>Belief:</strong> "Engineering concerns must be balanced against schedule, budget, and contractual obligations."</p>
+          <p><strong>Rule:</strong> "Find ways to accept and fly. Flight rationale can justify continued operations while working on improvements."</p>
+          <p><strong>What's Real:</strong> Political commitments, launch schedules, and NASA contracts were the pressing reality. Engineering data was just one input among many.</p>
+          <p><strong>Professional Identity:</strong> "Our job is to deliver a product on schedule and maintain the customer relationship with NASA."</p>
+        </div>
+        <div class="conflict-diagnosis-inline">
+          <div class="cd-label">Structural Conflict Analysis</div>
+          <div class="cd-pattern">Rule Conflict — Whose Rules Apply?</div>
+          <p>Both Boisjoly and management accepted the legitimacy of rules — they disagreed on the source. For Boisjoly, rules derived from physical reality and professional code. For management, rules derived from the authority hierarchy and contractual obligation. The dispute was not about what to do but about who has the authority to decide what counts as evidence.</p>
+        </div>
+        <div class="info-box" style="margin-top:1rem">
+          <p><strong>The Lens Conflict:</strong> Boisjoly saw "catastrophic design flaw requiring immediate grounding." Management saw "anomaly that can be managed while maintaining flight schedule." Both were using their frameworks consistently. That's what makes this case so important: the failure wasn't individual malice — it was a structural collision between two legitimate ways of reading institutional reality.</p>
+        </div>`,
+
+      'Reflection': () => `
+        <div class="reflection-prompt">
+          <h3>💭 Questions for Your Own PRF</h3>
+          <ul>
+            <li>When have you seen something dangerous that others didn't notice? What in your background made it visible to you?</li>
+            <li>How does your professional training shape what you consider "real" versus what's "just talk"?</li>
+            <li>If you discovered a fundamental safety flaw in a system you work with, what would your values compel you to do?</li>
+            <li>What institutional pressures might make you want to minimize or ignore what you see?</li>
+          </ul>
+        </div>
+        <div class="interactive-box">
+          <h4>📝 Your Personal Response</h4>
+          <p>Write your thoughts here. Your responses are saved automatically.</p>
+          <textarea class="student-input" id="r-discovery" placeholder="Think about a time when you noticed something others didn't see..." oninput="autoSave('discovery',this.value)"></textarea>
+          <span class="save-indicator" id="si-discovery">✓ Saved</span>
+        </div>`,
+    }
+  },
+
+  {
+    id: 'memo',
+    date: 'July 31, 1985',
+    title: 'The Memo: "Catastrophe of the Highest Order"',
+    critical: true,
+    tabs: {
+      'The Memo': () => `
+        <h3 class="section-title">Six Months Before Challenger</h3>
+        <p class="prose">After months of analysis, Boisjoly wrote a memo to the Vice President of Engineering at Morton Thiokol. This is what institutional warning looks like when done correctly:</p>
+        <div class="memo-text">SUBJECT: SRM O-RING EROSION/POTENTIAL FAILURE CRITICALITY
+
+The result would be a catastrophe of the highest order — loss of the shuttle and the crew.
+
+"IT IS MY OPINION THAT THE HIGH RATE OF PRIMARY O-RING EROSION AND THE FAILURE OF THE SECONDARY O-RING TO SEAL WHEN THE PRIMARY O-RING HAS FAILED, REPRESENTS A CRITICAL SAFETY PROBLEM. THE IMPLICATIONS ARE HUGE. IT IS MY ROUGH ESTIMATE THAT THE FAILURE PROBABILITY FOR THE SECONDARY SEAL IS CURRENTLY AT LEAST 15 PERCENT PER FLIGHT (AND THIS IS LIKELY OPTIMISTIC). THE RESULTANT LOSS OF THE VEHICLE AND CREW IS A POSSIBILITY OF WHICH WE ARE NOT WILLING TO ACCEPT. WE NEED TO FIX IT BEFORE THE NEXT FLIGHT."
+
+— R. M. Boisjoly, Applied Mechanics Section, SRM Engineering, 31 July 1985</div>
+        <div class="warning-box">
+          <h4>⚠️ What This Memo Means</h4>
+          <p><strong>Explicit prediction:</strong> "loss of the shuttle and the crew"</p>
+          <p><strong>Quantified risk:</strong> <span class="stat-badge">15% failure per flight</span></p>
+          <p><strong>Clear demand:</strong> "FIX IT BEFORE THE NEXT FLIGHT"</p>
+          <p><strong>Written in ALL CAPS for emphasis</strong> — impossible to misunderstand</p>
+        </div>
+        <p class="prose" style="font-weight:600;color:#991b1b;margin-top:.75rem">This memo was written <strong>six months</strong> before the Challenger disaster. Management received explicit warning. They chose to keep flying.</p>`,
+
+      'What Happened Next': () => `
+        <h3 class="section-title">The Response</h3>
+        <div class="info-box">
+          <p><strong>August 1985–January 1986:</strong> Morton Thiokol and NASA continued shuttle operations. A task force was formed to "work on redesigning" the joint, but flights continued.</p>
+        </div>
+        <p class="prose">Management's logic: "We'll keep flying while we work on improvements. We've been flying with this issue and getting away with it. We can manage the risk."</p>
+        <div class="prf-box">
+          <h4>The System's Response to Warning</h4>
+          <p>1. <strong>Acknowledge but minimize:</strong> "Yes, it's a concern, but not critical enough to ground the fleet"</p>
+          <p>2. <strong>Form a committee:</strong> Create a task force to study the problem while continuing operations</p>
+          <p>3. <strong>Normalize the deviation:</strong> "We've been flying with this issue successfully"</p>
+          <p>4. <strong>Isolate the warner:</strong> Boisjoly becomes known as "the problem person" who raises uncomfortable issues</p>
+        </div>
+        <div class="warning-box">
+          <h4>The Critical Question</h4>
+          <p>Boisjoly did everything right: documented the risk, quantified the danger, used proper channels, wrote in all caps, demanded action. <strong>The system ignored him anyway.</strong></p>
+          <p>What more could he have done? What does it mean when doing everything right isn't enough?</p>
+        </div>`,
+
+      'The Math': () => `
+        <h3 class="section-title">The Russian Roulette They Were Playing</h3>
+        <p class="prose">Boisjoly estimated a <strong>15% failure probability per flight</strong>. Consider what that means cumulatively:</p>
+        <div class="prf-box">
+          <h4>Probability of Survival</h4>
+          <p><strong>1 flight:</strong> 85% chance of survival</p>
+          <p><strong>5 flights:</strong> 44% chance all survive</p>
+          <p><strong>10 flights:</strong> 20% chance all survive</p>
+          <p><strong>25 flights:</strong> 2% chance all survive</p>
+        </div>
+        <div class="warning-box">
+          <h4>From July 1985 to January 1986</h4>
+          <p>7 missions flew in the six months after the memo. Challenger was the 8th flight since Boisjoly's warning.</p>
+          <p>With a 15% failure rate, there was approximately a <span class="stat-badge">75% chance</span> that at least one of those 8 flights would fail catastrophically.</p>
+          <p style="font-weight:700;margin-top:.75rem">This wasn't bad luck. This was the predictable outcome of ignoring quantified risk. The disaster was a matter of "when," not "if."</p>
+        </div>`,
+
+      'Reflection': () => `
+        <div class="reflection-prompt">
+          <h3>💭 Questions for Your Career</h3>
+          <ul>
+            <li>Have you ever warned about a serious problem using proper channels and been ignored? How did that affect your sense of agency?</li>
+            <li>If you quantified a 15% catastrophic failure rate in something you work on, what would professional ethics require you to do?</li>
+            <li>When systems normalize dangerous deviations, what's your responsibility?</li>
+            <li>How do you protect your sense of who you are when institutions punish people who raise uncomfortable truths?</li>
+          </ul>
+        </div>
+        <div class="interactive-box">
+          <h4>🎯 Decision Simulator: Six Months Later</h4>
+          <p>It's now January 1986. You're Boisjoly. Your July memo was acknowledged but ignored. What do you do?</p>
+          <div class="scenario-choice" onclick="selectChoice(this,1,'memo')" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-label">Option 1: Keep using internal channels</div>
+            <div class="choice-desc">Continue writing memos, attending meetings, arguing within the system. Trust that persistence will eventually work.</div>
+          </div>
+          <div class="scenario-choice" onclick="selectChoice(this,2,'memo')" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-label">Option 2: Go to the press</div>
+            <div class="choice-desc">Contact journalists. Public pressure might force action. But you'll likely be fired and blacklisted from the industry.</div>
+          </div>
+          <div class="scenario-choice" onclick="selectChoice(this,3,'memo')" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-label">Option 3: Resign publicly</div>
+            <div class="choice-desc">Quit and write a public letter explaining why. Distance yourself from the disaster you see coming. But people might still die.</div>
+          </div>
+          <div class="scenario-choice" onclick="selectChoice(this,4,'memo')" tabindex="0" role="button" aria-pressed="false">
+            <div class="choice-label">Option 4: Stay and document everything</div>
+            <div class="choice-desc">Remain at your post. Continue to object. Keep meticulous records. If disaster happens, the truth will be documented.</div>
+          </div>
+          <div class="scenario-feedback" id="sf-memo" role="status"></div>
+        </div>
+        <div class="interactive-box" style="margin-top:1rem">
+          <h4>📝 What Would You Actually Do?</h4>
+          <textarea class="student-input" id="r-memo" placeholder="Be honest: What would you actually do? What factors would influence your decision?" oninput="autoSave('memo',this.value)"></textarea>
+          <span class="save-indicator" id="si-memo">✓ Saved</span>
+        </div>`,
+    }
+  },
+
+  {
+    id: 'teleconference',
+    date: 'January 27, 1986',
+    title: 'The Night Before: Teleconference',
+    critical: true,
+    tabs: {
+      'What Happened': () => `
+        <h3 class="section-title">The Meeting That Failed</h3>
+        <p class="prose">The night before the Challenger launch, with temperatures predicted in the low 20s°F, Morton Thiokol engineers held a teleconference with NASA to discuss the launch decision.</p>
+        <div class="prf-box">
+          <h4>Boisjoly's Recommendation</h4>
+          <p>Don't launch. The cold temperature would make an already-unsafe joint design even more dangerous. But his real position — consistent since the July memo — was that <strong>they shouldn't be flying at all</strong> until the joint was redesigned.</p>
+          <p><em>"I argued that we shouldn't fly. I showed the data. I explained the physics. I made it clear this was not a close call — it was dangerous."</em></p>
+        </div>
+        <div class="warning-box">
+          <h4>Management's Response</h4>
+          <p>NASA pushed back hard: "When do you want to launch, next April?"</p>
+          <p>Morton Thiokol managers asked for a break in the teleconference. During that break, Thiokol's VP of Engineering told the engineers:</p>
+          <p style="font-weight:700;font-size:1.05rem;margin-top:.5rem">"Take off your engineering hat and put on your management hat."</p>
+          <p style="margin-top:.5rem">Morton Thiokol management overruled their engineers and recommended launch.</p>
+        </div>
+        <div class="quote">"I felt personally that management was under a lot of pressure to launch and that they made a very tough decision, but I didn't agree with it." — Roger Boisjoly</div>`,
+
+      'The Pressure System': () => `
+        <h3 class="section-title">How Systems Destroy Agency</h3>
+        <div class="prf-box">
+          <h4>The Pressures on Management</h4>
+          <p>• <strong>NASA relationship:</strong> Morton Thiokol was a contractor — saying "no" to NASA risked future contracts worth hundreds of millions</p>
+          <p>• <strong>Schedule pressure:</strong> The launch had already been delayed multiple times; Reagan administration pressure was real</p>
+          <p>• <strong>Normalized deviation:</strong> "We've launched with this problem and survived each time"</p>
+          <p>• <strong>Burden of proof:</strong> NASA demanded engineers prove it was <em>unsafe</em>, rather than requiring proof that it was <em>safe</em></p>
+        </div>
+        <div class="warning-box">
+          <h4>The Impossible Position</h4>
+          <p>Boisjoly was asked to prove something would definitely fail, when engineering is about probabilities. You can't prove a probabilistic event will occur on a specific flight — you can only show the risk is unacceptable.</p>
+          <p style="font-weight:700;margin-top:.5rem">The system required certainty where only probability exists. This makes it structurally impossible to prevent probabilistic disasters.</p>
+        </div>
+        <div class="info-box">
+          <p><strong>What "Take off your engineering hat" really meant:</strong> Stop thinking about physical reality and technical truth. Start thinking about organizational reality and relationship management. In other words: <em>change your PRF to match the system's needs.</em></p>
+        </div>`,
+
+      "Boisjoly's Moral Position": () => `
+        <h3 class="section-title">The Limits of Individual Agency</h3>
+        <div class="prf-box">
+          <h4>What Boisjoly Did Right</h4>
+          <p>✓ Documented the flaw when discovered (January 1985)</p>
+          <p>✓ Wrote formal memo with explicit warning (July 1985)</p>
+          <p>✓ Quantified the risk (15% failure rate)</p>
+          <p>✓ Used proper channels and escalation</p>
+          <p>✓ Advocated clearly in the teleconference</p>
+          <p>✓ Maintained his professional integrity throughout</p>
+        </div>
+        <div class="quote">"I made the best engineering judgment I could based on the data. I presented it clearly. Management made a different decision. What more could I have done?" — Roger Boisjoly's reflection</div>
+        <div class="warning-box">
+          <h4>The Devastating Truth</h4>
+          <p>Boisjoly did everything an engineer is supposed to do. He honored his professional code. He maintained his coherence.</p>
+          <p style="font-weight:700;font-size:1.05rem;margin-top:.5rem">And seven people died anyway.</p>
+          <p style="margin-top:.5rem">This is the reality of systemic failure: <strong>individual integrity is necessary but not sufficient.</strong> When systems are designed to ignore warnings, doing everything right isn't enough.</p>
+        </div>`,
+
+      '🔬 Run the UCP Simulation': () => `
+        <h3 class="section-title">Simulate the Teleconference — Live UCP Analysis</h3>
+        <p class="prose">
+          The suppression gap Boisjoly experienced — high coordination capacity he could not surface to decision-makers —
+          is exactly what the UCP simulation models. Run the simulation below to see what
+          the engine produces for the Thiokol institutional structure, then run it again with
+          OS2 scaffolding (a protected whistleblower channel) to see what would change.
+        </p>
+        <div class="ucp-sim-panel" id="ucpSimPanel">
+          <div class="ucp-sim-header">UCP Live Simulation — Whistleblower / Factory Safety Scenario</div>
+          <p class="ucp-sim-intro">
+            <strong>Configuration A</strong> runs the whistleblower scenario with a hierarchy-dominant
+            population — closely approximating the Thiokol management structure on January 27.
+            <strong>Configuration B</strong> runs the same scenario with BioBond OS2 scaffolding
+            activated — simulating what a protected independent review channel would have changed.
+          </p>
+          <div class="ucp-btn-row">
+            <button class="ucp-btn ucp-btn-run" id="btnRunA" onclick="runUCPSim(false)">
+              <span class="ucp-spinner" id="spinA"></span>
+              ▶ Run Thiokol Structure (No Protection)
+            </button>
+            <button class="ucp-btn ucp-btn-biobond" id="btnRunB" onclick="runUCPSim(true)">
+              <span class="ucp-spinner" id="spinB"></span>
+              🛡 Run With Whistleblower Protection
+            </button>
+          </div>
+          <div id="ucpResults" class="ucp-results"></div>
+          <div id="ucpError" class="ucp-error" style="display:none"></div>
+        </div>
+
+        <div class="reflection-prompt" style="margin-top:1.5rem">
+          <h3>💭 The Deepest Questions</h3>
+          <ul>
+            <li>Compare the suppression gap in the two simulation runs. What does the gap number represent in Boisjoly's actual situation?</li>
+            <li>Did BioBond reduce the gap? By how much? What would a 20% reduction in suppression gap have meant in the teleconference room?</li>
+            <li>The simulation shows structural features. What it cannot show is whether Boisjoly would have spoken differently if the structure had been different. What do you think?</li>
+            <li>At what point does "following proper channels" become complicity when you know people will die?</li>
+          </ul>
+        </div>
+        <div class="interactive-box" style="margin-top:1rem">
+          <h4>⚖️ Your Line in the Sand</h4>
+          <p>Everyone has limits. What would make YOU go outside proper channels and risk everything?</p>
+          <textarea class="student-input" id="r-teleconference" placeholder="Describe a situation where you would break rules, risk your career, or go public to prevent harm..." oninput="autoSave('teleconference',this.value)"></textarea>
+          <span class="save-indicator" id="si-teleconference">✓ Saved</span>
+        </div>`,
+    }
+  },
+
+  {
+    id: 'disaster',
+    date: 'January 28, 1986',
+    title: 'The Disaster: 73 Seconds',
+    critical: true,
+    tabs: {
+      'What Happened': () => `
+        <h3 class="section-title">Exactly As Predicted</h3>
+        <div class="warning-box">
+          <h4>11:38 AM EST</h4>
+          <p>Space Shuttle Challenger launched in 36°F weather — the coldest launch in shuttle program history. <strong>73 seconds after liftoff:</strong> Hot gas breached the right solid rocket booster's aft field joint — exactly the failure mode Boisjoly had warned about. The shuttle broke apart. All seven crew members were killed.</p>
+        </div>
+        <div class="info-box">
+          <p><strong>The Crew:</strong> Francis Scobee (Commander) · Michael Smith (Pilot) · Ronald McNair · Ellison Onizuka · Judith Resnik · Gregory Jarvis · Christa McAuliffe (Teacher in Space)</p>
+        </div>
+        <div class="quote" style="background:#fee2e2;border-left-color:#dc2626">
+          "I had a sickening feeling when I saw the flames. I knew what had happened. I knew exactly what had happened. We had warned them. We had told them. And they flew anyway."
+        </div>
+        <p class="prose" style="font-weight:600">The disaster was not a surprise to Boisjoly. It was the confirmation of what he had been warning about for 18 months. His July 1985 memo had explicitly predicted "loss of the shuttle and the crew." His prediction came true.</p>`,
+
+      'The Investigation': () => `
+        <h3 class="section-title">The Rogers Commission</h3>
+        <p class="prose">President Reagan appointed the Rogers Commission to investigate. Physicist Richard Feynman famously demonstrated the O-ring problem by dunking a sample in ice water during a public hearing.</p>
+        <div class="prf-box">
+          <h4>What the Investigation Found</h4>
+          <p>• The immediate cause was O-ring failure in the right solid rocket booster</p>
+          <p>• Cold temperature had reduced O-ring resilience</p>
+          <p>• The underlying cause was the flawed field joint design</p>
+          <p>• Morton Thiokol and NASA had known about the problem for years</p>
+          <p>• Engineers had repeatedly warned management</p>
+        </div>
+        <div class="warning-box">
+          <h4>The Commission's Conclusion — and Its Flaw</h4>
+          <p>"Those who made that decision were unaware of the recent history of problems concerning the O-rings..."</p>
+          <p style="font-weight:700;margin-top:.5rem">This was false. Management knew. They had Boisjoly's memo. They had attended the teleconference. They chose to discount the warnings.</p>
+        </div>`,
+
+      'Boisjoly Testifies': () => `
+        <h3 class="section-title">Truth at the Cost of Everything</h3>
+        <p class="prose">Roger Boisjoly was called to testify before the Rogers Commission. He faced an impossible choice:</p>
+        <div class="prf-box">
+          <h4>The Choice</h4>
+          <p><strong>Option 1:</strong> Be loyal to Morton Thiokol. Minimize the warnings. Protect his career and his colleagues.</p>
+          <p><strong>Option 2:</strong> Tell the complete truth. Show the memos. Explain what management knew and when. End his career.</p>
+        </div>
+        <div class="quote">"I was torn between loyalty to my employer and loyalty to the truth and to the crew that had died. But there was really no choice. The crew was dead. The truth was the only thing left to protect."</div>
+        <div class="warning-box">
+          <h4>The Consequences</h4>
+          <p>• Isolated at work — colleagues stopped speaking to him</p>
+          <p>• Removed from meaningful engineering work</p>
+          <p>• Suffered severe stress and depression</p>
+          <p>• Eventually took disability leave</p>
+          <p style="font-weight:700;margin-top:.5rem">His career at Morton Thiokol was effectively over. The system punished the truth-teller, not the decision-makers.</p>
+        </div>`,
+
+      'Reflection': () => `
+        <div class="reflection-prompt">
+          <h3>💭 The Cost of Integrity</h3>
+          <ul>
+            <li>Boisjoly maintained his authenticity by testifying honestly. But it destroyed his career. Was it worth it?</li>
+            <li>What does it mean that the system punished the whistleblower but not the managers who ignored his warnings?</li>
+            <li>If you knew that telling the truth would end your career and make you an outcast, would you do it?</li>
+            <li>How do we design systems that protect people like Boisjoly instead of destroying them?</li>
+          </ul>
+        </div>
+        <div class="interactive-box">
+          <h4>🔍 Identifying Your "Boisjoly Moment"</h4>
+          <p>Have you ever experienced or witnessed a moment where someone was punished for doing the right thing?</p>
+          <textarea class="student-input" id="r-disaster" placeholder="Describe what happened and how it affected everyone involved..." oninput="autoSave('disaster',this.value)"></textarea>
+          <span class="save-indicator" id="si-disaster">✓ Saved</span>
+        </div>`,
+    }
+  },
+
+  {
+    id: 'rebuilding',
+    date: '1987–2012',
+    title: 'Rebuilding: New Purpose from Tragedy',
+    critical: false,
+    tabs: {
+      'The Forward Pull': () => `
+        <h3 class="section-title">From Professional Destruction to Ethical Educator</h3>
+        <p class="prose">After leaving Morton Thiokol, Boisjoly could have disappeared into bitterness. Instead, he found new purpose.</p>
+        <div class="prf-box">
+          <h4>His Forward Pull: The Identity Kernel That Survived</h4>
+          <p style="font-weight:600;font-size:1.05rem;margin-bottom:.5rem">"I am a professional engineer who serves public safety."</p>
+          <p>This identity remained intact even after his career was destroyed. When his job, workplace relationships, and professional standing were taken away, the core identity remained. And that identity demanded new constructors serving the same purpose.</p>
+        </div>
+        <div class="info-box">
+          <p><strong>The New Constructors:</strong></p>
+          <p>• <strong>Ethics educator:</strong> Traveled to engineering schools nationwide</p>
+          <p>• <strong>Case study subject:</strong> The Challenger disaster became required teaching in engineering ethics</p>
+          <p>• <strong>Expert witness:</strong> Testified in engineering ethics and whistleblower protection cases</p>
+          <p>• <strong>Public speaker:</strong> Shared his story to prevent future disasters</p>
+        </div>
+        <div class="quote">"If my story can prevent one future engineer from staying silent when they see danger, then maybe the disaster wasn't completely meaningless. Maybe something good can come from it."</div>`,
+
+      'What Protected Him': () => `
+        <h3 class="section-title">How Boisjoly Maintained Coherence</h3>
+        <div class="prf-box">
+          <h4>1. Clear Forward Pull</h4>
+          <p>His identity as "an engineer who serves public safety" was more fundamental than any specific job. Core purpose survived even when specific constructors were destroyed.</p>
+        </div>
+        <div class="prf-box">
+          <h4>2. Professional Code as Anchor</h4>
+          <p>The engineering code of ethics gave him an external standard that validated his choices even when his employer punished him.</p>
+        </div>
+        <div class="prf-box">
+          <h4>3. Documentation</h4>
+          <p>His meticulous memos proved he had done everything right. This protected him from self-doubt. He knew he had honored his professional duty.</p>
+        </div>
+        <div class="prf-box">
+          <h4>4. New Constructors</h4>
+          <p>He could teach, speak, write, and testify. His expertise remained valuable even outside traditional employment.</p>
+        </div>
+        <div class="warning-box">
+          <h4>What This Teaches Us</h4>
+          <p>Boisjoly's survival wasn't about being unaffected by trauma — he suffered greatly. But he maintained <strong>coherence</strong>: alignment between his beliefs, his identity, and his actions. His forward pull was strong enough to survive the destruction of his specific career path.</p>
+        </div>`,
+
+      'Build Your Protection': () => `
+        <div class="prf-builder-panel">
+          <h4>🛡️ Define Your Forward Pull</h4>
+          <p>Boisjoly's identity kernel — "I am an engineer who serves public safety" — survived career destruction. What's yours? Fill in the fields below, then load your PRF-22 JSON to see how your framework compares to Boisjoly's.</p>
+
+          <div class="prf-field">
+            <label for="myIdentity">My Core Identity (who am I, regardless of job title?)</label>
+            <textarea class="student-input" id="myIdentity" placeholder="Example: I am someone who protects vulnerable people from harm..." oninput="autoSave('my-identity',this.value)"></textarea>
+          </div>
+          <div class="prf-field">
+            <label for="myRule">My Non-Negotiable Rule (what line won't I cross?)</label>
+            <textarea class="student-input" id="myRule" placeholder="Example: I will not stay silent when I know people are being harmed..." oninput="autoSave('my-rule',this.value)"></textarea>
+          </div>
+          <div class="prf-field">
+            <label for="myConstructors">My Alternative Constructors (other ways to serve my purpose if current path fails)</label>
+            <textarea class="student-input" id="myConstructors" placeholder="Example: Teaching, consulting, advocacy work, writing..." oninput="autoSave('my-constructors',this.value)"></textarea>
+          </div>
+
+          <button class="btn btn-primary" onclick="showComparison()" style="margin-top:.5rem">
+            Compare My PRF to Boisjoly's
+          </button>
+
+          <div id="comparisonDisplay" style="display:none;margin-top:1.5rem"></div>
+
+          <!-- PRF JSON personalized analysis -->
+          <div id="prfPersonalized" style="margin-top:1.25rem;display:none">
+            <div class="prf-result-panel visible" id="prfResultPanel">
+              <div class="prf-result-badge">
+                <span id="prfResultIcon"></span>
+                <span class="prf-result-badge-name" id="prfResultName"></span>
+              </div>
+              <div class="prf-result-text" id="prfResultText"></div>
+              <div class="prf-result-atcf" id="prfResultATCF"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interactive-box" style="margin-top:1.5rem">
+          <h4>📥 Export Your Reflections</h4>
+          <p>Save all your responses from this case study to review later or submit for class.</p>
+          <button class="btn btn-primary" onclick="exportReflections()">⬇ Download My Reflections</button>
+        </div>`,
+
+      'Reflection': () => `
+        <div class="reflection-prompt">
+          <h3>💭 Building Your Own Protections</h3>
+          <ul>
+            <li>What is YOUR forward pull? What identity kernel would survive even if your current career path were destroyed?</li>
+            <li>Are you building capabilities that serve a purpose larger than any specific job?</li>
+            <li>Do you document your professional decisions? Would you have evidence if you were questioned later?</li>
+            <li>What professional code or external standard can you appeal to when organizational pressure conflicts with your ethics?</li>
+            <li>How will you recognize when you're in a "Boisjoly moment" — when you need to speak up despite consequences?</li>
+            <li>What systems-level changes would you advocate for in your field to protect future whistleblowers?</li>
+          </ul>
+        </div>`,
+    }
+  },
+];
+
+
+// ─────────────────────────────────────────────────
+// WORLDVIEW LINK BUILDER
+// ─────────────────────────────────────────────────
+function buildWorldviewLink(fwA, fwB, desc) {
+  return `
+    <div class="wv-link-panel">
+      <div class="wv-link-title">🔗 UCP Worldview Comparison — Live Analysis Available</div>
+      <div class="wv-link-desc">${desc}</div>
+      <a class="wv-link-btn"
+         href="worldview-comparison.html"
+         target="_blank"
+         rel="noopener noreferrer"
+         aria-label="Open Worldview Comparison App">
+        Open Worldview Comparison App →
+      </a>
+    </div>`;
+}
+
+
+// ─────────────────────────────────────────────────
+// TIMELINE RENDER
+// ─────────────────────────────────────────────────
+let currentEventId = null;
+let currentTab     = null;
+
+function renderTimeline() {
+  const el = document.getElementById('timeline');
+  el.innerHTML = TIMELINE.map(ev => `
+    <div class="timeline-item ${ev.critical ? 'critical' : ''} ${currentEventId === ev.id ? 'active' : ''}"
+         onclick="selectEvent('${ev.id}')"
+         onkeydown="if(event.key==='Enter'||event.key===' ')selectEvent('${ev.id}')"
+         tabindex="0"
+         role="listitem button"
+         aria-selected="${currentEventId === ev.id}"
+         aria-label="${ev.date}: ${ev.title}">
+      <div class="timeline-dot" aria-hidden="true"></div>
+      <div class="timeline-date">${ev.date}</div>
+      <div class="timeline-title">${ev.title}</div>
+    </div>
+  `).join('');
+}
+
+function selectEvent(id) {
+  currentEventId = id;
+  const ev = TIMELINE.find(e => e.id === id);
+  currentTab = Object.keys(ev.tabs)[0];
+  renderTimeline();
+  renderDetail(ev);
+  document.getElementById('detailSection').style.display = 'block';
+  document.getElementById('detailSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setTimeout(restoreInputs, 150);
+}
+
+function renderDetail(ev) {
+  // Tab buttons
+  const btns = document.getElementById('tabButtons');
+  btns.innerHTML = Object.keys(ev.tabs).map((name, i) => `
+    <button class="tab-btn ${currentTab === name ? 'active' : ''}"
+            onclick="selectTab('${ev.id}','${escAttr(name)}')"
+            role="tab"
+            aria-selected="${currentTab === name}"
+            aria-controls="tabContent"
+            id="tab-${i}">
+      ${name}
+    </button>
+  `).join('');
+
+  // Tab content
+  document.getElementById('tabContent').innerHTML = ev.tabs[currentTab]();
+  restoreInputs();
+}
+
+function selectTab(evId, tabName) {
+  currentTab = tabName;
+  const ev = TIMELINE.find(e => e.id === evId);
+  renderDetail(ev);
+}
+
+function escAttr(s) { return s.replace(/'/g, "\\'"); }
+
+
+// ─────────────────────────────────────────────────
+// UCP SIMULATION
+// ─────────────────────────────────────────────────
+let _simDataA = null;
+let _simDataB = null;
+
+function rawPhrase(v) {
+  if (v > 0.70) return 'Strong underlying capacity';
+  if (v > 0.55) return 'Moderate capacity — under load';
+  if (v > 0.40) return 'Fragile — near collapse threshold';
+  return 'Capacity collapsed';
+}
+
+function percPhrase(v) {
+  if (v > 0.70) return 'Feels genuinely collaborative';
+  if (v > 0.55) return 'Feels effortful — strained';
+  if (v > 0.40) return 'Feels difficult — high personal cost';
+  return 'Feels nearly impossible';
+}
+
+function fricPhrase(v) {
+  if (v < 0.25) return 'Low drag';
+  if (v < 0.45) return 'Moderate drag';
+  if (v < 0.65) return 'High drag';
+  return 'Severe drag — system consuming itself';
+}
+
+function gapTitle(gap) {
+  if (gap < 0.05) return 'Minimal suppression';
+  if (gap < 0.15) return 'Mild suppression';
+  if (gap < 0.30) return 'Significant suppression';
+  return 'Critical suppression';
+}
+
+function valClass(v, higherBetter) {
+  if (higherBetter) return v > 0.60 ? 'val-good' : v > 0.40 ? 'val-warn' : 'val-bad';
+  return v < 0.30 ? 'val-good' : v < 0.55 ? 'val-warn' : 'val-bad';
+}
+
+function getVoiceNarrative(raw, perceived, friction) {
+  const gap = raw - perceived;
+  if (gap > 0.22 && friction > 0.55) {
+    return `You are in the meeting. You can see the problem clearly. But the room has a gravity to it — the weight of authority, the cost of speaking. So you say something adjacent to what you actually think. Softer. Framed as a question. It doesn't land. The decision gets made from the information that was safe to share, not from what was true. You leave knowing what you did not say.`;
+  } else if (gap > 0.22) {
+    return `The process works — meetings happen, decisions get made. But the critical thing stays in the hallway conversation after the meeting, in the email you almost sent, in the question you framed carefully enough that it wouldn't land. The decision might even be right. But it was made without the room's full intelligence.`;
+  } else if (friction > 0.55) {
+    return `People are saying what they actually think — there's no shortage of honesty. But getting anything done together takes enormous effort. Every decision costs three times what it should. By the time agreement is reached, everyone is exhausted. The problem eventually gets solved, but barely.`;
+  } else if (gap < 0.08 && friction < 0.30) {
+    return `The meeting actually works. You say what you think; other people say what they think. Real disagreement sharpens rather than derails the conversation. You leave feeling like your presence in the room mattered. This is what it's supposed to feel like. It is rarer than it should be.`;
+  } else {
+    return `You're managing. Coordination happens, but it costs effort. You've learned which things to say directly and which to soften. Whether that adaptation is healthy or a slow accumulation of self-censorship is a question you don't always stop to ask.`;
+  }
+}
+
+function buildSimResultsHTML(dataA, dataB) {
+  const mA = dataA.metrics || dataA;
+  const mB = dataB ? (dataB.metrics || dataB) : null;
+
+  const rawA  = mA.lambda_raw;
+  const percA = mA.lambda_perceived;
+  const fricA = mA.friction;
+  const gapA  = rawA - percA;
+
+  let html = '';
+
+  if (mB) {
+    const rawB  = mB.lambda_raw;
+    const percB = mB.lambda_perceived;
+    const fricB = mB.friction;
+    const gapB  = rawB - percB;
+
+    html += `<div class="ucp-compare-grid">`;
+
+    // Column A
+    html += `<div>
+      <div class="ucp-col-header col-a">Configuration A — No Protection</div>
+      <div class="ucp-metric-row">
+        <div class="ucp-metric-label">λ Raw — Coordination Capacity</div>
+        <div class="ucp-metric-value ${valClass(rawA,true)}">${rawA.toFixed(3)}</div>
+        <div class="ucp-metric-phrase">${rawPhrase(rawA)}</div>
+      </div>
+      <div class="ucp-metric-row">
+        <div class="ucp-metric-label">λ Perceived — Felt Experience</div>
+        <div class="ucp-metric-value ${valClass(percA,true)}">${percA.toFixed(3)}</div>
+        <div class="ucp-metric-phrase">${percPhrase(percA)}</div>
+      </div>
+      <div class="ucp-metric-row">
+        <div class="ucp-metric-label">Friction — Coordination Cost</div>
+        <div class="ucp-metric-value ${valClass(fricA,false)}">${fricA.toFixed(3)}</div>
+        <div class="ucp-metric-phrase">${fricPhrase(fricA)}</div>
+      </div>
+    </div>`;
+
+    // Column B
+    html += `<div>
+      <div class="ucp-col-header col-b">Configuration B — With OS2 Scaffold</div>
+      <div class="ucp-metric-row">
+        <div class="ucp-metric-label">λ Raw — Coordination Capacity</div>
+        <div class="ucp-metric-value ${valClass(rawB,true)}">${rawB.toFixed(3)}</div>
+        <div class="ucp-metric-phrase">${rawPhrase(rawB)}</div>
+      </div>
+      <div class="ucp-metric-row">
+        <div class="ucp-metric-label">λ Perceived — Felt Experience</div>
+        <div class="ucp-metric-value ${valClass(percB,true)}">${percB.toFixed(3)}</div>
+        <div class="ucp-metric-phrase">${percPhrase(percB)}</div>
+      </div>
+      <div class="ucp-metric-row">
+        <div class="ucp-metric-label">Friction — Coordination Cost</div>
+        <div class="ucp-metric-value ${valClass(fricB,false)}">${fricB.toFixed(3)}</div>
+        <div class="ucp-metric-phrase">${fricPhrase(fricB)}</div>
+      </div>
+    </div>`;
+
+    html += `</div>`;
+
+    // Suppression gap comparison
+    html += `<div class="ucp-gap-bar-wrap">
+      <div class="ucp-gap-label">Suppression Gap (λ Raw − λ Perceived)</div>
+      <div class="ucp-bar-container">
+        <span class="ucp-bar-name">Config A — Raw</span>
+        <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${(rawA*100).toFixed(1)}%"></div></div>
+        <span class="ucp-gap-number">${rawA.toFixed(2)}</span>
+      </div>
+      <div class="ucp-bar-container">
+        <span class="ucp-bar-name">Config A — Perceived</span>
+        <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perceived" style="width:${(percA*100).toFixed(1)}%"></div></div>
+        <span class="ucp-gap-number">${percA.toFixed(2)}</span>
+      </div>
+      <div class="ucp-bar-container">
+        <span class="ucp-bar-name">Config B — Raw</span>
+        <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${(rawB*100).toFixed(1)}%"></div></div>
+        <span class="ucp-gap-number">${rawB.toFixed(2)}</span>
+      </div>
+      <div class="ucp-bar-container">
+        <span class="ucp-bar-name">Config B — Perceived</span>
+        <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perceived" style="width:${(percB*100).toFixed(1)}%"></div></div>
+        <span class="ucp-gap-number">${percB.toFixed(2)}</span>
+      </div>
+    </div>`;
+
+    // Gap comparison callout
+    const gapDelta = gapA - gapB;
+    const gapImproved = gapDelta > 0.02;
+    html += `<div style="background:rgba(255,255,255,.07);border-radius:6px;padding:12px 14px;margin-top:10px;font-size:.88rem;color:rgba(255,255,255,.82);line-height:1.65">
+      <strong style="color:${gapA > 0.25 ? '#f08080' : '#c9a84c'}">Config A gap: ${(gapA*100).toFixed(1)}%</strong>
+      &nbsp;→&nbsp;
+      <strong style="color:${gapB > 0.25 ? '#f08080' : gapImproved ? '#7fd8a8' : '#c9a84c'}">Config B gap: ${(gapB*100).toFixed(1)}%</strong>
+      &nbsp;
+      ${gapImproved
+        ? `<span style="color:#7fd8a8">▼ ${(gapDelta*100).toFixed(1)} percentage point reduction — OS2 scaffolding partially restored suppressed voice.</span>`
+        : `<span style="color:rgba(255,255,255,.55)">Gap unchanged — structural power asymmetry persists even with scaffolding.</span>`}
+    </div>`;
+
+    // Narrative for the suppressed config
+    html += `<div class="ucp-narrative">
+      <div class="ucp-narrative-label">What It Feels Like — Config A</div>
+      ${getVoiceNarrative(rawA, percA, fricA)}
+    </div>`;
+
+    // PRF personalization if loaded
+    if (PRF.isLoaded()) {
+      const prfReading = PRF.getGapReading(gapA);
+      if (prfReading) {
+        html += `<div class="ucp-narrative" style="border-left-color:${PRF.getFrameworkColor()}">
+          <div class="ucp-narrative-label" style="color:${PRF.getFrameworkColor()}">${PRF.getFrameworkIcon()} Reading through your ${PRF.getFrameworkName()} profile</div>
+          ${prfReading}
+        </div>`;
+      }
+    }
+
+  } else {
+    // Single run result
+    html += `<div class="ucp-metric-row">
+      <div class="ucp-metric-label">λ Raw — Coordination Capacity</div>
+      <div class="ucp-metric-value ${valClass(rawA,true)}">${rawA.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${rawPhrase(rawA)}</div>
+    </div>
+    <div class="ucp-metric-row">
+      <div class="ucp-metric-label">λ Perceived — Felt Experience</div>
+      <div class="ucp-metric-value ${valClass(percA,true)}">${percA.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${percPhrase(percA)}</div>
+    </div>
+    <div class="ucp-metric-row">
+      <div class="ucp-metric-label">Friction — Coordination Cost</div>
+      <div class="ucp-metric-value ${valClass(fricA,false)}">${fricA.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${fricPhrase(fricA)}</div>
+    </div>`;
+
+    html += `<div class="ucp-gap-bar-wrap">
+      <div class="ucp-gap-label">Suppression Gap — λ Raw ${rawA.toFixed(3)} − λ Perceived ${percA.toFixed(3)} = ${(gapA*100).toFixed(1)}% — ${gapTitle(gapA)}</div>
+      <div class="ucp-bar-container">
+        <span class="ucp-bar-name">λ Raw</span>
+        <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${(rawA*100).toFixed(1)}%"></div></div>
+        <span class="ucp-gap-number">${rawA.toFixed(2)}</span>
+      </div>
+      <div class="ucp-bar-container">
+        <span class="ucp-bar-name">λ Perceived</span>
+        <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perceived" style="width:${(percA*100).toFixed(1)}%"></div></div>
+        <span class="ucp-gap-number">${percA.toFixed(2)}</span>
+      </div>
+    </div>`;
+
+    html += `<div class="ucp-narrative">
+      <div class="ucp-narrative-label">What It Feels Like — Inside This System</div>
+      ${getVoiceNarrative(rawA, percA, fricA)}
+    </div>`;
+
+    if (PRF.isLoaded()) {
+      const prfReading = PRF.getGapReading(gapA);
+      if (prfReading) {
+        html += `<div class="ucp-narrative" style="border-left-color:${PRF.getFrameworkColor()}">
+          <div class="ucp-narrative-label" style="color:${PRF.getFrameworkColor()}">${PRF.getFrameworkIcon()} ${PRF.getFrameworkName()} reading</div>
+          ${prfReading}
+        </div>`;
+      }
+    }
+
+    html += `<p style="color:rgba(255,255,255,.5);font-size:.8rem;font-style:italic;margin-top:12px;font-family:'Courier New',monospace">
+      Now click "Run With Whistleblower Protection" to see what OS2 scaffolding changes.
+    </p>`;
+  }
+
+  html += `<div class="ucp-pluralism">
+    Note: The simulation does not adjudicate what these patterns mean morally.
+    What the suppression gap represents — injustice, broken reciprocity, corrupted authority,
+    dishonored inheritance — depends on the framework through which you read it.
+    The simulation supplies the structural fact; your PRF supplies its significance.
+  </div>`;
+
+  return html;
+}
+
+async function runUCPSim(withBioBond) {
+  const btnA = document.getElementById('btnRunA');
+  const btnB = document.getElementById('btnRunB');
+  const spinA = document.getElementById('spinA');
+  const spinB = document.getElementById('spinB');
+  const errEl = document.getElementById('ucpError');
+  const resEl = document.getElementById('ucpResults');
+
+  if (!btnA) return;  // panel not visible
+
+  btnA.disabled = true; btnB.disabled = true;
+  if (withBioBond) { spinB.style.display='inline-block'; }
+  else             { spinA.style.display='inline-block'; }
+  errEl.style.display = 'none';
+
+  // Hierarchy-dominant distribution — approximates Thiokol management structure
+  const wvDist = {
+    role_order:            0.55,
+    sacred_boundary:       0.20,
+    liberal_individualist: 0.12,
+    ubuntu_relational:     0.08,
+    indigenous_custodial:  0.05,
+  };
+
+  const evDist = {
+    authority_weighted:  0.45,
+    alternative_facts:   0.25,
+    tradition_weighted:  0.20,
+    empirical_calibrated:0.10,
+  };
+
+  const seed = Math.floor(Math.random() * 9000) + 1000;
+
+  const payload = {
+    scenario_name:            'whistleblower',
+    num_agents:               16,
+    steps:                    8,
+    seed,
+    worldview_distribution:   wvDist,
+    evidence_distribution:    evDist,
+    activate_biobond_at:      withBioBond ? 4 : null,
+  };
+
+  try {
+    const resp = await fetch(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(25000),
+    });
+
+    if (!resp.ok) {
+      const txt = await resp.text();
+      throw new Error(`HTTP ${resp.status}: ${txt.slice(0,200)}`);
+    }
+
+    const data = await resp.json();
+
+    if (withBioBond) {
+      _simDataB = data;
+    } else {
+      _simDataA = data;
+      _simDataB = null;  // reset B when A re-runs
+    }
+
+    resEl.innerHTML = buildSimResultsHTML(_simDataA, _simDataB);
+    resEl.classList.add('visible');
+
+  } catch(e) {
+    errEl.textContent = `Simulation error: ${e.message}`;
+    errEl.style.display = 'block';
+  } finally {
+    btnA.disabled = false; btnB.disabled = false;
+    spinA.style.display='none'; spinB.style.display='none';
+  }
+}
+
+
+// ─────────────────────────────────────────────────
+// DECISION SIMULATOR
+// ─────────────────────────────────────────────────
+const CHOICE_FEEDBACK = {
+  1: `<h4>The Path Boisjoly Chose</h4>
+      <p>This is what Boisjoly did. He continued using internal channels, writing memos, attending meetings, making his case with data.</p>
+      <p><strong>Result:</strong> He maintained his professional standing but couldn't prevent the disaster. His documentation became crucial evidence later — but seven people died.</p>
+      <p><em>Question: Was this the right choice? Or does staying within the system become complicity when you know people will die?</em></p>`,
+  2: `<h4>The Nuclear Option</h4>
+      <p>Going public before the disaster would have been career suicide. Boisjoly would likely have been fired immediately and blacklisted from aerospace.</p>
+      <p><strong>Would it have worked?</strong> Maybe. Public pressure might have forced a fleet grounding. Or NASA might have dismissed it as a disgruntled employee. We'll never know.</p>
+      <p><em>The whistleblower paradox: You have to sacrifice everything to maybe prevent harm.</em></p>`,
+  3: `<h4>Washing Your Hands</h4>
+      <p>Resigning publicly would have protected Boisjoly's conscience. But it wouldn't have stopped the launches. Someone less knowledgeable or less willing to fight might have taken his place.</p>
+      <p>Walking away can feel like abandoning your post. If you're the person who sees the danger, do you have a duty to stay even when it's hopeless?</p>`,
+  4: `<h4>The Long Game</h4>
+      <p>Document everything. Create an unassailable record. If disaster strikes, the truth will be preserved. This was part of what Boisjoly did — his memos became the evidence that exposed management's failures.</p>
+      <p><em>But is "creating evidence for after the disaster" enough when you know people will die?</em></p>`,
+};
+
+function selectChoice(el, choice, scenario) {
+  // ARIA update and visual state
+  el.closest('.interactive-box').querySelectorAll('.scenario-choice').forEach(c => {
+    c.classList.remove('selected');
+    c.setAttribute('aria-pressed', 'false');
+  });
+  el.classList.add('selected');
+  el.setAttribute('aria-pressed', 'true');
+
+  const fb = document.getElementById(`sf-${scenario}`);
+  if (fb) {
+    fb.innerHTML = CHOICE_FEEDBACK[choice] || '';
+    fb.classList.add('show');
+  }
+}
+
+
+// ─────────────────────────────────────────────────
+// PRF COMPARISON
+// ─────────────────────────────────────────────────
+function showComparison() {
+  const identity    = loadSaved('my-identity');
+  const rule        = loadSaved('my-rule');
+  const constructors= loadSaved('my-constructors');
+
+  const display = document.getElementById('comparisonDisplay');
+  if (!display) return;
+
+  if (!identity && !rule && !constructors) {
+    alert('Please fill out at least one field above to see the comparison.');
+    return;
+  }
+
+  // PRF personalization block
+  let prfBlock = '';
+  if (PRF.isLoaded()) {
+    const meta = PRF.FW_META[PRF.getFramework()] || {};
+    const atcfLabel = { low: 'low sensitivity — high resilience', medium: 'medium sensitivity', high: 'high sensitivity — watch for faster capacity degradation' }[PRF.getATCFTier()] || '';
+    const cpfcStr   = PRF.getCPFC() != null ? ` · C_PFC: ${PRF.getCPFC().toFixed(3)} (${PRF.getCPFC() > 0.5 ? 'Manual mode' : 'Automatic mode'})` : '';
+    prfBlock = `
+      <div style="background:#f0faf4;border:2px solid #3a8a5c;border-radius:.5rem;padding:1rem;margin-top:1rem">
+        <p style="font-weight:700;color:#1a5c35;margin-bottom:.5rem">Your PRF-22 Profile</p>
+        <p style="font-size:.88rem;color:#2a4a30"><strong>Dominant framework:</strong> ${meta.icon || ''} ${meta.name || ''}</p>
+        <p style="font-size:.88rem;color:#2a4a30"><strong>ATCF:</strong> ${atcfLabel}${cpfcStr}</p>
+        <p style="font-size:.84rem;color:#3a5a40;margin-top:.5rem;font-style:italic">
+          ${PRF.getFramework() === 'relational_we'
+            ? 'Your relational framework aligns most closely with Boisjoly\'s care-for-others orientation — though he expressed it through engineering ethics rather than direct relational concern.'
+            : PRF.getFramework() === 'individual_rights'
+            ? 'Your rights-based framework closely mirrors Boisjoly\'s core reasoning — equal epistemic rights regardless of hierarchy, the rule applies universally.'
+            : PRF.getFramework() === 'hierarchical_role'
+            ? 'Your role-based framework is the framework that was used to override Boisjoly. This gives you unique insight: what would have to change in the authority structure for the hierarchy to have worked correctly?'
+            : PRF.getFramework() === 'custodial_stewardship'
+            ? 'Your custodial framework resonates with Boisjoly\'s sense of obligation to the public — both share a responsibility that extends beyond the immediate transaction.'
+            : 'Your boundary/integrity framework shares Boisjoly\'s sense of non-negotiable limits — the data was the boundary that could not be crossed.'}
+        </p>
+      </div>`;
+  }
+
+  display.innerHTML = `
+    <h4 style="color:#92400e;font-weight:700;margin-bottom:.85rem;font-size:.95rem">🔍 Your PRF vs. Boisjoly's PRF</h4>
+    <div class="comparison-grid">
+      <div class="comparison-col comparison-col-a">
+        <div class="comparison-col-title">Your Forward Pull</div>
+        <p><strong>Core Identity:</strong><br>${identity || '<em>Not yet defined</em>'}</p>
+        <p><strong>Non-Negotiable Rule:</strong><br>${rule || '<em>Not yet defined</em>'}</p>
+        <p><strong>Alternative Paths:</strong><br>${constructors || '<em>Not yet defined</em>'}</p>
+      </div>
+      <div class="comparison-col comparison-col-b">
+        <div class="comparison-col-title">Boisjoly's Forward Pull</div>
+        <p><strong>Core Identity:</strong><br>"I am a professional engineer who serves public safety."</p>
+        <p><strong>Non-Negotiable Rule:</strong><br>"I cannot live with myself if I remain silent when I know people will die."</p>
+        <p><strong>Alternative Paths:</strong><br>Ethics educator, expert witness, public speaker, case study contributor</p>
+      </div>
+    </div>
+    ${prfBlock}
+    <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:.5rem;padding:1rem;margin-top:1rem">
+      <p style="font-weight:600;color:#0c4a6e;margin-bottom:.4rem;font-size:.88rem">💡 Reflection</p>
+      <p style="color:#0c4a6e;font-size:.85rem;line-height:1.65">Is your identity tied to a specific job or a larger purpose? Do you have alternative ways to serve that purpose if your current path becomes untenable? Would your forward pull survive career destruction?</p>
+    </div>`;
+
+  display.style.display = 'block';
+  display.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+
+// ─────────────────────────────────────────────────
+// PERSISTENCE
+// ─────────────────────────────────────────────────
+const KEYS = ['discovery','memo','teleconference','disaster','my-identity','my-rule','my-constructors'];
+
+function autoSave(key, value) {
+  try {
+    localStorage.setItem(`challenger_${key}`, value);
+    const si = document.getElementById(`si-${key}`);
+    if (si) { si.classList.add('show'); setTimeout(() => si.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+
+function loadSaved(key) {
+  try { return localStorage.getItem(`challenger_${key}`) || ''; }
+  catch(e) { return ''; }
+}
+
+function restoreInputs() {
+  // Map input IDs to storage keys
+  const map = {
+    'r-discovery':    'discovery',
+    'r-memo':         'memo',
+    'r-teleconference':'teleconference',
+    'r-disaster':     'disaster',
+    'myIdentity':     'my-identity',
+    'myRule':         'my-rule',
+    'myConstructors': 'my-constructors',
+  };
+  Object.entries(map).forEach(([id, key]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = loadSaved(key);
+  });
+}
+
+
+// ─────────────────────────────────────────────────
+// EXPORT
+// ─────────────────────────────────────────────────
+function exportReflections() {
+  const div = '='.repeat(60);
+  const sub = '-'.repeat(60);
+  const lines = [
+    'CHALLENGER CASE EXPLORER — MY REFLECTIONS',
+    `Ethics Beyond Boundaries · ${new Date().toLocaleString()}`,
+    div, '',
+    'DISCOVERY REFLECTION:',
+    sub,
+    loadSaved('discovery') || '(Not completed)', '',
+    'MEMO DECISION:',
+    sub,
+    loadSaved('memo') || '(Not completed)', '',
+    'LINE IN THE SAND (Teleconference):',
+    sub,
+    loadSaved('teleconference') || '(Not completed)', '',
+    'MY BOISJOLY MOMENT (Disaster):',
+    sub,
+    loadSaved('disaster') || '(Not completed)', '',
+    'MY CORE IDENTITY:',
+    sub,
+    loadSaved('my-identity') || '(Not completed)', '',
+    'MY NON-NEGOTIABLE RULE:',
+    sub,
+    loadSaved('my-rule') || '(Not completed)', '',
+    'MY ALTERNATIVE CONSTRUCTORS:',
+    sub,
+    loadSaved('my-constructors') || '(Not completed)', '',
+    div,
+    PRF.isLoaded()
+      ? `PRF-22 Profile: ${PRF.getFrameworkName()} · ATCF: ${PRF.getATCFTier()} sensitivity`
+      : 'PRF-22 Profile: Not loaded',
+    div,
+  ];
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `Challenger_Reflections_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+
+// ─────────────────────────────────────────────────
+// PROGRESS MODAL
+// ─────────────────────────────────────────────────
+function showProgress() {
+  const sections = [
+    ['Discovery Reflection',    'discovery'],
+    ['Memo Decision',           'memo'],
+    ['Line in the Sand',        'teleconference'],
+    ['Boisjoly Moment',         'disaster'],
+    ['Core Identity',           'my-identity'],
+    ['Non-Negotiable Rule',     'my-rule'],
+    ['Alternative Constructors','my-constructors'],
+  ];
+
+  const completed = sections.filter(([,k]) => loadSaved(k).trim()).length;
+  const pct = Math.round((completed / sections.length) * 100);
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.setAttribute('aria-labelledby', 'modalTitle');
+
+  modal.innerHTML = `
+    <div class="modal-box">
+      <h2 class="modal-title" id="modalTitle">Your Learning Progress</h2>
+      <div class="progress-bar-track" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar-fill" style="width:${pct}%">${pct}%</div>
+      </div>
+      <p style="color:var(--muted);margin-bottom:1.5rem;font-size:.9rem">${completed} of ${sections.length} reflections completed</p>
+      ${sections.map(([name, key]) => {
+        const done = loadSaved(key).trim().length > 0;
+        return `<div class="progress-item">
+          <span class="progress-check">${done ? '✅' : '⬜'}</span>
+          <span style="${done ? 'color:var(--success);font-weight:600' : 'color:var(--light)'}">${name}</span>
+        </div>`;
+      }).join('')}
+      ${PRF.isLoaded() ? `<div class="progress-item"><span class="progress-check">✅</span><span style="color:var(--success);font-weight:600">PRF-22 Profile Loaded — ${PRF.getFrameworkName()}</span></div>` : ''}
+      <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:.6rem">
+        <button class="btn btn-primary" onclick="exportReflections()" style="width:100%">
+          📥 Download All Reflections
+        </button>
+        <button class="btn btn-secondary" onclick="this.closest('.modal-backdrop').remove()" style="width:100%">
+          Close
+        </button>
+      </div>
+    </div>`;
+
+  // Escape key closes
+  modal.addEventListener('keydown', e => { if (e.key === 'Escape') modal.remove(); });
+  modal.addEventListener('click',   e => { if (e.target === modal)  modal.remove(); });
+
+  document.body.appendChild(modal);
+
+  // Focus first button
+  setTimeout(() => modal.querySelector('.btn-primary')?.focus(), 50);
+}
+
+
+// ─────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────
+renderTimeline();
+
+// Keyboard handler for choice items
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.classList.contains('scenario-choice')) {
+    e.preventDefault();
+    e.target.click();
+  }
+});
+
+</script>
+</body>
+</html>
