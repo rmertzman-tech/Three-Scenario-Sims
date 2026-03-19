@@ -893,6 +893,13 @@ document.getElementById('prfFileInput').addEventListener('change', function() {
     if (result.ok) {
       statusEl.innerHTML = PRF.getBadgeHTML();
       statusEl.style.color = PRF.getFrameworkColor();
+
+      // If student is currently on the Build Your Protection tab,
+      // refresh it immediately so they don't see stale "load your PRF" instructions
+      if (currentEventId === 'rebuilding' && currentTab === 'Build Your Protection') {
+        const ev = TIMELINE.find(e => e.id === 'rebuilding');
+        if (ev) renderDetail(ev);
+      }
     } else {
       statusEl.textContent = `Error: ${result.error}`;
       statusEl.style.color = '#f08080';
@@ -1304,7 +1311,13 @@ The result would be a catastrophe of the highest order — loss of the shuttle a
       'Build Your Protection': () => `
         <div class="prf-builder-panel">
           <h4>🛡️ Define Your Forward Pull</h4>
-          <p>Boisjoly's identity kernel — "I am an engineer who serves public safety" — survived career destruction. What's yours? Fill in the fields below, then load your PRF-22 JSON to see how your framework compares to Boisjoly's.</p>
+          ${PRF.isLoaded()
+            ? `<div style="background:#f0faf4;border:1px solid #3a8a5c;border-radius:.4rem;padding:.75rem 1rem;margin-bottom:.85rem;font-size:.88rem;color:#1a5c35;line-height:1.6">
+                <strong>${PRF.getFrameworkIcon()} PRF loaded — ${PRF.getFrameworkName()}</strong>
+                · Your profile is already active. Fill in the fields below and click the button to see how your framework compares to Boisjoly's.
+               </div>`
+            : `<p>Boisjoly's identity kernel — "I am an engineer who serves public safety" — survived career destruction. What's yours? Fill in the fields below. If you'd like a personalized framework comparison, load your PRF-22 JSON using the <strong>Load My PRF</strong> button at the top of the page.</p>`
+          }
 
           <div class="prf-field">
             <label for="myIdentity">My Core Identity (who am I, regardless of job title?)</label>
@@ -1320,22 +1333,10 @@ The result would be a catastrophe of the highest order — loss of the shuttle a
           </div>
 
           <button class="btn btn-primary" onclick="showComparison()" style="margin-top:.5rem">
-            Compare My PRF to Boisjoly's
+            ${PRF.isLoaded() ? `${PRF.getFrameworkIcon()} Compare My PRF to Boisjoly's` : 'Compare My PRF to Boisjoly\'s'}
           </button>
 
           <div id="comparisonDisplay" style="display:none;margin-top:1.5rem"></div>
-
-          <!-- PRF JSON personalized analysis -->
-          <div id="prfPersonalized" style="margin-top:1.25rem;display:none">
-            <div class="prf-result-panel visible" id="prfResultPanel">
-              <div class="prf-result-badge">
-                <span id="prfResultIcon"></span>
-                <span class="prf-result-badge-name" id="prfResultName"></span>
-              </div>
-              <div class="prf-result-text" id="prfResultText"></div>
-              <div class="prf-result-atcf" id="prfResultATCF"></div>
-            </div>
-          </div>
         </div>
 
         <div class="interactive-box" style="margin-top:1.5rem">
@@ -1431,6 +1432,20 @@ function renderDetail(ev) {
   // Tab content
   document.getElementById('tabContent').innerHTML = ev.tabs[currentTab]();
   restoreInputs();
+
+  // If PRF is loaded and we're on the Build Your Protection tab,
+  // auto-show the comparison so students don't think they need to re-load
+  if (PRF.isLoaded() && currentTab === 'Build Your Protection') {
+    setTimeout(() => {
+      const hasContent = loadSaved('my-identity') || loadSaved('my-rule') || loadSaved('my-constructors');
+      if (hasContent) {
+        showComparison();
+      } else {
+        // Show just the PRF framework panel without requiring text fields
+        showPRFFrameworkPanel();
+      }
+    }, 120);
+  }
 }
 
 function selectTab(evId, tabName) {
@@ -1788,6 +1803,49 @@ function selectChoice(el, choice, scenario) {
   }
 }
 
+
+// ─────────────────────────────────────────────────
+// PRF FRAMEWORK PANEL — shows PRF reading without
+// requiring text fields to be filled first
+// ─────────────────────────────────────────────────
+function showPRFFrameworkPanel() {
+  if (!PRF.isLoaded()) return;
+  const display = document.getElementById('comparisonDisplay');
+  if (!display) return;
+
+  const meta     = PRF.FW_META[PRF.getFramework()] || {};
+  const atcfLabel= { low: 'low sensitivity — high resilience', medium: 'medium sensitivity', high: 'high sensitivity — watch for faster capacity degradation' }[PRF.getATCFTier()] || '';
+  const cpfcStr  = PRF.getCPFC() != null ? ` · C_PFC: ${PRF.getCPFC().toFixed(3)} (${PRF.getCPFC() > 0.5 ? 'Manual mode' : 'Automatic mode'})` : '';
+
+  const frameworkNote = {
+    individual_rights:     `Your rights-based framework closely mirrors Boisjoly's core reasoning — equal epistemic rights regardless of hierarchy, the rule applies universally. He would have recognized your lens immediately.`,
+    relational_we:         `Your relational framework aligns with Boisjoly's care-for-others orientation — though he expressed it through engineering ethics rather than direct relational concern. Both arrive at the same obligation through different paths.`,
+    hierarchical_role:     `Your role-based framework is the framework that was used to override Boisjoly. This gives you unique insight: from inside this framework, what would have needed to change in the authority structure for the hierarchy to have worked correctly?`,
+    boundary_integrity:    `Your boundary/integrity framework shares Boisjoly's sense of non-negotiable limits — the data was the line that could not be crossed. You would have felt the violation of that boundary acutely.`,
+    custodial_stewardship: `Your custodial framework resonates with Boisjoly's sense of obligation extending beyond the immediate transaction — a responsibility to those who came before (the engineering knowledge) and those who come after (the public).`,
+  }[PRF.getFramework()] || '';
+
+  display.innerHTML = `
+    <div style="background:linear-gradient(135deg,#1a2744,#243560);border-radius:.6rem;padding:1.25rem;">
+      <div style="font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--ucp-gold);margin-bottom:.85rem">
+        Your PRF-22 Profile — Active
+      </div>
+      <div style="font-size:1.05rem;font-weight:bold;color:#fff;margin-bottom:.5rem">
+        ${meta.icon || ''} ${meta.name || ''}
+      </div>
+      <div style="font-size:.84rem;color:rgba(255,255,255,.55);font-family:'Courier New',monospace;margin-bottom:.85rem">
+        ATCF: ${atcfLabel}${cpfcStr}
+      </div>
+      <div style="font-size:.9rem;color:rgba(255,255,255,.82);line-height:1.7;border-left:3px solid ${PRF.getFrameworkColor()};padding-left:12px">
+        ${frameworkNote}
+      </div>
+      <div style="margin-top:1rem;padding-top:.85rem;border-top:1px solid rgba(255,255,255,.12);font-size:.82rem;color:rgba(255,255,255,.5);font-style:italic">
+        Fill in the fields above and click the button to see the full side-by-side comparison with Boisjoly's framework.
+      </div>
+    </div>`;
+
+  display.style.display = 'block';
+}
 
 // ─────────────────────────────────────────────────
 // PRF COMPARISON
