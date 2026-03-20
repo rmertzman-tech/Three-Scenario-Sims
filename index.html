@@ -3521,19 +3521,19 @@
       <!-- Three metric cards — with phenomenological threshold phrases -->
       <div class="metrics-row">
         <div class="metric-card ${lambdaColorClass(mC.lambda_raw)}">
-          <div class="m-label">λ Raw <a href="ucp-metrics-reference.html#lambda-raw" target="_blank" title="What λ Raw measures" style="font-size:0.82rem;color:var(--prf-sky);margin-left:4px;text-decoration:none;opacity:.7">ⓘ</a></div>
+          <div class="m-label">λ Raw <button onclick="showMetricsExplainer()" aria-label="What λ Raw measures" title="What λ Raw measures" style="font-size:0.82rem;color:var(--prf-sky);margin-left:4px;background:none;border:none;cursor:pointer;opacity:.8;font-family:'Courier New',monospace;padding:0">ⓘ</button></div>
           <div class="m-value">${mC.lambda_raw.toFixed(3)}</div>
           <div class="m-name">Coordination Capacity</div>
           <div class="m-threshold">${lambdaRawPhrase(mC.lambda_raw)}</div>
         </div>
         <div class="metric-card ${lambdaColorClass(mC.lambda_perceived)}">
-          <div class="m-label">λ Perceived <a href="ucp-metrics-reference.html#lambda-perceived" target="_blank" title="What λ Perceived measures" style="font-size:0.82rem;color:var(--prf-sky);margin-left:4px;text-decoration:none;opacity:.7">ⓘ</a></div>
+          <div class="m-label">λ Perceived <button onclick="showMetricsExplainer()" aria-label="What λ Perceived measures" title="What λ Perceived measures" style="font-size:0.82rem;color:var(--prf-sky);margin-left:4px;background:none;border:none;cursor:pointer;opacity:.8;font-family:'Courier New',monospace;padding:0">ⓘ</button></div>
           <div class="m-value">${mC.lambda_perceived.toFixed(3)}</div>
           <div class="m-name">Experienced Coordination</div>
           <div class="m-threshold">${lambdaPerceivedPhrase(mC.lambda_perceived)}</div>
         </div>
         <div class="metric-card ${frictionColorClass(mC.friction)}">
-          <div class="m-label">Friction <a href="ucp-metrics-reference.html#friction" target="_blank" title="What Friction measures" style="font-size:0.82rem;color:var(--prf-sky);margin-left:4px;text-decoration:none;opacity:.7">ⓘ</a></div>
+          <div class="m-label">Friction <button onclick="showMetricsExplainer()" aria-label="What Friction measures" title="What Friction measures" style="font-size:0.82rem;color:var(--prf-sky);margin-left:4px;background:none;border:none;cursor:pointer;opacity:.8;font-family:'Courier New',monospace;padding:0">ⓘ</button></div>
           <div class="m-value">${mC.friction.toFixed(3)}</div>
           <div class="m-name">Coordination Loss</div>
           <div class="m-threshold">${frictionPhrase(mC.friction)}</div>
@@ -4000,6 +4000,10 @@
           Average suppression gap: ${(avgGap*100).toFixed(1)}%.
           This section translates those structural numbers into something that travels with you.
         </div>
+        <button onclick="showMetricsExplainer()" aria-haspopup="dialog"
+                style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:8px 16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);border-radius:6px;color:rgba(255,255,255,.85);font-family:'Georgia',serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .2s">
+          🧠 What do λ Raw, λ Perceived and Friction actually mean?
+        </button>
       </div>
 
       ${/* PRF reading */ hasPRF ? `
@@ -4166,6 +4170,78 @@
     if (!html) return;
     body.innerHTML = html;
     card.style.display = 'block';
+  }
+
+  // ─────────────────────────────────────────────────
+  // METRICS EXPLAINER — Scenario Runner
+  // ─────────────────────────────────────────────────
+  function showMetricsExplainer() {
+    const modal = document.createElement('div');
+    modal.setAttribute('role','dialog');
+    modal.setAttribute('aria-modal','true');
+    modal.setAttribute('aria-labelledby','meTitle');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+
+    function meB(sym, sBg, sFg, name, intro, lbls, states, insight) {
+      return `<div style="margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid #d0d8e8">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-family:'Courier New',monospace;font-size:1rem;font-weight:bold;padding:3px 10px;border-radius:5px;background:${sBg};color:${sFg};flex-shrink:0">${sym}</span>
+          <strong style="font-family:'Georgia',serif;font-size:.95rem;color:#1e2433">${name}</strong>
+        </div>
+        <p style="font-size:.86rem;color:#5a6a8a;line-height:1.7;margin-bottom:10px">${intro}</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+          ${states.map((v,i) => {
+            const bg = i===0?'#f2faf5':i===1?'#fdf6ee':'#fef3f2';
+            const c  = i===0?'#3a8a5c':i===1?'#c87843':'#b84444';
+            return `<div style="background:${bg};border-radius:7px;padding:10px 11px;border:1px solid #d0d8e8;border-top:3px solid ${c}">
+              <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:${c};margin-bottom:4px">${lbls[i]}</div>
+              <div style="font-size:.78rem;color:#333;line-height:1.55">${v}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="background:#f0faf4;border-left:3px solid #3a8a5c;border-radius:0 6px 6px 0;padding:9px 13px;font-size:.83rem;color:#1a5c35;line-height:1.6">
+          <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">🔑 In the scenario context</div>${insight}
+        </div>
+        <a href="ucp-metrics-reference.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;margin-top:7px;font-size:.76rem;color:var(--prf-sky);font-family:'Courier New',monospace;text-decoration:none">ⓘ Full technical layer in UCP Metrics Reference →</a>
+      </div>`;
+    }
+
+    modal.innerHTML = `
+    <div style="background:#fff;border-radius:14px;padding:28px;max-width:660px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+      <h2 id="meTitle" style="font-family:'Georgia',serif;font-size:1.35rem;font-weight:700;margin-bottom:10px;color:#1e2433">What Do These Numbers Actually Measure?</h2>
+      <p style="font-size:.86rem;color:#5a6a8a;line-height:1.65;margin-bottom:20px">Each metric describes structural features of the population you configured. These are not performance scores — they reveal what the institutional conditions you designed structurally produce across the population of agents.</p>
+
+      ${meB('λ Raw','#1e3a5f','#7fb3d3','Coordination Capacity — what this population could achieve if nothing suppressed it',
+        `λ Raw measures whether the cognitive infrastructure for deliberate, principled coordination is structurally intact across the agent population. It is determined by the worldview distribution, evidence weighting, and scenario stress you configured — not by individual agent effort. When you compare λ Raw across your four scenario panels, you are comparing what different institutional configurations structurally permit.`,
+        ['High — &gt; 0.70','Degrading — 0.40–0.70','Collapsed — &lt; 0.40'],
+        ['The factory safety or baseline scenario with a balanced worldview distribution: agents maintain full deliberate reasoning capacity because the institutional conditions are not consuming it. They can see the problem, analyze its causes, generate responses, and coordinate on action. The ceiling is intact.',
+         'The whistleblower scenario with a hierarchy-dominant population: agents have the capacity but are spending significant cognitive resources on institutional navigation — who can safely say what, to whom, through which channel — before any of it reaches the actual coordination task.',
+         'The misinformation shock scenario with authority-weighted evidence and role-order dominance: the institutional conditions have replaced principled deliberation with conformity pressure. Agents are no longer asking what is true or right — they are asking what is safe to say. This is λ Raw in collapse.'],
+        'The gap between your highest and lowest λ Raw across four panels tells you which of your configured institutional environments best preserves the structural conditions for deliberate action. This is the most direct comparison the Scenario Runner produces.')}
+
+      ${meB('λ Perceived','#3a2a0a','#e8c56a','Experienced Coordination — what agents in your configured population feel they can safely do',
+        `λ Raw asks what the population could do. λ Perceived asks what agents inside it feel safe actually doing. The suppression gap — displayed below the bars — is the distance between those two values. It measures how much of the population\'s actual coordination capacity is being structurally prevented from reaching decisions. When you activate BioBond, you are specifically targeting this gap: protecting the channel through which capacity reaches action.`,
+        ['High — &gt; 0.70','Constrained — 0.40–0.70','Blocked — &lt; 0.40'],
+        ['Agents in this configuration speak directly. Their analysis reaches the decision. The institutional environment is not filtering what they know before it enters the room. This is the coordination state that BioBond is designed to produce and that most institutional configurations do not naturally sustain.',
+         'Agents participate but self-filter. They share the safe version of their analysis. The uncomfortable observation circulates in side conversations. The decision is made from information that felt safe to contribute, not from the full intelligence of the population. This is the modal state of most institutional environments.',
+         'The population has learned what the institution rewards. What it rewards is not always — or even usually — what the institution actually needs. Agents have adapted. Their adaptation looks like coordination. It is coordinated self-censorship. The institution cannot hear what it most needs to hear.'],
+        'When you activate BioBond at step 4 and watch the suppression gap contract, you are watching a structural intervention restore the channel between knowing and safely saying. The gap after BioBond versus before it is the measurable value of that protection.')}
+
+      ${meB('Friction','#3a1a0a','#f0a060','Coordination Cost — drag produced by worldview distance in your population',
+        `Friction measures the translation cost between agents with different worldviews in your configured population. It is not about dishonesty or bad intentions — it is about the energy consumed when agents with genuinely different frameworks for what counts as evidence, what counts as legitimate authority, and what counts as a valid claim must coordinate with each other. Higher worldview diversity tends to increase friction while also potentially increasing OS2 Synergy when scaffolded correctly.`,
+        ['Low — &lt; 0.25','Moderate — 0.25–0.55','Severe — &gt; 0.55'],
+        ['A population with a narrower worldview distribution in a baseline scenario: agents share enough interpretive framework that coordination proceeds with low translation cost. The risk is homogeneity — the population may be efficient but blind to what its shared framework cannot see.',
+         'A mixed worldview population in a whistleblower scenario: the diversity of frameworks is producing both friction and potential richness. Agents are spending energy on translation that could go toward the problem — but the translation is producing insights that a homogeneous population would miss.',
+         'A highly diverse worldview population in a misinformation shock scenario: the institutional stress has amplified the worldview distance to the point where most of the population\'s energy is going to managing the framework collision rather than addressing the actual coordination challenge. The diversity that could be an asset has become a liability in the absence of OS2 scaffolding.'],
+        'Friction is not always bad. Some friction is the cost of genuine diversity — perspectives that see what the dominant framework cannot. The question is whether your configuration has the OS2 scaffolding (shared task language, structured dialogue, BioBond protection) to convert that friction into productive capability rather than consuming drag.')}
+
+      <button onclick="this.closest('[role=dialog]').remove()" style="width:100%;padding:11px;background:linear-gradient(135deg,#4a7fb5,#1a2744);color:#fff;border:none;border-radius:6px;font-family:'Georgia',serif;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:6px">Close</button>
+    </div>`;
+
+    modal.addEventListener('keydown', e => { if (e.key==='Escape') modal.remove(); });
+    modal.addEventListener('click',   e => { if (e.target===modal)  modal.remove(); });
+    document.body.appendChild(modal);
+    setTimeout(() => modal.querySelector('button')?.focus(), 50);
   }
 
   // ─────────────────────────────────────────────────

@@ -1764,9 +1764,13 @@ function buildChallengerTransfer() {
         <div class="transfer-eyebrow">Synthesis & Transfer</div>
         <div class="transfer-title">What You Take With You From the Challenger Case</div>
         <div class="transfer-subtitle">
-          The simulation is the telescope. This section is what you do after you put it down —
+          The case study is the telescope. This section is what you do after you put it down —
           translating what you engaged with into something that travels with you.
         </div>
+        <button onclick="showMetricsExplainer()" aria-haspopup="dialog"
+                style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:8px 16px;background:rgba(74,127,181,.12);border:1px solid #4a7fb5;border-radius:6px;color:#4a7fb5;font-family:'Georgia',serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .2s">
+          🧠 What do λ Raw, λ Perceived and Friction actually mean?
+        </button>
       </div>
 
       <div class="t-progress-strip">
@@ -2616,6 +2620,83 @@ function showProgress() {
   setTimeout(() => modal.querySelector('.btn-primary')?.focus(), 50);
 }
 
+
+// ─────────────────────────────────────────────────
+// METRICS EXPLAINER — Challenger Case
+// ─────────────────────────────────────────────────
+function showMetricsExplainer() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-backdrop';
+  modal.setAttribute('role','dialog');
+  modal.setAttribute('aria-modal','true');
+  modal.setAttribute('aria-labelledby','meTitle');
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+
+  modal.innerHTML = `
+  <div style="background:#fff;border-radius:14px;padding:28px;max-width:660px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+    <h2 id="meTitle" style="font-family:'Georgia',serif;font-size:1.35rem;font-weight:700;margin-bottom:10px;color:#1e2433">What Do These Numbers Actually Measure?</h2>
+    <p style="font-size:.86rem;color:#5a6a8a;line-height:1.65;margin-bottom:20px">Each metric has a felt, human meaning — grounded here in the Challenger case specifically. These are not performance ratings. They describe the structural conditions inside which ethical action is or isn't possible.</p>
+
+    ${meBlock('λ Raw','#1e3a5f','#7fb3d3','Coordination Capacity — what the institution could do if nothing got in the way',
+      `λ Raw measures whether the kind of thinking required for careful, principled coordination — deliberate, reflective, capable of holding complexity — is structurally available. In the Challenger context it measures whether the people in that system had the cognitive infrastructure to act on what they knew. Institutional pressure, career risk, schedule demands, and political friction all consume this capacity before a single decision is made.`,
+      {high:'High — &gt; 0.70', hmid:'Degrading — 0.40–0.70', hlow:'Collapsed — &lt; 0.40'},
+      {high:'Boisjoly at the teleconference: he could hold the engineering data, the institutional pressure, his professional obligations, and the human stakes simultaneously — and act on all of them. This is high λ Raw. The structure had not yet consumed his deliberate reasoning capacity.',
+       hmid:'Six months of warning ignored. By January 27, the cognitive load of sustained institutional resistance had changed the quality of Boisjoly\'s agency. He was still thinking clearly, but the space for principled action was narrowing with each escalation that went nowhere.',
+       hlow:'The moment when a manager says "take off your engineering hat." The institution is no longer asking for principled analysis — it is asking for organizational compliance. The infrastructure for deliberate ethical reasoning has been replaced by a demand for role conformity.'},
+      'λ Raw is not a measure of effort or courage. It measures whether the structural conditions for deliberate action are intact. Boisjoly had full deliberate capacity. What the system took from him was not his ability to think — it was the channel through which thinking could reach decisions.')}
+
+    ${meBlock('λ Perceived','#3a2a0a','#e8c56a','Felt Coordination — what people actually believe they can safely do',
+      `λ Raw asks: what could this system do? λ Perceived asks: what does it feel safe to actually do? The gap between the two is the Boisjoly number. He knew the shuttle was unsafe. He had the data, the analysis, the professional obligation. What the system suppressed was his felt capacity to act on that knowledge without catastrophic personal cost. That gap — between knowing and being able to safely surface what you know — is what λ Perceived measures.`,
+      {high:'High — &gt; 0.70', hmid:'Constrained — 0.40–0.70', hlow:'Blocked — &lt; 0.40'},
+      {high:'An institutional culture where an engineer can stand up in a meeting, say "I believe this launch will kill people," and have that statement received as data rather than insubordination. Extremely rare. This is what safety culture is supposed to produce and what the NASA/Thiokol system conspicuously did not.',
+       hmid:'Boisjoly speaks at the teleconference. His words reach the room. They do not reach the decision. He is technically present and structurally filtered. He says something adjacent to what he actually knows — framed carefully enough not to burn the relationship, which means framed softly enough not to stop the launch.',
+       hlow:'The morning of January 28. Boisjoly watches the launch from the ground. He knows what is about to happen. He has said everything he can say through every channel available to him. His perceived capacity to act on what he knows is functionally zero. He is there. He is silent. Both are true.'},
+      'The suppression gap — λ Raw minus λ Perceived — is the distance between what the people in a system know and what they can safely say. In the Challenger case this gap was not produced by cowardice. It was produced by a structure that had learned, over years, to reward certain kinds of silence and punish certain kinds of honesty.')}
+
+    ${meBlock('Friction','#3a1a0a','#f0a060','Coordination Cost — energy consumed before any work reaches the actual problem',
+      `Friction is not the same as suppression. Suppression is about voice — what can safely be said. Friction is about drag — how much energy the coordination process itself consumes before any of it reaches the actual problem. In the Challenger case, friction came from the genuine worldview distance between the engineers and management: different frameworks for what counts as evidence, what counts as acceptable risk, what counts as a legitimate professional claim.`,
+      {high:'Low — &lt; 0.25', hmid:'Moderate-High — 0.25–0.65', hlow:'Severe — &gt; 0.65'},
+      {high:'When Feynman dropped the O-ring into ice water at the Rogers Commission hearing, friction collapsed. Everyone in the room suddenly shared the same framework for what the evidence meant. Physical demonstration bypassed the institutional language game entirely. This is what low friction looks like: shared perception of the same reality.',
+       hmid:'The entire July–January period. Engineers and managers were in the same meetings, looking at the same data, and drawing completely different conclusions — not because anyone was lying but because they were using different frameworks to evaluate what the data meant. Every interaction cost more than it should have.',
+       hlow:'The January 27 teleconference. The engineers are speaking engineering; management is speaking organizational reality. The translation cost between these two frameworks is so high that the meeting produces a decision that would be impossible if both sides shared the same interpretive framework. The friction does not produce the wrong decision — it makes the right decision structurally unreachable.'},
+      'Friction and suppression require different interventions. Suppression is fixed by changing power dynamics — removing the cost of honesty. Friction is fixed by building shared language — protocols that let different frameworks communicate without requiring either to abandon its commitments. Treating them as the same problem is why many safety culture interventions fail.')}
+
+    <button onclick="this.closest('[role=dialog]').remove()" style="width:100%;padding:11px;background:linear-gradient(135deg,#4a7fb5,#1a2744);color:#fff;border:none;border-radius:6px;font-family:'Georgia',serif;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:6px">Close</button>
+  </div>`;
+
+  function meBlock(symbol, symBg, symFg, name, intro, labels, states, insight) {
+    return `
+    <div style="margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid #d0d8e8">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-family:'Courier New',monospace;font-size:1rem;font-weight:bold;padding:3px 10px;border-radius:5px;background:${symBg};color:${symFg};flex-shrink:0">${symbol}</span>
+        <strong style="font-family:'Georgia',serif;font-size:.95rem;color:#1e2433">${name}</strong>
+      </div>
+      <p style="font-size:.86rem;color:#5a6a8a;line-height:1.7;margin-bottom:10px">${intro}</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+        ${Object.entries(states).map(([k,v],i) => {
+          const lbl = Object.values(labels)[i];
+          const bg  = i===0?'#f2faf5':i===1?'#fdf6ee':'#fef3f2';
+          const col = i===0?'#3a8a5c':i===1?'#c87843':'#b84444';
+          const bar = i===0?'#3a8a5c':i===1?'#c87843':'#b84444';
+          return `<div style="background:${bg};border-radius:7px;padding:10px 11px;border:1px solid #d0d8e8;border-top:3px solid ${bar}">
+            <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:${col};margin-bottom:4px">${lbl}</div>
+            <div style="font-size:.78rem;color:#333;line-height:1.55">${v}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="background:#f0faf4;border-left:3px solid #3a8a5c;border-radius:0 6px 6px 0;padding:9px 13px;font-size:.83rem;color:#1a5c35;line-height:1.6">
+        <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">🔑 In the Challenger context</div>
+        ${insight}
+      </div>
+      <a href="ucp-metrics-reference.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;margin-top:7px;font-size:.76rem;color:#4a7fb5;font-family:'Courier New',monospace;text-decoration:none">ⓘ Full technical layer in UCP Metrics Reference →</a>
+    </div>`;
+  }
+
+  modal.addEventListener('keydown', e => { if (e.key==='Escape') modal.remove(); });
+  modal.addEventListener('click',   e => { if (e.target===modal)  modal.remove(); });
+  document.body.appendChild(modal);
+  setTimeout(() => modal.querySelector('button')?.focus(), 50);
+}
 
 // ─────────────────────────────────────────────────
 // INIT

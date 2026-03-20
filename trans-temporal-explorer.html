@@ -1808,7 +1808,7 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
       <div class="concept-row">
         <div class="concept-chip">
           <span class="chip-symbol">Top-λ Selection</span>
-          <span class="chip-name">Fitness = Coordination Capacity <a href="ucp-metrics-reference.html#lambda-raw" target="_blank" style="font-size:0.82rem;color:var(--prf-sky);text-decoration:none;opacity:.8">ⓘ λ Raw</a></span>
+          <span class="chip-name">Fitness = Coordination Capacity <button onclick="showMetricsExplainer()" aria-label="What λ Raw measures" style="font-size:0.82rem;color:var(--prf-sky);background:none;border:none;cursor:pointer;opacity:.8;font-family:'Courier New',monospace;padding:0;text-decoration:none">ⓘ λ Raw</button></span>
           <span class="chip-desc">Agents with highest λ Raw become parents of the next generation. The system selects for whoever coordinates best in the current structure — regardless of what they know that can't be safely said.</span>
         </div>
         <div class="concept-chip">
@@ -2878,6 +2878,10 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
           ${n} generations · ${sMode === 'top_lambda' ? 'Top-λ selection' : 'Random selection'} ·
           ${scenario} scenario · This section translates the trajectory into something that travels with you.
         </div>
+        <button onclick="showMetricsExplainer()" aria-haspopup="dialog"
+                style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:8px 16px;background:rgba(74,127,181,.12);border:1px solid #4a7fb5;border-radius:6px;color:#4a7fb5;font-family:'Georgia',serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .2s">
+          🧠 What do λ Raw, λ Perceived and Friction actually mean across generations?
+        </button>
       </div>
 
       <!-- Trajectory narrative -->
@@ -3060,6 +3064,78 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
     if (!html) return;
     el.innerHTML = html;
     el.style.display = 'block';
+  }
+
+  // ─────────────────────────────────────────────────
+  // METRICS EXPLAINER — Trans-Temporal Explorer
+  // ─────────────────────────────────────────────────
+  function showMetricsExplainer() {
+    const modal = document.createElement('div');
+    modal.setAttribute('role','dialog');
+    modal.setAttribute('aria-modal','true');
+    modal.setAttribute('aria-labelledby','meTitle');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+
+    function meB(sym, sBg, sFg, name, intro, lbls, states, insight) {
+      return `<div style="margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid #d0d8e8">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-family:'Courier New',monospace;font-size:1rem;font-weight:bold;padding:3px 10px;border-radius:5px;background:${sBg};color:${sFg};flex-shrink:0">${sym}</span>
+          <strong style="font-family:'Georgia',serif;font-size:.95rem;color:#1e2433">${name}</strong>
+        </div>
+        <p style="font-size:.86rem;color:#5a6a8a;line-height:1.7;margin-bottom:10px">${intro}</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+          ${states.map((v,i) => {
+            const bg = i===0?'#f2faf5':i===1?'#fdf6ee':'#fef3f2';
+            const c  = i===0?'#3a8a5c':i===1?'#c87843':'#b84444';
+            return `<div style="background:${bg};border-radius:7px;padding:10px 11px;border:1px solid #d0d8e8;border-top:3px solid ${c}">
+              <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:${c};margin-bottom:4px">${lbls[i]}</div>
+              <div style="font-size:.78rem;color:#333;line-height:1.55">${v}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="background:#f0faf4;border-left:3px solid #3a8a5c;border-radius:0 6px 6px 0;padding:9px 13px;font-size:.83rem;color:#1a5c35;line-height:1.6">
+          <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">🔑 In the generational context</div>${insight}
+        </div>
+        <a href="ucp-metrics-reference.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;margin-top:7px;font-size:.76rem;color:var(--prf-sky);font-family:'Courier New',monospace;text-decoration:none">ⓘ Full technical layer in UCP Metrics Reference →</a>
+      </div>`;
+    }
+
+    modal.innerHTML = `
+    <div style="background:#fff;border-radius:14px;padding:28px;max-width:660px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+      <h2 id="meTitle" style="font-family:'Georgia',serif;font-size:1.35rem;font-weight:700;margin-bottom:10px;color:#1e2433">What Do These Numbers Actually Measure?</h2>
+      <p style="font-size:.86rem;color:#5a6a8a;line-height:1.65;margin-bottom:20px">In the Trans-Temporal Explorer, each metric measures a feature of the population at a specific generation — and the trajectory across generations tells a story about what your selection mode and scenario are doing to the institution over time.</p>
+
+      ${meB('λ Raw','#1e3a5f','#7fb3d3','Coordination Capacity — what the generation could do if nothing suppressed it',
+        `λ Raw measures whether the cognitive infrastructure for deliberate, principled coordination is structurally intact in a given generation. In the generational context, watch λ Raw across generations rather than at a single point. Under top-λ selection, λ Raw tends to improve because agents with higher coordination capacity are preferentially transmitted. Under random selection, it drifts. What you are watching is the institutional evolution of the conditions for deliberate action.`,
+        ['High — &gt; 0.70','Degrading — 0.40–0.70','Collapsed — &lt; 0.40'],
+        ['A later generation under top-λ selection in a baseline scenario: the institution has been selecting for agents whose PRF configurations support deliberate coordination. The accumulated effect of that selection is a population that structurally maintains higher capacity for principled action than the founding generation. This is cultural evolution working in a coordination-enhancing direction.',
+         'An intermediate generation where the scenario pressure is beginning to interact with the selection mode: capacity is present but under load. The institution is in a transition — the founding culture is eroding, the replacement culture is not yet established. This is the most volatile and most important generation to observe.',
+         'A later generation under random selection in a misinformation shock scenario: the institution has drifted toward configurations that make deliberate action structurally difficult. This is not because anyone chose badly — it is because random selection, under sustained institutional stress, tends to select for agents who are adapted to the stress rather than agents who could resolve it.'],
+        'The λ Raw trajectory across generations is the simulation\'s most important output. An institution that maintains high λ Raw across generations has built coordination capacity into its culture. An institution where λ Raw degrades generation by generation is producing its own eventual failure — not through bad decisions but through the cumulative structural erosion of the conditions for good ones.')}
+
+      ${meB('λ Perceived','#3a2a0a','#e8c56a','Experienced Coordination — what each generation feels it can safely do',
+        `λ Perceived measures what agents in a given generation actually feel safe doing — how much of their coordination capacity they believe they can surface to decisions. The suppression gap — λ Raw minus λ Perceived — is particularly revealing in the generational context: a widening gap over generations means the institution is learning, over time, to silence more of itself. A narrowing gap means the institutional culture is becoming more psychologically safe, regardless of whether raw capacity is changing.`,
+        ['High — &gt; 0.70','Constrained — 0.40–0.70','Blocked — &lt; 0.40'],
+        ['A generation where the selection mode has consistently rewarded agents who speak directly, disagree constructively, and surface uncomfortable information. These agents have transmitted that behavioral pattern to the next cohort through socialization, modeling, and structural incentive. The institutional culture has learned that honesty is safe — and the λ Perceived value reflects that learned safety.',
+         'A generation where the institutional memory contains both the experience of speaking freely and the experience of being punished for it. Agents are navigating a cultural ambiguity: the official culture says speak up; the lived experience of predecessors says be careful. Most agents resolve this ambiguity toward caution. Most of the time.',
+         'A generation where the institutional culture has transmitted, across multiple cohorts, the lesson that certain things are not safe to say. No one decided to create this culture. Each generation learned from the previous one what was rewarded and what was punished, and adapted accordingly. The suppression is now structural — reproduced automatically by socialization rather than by active enforcement.'],
+        'A widening suppression gap across generations is one of the most important warning signs the simulation can produce. It means the institution is becoming progressively less able to hear what it most needs to hear — not because its people are less capable, but because the accumulated culture has made honesty progressively more costly.')}
+
+      ${meB('Friction','#3a1a0a','#f0a060','Coordination Cost — translation drag across worldview difference within each generation',
+        `Friction in the generational context measures the translation cost within a generation — how much energy is consumed by worldview distance between agents who must coordinate. Under top-λ selection, friction often decreases over generations because the selection is converging the population toward PRF configurations that coordinate more efficiently. But watch for the paradox: lower friction sometimes means lower diversity, which means the institution is gaining efficiency while losing the capacity to see what its dominant framework cannot.`,
+        ['Low — &lt; 0.25','Moderate — 0.25–0.55','Severe — &gt; 0.55'],
+        ['A later generation under top-λ selection: the institution has selected for PRF configurations that minimize translation cost. Coordination is efficient. The risk, invisible in the friction number itself, is that the institution has also selected away the worldview diversity that would let it recognize threats its dominant framework cannot see. Efficiency and brittleness often travel together.',
+         'An early or middle generation where the founding diversity is still present but the selection pressure is beginning to reduce it. This is often the most productive state: enough shared language to coordinate effectively, enough diversity to see from multiple angles. Most institutions pass through this state too quickly.',
+         'A generation where a diversity-preserving scenario (ubuntu relational, indigenous custodial) has created high worldview diversity without the OS2 scaffolding to channel it productively. The diversity that could be an institutional asset is manifesting as coordination drag. The institution is rich in perspectives and poor in the shared task language that would let those perspectives reinforce each other.'],
+        'The friction trajectory tells a complementary story to the λ Raw trajectory. An institution that decreases friction by increasing homogeneity is optimizing for short-term coordination efficiency at the cost of long-term adaptive capacity. The question is whether your simulation found a path that maintained productive friction — enough diversity to see broadly, enough shared language to coordinate effectively.')}
+
+      <button onclick="this.closest('[role=dialog]').remove()" style="width:100%;padding:11px;background:linear-gradient(135deg,#4a7fb5,#1a2744);color:#fff;border:none;border-radius:6px;font-family:'Georgia',serif;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:6px">Close</button>
+    </div>`;
+
+    modal.addEventListener('keydown', e => { if (e.key==='Escape') modal.remove(); });
+    modal.addEventListener('click',   e => { if (e.target===modal)  modal.remove(); });
+    document.body.appendChild(modal);
+    setTimeout(() => modal.querySelector('button')?.focus(), 50);
   }
 
   // ─────────────────────────────────────────────────

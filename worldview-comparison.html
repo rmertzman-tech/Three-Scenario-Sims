@@ -3074,19 +3074,19 @@
     // ── Metric rows — now with threshold phrases
     const metricRows = (m) => `
       <div class="comp-metric">
-        <div class="cm-label">λ Raw <a href="ucp-metrics-reference.html#lambda-raw" target="_blank" style="font-size:.6rem;color:var(--prf-sky);text-decoration:none;opacity:.7;margin-left:3px">ⓘ</a></div>
+        <div class="cm-label">λ Raw <button onclick="showMetricsExplainer()" aria-label="What λ Raw measures" style="font-size:.6rem;color:var(--prf-sky);background:none;border:none;cursor:pointer;opacity:.8;margin-left:3px;font-family:'Courier New',monospace">ⓘ</button></div>
         <div class="cm-value ${lambdaClass(m.lambda_raw)}">${m.lambda_raw.toFixed(3)}</div>
         <div class="cm-name">Coordination Capacity</div>
         <div class="cm-threshold">${lambdaRawPhrase(m.lambda_raw)}</div>
       </div>
       <div class="comp-metric">
-        <div class="cm-label">λ Perceived <a href="ucp-metrics-reference.html#lambda-perceived" target="_blank" style="font-size:.6rem;color:var(--prf-sky);text-decoration:none;opacity:.7;margin-left:3px">ⓘ</a></div>
+        <div class="cm-label">λ Perceived <button onclick="showMetricsExplainer()" aria-label="What λ Perceived measures" style="font-size:.6rem;color:var(--prf-sky);background:none;border:none;cursor:pointer;opacity:.8;margin-left:3px;font-family:'Courier New',monospace">ⓘ</button></div>
         <div class="cm-value ${lambdaClass(m.lambda_perceived)}">${m.lambda_perceived.toFixed(3)}</div>
         <div class="cm-name">Experienced Coordination</div>
         <div class="cm-threshold">${lambdaPercPhrase(m.lambda_perceived)}</div>
       </div>
       <div class="comp-metric">
-        <div class="cm-label">Friction <a href="ucp-metrics-reference.html#friction" target="_blank" style="font-size:.6rem;color:var(--prf-sky);text-decoration:none;opacity:.7;margin-left:3px">ⓘ</a></div>
+        <div class="cm-label">Friction <button onclick="showMetricsExplainer()" aria-label="What Friction measures" style="font-size:.6rem;color:var(--prf-sky);background:none;border:none;cursor:pointer;opacity:.8;margin-left:3px;font-family:'Courier New',monospace">ⓘ</button></div>
         <div class="cm-value ${frictionClass(m.friction)}">${m.friction.toFixed(3)}</div>
         <div class="cm-name">Coordination Cost</div>
         <div class="cm-threshold">${frictionPhrase(m.friction)}</div>
@@ -3822,6 +3822,10 @@
             asks what that measurement means for how you navigate institutions, coordinate across
             difference, and develop as an ethical reasoner.
           </div>
+          <button onclick="showMetricsExplainer()" aria-haspopup="dialog"
+                  style="display:inline-flex;align-items:center;gap:7px;margin-top:12px;padding:8px 16px;background:rgba(74,127,181,.12);border:1px solid #4a7fb5;border-radius:6px;color:#4a7fb5;font-family:'Georgia',serif;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .2s">
+            🧠 What do λ Raw, λ Perceived, Friction and OS2 Synergy actually mean?
+          </button>
         </div>
 
         <!-- PRF reading -->
@@ -4010,6 +4014,86 @@
     if (!el) return;
     el.innerHTML = buildWCTransfer();
     el.style.display = 'block';
+  }
+
+  // ─────────────────────────────────────────────────
+  // METRICS EXPLAINER — Worldview Comparison
+  // ─────────────────────────────────────────────────
+  function showMetricsExplainer() {
+    const modal = document.createElement('div');
+    modal.setAttribute('role','dialog');
+    modal.setAttribute('aria-modal','true');
+    modal.setAttribute('aria-labelledby','meTitle');
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto';
+
+    modal.innerHTML = `
+    <div style="background:#fff;border-radius:14px;padding:28px;max-width:660px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.4)">
+      <h2 id="meTitle" style="font-family:'Georgia',serif;font-size:1.35rem;font-weight:700;margin-bottom:10px;color:#1e2433">What Do These Numbers Actually Measure?</h2>
+      <p style="font-size:.86rem;color:#5a6a8a;line-height:1.65;margin-bottom:20px">Each metric describes structural features of how the two frameworks coordinate — or fail to coordinate. These are not preference ratings. They reveal what the institutions dominated by each framework structurally produce.</p>
+
+      ${meB('λ Raw','#1e3a5f','#7fb3d3','Coordination Capacity — the ceiling of what each framework-ecosystem can achieve',
+        `λ Raw measures whether the cognitive infrastructure for deliberate, principled coordination is structurally available to agents inside a framework-dominant institution. When you compare two frameworks, their λ Raw values tell you which institutional environment preserves more of that capacity under the conditions of the scenario you selected.`,
+        ['High — &gt; 0.70','Degrading — 0.40–0.70','Collapsed — &lt; 0.40'],
+        ['Inside a liberal individualist institution running a whistleblower scenario: agents can maintain full deliberate reasoning capacity because the framework\'s own commitments protect dissent. The ceiling is high because the structure is not consuming capacity to enforce conformity.',
+         'Inside a role-order institution under the same scenario: agents must devote significant cognitive resources to navigating the authority structure before their actual analysis can begin. The capacity is there — it\'s being spent on institutional navigation rather than on the problem.',
+         'In any institution where the scenario\'s pressure exceeds the framework\'s tolerance: agents shift to self-protection. The question stops being "what is right" and starts being "what is survivable." Principled deliberation is not absent — it has been crowded out.'],
+        'The gap between the two frameworks\' λ Raw values tells you which institutional environment better preserves the structural conditions for deliberate action. This is not about which framework has better values — it\'s about which institutional structure those values produce when they dominate an organization.')}
+
+      ${meB('λ Perceived','#3a2a0a','#e8c56a','Experienced Coordination — what agents inside each framework actually feel they can safely do',
+        `λ Raw asks: what could agents in this system do? λ Perceived asks: what do they actually feel safe doing? The suppression gap — λ Raw minus λ Perceived — is the most ethically significant comparison number. When Framework A produces a larger gap than Framework B, it means agents inside A-dominant institutions are systematically more likely to self-censor, soften their analysis, or withhold what they actually know.`,
+        ['High — &gt; 0.70','Constrained — 0.40–0.70','Blocked — &lt; 0.40'],
+        ['Agents speak directly. What they know reaches the decision. Their full analysis is available to the room. This is what psychological safety actually looks like when it\'s structurally produced rather than individually cultivated.',
+         'Agents participate but filter themselves. The meeting is technically open. The uncomfortable observation is shared in a corridor conversation afterward. The decision is made from the information that felt safe to share, not from what was actually known.',
+         'Agents are present and functionally mute. They have performed participation. Their actual analysis has not entered the room. The institution has learned, over time, what it wants to hear — and so, over time, has most of the people in it.'],
+        'When you compare the suppression gap across two frameworks, you are comparing how much of each institutional environment\'s intelligence actually reaches its decisions. A framework with high λ Raw but also high suppression gap is producing agents who know things the institution cannot hear.')}
+
+      ${meB('Friction','#3a1a0a','#f0a060','Coordination Cost — drag produced by worldview distance between agents',
+        `Friction is not the same as suppression. Suppression is about power — what the authority structure permits to be said. Friction is about translation cost — how much energy is consumed converting between frameworks before any work reaches the actual problem. When you run the Mixed scenario, you see friction specifically: what happens when two different framework-trained agents must coordinate directly.`,
+        ['Low — &lt; 0.25','Moderate — 0.25–0.55','Severe — &gt; 0.55'],
+        ['Two framework-trained agents have found a shared task language. The sacred boundary agent and the liberal individualist agent are both oriented toward the same specific outcome and have found the vocabulary to communicate about it without requiring either to abandon their framework. This is OS2 coordination in a low-friction state.',
+         'Coordination is happening but it costs. The ubuntu relational agent and the role order agent are both trying to contribute to the same task — but their frameworks for what counts as a contribution, what counts as evidence, and what counts as a legitimate claim keep requiring translation. Progress is real but slow.',
+         'Most energy consumed before work begins. Two frameworks so distant from each other that every exchange requires rebuilding the shared ground that most exchanges assume. In these conditions, the institution\'s actual problem is receiving very little of either agent\'s attention — almost all of it is going to managing the framework collision.'],
+        'Friction and suppression require different interventions. High suppression needs power redistribution — removing the cost of honesty. High friction needs translation scaffolding — shared protocols that let different frameworks communicate. OS2 thinking specifically addresses friction: coordinating through shared task rather than requiring shared framework.')}
+
+      ${meB('OS2 Synergy','#1a3a2a','#7fd8a8','Cross-PRF Bridge — whether different frameworks are coordinating through capability',
+        `OS2 Synergy measures something the other three metrics cannot: whether agents with genuinely different worldviews are successfully using their distinct capabilities to advance a shared task without needing to agree on why the task matters. This is the central concept of capability-based coordination. High OS2 Synergy means the frameworks are bridging — low means each is functioning in isolation despite sharing a nominal goal.`,
+        ['High — &gt; 0.65','Partial — 0.40–0.65','Absent — &lt; 0.40'],
+        ['Framework A agents and Framework B agents are contributing distinct capabilities to the same outcome — and those contributions are building on each other rather than competing. The sacred boundary agent\'s commitment to tradition and the liberal individualist\'s commitment to innovation are both serving the coordination task, each making the other\'s contribution more effective.',
+         'Some cross-framework capability bridging is occurring. Certain pairs of agents have found the task language that lets their contributions reinforce each other. Others are still siloed. The network is working, but leaving capability on the table.',
+         'Each framework is producing contributions that serve its own internal logic rather than the shared task. The simulation is running, coordination is happening within each framework, but the cross-framework capability bridge that would make the whole more than the sum of its parts is absent.'],
+        'OS2 Synergy is the direct empirical measure of whether capability-based coordination is actually occurring. When you compare two framework runs, the OS2 Synergy difference tells you which institutional design better enables agents to coordinate across their genuine differences — not by eliminating those differences but by channeling them toward a shared task.')}
+
+      <button onclick="this.closest('[role=dialog]').remove()" style="width:100%;padding:11px;background:linear-gradient(135deg,#4a7fb5,#1a2744);color:#fff;border:none;border-radius:6px;font-family:'Georgia',serif;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:6px">Close</button>
+    </div>`;
+
+    function meB(sym, sBg, sFg, name, intro, lbls, states, insight) {
+      return `<div style="margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid #d0d8e8">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-family:'Courier New',monospace;font-size:1rem;font-weight:bold;padding:3px 10px;border-radius:5px;background:${sBg};color:${sFg};flex-shrink:0">${sym}</span>
+          <strong style="font-family:'Georgia',serif;font-size:.95rem;color:#1e2433">${name}</strong>
+        </div>
+        <p style="font-size:.86rem;color:#5a6a8a;line-height:1.7;margin-bottom:10px">${intro}</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px">
+          ${states.map((v,i) => {
+            const bg = i===0?'#f2faf5':i===1?'#fdf6ee':'#fef3f2';
+            const c  = i===0?'#3a8a5c':i===1?'#c87843':'#b84444';
+            return `<div style="background:${bg};border-radius:7px;padding:10px 11px;border:1px solid #d0d8e8;border-top:3px solid ${c}">
+              <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:${c};margin-bottom:4px">${lbls[i]}</div>
+              <div style="font-size:.78rem;color:#333;line-height:1.55">${v}</div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div style="background:#f0faf4;border-left:3px solid #3a8a5c;border-radius:0 6px 6px 0;padding:9px 13px;font-size:.83rem;color:#1a5c35;line-height:1.6">
+          <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">🔑 In the comparison context</div>${insight}
+        </div>
+        <a href="ucp-metrics-reference.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;margin-top:7px;font-size:.76rem;color:#4a7fb5;font-family:'Courier New',monospace;text-decoration:none">ⓘ Full technical layer in UCP Metrics Reference →</a>
+      </div>`;
+    }
+
+    modal.addEventListener('keydown', e => { if (e.key==='Escape') modal.remove(); });
+    modal.addEventListener('click',   e => { if (e.target===modal)  modal.remove(); });
+    document.body.appendChild(modal);
+    setTimeout(() => modal.querySelector('button')?.focus(), 50);
   }
 
   // ─────────────────────────────────────────────────
