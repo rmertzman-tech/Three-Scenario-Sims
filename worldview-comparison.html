@@ -920,6 +920,141 @@
     .voices-grid         { grid-template-columns: 1fr; }
   }
 
+/* ══════════════════════════════════════════════
+   SYNTHESIS & TRANSFER — WC
+   ══════════════════════════════════════════════ */
+.wct-section { margin-top: 0; }
+
+.wct-header {
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 10px; padding: 20px 22px; margin-bottom: 14px;
+}
+.wct-eyebrow {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--prf-gold); margin-bottom: 5px;
+}
+.wct-title {
+  font-family: 'Georgia',serif; font-size: 1.25rem;
+  font-weight: 700; color: #fff; margin-bottom: 5px; line-height: 1.2;
+}
+.wct-subtitle {
+  font-size: .86rem; color: rgba(255,255,255,.6);
+  font-style: italic; line-height: 1.6;
+}
+.wct-block {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 10px; padding: 18px 20px; margin-bottom: 14px;
+  box-shadow: 0 1px 6px rgba(26,39,68,.07);
+}
+.wct-block-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.wct-icon  { font-size: 1.2rem; flex-shrink: 0; }
+.wct-btitle { font-family: 'Georgia',serif; font-size: .96rem;
+  font-weight: 700; color: var(--prf-navy); }
+.wct-bsub  { font-size: .77rem; color: var(--prf-muted); font-style: italic; }
+.wct-prose { font-size: .87rem; color: #444; line-height: 1.75; margin-bottom: 10px; }
+.wct-prose strong { color: var(--prf-navy); }
+
+.wct-fw-compare {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;
+}
+.wct-fw-card {
+  border-radius: 8px; padding: 13px 14px; border: 1px solid;
+}
+.wct-fw-label {
+  font-family: 'Courier New',monospace; font-size: .64rem;
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px;
+}
+.wct-fw-name  { font-weight: 700; font-size: .9rem; margin-bottom: 5px; }
+.wct-fw-text  { font-size: .8rem; line-height: 1.55; color: #444; }
+
+.wct-sage-grid {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 12px;
+}
+.wct-sage-card {
+  background: var(--prf-warm); border: 1px solid var(--prf-border);
+  border-radius: 7px; padding: 11px 13px; border-left: 4px solid;
+}
+.wct-sage-label { font-family: 'Courier New',monospace; font-size: .63rem;
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+.wct-sage-name  { font-weight: 700; font-size: .87rem;
+  color: var(--prf-navy); margin-bottom: 3px; }
+.wct-sage-read  { font-size: .78rem; color: #555; line-height: 1.5; }
+
+.wct-abcd-grid {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 12px;
+}
+.wct-abcd-card {
+  background: var(--prf-warm); border: 1px solid var(--prf-border);
+  border-radius: 8px; padding: 12px 13px;
+}
+.wct-letter { font-family: 'Georgia',serif; font-size: 1.3rem;
+  font-weight: 700; line-height: 1; margin-bottom: 2px; }
+.wct-aname  { font-size: .73rem; font-weight: 600;
+  font-family: 'Courier New',monospace; text-transform: uppercase;
+  letter-spacing: .07em; margin-bottom: 6px; }
+.wct-atext  { font-size: .8rem; color: #555; line-height: 1.6; }
+
+.wct-growth {
+  background: #f0f6fa; border: 1px solid var(--prf-sky);
+  border-radius: 8px; padding: 13px 15px; margin-bottom: 10px;
+}
+.wct-growth-label { font-family: 'Courier New',monospace; font-size: .63rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--prf-sky); margin-bottom: 4px; }
+.wct-growth-text  { font-size: .86rem; color: var(--prf-ink); line-height: 1.65; }
+.wct-growth-inv   { margin-top: 7px; padding-top: 7px;
+  border-top: 1px solid rgba(74,127,181,.2);
+  font-size: .79rem; color: var(--prf-muted); font-style: italic; }
+
+.wct-invest {
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 10px; padding: 18px 20px;
+}
+.wct-invest p {
+  font-size: .87rem; color: rgba(255,255,255,.82); line-height: 1.75; margin-bottom: 10px;
+}
+.wct-invest p:last-of-type { margin-bottom: 0; }
+.wct-invest strong { color: var(--prf-amber); }
+
+.wct-textarea {
+  width: 100%; padding: .75rem 1rem;
+  border: 1px solid var(--prf-border); border-radius: 6px;
+  font-family: 'Georgia',serif; font-size: .87rem;
+  margin-top: 7px; min-height: 85px; resize: vertical;
+  line-height: 1.65; background: #fff; color: var(--prf-ink);
+  transition: border-color .2s;
+}
+.wct-textarea:focus {
+  outline: none; border-color: var(--prf-sky);
+  box-shadow: 0 0 0 3px rgba(74,127,181,.12);
+}
+.wct-prompt { font-size: .82rem; font-weight: 600;
+  color: var(--prf-slate); margin-top: 10px; margin-bottom: 2px; }
+.wct-saved  { font-family: 'Courier New',monospace; font-size: .63rem;
+  color: var(--prf-success); margin-top: 2px; display: none; }
+.wct-saved.show { display: block; }
+
+.wct-prf-panel {
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 8px; padding: 13px 16px; margin-bottom: 12px;
+}
+.wct-prf-label {
+  font-family: 'Courier New',monospace; font-size: .63rem;
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px;
+}
+.wct-prf-text {
+  font-size: .86rem; color: rgba(255,255,255,.82); line-height: 1.7;
+}
+
+@media (max-width: 560px) {
+  .wct-fw-compare { grid-template-columns: 1fr; }
+  .wct-sage-grid  { grid-template-columns: 1fr; }
+  .wct-abcd-grid  { grid-template-columns: 1fr; }
+}
+
 </style>
 <script>
 /**
@@ -2329,6 +2464,10 @@
           <li>Which framework produced lower friction in this scenario? Does that mean it is the more ethical framework — or just the more coordinated one? Is there a difference?</li>
         </ol>
       </div>
+
+      <!-- Synthesis & Transfer — populated by JS after results render -->
+      <div id="wcTransferSection" style="display:none;margin-top:14px"></div>
+
     </div>
 
   </div><!-- /#results -->
@@ -3136,6 +3275,9 @@
 
     // ── Cache metrics for PRF refresh after load
     _lastRenderCache = { mA, mB, mM };
+    _lastFWA = fwA;
+    _lastFWB = fwB;
+    _lastScenario = scenarioName;
 
     document.getElementById('perFwReadings').innerHTML = perFwHTML;
 
@@ -3146,6 +3288,9 @@
     // Show results
     document.getElementById('results').classList.add('visible');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Build Transfer section after render
+    renderWCTransfer();
   }
   // ─────────────────────────────────────────────────
   // MFQ CALLOUT RENDERER
@@ -3328,6 +3473,9 @@
   // re-inject personalized text without a new API call.
   // ─────────────────────────────────────────────────
   let _lastRenderCache = null;
+  let _lastFWA = null;
+  let _lastFWB = null;
+  let _lastScenario = null;
 
   function refreshPRFPanels() {
     if (!_lastRenderCache) return;  // no results rendered yet
@@ -3423,6 +3571,446 @@
       document.getElementById('prf-clear-btn').style.display = 'inline-block';
     }
   })();
+
+  // ─────────────────────────────────────────────────
+  // SYNTHESIS & TRANSFER — WORLDVIEW COMPARISON
+  // ─────────────────────────────────────────────────
+
+  const WC_FW_TRANSFER = {
+    individual_rights: {
+      icon: '⚖️', color: '#4a7fb5',
+      strength: 'Your framework immediately locates the ethical problem in procedural fairness — whether every agent has equal epistemic standing regardless of their position in the hierarchy. The simulation\'s suppression gap is, from your lens, an inequality metric.',
+      growthEdge: 'Rights-based frameworks diagnose exclusion precisely but may underweight the relational repair needed after structural failures. The Mixed scenario is where your growing edge lives: coordinating with agents whose frameworks don\'t share your procedural commitments.',
+      invitation: 'Name one situation in your current context where the procedural conditions for equal voice don\'t exist. What would need to change structurally to create them?',
+    },
+    relational_we: {
+      icon: '🤝', color: '#3a8a5c',
+      strength: 'Your framework feels fractured mutual recognition immediately — and the simulation\'s suppression gap registers for you as a relational breakdown, not just an efficiency metric. The Mixed scenario is where your framework is most at home: building bridges across difference.',
+      growthEdge: 'Relational frameworks excel at building the human connection that coordination requires but may underweight structural diagnosis. Understanding why genuine hearing is structurally prevented — not just interpersonally absent — makes your relational instincts more effective.',
+      invitation: 'In a current coordination challenge, ask: is the genuine hearing absent because people aren\'t trying (relational problem) or because the structure makes it costly (structural problem)? They require different interventions.',
+    },
+    hierarchical_role: {
+      icon: '🏛️', color: '#8a6fb5',
+      strength: 'Your framework understands what legitimate authority is supposed to do and can name precisely when it has failed its own purpose. The friction metric is especially legible to you: high friction often signals role confusion or a corrupted chain of command.',
+      growthEdge: 'The framework most likely to produce the suppression patterns in this simulation is also hierarchical/role-based — when authority is used as a gate rather than a channel. Your growing edge is developing a personal threshold test for when to de-coordinate from institutional authority.',
+      invitation: 'Complete this: "The authority structure I work within has failed its own purpose when it ___." Be specific. Notice what it reveals about your actual relationship to the hierarchies you inhabit.',
+    },
+    boundary_integrity: {
+      icon: '🛡️', color: '#c9a84c',
+      strength: 'You feel violations of epistemic integrity immediately — when something that should be non-negotiable is being treated as negotiable. The suppression gap registers for you as a sanctity violation, not just an efficiency cost.',
+      growthEdge: 'Your framework makes you excellent at naming violations but may make you less comfortable with the messy, impure coalition-building needed to address them. Coordinating with agents who read the violation differently is the specific growing edge.',
+      invitation: 'Identify the non-negotiable in a current context — the line that shouldn\'t be crossed. What structural conditions would need to exist for that line to be effectively protected rather than just personally held?',
+    },
+    custodial_stewardship: {
+      icon: '🌱', color: '#4a9a7a',
+      strength: 'Your framework feels the weight of what\'s at risk of being lost — accumulated knowledge, inherited practice, the obligation to those who come after. The simulation\'s historical continuity metrics are especially legible to you.',
+      growthEdge: 'Custodial frameworks may be more oriented toward preservation than toward the disruptive coordination sometimes needed to protect what is inherited. The Mixed scenario tests this: coordinating with frameworks that don\'t share your temporal horizon.',
+      invitation: 'In a current context, what accumulated knowledge or practice is at risk of being lost? Who is the next generation you are a steward for — even if they don\'t know it yet?',
+    },
+  };
+
+  function wcTArea(key, placeholder) {
+    let saved = '';
+    try { saved = localStorage.getItem(`wc_transfer_${key}`) || ''; } catch(e) {}
+    return `
+      <textarea class="wct-textarea" id="wcta-${key}"
+                placeholder="${placeholder}"
+                oninput="wcTSave('${key}', this.value)">${saved}</textarea>
+      <div class="wct-saved" id="wcsi-${key}">✓ Saved</div>`;
+  }
+
+  function wcTSave(key, val) {
+    try {
+      localStorage.setItem(`wc_transfer_${key}`, val);
+      const si = document.getElementById(`wcsi-${key}`);
+      if (si) { si.classList.add('show'); setTimeout(() => si.classList.remove('show'), 2000); }
+    } catch(e) {}
+  }
+
+  const wcSageTierColor = t =>
+    t === 'strong'    ? '#3a8a5c' : t === 'developing' ? '#4a7fb5' :
+    t === 'emerging'  ? '#c87843' : '#8090a8';
+  const wcSageTierLabel = t =>
+    t === 'strong'    ? 'Strong' : t === 'developing' ? 'Developing' :
+    t === 'emerging'  ? 'Emerging' : 'Undertested';
+
+  function inferWCSAGE(mA, mB, mM) {
+    const gapA = (mA.lambda_raw||0) - (mA.lambda_perceived||0);
+    const gapB = (mB.lambda_raw||0) - (mB.lambda_perceived||0);
+    const fricDiff = Math.abs((mA.friction||0) - (mB.friction||0));
+    const ranMixed = mM !== null;
+
+    // See: noticed structural divergence
+    const see = gapA > .15 || gapB > .15 ? 3 : gapA > .08 || gapB > .08 ? 2 : 1;
+
+    // Analyze: engaged with friction / suppression distinction
+    const analyze = fricDiff > .10 ? 3 : ranMixed ? 2 : 1;
+
+    // Generate: ran the mixed scenario — tested cross-framework coordination
+    const generate = ranMixed ? (mM.lambda_perceived > Math.min(mA.lambda_perceived, mB.lambda_perceived) ? 4 : 3) : 1;
+
+    // Engage: compared gap sizes — recognized epistemic justice dimension
+    const engage = (Math.abs(gapA - gapB) > .08) ? 3 : 2;
+
+    const tier = v => v >= 4 ? 'strong' : v >= 3 ? 'developing' : v >= 2 ? 'emerging' : 'undertested';
+
+    return {
+      see:      { score: see,      tier: tier(see) },
+      analyze:  { score: analyze,  tier: tier(analyze) },
+      generate: { score: generate, tier: tier(generate) },
+      engage:   { score: engage,   tier: tier(engage) },
+    };
+  }
+
+  const WC_SAGE_META = {
+    see: {
+      name: 'See',
+      def: 'Perceiving structural divergence across frameworks — not just preference difference.',
+      strong:      'The simulation produced a visible suppression gap difference between the two frameworks. You ran the comparison in a context where that structural divergence was legible. This is the See capacity working: noticing that two frameworks don\'t just prefer different things — they produce structurally different coordination outcomes.',
+      developing:  'The suppression gaps across the two frameworks contain information about structural divergence. Developing the See capacity here means asking: what does the gap difference reveal about which PRF environments make voice structurally safe?',
+      emerging:    'The difference in suppression gaps between Framework A and Framework B is not a preference difference — it\'s a structural one. One environment systematically produces higher suppression than the other. That pattern, noticed early, is the See capacity in action.',
+      undertested: 'Running the comparison in a higher-stress scenario (whistleblower, misinformation shock) would produce sharper structural divergence, making the See capacity more testable.',
+    },
+    analyze: {
+      name: 'Analyze',
+      def: 'Distinguishing friction from suppression — two different structural problems.',
+      strong:      'The friction differential between the two frameworks is structural, not personal. Friction measures worldview distance; suppression measures power asymmetry. The Analyze capacity is specifically about holding that distinction and knowing which intervention applies to which problem.',
+      developing:  'The friction and suppression metrics tell different stories about the two frameworks. Analyzing the distinction — what each reveals about the structural conditions for coordination — is where this capacity deepens.',
+      emerging:    'Running the Mixed scenario is a direct Analyze exercise: it asks what happens to friction and suppression when you force two different frameworks to coordinate. The results are structural data about compatibility, not just preference clash.',
+      undertested: 'The Mixed scenario column is where structural analysis is richest. If you didn\'t run it, that\'s the most direct next step for developing the Analyze capacity.',
+    },
+    generate: {
+      name: 'Generate',
+      def: 'Designing coordination conditions that work across PRF difference.',
+      strong:      'Running the Mixed scenario and engaging with its results is the Generate capacity in direct operation — you asked what cross-framework coordination actually produces, rather than just theorizing about it. The Mixed results are your answer.',
+      developing:  'Generate in the worldview comparison context means asking: given the structural differences between these frameworks, what conditions would allow genuine coordination without requiring either framework to abandon its commitments? The Mixed column is the starting point.',
+      emerging:    'The Generate capacity here is specifically about OS2 thinking: coordinating across PRF difference through shared task rather than value agreement. The conflict diagnosis panel is the beginning of this — it names what the frameworks disagree about and what they implicitly share.',
+      undertested: 'The strongest exercise of Generate here is running the Mixed scenario and asking: what structural intervention (BioBond, role redesign, evidence protocol) would most reduce friction without increasing suppression?',
+    },
+    engage: {
+      name: 'Engage',
+      def: 'Acting on cross-framework analysis — not just describing the difference.',
+      strong:      'You engaged with the suppression gap difference between the two frameworks — you let it raise the ethical question rather than treating it as a data curiosity. That\'s the Engage capacity in the analytical mode: letting the structural finding actually matter.',
+      developing:  'The suppression gap differential between frameworks raises a direct Engage question: if you are inside an institution dominated by one of these frameworks, and you know the structural suppression it produces, what does that knowledge require of you?',
+      emerging:    'The Engage capacity connects analysis to action. The comparison you just ran has implications for how you would advocate for structural change in institutions you inhabit. Naming one specific implication would develop this capacity.',
+      undertested: 'The Engage capacity deepens when the comparison is personal — when the frameworks you\'re comparing include the one you most closely identify with. Try re-running with your dominant PRF framework as one of the two.',
+    },
+  };
+
+  function buildWCTransfer() {
+    if (!_lastRenderCache || !_lastFWA || !_lastFWB) return '';
+
+    const { mA, mB, mM } = _lastRenderCache;
+    const fwA     = _lastFWA;
+    const fwB     = _lastFWB;
+    const scenario = _lastScenario || 'baseline';
+    const hasPRF  = window.UCPProfile && UCPProfile.isLoaded();
+    const fw      = hasPRF ? UCPProfile.getFramework() : null;
+    const prfMeta = hasPRF ? WC_FW_TRANSFER[fw] : null;
+    const sage    = inferWCSAGE(mA, mB, mM);
+
+    const gapA    = ((mA.lambda_raw||0) - (mA.lambda_perceived||0));
+    const gapB    = ((mB.lambda_raw||0) - (mB.lambda_perceived||0));
+    const higherGapFW = gapA > gapB ? fwA.displayName : fwB.displayName;
+    const lowerGapFW  = gapA > gapB ? fwB.displayName : fwA.displayName;
+    const mixGap  = mM ? ((mM.lambda_raw||0) - (mM.lambda_perceived||0)) : null;
+
+    // PRF-aware reading of gap
+    let prfReading = '';
+    if (hasPRF && prfMeta) {
+      prfReading = `
+        <div class="wct-prf-panel" style="border-left:3px solid ${UCPProfile.getFrameworkColor()}">
+          <div class="wct-prf-label" style="color:${UCPProfile.getFrameworkColor()}">${UCPProfile.getFrameworkName()} — Your Lens on This Comparison</div>
+          <div class="wct-prf-text">${prfMeta.strength}<br><br>
+            ${gapA.toFixed(3) !== gapB.toFixed(3)
+              ? `The suppression gap differential — ${(gapA*100).toFixed(0)}% for ${fwA.displayName} vs ${(gapB*100).toFixed(0)}% for ${fwB.displayName} — is, from your ${UCPProfile.getFrameworkName()} lens, a structural finding about which environments make voice safe. That is not a trivial difference.`
+              : `Both frameworks produced similar suppression gaps in this scenario — the structural conditions for voice were roughly equivalent. From your ${UCPProfile.getFrameworkName()} lens, ask whether a higher-stress scenario would reveal structural divergence that this scenario obscured.`}
+          </div>
+        </div>`;
+    }
+
+    // Framework comparison cards
+    const fwCards = `
+      <div class="wct-fw-compare">
+        <div class="wct-fw-card" style="background:#eff6ff;border-color:#4a7fb5">
+          <div class="wct-fw-label" style="color:#4a7fb5">Framework A</div>
+          <div class="wct-fw-name">${fwA.displayName}</div>
+          <div class="wct-fw-text">
+            Suppression gap: <strong>${(gapA*100).toFixed(1)}%</strong> ·
+            Friction: <strong>${(mA.friction||0).toFixed(3)}</strong><br>
+            λ Perceived: <strong>${(mA.lambda_perceived||0).toFixed(3)}</strong>
+          </div>
+        </div>
+        <div class="wct-fw-card" style="background:#fefce8;border-color:#c9a84c">
+          <div class="wct-fw-label" style="color:#b45309">Framework B</div>
+          <div class="wct-fw-name">${fwB.displayName}</div>
+          <div class="wct-fw-text">
+            Suppression gap: <strong>${(gapB*100).toFixed(1)}%</strong> ·
+            Friction: <strong>${(mB.friction||0).toFixed(3)}</strong><br>
+            λ Perceived: <strong>${(mB.lambda_perceived||0).toFixed(3)}</strong>
+          </div>
+        </div>
+      </div>
+      ${mM ? `
+      <div style="background:#f0faf4;border:1px solid #3a8a5c;border-radius:8px;padding:11px 14px;margin-bottom:12px;font-size:.84rem;color:#1a5c35;line-height:1.6">
+        <strong>Mixed (50/50) result:</strong>
+        Gap ${(mixGap*100).toFixed(1)}% · Friction ${(mM.friction||0).toFixed(3)} · λ Perceived ${(mM.lambda_perceived||0).toFixed(3)}
+        &nbsp;·&nbsp; ${mixGap < Math.min(gapA, gapB) + .03
+          ? 'Mixing reduced suppression — cross-framework coordination improved voice safety.'
+          : mixGap > Math.max(gapA, gapB) - .03
+          ? 'Mixing increased suppression — worldview distance consumed more than the bridge produced.'
+          : 'Mixed result was intermediate — partial OS2 bridging occurred.'}
+      </div>` : ''}`;
+
+    // SAGE cards
+    const sageCards = Object.entries(WC_SAGE_META).map(([k, meta]) => {
+      const s = sage[k];
+      return `
+        <div class="wct-sage-card" style="border-left-color:${wcSageTierColor(s.tier)}">
+          <div class="wct-sage-label" style="color:${wcSageTierColor(s.tier)}">${wcSageTierLabel(s.tier)}</div>
+          <div class="wct-sage-name">${meta.name}</div>
+          <div class="wct-sage-read">${meta[s.tier]}</div>
+        </div>`;
+    }).join('');
+
+    // ABCD
+    const agencyText = `The comparison you just ran is a direct Agency exercise: you asked what the structural conditions for voice look like inside two different institutional frameworks, then measured the answer. ${higherGapFW} produced a larger suppression gap — meaning less of agents' coordination capacity reached the decision. Agency requires not just will but structural support. Which of these two environments more closely resembles the institutions you actually navigate?`;
+
+    const beautyText = `There is something worth pausing on: the engine has no opinion about which framework is more ethical. It only reports structural coordination outcomes. And yet the results reveal genuine structural differences in how safe it is to speak inside different kinds of institutions. That structural fairness — or its absence — is not something the frameworks themselves can see about each other. It takes a different kind of measurement. That is what the simulation is for. Notice that this is beautiful: a tool that can reveal what no single framework can see about itself.`;
+
+    const contextText = `The scenario you chose — ${scenario} — shapes what the comparison reveals. High-stress scenarios (whistleblower, misinformation shock) produce sharper structural divergence because they activate the suppression and friction mechanisms most directly. Low-stress scenarios (baseline) reveal the frameworks' coordination floors. Where you are in your professional life shapes which scenario is most relevant to you right now. Which scenario would you run if you wanted to understand the institutional dynamics most present in your actual work?`;
+
+    const dynamismText = hasPRF && prfMeta
+      ? `Your ${UCPProfile.getFrameworkName()} framework has a specific growing edge in cross-framework coordination: ${prfMeta.growthEdge} The specific invitation: ${prfMeta.invitation}`
+      : `The dynamism question from this simulation is: which framework do you most need to be able to coordinate with — the one that most diverges from your own? ${higherGapFW} produced a larger suppression gap in this scenario. If that framework dominates the institutions you work within, the structural conditions for your voice are constrained. Understanding that structurally rather than personally is the developmental move.`;
+
+    // Growth pathway
+    let growthHTML = '';
+    if (hasPRF && prfMeta) {
+      growthHTML = `
+        <div class="wct-growth">
+          <div class="wct-growth-label">${prfMeta.icon} ${UCPProfile.getFrameworkName()} — Strength Here</div>
+          <div class="wct-growth-text">${prfMeta.strength}</div>
+        </div>
+        <div class="wct-growth" style="border-color:#c87843;background:#fff8f0">
+          <div class="wct-growth-label" style="color:#c87843">Growing Edge</div>
+          <div class="wct-growth-text">${prfMeta.growthEdge}</div>
+          <div class="wct-growth-inv">Specific invitation: ${prfMeta.invitation}</div>
+        </div>`;
+    } else {
+      const strongest = Object.entries(sage).sort((a,b) => b[1].score - a[1].score)[0][0];
+      const weakest   = Object.entries(sage).sort((a,b) => a[1].score - b[1].score)[0][0];
+      growthHTML = `
+        <div class="wct-growth">
+          <div class="wct-growth-label">Strongest SAGE Capacity in This Comparison</div>
+          <div class="wct-growth-text">${WC_SAGE_META[strongest].strong}</div>
+        </div>
+        <div class="wct-growth" style="border-color:#c87843;background:#fff8f0">
+          <div class="wct-growth-label" style="color:#c87843">Growing Edge</div>
+          <div class="wct-growth-text">${WC_SAGE_META[weakest].developing}</div>
+          <div class="wct-growth-inv">Load your PRF-22 JSON (header button) for a framework-specific growth pathway.</div>
+        </div>`;
+    }
+
+    return `
+      <div class="wct-section">
+        <div class="wct-header">
+          <div class="wct-eyebrow">Synthesis & Transfer</div>
+          <div class="wct-title">What This Comparison Reveals About You and Your World</div>
+          <div class="wct-subtitle">
+            The simulation measured two frameworks against each other. This section
+            asks what that measurement means for how you navigate institutions, coordinate across
+            difference, and develop as an ethical reasoner.
+          </div>
+        </div>
+
+        <!-- PRF reading -->
+        ${hasPRF ? `
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">${UCPProfile.getFrameworkIcon()}</span>
+            <div>
+              <div class="wct-btitle">Your PRF Reading of This Comparison</div>
+              <div class="wct-bsub">${UCPProfile.getFrameworkName()} · ${UCPProfile.getATCFTier()} ATCF sensitivity</div>
+            </div>
+          </div>
+          ${prfReading}
+          <div class="wct-prompt">What did your framework make immediately visible in this comparison that someone with a different lens might have missed?</div>
+          ${wcTArea('prf-read', 'Write what your specific framework made visible — and what required more effort to see...')}
+        </div>` : `
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">🔭</span>
+            <div>
+              <div class="wct-btitle">PRF Reading — Load Your Profile for Personalization</div>
+              <div class="wct-bsub">The "Load PRF JSON" button above connects your specific framework to this analysis</div>
+            </div>
+          </div>
+          <p class="wct-prose">Your PRF lens shapes which structural differences between these frameworks are immediately visible to you. Loading your PRF-22 JSON will generate a framework-specific reading of what this comparison reveals through your particular lens.</p>
+          <div class="wct-prompt">Without your PRF loaded: which framework's voice — A or B — felt more recognizable to your own way of reading situations, and why?</div>
+          ${wcTArea('prf-read', 'Write about which framework resonated and what that reveals about your own lens...')}
+        </div>`}
+
+        <!-- Framework summary -->
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">📊</span>
+            <div>
+              <div class="wct-btitle">What the Numbers Say About These Two Frameworks</div>
+              <div class="wct-bsub">Structural coordination outcomes — not ethical rankings</div>
+            </div>
+          </div>
+          ${fwCards}
+          <p class="wct-prose">
+            These numbers do not say which framework is more ethical — they say which structural
+            conditions each framework produces for voice, coordination, and the safe surfacing
+            of knowledge. <strong>${higherGapFW}</strong> produced a larger suppression gap
+            in this scenario: more coordination capacity that could not safely surface.
+            That is a structural finding about the institutional environment that framework
+            creates — not a moral verdict about the people who hold it.
+          </p>
+          <div class="wct-prompt">In an institution dominated by ${higherGapFW} thinking, what would a person with ${lowerGapFW} values need to do to have their voice reach decisions?</div>
+          ${wcTArea('fw-reflect', 'Think about the structural conditions, not just the interpersonal ones...')}
+        </div>
+
+        <!-- SAGE profile -->
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">⚡</span>
+            <div>
+              <div class="wct-btitle">Your SAGE Capacity Profile from This Comparison</div>
+              <div class="wct-bsub">Inferred from the structural features of this run — a map, not a grade</div>
+            </div>
+          </div>
+          <div class="wct-sage-grid">${sageCards}</div>
+          <div class="wct-prompt">Which SAGE capacity does cross-framework coordination most directly require — and where are you in developing it?</div>
+          ${wcTArea('sage-reflect', 'What would developing that capacity look like in a real coordination challenge you face?')}
+        </div>
+
+        <!-- ABCD -->
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">🌐</span>
+            <div>
+              <div class="wct-btitle">ABCD — Four Dimensions of Growth</div>
+              <div class="wct-bsub">Agency · Beauty/Awe · Context · Dynamism</div>
+            </div>
+          </div>
+          <div class="wct-abcd-grid">
+            <div class="wct-abcd-card" style="border-top:3px solid var(--prf-sky)">
+              <div class="wct-letter" style="color:var(--prf-sky)">A</div>
+              <div class="wct-aname">Agency</div>
+              <div class="wct-atext">${agencyText}</div>
+            </div>
+            <div class="wct-abcd-card" style="border-top:3px solid var(--prf-gold)">
+              <div class="wct-letter" style="color:var(--prf-gold)">B</div>
+              <div class="wct-aname">Beauty / Awe</div>
+              <div class="wct-atext">${beautyText}</div>
+            </div>
+            <div class="wct-abcd-card" style="border-top:3px solid var(--prf-success)">
+              <div class="wct-letter" style="color:var(--prf-success)">C</div>
+              <div class="wct-aname">Context</div>
+              <div class="wct-atext">${contextText}</div>
+            </div>
+            <div class="wct-abcd-card" style="border-top:3px solid var(--prf-warn)">
+              <div class="wct-letter" style="color:var(--prf-warn)">D</div>
+              <div class="wct-aname">Dynamism</div>
+              <div class="wct-atext">${dynamismText}</div>
+            </div>
+          </div>
+          <div class="wct-prompt">Which dimension is most alive for you from this comparison?</div>
+          ${wcTArea('abcd-reflect', 'Write about one dimension in relation to your specific life situation...')}
+        </div>
+
+        <!-- What you learned -->
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">🛡️</span>
+            <div>
+              <div class="wct-btitle">What You Learned Without Living It</div>
+              <div class="wct-bsub">Pattern recognition that travels with you</div>
+            </div>
+          </div>
+          <p class="wct-prose">
+            You just measured something that most people never get to measure directly:
+            <strong>what different moral frameworks actually produce structurally</strong> —
+            not what they claim to produce, but what the coordination engine shows they produce
+            when you run the same scenario through both of them.
+          </p>
+          <p class="wct-prose">
+            Most people learn the difference between institutional environments through years
+            of lived experience — through noticing that voice works differently in different
+            organizations, that the same knowledge lands differently in different rooms, that
+            some institutions seem structurally designed to use what you know and others
+            seem structurally designed to suppress it. You just learned that pattern structurally,
+            in twenty minutes, without needing to spend a decade inside the wrong institution
+            to figure it out.
+          </p>
+          <p class="wct-prose">
+            What you specifically learned: that the suppression gap is not about individual
+            willingness to speak — it is about structural conditions that make speaking safe
+            or unsafe. That friction and suppression are different problems with different
+            remedies. That mixing frameworks can increase or decrease suppression depending
+            on whether OS2 bridging is available. And that these structural features are
+            <strong>measurable, predictable, and changeable</strong> — which means they
+            are also things you can advocate for changing.
+          </p>
+          <div class="wct-prompt">What is the one structural insight from this comparison that you think will be most useful in your actual life?</div>
+          ${wcTArea('vicarious', 'Name the insight, the context where you\'ll use it, and what you\'ll do differently because of it...')}
+        </div>
+
+        <!-- Growth pathways -->
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">🌱</span>
+            <div>
+              <div class="wct-btitle">Growth Pathways — From Where You Are</div>
+              <div class="wct-bsub">Specific developmental invitations from this comparison</div>
+            </div>
+          </div>
+          ${growthHTML}
+          <div class="wct-prompt">Write one concrete commitment — something you will actually do, with a timeframe.</div>
+          ${wcTArea('commitment', 'I will _____ by _____ because this comparison showed me that _____')}
+        </div>
+
+        <!-- Investment -->
+        <div class="wct-block">
+          <div class="wct-block-header">
+            <span class="wct-icon">⏳</span>
+            <div>
+              <div class="wct-btitle">Why This Investment Was Worth It</div>
+              <div class="wct-bsub">Honoring the attention and time you brought here</div>
+            </div>
+          </div>
+          <div class="wct-invest">
+            <p>Most ethics education asks you to learn what different moral frameworks say.
+            This simulation asked you to learn what different moral frameworks <strong>structurally produce</strong>
+            — not their stated values but their measurable structural consequences for voice,
+            coordination, and the safe surfacing of knowledge.</p>
+            <p>That is a different kind of knowledge. It is the kind of knowledge that lets you
+            walk into a new institution and ask — before the first meeting, before the first
+            conflict — <strong>"what kind of environment does this framework produce for people
+            like me?"</strong> That question, asked early, saves years.</p>
+            <p>You also built a specific capacity: the ability to hold two frameworks in mind
+            simultaneously, to run them through the same scenario, and to read their structural
+            outputs without collapsing one into the other or declaring a winner. That is
+            OS2 thinking — and it is what ethical coordination across genuine difference requires.
+            That is what this time was for.</p>
+          </div>
+          <div class="wct-prompt">What do you want to remember from this comparison six months from now?</div>
+          ${wcTArea('final', 'Write it here so it exists somewhere outside your head...')}
+        </div>
+
+      </div>`;
+  }
+
+  // Called from renderResults to inject Transfer section
+  function renderWCTransfer() {
+    const el = document.getElementById('wcTransferSection');
+    if (!el) return;
+    el.innerHTML = buildWCTransfer();
+    el.style.display = 'block';
+  }
 
   // ─────────────────────────────────────────────────
   // INIT

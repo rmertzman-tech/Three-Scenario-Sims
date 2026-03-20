@@ -694,6 +694,146 @@ footer {
   .header-inner      { padding: 1rem; }
 }
 
+/* ══════════════════════════════════════════════
+   SYNTHESIS & TRANSFER
+   ══════════════════════════════════════════════ */
+.transfer-section { margin-top: 0; }
+
+.transfer-eyebrow {
+  font-family:'Courier New',monospace; font-size:.68rem;
+  text-transform:uppercase; letter-spacing:.14em;
+  color:var(--prf-gold); margin-bottom:6px;
+}
+
+.transfer-title {
+  font-family:'Georgia',serif; font-size:1.3rem;
+  font-weight:700; color:#fff; margin-bottom:6px; line-height:1.2;
+}
+
+.transfer-subtitle {
+  font-size:.88rem; color:rgba(255,255,255,.6);
+  font-style:italic; line-height:1.6; margin-bottom:18px;
+}
+
+.t-block {
+  background:#fff; border:1px solid var(--prf-border);
+  border-radius:10px; padding:18px 20px; margin-bottom:14px;
+  box-shadow:0 1px 6px rgba(26,39,68,.08);
+}
+
+.t-block-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+
+.t-block-icon { font-size:1.2rem; flex-shrink:0; }
+
+.t-block-title {
+  font-family:'Georgia',serif; font-size:.98rem;
+  font-weight:700; color:var(--prf-navy);
+}
+
+.t-block-sub {
+  font-size:.78rem; color:var(--prf-muted); font-style:italic;
+}
+
+.t-prose {
+  font-size:.88rem; color:#444; line-height:1.75; margin-bottom:10px;
+}
+.t-prose strong { color:var(--prf-navy); }
+.t-prose em     { color:var(--prf-slate); }
+
+.t-prf-panel {
+  background:linear-gradient(135deg,var(--prf-deep),var(--prf-navy));
+  border-radius:8px; padding:14px 16px; margin-bottom:12px;
+}
+.t-prf-label {
+  font-family:'Courier New',monospace; font-size:.64rem;
+  text-transform:uppercase; letter-spacing:.1em; margin-bottom:5px;
+}
+.t-prf-text {
+  font-size:.87rem; color:rgba(255,255,255,.82); line-height:1.7;
+}
+
+.sage-grid-ch {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:12px;
+}
+
+.sage-card-ch {
+  background:var(--prf-warm); border:1px solid var(--prf-border);
+  border-radius:7px; padding:11px 13px; border-left:4px solid;
+}
+.sage-card-label { font-family:'Courier New',monospace; font-size:.64rem;
+  text-transform:uppercase; letter-spacing:.08em; margin-bottom:2px; }
+.sage-card-name  { font-weight:700; font-size:.88rem; color:var(--prf-navy); margin-bottom:3px; }
+.sage-card-read  { font-size:.78rem; color:#555; line-height:1.5; }
+
+.abcd-grid-ch {
+  display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:12px;
+}
+.abcd-card-ch {
+  background:var(--prf-warm); border:1px solid var(--prf-border);
+  border-radius:8px; padding:12px 13px;
+}
+.abcd-letter { font-family:'Georgia',serif; font-size:1.3rem;
+  font-weight:700; line-height:1; margin-bottom:2px; }
+.abcd-name   { font-size:.74rem; font-weight:600; font-family:'Courier New',monospace;
+  text-transform:uppercase; letter-spacing:.07em; margin-bottom:6px; }
+.abcd-text   { font-size:.8rem; color:#555; line-height:1.6; }
+
+.growth-ch {
+  background:#f0f6fa; border:1px solid var(--prf-sky);
+  border-radius:8px; padding:13px 15px; margin-bottom:10px;
+}
+.growth-label { font-family:'Courier New',monospace; font-size:.64rem;
+  text-transform:uppercase; letter-spacing:.1em; color:var(--prf-sky); margin-bottom:4px; }
+.growth-text  { font-size:.86rem; color:var(--prf-ink); line-height:1.65; }
+.growth-inv   { margin-top:7px; padding-top:7px; border-top:1px solid rgba(74,127,181,.2);
+  font-size:.8rem; color:var(--prf-muted); font-style:italic; line-height:1.55; }
+
+.invest-block {
+  background:linear-gradient(135deg,var(--prf-deep),var(--prf-navy));
+  border-radius:10px; padding:18px 20px;
+}
+.invest-block p {
+  font-size:.88rem; color:rgba(255,255,255,.82); line-height:1.75; margin-bottom:10px;
+}
+.invest-block p:last-of-type { margin-bottom:0; }
+.invest-block strong { color:var(--prf-amber); }
+
+.t-textarea {
+  width:100%; padding:.75rem 1rem;
+  border:1px solid var(--prf-border); border-radius:6px;
+  font-family:'Georgia',serif; font-size:.88rem;
+  margin-top:7px; min-height:88px; resize:vertical;
+  line-height:1.65; background:#fff; color:var(--prf-ink);
+  transition:border-color .2s;
+}
+.t-textarea:focus { outline:none; border-color:var(--prf-sky);
+  box-shadow:0 0 0 3px rgba(74,127,181,.12); }
+
+.t-prompt {
+  font-size:.82rem; font-weight:600; color:var(--prf-slate);
+  margin-top:10px; margin-bottom:2px;
+}
+
+.t-saved {
+  font-family:'Courier New',monospace; font-size:.64rem;
+  color:var(--prf-success); margin-top:2px; display:none;
+}
+.t-saved.show { display:block; }
+
+.t-progress-strip {
+  background:var(--prf-warm); border:1px solid var(--prf-border);
+  border-radius:8px; padding:12px 15px; margin-bottom:16px;
+  font-size:.84rem; color:var(--prf-muted); line-height:1.6;
+}
+.t-progress-strip strong { color:var(--prf-navy); }
+
+@media(max-width:560px){
+  .sage-grid-ch { grid-template-columns:1fr; }
+  .abcd-grid-ch { grid-template-columns:1fr; }
+}
+
   </style>
 </head>
 <body>
@@ -1359,6 +1499,17 @@ The result would be a catastrophe of the highest order — loss of the shuttle a
         </div>`,
     }
   },
+
+  // ── 6th event: Synthesis & Transfer
+  {
+    id: 'transfer',
+    date: 'After Reflection',
+    title: 'Synthesis & Transfer — What You Take With You',
+    critical: false,
+    tabs: {
+      'Your Transfer': buildChallengerTransfer,
+    }
+  },
 ];
 
 
@@ -1380,6 +1531,414 @@ function buildWorldviewLink(fwA, fwB, desc) {
     </div>`;
 }
 
+
+// ─────────────────────────────────────────────────
+// SYNTHESIS & TRANSFER — CHALLENGER
+// ─────────────────────────────────────────────────
+
+// Shared PRF transfer content (Challenger-specific framing)
+const CH_PRF_TRANSFER = {
+  individual_rights: {
+    reading: (simGap) => `Your rights-based framework made the epistemic injustice of the Challenger disaster immediately legible: Boisjoly had an equal right to contribute his knowledge to the launch decision, and that right was structurally nullified. ${simGap !== null ? `The suppression gap in your teleconference simulation (${(simGap*100).toFixed(0)}%) is the number that measures exactly what your framework is calibrated to feel — the distance between equal standing and structural exclusion.` : `The suppression gap your teleconference simulation measured is the number that quantifies what your framework is calibrated to feel.`}`,
+    strength: 'You have a precise vocabulary for naming epistemic injustice — when someone\'s right to contribute what they know to decisions that affect them has been structurally removed. This is rare. Most people feel that something is wrong without being able to name it precisely.',
+    growthEdge: 'Rights-based frameworks excel at diagnosis but may underweight the relational repair needed after structural failures. Boisjoly\'s post-disaster work required building coalitions with people who read the problem very differently.',
+    invitation: 'Name one situation in your current life where someone\'s equal right to contribute to a decision that affects them has been quietly removed. What would restoring that right require — structurally, not just interpersonally?',
+  },
+  relational_we: {
+    reading: (simGap) => `Your relational framework experienced the Challenger disaster as a collapse of mutual recognition: the people in the teleconference room stopped genuinely hearing each other. Boisjoly was present; his knowledge was structurally absent. ${simGap !== null ? `The ${(simGap*100).toFixed(0)}% gap in your simulation measures the distance between formal presence and genuine attention.` : `The suppression gap measures the distance between formal presence and genuine attention.`}`,
+    strength: 'You feel fractured mutual recognition immediately and work instinctively to restore it. The human cost of the Challenger disaster — to Boisjoly, to the families — registers for you as relational as well as structural.',
+    growthEdge: 'Your framework may experience coordination failures as relational problems when they are simultaneously institutional ones. The teleconference wasn\'t just about people not listening — it was about organizational structures that made listening institutionally costly.',
+    invitation: 'Identify one current context where genuine hearing is being structurally prevented rather than personally withheld. What would need to change structurally — not just interpersonally — for genuine attention to become possible?',
+  },
+  hierarchical_role: {
+    reading: (simGap) => `Your role-based framework sees the Challenger disaster as a failure of legitimate authority to honor its own purpose. "Take off your engineering hat" was authority used as a suppression mechanism rather than a coordination channel — the exact inversion of what legitimate hierarchy is supposed to do. ${simGap !== null ? `Your simulation produced a ${(simGap*100).toFixed(0)}% suppression gap — authority acting as a gate rather than a channel.` : `The suppression gap your simulation produced measures authority acting as a gate rather than a channel.`}`,
+    strength: 'You understand precisely what legitimate authority is supposed to do, and you can name exactly when it has failed its own stated purpose. This analytical capacity is rare and valuable.',
+    growthEdge: 'The framework used to override Boisjoly was hierarchical/role-based and felt justified from within. Your growing edge is developing a personal threshold test: at what point has institutional authority failed its purpose sufficiently to warrant de-coordination?',
+    invitation: 'Write one sentence: "The authority structure I work within has failed its own purpose when it ___." Keep it honest. Notice what it reveals about your actual relationship to the hierarchies you inhabit.',
+  },
+  boundary_integrity: {
+    reading: (simGap) => `Your boundary/integrity framework experienced the Challenger disaster as a sanctity violation — the systematic treatment of something non-negotiable (Boisjoly\'s engineering data, his explicit warning) as organizationally manageable. ${simGap !== null ? `The ${(simGap*100).toFixed(0)}% suppression gap is the measure of that violation — the distance between what was known and what was allowed to matter.` : `The suppression gap is the measure of that violation.`}`,
+    strength: 'You feel violations of epistemic integrity immediately — the moment something that should be non-negotiable is being treated as negotiable. Boisjoly had this sensitivity. The institution worked specifically to suppress it.',
+    growthEdge: 'Your framework makes you excellent at naming violations but may make you less comfortable with the messy coalition-building needed to address them. Boisjoly couldn\'t act alone — he needed the journalist, the commission, the public. Building those bridges requires tolerating impurity in the coalition.',
+    invitation: 'Identify the one non-negotiable in your current professional or personal context — the line you will not cross. What structural conditions would need to exist for that line to be effectively protected rather than just personally held?',
+  },
+  custodial_stewardship: {
+    reading: (simGap) => `Your custodial framework experienced the Challenger disaster as a generational betrayal — the systematic suppression of accumulated knowledge (what Boisjoly knew about O-ring behavior, what engineers had documented for months) from reaching the decision it needed to inform. ${simGap !== null ? `The ${(simGap*100).toFixed(0)}% suppression gap measures the distance between what was inherited and what was allowed to reach the present decision.` : `The suppression gap measures the distance between accumulated knowledge and the present decision.`}`,
+    strength: 'You feel the weight of what\'s being lost — accumulated knowledge, the obligation to those who come after — most acutely. Boisjoly\'s post-disaster work was explicitly custodial: he spent decades ensuring that what he knew would reach future engineers.',
+    growthEdge: 'Your framework may be more oriented toward preservation than toward the disruptive coordination sometimes needed to protect what is inherited. Protecting accumulated knowledge from institutional suppression sometimes requires actively disrupting the structures that would otherwise erase it.',
+    invitation: 'In your current context — profession, community, family — what accumulated knowledge or practice is at risk of being lost because the structural conditions for transmitting it don\'t exist? And what is the smallest action you could take to begin building those conditions?',
+  },
+};
+
+// SAGE inference for Challenger — based on reflection completion and UCP sim usage
+function inferChallengerSAGE() {
+  const reflections = {
+    discovery:      loadSaved('discovery'),
+    memo:           loadSaved('memo'),
+    teleconference: loadSaved('teleconference'),
+    disaster:       loadSaved('disaster'),
+    identity:       loadSaved('my-identity'),
+    rule:           loadSaved('my-rule'),
+    constructors:   loadSaved('my-constructors'),
+  };
+
+  const completed  = Object.values(reflections).filter(v => v.trim()).length;
+  const ranSimA    = _simDataA !== null;
+  const ranSimB    = _simDataB !== null;
+  const hasIdentity= reflections.identity.trim().length > 10;
+  const hasRule    = reflections.rule.trim().length > 10;
+  const hasBoth    = _simDataA && _simDataB;
+
+  // See: Did they engage with early structural signals?
+  const seeScore = (reflections.discovery.trim().length > 30 ? 2 : 0)
+    + (completed >= 4 ? 1 : 0);
+
+  // Analyze: Did they dig into structural causes?
+  const analyzeScore = (reflections.teleconference.trim().length > 30 ? 2 : 0)
+    + (reflections.disaster.trim().length > 30 ? 1 : 0)
+    + (ranSimA ? 1 : 0);
+
+  // Generate: Did they build forward-looking responses?
+  const generateScore = (hasIdentity ? 2 : 0)
+    + (hasRule ? 1 : 0)
+    + (reflections.constructors.trim().length > 10 ? 1 : 0)
+    + (hasBoth ? 1 : 0);  // ran comparison simulation
+
+  // Engage: Did they grapple with the cost of action?
+  const engageScore = (reflections.memo.trim().length > 30 ? 2 : 0)
+    + (reflections.disaster.trim().length > 30 ? 1 : 0)
+    + (ranSimB ? 1 : 0);  // explored the BioBond condition
+
+  const tier = v => v >= 4 ? 'strong' : v >= 2 ? 'developing' : v >= 1 ? 'emerging' : 'undertested';
+
+  return {
+    see:      { score: seeScore,      tier: tier(seeScore) },
+    analyze:  { score: analyzeScore,  tier: tier(analyzeScore) },
+    generate: { score: generateScore, tier: tier(generateScore) },
+    engage:   { score: engageScore,   tier: tier(engageScore) },
+    completed,
+  };
+}
+
+const CH_SAGE_META = {
+  see: {
+    name: 'See',
+    def: 'Perceiving the ethical dimensions of a situation before others name them.',
+    strong:      'You engaged deeply with the Discovery and early warning material — you did the work of noticing what was ethically at stake before the consequences were obvious. That\'s the foundational SAGE capacity: seeing the problem before the disaster reveals it.',
+    developing:  'You engaged with the ethical dimensions once they were named for you. The growing edge is earlier detection — the habit of asking "who has voice here and who doesn\'t?" before events force the question.',
+    emerging:    'The ethical dimensions were present throughout the Challenger case before any disaster occurred. Building the habit of noticing structural suppression signals before they compound would develop this capacity.',
+    undertested: 'You moved quickly through the material. Slowing down at the first moment of a case to map what\'s ethically at stake — before the narrative carries you forward — builds the See capacity most directly.',
+  },
+  analyze: {
+    name: 'Analyze',
+    def: 'Understanding structural causes — why this was predictable, not just what happened.',
+    strong:      'Your engagement with the teleconference and disaster sections shows you understand structural causation: this wasn\'t individual moral failure — it was an institutional system producing a predictable outcome. You can distinguish the symptom from the cause.',
+    developing:  'You identified the problem but sometimes at the level of individual decisions rather than structural dynamics. The Analyze capacity deepens with the question: what institutional conditions made this outcome almost inevitable regardless of the individuals involved?',
+    emerging:    'Structural analysis means asking not "who made a bad decision?" but "what system produced this decision predictably?" The Challenger disaster was not primarily about bad individuals — Morton Thiokol management were not evil people. They were people inside a structure that made suppression rational.',
+    undertested: 'Running both simulation configurations (with and without BioBond) is a direct exercise in structural analysis — it shows what changes when you change the structure, holding everything else constant.',
+  },
+  generate: {
+    name: 'Generate',
+    def: 'Creating responses that work beyond your own framework — building your forward pull.',
+    strong:      'You built a clear forward pull with a defined identity kernel, a non-negotiable rule, and alternative constructors. This is Boisjoly\'s own architecture for surviving career destruction — you\'ve adapted it to your own life. That\'s the Generate capacity applied.',
+    developing:  'You\'ve started building your forward pull but it\'s not yet fully specified. The Generate capacity in the Challenger context is specifically about building the structure that survives institutional pressure — an identity that isn\'t contingent on any specific job, organization, or relationship.',
+    emerging:    'The most important thing Boisjoly built wasn\'t the memo or the testimony — it was an identity kernel strong enough to survive the destruction of his career. The forward pull section of this app is the direct exercise of Generate. Completing it with specificity would develop this capacity.',
+    undertested: 'Generate is the capacity to build something forward-looking from the analysis. In the Challenger context, it\'s the question: what are you building, right now, that would survive the destruction of your current career path?',
+  },
+  engage: {
+    name: 'Engage',
+    def: 'Acting on your analysis with appropriate courage — even when the structure makes it costly.',
+    strong:      'Your engagement with the memo decision simulator and the disaster reflection shows you grappled seriously with the cost of action. Engage isn\'t about being fearless — it\'s about acting deliberately despite legitimate fear. You\'ve thought through that.',
+    developing:  'You understand the theory of engagement — that Boisjoly did everything right and the system failed him anyway. The growing edge is the practical question: what would you actually do, in your actual context, when doing the right thing is institutionally costly?',
+    emerging:    'The teleconference and memo sections directly simulate the Engage decision: what do you do when you\'ve done everything right and the system ignores you anyway? Your reflections in those sections are the primary exercise of this capacity.',
+    undertested: 'The Engage capacity is specifically tested by the question: what is your line? The "Your Line in the Sand" reflection in the teleconference section is the direct exercise. Completing it with honesty — not with what you wish your line was, but with what it actually is — builds this capacity.',
+  },
+};
+
+function chTArea(key, placeholder) {
+  const saved = loadSaved(`ch-transfer-${key}`);
+  return `
+    <textarea class="t-textarea" id="chta-${key}"
+              placeholder="${placeholder}"
+              oninput="chTSave('${key}', this.value)">${saved}</textarea>
+    <div class="t-saved" id="chsi-${key}">✓ Saved</div>`;
+}
+
+function chTSave(key, val) {
+  try {
+    localStorage.setItem(`challenger_ch-transfer-${key}`, val);
+    const si = document.getElementById(`chsi-${key}`);
+    if (si) { si.classList.add('show'); setTimeout(() => si.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+
+const sageTierColor = t =>
+  t === 'strong'    ? '#3a8a5c' :
+  t === 'developing'? '#4a7fb5' :
+  t === 'emerging'  ? '#c87843' : '#8090a8';
+
+const sageTierLabel = t =>
+  t === 'strong'    ? 'Strong'    :
+  t === 'developing'? 'Developing':
+  t === 'emerging'  ? 'Emerging'  : 'Undertested';
+
+function buildChallengerTransfer() {
+  const sage       = inferChallengerSAGE();
+  const hasPRF     = PRF.isLoaded();
+  const fw         = PRF.fw();
+  const prfData    = hasPRF ? CH_PRF_TRANSFER[fw] : null;
+  const simGap     = _simDataA
+    ? ((_simDataA.metrics||_simDataA).lambda_raw
+       - (_simDataA.metrics||_simDataA).lambda_perceived)
+    : null;
+
+  // Progress summary
+  const progressText = sage.completed >= 6
+    ? `You completed ${sage.completed} of 7 reflection sections — a deep engagement with this case.`
+    : sage.completed >= 3
+    ? `You completed ${sage.completed} of 7 reflection sections. The remaining prompts are still here if you want to return.`
+    : `You completed ${sage.completed} of 7 reflection sections. The transfer analysis below is based on what you engaged with — more engagement produces more specific personalization.`;
+
+  // SAGE cards
+  const sageCards = Object.entries(CH_SAGE_META).map(([k, meta]) => {
+    const s = sage[k];
+    return `
+      <div class="sage-card-ch" style="border-left-color:${sageTierColor(s.tier)}">
+        <div class="sage-card-label" style="color:${sageTierColor(s.tier)}">${sageTierLabel(s.tier)}</div>
+        <div class="sage-card-name">${meta.name}: ${meta.def.split(' — ')[0]}</div>
+        <div class="sage-card-read">${meta[s.tier]}</div>
+      </div>`;
+  }).join('');
+
+  // ABCD
+  const agencyText = simGap !== null
+    ? `In your teleconference simulation, the suppression gap was ${(simGap*100).toFixed(0)}% — the structural measure of how much of Boisjoly's coordination capacity could not safely surface. ${simGap > .20 ? 'That gap is not a measure of his will or his courage. It\'s a measure of what the institutional structure took from him before he could act.' : 'The relatively contained gap in your simulation suggests the structural conditions for agency were partially intact.'} The question for your own life: in the institutional contexts you navigate, is your deliberate reasoning capacity structurally supported or structurally consumed?`
+    : `Boisjoly had high deliberate reasoning capacity — he saw the problem clearly, analyzed it precisely, and generated a response. What the structure took from him was the channel to act on what he knew. Agency is not just about will — it requires structural conditions. What structural conditions in your actual life support or impede your capacity to engage when it costs something?`;
+
+  const beautyText = `Boisjoly spent his post-career years as an ethics educator — traveling to engineering schools, sharing his story, ensuring that what he learned would reach the next generation of engineers. He turned the worst thing that happened to him into the most useful thing he could offer. There is something genuinely beautiful about that: the capacity to find forward pull even in the ruins of what was destroyed. And there is something worth noticing about the fact that he didn't become bitter — he became purposeful. That movement, from destruction to transmission, is itself a model worth studying.`;
+
+  const contextText = `Where you are in your life shapes which part of this case speaks most directly to you. An early-career student is most likely to encounter the Discovery phase: noticing something wrong before others name it. A mid-career professional is most likely to encounter the Teleconference: being overruled after doing everything right. A manager or administrator is most likely to encounter the Executive's dilemma: pressure from above meeting knowledge from below. Whatever your current position, the case contains the pattern you are most likely to need. Which phase felt most personally recognizable to you?`;
+
+  const dynamismText = `Your SAGE profile above maps where you currently are. Dynamism is about the vector — not where you are but where you're heading. The specific next inch of development is determined by whichever SAGE capacity is marked "developing" or "emerging" for you. ${hasPRF && prfData ? `For someone with your ${PRF.fwName()} framework: ${prfData.invitation}` : `The specific invitation is to take the capacity marked "developing" or "emerging" above and identify one concrete situation in your actual life — this week, this month — where you could practice it.`}`;
+
+  // Growth pathways
+  let growthHTML = '';
+  if (hasPRF && prfData) {
+    growthHTML = `
+      <div class="growth-ch">
+        <div class="growth-label">${PRF.fwIcon()} ${PRF.fwName()} — Your Strength in This Context</div>
+        <div class="growth-text">${prfData.strength}</div>
+      </div>
+      <div class="growth-ch" style="border-color:#c87843;background:#fff8f0">
+        <div class="growth-label" style="color:#c87843">Growing Edge</div>
+        <div class="growth-text">${prfData.growthEdge}</div>
+        <div class="growth-inv">Specific invitation: ${prfData.invitation}</div>
+      </div>
+      ${simGap !== null ? `
+      <div class="growth-ch" style="border-color:#3a8a5c;background:#f0faf4">
+        <div class="growth-label" style="color:#3a8a5c">What the Simulation Revealed Through Your Lens</div>
+        <div class="growth-text">${prfData.reading(simGap)}</div>
+      </div>` : ''}`;
+  } else {
+    const sortedSage = Object.entries(sage).filter(([k])=>k!=='completed')
+      .sort((a,b) => b[1].score - a[1].score);
+    const strongest  = sortedSage[0][0];
+    const weakest    = sortedSage[sortedSage.length-1][0];
+    growthHTML = `
+      <div class="growth-ch">
+        <div class="growth-label">Your Strongest SAGE Capacity</div>
+        <div class="growth-text">${CH_SAGE_META[strongest].strong}</div>
+      </div>
+      <div class="growth-ch" style="border-color:#c87843;background:#fff8f0">
+        <div class="growth-label" style="color:#c87843">Specific Growing Edge</div>
+        <div class="growth-text">${CH_SAGE_META[weakest].developing}</div>
+        <div class="growth-inv">Load your PRF-22 JSON (header button) for a framework-specific growth pathway.</div>
+      </div>`;
+  }
+
+  return `
+    <div class="transfer-section">
+
+      <div style="background:linear-gradient(135deg,var(--prf-deep),var(--prf-navy));
+                  border-radius:10px;padding:20px 22px;margin-bottom:14px">
+        <div class="transfer-eyebrow">Synthesis & Transfer</div>
+        <div class="transfer-title">What You Take With You From the Challenger Case</div>
+        <div class="transfer-subtitle">
+          The simulation is the telescope. This section is what you do after you put it down —
+          translating what you engaged with into something that travels with you.
+        </div>
+      </div>
+
+      <div class="t-progress-strip">
+        ${progressText}
+        ${!_simDataA ? ' You can still run the teleconference UCP simulation (Teleconference tab → 🔬 Run the UCP Simulation) to add metric-grounded analysis to this Transfer section.' : ''}
+      </div>
+
+      <!-- PRF Reading -->
+      ${hasPRF ? `
+      <div class="t-block">
+        <div class="t-block-header">
+          <span class="t-block-icon">${PRF.fwIcon()}</span>
+          <div>
+            <div class="t-block-title">Your PRF Reading of the Challenger Case</div>
+            <div class="t-block-sub">${PRF.fwName()} · ${PRF.tier()} ATCF sensitivity</div>
+          </div>
+        </div>
+        <div class="t-prf-panel" style="border-left:3px solid ${PRF.fwColor()}">
+          <div class="t-prf-label" style="color:${PRF.fwColor()}">What Your Framework Specifically Saw</div>
+          <div class="t-prf-text">${prfData.reading(simGap)}</div>
+        </div>
+        <div class="t-prompt">What did your specific lens make visible in this case that others might have missed?</div>
+        ${chTArea('prf-reading', 'Write what your framework made immediately visible — and what it may have required more effort to see...')}
+      </div>` : `
+      <div class="t-block">
+        <div class="t-block-header">
+          <span class="t-block-icon">🔭</span>
+          <div>
+            <div class="t-block-title">PRF Reading — Load Your Profile for Personalization</div>
+            <div class="t-block-sub">The "Load My PRF" button in the header connects your specific framework to this analysis</div>
+          </div>
+        </div>
+        <p class="t-prose">Your PRF lens shaped which parts of the Challenger case were immediately visible to you and which required effort. Loading your PRF-22 JSON will generate a framework-specific reading of what your lens made visible, what it may have obscured, and the specific growth pathway from your current position.</p>
+        <div class="t-prompt">Without your PRF loaded: which moment in the case felt most personally resonant, and what in your own experience made it so?</div>
+        ${chTArea('prf-reading', 'Name the moment and what in your own background made it visible to you...')}
+      </div>`}
+
+      <!-- SAGE Profile -->
+      <div class="t-block">
+        <div class="t-block-header">
+          <span class="t-block-icon">⚡</span>
+          <div>
+            <div class="t-block-title">Your SAGE Capacity Profile</div>
+            <div class="t-block-sub">Inferred from your engagement with this case — a map, not a grade</div>
+          </div>
+        </div>
+        <p class="t-prose">
+          SAGE — <strong>See</strong>, <strong>Analyze</strong>, <strong>Generate</strong>, <strong>Engage</strong> —
+          is the structured ethical analysis method this course is building in you.
+          Your engagement with the Challenger material gives us data about where each capacity currently sits.
+          This is inferred from which sections you engaged with and how deeply — not a test score.
+        </p>
+        <div class="sage-grid-ch">${sageCards}</div>
+        <div class="t-prompt">Which capacity feels most important to develop given where you are in your life right now?</div>
+        ${chTArea('sage-reflect', 'What would developing that capacity look like in a specific context you actually navigate?')}
+      </div>
+
+      <!-- ABCD -->
+      <div class="t-block">
+        <div class="t-block-header">
+          <span class="t-block-icon">🌐</span>
+          <div>
+            <div class="t-block-title">ABCD — Four Dimensions of Growth</div>
+            <div class="t-block-sub">Agency · Beauty/Awe · Context · Dynamism</div>
+          </div>
+        </div>
+        <div class="abcd-grid-ch">
+          <div class="abcd-card-ch" style="border-top:3px solid var(--prf-sky)">
+            <div class="abcd-letter" style="color:var(--prf-sky)">A</div>
+            <div class="abcd-name">Agency</div>
+            <div class="abcd-text">${agencyText}</div>
+          </div>
+          <div class="abcd-card-ch" style="border-top:3px solid var(--prf-gold)">
+            <div class="abcd-letter" style="color:var(--prf-gold)">B</div>
+            <div class="abcd-name">Beauty / Awe</div>
+            <div class="abcd-text">${beautyText}</div>
+          </div>
+          <div class="abcd-card-ch" style="border-top:3px solid var(--prf-success)">
+            <div class="abcd-letter" style="color:var(--prf-success)">C</div>
+            <div class="abcd-name">Context</div>
+            <div class="abcd-text">${contextText}</div>
+          </div>
+          <div class="abcd-card-ch" style="border-top:3px solid var(--prf-warn)">
+            <div class="abcd-letter" style="color:var(--prf-warn)">D</div>
+            <div class="abcd-name">Dynamism</div>
+            <div class="abcd-text">${dynamismText}</div>
+          </div>
+        </div>
+        <div class="t-prompt">Which dimension is most alive for you right now — and what does the Challenger case add to it?</div>
+        ${chTArea('abcd-reflect', 'Write about one dimension in relation to your specific life situation...')}
+      </div>
+
+      <!-- What You Learned Without Living It -->
+      <div class="t-block">
+        <div class="t-block-header">
+          <span class="t-block-icon">🛡️</span>
+          <div>
+            <div class="t-block-title">What You Learned Without Having to Live It</div>
+            <div class="t-block-sub">The protective thesis — pattern recognition without catastrophic tuition</div>
+          </div>
+        </div>
+        <p class="t-prose">
+          Roger Boisjoly paid for the knowledge you just engaged with — about institutional
+          suppression, about the cost of integrity, about what it takes to maintain coherence
+          when the system works against you — with eighteen months of professional isolation,
+          the collapse of his career, and the permanent knowledge that seven people died after
+          his warnings were ignored. You got to learn the same structural lessons without those costs.
+        </p>
+        <p class="t-prose">
+          That is the specific value of this kind of learning: <strong>pattern recognition built
+          without catastrophic tuition.</strong> You now have a template — a felt sense of what
+          these dynamics look like — so that when you encounter them in your actual life you will
+          recognize them faster, name them more precisely, and have more deliberate space to
+          choose your response rather than react to the pressure.
+        </p>
+        <p class="t-prose">
+          Specifically, you learned: what a suppression gap looks like from the inside of the
+          institution producing it. What it feels like to do everything right and have the system
+          ignore you anyway. That moral injury is not a personal failing — it is a structural
+          product, predictable and measurable, that affects people with high integrity
+          more than people with low integrity. And what a forward pull looks like that is
+          strong enough to survive career destruction.
+        </p>
+        <div class="t-prompt">What is the one thing you now know that you think will be most useful in your actual life?</div>
+        ${chTArea('vicarious', 'Be specific. Name the pattern, name the context where you expect to see it, name what you\'ll do differently...')}
+      </div>
+
+      <!-- Growth Pathways -->
+      <div class="t-block">
+        <div class="t-block-header">
+          <span class="t-block-icon">🌱</span>
+          <div>
+            <div class="t-block-title">Growth Pathways — From Where You Are</div>
+            <div class="t-block-sub">Specific developmental invitations based on your engagement and framework</div>
+          </div>
+        </div>
+        ${growthHTML}
+        <div class="t-prompt">Write one concrete, specific commitment — something you will actually do, with a timeframe.</div>
+        ${chTArea('commitment', 'I will _____ by _____ because this case showed me that _____')}
+      </div>
+
+      <!-- The Investment -->
+      <div class="t-block">
+        <div class="t-block-header">
+          <span class="t-block-icon">⏳</span>
+          <div>
+            <div class="t-block-title">Why This Investment Was Worth It</div>
+            <div class="t-block-sub">Honoring the attention and time you brought here</div>
+          </div>
+        </div>
+        <div class="invest-block">
+          <p>The Challenger case is not primarily a story about spacecraft. It is a story about
+          <strong>what institutions do to people who try to protect us</strong> —
+          and about what those people can do to protect themselves and the people who come after them.
+          That pattern recurs across every industry, every profession, every organizational scale.
+          It will appear in your career. It may already be present in contexts you inhabit.</p>
+          <p>What you gained here is <strong>structural recognition capacity</strong>: the ability
+          to identify the suppression pattern faster, name the gap between raw capacity and perceived
+          safety more precisely, and build your forward pull before the crisis rather than during it.
+          Boisjoly built his identity kernel across a career before he needed it. The students who
+          benefit most from this case are those who build theirs before they need it too.</p>
+          <p>You also gained something harder to name: a felt sense of what it costs to be Boisjoly.
+          That felt sense is <strong>moral imagination</strong> — the capacity to understand what it
+          is like to be inside a situation you haven't personally experienced. That is what makes
+          ethical reasoning more than rule-following. And that is what this time was for.</p>
+        </div>
+        <div class="t-prompt">What do you want to remember from this case six months from now?</div>
+        ${chTArea('final', 'Write it here so it exists somewhere outside your head...')}
+      </div>
+
+    </div>`;
+}
 
 // ─────────────────────────────────────────────────
 // TIMELINE RENDER

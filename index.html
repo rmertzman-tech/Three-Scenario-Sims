@@ -2595,6 +2595,15 @@
 
   </div><!-- /card -->
 
+  <!-- Synthesis & Transfer — appears after at least one scenario has been run -->
+  <div class="card" id="srTransferCard" style="display:none;margin-top:20px">
+    <div class="card-header">
+      <span class="card-num">T</span>
+      <h2>Synthesis &amp; Transfer — What You Take With You</h2>
+    </div>
+    <div class="card-body" id="srTransferBody"></div>
+  </div>
+
 </main>
 
 <footer>UCP Scenario Runner v3.1 · Ethics Beyond Boundaries · Saint Petersburg College · &copy; 2026</footer>
@@ -3596,6 +3605,9 @@
       }, 80);
     });
 
+    // Build/update Transfer section after each scenario run
+    renderSRTransfer();
+
     // Draw timeline chart if we have step data
     if (timeline.length > 1) {
       drawTimelineChart(chartId, timeline, payload.activate_biobond_at);
@@ -3786,6 +3798,375 @@
       document.getElementById('prf-clear-btn').style.display = 'inline-block';
     }
   })();
+
+  // ─────────────────────────────────────────────────
+  // SYNTHESIS & TRANSFER — SCENARIO RUNNER
+  // Appears after first scenario run; synthesises
+  // across all completed panels.
+  // ─────────────────────────────────────────────────
+
+  const SR_SCENARIO_CONTEXT = [
+    { name: 'Factory Safety / Whistleblower',  threat: 'institutional suppression of safety knowledge', professional: 'safety-critical industries, engineering, healthcare' },
+    { name: 'Hospital Ethics / Epistemic Crisis', threat: 'information quality degradation under institutional pressure', professional: 'healthcare, policy, research' },
+    { name: 'Land and Stewardship Conflict', threat: 'competing claims about legitimacy and inherited obligation', professional: 'law, community development, environmental work' },
+    { name: 'Resource Scarcity',              threat: 'coordination breakdown under competitive pressure', professional: 'management, public administration, NGO work' },
+  ];
+
+  const SR_FW_TRANSFER = {
+    individual_rights: {
+      icon: '⚖️',
+      reading: (gapAvg) => `Your rights-based framework reads the suppression gap as an inequality metric: agents with equal stakes in these scenarios could not contribute equally to the decisions that affected them. The average ${(gapAvg*100).toFixed(0)}% gap across your simulations measures the structural distance from equal epistemic standing.`,
+      strength: 'You locate the ethical problem in procedural fairness immediately — who has voice, who doesn\'t, and whether that distribution is structurally justified. This is a precise diagnostic capacity.',
+      growthEdge: 'Rights-based frameworks diagnose exclusion precisely but may underweight the relational repair needed after structural failures are identified. Generating cross-framework solutions — not just naming the violation — is the growing edge.',
+      invitation: 'In a current context, name one person whose equal right to contribute to a decision that affects them has been structurally removed. What would restoring that right require?',
+    },
+    relational_we: {
+      icon: '🤝',
+      reading: (gapAvg) => `Your relational framework reads the suppression gap as fractured mutual recognition: agents couldn't be genuinely heard in these scenarios. The ${(gapAvg*100).toFixed(0)}% average gap measures the distance between formal presence and genuine attention — the people in these scenarios were in the room but not in the conversation.`,
+      strength: 'You feel fractured mutual recognition immediately and work instinctively to restore it. The friction metric is especially telling for your framework: high friction means genuine attention is being consumed by the coordination process before it reaches the actual problem.',
+      growthEdge: 'Relational frameworks excel at building the connection that coordination requires but may underweight structural diagnosis. Understanding why genuine hearing is structurally prevented — not just interpersonally absent — makes your relational instincts more effective in institutional contexts.',
+      invitation: 'In one current coordination challenge, ask: is the genuine hearing absent because people aren\'t trying (relational) or because the structure makes it costly (structural)? Different diagnoses require different interventions.',
+    },
+    hierarchical_role: {
+      icon: '🏛️',
+      reading: (gapAvg) => `Your role-based framework reads the suppression gap as authority corruption: the information hierarchy failed its purpose. The ${(gapAvg*100).toFixed(0)}% average gap measures the distance between what the authority chain was supposed to transmit and what it actually allowed to surface.`,
+      strength: 'You understand precisely what legitimate authority is supposed to do and can name when it has failed its own purpose. The Scenario Runner\'s whistleblower scenario is the canonical case: authority used as a gate rather than a channel.',
+      growthEdge: 'The framework most likely to produce high suppression in these simulations is also hierarchical/role-based — when authority becomes gatekeeping. Your growing edge is developing a personal threshold: when has institutional authority failed its purpose sufficiently to warrant de-coordination?',
+      invitation: 'Complete this sentence honestly: "The authority structure I work within has failed its own purpose when it ___."',
+    },
+    boundary_integrity: {
+      icon: '🛡️',
+      reading: (gapAvg) => `Your boundary/integrity framework reads the suppression gap as a sanctity violation: something that should be non-negotiable — the knowledge that exists in these scenarios — is being treated as organizationally manageable. The ${(gapAvg*100).toFixed(0)}% gap measures the extent of that violation.`,
+      strength: 'You feel violations of epistemic integrity immediately. The moment something that should be non-negotiable is being treated as optional, your framework registers it as a structural wrong rather than just an inefficiency.',
+      growthEdge: 'Your framework makes you excellent at naming violations but may make you less comfortable with the messy coalition-building needed to address them. The BioBond conditions in these simulations represent that coalition work — impure, compromised, effective.',
+      invitation: 'Identify the non-negotiable in a current professional context. What structural conditions would need to exist for that line to be effectively protected rather than just personally held?',
+    },
+    custodial_stewardship: {
+      icon: '🌱',
+      reading: (gapAvg) => `Your custodial framework reads the suppression gap as inherited knowledge failing to reach the present decision. The ${(gapAvg*100).toFixed(0)}% average gap measures how much accumulated institutional intelligence — built over time, at real cost — was prevented from informing the decisions that needed it.`,
+      strength: 'You feel the weight of what\'s being lost — accumulated practice, institutional memory, the obligation to those who come after. The historical continuity metrics in these simulations are especially legible to your framework.',
+      growthEdge: 'Custodial frameworks may be more oriented toward preservation than toward the disruptive coordination sometimes needed to protect what is inherited. The BioBond mechanism represents that disruption — sometimes protecting inherited knowledge requires actively challenging the structures that would erase it.',
+      invitation: 'In your current context, what accumulated knowledge or practice is at risk of being lost? And what is the smallest action you could take to begin building the structural conditions for transmitting it?',
+    },
+  };
+
+  function srTArea(key, placeholder) {
+    let saved = '';
+    try { saved = localStorage.getItem(`sr_transfer_${key}`) || ''; } catch(e) {}
+    return `
+      <textarea style="width:100%;padding:.75rem 1rem;border:1px solid var(--prf-border);
+                border-radius:6px;font-family:'Georgia',serif;font-size:.88rem;
+                margin-top:7px;min-height:85px;resize:vertical;line-height:1.65;
+                background:#fff;color:var(--prf-ink);transition:border-color .2s"
+                id="srta-${key}" placeholder="${placeholder}"
+                oninput="srTSave('${key}', this.value)">${saved}</textarea>
+      <div id="srsi-${key}" style="font-family:'Courier New',monospace;font-size:.63rem;
+           color:var(--prf-success);margin-top:2px;display:none">✓ Saved</div>`;
+  }
+
+  function srTSave(key, val) {
+    try {
+      localStorage.setItem(`sr_transfer_${key}`, val);
+      const si = document.getElementById(`srsi-${key}`);
+      if (si) { si.classList.add('show') || (si.style.display='block');
+        setTimeout(() => si.style.display='none', 2000); }
+    } catch(e) {}
+  }
+
+  function buildSRTransfer() {
+    // Gather all completed panels
+    const completed = Object.entries(_renderCache);
+    if (!completed.length) return '';
+
+    const hasPRF  = window.UCPProfile && UCPProfile.isLoaded();
+    const fw      = hasPRF ? UCPProfile.getFramework() : null;
+    const prfData = hasPRF ? SR_FW_TRANSFER[fw] : null;
+
+    // Compute averages across completed panels
+    const avgRaw  = completed.reduce((s,[,c]) => s + c.raw, 0) / completed.length;
+    const avgPerc = completed.reduce((s,[,c]) => s + c.perceived, 0) / completed.length;
+    const avgFric = completed.reduce((s,[,c]) => s + c.friction, 0) / completed.length;
+    const avgGap  = avgRaw - avgPerc;
+
+    // Worst gap scenario
+    const worstIdx = completed.reduce((wi, [i,c]) =>
+      (c.raw - c.perceived) > (completed[wi]?.[1]?.raw - completed[wi]?.[1]?.perceived || 0) ? parseInt(i) : wi, 0);
+    const bestIdx  = completed.reduce((bi, [i,c]) =>
+      (c.raw - c.perceived) < (completed[bi]?.[1]?.raw - completed[bi]?.[1]?.perceived || 999) ? parseInt(i) : bi, 0);
+
+    // SAGE inference from pattern across scenarios
+    const consistentlyHighGap = completed.every(([,c]) => (c.raw - c.perceived) > .15);
+    const gapVariance  = completed.length > 1
+      ? completed.reduce((s,[,c]) => s + Math.pow((c.raw-c.perceived)-avgGap, 2), 0) / completed.length
+      : 0;
+    const noticesDiff  = gapVariance > .005;  // noticed structural differences across scenarios
+    const ranBioBond   = document.querySelectorAll('.biobond-toggle input:checked').length > 0;
+    const ranMultiple  = completed.length >= 2;
+
+    const seeTier     = ranMultiple && noticesDiff ? 'strong'    : ranMultiple ? 'developing' : 'emerging';
+    const analyzeTier = avgGap > .12 ? (ranBioBond ? 'strong' : 'developing') : 'developing';
+    const generateTier= ranBioBond ? (avgGap > .08 ? 'strong' : 'developing') : 'emerging';
+    const engageTier  = completed.length >= 3 ? 'strong' : completed.length >= 2 ? 'developing' : 'emerging';
+
+    const tierC = t => t === 'strong' ? '#3a8a5c' : t === 'developing' ? '#4a7fb5' : t === 'emerging' ? '#c87843' : '#8090a8';
+    const tierL = t => t === 'strong' ? 'Strong' : t === 'developing' ? 'Developing' : t === 'emerging' ? 'Emerging' : 'Undertested';
+
+    const sageData = [
+      { k: 'see',      t: seeTier,      name: 'See',      def: 'Perceiving structural suppression across different scenario types.',
+        strong:      `You ran ${completed.length} scenario${completed.length>1?'s':''} and noticed that the suppression gap varied across them. That variation is structural data — different institutional contexts produce different suppression profiles. Noticing that pattern is the See capacity working.`,
+        developing:  'Running multiple scenarios and comparing their suppression gaps develops the See capacity specifically: the question is not just "is there a gap?" but "why does the gap differ across contexts?"',
+        emerging:    'Running additional scenarios — especially the whisteblower and misinformation shock — would reveal more structural variation and develop the See capacity more directly.' },
+      { k: 'analyze',  t: analyzeTier,  name: 'Analyze',  def: 'Understanding what produces the suppression gap — power asymmetry vs. worldview distance.',
+        strong:      `The combination of ${avgGap > .12 ? 'a significant suppression gap' : 'a moderate suppression gap'} and BioBond testing shows you engaged with structural causation — you asked not just "how bad is it?" but "what changes when the structure changes?"`,
+        developing:  'The BioBond condition directly tests structural analysis: it asks what changes when OS2 scaffolding is provided. Running it on at least one scenario would sharpen the Analyze capacity.',
+        emerging:    'Structural analysis means asking: what institutional conditions are producing this gap, and what would need to change to reduce it? The BioBond checkbox is the direct experiment.' },
+      { k: 'generate', t: generateTier, name: 'Generate',  def: 'Designing interventions that work across PRF difference — including BioBond.',
+        strong:      'Running the BioBond condition is the Generate capacity in direct operation: you tested what cross-framework scaffolding actually produces, rather than just theorizing about it.',
+        developing:  'The Generate capacity here is specifically about OS2 design: what structural intervention would reduce friction without increasing suppression? The BioBond comparison is the direct exercise.',
+        emerging:    'The most direct Generate exercise is running the same scenario with and without BioBond, then asking: what changed and why? That comparison is the foundation of cross-framework solution design.' },
+      { k: 'engage',   t: engageTier,   name: 'Engage',    def: 'Applying structural analysis to contexts you actually inhabit.',
+        strong:      `Running ${completed.length} scenarios shows sustained engagement — you didn't just observe one structural pattern, you tested it across multiple contexts.`,
+        developing:  'Engage deepens when the simulation connects to a real situation. Which of the scenarios you ran most closely resembles an institution you actually navigate? That connection is where engagement becomes practical.',
+        emerging:    'The Engage capacity specifically connects analysis to action. After running each scenario, ask: which institutions in my actual life does this pattern appear in? What does that knowledge require of me?' },
+    ];
+
+    const sageCards = sageData.map(s => `
+      <div style="background:var(--prf-warm);border:1px solid var(--prf-border);
+                  border-radius:7px;padding:11px 13px;border-left:4px solid ${tierC(s.t)}">
+        <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;
+                    letter-spacing:.08em;color:${tierC(s.t)};margin-bottom:2px">${tierL(s.t)}</div>
+        <div style="font-weight:700;font-size:.87rem;color:var(--prf-navy);margin-bottom:3px">${s.name}: ${s.def.split(' — ')[0]}</div>
+        <div style="font-size:.78rem;color:#555;line-height:1.5">${s[s.t]}</div>
+      </div>`).join('');
+
+    // Scenario summary
+    const scenarioRows = completed.map(([idx,c]) => {
+      const gap = c.raw - c.perceived;
+      const sc  = SR_SCENARIO_CONTEXT[parseInt(idx)] || { name: `Scenario ${parseInt(idx)+1}` };
+      return `<div style="display:flex;justify-content:space-between;align-items:center;
+                           padding:8px 0;border-bottom:1px solid var(--prf-border);font-size:.84rem">
+        <span style="color:var(--prf-navy);font-weight:600">${sc.name}</span>
+        <span style="font-family:'Courier New',monospace;font-size:.76rem;color:${gap>.20?'#b84444':gap>.10?'#c87843':'#3a8a5c'}">
+          Gap: ${(gap*100).toFixed(1)}% &nbsp;·&nbsp; Friction: ${(c.friction||0).toFixed(3)}
+        </span>
+      </div>`;
+    }).join('');
+
+    // Growth pathway
+    let growthHTML = '';
+    if (hasPRF && prfData) {
+      growthHTML = `
+        <div style="background:#f0f6fa;border:1px solid var(--prf-sky);border-radius:8px;padding:13px 15px;margin-bottom:10px">
+          <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;
+                      letter-spacing:.1em;color:var(--prf-sky);margin-bottom:4px">${prfData.icon} ${UCPProfile.getFrameworkName()} — Strength Here</div>
+          <div style="font-size:.86rem;color:var(--prf-ink);line-height:1.65">${prfData.strength}</div>
+        </div>
+        <div style="background:#fff8f0;border:1px solid #c87843;border-radius:8px;padding:13px 15px;margin-bottom:10px">
+          <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;
+                      letter-spacing:.1em;color:#c87843;margin-bottom:4px">Growing Edge</div>
+          <div style="font-size:.86rem;color:var(--prf-ink);line-height:1.65">${prfData.growthEdge}</div>
+          <div style="margin-top:7px;padding-top:7px;border-top:1px solid rgba(200,120,67,.2);
+                      font-size:.79rem;color:var(--prf-muted);font-style:italic">${prfData.invitation}</div>
+        </div>
+        ${hasPRF ? `
+        <div style="background:#f0faf4;border:1px solid #3a8a5c;border-radius:8px;padding:13px 15px;margin-bottom:10px">
+          <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;
+                      letter-spacing:.1em;color:#3a8a5c;margin-bottom:4px">What Your Numbers Reveal Through Your Lens</div>
+          <div style="font-size:.86rem;color:var(--prf-ink);line-height:1.65">${prfData.reading(avgGap)}</div>
+        </div>` : ''}`;
+    } else {
+      const strongestSage = sageData.reduce((a,b) => (a.t==='strong'?4:a.t==='developing'?3:a.t==='emerging'?2:1) > (b.t==='strong'?4:b.t==='developing'?3:b.t==='emerging'?2:1) ? a : b);
+      growthHTML = `
+        <div style="background:#f0f6fa;border:1px solid var(--prf-sky);border-radius:8px;padding:13px 15px;margin-bottom:10px">
+          <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;
+                      letter-spacing:.1em;color:var(--prf-sky);margin-bottom:4px">Your Strongest Capacity From This Session</div>
+          <div style="font-size:.86rem;color:var(--prf-ink);line-height:1.65">${strongestSage.strong}</div>
+        </div>
+        <div style="background:#f0f4fa;border:1px solid var(--prf-border);border-radius:8px;padding:11px 14px;
+                    font-size:.82rem;color:var(--prf-muted);font-style:italic">
+          Load your PRF-22 JSON (header button) for a framework-specific growth pathway.
+        </div>`;
+    }
+
+    return `
+      <div style="background:linear-gradient(135deg,var(--prf-deep),var(--prf-navy));
+                  border-radius:10px;padding:20px 22px;margin-bottom:16px">
+        <div style="font-family:'Courier New',monospace;font-size:.66rem;text-transform:uppercase;
+                    letter-spacing:.14em;color:var(--prf-gold);margin-bottom:5px">Synthesis & Transfer</div>
+        <div style="font-family:'Georgia',serif;font-size:1.2rem;font-weight:700;
+                    color:#fff;margin-bottom:5px">What These Simulations Mean For How You Navigate Institutions</div>
+        <div style="font-size:.85rem;color:rgba(255,255,255,.6);font-style:italic;line-height:1.6">
+          You ran ${completed.length} scenario${completed.length>1?'s':''}.
+          Average suppression gap: ${(avgGap*100).toFixed(1)}%.
+          This section translates those structural numbers into something that travels with you.
+        </div>
+      </div>
+
+      ${/* PRF reading */ hasPRF ? `
+      <div style="background:#fff;border:1px solid var(--prf-border);border-radius:10px;
+                  padding:18px 20px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:1.2rem">${UCPProfile.getFrameworkIcon()}</span>
+          <div>
+            <div style="font-family:'Georgia',serif;font-size:.96rem;font-weight:700;color:var(--prf-navy)">
+              Your PRF Reading of These Results</div>
+            <div style="font-size:.77rem;color:var(--prf-muted);font-style:italic">
+              ${UCPProfile.getFrameworkName()} · ${UCPProfile.getATCFTier()} ATCF sensitivity</div>
+          </div>
+        </div>
+        <div style="background:linear-gradient(135deg,var(--prf-deep),var(--prf-navy));
+                    border-radius:8px;padding:13px 16px;margin-bottom:12px;
+                    border-left:3px solid ${UCPProfile.getFrameworkColor()}">
+          <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;
+                      letter-spacing:.1em;color:${UCPProfile.getFrameworkColor()};margin-bottom:5px">
+            ${UCPProfile.getFrameworkIcon()} ${UCPProfile.getFrameworkName()} — Your Lens</div>
+          <div style="font-size:.86rem;color:rgba(255,255,255,.82);line-height:1.7">${prfData.reading(avgGap)}</div>
+        </div>
+        <div style="font-size:.82rem;font-weight:600;color:var(--prf-slate);margin-top:10px;margin-bottom:2px">
+          What did your specific framework make visible across these scenarios that others might have missed?</div>
+        ${srTArea('prf-read', 'Write what your framework made immediately visible — and what required more effort to see...')}
+      </div>` : `
+      <div style="background:#fff;border:1px solid var(--prf-border);border-radius:10px;
+                  padding:16px 20px;margin-bottom:14px">
+        <p style="font-size:.87rem;color:var(--prf-muted);line-height:1.7;margin-bottom:8px">
+          Load your PRF-22 JSON (header button) for a framework-specific reading of these results.</p>
+        <div style="font-size:.82rem;font-weight:600;color:var(--prf-slate);margin-bottom:2px">
+          Without your PRF: which scenario felt most personally recognizable, and why?</div>
+        ${srTArea('prf-read', 'Name the scenario and what in your own experience made it resonate...')}
+      </div>`}
+
+      ${/* Scenario summary */`
+      <div style="background:#fff;border:1px solid var(--prf-border);border-radius:10px;
+                  padding:18px 20px;margin-bottom:14px">
+        <div style="font-family:'Georgia',serif;font-size:.96rem;font-weight:700;
+                    color:var(--prf-navy);margin-bottom:10px">Your Simulation Results — Structural Summary</div>
+        ${scenarioRows}
+        <p style="font-size:.86rem;color:#444;line-height:1.7;margin-top:12px">
+          ${SR_SCENARIO_CONTEXT[worstIdx] ? `<strong>${SR_SCENARIO_CONTEXT[worstIdx].name}</strong> produced the largest suppression gap.
+          This is the scenario most relevant to: ${SR_SCENARIO_CONTEXT[worstIdx].professional}.` : ''}
+          ${ranBioBond ? ' BioBond OS2 scaffolding was tested — you asked what changes when cross-framework coordination support is provided.' : ' Try enabling BioBond on at least one scenario to see what OS2 scaffolding changes.'}
+        </p>
+        <div style="font-size:.82rem;font-weight:600;color:var(--prf-slate);margin-top:10px;margin-bottom:2px">
+          Which scenario most closely resembles an institution you currently navigate?</div>
+        ${srTArea('scenario-connect', 'Name the institution and the specific pattern it shares with the simulation...')}
+      </div>`}
+
+      ${/* SAGE cards */`
+      <div style="background:#fff;border:1px solid var(--prf-border);border-radius:10px;
+                  padding:18px 20px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:1.2rem">⚡</span>
+          <div>
+            <div style="font-family:'Georgia',serif;font-size:.96rem;font-weight:700;color:var(--prf-navy)">Your SAGE Capacity Profile</div>
+            <div style="font-size:.77rem;color:var(--prf-muted);font-style:italic">Inferred from your engagement across scenarios</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px">
+          ${sageCards}
+        </div>
+        <div style="font-size:.82rem;font-weight:600;color:var(--prf-slate);margin-top:10px;margin-bottom:2px">
+          Which capacity would most change how you navigate the scenario that felt most personally relevant?</div>
+        ${srTArea('sage-reflect', 'What would developing that capacity look like in a specific context you actually inhabit?')}
+      </div>`}
+
+      ${/* ABCD */`
+      <div style="background:#fff;border:1px solid var(--prf-border);border-radius:10px;
+                  padding:18px 20px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:1.2rem">🌐</span>
+          <div>
+            <div style="font-family:'Georgia',serif;font-size:.96rem;font-weight:700;color:var(--prf-navy)">ABCD — Four Dimensions of Growth</div>
+            <div style="font-size:.77rem;color:var(--prf-muted);font-style:italic">Agency · Beauty/Awe · Context · Dynamism</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px">
+          <div style="background:var(--prf-warm);border:1px solid var(--prf-border);border-radius:8px;padding:12px 13px;border-top:3px solid var(--prf-sky)">
+            <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:700;color:var(--prf-sky)">A</div>
+            <div style="font-size:.73rem;font-weight:600;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Agency</div>
+            <div style="font-size:.8rem;color:#555;line-height:1.6">
+              Across your ${completed.length} scenario${completed.length>1?'s':''}, the average suppression gap was ${(avgGap*100).toFixed(1)}% — ${avgGap>.20?'a significant structural constraint on deliberate action. The conditions for agency were structurally limited in these simulations.':avgGap>.10?'a moderate structural constraint. Some of what the agents knew could not safely surface, limiting the range of deliberate action available.':'a relatively contained structural constraint. The conditions for deliberate agency were largely intact.'} What structural conditions in your actual institutional life support or impede your capacity to act on what you know?
+            </div>
+          </div>
+          <div style="background:var(--prf-warm);border:1px solid var(--prf-border);border-radius:8px;padding:12px 13px;border-top:3px solid var(--prf-gold)">
+            <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:700;color:var(--prf-gold)">B</div>
+            <div style="font-size:.73rem;font-weight:600;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Beauty / Awe</div>
+            <div style="font-size:.8rem;color:#555;line-height:1.6">
+              Something worth pausing on: the simulation has no opinion about which framework is more ethical. It only reports structural coordination outcomes. Yet those outcomes reveal genuine differences in how safe it is to speak inside different institutional environments. A tool that can measure that — without taking sides — is itself a remarkable thing. It is the engine doing what good formal systems do: revealing structure that no single perspective can see about itself.
+            </div>
+          </div>
+          <div style="background:var(--prf-warm);border:1px solid var(--prf-border);border-radius:8px;padding:12px 13px;border-top:3px solid var(--prf-success)">
+            <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:700;color:var(--prf-success)">C</div>
+            <div style="font-size:.73rem;font-weight:600;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Context</div>
+            <div style="font-size:.8rem;color:#555;line-height:1.6">
+              ${SR_SCENARIO_CONTEXT[worstIdx] ? `The scenario that produced the most structural suppression in your session — <strong>${SR_SCENARIO_CONTEXT[worstIdx].name}</strong> — is most relevant to: ${SR_SCENARIO_CONTEXT[worstIdx].professional}. Your specific professional context shapes which of these scenarios is most likely to appear in your actual career. Where do you sit relative to that professional list?` : 'Each scenario maps to specific professional contexts. Your position in your professional field shapes which scenario is most likely to recur in your actual work.'}
+            </div>
+          </div>
+          <div style="background:var(--prf-warm);border:1px solid var(--prf-border);border-radius:8px;padding:12px 13px;border-top:3px solid var(--prf-warn)">
+            <div style="font-family:'Georgia',serif;font-size:1.3rem;font-weight:700;color:var(--prf-warn)">D</div>
+            <div style="font-size:.73rem;font-weight:600;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Dynamism</div>
+            <div style="font-size:.8rem;color:#555;line-height:1.6">
+              ${hasPRF && prfData ? prfData.growthEdge + ' ' + prfData.invitation : `The SAGE capacity marked "developing" or "emerging" above is the specific growing edge. Dynamism is not about where you are — it is about the vector. What is the one next step that would most change how you navigate the scenario most personally relevant to you?`}
+            </div>
+          </div>
+        </div>
+        <div style="font-size:.82rem;font-weight:600;color:var(--prf-slate);margin-top:10px;margin-bottom:2px">
+          Which dimension is most alive for you from this session?</div>
+        ${srTArea('abcd-reflect', 'Write about one dimension in relation to your specific life situation...')}
+      </div>`}
+
+      ${/* Growth + Investment */`
+      <div style="background:#fff;border:1px solid var(--prf-border);border-radius:10px;padding:18px 20px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:1.2rem">🌱</span>
+          <div>
+            <div style="font-family:'Georgia',serif;font-size:.96rem;font-weight:700;color:var(--prf-navy)">Growth Pathways</div>
+            <div style="font-size:.77rem;color:var(--prf-muted);font-style:italic">Specific developmental invitations from this session</div>
+          </div>
+        </div>
+        ${growthHTML}
+        <div style="font-size:.82rem;font-weight:600;color:var(--prf-slate);margin-top:10px;margin-bottom:2px">Write one concrete commitment with a timeframe.</div>
+        ${srTArea('commitment', 'I will _____ by _____ because this simulation showed me that _____')}
+      </div>
+
+      <div style="background:linear-gradient(135deg,var(--prf-deep),var(--prf-navy));
+                  border-radius:10px;padding:18px 20px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <span style="font-size:1.2rem">⏳</span>
+          <div style="font-family:'Georgia',serif;font-size:.96rem;font-weight:700;color:#fff">Why This Investment Was Worth It</div>
+        </div>
+        <p style="font-size:.87rem;color:rgba(255,255,255,.82);line-height:1.75;margin-bottom:10px">
+          You just measured something most people never get to measure directly:
+          <strong style="color:var(--prf-amber)">what different institutional conditions structurally produce for voice and coordination</strong> —
+          not what organizations claim to produce, but what the coordination engine shows they produce
+          when you run the same scenario through different structural configurations.
+        </p>
+        <p style="font-size:.87rem;color:rgba(255,255,255,.82);line-height:1.75;margin-bottom:10px">
+          You learned: that the suppression gap is structural, not personal. That friction and suppression
+          are different problems with different remedies. That BioBond — OS2 scaffolding —
+          can reduce both, but through different mechanisms. And that these features are
+          <strong style="color:var(--prf-amber)">measurable, predictable, and changeable</strong>.
+        </p>
+        <p style="font-size:.87rem;color:rgba(255,255,255,.82);line-height:1.75">
+          What you carry forward is structural recognition capacity: the ability to walk into a new
+          institutional context and ask — before the first conflict — what kind of coordination
+          environment this structure produces. That question, asked early, changes everything.
+          That is what this time was for.
+        </p>
+        <div style="font-size:.82rem;font-weight:600;color:var(--prf-amber);margin-top:14px;margin-bottom:5px">
+          What do you want to remember from this session six months from now?</div>
+        ${srTArea('final', 'Write it here so it exists somewhere outside your head...')}
+      </div>`}`;
+  }
+
+  function renderSRTransfer() {
+    const card = document.getElementById('srTransferCard');
+    const body = document.getElementById('srTransferBody');
+    if (!card || !body) return;
+    const html = buildSRTransfer();
+    if (!html) return;
+    body.innerHTML = html;
+    card.style.display = 'block';
+  }
 
   // ─────────────────────────────────────────────────
   // INIT

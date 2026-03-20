@@ -610,6 +610,137 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
   .sup-trend-arrow { transform: rotate(90deg); }
 }
 
+/* ══════════════════════════════════════════════
+   SYNTHESIS & TRANSFER — TTE
+   ══════════════════════════════════════════════ */
+.tte-t-header {
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 10px; padding: 20px 22px; margin-bottom: 14px;
+}
+.tte-t-eyebrow {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--prf-gold); margin-bottom: 5px;
+}
+.tte-t-title {
+  font-family: 'Georgia',serif; font-size: 1.2rem;
+  font-weight: 700; color: #fff; margin-bottom: 5px; line-height: 1.2;
+}
+.tte-t-sub {
+  font-size: .85rem; color: rgba(255,255,255,.6);
+  font-style: italic; line-height: 1.6;
+}
+.tte-block {
+  background: #fff; border: 1px solid var(--prf-border);
+  border-radius: 10px; padding: 18px 20px; margin-bottom: 14px;
+  box-shadow: 0 1px 6px rgba(26,39,68,.07);
+}
+.tte-block-hdr {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+.tte-b-icon  { font-size: 1.2rem; flex-shrink: 0; }
+.tte-b-title { font-family: 'Georgia',serif; font-size: .96rem;
+  font-weight: 700; color: var(--prf-navy); }
+.tte-b-sub   { font-size: .77rem; color: var(--prf-muted); font-style: italic; }
+.tte-prose   { font-size: .87rem; color: #444; line-height: 1.75; margin-bottom: 10px; }
+.tte-prose strong { color: var(--prf-navy); }
+
+.tte-gen-compare {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; margin-bottom: 12px;
+}
+.tte-gen-card {
+  background: var(--prf-warm); border: 1px solid var(--prf-border);
+  border-radius: 8px; padding: 11px 13px; text-align: center;
+}
+.tte-gen-label {
+  font-family: 'Courier New',monospace; font-size: .64rem;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--prf-muted); margin-bottom: 4px;
+}
+.tte-gen-val {
+  font-size: 1.2rem; font-weight: 700;
+  font-family: 'Courier New',monospace; line-height: 1; margin-bottom: 3px;
+}
+.tte-gen-phrase { font-size: .76rem; color: var(--prf-muted); line-height: 1.4; }
+
+.tte-sage-grid {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 12px;
+}
+.tte-sage-card {
+  background: var(--prf-warm); border: 1px solid var(--prf-border);
+  border-radius: 7px; padding: 11px 13px; border-left: 4px solid;
+}
+.tte-sage-lbl { font-family: 'Courier New',monospace; font-size: .63rem;
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+.tte-sage-nm  { font-weight: 700; font-size: .87rem; color: var(--prf-navy); margin-bottom: 3px; }
+.tte-sage-rd  { font-size: .78rem; color: #555; line-height: 1.5; }
+
+.tte-abcd-grid {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 12px;
+}
+.tte-abcd-card {
+  background: var(--prf-warm); border: 1px solid var(--prf-border);
+  border-radius: 8px; padding: 12px 13px;
+}
+.tte-letter { font-family: 'Georgia',serif; font-size: 1.3rem;
+  font-weight: 700; line-height: 1; margin-bottom: 2px; }
+.tte-aname  { font-size: .73rem; font-weight: 600; font-family: 'Courier New',monospace;
+  text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
+.tte-atext  { font-size: .8rem; color: #555; line-height: 1.6; }
+
+.tte-growth {
+  background: #f0f6fa; border: 1px solid var(--prf-sky);
+  border-radius: 8px; padding: 13px 15px; margin-bottom: 10px;
+}
+.tte-growth-lbl { font-family: 'Courier New',monospace; font-size: .63rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--prf-sky); margin-bottom: 4px; }
+.tte-growth-txt { font-size: .86rem; color: var(--prf-ink); line-height: 1.65; }
+.tte-growth-inv { margin-top: 7px; padding-top: 7px;
+  border-top: 1px solid rgba(74,127,181,.2);
+  font-size: .79rem; color: var(--prf-muted); font-style: italic; }
+
+.tte-prf-panel {
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 8px; padding: 13px 16px; margin-bottom: 12px;
+}
+.tte-prf-lbl { font-family: 'Courier New',monospace; font-size: .63rem;
+  text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+.tte-prf-txt { font-size: .86rem; color: rgba(255,255,255,.82); line-height: 1.7; }
+
+.tte-invest {
+  background: linear-gradient(135deg, var(--prf-deep), var(--prf-navy));
+  border-radius: 10px; padding: 18px 20px;
+}
+.tte-invest p {
+  font-size: .87rem; color: rgba(255,255,255,.82); line-height: 1.75; margin-bottom: 10px;
+}
+.tte-invest p:last-of-type { margin-bottom: 0; }
+.tte-invest strong { color: var(--prf-amber); }
+
+.tte-textarea {
+  width: 100%; padding: .75rem 1rem;
+  border: 1px solid var(--prf-border); border-radius: 6px;
+  font-family: 'Georgia',serif; font-size: .87rem;
+  margin-top: 7px; min-height: 85px; resize: vertical;
+  line-height: 1.65; background: #fff; color: var(--prf-ink);
+  transition: border-color .2s;
+}
+.tte-textarea:focus { outline: none; border-color: var(--prf-sky);
+  box-shadow: 0 0 0 3px rgba(74,127,181,.12); }
+.tte-prompt { font-size: .82rem; font-weight: 600;
+  color: var(--prf-slate); margin-top: 10px; margin-bottom: 2px; }
+.tte-saved  { font-family: 'Courier New',monospace; font-size: .63rem;
+  color: var(--prf-success); margin-top: 2px; display: none; }
+.tte-saved.show { display: block; }
+
+@media (max-width: 540px) {
+  .tte-sage-grid  { grid-template-columns: 1fr; }
+  .tte-abcd-grid  { grid-template-columns: 1fr; }
+  .tte-gen-compare { grid-template-columns: 1fr; }
+}
+
 </style>
 <script>
 /**
@@ -1881,6 +2012,9 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
       </div>
     </div>
 
+    <!-- Synthesis & Transfer — populated after simulation runs -->
+    <div id="tteTransferSection" style="display:none;margin-top:24px"></div>
+
   </div><!-- /#results -->
 
 </main>
@@ -1893,6 +2027,7 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
 
   const BACKEND = 'https://ucp-backend-4dig.onrender.com';
   let selectionMode = 'top_lambda';
+  let _lastTTEResults = null;  // { gens, scenario, selectionMode, generations, numAgents }
 
   // ─────────────────────────────────────────────────
   // SCENARIO DESCRIPTIONS
@@ -2054,6 +2189,9 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
     const gens = data.generations || [];
     if (!gens.length) return;
 
+    // Cache for Transfer section
+    _lastTTEResults = { gens, scenario, selectionMode, generations, numAgents };
+
     const n = gens.length;
     const scenarioLabel = data.scenario || scenario;
 
@@ -2081,6 +2219,9 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
     // Show results
     document.getElementById('results').classList.add('visible');
     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    // Build Transfer section
+    renderTTETransfer();
 
     // Animate bars after paint
     requestAnimationFrame(() => {
@@ -2484,6 +2625,442 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
       document.getElementById('prf-clear-btn').style.display = 'inline-block';
     }
   })();
+
+  // ─────────────────────────────────────────────────
+  // SYNTHESIS & TRANSFER — TRANS-TEMPORAL EXPLORER
+  // ─────────────────────────────────────────────────
+
+  const TTE_FW_TRANSFER = {
+    individual_rights: {
+      icon: '⚖️', color: '#4a7fb5',
+      reading: (gapGrew, rawImproved) => `Your rights-based framework reads the generational trajectory as a question of epistemic equity over time: ${gapGrew ? 'each successive generation could coordinate more but felt less able to safely say what it knew — a rights violation that compounded generationally rather than occurring in a single moment.' : rawImproved ? 'coordination capacity improved across generations and the suppression gap stayed contained — the structural conditions for equal epistemic standing were maintained under selection pressure.' : 'the structural conditions for equal voice were neither improving nor degrading significantly — a stable inequality rather than a growing one.'}`,
+      strength: 'You immediately locate the ethical problem in whether the selection process maintained or eroded the structural conditions for equal voice. The generational trajectory is, from your lens, an equity trajectory.',
+      growthEdge: 'Rights-based frameworks diagnose the equity problem precisely but may underweight the question of what produced it. Understanding which selection pressures generate compounding suppression — and why — is the Analyze growing edge.',
+      invitation: 'In an institution you know well: is the selection process selecting for people who can speak safely, or people who have learned to be silent safely? These are structurally different populations. Which is being transmitted?',
+    },
+    relational_we: {
+      icon: '🤝', color: '#3a8a5c',
+      reading: (gapGrew, rawImproved) => `Your relational framework reads the generational trajectory as a question of whether mutual recognition is being transmitted or eroded. ${gapGrew ? 'Each generation inherited less capacity for genuine hearing than the one before — the network of mutual attention was being selected out.' : rawImproved ? 'The selection process transmitted the conditions for genuine coordination — the network of mutual attention survived generational pressure.' : 'The relational infrastructure of this institution held roughly stable — neither deepening nor degrading across generations.'}`,
+      strength: 'You feel the relational quality of what is being transmitted most acutely. Whether genuine hearing survives the selection process is the question your framework is most calibrated to ask.',
+      growthEdge: 'The generational simulation reveals that relational quality is a structural product of selection pressure, not just personal effort. Understanding which institutional structures preserve versus erode relational capacity is the structural dimension your framework benefits from adding.',
+      invitation: 'In a community or institution you\'re part of: what relational practices were transmitted to you from those who came before? What will be transmitted to those who come after you, and what will be lost?',
+    },
+    hierarchical_role: {
+      icon: '🏛️', color: '#8a6fb5',
+      reading: (gapGrew, rawImproved) => `Your role-based framework reads the generational trajectory as a question of whether legitimate authority is being properly transmitted. ${gapGrew ? 'The selection process selected for agents who navigate the hierarchy well — but the growing suppression gap suggests that navigation increasingly required self-censorship. Authority was being transmitted; its proper purpose was being eroded.' : rawImproved && !gapGrew ? 'The selection process transmitted both coordination capacity and the structural conditions for legitimate authority to function as a channel rather than a gate.' : 'Authority structure transmission was mixed — capacity improved but the gap between formal authority and its legitimate purpose fluctuated.'}`,
+      strength: 'You understand what legitimate authority is supposed to transmit across generations — and when the transmission is producing something that looks like authority but functions as capture.',
+      growthEdge: 'Top-λ selection in a suppression-heavy environment often transmits compliance rather than legitimate coordination capacity. Your growing edge is distinguishing between these two in institutional contexts you inhabit.',
+      invitation: 'In a role you currently hold or aspire to: what would you be transmitting to the next generation of people in that role? Is it the legitimate purpose of the authority, or the adaptation strategies for navigating its dysfunction?',
+    },
+    boundary_integrity: {
+      icon: '🛡️', color: '#c9a84c',
+      reading: (gapGrew, rawImproved) => `Your boundary/integrity framework reads the generational trajectory as a question of whether non-negotiable knowledge is being protected across time. ${gapGrew ? 'Each generation inherited less ability to surface what it knew to be true — the institution was gradually normalizing the suppression of what should have been non-negotiable input.' : rawImproved ? 'The selection process maintained the structural conditions for honest knowledge to reach decisions — the integrity of institutional knowledge was preserved under generational pressure.' : 'The transmission of epistemic integrity was mixed — some types of knowledge could surface, others could not.'}`,
+      strength: 'You feel the erosion of epistemic integrity across generations as a compounding violation — each generation inheriting a slightly more compromised version of what should be inviolable.',
+      growthEdge: 'Your framework makes you excellent at naming the violation but the generational simulation reveals that some integrity erosion is structural and gradual — invisible in any single generation. Developing longitudinal structural analysis is the growing edge.',
+      invitation: 'In an institution you know: what was non-negotiable for the generation that came before you that has quietly become negotiable in your generation? What will be negotiable for those who come after you that you currently hold as non-negotiable?',
+    },
+    custodial_stewardship: {
+      icon: '🌱', color: '#4a9a7a',
+      reading: (gapGrew, rawImproved) => `Your custodial framework reads the generational trajectory as a question of whether the institution is honoring its obligation to those who come after. ${gapGrew ? 'The selection process selected for agents who could survive in the current structure — but what it transmitted to the next generation was a progressively more suppression-heavy environment. The institution was consuming its own inheritance.' : rawImproved ? 'The selection process transmitted not just coordination capacity but the structural conditions that make coordination possible — the institution was genuinely building for those who come after.' : 'The transmission was partial — some of what was inherited was passed on, some was eroded, and the next generation will receive a mixed inheritance.'}`,
+      strength: 'The generational simulation is most legible to your framework — it is literally a model of institutional inheritance. You immediately ask whether what is being selected for is worth transmitting.',
+      growthEdge: 'Custodial frameworks may focus on what should be preserved without fully analyzing why the current structure is failing to preserve it. The selection mechanism itself — which agents become institutional parents — is the structural lever your framework benefits from examining.',
+      invitation: 'In an institution you care about: what selection process is currently determining who becomes the institutional "parent" of the next generation? Is that process selecting for what you would want transmitted?',
+    },
+  };
+
+  function tteTArea(key, placeholder) {
+    let saved = '';
+    try { saved = localStorage.getItem(`tte_transfer_${key}`) || ''; } catch(e) {}
+    return `
+      <textarea class="tte-textarea" id="tteta-${key}"
+                placeholder="${placeholder}"
+                oninput="tteTSave('${key}', this.value)">${saved}</textarea>
+      <div class="tte-saved" id="ttesi-${key}">✓ Saved</div>`;
+  }
+
+  function tteTSave(key, val) {
+    try {
+      localStorage.setItem(`tte_transfer_${key}`, val);
+      const si = document.getElementById(`ttesi-${key}`);
+      if (si) { si.classList.add('show'); setTimeout(() => si.classList.remove('show'), 2000); }
+    } catch(e) {}
+  }
+
+  const tteTierC = t =>
+    t === 'strong' ? '#3a8a5c' : t === 'developing' ? '#4a7fb5' :
+    t === 'emerging' ? '#c87843' : '#8090a8';
+  const tteTierL = t =>
+    t === 'strong' ? 'Strong' : t === 'developing' ? 'Developing' :
+    t === 'emerging' ? 'Emerging' : 'Undertested';
+
+  function inferTTESAGE(gens, selMode) {
+    const n   = gens.length;
+    const g0  = gens[0].metrics;
+    const gF  = gens[n-1].metrics;
+    const gap0 = (g0.lambda_raw||0) - (g0.lambda_perceived||0);
+    const gapF = (gF.lambda_raw||0) - (gF.lambda_perceived||0);
+    const rawDelta  = (gF.lambda_raw||0) - (g0.lambda_raw||0);
+    const gapGrew   = gapF > gap0 + .03;
+    const gapShrunk = gapF < gap0 - .03;
+    const rawImproved = rawDelta > .02;
+    const rawDegraded = rawDelta < -.02;
+    const usedTopLambda = selMode === 'top_lambda';
+
+    // See: noticed generational pattern — gap growing while raw improves
+    const see = (gapGrew && rawImproved) ? 4    // paradox visible
+              : (gapGrew || rawImproved)  ? 3
+              : n >= 4                    ? 2 : 1;
+
+    // Analyze: ran multiple gens, understood selection mechanism
+    const analyze = usedTopLambda ? (n >= 4 ? 4 : 3) : 2;
+
+    // Generate: ran random selection for comparison, or high final coordination
+    const generate = (gF.lambda_raw||0) > .65 ? 3 : gapShrunk ? 4 : 2;
+
+    // Engage: final state shows understanding of implications
+    const engage = (gapGrew && gF.lambda_raw > .60) ? 4   // saw troubling divergence
+                 : rawImproved && !gapGrew            ? 3
+                 : rawDegraded                        ? 3  // engaged with failure
+                 : 2;
+
+    const tier = v => v >= 4 ? 'strong' : v >= 3 ? 'developing' : v >= 2 ? 'emerging' : 'undertested';
+    return {
+      see:      { score: see,      tier: tier(see) },
+      analyze:  { score: analyze,  tier: tier(analyze) },
+      generate: { score: generate, tier: tier(generate) },
+      engage:   { score: engage,   tier: tier(engage) },
+      rawImproved, rawDegraded, gapGrew, gapShrunk, rawDelta, gap0, gapF,
+    };
+  }
+
+  const TTE_SAGE_META = {
+    see: {
+      name: 'See',
+      def: 'Noticing what is being selected for — and what is being selected out.',
+      strong:      'Your simulation revealed the most instructive paradox the Trans-Temporal Explorer can produce: coordination capacity improved across generations while the suppression gap grew. You are watching a system get better at coordination while getting worse at honesty. That structural paradox is invisible in any single generation — it only becomes visible across the trajectory. You saw it.',
+      developing:  'The generational trajectory contains a pattern that only becomes visible when you track it across time: whether what is being transmitted is coordination capacity or compliance capacity. These look identical in any single generation. Noticing the difference is the See capacity this simulation is designed to build.',
+      emerging:    'The key signal to watch for in the generational simulation is whether the suppression gap grows as raw coordination capacity improves. That combination — better coordination, worse honesty — is the structural signature of an institution selecting for compliance rather than genuine capacity.',
+      undertested: 'Running the simulation with more generations (5-6) and comparing Top-λ to Random selection side by side would make the structural pattern most visible. The See capacity develops most directly from that comparison.',
+    },
+    analyze: {
+      name: 'Analyze',
+      def: 'Understanding why Top-λ selection produces what it produces.',
+      strong:      'Using Top-λ selection across multiple generations is a direct exercise in structural analysis: the selection mechanism is explicit, the outcome is measurable, and the causal path — which agents become parents, what they transmit, how that shapes the next generation — is traceable. You engaged with that causal structure.',
+      developing:  'Top-λ selection is not neutral — it selects for whoever coordinates most effectively in the current structure, which may not be whoever is most honest, most capable in the abstract, or most valuable to the institution\'s stated purpose. Analyzing that gap is the Analyze capacity this simulation targets.',
+      emerging:    'The most direct Analyze exercise is comparing Top-λ to Random selection. Random selection shows you what transmission looks like without selection pressure. The difference between the two trajectories is the structural effect of selecting for current-system fitness. What that difference reveals about the institution is the analysis.',
+      undertested: 'Running both selection modes and comparing trajectories would develop the Analyze capacity most directly. The question to hold: what does the difference tell you about what Top-λ selection is actually selecting for?',
+    },
+    generate: {
+      name: 'Generate',
+      def: 'Imagining alternative selection mechanisms — and what they would transmit.',
+      strong:      'Your simulation produced a final state where coordination capacity was high. Whether that reflects genuine OS2 capability or coordination through compliance is the Generate question: what structural intervention — different selection criteria, BioBond scaffolding, role redesign — would preserve the capacity while reducing the suppression? You have the data to work with.',
+      developing:  'The Generate capacity in the generational context is specifically about institutional design: given what you now know about what this selection mechanism produces, what would you design differently? The Random selection mode is one answer — but what are others?',
+      emerging:    'Generate here means asking: if you were designing the selection mechanism for the next generation of this institution, what would you select for? What criteria, beyond current coordination performance, would you want in your institutional parents? What would that transmit?',
+      undertested: 'Running the Random selection condition alongside Top-λ gives you a design baseline. The question is then: what selection mechanism would produce a better generational trajectory than either? That is the Generate question.',
+    },
+    engage: {
+      name: 'Engage',
+      def: 'Connecting the generational trajectory to institutions you actually inhabit.',
+      strong:      'Your simulation produced a trajectory with clear ethical implications — either a troubling divergence between capacity and honesty, or a system successfully transmitting genuine coordination. The Engage capacity is connecting that to a real institution: where in your actual life does this selection pattern appear?',
+      developing:  'Engage deepens when the simulation connects to something personal. Every institution you inhabit has a selection mechanism — promotion criteria, hiring practices, what behaviors get rewarded and punished. The generational simulation models those mechanisms. Which institution in your actual life does this trajectory most resemble?',
+      emerging:    'The Trans-Temporal Explorer models something that is happening right now in every institution you are part of: whoever thrives in the current structure tends to become the template for who is recruited, promoted, and socialized next. The Engage capacity begins with noticing that this is happening — not in a simulation, but in a real institution you inhabit.',
+      undertested: 'The Engage capacity develops most directly from answering this question honestly: in an institution I am currently part of, who are the "institutional parents" — the people whose way of being is being selected and transmitted? And is that what I want transmitted?',
+    },
+  };
+
+  function buildTTETransfer() {
+    if (!_lastTTEResults) return '';
+
+    const { gens, scenario, selectionMode: sMode, generations, numAgents } = _lastTTEResults;
+    const n    = gens.length;
+    const g0   = gens[0].metrics;
+    const gF   = gens[n-1].metrics;
+    const sage = inferTTESAGE(gens, sMode);
+    const hasPRF  = window.UCPProfile && UCPProfile.isLoaded();
+    const fw      = hasPRF ? UCPProfile.getFramework() : null;
+    const prfData = hasPRF ? TTE_FW_TRANSFER[fw] : null;
+
+    const { rawImproved, rawDegraded, gapGrew, gapShrunk, gap0, gapF, rawDelta } = sage;
+
+    // Trajectory summary cards
+    const trajCards = [
+      { label: 'λ Raw — Gen 0', val: g0.lambda_raw, phrase: rawImproved ? '→ improved' : rawDegraded ? '→ degraded' : '→ stable' },
+      { label: 'λ Raw — Final', val: gF.lambda_raw, phrase: rawImproved ? '▲ +' + (rawDelta*100).toFixed(1) + '%' : rawDegraded ? '▼ ' + (rawDelta*100).toFixed(1) + '%' : '→ stable' },
+      { label: 'Suppression Gap — Gen 0', val: gap0, phrase: gapGrew ? '→ grew' : gapShrunk ? '→ shrank' : '→ stable' },
+      { label: 'Suppression Gap — Final', val: gapF, phrase: gapGrew ? '▲ widened' : gapShrunk ? '▼ narrowed' : '→ stable' },
+      { label: 'Friction — Final', val: gF.friction, phrase: (gF.friction||0) < .30 ? 'Low drag' : (gF.friction||0) < .55 ? 'Moderate drag' : 'High drag' },
+      { label: 'Selection Mode', val: null, phrase: sMode === 'top_lambda' ? 'Top-λ (fitness = coordination)' : 'Random (no selection pressure)' },
+    ].map(c => `
+      <div class="tte-gen-card">
+        <div class="tte-gen-label">${c.label}</div>
+        <div class="tte-gen-val" style="color:${c.val !== null ? (c.val > .55 ? '#3a8a5c' : c.val > .35 ? '#c87843' : '#b84444') : 'var(--prf-sky)'}">
+          ${c.val !== null ? c.val.toFixed(3) : '—'}
+        </div>
+        <div class="tte-gen-phrase">${c.phrase}</div>
+      </div>`).join('');
+
+    // Headline narrative about what this trajectory means
+    let trajectoryNarrative = '';
+    if (rawImproved && gapGrew) {
+      trajectoryNarrative = `Your simulation revealed the most instructive pattern the Trans-Temporal Explorer produces: <strong>coordination capacity improved while the suppression gap grew.</strong> Each generation of this institution coordinated more effectively than the last — and each generation was less able to safely surface what it knew. The system got better at coordination and worse at honesty simultaneously. This is what happens when Top-λ selection in a suppression-heavy environment selects for agents who are excellent at navigating the existing power structure — which requires learning, over generations, what not to say.`;
+    } else if (rawImproved && !gapGrew) {
+      trajectoryNarrative = `Your simulation produced a genuinely positive trajectory: <strong>coordination capacity improved and the suppression gap stayed contained.</strong> The selection process transmitted agents who could coordinate effectively without increasing the cost of honest voice. This is the optimistic case — but it raises a question worth examining: what specific features of this configuration produced this outcome? What would need to change for the trajectory to reverse?`;
+    } else if (rawDegraded) {
+      trajectoryNarrative = `Your simulation produced capacity erosion: <strong>raw coordination capacity declined across generations</strong> despite selecting for the highest-performing agents each cycle. This is the stress cascade pattern: the environmental pressure of this scenario degraded the very capacity being selected for faster than selection could rebuild it. The institution was consuming itself.`;
+    } else if (gapShrunk) {
+      trajectoryNarrative = `Your simulation produced suppression relief: <strong>the gap between what agents could do and what they felt safe expressing narrowed across generations.</strong> The selection process appears to have transmitted agents who could maintain coordination without as much self-censorship. Whether this reflects genuinely safer conditions or the gradual adaptation of agents to saying less — and expecting less — is the question this trajectory cannot resolve on its own.`;
+    } else {
+      trajectoryNarrative = `Your simulation produced a mixed or stable trajectory: <strong>metrics fluctuated without a dominant directional pattern across ${n} generations.</strong> This is common when the selection pressure and the environmental stress are roughly balanced. The institution is neither clearly improving nor clearly degrading — it is drifting.`;
+    }
+
+    // SAGE cards
+    const sageCards = Object.entries(TTE_SAGE_META).map(([k, meta]) => {
+      const s = sage[k];
+      return `
+        <div class="tte-sage-card" style="border-left-color:${tteTierC(s.tier)}">
+          <div class="tte-sage-lbl" style="color:${tteTierC(s.tier)}">${tteTierL(s.tier)}</div>
+          <div class="tte-sage-nm">${meta.name}: ${meta.def.split(' — ')[0]}</div>
+          <div class="tte-sage-rd">${meta[s.tier]}</div>
+        </div>`;
+    }).join('');
+
+    // ABCD
+    const agencyText = `The generational simulation reveals that agency is not just an individual capacity — it is a structural product. ${gapGrew ? `In your simulation, each generation inherited a slightly more constrained environment for deliberate action: the suppression gap grew from ${(gap0*100).toFixed(0)}% to ${(gapF*100).toFixed(0)}%. Individual agents in the final generation may have had as much will as those in the first — but the structural conditions for translating that will into action had been progressively consumed.` : `In your simulation, the structural conditions for agency were ${gapShrunk ? 'progressively improving — each generation inherited slightly more space for deliberate action.' : 'roughly maintained — the conditions for individual agency were not systematically eroded by the selection process.'}`} What structural conditions in the institutions you currently inhabit are supporting or constraining your own deliberate agency?`;
+
+    const beautyText = `There is something worth pausing on in this simulation: it models one of the most consequential and least visible processes in institutional life — the generational transmission of culture. Every institution is doing this right now. The people who thrive in the current structure become the template for who is recruited, promoted, and socialized next. Their PRF coefficients — their ways of reading the world, their learned responses to power — are transmitted to the next generation with small mutations. Most people never get to see this process directly. You just ran it. That is not a small thing. The capacity to see what is being transmitted, and to ask whether it is worth transmitting, is one of the rarest capacities an ethical reasoner can have.`;
+
+    const contextText = `The scenario you chose — ${scenario} — shapes which stresses activated the transmission dynamics most strongly. High-stress scenarios (whistleblower, misinformation shock) tend to produce sharper divergence between coordination capacity and suppression because they activate the compliance-versus-integrity distinction most directly. Where you are in your professional life shapes which scenario is most relevant: early-career professionals are most likely to be the recipients of institutional transmission; mid-career professionals are most likely to be both recipients and transmitters; senior professionals and leaders are most likely to be the institutional parents whose PRF coefficients are being transmitted to the next generation. Which position are you currently in?`;
+
+    const dynamismText = hasPRF && prfData
+      ? `Your ${UCPProfile.getFrameworkName()} framework has a specific growing edge revealed by this simulation: ${prfData.growthEdge} The specific invitation: ${prfData.invitation}`
+      : `The generational simulation reveals the specific capacity most worth developing for someone at your stage: ${gapGrew ? 'the ability to see what is being selected for versus what is claimed to be selected for — these two things diverge most clearly in long-running institutions where the selection mechanism has had time to compound.' : rawImproved ? 'the ability to distinguish between genuine coordination capacity and compliance capacity — they produce similar short-term metrics but transmit very different things to the next generation.' : 'the ability to identify what selection mechanism is operating in the institutions you inhabit, and whether it is selecting for what you would want transmitted.'}`;
+
+    // Growth pathway
+    let growthHTML = '';
+    if (hasPRF && prfData) {
+      growthHTML = `
+        <div class="tte-growth">
+          <div class="tte-growth-lbl">${prfData.icon} ${UCPProfile.getFrameworkName()} — Strength Here</div>
+          <div class="tte-growth-txt">${prfData.strength}</div>
+        </div>
+        <div class="tte-growth" style="border-color:#c87843;background:#fff8f0">
+          <div class="tte-growth-lbl" style="color:#c87843">Growing Edge</div>
+          <div class="tte-growth-txt">${prfData.growthEdge}</div>
+          <div class="tte-growth-inv">Specific invitation: ${prfData.invitation}</div>
+        </div>
+        <div class="tte-growth" style="border-color:#3a8a5c;background:#f0faf4">
+          <div class="tte-growth-lbl" style="color:#3a8a5c">What Your Numbers Reveal Through Your Lens</div>
+          <div class="tte-growth-txt">${prfData.reading(gapGrew, rawImproved)}</div>
+        </div>`;
+    } else {
+      const sortedSage = Object.entries(sage)
+        .filter(([k]) => k in TTE_SAGE_META)
+        .sort((a,b) => b[1].score - a[1].score);
+      const strongest = sortedSage[0][0];
+      const weakest   = sortedSage[sortedSage.length-1][0];
+      growthHTML = `
+        <div class="tte-growth">
+          <div class="tte-growth-lbl">Your Strongest SAGE Capacity From This Simulation</div>
+          <div class="tte-growth-txt">${TTE_SAGE_META[strongest].strong}</div>
+        </div>
+        <div class="tte-growth" style="border-color:#c87843;background:#fff8f0">
+          <div class="tte-growth-lbl" style="color:#c87843">Growing Edge</div>
+          <div class="tte-growth-txt">${TTE_SAGE_META[weakest].developing}</div>
+          <div class="tte-growth-inv">Load your PRF-22 JSON (header button) for a framework-specific growth pathway.</div>
+        </div>`;
+    }
+
+    return `
+      <div class="tte-t-header">
+        <div class="tte-t-eyebrow">Synthesis & Transfer</div>
+        <div class="tte-t-title">What This Generational Trajectory Means For You and the Institutions You Inhabit</div>
+        <div class="tte-t-sub">
+          ${n} generations · ${sMode === 'top_lambda' ? 'Top-λ selection' : 'Random selection'} ·
+          ${scenario} scenario · This section translates the trajectory into something that travels with you.
+        </div>
+      </div>
+
+      <!-- Trajectory narrative -->
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">📈</span>
+          <div>
+            <div class="tte-b-title">What Your Trajectory Actually Showed</div>
+            <div class="tte-b-sub">The structural story across ${n} generations</div>
+          </div>
+        </div>
+        <div class="tte-gen-compare">${trajCards}</div>
+        <p class="tte-prose">${trajectoryNarrative}</p>
+        <div class="tte-prompt">Which real institution does this trajectory most remind you of — and why?</div>
+        ${tteTArea('trajectory', 'Name the institution, name the pattern, name what you recognize...')}
+      </div>
+
+      <!-- PRF reading -->
+      ${hasPRF ? `
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">${UCPProfile.getFrameworkIcon()}</span>
+          <div>
+            <div class="tte-b-title">Your PRF Reading of This Trajectory</div>
+            <div class="tte-b-sub">${UCPProfile.getFrameworkName()} · ${UCPProfile.getATCFTier()} ATCF sensitivity</div>
+          </div>
+        </div>
+        <div class="tte-prf-panel" style="border-left:3px solid ${UCPProfile.getFrameworkColor()}">
+          <div class="tte-prf-lbl" style="color:${UCPProfile.getFrameworkColor()}">${UCPProfile.getFrameworkIcon()} ${UCPProfile.getFrameworkName()} — Your Lens on This Trajectory</div>
+          <div class="tte-prf-txt">${prfData.reading(gapGrew, rawImproved)}</div>
+        </div>
+        <div class="tte-prompt">What did your framework make immediately visible in this trajectory that someone with a different lens might have missed?</div>
+        ${tteTArea('prf-read', 'Write what your specific framework made visible — and what required more effort to see...')}
+      </div>` : `
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">🔭</span>
+          <div>
+            <div class="tte-b-title">PRF Reading — Load Your Profile for Personalization</div>
+            <div class="tte-b-sub">The "Load My PRF" button in the header connects your specific framework to this analysis</div>
+          </div>
+        </div>
+        <p class="tte-prose">Your PRF lens shapes which features of this generational trajectory are most visible to you. Loading your PRF-22 JSON will generate a framework-specific reading of what this trajectory reveals through your particular lens — what your framework makes immediately visible and what it requires more effort to see.</p>
+        <div class="tte-prompt">Without your PRF: which generation in the trajectory felt most ethically troubling to you, and why?</div>
+        ${tteTArea('prf-read', 'Name the generation and what in your own values made it troubling...')}
+      </div>`}
+
+      <!-- SAGE profile -->
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">⚡</span>
+          <div>
+            <div class="tte-b-title">Your SAGE Capacity Profile from This Simulation</div>
+            <div class="tte-b-sub">Inferred from your engagement with the generational trajectory</div>
+          </div>
+        </div>
+        <p class="tte-prose">The Trans-Temporal Explorer builds a specific kind of ethical reasoning capacity: the ability to see what is being transmitted across time — what an institution selects for, what it selects out, and what that selection produces over generations. The SAGE profile below maps how this simulation exercised each capacity.</p>
+        <div class="tte-sage-grid">${sageCards}</div>
+        <div class="tte-prompt">Which SAGE capacity does reading institutional trajectories over time most require — and where are you in developing it?</div>
+        ${tteTArea('sage-reflect', 'What would developing that capacity look like in an institution you actually inhabit?')}
+      </div>
+
+      <!-- ABCD -->
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">🌐</span>
+          <div>
+            <div class="tte-b-title">ABCD — Four Dimensions of Growth</div>
+            <div class="tte-b-sub">Agency · Beauty/Awe · Context · Dynamism</div>
+          </div>
+        </div>
+        <div class="tte-abcd-grid">
+          <div class="tte-abcd-card" style="border-top:3px solid var(--prf-sky)">
+            <div class="tte-letter" style="color:var(--prf-sky)">A</div>
+            <div class="tte-aname">Agency</div>
+            <div class="tte-atext">${agencyText}</div>
+          </div>
+          <div class="tte-abcd-card" style="border-top:3px solid var(--prf-gold)">
+            <div class="tte-letter" style="color:var(--prf-gold)">B</div>
+            <div class="tte-aname">Beauty / Awe</div>
+            <div class="tte-atext">${beautyText}</div>
+          </div>
+          <div class="tte-abcd-card" style="border-top:3px solid var(--prf-success)">
+            <div class="tte-letter" style="color:var(--prf-success)">C</div>
+            <div class="tte-aname">Context</div>
+            <div class="tte-atext">${contextText}</div>
+          </div>
+          <div class="tte-abcd-card" style="border-top:3px solid var(--prf-warn)">
+            <div class="tte-letter" style="color:var(--prf-warn)">D</div>
+            <div class="tte-aname">Dynamism</div>
+            <div class="tte-atext">${dynamismText}</div>
+          </div>
+        </div>
+        <div class="tte-prompt">Which dimension is most alive for you from this trajectory?</div>
+        ${tteTArea('abcd-reflect', 'Write about one dimension in relation to your specific life situation...')}
+      </div>
+
+      <!-- Vicarious learning -->
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">🛡️</span>
+          <div>
+            <div class="tte-b-title">What You Learned Without Living It</div>
+            <div class="tte-b-sub">Generational pattern recognition — without requiring a career to build it</div>
+          </div>
+        </div>
+        <p class="tte-prose">
+          The pattern you just observed across ${n} generations typically takes decades
+          to become visible from inside an institution. Employees rarely have the longitudinal
+          view to see that the people who thrive in the current structure are progressively
+          shaping who the institution recruits and promotes — and therefore what the institution
+          becomes. They experience each individual hiring or promotion decision as reasonable.
+          They don't see the trajectory.
+        </p>
+        <p class="tte-prose">
+          You just saw the trajectory directly, in a matter of minutes.
+          What you specifically learned: that <strong>selection pressure is a moral mechanism</strong>
+          — it determines not just who survives but what gets transmitted to those who come after.
+          That Top-λ selection in a suppression-heavy environment does not necessarily select
+          for the most ethical agents — it selects for the most adapted ones, which is a different
+          thing. And that the suppression gap is not visible in any single generation — it is
+          only visible across the trajectory.
+        </p>
+        <div class="tte-prompt">What is the one pattern from this trajectory that you think will be most useful in your actual institutional life?</div>
+        ${tteTArea('vicarious', 'Name the pattern, name the institution where you expect to see it, name what you\'ll do differently because of it...')}
+      </div>
+
+      <!-- Growth pathways -->
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">🌱</span>
+          <div>
+            <div class="tte-b-title">Growth Pathways — From Where You Are</div>
+            <div class="tte-b-sub">Specific developmental invitations from this trajectory</div>
+          </div>
+        </div>
+        ${growthHTML}
+        <div class="tte-prompt">Write one concrete commitment — something you will actually do, with a timeframe.</div>
+        ${tteTArea('commitment', 'I will _____ by _____ because this simulation showed me that _____')}
+      </div>
+
+      <!-- Investment -->
+      <div class="tte-block">
+        <div class="tte-block-hdr">
+          <span class="tte-b-icon">⏳</span>
+          <div>
+            <div class="tte-b-title">Why This Investment Was Worth It</div>
+            <div class="tte-b-sub">Honoring the attention and time you brought here</div>
+          </div>
+        </div>
+        <div class="tte-invest">
+          <p>The Trans-Temporal Explorer models something that almost no other educational tool
+          does: <strong>the generational transmission of institutional culture.</strong>
+          Not as a theory — as a measurable, runnable process. You can change the selection
+          mechanism, change the scenario, change the number of generations, and see what
+          those changes produce in the trajectory. That is not a metaphor. That is structural
+          knowledge about how institutions reproduce themselves.</p>
+          <p>What you specifically learned: that selection pressure is a moral mechanism with
+          compounding effects that are invisible in any single generation. That Top-λ selection
+          and Random selection produce different trajectories — and that the difference between
+          them reveals what the selection mechanism is actually selecting for. And that the
+          suppression gap, tracked across generations, is the most ethically significant metric
+          in the simulation: it measures whether each successive generation inherits more or less
+          structural freedom to be honest.</p>
+          <p>What you carry forward is <strong>generational pattern recognition</strong>:
+          the capacity to look at an institution and ask — not just "how is it functioning now?"
+          but "what is it becoming, and is that what it should be transmitting?"
+          That question, asked by enough people inside enough institutions, is how institutional
+          cultures change. That is what this time was for.</p>
+        </div>
+        <div class="tte-prompt">What do you want to remember from this simulation six months from now?</div>
+        ${tteTArea('final', 'Write it here so it exists somewhere outside your head...')}
+      </div>`;
+  }
+
+  function renderTTETransfer() {
+    const el = document.getElementById('tteTransferSection');
+    if (!el) return;
+    const html = buildTTETransfer();
+    if (!html) return;
+    el.innerHTML = html;
+    el.style.display = 'block';
+  }
 
   // ─────────────────────────────────────────────────
   // INIT
