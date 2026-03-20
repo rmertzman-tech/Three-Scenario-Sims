@@ -710,6 +710,207 @@ header {
   .metric-felt-states { grid-template-columns: 1fr; }
 }
 
+/* ══════════════════════════════════════════════════
+   SYNTHESIS & TRANSFER SECTION
+   ══════════════════════════════════════════════════ */
+.transfer-section {
+  margin-top: 24px;
+  border-top: 3px solid var(--gold);
+  padding-top: 22px;
+}
+
+.transfer-header {
+  text-align: center; margin-bottom: 20px;
+}
+
+.transfer-eyebrow {
+  font-family: 'Courier New',monospace; font-size: .68rem;
+  text-transform: uppercase; letter-spacing: .14em;
+  color: var(--gold); margin-bottom: 6px;
+}
+
+.transfer-title {
+  font-family: 'Georgia',serif; font-size: 1.3rem;
+  font-weight: 700; color: var(--ink); margin-bottom: 6px;
+}
+
+.transfer-subtitle {
+  font-size: .88rem; color: var(--muted);
+  font-style: italic; line-height: 1.6;
+}
+
+/* Transfer block */
+.transfer-block {
+  margin-bottom: 24px; padding-bottom: 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.transfer-block:last-of-type { border-bottom: none; margin-bottom: 0; }
+
+.transfer-block-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+}
+
+.transfer-block-icon {
+  font-size: 1.3rem; flex-shrink: 0;
+}
+
+.transfer-block-title {
+  font-family: 'Georgia',serif; font-size: 1rem;
+  font-weight: 700; color: var(--ink);
+}
+
+.transfer-block-subtitle {
+  font-size: .8rem; color: var(--muted); font-style: italic;
+}
+
+.transfer-prose {
+  font-size: .88rem; color: var(--muted);
+  line-height: 1.75; margin-bottom: 10px;
+}
+
+.transfer-prose strong { color: var(--ink); }
+.transfer-prose em     { color: var(--slate); }
+
+/* PRF reading block */
+.transfer-prf-reading {
+  background: linear-gradient(135deg, var(--deep), var(--navy));
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 12px;
+}
+
+.transfer-prf-label {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  margin-bottom: 6px;
+}
+
+.transfer-prf-text {
+  font-size: .88rem; color: rgba(255,255,255,.82); line-height: 1.7;
+}
+
+/* SAGE grid */
+.sage-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 12px;
+}
+
+.sage-card {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 7px; padding: 12px 13px;
+  border-left: 4px solid;
+}
+
+.sage-card-label {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  margin-bottom: 3px;
+}
+
+.sage-card-name {
+  font-weight: 700; font-size: .9rem; color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.sage-card-reading {
+  font-size: .8rem; color: var(--muted); line-height: 1.55;
+}
+
+/* ABCD cards */
+.abcd-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 12px;
+}
+
+.abcd-card {
+  background: var(--paper); border: 1px solid var(--border);
+  border-radius: 8px; padding: 13px 14px;
+}
+
+.abcd-letter {
+  font-family: 'Georgia',serif; font-size: 1.4rem; font-weight: 700;
+  line-height: 1; margin-bottom: 3px;
+}
+
+.abcd-name {
+  font-size: .78rem; font-weight: 600; color: var(--slate);
+  font-family: 'Courier New',monospace; text-transform: uppercase;
+  letter-spacing: .07em; margin-bottom: 7px;
+}
+
+.abcd-text {
+  font-size: .82rem; color: var(--muted); line-height: 1.6;
+}
+
+/* Growth pathway */
+.growth-pathway {
+  background: #f0f6fa; border: 1px solid var(--sky);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 10px;
+}
+
+.growth-pathway-label {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--sky); margin-bottom: 5px;
+}
+
+.growth-pathway-text {
+  font-size: .87rem; color: var(--ink); line-height: 1.7;
+}
+
+.growth-pathway-invitation {
+  margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid rgba(74,127,181,.2);
+  font-size: .82rem; color: var(--muted);
+  font-style: italic; line-height: 1.6;
+}
+
+/* Investment block */
+.investment-block {
+  background: linear-gradient(135deg, #1a2744, #243560);
+  border-radius: 10px; padding: 20px 22px;
+}
+
+.investment-block p {
+  font-size: .9rem; color: rgba(255,255,255,.82);
+  line-height: 1.75; margin-bottom: 10px;
+}
+
+.investment-block p:last-of-type { margin-bottom: 0; }
+
+.investment-block strong { color: var(--ucp-gold); }
+
+/* Reflection textarea in transfer */
+.transfer-textarea {
+  width: 100%; padding: .8rem 1rem;
+  border: 1px solid var(--border); border-radius: 6px;
+  font-family: 'Georgia',serif; font-size: .88rem;
+  margin-top: 8px; min-height: 90px; resize: vertical;
+  line-height: 1.65; background: var(--white);
+  color: var(--ink); transition: border-color .2s;
+}
+
+.transfer-textarea:focus {
+  outline: none; border-color: var(--sky);
+  box-shadow: 0 0 0 3px rgba(74,127,181,.12);
+}
+
+.transfer-save-note {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  color: var(--success); margin-top: 3px; display: none;
+}
+
+.transfer-save-note.show { display: block; }
+
+.transfer-prompt-label {
+  font-size: .82rem; font-weight: 600; color: var(--slate);
+  margin-top: 10px; margin-bottom: 3px;
+}
+
+@media (max-width: 540px) {
+  .sage-grid  { grid-template-columns: 1fr; }
+  .abcd-grid  { grid-template-columns: 1fr; }
+}
+
 /* ── Fade-in ── */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
@@ -987,6 +1188,10 @@ header {
     <div id="decisionLog"></div>
 
     <button class="restart-btn" onclick="restartApp()">▶ Play Again — Different Role</button>
+
+    <!-- Synthesis & Transfer — populated after UCP simulation completes -->
+    <div id="transferSection" style="display:none"></div>
+
   </div>
 </div>
 
@@ -1610,6 +1815,7 @@ const PUZZLE = {
 let currentRole    = null;
 let scenarioIndex  = 0;
 let state = {};
+let _ucpResults    = null;  // stored after debrief simulation runs
 
 function resetState() {
   state = { coordination:50, health:100, trust:50,
@@ -2100,6 +2306,9 @@ async function runUCPForDebrief() {
     const os2   = m.os2_synergy;
     const gap   = raw - perc;
 
+    // Store for Transfer section
+    _ucpResults = { raw, perc, fric, os2, gap };
+
     let prfNote = '';
     if (PRF.isLoaded()) {
       const fw = PRF.fw();
@@ -2180,12 +2389,26 @@ async function runUCPForDebrief() {
         </div>
       </div>`;
 
+    // Build Transfer section now that _ucpResults is stored
+    const transferEl = document.getElementById('transferSection');
+    if (transferEl) {
+      transferEl.innerHTML  = buildTransferSection();
+      transferEl.style.display = 'block';
+    }
+
   } catch(e) {
     panelEl.innerHTML = `
       <div class="ucp-panel">
         <div class="ucp-panel-header">UCP Engine</div>
         <div class="ucp-error">Could not connect to UCP engine: ${e.message}. The debrief is still complete above.</div>
       </div>`;
+
+    // Build Transfer section even if UCP failed (_ucpResults will be null)
+    const transferEl = document.getElementById('transferSection');
+    if (transferEl) {
+      transferEl.innerHTML  = buildTransferSection();
+      transferEl.style.display = 'block';
+    }
   }
 }
 
@@ -2196,8 +2419,449 @@ function restartApp() {
   closeModal('debriefModal');
   document.getElementById('simulationScreen').classList.add('hidden');
   document.getElementById('roleSelectionScreen').classList.remove('hidden');
+  // Reset transfer state
+  _ucpResults = null;
+  const ts = document.getElementById('transferSection');
+  if (ts) { ts.innerHTML = ''; ts.style.display = 'none'; }
   currentRole = null;
   if (PRF.isLoaded()) highlightClosestRole();
+}
+
+// ─────────────────────────────────────────────────
+// SYNTHESIS & TRANSFER SECTION
+// Built after UCP simulation completes so it has
+// access to λ Raw, λ Perceived, Friction, OS2.
+// ─────────────────────────────────────────────────
+
+// SAGE inference from decision log
+function inferSAGE() {
+  const log = state.log;
+  const scores = { see: 0, analyze: 0, generate: 0, engage: 0 };
+
+  log.forEach(entry => {
+    const out = (entry.outcome || '').toLowerCase();
+    const ch  = (entry.choice  || '').toLowerCase();
+
+    // See — noticed ethical dimensions, structural patterns
+    if (out.includes('network') || out.includes('connect') ||
+        out.includes('functional equiv') || out.includes('bridge'))
+      scores.see += 2;
+    if (out.includes('stagnated') || out.includes('missed') ||
+        out.includes('minimized'))
+      scores.see -= 1;
+
+    // Analyze — understood structural causes vs. personal ones
+    if (out.includes('monopolist') || out.includes('power') ||
+        out.includes('structural') || out.includes('credibil'))
+      scores.analyze += 2;
+    if (out.includes('isolated') || out.includes('silo'))
+      scores.analyze -= 1;
+
+    // Generate — built cross-framework solutions
+    if (out.includes('coalition') || out.includes('distributed') ||
+        out.includes('bootstrap') || out.includes('narrative captured') ||
+        out.includes('history written'))
+      scores.generate += 2;
+    if (out.includes('narrowed') || out.includes('blunted') ||
+        out.includes('weakened'))
+      scores.generate -= 1;
+
+    // Engage — acted deliberately despite institutional cost
+    if (out.includes('authority solidif') || out.includes('power challenged') ||
+        out.includes('testimony') || out.includes('door opened') ||
+        out.includes('conflict resolved'))
+      scores.engage += 2;
+    if (out.includes('conflict avoided') || out.includes('trust eroded') ||
+        out.includes('war declared'))
+      scores.engage -= 1;
+  });
+
+  // Convert to descriptive tiers
+  const tier = v =>
+    v >= 4  ? 'strong'    :
+    v >= 2  ? 'developing':
+    v >= 0  ? 'emerging'  : 'undertested';
+
+  return {
+    see:      { score: scores.see,      tier: tier(scores.see) },
+    analyze:  { score: scores.analyze,  tier: tier(scores.analyze) },
+    generate: { score: scores.generate, tier: tier(scores.generate) },
+    engage:   { score: scores.engage,   tier: tier(scores.engage) },
+  };
+}
+
+const SAGE_META = {
+  see: {
+    name: 'See',
+    definition: 'Perceiving the ethical dimensions of a situation before others name them.',
+    strong:      'You consistently noticed structural patterns — coordination gaps, power asymmetries, suppression dynamics — before they were labeled for you. This is the foundational SAGE capacity.',
+    developing:  'You recognized ethical problems but sometimes after they were already named by others. Building earlier pattern recognition — especially for structural vs. interpersonal problems — would sharpen this.',
+    emerging:    'The ethical dimensions were present throughout the simulation. Developing the habit of asking "who has voice here and who doesn\'t?" before decisions are made would strengthen your See capacity.',
+    undertested: 'You moved through the simulation quickly. Slowing down at the scenario-entry point to map what\'s ethically at stake before choosing would develop this foundational skill.',
+  },
+  analyze: {
+    name: 'Analyze',
+    definition: 'Understanding structural causes — why this is happening, not just what is happening.',
+    strong:      'Your choices show understanding of structural causes: institutional capture, power asymmetry, the difference between suppression and friction. You diagnosed the system, not just the symptom.',
+    developing:  'You understood the immediate problem but sometimes treated structural dynamics as personal ones. The difference between "management made a bad decision" and "the system produced this decision predictably" is the Analyze gap.',
+    emerging:    'Developing structural analysis means asking: what institutional conditions made this outcome almost inevitable? The CTE crisis was not primarily about bad individuals — it was about predictable institutional dynamics.',
+    undertested: 'The Analyze capacity deepens with comparative cases. After this simulation, tracing one connection between the CTE dynamics and a situation in your own life would build this skill.',
+  },
+  generate: {
+    name: 'Generate',
+    definition: 'Creating responses that work across different PRF frameworks — not just within your own.',
+    strong:      'You built cross-framework solutions: bridging the scientist to the family to the journalist. This OS2 capacity — coordinating across worldview difference — is the rarest and most valuable SAGE skill.',
+    developing:  'Some of your choices stayed within a single framework\'s logic. The Generate capacity expands when you ask: "what would make this response legible and useful to someone who reads the world completely differently than I do?"',
+    emerging:    'OS2 thinking — generating solutions that work for multiple PRF frameworks simultaneously — is the central skill this simulation is designed to build. The puzzle was a direct exercise in it: different people, different reasons, same coordinated goal.',
+    undertested: 'The Generate capacity is specifically about cross-framework design. Going back through one decision you made and asking "how could I have framed this to be effective for someone with the opposite PRF?" would build this directly.',
+  },
+  engage: {
+    name: 'Engage',
+    definition: 'Acting on your analysis with appropriate care and courage — even when the structure makes it costly.',
+    strong:      'You acted deliberately despite institutional cost. This is the hardest SAGE capacity to develop because it requires the other three to be functional first, and then adds the dimension of will.',
+    developing:  'You engaged effectively when the cost was low. The Engage capacity is specifically tested when action is costly — when the structure pushes back. Identifying one situation in your life where you have the analysis but haven\'t yet acted is the growing edge.',
+    emerging:    'The gap between seeing, analyzing, and generating a good response — and actually engaging with it in the world — is the central challenge of applied ethics. Boisjoly could See, Analyze, and Generate. What cost him was that the system made Engaging impossible despite his best efforts.',
+    undertested: 'Engage is not just about courage — it is about structural conditions. The simulation reveals that individual willingness to act is necessary but not sufficient. The Transfer question is: what structural conditions in your actual life support or impede your capacity to engage?',
+  },
+};
+
+// PRF-specific content
+const PRF_TRANSFER = {
+  individual_rights: {
+    reading: (gap, os2) => `Your rights-based framework made the epistemic injustice of the CTE crisis immediately visible to you — the structural exclusion of certain voices from decisions that affected them. ${gap > .20 ? `The ${(gap*100).toFixed(0)}% suppression gap your simulation produced is, from your lens, a rights violation: agents with equal stakes could not contribute equally. This is the precise thing your framework is calibrated to see.` : `The relatively contained suppression gap your choices produced reflects your framework's orientation toward equal epistemic standing.`}`,
+    strength: 'Your framework gives you a precise vocabulary for naming epistemic injustice — you can identify when someone\'s equal right to contribute to decisions that affect them has been structurally removed.',
+    growthEdge: 'Rights-based frameworks excel at diagnosis but may underweight the relational repair needed after structural failures. The CTE network needed not just to establish rights violations but to build the relational trust that made sustained coalition possible.',
+    invitation: 'Practice describing one structural problem in your own context using three different PRF languages — not to abandon your own, but to make your analysis legible to the people you\'ll need to coordinate with.',
+  },
+  relational_we: {
+    reading: (gap, os2) => `Your relational framework felt the CTE crisis as a breakdown in mutual recognition — the network of genuine hearing and being heard that sustained coordination requires. ${os2 > .60 ? `The strong OS2 Synergy your simulation produced (${os2.toFixed(3)}) reflects your framework\'s natural orientation toward building the relational bridges that cross-PRF coordination depends on.` : `The OS2 Synergy score of ${os2.toFixed(3)} suggests some relational bridges were not fully built — moments where the formal coordination existed but the genuine mutual attention did not.`}`,
+    strength: 'You feel fractured mutual recognition immediately and instinctively work to restore it. The coalition-building that eventually forced the NFL to the settlement required exactly this relational capacity.',
+    growthEdge: 'Your framework may experience coordination failures as relational problems when they are simultaneously structural ones. The NFL\'s suppression was not just a failure of genuine hearing — it was a deliberate institutional strategy. Developing structural analysis as a complement to relational repair would make your instincts more effective.',
+    invitation: 'Identify one current coordination challenge in your life and ask: is this primarily a relational problem (genuine hearing absent) or a structural problem (conditions making hearing impossible) — or both? Different diagnoses require different interventions.',
+  },
+  hierarchical_role: {
+    reading: (gap, os2) => `Your role-based framework sees the CTE crisis as a failure of legitimate authority to honor its own purpose. When Thiokol management said "take off your engineering hat," they used role authority as a suppression mechanism rather than a coordination channel — the exact inversion of what legitimate hierarchy is supposed to do. ${gap > .20 ? `The suppression gap in your simulation (${(gap*100).toFixed(0)}%) represents authority being used as a gate rather than a channel.` : `Your choices produced a more contained gap, suggesting you found ways to work within the authority structure while maintaining coordination integrity.`}`,
+    strength: 'You understand what legitimate authority is supposed to do — and you can name precisely when it\'s failing its own stated purpose. This is a rare analytical capacity.',
+    growthEdge: 'The framework that was used to override Boisjoly was hierarchical/role-based. From inside this framework, that felt justified in the moment. The Transfer question is: how do you develop a personal threshold test for when institutional authority has failed its purpose sufficiently to warrant de-coordination?',
+    invitation: 'Write one sentence that completes this: "The authority structure I work within has failed its own purpose when it ___." Keep it specific, keep it honest, and notice what it reveals about your actual relationship to institutional hierarchy.',
+  },
+  boundary_integrity: {
+    reading: (gap, os2) => `Your boundary/integrity framework experienced the CTE crisis as a sanctity violation — the systematic treatment of something inviolable (the truth about what the NFL knew and when) as negotiable. ${gap > .20 ? `The suppression gap your simulation produced (${(gap*100).toFixed(0)}%) measures the distance between what was true and what could safely be said. From your framework, that gap is not just inefficiency — it is a violation of epistemic integrity at the institutional scale.` : `Your choices helped contain the gap between what was known and what could be said — protecting the integrity of the knowledge even under institutional pressure.`}`,
+    strength: 'You feel violations of epistemic integrity immediately — the moment when something that should be non-negotiable is being treated as negotiable. This sensitivity is exactly what Boisjoly had and what the NFL\'s institutional structure systematically worked to suppress.',
+    growthEdge: 'Your framework makes you excellent at naming violations but may make you less comfortable with the messy coalition-building needed to address them. The CTE network required not just identifying the integrity breach but navigating complex, impure, compromised coordination among people with very different values.',
+    invitation: 'Identify the one thing in your current professional or personal context that functions as your non-negotiable — the line you will not cross. Then ask: what structural conditions would need to be in place for that line to be effectively protected, not just personally held?',
+  },
+  custodial_stewardship: {
+    reading: (gap, os2) => `Your custodial framework experienced the CTE crisis as a generational failure — the systematic suppression of accumulated knowledge (what happens to brains under sustained impact) from reaching the decisions that needed it. ${gap > .20 ? `The suppression gap of ${(gap*100).toFixed(0)}% represents the distance between what was inherited (Omalu\'s findings, the families\' experience, the athletes\' bodies) and what was allowed to reach the present decision.` : `Your choices helped the accumulated knowledge reach the decisions that needed it — the custodial function working as it should.`}`,
+    strength: 'You feel the weight of what\'s being lost — accumulated knowledge, inherited practice, the obligation to those who come after — most acutely. This long-horizon orientation is exactly what the CTE crisis needed and exactly what the NFL\'s short-term financial calculus suppressed.',
+    growthEdge: 'Your framework may be more effective at preservation than at the disruptive coordination needed to create change. Protecting what\'s inherited sometimes requires active disruption of the structures that would otherwise continue consuming it.',
+    invitation: 'In your current context — your profession, your community, your family — what accumulated knowledge or practice is at risk of being lost? And who is the "next generation" that you are stewards for, even if they don\'t know it yet?',
+  },
+};
+
+function tSave(key, val) {
+  try {
+    localStorage.setItem(`cte_transfer_${key}`, val);
+    const si = document.getElementById(`tsi-${key}`);
+    if (si) { si.classList.add('show'); setTimeout(() => si.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+
+function tLoad(key) {
+  try { return localStorage.getItem(`cte_transfer_${key}`) || ''; } catch(e) { return ''; }
+}
+
+function tArea(key, placeholder) {
+  const saved = tLoad(key);
+  return `
+    <textarea class="transfer-textarea" id="ta-${key}"
+              placeholder="${placeholder}"
+              oninput="tSave('${key}', this.value)">${saved}</textarea>
+    <div class="transfer-save-note" id="tsi-${key}">✓ Saved</div>`;
+}
+
+function buildTransferSection() {
+  const role     = ROLES[currentRole];
+  const sage     = inferSAGE();
+  const ucp      = _ucpResults;
+  const hasPRF   = PRF.isLoaded();
+  const fw       = PRF.fw();
+  const prfData  = hasPRF ? PRF_TRANSFER[fw] : null;
+
+  const sageTierColor = t =>
+    t === 'strong'    ? 'var(--success)' :
+    t === 'developing'? 'var(--sky)'     :
+    t === 'emerging'  ? 'var(--warn)'    : 'var(--light)';
+
+  const sageTierLabel = t =>
+    t === 'strong'    ? 'Strong'    :
+    t === 'developing'? 'Developing':
+    t === 'emerging'  ? 'Emerging'  : 'Undertested';
+
+  // SAGE cards
+  const sageCards = Object.entries(SAGE_META).map(([k, meta]) => {
+    const s = sage[k];
+    return `
+      <div class="sage-card" style="border-left-color:${sageTierColor(s.tier)}">
+        <div class="sage-card-label" style="color:${sageTierColor(s.tier)}">${sageTierLabel(s.tier)}</div>
+        <div class="sage-card-name">${meta.name}: ${meta.definition.split(' — ')[0]}</div>
+        <div class="sage-card-reading">${meta[s.tier]}</div>
+      </div>`;
+  }).join('');
+
+  // ABCD content — role and UCP aware
+  const agencyText = ucp
+    ? `In this simulation, λ Raw measured whether the ${role.name.toLowerCase()} ecosystem had the cognitive infrastructure for deliberate action. Your run produced λ Raw = <strong>${ucp.raw.toFixed(3)}</strong> — ${ucp.raw > .60 ? 'capacity substantially intact, meaning the conditions for deliberate agency were present even under institutional pressure' : 'capacity under significant load, meaning the structural conditions were actively consuming the bandwidth that deliberate agency requires'}. The question this raises for your own life: in the institutional contexts you navigate, is your deliberate reasoning capacity structurally protected or structurally consumed?`
+    : `The simulation measured whether the ${role.name.toLowerCase()} ecosystem had the structural conditions for deliberate action. Your final coordination score of ${state.coordination}/100 reflects how much of that potential was realized. The question for your own life: what structural conditions support or impede your capacity to act deliberately when it costs something?`;
+
+  const beautyText = `Something remarkable happened in the CTE story, and it deserves to be named as remarkable. A Nigerian immigrant doctor's commitment to scientific truth, a widow's grief, a journalist's professional purpose, and an athlete's growing fear about his own mind — four completely different people with completely different reasons — created something together that forced the most powerful sports organization in America to change its practices. They didn't need to agree on why player safety matters. They needed to find the shared task. That is a genuinely beautiful form of human coordination. It is the thing OS2 thinking makes possible. It is worth noticing that it's beautiful.`;
+
+  const contextText = `Your specific position in the world — your age, your profession, your relationships, your power — shapes which parts of this simulation spoke most directly to you. ${currentRole === 'athlete' ? 'You played the athlete role, which placed you inside the system being harmed by the thing you couldn\'t safely name. The question of who bears the cost of institutional silence hits differently from that position.' : currentRole === 'executive' ? 'You played the executive role, which placed you inside the power structure that was producing the suppression. The question of when institutional authority fails its own stated purpose is most alive from that position.' : `You played the ${role.name.toLowerCase()} role. The ethical dilemmas specific to that position — ${currentRole === 'scientist' ? 'the tension between scientific integrity and institutional survival' : currentRole === 'family' ? 'the translation of private grief into public coordination' : 'the tension between objective reporting and active structural intervention'} — are the ones most likely to recur in your own professional and personal life.`} What does your specific position in your actual world share with the position you just inhabited?`;
+
+  const dynamismText = `Dynamism is not about where you are — it's about your vector of development. This simulation revealed something about both your current strengths and your growing edge. The SAGE profile above maps that. But dynamism requires more than knowing your growing edge: it requires identifying the specific next step. ${hasPRF && prfData ? `For someone with your ${PRF.fwName()} framework, the specific developmental invitation is: <em>${prfData.invitation}</em>` : `The specific invitation is to take one of the SAGE capacities marked "developing" or "emerging" above and identify one concrete situation in your life — this week, this month — where you could practice that specific capacity.`}`;
+
+  // Growth pathway (PRF-personalized if loaded, generic otherwise)
+  let growthHTML = '';
+  if (hasPRF && prfData) {
+    growthHTML = `
+      <div class="growth-pathway">
+        <div class="growth-pathway-label">${PRF.fwIcon()} Your ${PRF.fwName()} — Strength in Context</div>
+        <div class="growth-pathway-text">${prfData.strength}</div>
+      </div>
+      <div class="growth-pathway" style="border-color:var(--warn);background:#fff8f0">
+        <div class="growth-pathway-label" style="color:var(--warn)">Growing Edge</div>
+        <div class="growth-pathway-text">${prfData.growthEdge}</div>
+        <div class="growth-pathway-invitation">Specific invitation: ${prfData.invitation}</div>
+      </div>
+      ${ucp ? `
+      <div class="growth-pathway" style="border-color:var(--ucp-success);background:#f0faf4">
+        <div class="growth-pathway-label" style="color:var(--ucp-success)">What the Numbers Reveal Through Your Lens</div>
+        <div class="growth-pathway-text">${prfData.reading(ucp.gap, ucp.os2)}</div>
+      </div>` : ''}`;
+  } else {
+    growthHTML = `
+      <div class="growth-pathway">
+        <div class="growth-pathway-label">Your Strongest SAGE Capacity</div>
+        <div class="growth-pathway-text">${SAGE_META[Object.entries(sage).sort((a,b)=>b[1].score-a[1].score)[0][0]].strong}</div>
+      </div>
+      <div class="growth-pathway" style="border-color:var(--warn);background:#fff8f0">
+        <div class="growth-pathway-label" style="color:var(--warn)">Growing Edge</div>
+        <div class="growth-pathway-text">${SAGE_META[Object.entries(sage).sort((a,b)=>a[1].score-b[1].score)[0][0]].developing}</div>
+        <div class="growth-pathway-invitation">Load your PRF-22 JSON above for a framework-specific growth pathway.</div>
+      </div>`;
+  }
+
+  return `
+    <div class="transfer-section fade-in">
+      <div class="transfer-header">
+        <div class="transfer-eyebrow">Synthesis & Transfer</div>
+        <div class="transfer-title">What This Simulation Means For Who You Are Becoming</div>
+        <div class="transfer-subtitle">
+          The simulation is the telescope. This section is what you do after you put it down —
+          translating what you just experienced into something that travels with you.
+        </div>
+      </div>
+
+      <!-- Block 1: PRF Reading of Your Experience -->
+      ${hasPRF ? `
+      <div class="transfer-block">
+        <div class="transfer-block-header">
+          <span class="transfer-block-icon">${PRF.fwIcon()}</span>
+          <div>
+            <div class="transfer-block-title">Your PRF Reading of This Experience</div>
+            <div class="transfer-block-subtitle">${PRF.fwName()} · ${PRF.tier()} ATCF sensitivity</div>
+          </div>
+        </div>
+        <div class="transfer-prf-reading" style="border-left:3px solid ${PRF.fwColor()}">
+          <div class="transfer-prf-label" style="color:${PRF.fwColor()}">What Your Framework Specifically Saw</div>
+          <div class="transfer-prf-text">
+            ${ucp ? prfData.reading(ucp.gap, ucp.os2) : `Your ${PRF.fwName()} framework shaped which ethical dimensions of the CTE crisis were most visible to you, and which required more effort to see. The simulation produced a coordination score of ${state.coordination}/100, which from your lens means: ${state.coordination > 70 ? 'the cross-PRF coordination you helped build reflects your framework\'s capacity to recognize shared tasks beneath surface value differences' : state.coordination < 45 ? 'the coordination gaps you experienced reflect the friction between your framework\'s way of reading the situation and the frameworks of other stakeholders in the network' : 'partial coordination — some of what your framework could see was effectively translated into shared action, some remained legible only within your own lens'}.`}
+          </div>
+        </div>
+        <div class="transfer-prompt-label">What did you notice through your specific lens that others might have missed?</div>
+        ${tArea('prf-reading', 'Write what your framework made visible in this simulation...')}
+      </div>` : `
+      <div class="transfer-block">
+        <div class="transfer-block-header">
+          <span class="transfer-block-icon">🔭</span>
+          <div>
+            <div class="transfer-block-title">PRF Reading — Load Your Profile for Personalization</div>
+            <div class="transfer-block-subtitle">The "Load My PRF" button in the header connects your specific framework to these results</div>
+          </div>
+        </div>
+        <p class="transfer-prose">
+          Your Personal Reality Framework — the specific lens through which you read the world —
+          determines which parts of the CTE story were immediately visible to you and which required
+          effort to see. Loading your PRF-22 JSON will generate a framework-specific reading of
+          what you just experienced: what your framework made visible, what it may have obscured,
+          and how it shapes your specific path of development from here.
+        </p>
+        <div class="transfer-prompt-label">Without your PRF loaded, reflect: which stakeholder's dilemmas felt most personally resonant, and why?</div>
+        ${tArea('prf-reading', 'What did you notice that you think others might have missed, and what might you have missed that others saw clearly?')}
+      </div>`}
+
+      <!-- Block 2: SAGE Capacity Profile -->
+      <div class="transfer-block">
+        <div class="transfer-block-header">
+          <span class="transfer-block-icon">⚡</span>
+          <div>
+            <div class="transfer-block-title">Your SAGE Capacity Profile</div>
+            <div class="transfer-block-subtitle">Inferred from the choices you made — not a grade, a map</div>
+          </div>
+        </div>
+        <p class="transfer-prose">
+          SAGE — See, Analyze, Generate, Engage — is the structured ethical analysis method
+          this course is building in you. Your decisions just gave us data about where each
+          capacity currently sits. <em>Strong</em> means the simulation exercised it.
+          <em>Developing</em> means there's room to grow. <em>Emerging</em> means this is
+          a specific growing edge. <em>Undertested</em> means the simulation didn't create
+          enough pressure on this capacity to reveal it clearly.
+        </p>
+        <div class="sage-grid">${sageCards}</div>
+        <div class="transfer-prompt-label">Which of these four capacities feels most important to develop given where you are in your life right now?</div>
+        ${tArea('sage-reflection', 'What would it look like to develop that SAGE capacity in a specific context you actually navigate?')}
+      </div>
+
+      <!-- Block 3: ABCD Dimensions -->
+      <div class="transfer-block">
+        <div class="transfer-block-header">
+          <span class="transfer-block-icon">🌐</span>
+          <div>
+            <div class="transfer-block-title">ABCD — Four Dimensions of Growth</div>
+            <div class="transfer-block-subtitle">Agency · Beauty/Awe · Context · Dynamism</div>
+          </div>
+        </div>
+        <div class="abcd-grid">
+          <div class="abcd-card" style="border-top:3px solid var(--sky)">
+            <div class="abcd-letter" style="color:var(--sky)">A</div>
+            <div class="abcd-name">Agency</div>
+            <div class="abcd-text">${agencyText}</div>
+          </div>
+          <div class="abcd-card" style="border-top:3px solid var(--gold)">
+            <div class="abcd-letter" style="color:var(--gold)">B</div>
+            <div class="abcd-name">Beauty / Awe</div>
+            <div class="abcd-text">${beautyText}</div>
+          </div>
+          <div class="abcd-card" style="border-top:3px solid var(--success)">
+            <div class="abcd-letter" style="color:var(--success)">C</div>
+            <div class="abcd-name">Context</div>
+            <div class="abcd-text">${contextText}</div>
+          </div>
+          <div class="abcd-card" style="border-top:3px solid var(--warn)">
+            <div class="abcd-letter" style="color:var(--warn)">D</div>
+            <div class="abcd-name">Dynamism</div>
+            <div class="abcd-text">${dynamismText}</div>
+          </div>
+        </div>
+        <div class="transfer-prompt-label">Which of the four dimensions is most alive for you right now — and what does this simulation add to it?</div>
+        ${tArea('abcd-reflection', 'Write about one of the four dimensions in relation to your specific life situation...')}
+      </div>
+
+      <!-- Block 4: What You Learned Without Living It -->
+      <div class="transfer-block">
+        <div class="transfer-block-header">
+          <span class="transfer-block-icon">🛡️</span>
+          <div>
+            <div class="transfer-block-title">What You Learned Without Having to Live It</div>
+            <div class="transfer-block-subtitle">The protective thesis — why simulated experience has real value</div>
+          </div>
+        </div>
+        <p class="transfer-prose">
+          Roger Boisjoly paid for the knowledge you just acquired with eighteen months of
+          professional isolation, the collapse of his career, and the permanent knowledge
+          that seven people died after his warnings were ignored. The CTE families paid
+          for it with their loved ones. You got to learn the same structural lessons —
+          what institutional suppression looks like from the inside, what it costs to be
+          right when the structure doesn't want to hear it, how cross-framework coordination
+          actually works when it works — without those costs.
+        </p>
+        <p class="transfer-prose">
+          That is not a small thing. It is the specific value of simulated ethical experience:
+          <strong>pattern recognition built without catastrophic tuition.</strong>
+          What you now have is a template — a felt sense of what these structural dynamics
+          look like, so that when you encounter them in your actual life you will recognize
+          them faster, name them more precisely, and have more time to choose your response
+          rather than react to the pressure.
+        </p>
+        <p class="transfer-prose">
+          Specifically, you learned: what a suppression gap looks like from the inside.
+          What functional equivalence looks like when it works. The difference between
+          suppression and friction, and why treating them as the same problem produces
+          interventions that fail. What Bootstrap Resolution looks like when someone builds
+          authority from nothing but demonstrated capability. And that moral injury is not
+          a personal failing — it is a structural product, predictable and measurable,
+          that affects people with high integrity more than people with low integrity.
+        </p>
+        <div class="transfer-prompt-label">What is the one thing you now know — that you didn't know before this simulation — that you think will be most useful in your actual life?</div>
+        ${tArea('vicarious-learning', 'Be specific. Name the pattern, name the context where you expect to see it, name what you\'ll do differently because of this...')}
+      </div>
+
+      <!-- Block 5: Growth Pathways -->
+      <div class="transfer-block">
+        <div class="transfer-block-header">
+          <span class="transfer-block-icon">🌱</span>
+          <div>
+            <div class="transfer-block-title">Growth Pathways — From Where You Are</div>
+            <div class="transfer-block-subtitle">Specific developmental invitations, not generic advice</div>
+          </div>
+        </div>
+        <p class="transfer-prose">
+          These pathways are not prescriptions. They are invitations — specific to your
+          PRF framework, your SAGE profile, and the choices you made in this simulation.
+          They describe the next inch of development, not the full destination.
+        </p>
+        ${growthHTML}
+        <div class="transfer-prompt-label">Write one concrete, specific commitment — something you will actually do, with a timeframe — that follows from your growing edge.</div>
+        ${tArea('growth-commitment', 'I will _____ by _____ because this simulation showed me that _____')}
+      </div>
+
+      <!-- Block 6: The Investment -->
+      <div class="transfer-block">
+        <div class="transfer-block-header">
+          <span class="transfer-block-icon">⏳</span>
+          <div>
+            <div class="transfer-block-title">Why This Investment Was Worth It</div>
+            <div class="transfer-block-subtitle">Honoring the attention, energy, and time you brought here</div>
+          </div>
+        </div>
+        <div class="investment-block">
+          <p>
+            You invested real attention and real time in this simulation. That investment
+            deserves an honest accounting of what it was for.
+          </p>
+          <p>
+            The CTE case is not just a historical event. It is a <strong>template for
+            institutional suppression</strong> — a pattern that recurs across industries,
+            institutions, and organizational scales. The NFL is not uniquely evil. It is
+            an institution that did predictably what institutions under existential financial
+            threat predictably do. That pattern will appear in your career. It may already
+            be present in contexts you inhabit.
+          </p>
+          <p>
+            What you gained here is <strong>structural recognition capacity</strong> —
+            the ability to identify the pattern faster, name it more precisely, and respond
+            more deliberately. You gained a SAGE profile that tells you specifically where
+            your ethical reasoning is strong and where it needs development. You gained
+            a PRF reading that shows you how your specific framework for understanding
+            the world shapes what you can and cannot easily see.
+          </p>
+          <p>
+            And you gained something harder to name: a felt sense of what it costs to be
+            Boisjoly, to be the family member, to be the athlete who knows something is wrong
+            and cannot safely say it. That felt sense is <strong>moral imagination</strong>
+            — the capacity to understand what it is like to be inside a situation you haven't
+            personally experienced. That capacity is what makes ethical reasoning
+            more than rule-following. It is what makes it genuine.
+          </p>
+          <p>
+            That is what this hour was for.
+          </p>
+        </div>
+        <div class="transfer-prompt-label">Final reflection — what do you want to remember from this experience six months from now?</div>
+        ${tArea('final-reflection', 'Write it here so it exists somewhere outside your head...')}
+      </div>
+
+    </div>`;
 }
 
 // ─────────────────────────────────────────────────
