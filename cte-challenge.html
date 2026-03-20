@@ -604,6 +604,69 @@ header {
 }
 .restart-btn:hover { filter: brightness(1.1); }
 
+/* ── Cross-role hint banner ── */
+.cross-role-banner {
+  background: linear-gradient(135deg, #1a2744, #243560);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+  border-left: 4px solid var(--ucp-gold);
+}
+.cross-role-banner-label {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--ucp-gold); margin-bottom: 6px;
+}
+.cross-role-banner-text {
+  font-size: .87rem; color: rgba(255,255,255,.82); line-height: 1.65;
+}
+
+/* ── Network effect panel ── */
+.network-effect-panel {
+  background: #f0faf4; border: 1px solid var(--ucp-success);
+  border-radius: 8px; padding: 14px 16px; margin-bottom: 14px;
+}
+.network-effect-label {
+  font-family: 'Courier New',monospace; font-size: .66rem;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--ucp-success); margin-bottom: 8px;
+}
+.network-role-grid {
+  display: grid; grid-template-columns: repeat(5,1fr); gap: 8px;
+  margin-bottom: 10px;
+}
+.network-role-chip {
+  background: #fff; border: 2px solid var(--border);
+  border-radius: 6px; padding: 7px 6px; text-align: center;
+  font-size: .78rem; color: var(--muted); line-height: 1.3;
+  transition: all .2s;
+}
+.network-role-chip.played {
+  border-color: var(--ucp-success); background: #f0faf4;
+  color: var(--ink); font-weight: 600;
+}
+.network-role-chip .chip-icon { display: block; font-size: 1.1rem; margin-bottom: 3px; }
+.network-effect-text {
+  font-size: .84rem; color: var(--ink); line-height: 1.65;
+}
+
+/* ── Export/save row ── */
+.debrief-action-row {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.export-btn {
+  padding: 9px 18px;
+  background: linear-gradient(135deg, var(--ucp-success), #2a7a50);
+  color: #fff; border: none; border-radius: 6px;
+  font-family: 'Georgia',serif; font-size: .88rem;
+  font-weight: 600; cursor: pointer; transition: all .22s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.export-btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.export-btn:focus { outline: 3px solid var(--ucp-success); outline-offset: 2px; }
+
+@media (max-width: 480px) {
+  .network-role-grid { grid-template-columns: repeat(3,1fr); }
+}
+
 /* ── Metrics explainer button ── */
 .metrics-explainer-btn {
   display: inline-flex; align-items: center; gap: 7px;
@@ -1187,7 +1250,37 @@ header {
     <div class="section-label">Your Decision Path</div>
     <div id="decisionLog"></div>
 
-    <button class="restart-btn" onclick="restartApp()">▶ Play Again — Different Role</button>
+    <!-- Cross-role hint banner -->
+    <div class="cross-role-banner" id="crossRoleBanner">
+      <div class="cross-role-banner-label">🎯 The Pedagogical Point of This App</div>
+      <div class="cross-role-banner-text" id="crossRoleText">
+        You just experienced the CTE crisis from one stakeholder's position.
+        The full argument of this simulation only becomes visible when you run
+        all five roles — because the central claim is that coordination across
+        PRF difference works through <em>functional equivalence</em>, not value agreement.
+        Each role contributes something the others cannot. Playing only one role
+        is like hearing one instrument and thinking you've heard the symphony.
+      </div>
+    </div>
+
+    <!-- Network effect panel -->
+    <div class="network-effect-panel">
+      <div class="network-effect-label">🌐 What Changes When You Play All Five Roles</div>
+      <div class="network-role-grid" id="networkRoleGrid"></div>
+      <div class="network-effect-text" id="networkEffectText"></div>
+    </div>
+
+    <!-- Action row: export + play again -->
+    <div class="debrief-action-row">
+      <button class="export-btn" onclick="exportDebriefResults()"
+              aria-label="Download your simulation results">
+        ⬇ Save My Results
+      </button>
+      <button class="restart-btn" style="flex:1;margin-top:0"
+              onclick="restartApp()">
+        ▶ Play Again — Different Role
+      </button>
+    </div>
 
     <!-- Synthesis & Transfer — populated after UCP simulation completes -->
     <div id="transferSection" style="display:none"></div>
@@ -1265,9 +1358,9 @@ header {
         λ Raw asks: <em>what could this network do?</em>
         λ Perceived asks: <em>what does it feel safe to actually do?</em>
         The gap between the two is the most ethically significant number in the simulation.
-        It is the Boisjoly number — high capacity, near-zero perceived ability to surface it.
         In the CTE crisis, every stakeholder who self-censors, softens their story,
-        or "decides not to make it a big deal" is living inside that gap.
+        or "decides not to make it a big deal" is living inside that gap —
+        high capacity, near-zero perceived ability to surface it.
       </p>
       <div class="metric-felt-states">
         <div class="felt-state high">
@@ -2163,6 +2256,9 @@ async function showDebrief() {
   document.getElementById('simulationScreen').classList.add('hidden');
   openModal('debriefModal');
 
+  // Track this role as played
+  if (currentRole) markRolePlayed(currentRole);
+
   const role = ROLES[currentRole];
 
   // ── Score cards
@@ -2217,6 +2313,9 @@ async function showDebrief() {
       <div class="log-outcome"><strong>Outcome:</strong> ${entry.outcome}</div>
     </div>`).join('');
 
+  // Render cross-role network panel
+  renderNetworkPanel();
+
   // ── Live UCP simulation
   await runUCPForDebrief();
 }
@@ -2254,7 +2353,7 @@ function getVoiceNarrative(raw, perceived, os2, roleName) {
   } else if (os2 > .55 && gap < .20) {
     return `There's friction in the room, but it's productive. The scientist's language and the family member's language don't quite translate — but they're both being heard, and the task is moving forward. This is what partial OS2 coordination looks like: imperfect, effortful, but real. The network is building capacity faster than the opposition can erode it.`;
   } else if (gap > .25) {
-    return `You can see the problem clearly. So can others. But different parts of the network are not reaching each other — information that exists in one stakeholder's possession cannot surface to the decision-makers who need it. The coordination capacity is there. The structural channels that would let it flow are not. This is the Boisjoly pattern at the network scale.`;
+    return `You can see the problem clearly. So can others. But different parts of the network are not reaching each other — information that exists in one stakeholder's possession cannot surface to the decision-makers who need it. The coordination capacity is there. The structural channels that would let it flow are not. This is the classic suppression pattern at the network scale: the knowledge exists, the structure makes it unsayable.`;
   } else {
     return `Coordination is happening, but it's costly. Each stakeholder is contributing from their own PRF lens, and the translation between them requires effort that slows the network down. Progress is real but slower than it needs to be. The question is whether the network can maintain this friction long enough for the coordination to compound.`;
   }
@@ -2520,7 +2619,7 @@ const SAGE_META = {
     definition: 'Acting on your analysis with appropriate care and courage — even when the structure makes it costly.',
     strong:      'You acted deliberately despite institutional cost. This is the hardest SAGE capacity to develop because it requires the other three to be functional first, and then adds the dimension of will.',
     developing:  'You engaged effectively when the cost was low. The Engage capacity is specifically tested when action is costly — when the structure pushes back. Identifying one situation in your life where you have the analysis but haven\'t yet acted is the growing edge.',
-    emerging:    'The gap between seeing, analyzing, and generating a good response — and actually engaging with it in the world — is the central challenge of applied ethics. Boisjoly could See, Analyze, and Generate. What cost him was that the system made Engaging impossible despite his best efforts.',
+    emerging:    'The gap between seeing, analyzing, and generating a good response — and actually engaging with it in the world — is the central challenge of applied ethics. Dr. Omalu could See, Analyze, and Generate: he had the data, he published the paper, he refused to retract. What the NFL\'s institutional structure worked to prevent was his ability to Engage — to have his findings actually reach the decisions that mattered. The structural conditions for Engage are not just about personal will.',
     undertested: 'Engage is not just about courage — it is about structural conditions. The simulation reveals that individual willingness to act is necessary but not sufficient. The Transfer question is: what structural conditions in your actual life support or impede your capacity to engage?',
   },
 };
@@ -2542,12 +2641,12 @@ const PRF_TRANSFER = {
   hierarchical_role: {
     reading: (gap, os2) => `Your role-based framework sees the CTE crisis as a failure of legitimate authority to honor its own purpose. When Thiokol management said "take off your engineering hat," they used role authority as a suppression mechanism rather than a coordination channel — the exact inversion of what legitimate hierarchy is supposed to do. ${gap > .20 ? `The suppression gap in your simulation (${(gap*100).toFixed(0)}%) represents authority being used as a gate rather than a channel.` : `Your choices produced a more contained gap, suggesting you found ways to work within the authority structure while maintaining coordination integrity.`}`,
     strength: 'You understand what legitimate authority is supposed to do — and you can name precisely when it\'s failing its own stated purpose. This is a rare analytical capacity.',
-    growthEdge: 'The framework that was used to override Boisjoly was hierarchical/role-based. From inside this framework, that felt justified in the moment. The Transfer question is: how do you develop a personal threshold test for when institutional authority has failed its purpose sufficiently to warrant de-coordination?',
+    growthEdge: 'The framework most likely to produce the CTE suppression patterns was also hierarchical/role-based — the NFL\'s medical committee used role authority as a gate rather than a channel, and from inside that framework it felt like responsible stewardship. Your growing edge is developing a personal threshold test for when institutional authority has failed its purpose sufficiently to warrant de-coordination.',
     invitation: 'Write one sentence that completes this: "The authority structure I work within has failed its own purpose when it ___." Keep it specific, keep it honest, and notice what it reveals about your actual relationship to institutional hierarchy.',
   },
   boundary_integrity: {
     reading: (gap, os2) => `Your boundary/integrity framework experienced the CTE crisis as a sanctity violation — the systematic treatment of something inviolable (the truth about what the NFL knew and when) as negotiable. ${gap > .20 ? `The suppression gap your simulation produced (${(gap*100).toFixed(0)}%) measures the distance between what was true and what could safely be said. From your framework, that gap is not just inefficiency — it is a violation of epistemic integrity at the institutional scale.` : `Your choices helped contain the gap between what was known and what could be said — protecting the integrity of the knowledge even under institutional pressure.`}`,
-    strength: 'You feel violations of epistemic integrity immediately — the moment when something that should be non-negotiable is being treated as negotiable. This sensitivity is exactly what Boisjoly had and what the NFL\'s institutional structure systematically worked to suppress.',
+    strength: 'You feel violations of epistemic integrity immediately — the moment when something that should be non-negotiable is being treated as negotiable. Dr. Omalu had this sensitivity, and it is exactly what the NFL\'s institutional structure worked to suppress through discrediting campaigns, committee pressure, and the demand that he retract his findings.',
     growthEdge: 'Your framework makes you excellent at naming violations but may make you less comfortable with the messy coalition-building needed to address them. The CTE network required not just identifying the integrity breach but navigating complex, impure, compromised coordination among people with very different values.',
     invitation: 'Identify the one thing in your current professional or personal context that functions as your non-negotiable — the line you will not cross. Then ask: what structural conditions would need to be in place for that line to be effectively protected, not just personally held?',
   },
@@ -2767,10 +2866,10 @@ function buildTransferSection() {
           </div>
         </div>
         <p class="transfer-prose">
-          Roger Boisjoly paid for the knowledge you just acquired with eighteen months of
-          professional isolation, the collapse of his career, and the permanent knowledge
-          that seven people died after his warnings were ignored. The CTE families paid
-          for it with their loved ones. You got to learn the same structural lessons —
+          The CTE families paid for the knowledge you just acquired with their loved ones.
+          Dr. Omalu paid for it with years of professional attacks, discrediting campaigns,
+          and the demand that he retract findings he knew to be true. The athletes paid for it
+          with their brains. You got to learn the same structural lessons —
           what institutional suppression looks like from the inside, what it costs to be
           right when the structure doesn't want to hear it, how cross-framework coordination
           actually works when it works — without those costs.
@@ -2847,7 +2946,7 @@ function buildTransferSection() {
           </p>
           <p>
             And you gained something harder to name: a felt sense of what it costs to be
-            Boisjoly, to be the family member, to be the athlete who knows something is wrong
+            Dr. Omalu, to be the family member, to be the athlete who knows something is wrong
             and cannot safely say it. That felt sense is <strong>moral imagination</strong>
             — the capacity to understand what it is like to be inside a situation you haven't
             personally experienced. That capacity is what makes ethical reasoning
@@ -2862,6 +2961,122 @@ function buildTransferSection() {
       </div>
 
     </div>`;
+}
+
+// ─────────────────────────────────────────────────
+// PLAYED ROLES TRACKING — persisted across sessions
+// ─────────────────────────────────────────────────
+function markRolePlayed(roleId) {
+  try {
+    const played = JSON.parse(localStorage.getItem('cte_roles_played') || '[]');
+    if (!played.includes(roleId)) played.push(roleId);
+    localStorage.setItem('cte_roles_played', JSON.stringify(played));
+  } catch(e) {}
+}
+
+function getPlayedRoles() {
+  try { return JSON.parse(localStorage.getItem('cte_roles_played') || '[]'); }
+  catch(e) { return []; }
+}
+
+// ─────────────────────────────────────────────────
+// CROSS-ROLE BANNER + NETWORK PANEL
+// ─────────────────────────────────────────────────
+const NETWORK_ROLE_META = [
+  { id: 'scientist',  icon: '🔬', label: 'Scientist' },
+  { id: 'executive',  icon: '💼', label: 'Executive' },
+  { id: 'family',     icon: '❤️', label: 'Family' },
+  { id: 'journalist', icon: '📰', label: 'Journalist' },
+  { id: 'athlete',    icon: '🏈', label: 'Athlete' },
+];
+
+const NETWORK_WHAT_CHANGES = {
+  1: 'You\'ve seen the CTE crisis from one position. Every other role experiences the same institutional suppression differently — because each has different stakes, different PRF lenses, and different capabilities to contribute. What the scientist can see, the family member cannot. What the athlete can make viscerally real, the journalist can document. Run a second role to start seeing how these capabilities connect.',
+  2: 'You\'ve now played two roles. Notice: the same NFL institutional pressure produced completely different dilemmas depending on your position. A third role will start revealing the pattern — what stays constant across roles is the structural suppression; what varies is the specific form it takes for each stakeholder.',
+  3: 'Three roles completed. You\'re beginning to see the full coordination map: where the scientist\'s evidence meets the family\'s testimony, where the journalist amplifies both, where the athlete\'s voice would add a dimension neither alone can provide. Two more roles will complete the picture of what the CTE network actually was — and why it worked.',
+  4: 'Four roles. The network is almost visible. Notice that no single role had the full picture — the scientist couldn\'t access the families\' grief, the families couldn\'t access the peer-review process, the journalist couldn\'t speak from lived experience. Each was necessary precisely because the others couldn\'t do what they did. One more role reveals the full OS2 network.',
+  5: 'All five roles completed. You\'ve now inhabited the full CTE network — scientist, executive, family, journalist, and athlete. The coordination that eventually forced a $1 billion settlement and changed how the NFL handles player safety was built from exactly these five types of contribution, each necessary, none sufficient alone. You\'ve experienced the network from the inside. That is the simulation\'s central argument, made visible.',
+};
+
+function renderNetworkPanel() {
+  const played = getPlayedRoles();
+  const count  = played.length;
+
+  // Role chips
+  const grid = document.getElementById('networkRoleGrid');
+  if (grid) {
+    grid.innerHTML = NETWORK_ROLE_META.map(r => `
+      <div class="network-role-chip ${played.includes(r.id) ? 'played' : ''}">
+        <span class="chip-icon">${r.icon}</span>
+        ${r.label}
+        ${played.includes(r.id) ? ' ✓' : ''}
+      </div>`).join('');
+  }
+
+  // What changes text
+  const textEl = document.getElementById('networkEffectText');
+  if (textEl) {
+    textEl.textContent = NETWORK_WHAT_CHANGES[Math.min(count, 5)] || NETWORK_WHAT_CHANGES[1];
+  }
+
+  // Update cross-role banner based on count
+  const banner = document.getElementById('crossRoleText');
+  if (banner && count >= 5) {
+    banner.innerHTML = `You have played all five roles — you\'ve experienced the full CTE network from every position. The Synthesis & Transfer section below is now drawing on that complete perspective.`;
+  }
+}
+
+// ─────────────────────────────────────────────────
+// EXPORT DEBRIEF RESULTS
+// ─────────────────────────────────────────────────
+function exportDebriefResults() {
+  const role     = currentRole ? ROLES[currentRole] : { name: 'Unknown', icon: '' };
+  const played   = getPlayedRoles();
+  const div      = '='.repeat(60);
+  const sub      = '-'.repeat(60);
+
+  const lines = [
+    `CTE CHALLENGE — SIMULATION RESULTS`,
+    `Role: ${role.icon} ${role.name}`,
+    `Date: ${new Date().toLocaleString()}`,
+    `Roles played (total): ${played.length}/5 — ${played.map(r => ROLES[r]?.name || r).join(', ')}`,
+    div, '',
+    `FINAL SCORES:`,
+    sub,
+    `Overall Coordination: ${state.coordination}/100`,
+    currentRole === 'athlete' ? `Personal Health: ${state.health}/100` : '',
+    currentRole === 'athlete' ? `Trust in NFL: ${state.trust}/100` : '',
+    '',
+    `THEORETICAL TAKEAWAYS:`,
+    sub,
+    ...(state.takeaways.size > 0
+      ? [...state.takeaways].map(t => `• ${t}`)
+      : ['(No specific takeaways triggered — try different choices)']),
+    '',
+    `YOUR DECISION PATH:`,
+    sub,
+    ...state.log.map((entry, i) => [
+      `Scenario ${i+1}: ${entry.scenario}`,
+      `Choice: ${entry.choice}`,
+      `${entry.prf}`,
+      `Outcome: ${entry.outcome}`,
+      '',
+    ]).flat(),
+    div,
+    `NETWORK STATUS: ${played.length}/5 roles completed`,
+    played.length < 5
+      ? `Remaining: ${NETWORK_ROLE_META.filter(r => !played.includes(r.id)).map(r => r.label).join(', ')}`
+      : 'All five roles completed — full network perspective achieved.',
+    div,
+  ].filter(l => l !== null);
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `CTE_Challenge_${role.name.replace(/\s+/g,'_')}_${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // ─────────────────────────────────────────────────
