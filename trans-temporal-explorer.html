@@ -1594,6 +1594,8 @@ canvas.gen-chart { display: block; width: 100% !important; border-radius: 4px; }
     isLoaded()        { return _profile !== null; },
     getFramework()    { return _framework; },
     getFrameworkName(){ return _framework ? (FW_META[_framework]?.name || _framework) : null; },
+    getFrameworkIcon(){ return _framework ? (FW_META[_framework]?.icon || '') : ''; },
+    getFrameworkColor(){ return _framework ? (FW_META[_framework]?.color || '#4a7fb5') : '#4a7fb5'; },
     getATCFTier()     { return _atcfTier; },
     getProfile()      { return _profile; },
 
