@@ -2749,9 +2749,11 @@
   function getMetrics(data) {
     const m = data.metrics || data;
     return {
-      lambda_raw:       m.lambda_raw,
-      lambda_perceived: m.lambda_perceived,
-      friction:         m.friction,
+      lambda_raw:          m.lambda_raw,
+      lambda_perceived:    m.lambda_perceived,
+      friction:            m.friction,
+      os2_synergy:         m.os2_synergy,        // v1 — individual readiness
+      os2_synergy_bridge:  m.os2_synergy_bridge, // v2 — cross-worldview convergence
     };
   }
 
@@ -3092,6 +3094,29 @@
         <div class="cm-value ${frictionClass(m.friction)}">${m.friction.toFixed(3)}</div>
         <div class="cm-name">Coordination Cost</div>
         <div class="cm-threshold">${frictionPhrase(m.friction)}</div>
+      </div>
+      <div class="comp-metric" style="grid-column:span 1">
+        <div class="cm-label">OS2 Synergy <button onclick="showMetricsExplainer()" aria-label="What OS2 Synergy measures" style="font-size:.6rem;color:var(--prf-sky);background:none;border:none;cursor:pointer;opacity:.8;margin-left:3px;font-family:'Courier New',monospace">ⓘ</button></div>
+        ${m.os2_synergy != null ? `
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px">
+            <div>
+              <div style="font-family:'Courier New',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--prf-light);margin-bottom:2px">v1 readiness</div>
+              <div class="cm-value ${m.os2_synergy > .60 ? 'good' : m.os2_synergy > .40 ? '' : 'bad'}" style="font-size:1rem">${m.os2_synergy.toFixed(3)}</div>
+            </div>
+            <div>
+              <div style="font-family:'Courier New',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--prf-light);margin-bottom:2px">v2 bridge</div>
+              <div class="cm-value ${(m.os2_synergy_bridge||0) > .60 ? 'good' : (m.os2_synergy_bridge||0) > .40 ? '' : 'bad'}" style="font-size:1rem">${(m.os2_synergy_bridge??m.os2_synergy).toFixed(3)}</div>
+            </div>
+          </div>
+          <div style="font-size:.66rem;color:var(--prf-muted);margin-top:4px;line-height:1.45;font-style:italic">
+            ${m.os2_synergy_bridge != null
+              ? (m.os2_synergy_bridge > m.os2_synergy + 0.04
+                  ? 'Groups converging — OS2 active'
+                  : m.os2_synergy > m.os2_synergy_bridge + 0.04
+                  ? 'Siloed — capability not bridging'
+                  : 'Readiness and bridge aligned')
+              : ''}
+          </div>` : '<div class="cm-value" style="color:var(--prf-light)">—</div>'}
       </div>`;
 
     // ── Delta column + mixed column

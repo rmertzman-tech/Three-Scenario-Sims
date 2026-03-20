@@ -2402,11 +2402,12 @@ async function runUCPForDebrief() {
     const raw   = m.lambda_raw;
     const perc  = m.lambda_perceived;
     const fric  = m.friction;
-    const os2   = m.os2_synergy;
-    const gap   = raw - perc;
+    const os2        = m.os2_synergy;
+    const os2_bridge = m.os2_synergy_bridge;   // Q2 cross-worldview bridge
+    const gap        = raw - perc;
 
     // Store for Transfer section
-    _ucpResults = { raw, perc, fric, os2, gap };
+    _ucpResults = { raw, perc, fric, os2, os2_bridge, gap };
 
     let prfNote = '';
     if (PRF.isLoaded()) {
@@ -2450,12 +2451,31 @@ async function runUCPForDebrief() {
             <div class="ucp-metric-value ${vc(fric,false)}">${fric.toFixed(3)}</div>
             <div class="ucp-metric-phrase">${fric < .30 ? 'Low drag' : fric < .55 ? 'Moderate drag' : 'High drag'}</div>
           </div>
-          <div class="ucp-metric">
+          <div class="ucp-metric" style="grid-column: span 2">
             <div class="ucp-metric-label">OS2 Synergy — Cross-PRF Bridge
               <button class="metric-info-link" onclick="openModal('metricsModal')" title="What does OS2 Synergy measure?" aria-label="What does OS2 Synergy measure?">ⓘ</button>
             </div>
-            <div class="ucp-metric-value ${os2 > .60 ? 'val-great' : os2 > .40 ? 'val-warn' : 'val-bad'}">${os2.toFixed(3)}</div>
-            <div class="ucp-metric-phrase">${os2 > .60 ? 'Capability bridge functioning' : os2 > .40 ? 'Partial bridge' : 'Bridge absent'}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+              <div>
+                <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.38);margin-bottom:2px">v1 — Individual readiness</div>
+                <div class="ucp-metric-value ${os2 > .60 ? 'val-great' : os2 > .40 ? 'val-warn' : 'val-bad'}" style="font-size:1.2rem">${os2.toFixed(3)}</div>
+                <div class="ucp-metric-phrase">${os2 > .60 ? 'High readiness' : os2 > .40 ? 'Partial readiness' : 'Low readiness'}</div>
+              </div>
+              <div>
+                <div style="font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.38);margin-bottom:2px">v2 — Cross-PRF convergence</div>
+                <div class="ucp-metric-value ${os2_bridge > .60 ? 'val-great' : os2_bridge > .40 ? 'val-warn' : 'val-bad'}" style="font-size:1.2rem">${(os2_bridge??os2).toFixed(3)}</div>
+                <div class="ucp-metric-phrase">${(os2_bridge??0) > .60 ? 'Bridge functioning' : (os2_bridge??0) > .40 ? 'Partial bridge' : 'Bridge absent'}</div>
+              </div>
+            </div>
+            <div style="margin-top:8px;font-size:.76rem;color:rgba(255,255,255,.42);font-style:italic;line-height:1.5">
+              ${os2_bridge != null
+                ? (os2_bridge > os2 + 0.05
+                    ? 'v2 &gt; v1 — different-framework groups converging beyond what individual readiness predicts. OS2 coordination is active.'
+                    : os2 > os2_bridge + 0.05
+                    ? 'v1 &gt; v2 — individual readiness present but cross-framework groups not yet converging. Capability is siloed.'
+                    : 'v1 ≈ v2 — individual readiness and cross-framework convergence are aligned.')
+                : ''}
+            </div>
           </div>
         </div>
         <div>

@@ -2943,9 +2943,12 @@
     const src = (data && data.metrics) ? data.metrics : data;
     if (!src) return null;
     return {
-      lambda_raw:       src.lambda_raw       ?? src.lambdaRaw       ?? null,
-      lambda_perceived: src.lambda_perceived ?? src.lambdaPerceived ?? null,
-      friction:         src.friction         ?? null,
+      lambda_raw:           src.lambda_raw           ?? src.lambdaRaw       ?? null,
+      lambda_perceived:     src.lambda_perceived     ?? src.lambdaPerceived ?? null,
+      friction:             src.friction             ?? null,
+      os2_synergy:          src.os2_synergy          ?? null,  // v1
+      os2_synergy_bridge:   src.os2_synergy_bridge   ?? null,  // v2
+      morphic_suppression:  src.morphic_suppression  ?? null,  // Q2
     };
   }
 
@@ -3540,6 +3543,26 @@
           <div class="m-name">Coordination Loss</div>
           <div class="m-threshold">${frictionPhrase(mC.friction)}</div>
         </div>
+        ${mC.os2_synergy != null ? `
+        <div class="metric-card">
+          <div class="m-label">OS2 Synergy <button onclick="showMetricsExplainer()" aria-label="What OS2 Synergy measures" title="What OS2 Synergy measures" style="font-size:0.82rem;color:var(--prf-sky);margin-left:4px;background:none;border:none;cursor:pointer;opacity:.8;font-family:'Courier New',monospace;padding:0">ⓘ</button></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:4px 0">
+            <div>
+              <div style="font-family:'Courier New',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--prf-light)">v1</div>
+              <div class="m-value" style="font-size:1rem">${mC.os2_synergy.toFixed(3)}</div>
+            </div>
+            <div>
+              <div style="font-family:'Courier New',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.06em;color:var(--prf-light)">v2</div>
+              <div class="m-value" style="font-size:1rem">${(mC.os2_synergy_bridge??mC.os2_synergy).toFixed(3)}</div>
+            </div>
+          </div>
+          <div class="m-name">Cross-PRF Bridge</div>
+          <div class="m-threshold" style="font-size:.68rem">${mC.os2_synergy_bridge != null
+            ? (mC.os2_synergy_bridge > mC.os2_synergy + 0.04 ? 'Groups converging — OS2 active'
+               : mC.os2_synergy > mC.os2_synergy_bridge + 0.04 ? 'Siloed capability'
+               : 'Readiness & bridge aligned')
+            : ''}</div>
+        </div>` : ''}
       </div>
 
       <!-- Animated bar visualization -->
