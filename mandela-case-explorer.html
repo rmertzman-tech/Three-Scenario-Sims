@@ -463,6 +463,16 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <div id="compareText" style="margin-top:.5rem"></div>
     </div>
 
+    <!-- ═══ SIDE-BY-SIDE COMPARISON PANEL ═══ -->
+    <div id="sxsPanel" style="margin-top:1.5rem">
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.25);border-radius:.75rem;padding:1.25rem">
+        <div style="font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.7);margin-bottom:.875rem">Side-by-Side Run Comparison</div>
+        <div id="sxsBody">
+          <div style="font-size:.84rem;color:rgba(255,255,255,.4);font-style:italic;text-align:center;padding:1.5rem 0">Run simulations above to populate the comparison.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="card card-warn" style="margin-top:1rem">
       <h4>Reading the Three-Run Comparison</h4>
       <p><strong>Run 1 vs Run 2 (the Hanna question at 27 years):</strong> The difference in λ Raw and morphic suppression between these runs is the simulation's measure of what Oliver Tambo's external network contributed to Mandela's identity resilience. His individual ATCF was exceptional — but the network was not incidental. It was structural.</p>
@@ -921,6 +931,8 @@ function renderRun(data){
   // Show external Run 3 prompt after Run 2; hide otherwise
   const ext3 = document.getElementById('run3ExternalPrompt');
   if (ext3) ext3.style.display = (_run === 'run2') ? 'block' : 'none';
+  // Update side-by-side panel after every run
+  renderSxS();
 }
 
 function renderComparison(){
@@ -933,6 +945,149 @@ function renderComparison(){
     <strong>Transition coordination (Run 3):</strong> OS2 Bridge = ${(r3.os2_synergy_bridge||0).toFixed(3)}, friction = ${(r3.friction||0).toFixed(3)}. ${(r3.os2_synergy_bridge||0)>(r2.os2_synergy_bridge||0)?'Bridge higher in transition than in prison runs — shared task is working despite maximum worldview distance.':'Both bridge values similar — run again with different seed to explore the stochastic variation.'}<br>
     <em>${morphDiff>0.02?'The external network measurably contained morphic suppression — structural support is not optional, it is load-bearing.':'The pattern emerges clearly across runs: identical suppression conditions, different structural support, different coordination capacity outcomes.'}</em>`;
   document.getElementById('compareBox').style.display='block';
+  renderSxS();
+}
+
+// ── Side-by-Side Comparison ───────────────────────────────
+function renderSxS() {
+  const runs = ['run1','run2','run3'];
+  const labels = {
+    run1:'Run 1: Robben Island',
+    run2:'Run 2: + Network',
+    run3:'Run 3: Transition'
+  };
+  const colors = {
+    run1:'#e879f9',  // morph purple-ish
+    run2:'#7fd8a8',  // success green
+    run3:'#C9A84C'   // gold
+  };
+  const METRICS = [
+    {key:'lambda_raw',        label:'λ Raw',          hi:true,  desc:'Coordination capacity available'},
+    {key:'lambda_perceived',  label:'λ Perceived',    hi:true,  desc:'Coordination capacity reaching decisions'},
+    {key:'os2_synergy_bridge',label:'OS2 Bridge',     hi:true,  desc:'Cross-worldview convergence'},
+    {key:'friction',          label:'Friction',       hi:false, desc:'Translation cost across worldviews'},
+    {key:'morphic_suppression',label:'Morphic Supp.', hi:false, desc:'Accumulated learned self-censorship'},
+  ];
+
+  // Compute gap for display
+  const getMetric = (r, key) => {
+    const m = _results[r]?.metrics || {};
+    if (key === 'os2_synergy_bridge') return m.os2_synergy_bridge ?? m.os2_synergy ?? 0;
+    return m[key] || 0;
+  };
+
+  const completedRuns = runs.filter(r => _results[r]);
+  if (completedRuns.length === 0) return;
+
+  // Build the comparison annotations
+  const annotations = buildAnnotations();
+
+  let html = '';
+
+  // ── Metric bars grid ──
+  html += `<div style="overflow-x:auto">`;
+  html += `<table style="width:100%;border-collapse:collapse;min-width:520px">`;
+
+  // Header row
+  html += `<tr>`;
+  html += `<td style="width:30%;padding:.4rem .6rem;font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.07em">Metric</td>`;
+  runs.forEach(r => {
+    const done = !!_results[r];
+    html += `<td style="width:${70/3}%;padding:.4rem .5rem;text-align:center">
+      <div style="font-size:.75rem;font-family:'Courier New',monospace;color:${done?colors[r]:'rgba(255,255,255,.2)'};font-weight:700">${labels[r]}</div>
+    </td>`;
+  });
+  html += `</tr>`;
+
+  // Metric rows
+  METRICS.forEach(m => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">`;
+    html += `<td style="padding:.5rem .6rem">
+      <div style="font-size:.8rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${m.label}</div>
+      <div style="font-size:.68rem;color:rgba(255,255,255,.35);margin-top:.1rem">${m.desc}</div>
+    </td>`;
+
+    runs.forEach(r => {
+      const done = !!_results[r];
+      const val = done ? getMetric(r, m.key) : null;
+      const pct = done ? Math.round(val * 100) : 0;
+      const numColor = done ? (m.hi ? (val>.60?'#7fd8a8':val>.35?'#f5c842':'#f08080') : (val<.30?'#7fd8a8':val<.55?'#f5c842':'#f08080')) : 'rgba(255,255,255,.2)';
+
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (done) {
+        html += `<div style="font-size:1.15rem;font-weight:700;font-family:'Courier New',monospace;color:${numColor};line-height:1.1">${val.toFixed(3)}</div>`;
+        html += `<div style="margin:.3rem auto 0;width:80%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${colors[r]};border-radius:3px;transition:width 1s ease"></div>
+        </div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+
+  html += `</table></div>`;
+
+  // ── Delta callouts ──
+  if (completedRuns.length >= 2 && annotations.length > 0) {
+    html += `<div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:.65rem">`;
+    annotations.forEach(a => {
+      html += `<div style="background:rgba(255,255,255,.055);border-left:3px solid ${a.color};border-radius:0 .4rem .4rem 0;padding:.7rem .9rem">
+        <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:${a.color};font-weight:700;margin-bottom:.25rem">${a.label}</div>
+        <div style="font-size:.84rem;color:rgba(255,255,255,.75);line-height:1.55">${a.text}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  document.getElementById('sxsBody').innerHTML = html;
+}
+
+function buildAnnotations() {
+  const anns = [];
+  const r1 = _results.run1?.metrics || {};
+  const r2 = _results.run2?.metrics || {};
+  const r3 = _results.run3?.metrics || {};
+
+  if (_results.run1 && _results.run2) {
+    const rawDelta = ((r2.lambda_raw||0)-(r1.lambda_raw||0));
+    const morphDelta = ((r1.morphic_suppression||0)-(r2.morphic_suppression||0));
+    const sign = v => v>=0?'+':'';
+
+    anns.push({
+      label:'Run 1 → Run 2: What the External Network Added',
+      color:'#7fd8a8',
+      text:`Same suppression conditions. Same prisoners. BioBond activates at step 5 — representing Oliver Tambo's international campaign intensifying. λ Raw ${sign(rawDelta)}${rawDelta.toFixed(3)} (${rawDelta>0.02?'structurally meaningful increase':'small difference this run — rerun with different seed to explore variation'}). Morphic suppression ${morphDelta>0?'reduced by '+morphDelta.toFixed(3)+' — the network prevented as much learned self-censorship from accumulating':'similar across both runs — the long-duration suppression dominates'}. Structural lesson: the network is not sentiment. It is load-bearing.`
+    });
+  }
+
+  if (_results.run1 && _results.run3) {
+    const bridge1 = r1.os2_synergy_bridge ?? r1.os2_synergy ?? 0;
+    const bridge3 = r3.os2_synergy_bridge ?? r3.os2_synergy ?? 0;
+    const fric1 = r1.friction||0, fric3 = r3.friction||0;
+    const raw1 = r1.lambda_raw||0, raw3 = r3.lambda_raw||0;
+    anns.push({
+      label:'Run 1 vs Run 3: Two Different Problems',
+      color:'#C9A84C',
+      text:`Run 1 is a suppression problem — maximum entropy (0.85), community block −0.85, agents being prevented from reaching decisions. Run 3 is a coordination-across-difference problem — lower entropy (0.52), all blocks positive, five worldview types active including Afrikaner nationalists alongside ANC. Friction: ${fric1.toFixed(3)} vs ${fric3.toFixed(3)} — ${Math.abs(fric3-fric1)<0.08?'similar, because genuine worldview distance is real in both contexts':'different structural conditions produce different translation costs'}. OS2 Bridge: ${bridge1.toFixed(3)} vs ${bridge3.toFixed(3)} — ${bridge3>bridge1?'higher in Run 3, as the shared task enables cross-worldview convergence despite the friction':'run again to see the variation; the shared task should push this higher'}. The transition was not easier than the prison. It was a different kind of hard.`
+    });
+  }
+
+  if (_results.run1 && _results.run2 && _results.run3) {
+    const morph1 = r1.morphic_suppression||0;
+    const morph2 = r2.morphic_suppression||0;
+    const morph3 = r3.morphic_suppression||0;
+    const bridge2 = r2.os2_synergy_bridge ?? r2.os2_synergy ?? 0;
+    const bridge3 = r3.os2_synergy_bridge ?? r3.os2_synergy ?? 0;
+    anns.push({
+      label:'The Trilogy Argument: All Three Together',
+      color:'#a78bfa',
+      text:`Run 1 shows what 27 years of maximum suppression does structurally — morphic suppression building to ${morph1.toFixed(3)}, coordination capacity severely constrained. Run 2 shows that structural support (the external network) is load-bearing — morphic suppression ${morph2<morph1?'contained at '+morph2.toFixed(3)+', λ Raw held higher':'running close to Run 1 in this seed — the network effect appears in the mean across many runs'}. Run 3 shows that a completely different structural problem — coordinating five incompatible worldviews toward a shared task — produces a completely different pattern: OS2 Bridge ${bridge3.toFixed(3)}, friction high but coordination converging. Mandela needed both capacities simultaneously: the Identity Kernel that survived Run 1 conditions is the same Identity Kernel that made Run 3 possible. You cannot have one without the other.`
+    });
+  }
+
+  return anns;
 }
 
 // ── Transfer localStorage ─────────────────────────────────
