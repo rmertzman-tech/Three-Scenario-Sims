@@ -452,6 +452,12 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <div id="ucpError" class="ucp-error" style="display:none"></div>
     </div>
 
+    <!-- External Run 3 prompt — appears after Run 2 completes, outside the dark panel -->
+    <div id="run3ExternalPrompt" style="display:none;margin-top:1rem;padding:1rem 1.25rem;background:var(--gold-light);border:2px solid var(--gold);border-radius:.75rem;text-align:center">
+      <div style="font-size:.85rem;color:var(--gold-dark);margin-bottom:.6rem;font-style:italic;font-weight:700">Run 2 complete — now model the transition: the highest-friction worldview configuration in the suite</div>
+      <button onclick="selectRun('run3');runMandela();document.getElementById('run3ExternalPrompt').style.display='none'" style="padding:.65rem 1.6rem;border:none;border-radius:.5rem;background:var(--gold-dark);color:#fff;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s" onmouseover="this.style.background='#1A1A2E'" onmouseout="this.style.background='var(--gold-dark)'">▶ Run 3 — The Transition (1990–1994)</button>
+    </div>
+
     <div id="compareBox" class="compare-box" style="display:none">
       <strong style="color:#7fd8a8">Three-Run Comparison:</strong>
       <div id="compareText" style="margin-top:.5rem"></div>
@@ -912,6 +918,9 @@ function renderRun(data){
   } else {prompt.style.display='none';}
 
   document.getElementById('ucpResult').style.display='block';
+  // Show external Run 3 prompt after Run 2; hide otherwise
+  const ext3 = document.getElementById('run3ExternalPrompt');
+  if (ext3) ext3.style.display = (_run === 'run2') ? 'block' : 'none';
 }
 
 function renderComparison(){
