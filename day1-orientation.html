@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethics Beyond Boundaries — Day One</title>
+<style>
+:root {
+  --navy:#1A2744;--sky:#4A7FB5;--gold:#C9A84C;--gold-dark:#92650A;
+  --gold-light:#FEF3C7;--light:#EEF2F8;--white:#FFFFFF;
+  --ink:#1f2937;--muted:#4b5563;--border:#e5e7eb;--paper:#f9fafb;
+  --virtue:#4A7FB5;--deont:#5B21B6;--conseq:#C87843;--care:#166534;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(135deg,#1A2744 0%,#2D2D44 50%,#92650A 100%);background-attachment:fixed;min-height:100vh;color:var(--ink);line-height:1.65;padding-bottom:3rem}
+.glass{background:rgba(255,255,255,.97);backdrop-filter:blur(10px)}
+.glass-dark{background:rgba(26,39,68,.96);backdrop-filter:blur(10px);color:#fff}
+.fade-in{animation:fadeIn .7s ease-out both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* Header */
+header{position:sticky;top:0;z-index:50;box-shadow:0 4px 24px rgba(0,0,0,.45)}
+.header-inner{max-width:72rem;margin:0 auto;padding:1.1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.header-titles h1{font-size:1.5rem;font-weight:700;margin-bottom:.15rem}
+.header-titles p{font-size:.82rem;opacity:.65;font-style:italic}
+.progress-wrap{display:flex;align-items:center;gap:.75rem}
+.progress-label{font-size:.75rem;font-family:'Courier New',monospace;opacity:.6}
+.progress-track{width:140px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .5s ease}
+
+/* Page */
+.page{max-width:72rem;margin:2rem auto;padding:0 1rem}
+
+/* Section nav */
+.sec-nav{display:flex;gap:.35rem;flex-wrap:wrap;background:rgba(26,39,68,.6);backdrop-filter:blur(8px);border-radius:.75rem;padding:.5rem;margin-bottom:1.5rem}
+.sec-btn{padding:.5rem 1rem;border:none;background:transparent;color:rgba(255,255,255,.6);font-family:'Georgia',serif;font-size:.85rem;border-radius:.5rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.sec-btn:hover{background:rgba(201,168,76,.15);color:#fff}
+.sec-btn.active{background:rgba(201,168,76,.22);color:var(--gold);font-weight:700}
+.sec-btn.done{color:rgba(127,216,168,.8)}
+.sec-btn.done::after{content:" ✓"}
+.sec-pane{display:none}.sec-pane.active{display:block}
+
+/* Cards */
+.card{border-radius:.875rem;padding:1.75rem;margin-bottom:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.card-gold{background:var(--gold-light);border-left:4px solid var(--gold)}
+.card-blue{background:#dbeafe;border-left:4px solid var(--sky)}
+.card-navy{background:var(--navy);color:#fff;border-radius:.875rem;padding:1.75rem;margin-bottom:1.25rem}
+.card-quote{background:var(--paper);border-left:4px solid var(--gold);padding:1.25rem 1.5rem;border-radius:0 .5rem .5rem 0;font-style:italic;font-size:1.05rem;margin:1rem 0}
+
+h2{font-size:1.5rem;color:var(--navy);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:3px solid var(--gold)}
+h3{font-size:1.15rem;color:var(--muted);margin-top:1.5rem;margin-bottom:.6rem}
+h4{font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.3rem}
+
+/* Greek inscription display */
+.inscription{text-align:center;padding:2.5rem 1.5rem;margin:1.5rem 0}
+.greek{font-size:2.8rem;color:var(--gold-dark);font-style:italic;font-weight:700;letter-spacing:.05em;margin-bottom:.5rem}
+.greek-trans{font-size:1.3rem;color:var(--navy);font-style:italic;margin-bottom:.4rem}
+.greek-src{font-size:.82rem;color:var(--muted);font-family:'Courier New',monospace}
+
+/* Four theory cards */
+.theory-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.25rem 0}
+.theory-card{border-radius:.75rem;padding:1.25rem;cursor:pointer;transition:.2s;border:2px solid transparent}
+.theory-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12)}
+.theory-card.selected{border-color:currentColor;box-shadow:0 0 0 3px currentColor}
+.theory-virtue{background:#EEF4FB;color:var(--virtue)}
+.theory-deont{background:#F5F0FF;color:var(--deont)}
+.theory-conseq{background:#FEF9F0;color:var(--conseq)}
+.theory-care{background:#F0FAF4;color:var(--care)}
+.theory-icon{font-size:2rem;margin-bottom:.5rem}
+.theory-name{font-size:1rem;font-weight:700;margin-bottom:.3rem}
+.theory-q{font-size:.85rem;font-style:italic;opacity:.8;margin-bottom:.5rem}
+.theory-sees{font-size:.82rem;line-height:1.5;opacity:.85}
+
+/* PRF dimensions */
+.prf-dim{margin-bottom:1.5rem}
+.prf-dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.prf-dim-label{font-weight:700;color:var(--navy);font-size:.9rem}
+.prf-dim-score{font-family:'Courier New',monospace;font-size:.85rem;color:var(--gold-dark);font-weight:700}
+.prf-track{height:14px;background:var(--border);border-radius:7px;overflow:hidden}
+.prf-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--gold));border-radius:7px;transition:width 1.2s ease}
+.prf-desc{font-size:.82rem;color:var(--muted);margin-top:.35rem;line-height:1.5}
+
+/* PRF-22 questionnaire */
+.q-block{background:var(--paper);border-radius:.5rem;padding:1.25rem;margin-bottom:.875rem;border:1px solid var(--border)}
+.q-text{font-size:.92rem;color:var(--ink);margin-bottom:.75rem;line-height:1.6}
+.q-scale{display:flex;gap:.3rem;flex-wrap:wrap}
+.q-btn{flex:1;min-width:40px;padding:.5rem .3rem;border:2px solid var(--border);background:#fff;border-radius:.4rem;cursor:pointer;font-family:'Courier New',monospace;font-size:.82rem;color:var(--muted);transition:.15s;text-align:center}
+.q-btn:hover{border-color:var(--sky);color:var(--sky)}
+.q-btn.chosen{background:var(--navy);border-color:var(--navy);color:#fff}
+.q-labels{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:.25rem;font-family:'Courier New',monospace}
+
+/* Profile result */
+.profile-result{text-align:center;padding:2rem;background:var(--navy);border-radius:.875rem;color:#fff;margin:1.25rem 0}
+.profile-fw-icon{font-size:3rem;margin-bottom:.5rem}
+.profile-fw-name{font-size:1.6rem;font-weight:700;margin-bottom:.4rem}
+.profile-fw-desc{font-size:.9rem;opacity:.75;max-width:38rem;margin:0 auto .75rem;line-height:1.6}
+.profile-tag{display:inline-block;padding:.3rem .75rem;border-radius:2rem;font-size:.78rem;font-family:'Courier New',monospace;margin:.2rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+
+/* Course arc */
+.arc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.875rem;margin:1.25rem 0}
+.arc-card{background:var(--paper);border-radius:.5rem;padding:1rem;border-top:4px solid var(--gold);text-align:center}
+.arc-num{font-size:1.5rem;font-weight:700;color:var(--gold-dark);font-family:'Courier New',monospace;line-height:1}
+.arc-unit{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:'Courier New',monospace;margin:.2rem 0}
+.arc-title{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:.3rem}
+.arc-q{font-size:.78rem;font-style:italic;color:var(--muted);line-height:1.45}
+
+/* Journal */
+.journal-box{background:var(--gold-light);border-left:4px solid var(--gold);border-radius:.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem}
+.journal-box h4{color:var(--gold-dark);margin-bottom:.6rem}
+.journal-ta{width:100%;min-height:110px;padding:.75rem;border:1px solid #d97706;border-radius:.5rem;font-family:'Georgia',serif;font-size:.9rem;resize:vertical;background:rgba(255,255,255,.85)}
+.journal-ta:focus{outline:none;border-color:var(--gold);background:#fff}
+.save-note{font-size:.75rem;color:var(--care);margin-top:.25rem;height:1.1rem;opacity:0;transition:opacity .3s}
+.save-note.show{opacity:1}
+
+/* Buttons */
+.btn{padding:.65rem 1.5rem;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-gold{background:var(--gold-dark);color:#fff}.btn-gold:hover{background:var(--navy)}
+.btn-sky{background:var(--sky);color:#fff}.btn-sky:hover{background:var(--navy)}
+.btn-lg{padding:.85rem 2.5rem;font-size:1.05rem;width:100%;margin-top:.75rem}
+
+footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;color:rgba(255,255,255,.45);font-size:.82rem;font-style:italic}
+@media(max-width:640px){
+  .header-titles h1{font-size:1.2rem}
+  .greek{font-size:2rem}
+  .arc-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="glass-dark">
+  <div class="header-inner">
+    <div class="header-titles">
+      <h1>⚗️ Ethics Beyond Boundaries</h1>
+      <p>Day One · Know Thyself · The Examined Life Begins</p>
+    </div>
+    <div class="progress-wrap">
+      <span class="progress-label" id="progressLabel">0 of 5 sections</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+  <nav class="sec-nav">
+    <button class="sec-btn active" id="nav-inscription" onclick="showSec('inscription',this)">The Inscription</button>
+    <button class="sec-btn" id="nav-four" onclick="showSec('four',this)">Four Directions</button>
+    <button class="sec-btn" id="nav-prf22" onclick="showSec('prf22',this)">Your PRF-22</button>
+    <button class="sec-btn" id="nav-arc" onclick="showSec('arc',this)">The Course Arc</button>
+    <button class="sec-btn" id="nav-journal" onclick="showSec('journal',this)">Your Journal Begins</button>
+  </nav>
+
+  <!-- ═══ SECTION 1: THE INSCRIPTION ═══ -->
+  <div id="sec-inscription" class="sec-pane active glass fade-in" style="border-radius:.875rem;padding:2rem">
+    <h2>Where Ethics Begins</h2>
+
+    <div class="inscription">
+      <div class="greek">γνῶθι σεαυτόν</div>
+      <div class="greek-trans">Know thyself</div>
+      <div class="greek-src">Inscription at the Oracle of Delphi · The starting point Socrates chose for all serious philosophical inquiry</div>
+    </div>
+
+    <p>This inscription was carved above the entrance to the most consulted oracle in the ancient Greek world. Socrates treated it as the most important philosophical instruction that existed — not because self-knowledge was the endpoint of ethical inquiry, but because it was the precondition. Before you can reason well about what you should do, you must be able to see the framework through which you are doing the reasoning.</p>
+
+    <div class="card card-gold">
+      <h4>What Socrates understood that most ethics courses skip</h4>
+      <p>You are already operating from an ethical framework. Right now, before this course begins, you have beliefs about what is morally real, rules you follow even when no one requires it, things you experience as authentic versus performed, and a sense of where your own development is headed. You have been using this framework your entire life. You just have not had precise language for it.</p>
+      <p>This course begins by giving you that language — and then showing you what your specific framework sees with particular clarity, what it characteristically misses, and what the theoretical vocabulary of 2,500 years of moral philosophy was trying to capture that your framework was already pointing toward.</p>
+    </div>
+
+    <p>This is the opposite sequence from most ethics courses, which introduce theories first and then apply them to cases. Here the sequence is: <strong>discover your framework first</strong>, then encounter the theories as names for dimensions of moral reality you were already navigating.</p>
+
+    <div class="card-quote">
+      "The unexamined life is not worth living."
+      <div style="text-align:right;margin-top:.5rem;font-weight:700;font-style:normal;font-size:.88rem">— Socrates, Apology 38a · spoken at his trial, 399 BCE</div>
+    </div>
+
+    <p>Socrates was convicted and executed for teaching Athenian citizens to examine their lives. He accepted the verdict rather than stop the practice. The self-knowledge he was pursuing was not private introspection — it was the structural precondition for serious reasoning about how to live alongside other people in a just community.</p>
+
+    <p style="color:var(--muted);font-size:.9rem;font-style:italic">The next section introduces the four great ethical theories — not as competing correct answers, but as four directions in which moral reality extends. Then you will complete the PRF-22, which identifies which direction your own lens is most naturally oriented toward.</p>
+
+    <button class="btn btn-gold btn-lg" onclick="showSec('four',document.getElementById('nav-four'))">Continue → The Four Directions</button>
+  </div>
+
+  <!-- ═══ SECTION 2: FOUR THEORIES ═══ -->
+  <div id="sec-four" class="sec-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>Four Directions in Which Moral Reality Extends</h2>
+
+    <p>For 2,500 years, moral philosophers have been trying to articulate what moral reality is and what it demands of us. They have not agreed. But the disagreement is not arbitrary — it has a structure. Each major tradition is sensitive to a genuine dimension of moral experience that the others see less clearly. Together, they are four instruments, each calibrated for a different frequency of moral life.</p>
+
+    <p style="color:var(--gold-dark);font-weight:700">Select any card to explore that theory. Notice which one feels most immediately recognizable — that recognition is your first piece of self-knowledge for today.</p>
+
+    <div class="theory-grid">
+      <div class="theory-card theory-virtue" onclick="selectTheory('virtue',this)">
+        <div class="theory-icon">🏛️</div>
+        <div class="theory-name">Virtue Ethics</div>
+        <div class="theory-q">"Who are you becoming?"</div>
+        <div class="theory-sees">Aristotle · MacIntyre · Foot. Character is the foundation. The stable dispositions — courage, justice, honesty, practical wisdom — that make a person admirable and a life worth living. What the community must provide for virtue to be possible.</div>
+      </div>
+      <div class="theory-card theory-deont" onclick="selectTheory('deont',this)">
+        <div class="theory-icon">⚖️</div>
+        <div class="theory-name">Deontology</div>
+        <div class="theory-q">"What is your duty?"</div>
+        <div class="theory-sees">Kant · Korsgaard · O'Neill. Rational agency carries inherent dignity. There are categorical limits — things you cannot do to persons regardless of the outcome they would produce. Every person is an end in themselves, never merely a means.</div>
+      </div>
+      <div class="theory-card theory-conseq" onclick="selectTheory('conseq',this)">
+        <div class="theory-icon">📊</div>
+        <div class="theory-name">Consequentialism</div>
+        <div class="theory-q">"What does this produce?"</div>
+        <div class="theory-sees">Mill · Bentham · Singer. Outcomes for sentient beings are morally fundamental. The right action produces the greatest good across all those affected, calculated impartially. Results matter — and they matter equally regardless of whose they are.</div>
+      </div>
+      <div class="theory-card theory-care" onclick="selectTheory('care',this)">
+        <div class="theory-icon">🤝</div>
+        <div class="theory-name">Care Ethics</div>
+        <div class="theory-q">"Who are you in relation with?"</div>
+        <div class="theory-sees">Noddings · Gilligan · Held. The relational network of care and dependency is morally primary. Attentiveness to the particular other, responsiveness to vulnerability. The web of mutual recognition within which any justice worth having becomes possible.</div>
+      </div>
+    </div>
+
+    <div id="theoryDetail" style="display:none;margin-top:1rem"></div>
+
+    <div class="card card-gold" style="margin-top:1.5rem">
+      <h4>Why four? And why can't we just pick the right one?</h4>
+      <p>Each theory sees something real. Each also generates characteristic anomalies — observations it can accommodate only through increasingly complex adjustments — at the scale of institutional life. Virtue ethics cannot easily explain why people of apparently good character produce harmful institutions. Deontology cannot easily explain why fulfilled individual duties still produce structural violations no individual chose. Consequentialism cannot easily see the structural distortions that make individual utility calculations systematically wrong in organizations. Care ethics cannot easily diagnose the institutional designs that sever relational networks at scale.</p>
+      <p>This course does not ask you to choose one. It shows you what all four see — and then shows you the reference frame from which all four become more coherent simultaneously.</p>
+    </div>
+
+    <button class="btn btn-gold btn-lg" onclick="showSec('prf22',document.getElementById('nav-prf22'))">Continue → Complete Your PRF-22</button>
+  </div>
+
+  <!-- ═══ SECTION 3: PRF-22 ═══ -->
+  <div id="sec-prf22" class="sec-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>Your Phenomenological Reference Framework</h2>
+
+    <div class="card card-blue">
+      <h4>Before you begin — read this</h4>
+      <p>This is not a test. There are no right or wrong answers. What it produces is a profile of the lens you are already using — the specific configuration of what you take to be morally real, what rules you follow, and where your development is oriented. Approach it the way Socrates approached every serious conversation: assume that what you find will surprise you, and that the surprise is where the examination begins.</p>
+      <p>Rate each statement honestly based on how you actually think and act — not how you think you should think and act.</p>
+    </div>
+
+    <div id="prfQuestions"></div>
+
+    <div id="prfSubmitWrap" style="display:none;margin-top:1rem">
+      <button class="btn btn-gold btn-lg" onclick="scorePRF()">Calculate My PRF Profile →</button>
+    </div>
+
+    <div id="prfResult" style="display:none;margin-top:1.5rem">
+      <div class="profile-result fade-in">
+        <div class="profile-fw-icon" id="resIcon"></div>
+        <div class="profile-fw-name" id="resName"></div>
+        <div class="profile-fw-desc" id="resDesc"></div>
+        <div id="resTags"></div>
+      </div>
+      <h3>Your Dimension Profile</h3>
+      <div id="dimBars"></div>
+      <div class="card card-gold" style="margin-top:1.25rem">
+        <h4>What this means — and what it does not mean</h4>
+        <p id="profileMeaning"></p>
+      </div>
+      <button class="btn btn-gold btn-lg" onclick="showSec('arc',document.getElementById('nav-arc'))">Continue → The Course Arc</button>
+    </div>
+  </div>
+
+  <!-- ═══ SECTION 4: COURSE ARC ═══ -->
+  <div id="sec-arc" class="sec-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>The Course Arc — Seven Units, One Developing Capacity</h2>
+
+    <p>Every unit in this course builds on what precedes it. The sequence is not arbitrary — it follows the logic of the Socratic project: begin with self-knowledge, develop the instruments for extending it, encounter the hardest cases, discover the methodology's reach, and then build something with what you have learned.</p>
+
+    <div class="arc-grid">
+      <div class="arc-card">
+        <div class="arc-num">1</div>
+        <div class="arc-unit">Foundation</div>
+        <div class="arc-title">Self-Knowledge</div>
+        <div class="arc-q">"Who are you, and how do you see?"<br><br>PRF-22, Identity Kernel, Forward Pull. You are here.</div>
+      </div>
+      <div class="arc-card">
+        <div class="arc-num">2</div>
+        <div class="arc-unit">Instruments</div>
+        <div class="arc-title">The Telescope</div>
+        <div class="arc-q">"What instrument are we using, and what does it show?"<br><br>Four theories. The Copernican shift. OS1 → OS2. Simulation as formalized thought experiment.</div>
+      </div>
+      <div class="arc-card">
+        <div class="arc-num">3</div>
+        <div class="arc-unit">Human Case I</div>
+        <div class="arc-title">Individual Resilience</div>
+        <div class="arc-q">"What does it take to hold together when the institution is designed to destroy you?"<br><br>Bishop Saad Hanna · Commonwealth of One</div>
+      </div>
+      <div class="arc-card">
+        <div class="arc-num">4</div>
+        <div class="arc-unit">Human Case II</div>
+        <div class="arc-title">Network Coordination</div>
+        <div class="arc-q">"How do people who disagree about everything coordinate toward a shared goal?"<br><br>Wangari Maathai · Green Belt Movement</div>
+      </div>
+      <div class="arc-card">
+        <div class="arc-num">5</div>
+        <div class="arc-unit">Human Case III</div>
+        <div class="arc-title">The Synthesis</div>
+        <div class="arc-q">"What does it look like when one life holds both capacities simultaneously?"<br><br>Nelson Mandela · The 7×7 Cell · The TRC</div>
+      </div>
+      <div class="arc-card">
+        <div class="arc-num">6</div>
+        <div class="arc-unit">Scientific Cases</div>
+        <div class="arc-title">Real Stakes</div>
+        <div class="arc-q">"What happens when this kind of thinking determines whether people survive?"<br><br>Tim Palmer · hurricane forecasting<br>Doyne Farmer · COVID economics</div>
+      </div>
+      <div class="arc-card">
+        <div class="arc-num">7</div>
+        <div class="arc-unit">Creative Design</div>
+        <div class="arc-title">Build Something</div>
+        <div class="arc-q">"Using everything you have developed — design an Adaptive Moral Commonwealth for a context you care about."<br><br>Scenario Runner · Trans-Temporal Explorer</div>
+      </div>
+    </div>
+
+    <div class="card-navy" style="margin-top:1.5rem">
+      <h4 style="color:var(--gold);margin-bottom:.75rem">Your profile in the arc</h4>
+      <p id="arcPersonalized" style="font-size:.9rem;opacity:.85;line-height:1.65">Complete your PRF-22 to see how your specific framework profile relates to each unit in the course.</p>
+    </div>
+
+    <div class="card card-gold" style="margin-top:1.25rem">
+      <h4>The ethics journal — your companion across every unit</h4>
+      <p>Beginning in the next section and continuing throughout the course, you will maintain an ethics journal. It is not a diary. It is the written form of the Socratic examined life — the record of your self-knowledge in dialogue with everything the course shows you. The final creative architecture exercise (Unit 7) draws directly from it. The journal is the most important document you will produce in this course.</p>
+    </div>
+
+    <button class="btn btn-gold btn-lg" onclick="showSec('journal',document.getElementById('nav-journal'))">Continue → Your Journal Begins</button>
+  </div>
+
+  <!-- ═══ SECTION 5: JOURNAL ═══ -->
+  <div id="sec-journal" class="sec-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>Your Ethics Journal — Entry One</h2>
+
+    <p>The ethics journal begins today. It will accompany you through every unit of the course. Each entry is a structured act of self-examination — connecting what the course shows you to who you already are.</p>
+
+    <div class="journal-box">
+      <h4>📝 Entry 1a: The Surprise</h4>
+      <p>Look at your PRF profile. What in it surprises you? What feels exactly right? What feels slightly off? The profile is not a verdict — it is a starting point. Name the most interesting thing it reveals about how you see.</p>
+      <textarea class="journal-ta" id="j1a" placeholder="What surprised me about my profile, and what feels exactly right..." oninput="jSave('1a',this.value)"></textarea>
+      <div class="save-note" id="sn1a">✓ Saved</div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Entry 1b: The Theory That Felt Most Like Home</h4>
+      <p>When you explored the four ethical theories, one probably felt more immediately recognizable than the others. Which was it, and why? What does your immediate recognition reveal about what your framework is most sensitive to?</p>
+      <textarea class="journal-ta" id="j1b" placeholder="The theory that felt most immediately recognizable was... because..." oninput="jSave('1b',this.value)"></textarea>
+      <div class="save-note" id="sn1b">✓ Saved</div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Entry 1c: The Theory That Generated Friction</h4>
+      <p>One theory probably generated more resistance — felt less compelling, harder to take seriously, or required more effort to inhabit. Which was it? The friction is data: it is showing you a dimension of moral reality your framework may be under-weighting. What might that mean for your own ethical reasoning?</p>
+      <textarea class="journal-ta" id="j1c" placeholder="The theory I found hardest to take seriously was... and what that might mean..." oninput="jSave('1c',this.value)"></textarea>
+      <div class="save-note" id="sn1c">✓ Saved</div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Entry 1d: The Socratic Question</h4>
+      <p>Socrates' method was to ask careful questions until he reached the foundations of a belief — and then keep asking. Choose one belief you hold about ethics — something you are fairly confident is true about what is right or wrong. Ask: <em>why do I believe this? What does my belief rest on? If someone asked me to justify the foundation, what would I say?</em> Write until you reach something you cannot justify further.</p>
+      <textarea class="journal-ta" id="j1d" placeholder="A belief I hold about ethics: ...&#10;&#10;Why I believe it: ...&#10;&#10;What it rests on: ...&#10;&#10;What I cannot justify further: ..." oninput="jSave('1d',this.value)"></textarea>
+      <div class="save-note" id="sn1d">✓ Saved</div>
+    </div>
+
+    <div class="card card-gold">
+      <h4>💾 Export Your First Entry</h4>
+      <p style="margin-bottom:.75rem">Save your journal entry to submit to Canvas or keep for future reference.</p>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="exportJournal()">📥 Download Entry</button>
+        <button class="btn btn-sky" onclick="copyJournal()">📋 Copy to Clipboard</button>
+      </div>
+    </div>
+
+    <div id="exportPreview" style="display:none;margin-top:1.25rem;padding:1rem;background:var(--paper);border-radius:.5rem;border:1px solid var(--border)">
+      <pre id="exportContent" style="white-space:pre-wrap;font-family:'Courier New',monospace;font-size:.82rem;max-height:400px;overflow-y:auto"></pre>
+      <button class="btn btn-sky" onclick="document.getElementById('exportPreview').style.display='none'" style="margin-top:.75rem">Close</button>
+    </div>
+
+    <div class="card-navy" style="margin-top:1.5rem;text-align:center">
+      <div style="font-size:1.1rem;font-weight:700;color:var(--gold);margin-bottom:.75rem">You have completed Day One.</div>
+      <div style="font-size:.9rem;opacity:.8;max-width:38rem;margin:0 auto;line-height:1.7">Your PRF profile is saved. Your first journal entries are saved. The examination has begun. Everything that follows in this course — every case, every simulation, every theoretical encounter — is the pursuit of what your Day One surprise points toward.</div>
+    </div>
+  </div>
+</div>
+
+<footer>Ethics Beyond Boundaries · Ethics Institute, Saint Petersburg College · Day One Orientation</footer>
+
+<script>
+// ── Section navigation ─────────────────────────────────
+const SECTIONS=['inscription','four','prf22','arc','journal'];
+const completed=new Set();
+
+function showSec(name,btn){
+  SECTIONS.forEach(s=>{
+    const pane=document.getElementById('sec-'+s);
+    const nav=document.getElementById('nav-'+s);
+    pane.style.display='none';pane.classList.remove('active');
+    if(nav){nav.classList.remove('active');}
+  });
+  const pane=document.getElementById('sec-'+name);
+  pane.style.display='block';pane.classList.add('active');
+  if(btn)btn.classList.add('active');
+  completed.add(name);
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(name==='prf22'&&!document.getElementById('prfQuestions').children.length) buildPRF();
+  if(name==='arc')personalizeArc();
+  if(name==='journal')loadJournal();
+}
+
+function updateProgress(){
+  const n=completed.size;
+  document.getElementById('progressLabel').textContent=`${n} of 5 sections`;
+  document.getElementById('progressFill').style.width=`${n/5*100}%`;
+  SECTIONS.forEach(s=>{
+    if(completed.has(s)){
+      const nav=document.getElementById('nav-'+s);
+      if(nav&&!nav.classList.contains('active'))nav.classList.add('done');
+    }
+  });
+}
+
+// ── Theory detail panel ────────────────────────────────
+const THEORY_DETAILS={
+  virtue:{
+    name:"Virtue Ethics",icon:"🏛️",color:"#4A7FB5",
+    deepening:"This course deepens virtue ethics through the case of Bishop Saad Hanna (Unit 3) — where the question 'who are you becoming?' is answered under the most extreme possible pressure, and through the OS2 extension (Unit 2): what institutional design produces or destroys character in the people who inhabit it?",
+    blind:"Why do people of apparently good character consistently produce harmful collective outcomes inside extractive institutions? Virtue ethics correctly identifies the importance of character — but struggles to explain why individual virtue is insufficient at the institutional scale.",
+    figures:"Aristotle's Nicomachean Ethics Books I and X. Alasdair MacIntyre's After Virtue. Philippa Foot's Natural Goodness."
+  },
+  deont:{
+    name:"Deontology",icon:"⚖️",color:"#5B21B6",
+    deepening:"This course deepens deontology through the cases of Maathai (Unit 4) — where equal epistemic standing is the Kantian claim — and Mandela (Unit 5) — where the TRC's conditional amnesty design operationalizes the Formula of Humanity at national scale.",
+    blind:"Why do fulfilled individual duties still produce institutional-scale Kantian violations? The suppression gap — rational agency prevented from reaching decisions — is a structural deontological violation that cannot be attributed to any individual agent's choice.",
+    figures:"Kant's Groundwork of the Metaphysics of Morals sections 1–2. Onora O'Neill's Constructions of Reason. Dennis Thompson's 'Moral Responsibility of Public Officials.'"
+  },
+  conseq:{
+    name:"Consequentialism",icon:"📊",color:"#C87843",
+    deepening:"This course deepens consequentialism most fully through Doyne Farmer's work (Unit 6) — where agent-based modeling IS consequentialism at the correct scale. Palmer (Unit 6) shows the body count of false certainty versus honest uncertainty communication.",
+    blind:"Why do individually rational expected-value calculations in organizations systematically underestimate harm? Individual aggregation misses structural suppression effects — the institutional design's distortion of which information reaches which decision.",
+    figures:"Mill's Utilitarianism chapters 1–4. Peter Singer's 'Famine, Affluence, and Morality.' Doyne Farmer's work on agent-based economic modeling."
+  },
+  care:{
+    name:"Care Ethics",icon:"🤝",color:"#166534",
+    deepening:"This course deepens care ethics most fully through Maathai (Unit 4) — whose ubuntu philosophy is care ethics at its most structural — and through Tim Palmer (Unit 6), where the ethics of disaster communication asks: what do we owe the specific vulnerable communities in the path of a storm?",
+    blind:"Why does individual caring consistently fail inside structurally hostile institutions? The institutional design can destroy the relational conditions that make genuine care possible — a structural failure that the individual-relationship focus of classical care ethics cannot fully diagnose.",
+    figures:"Nel Noddings' Caring chapters 1–2. Carol Gilligan's In a Different Voice chapter 2. Joan Tronto's Moral Boundaries chapters 1 and 4."
+  }
+};
+
+function selectTheory(key,card){
+  document.querySelectorAll('.theory-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  const d=THEORY_DETAILS[key];
+  const el=document.getElementById('theoryDetail');
+  el.style.display='block';
+  el.innerHTML=`
+    <div style="background:var(--paper);border-radius:.5rem;padding:1.25rem;border:2px solid ${d.color}">
+      <div style="font-size:1.1rem;font-weight:700;color:${d.color};margin-bottom:1rem">${d.icon} ${d.name} — Deeper View</div>
+      <p><strong style="color:${d.color}">How this course deepens it:</strong> ${d.deepening}</p>
+      <p><strong style="color:#C87843">Its characteristic blind spot:</strong> ${d.blind}</p>
+      <p style="font-size:.85rem;color:var(--muted);font-style:italic"><strong>Key texts:</strong> ${d.figures}</p>
+    </div>`;
+  try{localStorage.setItem('d1_preferred_theory',key);}catch(e){}
+}
+
+// ── PRF-22 ─────────────────────────────────────────────
+// 22 questions across 5 dimensions
+const PRF_QS=[
+  // Care/Harm
+  {id:1,dim:'care',text:"It is deeply important to me to protect people from being hurt, even when others think the harm is minor."},
+  {id:2,dim:'care',text:"When I see someone suffering, I feel a strong pull to help them even if it means inconvenience to myself."},
+  {id:3,dim:'fairness',text:"I am bothered when people are treated differently based on who they know rather than what they deserve."},
+  {id:4,dim:'fairness',text:"I believe that everyone should play by the same rules, regardless of their position or status."},
+  {id:5,dim:'loyalty',text:"Loyalty to my group, team, or community is one of my most important values."},
+  {id:6,dim:'loyalty',text:"It troubles me when people speak badly about their own community or institution, even when criticism might be deserved."},
+  {id:7,dim:'authority',text:"I have respect for traditions and structures that have been built up over time — they usually exist for good reasons."},
+  {id:8,dim:'authority',text:"People in legitimate positions of authority deserve to have their decisions respected, even when I personally disagree."},
+  {id:9,dim:'purity',text:"There are certain actions that feel wrong to me at a deep level, even when I cannot fully explain why in terms of harm."},
+  {id:10,dim:'purity',text:"I value maintaining the integrity and dignity of sacred or meaningful things, even when no one would be directly harmed by disrespecting them."},
+  // Identity/ATCF
+  {id:11,dim:'hc',text:"When I look at my past, I can trace a coherent story of who I was becoming across different phases of my life."},
+  {id:12,dim:'pi',text:"I generally act in ways that are consistent with my stated values — there is not a large gap between what I believe and what I do."},
+  {id:13,dim:'pc',text:"I can describe, in fairly concrete terms, the kind of person I want to be five or ten years from now."},
+  {id:14,dim:'mcc',text:"I regularly examine my own assumptions and am willing to revise my beliefs when I find them inconsistent."},
+  // Rules/ontology
+  {id:15,dim:'rules',text:"I have certain commitments that I would not compromise even under significant pressure or personal cost."},
+  {id:16,dim:'rules',text:"In difficult situations, I tend to ask 'what would a person of good character do here?' rather than 'what produces the best outcome?'"},
+  {id:17,dim:'ontology',text:"I tend to see social and political problems as connected systems rather than isolated issues — fixing one part often means understanding the whole."},
+  {id:18,dim:'ontology',text:"The most important things in a situation are often not the most visible — symbols, relationships, and histories matter as much as facts."},
+  // Forward pull / authenticity
+  {id:19,dim:'pull',text:"I have a sense of what I am working toward — not just professionally but as a person — and it guides my choices even when it is not immediately visible."},
+  {id:20,dim:'pull',text:"The vision of who I want to become provides genuine motivation even during difficult or discouraging periods."},
+  {id:21,dim:'auth',text:"There is not a large gap between who I am in public and who I am in private — I am fairly consistent across contexts."},
+  {id:22,dim:'auth',text:"When I act in ways that contradict my values, I notice it — and it bothers me enough to prompt me to change."},
+];
+
+const SCALE=['1','2','3','4','5'];
+const SCALE_LABELS=['Strongly disagree','','Neutral','','Strongly agree'];
+let answers={};
+
+function buildPRF(){
+  const wrap=document.getElementById('prfQuestions');
+  wrap.innerHTML='';
+  PRF_QS.forEach(q=>{
+    const saved=answers[q.id]||null;
+    let html=`<div class="q-block" id="qblock${q.id}">`;
+    html+=`<div class="q-text"><strong>${q.id}.</strong> ${q.text}</div>`;
+    html+=`<div class="q-scale">`;
+    SCALE.forEach(s=>{
+      html+=`<button class="q-btn${saved===s?' chosen':''}" onclick="answer(${q.id},'${s}',this)">${s}</button>`;
+    });
+    html+=`</div><div class="q-labels"><span>${SCALE_LABELS[0]}</span><span>${SCALE_LABELS[4]}</span></div></div>`;
+    wrap.insertAdjacentHTML('beforeend',html);
+  });
+  checkPRFComplete();
+}
+
+function answer(qid,val,btn){
+  answers[qid]=val;
+  const block=document.getElementById('qblock'+qid);
+  block.querySelectorAll('.q-btn').forEach(b=>b.classList.remove('chosen'));
+  btn.classList.add('chosen');
+  try{localStorage.setItem('d1_prf_answers',JSON.stringify(answers));}catch(e){}
+  checkPRFComplete();
+}
+
+function checkPRFComplete(){
+  const n=Object.keys(answers).length;
+  const wrap=document.getElementById('prfSubmitWrap');
+  if(wrap)wrap.style.display=n>=22?'block':'none';
+}
+
+function avg(keys){
+  const vals=keys.map(k=>{
+    const qs=PRF_QS.filter(q=>q.dim===k);
+    const sum=qs.reduce((a,q)=>a+(parseInt(answers[q.id])||3),0);
+    return sum/qs.length;
+  });
+  return vals.reduce((a,v)=>a+v,0)/vals.length;
+}
+
+function scorePRF(){
+  // Five framework scores
+  const scores={
+    individual_rights: 0.40*(avg(['fairness'])-3)+0.30*(avg(['fairness','care'])/2-3)-0.30*(avg(['loyalty','authority','purity'])/3-3)+3,
+    relational_we:     0.40*(avg(['care'])-3)+0.30*(avg(['fairness','care'])/2-3)-0.10*(avg(['loyalty','authority','purity'])/3-3)+3,
+    hierarchical_role: 0.40*(avg(['loyalty','authority','purity'])/3-3)-0.20*(avg(['mcc'])-3)+3,
+    boundary_integrity:0.30*(avg(['loyalty','authority','purity'])/3-3)+0.40*(avg(['purity'])-3)-0.10*(avg(['mcc'])-3)+3,
+    custodial:         0.30*(avg(['authority','purity'])/2-3)+0.20*(avg(['loyalty','authority','purity'])/3-3)+0.05+3,
+  };
+  const fw=Object.entries(scores).sort((a,b)=>b[1]-a[1])[0][0];
+
+  const PROFILES={
+    individual_rights:{
+      name:"Individual / Rights-Based",icon:"⚖️",
+      desc:"Your framework is most sensitive to questions of equal standing, fair treatment, and the protection of individual rational agency. You see epistemic injustice quickly — when someone's voice is excluded from decisions that affect them. Your characteristic strength is diagnosing when formal structures fail to protect genuine equality.",
+      tags:["Fairness-sensitive","Rights-oriented","Epistemic justice","Equal standing"]
+    },
+    relational_we:{
+      name:"Relational / We-Centered",icon:"🤝",
+      desc:"Your framework is most sensitive to the network of mutual recognition and care that makes human life meaningful. You feel fractured relationships immediately and work instinctively to restore them. Your characteristic strength is seeing what the relational fabric requires and what threatens it.",
+      tags:["Care-sensitive","Ubuntu-oriented","Network awareness","Relational repair"]
+    },
+    hierarchical_role:{
+      name:"Hierarchical / Role-Based",icon:"🏛️",
+      desc:"Your framework is most sensitive to legitimate authority, role obligations, and the question of whether institutional structures are serving their stated purposes. You notice when authority is being used as a gate rather than a channel — when hierarchy inverts its own legitimacy.",
+      tags:["Authority-sensitive","Role-oriented","Institutional legitimacy","Structural accountability"]
+    },
+    boundary_integrity:{
+      name:"Boundary / Integrity-Centered",icon:"🛡️",
+      desc:"Your framework is most sensitive to non-negotiable limits — things that cannot be crossed regardless of outcome or pressure. You feel violations of epistemic and moral integrity immediately. Your characteristic strength is holding categorical commitments under conditions designed to erode them.",
+      tags:["Integrity-sensitive","Boundary-oriented","Non-negotiable limits","Categorical commitment"]
+    },
+    custodial:{
+      name:"Custodial / Stewardship",icon:"🌱",
+      desc:"Your framework is most sensitive to what is inherited and what will be transmitted — the obligations to those who came before and those who will come after. You feel the weight of generational responsibility. Your characteristic strength is long-horizon thinking and the protection of what matters across time.",
+      tags:["Stewardship-sensitive","Custodial-oriented","Generational thinking","Inheritance and transmission"]
+    }
+  };
+
+  const prof=PROFILES[fw];
+  document.getElementById('resIcon').textContent=prof.icon;
+  document.getElementById('resName').textContent=prof.name;
+  document.getElementById('resDesc').textContent=prof.desc;
+  document.getElementById('resTags').innerHTML=prof.tags.map(t=>`<span class="profile-tag">${t}</span>`).join('');
+
+  // Dimension bars
+  const DIMS=[
+    {key:'care',label:'Care & Harm',desc:'Sensitivity to suffering and the impulse to protect'},
+    {key:'fairness',label:'Fairness & Justice',desc:'Sensitivity to equal treatment and reciprocity'},
+    {key:'loyalty',label:'Loyalty & Community',desc:'Value placed on group bonds and collective identity'},
+    {key:'authority',label:'Authority & Tradition',desc:'Respect for legitimate structures and accumulated wisdom'},
+    {key:'purity',label:'Integrity & Sanctity',desc:'Sensitivity to violations of what should be inviolable'},
+    {key:'hc',label:'Historical Continuity',desc:'Coherence of your past narrative'},
+    {key:'pc',label:'Prospective Coherence',desc:'Clarity of your forward pull'},
+    {key:'mcc',label:'Meta-Constructor',desc:'Capacity to examine and modify your own framework'},
+  ];
+  const barsHtml=DIMS.map(d=>{
+    const score=avg([d.key]);
+    const pct=Math.round((score-1)/4*100);
+    const color=pct>70?'#166534':pct>45?'#4A7FB5':'#C87843';
+    return `<div class="prf-dim">
+      <div class="prf-dim-header"><span class="prf-dim-label">${d.label}</span><span class="prf-dim-score">${score.toFixed(1)}/5.0</span></div>
+      <div class="prf-track"><div class="prf-fill" style="width:${pct}%;background:linear-gradient(90deg,${color},var(--gold))"></div></div>
+      <div class="prf-desc">${d.desc}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('dimBars').innerHTML=barsHtml;
+
+  const MEANINGS={
+    individual_rights:`Your rights-based framework will feel most at home in Units 4 and 5, where epistemic justice (Maathai) and constitutional design (Mandela) are central. Your characteristic growing edge in this course will be the functional equivalence concept: coordination without value agreement requires tolerating different motivations even when your framework wants everyone to share the rights-first foundation.`,
+    relational_we:`Your relational framework will feel most at home in Unit 4 (Maathai's ubuntu philosophy) and Unit 5 (the TRC as mutual recognition at national scale). Your characteristic growing edge will be the structural dimension: relational repair requires not just individual caring but institutional designs that enable care networks to form and be sustained.`,
+    hierarchical_role:`Your role-based framework will feel most at home in Unit 5 (Mandela's bootstrap authority and the transition's constitutional design) and Unit 6 (the ethics of institutional advisors). Your characteristic growing edge will be the tolerance for building authority through demonstrated competence before formal authorization exists.`,
+    boundary_integrity:`Your boundary/integrity framework will feel most at home in Unit 3 (Hanna's categorical refusal) and Unit 5 (Mandela's 27 years of refusing conditional release). Your characteristic growing edge will be the reconciliation dimension: your non-negotiable limits and the belief in redeemable humanity are not in conflict, but holding both simultaneously requires the Identity Kernel depth the course builds.`,
+    custodial:`Your custodial framework will feel most at home in Unit 5 (Mandela's Rainbow Nation as a gift to future generations) and Unit 7 (creative architecture as a stewardship exercise). Your characteristic growing edge will be tactical flexibility: the long horizon you naturally inhabit requires knowing when patience is right and when decisive action is required.`,
+  };
+  document.getElementById('profileMeaning').textContent=MEANINGS[fw];
+
+  try{
+    localStorage.setItem('d1_prf_fw',fw);
+    localStorage.setItem('d1_prf_prof',JSON.stringify(prof));
+  }catch(e){}
+
+  document.getElementById('prfResult').style.display='block';
+  document.getElementById('prfResult').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function personalizeArc(){
+  try{
+    const fw=localStorage.getItem('d1_prf_fw');
+    if(!fw)return;
+    const FW_ARC={
+      individual_rights:"Your rights-based framework will generate particular insight in Unit 4 (Maathai's epistemic justice argument) and Unit 5 (constitutional design as Kantian architecture). Watch for the OS2 extension of deontology — it will reframe how you think about what equal standing actually requires at the institutional level.",
+      relational_we:"Your relational framework is most naturally aligned with Unit 4 (ubuntu philosophy and the Green Belt Movement) and the care ethics thread that runs through Units 3, 4, and 5. The structural question this course adds: what institutional design makes the relational network you naturally attend to sustainable rather than fragile?",
+      hierarchical_role:"Your role-based framework will generate particular insight in Unit 5 (Mandela's bootstrap authority) and Unit 6 (Farmer's argument about what institutional advisors owe). The course's central challenge for your framework: what do you do when legitimate authority has failed its own stated purpose — and where does your authority to name that failure come from?",
+      boundary_integrity:"Your boundary/integrity framework is most naturally aligned with Unit 3 (Hanna's categorical refusal) and the deontological thread across the course. The synthesis the course asks for: how does the Identity Kernel that holds categorical limits under maximum pressure become the same Identity Kernel that can imagine the redeemable humanity of those applying the pressure?",
+      custodial:"Your custodial framework is most naturally aligned with Unit 5 (Mandela's generational vision) and Unit 7 (creative architecture as stewardship design). The course's central question for your framework: what specific structural choices would you make this year to ensure that what you are custodian of is durable — designed to survive beyond your own involvement?"
+    };
+    document.getElementById('arcPersonalized').textContent=FW_ARC[fw]||'';
+  }catch(e){}
+}
+
+// ── Journal ────────────────────────────────────────────
+const JP='d1_journal_';
+function jSave(k,v){
+  try{
+    localStorage.setItem(JP+k,v);
+    const sn=document.getElementById('sn'+k);
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+  }catch(e){}
+}
+function loadJournal(){
+  ['1a','1b','1c','1d'].forEach(k=>{
+    const el=document.getElementById('j'+k);
+    if(el){
+      try{el.value=localStorage.getItem(JP+k)||'';}catch(e){}
+    }
+  });
+}
+
+function buildExport(){
+  const get=k=>{try{return localStorage.getItem(JP+k)||'[not completed]';}catch(e){return '[not completed]';}};
+  const fw=(() => {try{return localStorage.getItem('d1_prf_fw')||'not yet completed';}catch(e){return 'not yet completed';}})();
+  return `ETHICS BEYOND BOUNDARIES — DAY ONE JOURNAL ENTRY\nDate: ${new Date().toLocaleDateString()}\nStudent: [YOUR NAME]\nPRF Framework: ${fw}\n\n` +
+    `ENTRY 1a: THE SURPRISE\n${get('1a')}\n\n` +
+    `ENTRY 1b: THE THEORY THAT FELT MOST LIKE HOME\n${get('1b')}\n\n` +
+    `ENTRY 1c: THE THEORY THAT GENERATED FRICTION\n${get('1c')}\n\n` +
+    `ENTRY 1d: THE SOCRATIC QUESTION\n${get('1d')}\n`;
+}
+function exportJournal(){
+  const txt=buildExport();
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='EBB_Day1_Journal.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+function copyJournal(){
+  const txt=buildExport();
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>fallback(txt));
+  else fallback(txt);
+  document.getElementById('exportContent').textContent=txt;
+  document.getElementById('exportPreview').style.display='block';
+}
+function fallback(txt){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+}
+
+// ── On load ────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  try{
+    const saved=localStorage.getItem('d1_prf_answers');
+    if(saved)answers=JSON.parse(saved);
+  }catch(e){}
+  completed.add('inscription');
+  updateProgress();
+});
+</script>
+</body>
+</html>
