@@ -259,6 +259,15 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
         <h4>What this means — and what it does not mean</h4>
         <p id="profileMeaning"></p>
       </div>
+
+      <!-- PRF FILE DOWNLOAD — critical for using other apps -->
+      <div style="background:var(--navy);border-radius:.875rem;padding:1.5rem;margin-top:1.25rem;text-align:center">
+        <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.5rem">📂 Download Your PRF-22 File</div>
+        <div style="font-size:.88rem;color:rgba(255,255,255,.75);max-width:38rem;margin:0 auto .875rem;line-height:1.6">This JSON file contains your PRF-22 scores in the format every course simulation app accepts. Save it somewhere you can find it — you will load it into each app using the <strong style="color:var(--gold)">"Load My PRF"</strong> button in the header. Loading your PRF personalises the Transfer sections of each app to your specific framework.</div>
+        <button class="btn btn-gold" style="font-size:1rem;padding:.75rem 2rem" onclick="downloadPRFFile()">⬇ Download MyPRF22.json</button>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.45);margin-top:.6rem;font-family:'Courier New',monospace">Save this file. You will use it in every simulation app this semester.</div>
+      </div>
+
       <button class="btn btn-gold btn-lg" onclick="showSec('arc',document.getElementById('nav-arc'))">Continue → The Course Arc</button>
     </div>
   </div>
@@ -361,11 +370,19 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <div class="save-note" id="sn1d">✓ Saved</div>
     </div>
 
+    <!-- PRF standalone download repeated in journal section -->
+    <div style="background:var(--navy);border-radius:.875rem;padding:1.5rem;margin-bottom:1.25rem;text-align:center">
+      <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:.4rem">📂 Your PRF-22 File — Save This Now</div>
+      <div style="font-size:.86rem;color:rgba(255,255,255,.75);max-width:40rem;margin:0 auto .875rem;line-height:1.6">Every simulation app in this course has a <strong style="color:var(--gold)">"Load My PRF"</strong> button in the header. Loading this file personalises the Transfer and journal sections to your specific framework. Save it somewhere easy to find — you will use it all semester.</div>
+      <button class="btn btn-gold" style="font-size:1rem;padding:.75rem 2rem;margin-bottom:.4rem" onclick="downloadPRFFile()">⬇ Download MyPRF22.json</button>
+      <div style="font-size:.73rem;color:rgba(255,255,255,.4);font-family:'Courier New',monospace">Complete the PRF-22 on the previous tab before downloading.</div>
+    </div>
+
     <div class="card card-gold">
-      <h4>💾 Export Your First Entry</h4>
-      <p style="margin-bottom:.75rem">Save your journal entry to submit to Canvas or keep for future reference.</p>
+      <h4>💾 Export Your Journal Entry</h4>
+      <p style="margin-bottom:.75rem">Save your journal entry to submit to Canvas. Your PRF profile summary is included so your instructor can see your scores and reflections together.</p>
       <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-        <button class="btn btn-gold" onclick="exportJournal()">📥 Download Entry</button>
+        <button class="btn btn-gold" onclick="exportJournal()">📥 Download Journal + PRF Summary</button>
         <button class="btn btn-sky" onclick="copyJournal()">📋 Copy to Clipboard</button>
       </div>
     </div>
@@ -658,10 +675,76 @@ function loadJournal(){
   });
 }
 
+// ── PRF-22 JSON export (for loading into course apps) ─────
+function buildPRFJson(){
+  // Compute averaged scores per moral foundation dimension
+  const mf={
+    Care:   avg(['care']),
+    Fairness: avg(['fairness']),
+    Loyalty:  avg(['loyalty']),
+    Authority:avg(['authority']),
+    Purity:   avg(['purity']),
+  };
+  // ATCF from identity dimensions (HC, PI, PC, MCC averaged)
+  const atcf=avg(['hc','auth','pc','mcc']); // auth questions proxy Present Integration
+  const fw=(() => {try{return localStorage.getItem('d1_prf_fw')||'unknown';}catch(e){return 'unknown';}})();
+  return {
+    prf22:{
+      moralFoundations:{
+        Care:   parseFloat(mf.Care.toFixed(3)),
+        Fairness:parseFloat(mf.Fairness.toFixed(3)),
+        Loyalty: parseFloat(mf.Loyalty.toFixed(3)),
+        Authority:parseFloat(mf.Authority.toFixed(3)),
+        Purity:  parseFloat(mf.Purity.toFixed(3)),
+      },
+      values:{ Openness: parseFloat(avg(['mcc']).toFixed(3)) },
+      resilience:{ ATCF: parseFloat(atcf.toFixed(3)) },
+    },
+    derivedMetrics:{ C_PFC: null },
+    framework: fw,
+    completedDate: new Date().toISOString().split('T')[0],
+    courseVersion: "Ethics Beyond Boundaries 2025",
+  };
+}
+
+function downloadPRFFile(){
+  const data=buildPRFJson();
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`MyPRF22_${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
 function buildExport(){
   const get=k=>{try{return localStorage.getItem(JP+k)||'[not completed]';}catch(e){return '[not completed]';}};
-  const fw=(() => {try{return localStorage.getItem('d1_prf_fw')||'not yet completed';}catch(e){return 'not yet completed';}})();
-  return `ETHICS BEYOND BOUNDARIES — DAY ONE JOURNAL ENTRY\nDate: ${new Date().toLocaleDateString()}\nStudent: [YOUR NAME]\nPRF Framework: ${fw}\n\n` +
+  let fw='not yet completed';
+  let fwDetail='';
+  try{
+    fw=localStorage.getItem('d1_prf_fw')||'not yet completed';
+    const prof=JSON.parse(localStorage.getItem('d1_prf_prof')||'{}');
+    if(prof.name) fwDetail=`  Profile name: ${prof.name}\n  Description: ${prof.desc||''}`;
+  }catch(e){}
+  let prfScores='PRF-22 not yet completed.';
+  if(Object.keys(answers).length>=22){
+    const data=buildPRFJson();
+    const mf=data.prf22.moralFoundations;
+    prfScores=`Framework: ${fw}\nMoral Foundation Scores (1.0–5.0 scale):\n` +
+      `  Care/Harm:        ${mf.Care}\n` +
+      `  Fairness:         ${mf.Fairness}\n` +
+      `  Loyalty:          ${mf.Loyalty}\n` +
+      `  Authority:        ${mf.Authority}\n` +
+      `  Purity/Integrity: ${mf.Purity}\n` +
+      `  ATCF (identity):  ${data.prf22.resilience.ATCF}\n` +
+      `${fwDetail}\n\n` +
+      `NOTE: Your standalone PRF-22 JSON file (MyPRF22_[date].json) can be loaded\n` +
+      `into any course simulation app using the "Load My PRF" button.`;
+  }
+  return `ETHICS BEYOND BOUNDARIES — DAY ONE JOURNAL ENTRY\nDate: ${new Date().toLocaleDateString()}\nStudent: [YOUR NAME]\n\n` +
+    `═══════════════════════════════\nPRF-22 PROFILE\n═══════════════════════════════\n${prfScores}\n\n` +
+    `═══════════════════════════════\nJOURNAL ENTRIES\n═══════════════════════════════\n\n` +
     `ENTRY 1a: THE SURPRISE\n${get('1a')}\n\n` +
     `ENTRY 1b: THE THEORY THAT FELT MOST LIKE HOME\n${get('1b')}\n\n` +
     `ENTRY 1c: THE THEORY THAT GENERATED FRICTION\n${get('1c')}\n\n` +
