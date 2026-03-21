@@ -506,6 +506,16 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <div id="comparisonText" style="margin-top:.5rem"></div>
     </div>
 
+    <!-- ═══ SIDE-BY-SIDE COMPARISON PANEL ═══ -->
+    <div id="sxsPanel" style="margin-top:1.5rem">
+      <div style="background:var(--ucp-navy);border:1px solid rgba(127,216,168,.25);border-radius:.875rem;padding:1.25rem">
+        <div style="font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(127,216,168,.65);margin-bottom:.875rem">Side-by-Side Phase Comparison</div>
+        <div id="sxsBody">
+          <div style="font-size:.84rem;color:rgba(255,255,255,.35);font-style:italic;text-align:center;padding:1.25rem 0">Run both phases above to populate the comparison.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="card card-warn" style="margin-top:1rem">
       <h4>Reading These Results</h4>
       <p><strong>OS2 Synergy Bridge (the key metric):</strong> This is what distinguishes the two phases. In Phase 1, different-worldview agents are not converging on shared felt coordination — they are each operating within their own framework without a shared task to bridge them. In Phase 2, the shared task (plant trees) creates convergence across frameworks — different agents arriving at similar felt coordination through different means. The Bridge score rises.</p>
@@ -986,6 +996,8 @@ function renderResult(data){
   // Show next-phase prompt after Phase 1, hide it after Phase 2
   const prompt = document.getElementById('nextPhasePrompt');
   if (prompt) prompt.style.display = _currentPhase === 'phase1' ? 'block' : 'none';
+  // Update side-by-side panel
+  renderSxS();
 }
 
 function showComparison(){
@@ -1078,6 +1090,76 @@ function clearJournal(){
   ['prf','sage','abcd','learned','growth','final'].forEach(k=>
     localStorage.removeItem(PREFIX+k));
   location.reload();
+}
+
+
+// ── Side-by-Side Comparison ───────────────────────────────
+function renderSxS() {
+  const PHASES = ['phase1','phase2'];
+  const LABELS = {phase1:'Phase 1: Value-Agreement', phase2:'Phase 2: Shared-Task'};
+  const COLORS = {phase1:'#f08080', phase2:'#7fd8a8'};
+  const METRICS = [
+    {key:'lambda_raw',          label:'λ Raw',         hi:true,  desc:'Coordination capacity available'},
+    {key:'lambda_perceived',    label:'λ Perceived',   hi:true,  desc:'Coordination reaching decisions'},
+    {key:'os2_synergy_bridge',  label:'OS2 Bridge',    hi:true,  desc:'Cross-worldview convergence'},
+    {key:'friction',            label:'Friction',      hi:false, desc:'Translation cost'},
+    {key:'morphic_suppression', label:'Morphic Supp.', hi:false, desc:'Learned self-censorship'},
+  ];
+  const gv = (p,k) => { const m=_results[p]?.metrics||{}; return k==='os2_synergy_bridge'?(m.os2_synergy_bridge??m.os2_synergy??0):(m[k]||0); };
+  if(!PHASES.some(p=>_results[p])) return;
+
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">`;
+  html += `<tr><td style="width:38%;padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em">Metric</td>`;
+  PHASES.forEach(p => {
+    const d = !!_results[p];
+    html += `<td style="width:31%;padding:.4rem .5rem;text-align:center"><div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${d?COLORS[p]:'rgba(255,255,255,.2)'}">${LABELS[p]}</div></td>`;
+  });
+  html += `</tr>`;
+
+  METRICS.forEach(m => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">`;
+    html += `<td style="padding:.5rem .6rem"><div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${m.label}</div><div style="font-size:.66rem;color:rgba(255,255,255,.32);margin-top:.1rem">${m.desc}</div></td>`;
+    PHASES.forEach(p => {
+      const d = !!_results[p];
+      const val = d ? gv(p,m.key) : null;
+      const pct = d ? Math.round(val*100) : 0;
+      const nc = d ? (m.hi?(val>.60?'#7fd8a8':val>.35?'#f5c842':'#f08080'):(val<.30?'#7fd8a8':val<.55?'#f5c842':'#f08080')) : 'rgba(255,255,255,.2)';
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (d) {
+        html += `<div style="font-size:1.12rem;font-weight:700;font-family:'Courier New',monospace;color:${nc};line-height:1.1">${val.toFixed(3)}</div>`;
+        html += `<div style="margin:.25rem auto 0;width:76%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${COLORS[p]};border-radius:3px;transition:width 1s ease"></div></div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table></div>`;
+
+  if (_results.phase1 && _results.phase2) {
+    const bd = gv('phase2','os2_synergy_bridge') - gv('phase1','os2_synergy_bridge');
+    const md = gv('phase1','morphic_suppression') - gv('phase2','morphic_suppression');
+    const fd = gv('phase1','friction') - gv('phase2','friction');
+    const s = v => v>=0?'+':'';
+    const anns = [
+      { color:'#7fd8a8', label:'OS2 Bridge — The Key Comparison',
+        text:`Phase 1: ${gv('phase1','os2_synergy_bridge').toFixed(3)} → Phase 2: ${gv('phase2','os2_synergy_bridge').toFixed(3)} (${s(bd)}${bd.toFixed(3)}). ${bd>0.04?'Shared-task structure produced meaningfully higher cross-worldview convergence — functional equivalence measured.':bd>0?'Positive shift directionally consistent with the shared-task argument.':'Run both phases again with a different seed to explore stochastic variation.'}` },
+      { color:'#f5c842', label:'Morphic Suppression — Value-Agreement vs Shared Task',
+        text:`Phase 1: ${gv('phase1','morphic_suppression').toFixed(3)} → Phase 2: ${gv('phase2','morphic_suppression').toFixed(3)}. ${md>0.01?'Lower by '+md.toFixed(3)+' under shared-task structure — the concrete task opens a consistent path for different capabilities to contribute.':'Similar across both phases — base entropy is dominating this run; the architectural difference appears more in the Bridge metric.'}` },
+      { color:'#f08080', label:'Friction — What Does Not Disappear',
+        text:`Phase 1: ${gv('phase1','friction').toFixed(3)} → Phase 2: ${gv('phase2','friction').toFixed(3)}. ${Math.abs(fd)<0.06?'Friction is similar across both phases — as expected. Genuine worldview distance does not dissolve when a shared task is present. The Movement succeeded by making the task worth paying the friction cost, not by eliminating the cost.':'Some friction reduction, but genuine worldview distance persists.'}` }
+    ];
+    html += `<div style="margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem">`;
+    anns.forEach(a => {
+      html += `<div style="background:rgba(255,255,255,.05);border-left:3px solid ${a.color};border-radius:0 .4rem .4rem 0;padding:.65rem .875rem">`;
+      html += `<div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:${a.color};font-weight:700;margin-bottom:.22rem">${a.label}</div>`;
+      html += `<div style="font-size:.83rem;color:rgba(255,255,255,.72);line-height:1.55">${a.text}</div>`;
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+  document.getElementById('sxsBody').innerHTML = html;
 }
 </script>
 </body>
