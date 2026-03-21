@@ -493,6 +493,10 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
         <div class="ucp-metrics" id="ucpMetrics"></div>
         <div id="ucpBars"></div>
         <div class="ucp-narrative" id="ucpNarrative"></div>
+        <div id="nextPhasePrompt" style="display:none;margin-top:1rem;padding:.875rem 1rem;background:rgba(127,216,168,.12);border:1px solid rgba(127,216,168,.35);border-radius:.5rem;text-align:center">
+          <div style="font-size:.82rem;color:rgba(255,255,255,.65);margin-bottom:.6rem;font-style:italic">Phase 1 complete — now run the shared-task coordination to see the difference</div>
+          <button onclick="selectPhase('phase2');runSimulation()" style="padding:.65rem 1.5rem;border:none;border-radius:.5rem;background:#7fd8a8;color:#14532d;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s" onmouseover="this.style.background='#4ade80'" onmouseout="this.style.background='#7fd8a8'">▶ Run Phase 2 — Shared-Task Coordination</button>
+        </div>
       </div>
       <div id="ucpError" class="ucp-error" style="display:none"></div>
     </div>
@@ -979,6 +983,9 @@ function renderResult(data){
 
   document.getElementById('ucpNarrative').textContent=narrative;
   document.getElementById('ucpResult').style.display='block';
+  // Show next-phase prompt after Phase 1, hide it after Phase 2
+  const prompt = document.getElementById('nextPhasePrompt');
+  if (prompt) prompt.style.display = _currentPhase === 'phase1' ? 'block' : 'none';
 }
 
 function showComparison(){
