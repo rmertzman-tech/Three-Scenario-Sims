@@ -860,8 +860,15 @@ function selectPhase(phase){
   document.getElementById('btn-phase2').classList.toggle('active-run',phase==='phase2');
   document.getElementById('phase-label').textContent=
     phase==='phase1'?'Phase 1: Value-Agreement Attempt':'Phase 2: Shared-Task Coordination';
-  document.getElementById('ucpResult').style.display='none';
   document.getElementById('ucpError').style.display='none';
+  // If this phase has already been completed, show its stored results immediately
+  if(_results[phase]){
+    renderUCPResult(_results[phase]);
+    document.getElementById('ucpRunBtn').innerHTML='↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display='none';
+    document.getElementById('ucpRunBtn').innerHTML='▶ Run Simulation';
+  }
 }
 
 const PHASE_CONFIGS={
@@ -928,7 +935,7 @@ async function runSimulation(){
     document.getElementById('ucpError').style.display='block';
     document.getElementById('ucpError').textContent=`Simulation error: ${e.message}. The backend may be starting up — wait 30 seconds and try again.`;
   }
-  btn.disabled=false;btn.innerHTML='▶ Run Simulation';
+  btn.disabled=false;btn.innerHTML=_results[_currentPhase]?'↺ Re-run Simulation':'▶ Run Simulation';
 }
 
 function vc(v,hi=true){

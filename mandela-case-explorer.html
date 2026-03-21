@@ -849,9 +849,17 @@ function selectRun(r){
   document.querySelectorAll('.run-tab-btn').forEach(b=>b.classList.remove('active-run'));
   document.getElementById('btn-'+r).classList.add('active-run');
   document.getElementById('run-label').textContent=RUN_CONFIGS[r].label;
-  document.getElementById('ucpResult').style.display='none';
   document.getElementById('ucpError').style.display='none';
-  document.getElementById('nextRunPrompt').style.display='none';
+  // If this run has already been completed, show its stored results immediately
+  if(_results[r]){
+    renderRun(_results[r]);
+    document.getElementById('ucpRunBtn').innerHTML='↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display='none';
+    document.getElementById('nextRunPrompt').style.display='none';
+    document.getElementById('run3ExternalPrompt').style.display='none';
+    document.getElementById('ucpRunBtn').innerHTML='▶ Run Simulation';
+  }
 }
 
 async function runMandela(){
@@ -875,7 +883,7 @@ async function runMandela(){
     document.getElementById('ucpError').style.display='block';
     document.getElementById('ucpError').textContent=`Error: ${e.message}. Backend may be starting — wait 30s and retry.`;
   }
-  btn.disabled=false;btn.innerHTML='▶ Run Simulation';
+  btn.disabled=false;btn.innerHTML=_results[_run]?'↺ Re-run Simulation':'▶ Run Simulation';
 }
 
 function nextRun(){
