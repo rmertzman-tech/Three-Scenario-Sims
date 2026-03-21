@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nelson Mandela — The Synthesis Case Explorer</title>
+<style>
+:root {
+  --gold:#C9A84C;--gold-dark:#92650A;--gold-light:#FEF3C7;
+  --charcoal:#1A1A2E;--charcoal2:#2D2D44;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --warn:#f59e0b;--warn-light:#fef3c7;
+  --success:#16a34a;--info:#3b82f6;--info-light:#dbeafe;
+  --ink:#1f2937;--muted:#4b5563;--light:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --ucp-navy:#1a2744;--ucp-sky:#4a7fb5;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(135deg,#1A1A2E 0%,#2D2D44 40%,#6B3A00 100%);background-attachment:fixed;min-height:100vh;padding-bottom:3rem;color:var(--ink);line-height:1.65}
+.glass{background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.4)}
+.glass-dark{background:rgba(26,26,46,.96);backdrop-filter:blur(10px);border:1px solid rgba(201,168,76,.2);color:#fff}
+.fade-in{animation:fadeIn .6s ease-out both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+/* Header */
+header{position:sticky;top:0;z-index:50;box-shadow:0 4px 24px rgba(0,0,0,.5)}
+.header-inner{max-width:72rem;margin:0 auto;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.header-titles h1{font-family:'Georgia',serif;font-size:1.65rem;font-weight:700;margin-bottom:.2rem}
+.header-titles p{font-size:.85rem;opacity:.7;font-style:italic}
+.prf-badge-wrap{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+.prf-status{font-size:.8rem;font-family:'Courier New',monospace;min-width:180px;opacity:.85}
+.prf-file-label{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem .9rem;border-radius:.5rem;font-size:.8rem;font-family:'Courier New',monospace;cursor:pointer;border:1px solid rgba(201,168,76,.4);background:rgba(201,168,76,.12);color:#fff;transition:.2s}
+.prf-file-label:hover{background:rgba(201,168,76,.25)}
+#prfFileInput{display:none}
+.suite-badge{font-size:.72rem;font-family:'Courier New',monospace;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:rgba(255,255,255,.7);padding:.2rem .55rem;border-radius:.3rem}
+
+/* Page */
+.page{max-width:72rem;margin:2rem auto;padding:0 1rem}
+.tab-nav{display:flex;gap:.35rem;flex-wrap:wrap;background:rgba(26,26,46,.65);backdrop-filter:blur(8px);border-radius:.75rem;padding:.5rem;margin-bottom:1.5rem}
+.tab-btn{padding:.55rem 1.1rem;border:none;background:transparent;color:rgba(255,255,255,.65);font-family:'Georgia',serif;font-size:.88rem;border-radius:.5rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab-btn:hover{background:rgba(201,168,76,.15);color:#fff}
+.tab-btn.active{background:rgba(201,168,76,.22);color:var(--gold);font-weight:700}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* Cards */
+.card{border-radius:.875rem;padding:1.75rem;margin-bottom:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.card-gold{background:var(--gold-light);border-left:4px solid var(--gold)}
+.card-blue{background:var(--info-light);border-left:4px solid var(--info)}
+.card-warn{background:var(--warn-light);border-left:4px solid var(--warn)}
+.card-danger{background:var(--danger-light);border-left:4px solid var(--danger)}
+.card-success{background:#d1fae5;border-left:4px solid var(--success)}
+.card-dark{background:var(--charcoal);color:#fff;border-radius:.875rem;padding:1.75rem;margin-bottom:1.25rem}
+.card-quote{background:var(--paper);border-left:4px solid var(--gold);padding:1.25rem 1.5rem;border-radius:0 .5rem .5rem 0;font-style:italic;font-size:1.05rem;margin:1rem 0}
+
+h2{font-size:1.55rem;color:var(--charcoal);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:3px solid var(--gold)}
+h3{font-size:1.2rem;color:var(--muted);margin-top:1.75rem;margin-bottom:.75rem}
+h4{font-size:1rem;font-weight:700;margin-bottom:.5rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.3rem}
+
+/* Stats */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.875rem;margin:1rem 0}
+.stat-box{text-align:center;padding:1.25rem;border-radius:.875rem;color:#fff}
+.stat-gold{background:linear-gradient(135deg,#92650A,#C9A84C)}
+.stat-dark{background:linear-gradient(135deg,#1A1A2E,#2D2D44)}
+.stat-number{font-size:2.2rem;font-weight:700;line-height:1}
+.stat-label{font-size:.78rem;opacity:.9;margin-top:.3rem}
+
+/* Timeline */
+.timeline{position:relative;padding:1rem 0}
+.timeline::before{content:'';position:absolute;left:40px;top:0;bottom:0;width:3px;background:var(--gold)}
+.tl-event{position:relative;padding-left:90px;margin-bottom:1.5rem}
+.tl-dot{position:absolute;left:32px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--gold);border:3px solid #fff;box-shadow:0 0 0 3px var(--gold)}
+.tl-event.crisis .tl-dot{background:var(--danger);box-shadow:0 0 0 3px var(--danger)}
+.tl-event.victory .tl-dot{background:var(--success);box-shadow:0 0 0 3px var(--success)}
+.tl-event.prison .tl-dot{background:var(--charcoal);box-shadow:0 0 0 3px var(--charcoal)}
+.tl-content{background:var(--paper);padding:1.1rem 1.25rem;border-radius:.5rem;border-left:4px solid var(--gold)}
+.tl-event.crisis .tl-content{border-left-color:var(--danger);background:var(--danger-light)}
+.tl-event.victory .tl-content{border-left-color:var(--success);background:#f0fdf4}
+.tl-event.prison .tl-content{border-left-color:var(--charcoal);background:#f1f1f8}
+.tl-date{font-family:'Courier New',monospace;font-size:.8rem;color:var(--gold-dark);font-weight:700;margin-bottom:.35rem}
+.tl-event.crisis .tl-date{color:var(--danger)}
+.tl-event.victory .tl-date{color:var(--success)}
+.tl-event.prison .tl-date{color:var(--charcoal)}
+
+/* PRF dims */
+.prf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+.prf-dim{background:var(--paper);border-radius:.5rem;padding:1.25rem;border-top:4px solid var(--gold)}
+.prf-dim-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--gold-dark);font-weight:700;margin-bottom:.4rem}
+.prf-dim-title{font-size:.95rem;font-weight:700;color:var(--charcoal);margin-bottom:.5rem}
+.prf-dim-text{font-size:.85rem;color:var(--muted);line-height:1.55}
+
+/* Network nodes */
+.network-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1rem 0}
+.net-card{background:var(--paper);border-radius:.5rem;padding:1.25rem}
+.net-icon{font-size:1.8rem;margin-bottom:.5rem}
+.net-name{font-size:.95rem;font-weight:700;color:var(--charcoal);margin-bottom:.3rem}
+.net-role{font-size:.8rem;color:var(--gold-dark);font-weight:700;margin-bottom:.4rem;font-family:'Courier New',monospace}
+.net-cap{font-size:.82rem;color:var(--muted);line-height:1.5}
+.net-contrib{font-size:.8rem;font-style:italic;color:var(--ucp-sky);margin-top:.5rem;border-top:1px solid var(--border);padding-top:.4rem}
+
+/* TRC table */
+.trc-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.88rem}
+.trc-table th{background:var(--charcoal);color:#fff;padding:.75rem 1rem;text-align:left}
+.trc-table td{padding:.7rem 1rem;border-bottom:1px solid var(--border)}
+.trc-table tr:nth-child(even){background:var(--paper)}
+
+/* UCP Sim */
+.ucp-panel{background:var(--ucp-navy);color:#fff;border-radius:.875rem;padding:1.5rem;margin-top:1.25rem}
+.ucp-panel h3{color:rgba(255,255,255,.55);font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:.5rem;margin-bottom:1rem;margin-top:0}
+.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:.65rem;margin:.75rem 0}
+.ucp-metric{background:rgba(255,255,255,.08);border-radius:.5rem;padding:.65rem .9rem;text-align:center}
+.ucp-metric-label{font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;opacity:.5;margin-bottom:.25rem;font-family:'Courier New',monospace}
+.ucp-metric-value{font-size:1.5rem;font-weight:700;font-family:'Courier New',monospace;line-height:1}
+.ucp-metric-phrase{font-size:.68rem;opacity:.55;margin-top:.15rem}
+.val-great{color:#7fd8a8}.val-warn{color:#f5c842}.val-bad{color:#f08080}
+.ucp-bar-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.4rem}
+.ucp-bar-name{font-size:.73rem;font-family:'Courier New',monospace;width:6rem;text-align:right;opacity:.65}
+.ucp-bar-track{flex:1;height:11px;background:rgba(255,255,255,.1);border-radius:6px;overflow:hidden}
+.ucp-bar-fill{height:100%;border-radius:6px;transition:width 1s ease}
+.fill-raw{background:var(--ucp-sky)}.fill-perc{background:var(--gold)}.fill-bridge{background:#7fd8a8}.fill-morph{background:#e879f9}
+.ucp-bar-num{font-family:'Courier New',monospace;font-size:.73rem;width:3rem;opacity:.75}
+.ucp-run-btn{width:100%;padding:.7rem;border:none;border-radius:.5rem;background:rgba(255,255,255,.1);color:#fff;font-family:'Georgia',serif;font-size:.92rem;cursor:pointer;border:1px solid rgba(255,255,255,.18);transition:.2s;margin-top:.5rem}
+.ucp-run-btn:hover{background:rgba(255,255,255,.2)}.ucp-run-btn:disabled{opacity:.35;cursor:wait}
+.ucp-narrative{margin-top:.75rem;background:rgba(255,255,255,.055);border-radius:.5rem;padding:.85rem 1rem;font-size:.86rem;line-height:1.6;border-left:3px solid var(--gold);font-style:italic}
+.ucp-error{background:rgba(220,38,38,.14);border:1px solid rgba(220,38,38,.35);border-radius:.5rem;padding:.7rem 1rem;font-size:.84rem;color:#fca5a5;margin-top:.5rem}
+.ucp-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.run-tabs{display:flex;gap:.4rem;margin:.75rem 0}
+.run-tab-btn{flex:1;padding:.5rem .4rem;border:1px solid rgba(255,255,255,.18);background:transparent;color:rgba(255,255,255,.55);border-radius:.4rem;cursor:pointer;font-size:.78rem;transition:.2s;font-family:'Georgia',serif;text-align:center}
+.run-tab-btn.active-run{background:rgba(201,168,76,.2);color:var(--gold);border-color:rgba(201,168,76,.4);font-weight:700}
+.next-run-prompt{display:none;margin-top:.875rem;padding:.75rem 1rem;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);border-radius:.5rem;text-align:center}
+.next-run-prompt p{font-size:.8rem;color:rgba(255,255,255,.6);margin-bottom:.5rem;font-style:italic}
+.next-run-prompt button{padding:.55rem 1.3rem;border:none;border-radius:.4rem;background:var(--gold);color:var(--charcoal);font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s}
+.next-run-prompt button:hover{background:#e6be58}
+.compare-box{background:rgba(127,216,168,.07);border:1px solid rgba(127,216,168,.22);border-radius:.5rem;padding:.9rem 1rem;margin-top:.75rem;font-size:.84rem;line-height:1.6}
+
+/* Transfer */
+.transfer-header{text-align:center;margin-bottom:2rem;padding:1.75rem;border-radius:.875rem;background:linear-gradient(135deg,#1A1A2E,#92650A)}
+.transfer-eyebrow{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.5);font-family:'Courier New',monospace;margin-bottom:.5rem}
+.transfer-title{font-size:1.55rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+.transfer-subtitle{font-size:.88rem;color:rgba(255,255,255,.55);max-width:42rem;margin:0 auto;font-style:italic}
+.transfer-block{border-radius:.875rem;padding:1.5rem;margin-bottom:1.25rem;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.transfer-block-header{display:flex;align-items:flex-start;gap:.875rem;margin-bottom:1rem}
+.transfer-block-icon{font-size:1.75rem;line-height:1}
+.transfer-block-title{font-weight:700;color:var(--charcoal);font-size:1.05rem}
+.transfer-block-subtitle{font-size:.8rem;color:var(--muted);font-family:'Courier New',monospace;margin-top:.2rem}
+.transfer-prompt-label{font-size:.85rem;font-weight:700;color:var(--muted);margin-top:1rem;margin-bottom:.4rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+.transfer-textarea{width:100%;min-height:90px;padding:.75rem;border:1px solid var(--border);border-radius:.5rem;font-family:'Georgia',serif;font-size:.9rem;resize:vertical;background:var(--paper);transition:.2s}
+.transfer-textarea:focus{outline:none;border-color:var(--gold);background:#fff}
+.transfer-save-note{font-size:.75rem;color:var(--success);margin-top:.2rem;height:1.1rem;opacity:0;transition:opacity .3s}
+.transfer-save-note.show{opacity:1}
+.sage-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.875rem;margin:.75rem 0}
+.sage-card{padding:1rem;border-radius:.5rem;border-left:4px solid var(--border);background:var(--paper)}
+.sage-card-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;font-family:'Courier New',monospace;font-weight:700;margin-bottom:.3rem}
+.sage-card-name{font-size:.88rem;font-weight:700;color:var(--charcoal);margin-bottom:.35rem}
+.sage-card-reading{font-size:.83rem;color:var(--muted);line-height:1.5}
+.growth-pathway{padding:1rem 1.25rem;border-radius:.5rem;border-left:4px solid var(--gold);background:var(--gold-light);margin-bottom:.875rem}
+.growth-pathway-label{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gold-dark);font-family:'Courier New',monospace;font-weight:700;margin-bottom:.35rem}
+.growth-pathway-text{font-size:.88rem;color:var(--ink);line-height:1.55}
+.growth-pathway-invitation{margin-top:.5rem;font-size:.85rem;color:var(--gold-dark);font-style:italic;border-top:1px solid rgba(146,101,10,.2);padding-top:.4rem}
+.abcd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.875rem;margin:.75rem 0}
+.abcd-card{padding:1rem;border-radius:.5rem;background:var(--paper);border-top:4px solid var(--gold)}
+.abcd-letter{font-size:1.8rem;font-weight:700;color:var(--gold-dark);line-height:1;margin-bottom:.25rem}
+.abcd-name{font-size:.8rem;font-weight:700;color:var(--charcoal);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4rem}
+.abcd-text{font-size:.82rem;color:var(--muted);line-height:1.5}
+.investment-block{background:linear-gradient(135deg,#1A1A2E,#92650A);color:#fff;border-radius:.875rem;padding:1.75rem;margin-top:1.25rem;text-align:center}
+
+/* Journal */
+.exercise-box{background:var(--warn-light);border-left:4px solid var(--warn);border-radius:.5rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem}
+.exercise-box h4{color:#92400e;margin-bottom:.75rem}
+.journal-textarea{width:100%;min-height:90px;padding:.75rem;border:1px solid #d97706;border-radius:.5rem;font-family:'Georgia',serif;font-size:.9rem;resize:vertical;background:rgba(255,255,255,.85)}
+.journal-textarea:focus{outline:none;border-color:var(--warn);background:#fff}
+.btn{padding:.6rem 1.4rem;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-primary{background:var(--gold-dark);color:#fff}.btn-primary:hover{background:var(--charcoal);transform:translateY(-1px)}
+.btn-danger{background:var(--danger);color:#fff}.btn-export{background:var(--gold);color:var(--charcoal)}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem}
+
+footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;color:rgba(255,255,255,.45);font-size:.82rem;font-style:italic}
+@media(max-width:640px){
+  .header-inner{flex-direction:column;align-items:flex-start}
+  .header-titles h1{font-size:1.25rem}
+  .timeline::before{left:16px}.tl-event{padding-left:50px}.tl-dot{left:8px}
+  .run-tabs{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<header class="glass-dark">
+  <div class="header-inner">
+    <div class="header-titles">
+      <h1>✊ Nelson Mandela — The Synthesis Case</h1>
+      <p>Commonwealth of One · Adaptive Moral Commonwealth · The Hinge Between</p>
+    </div>
+    <div class="prf-badge-wrap">
+      <div class="prf-status" id="prfStatusWrap" style="color:rgba(255,255,255,.45)">No PRF loaded</div>
+      <label class="prf-file-label" for="prfFileInput">📂 Load My PRF</label>
+      <input type="file" id="prfFileInput" accept=".json">
+      <span class="suite-badge">Ethics Beyond Boundaries</span>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+    <button class="tab-btn" onclick="showTab('prf',this)">Mandela's PRF</button>
+    <button class="tab-btn" onclick="showTab('timeline',this)">Timeline</button>
+    <button class="tab-btn" onclick="showTab('network',this)">The Network</button>
+    <button class="tab-btn" onclick="showTab('trc',this)">The TRC as Design</button>
+    <button class="tab-btn" onclick="showTab('simulation',this)">UCP Simulation</button>
+    <button class="tab-btn" onclick="showTab('transfer',this)">Synthesis & Transfer</button>
+    <button class="tab-btn" onclick="showTab('journal',this)">Ethics Journal</button>
+  </nav>
+
+  <!-- ══ OVERVIEW ══ -->
+  <div id="tab-overview" class="tab-pane active glass fade-in" style="border-radius:.875rem;padding:2rem">
+    <h2>The Synthesis Case: Both Stories in One Life</h2>
+    <div class="stat-row">
+      <div class="stat-box stat-dark"><div class="stat-number">27</div><div class="stat-label">Years on Robben Island</div></div>
+      <div class="stat-box stat-gold"><div class="stat-number">33</div><div class="stat-label">Years from armed struggle to democracy</div></div>
+      <div class="stat-box stat-dark"><div class="stat-number">1994</div><div class="stat-label">First democratic election</div></div>
+      <div class="stat-box stat-gold"><div class="stat-number">0</div><div class="stat-label">Civil wars during transition</div></div>
+    </div>
+
+    <div class="card card-gold">
+      <h4>Why This Case Is Different</h4>
+      <p>The previous two cases each demonstrated one capacity. Bishop Saad Hanna demonstrated the <strong>Commonwealth of One</strong> — what one person can do when the institution is designed to destroy their identity. Wangari Maathai demonstrated the <strong>Adaptive Moral Commonwealth</strong> — what a network can do when its members disagree about everything.</p>
+      <p>Mandela is the synthesis. One life contains both stories simultaneously. Robben Island is the Hanna question extended to 27 years: what does identity become after nearly three decades of sustained institutional attempt to destroy it? The post-apartheid transition is the Maathai question applied to an entire nation: how do people who have been at war with each other coordinate toward a shared future without requiring each other to become something they are not?</p>
+      <p><strong>The synthesis insight:</strong> these are not separate ethical capacities that you alternate between. In Mandela's life they were a unified practice — the same Identity Kernel that survived 27 years of isolation is the Identity Kernel that could imagine his oppressors' redeemable humanity. You cannot have one without the other at this scale.</p>
+    </div>
+
+    <div class="card card-blue">
+      <h4>What the Simulation Does Differently Here</h4>
+      <p>The Mandela simulation has <strong>three runs</strong> rather than two, because this case contains two structurally distinct problems. Runs 1 and 2 are the Robben Island question — with and without the external network — run at 12 steps rather than 8 to model the accumulated weight of years. Run 3 is the transition — a completely different configuration modelling the 1990–1994 negotiations, the highest-friction worldview combination in the suite, with the Truth and Reconciliation Commission as the concrete shared task that made coordination possible.</p>
+      <p>The comparison across all three runs is the chapter's central argument made structurally visible: here is identity resilience under maximum long-duration suppression; here is what the external network did to that; here is what capability-based coordination looks like when the scale is a nation.</p>
+    </div>
+
+    <div class="card-quote">
+      "I am not truly free if I am taking away someone else's freedom, just as surely as I am not free when my freedom is taken from me. The oppressed and the oppressor alike are robbed of their humanity."
+      <div style="text-align:right;margin-top:.75rem;font-weight:700;font-style:normal">— Nelson Mandela, Long Walk to Freedom</div>
+    </div>
+  </div>
+
+  <!-- ══ PRF ══ -->
+  <div id="tab-prf" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>Mandela's Phenomenological Reference Framework</h2>
+    <p>The six PRF dimensions below are drawn from his writings, speeches, and <em>Long Walk to Freedom</em>. What makes them unusual is the explicit awareness of the gap between internal and external — he was one of the most reflective people in the suite about the difference between what he felt and what he showed.</p>
+
+    <div class="prf-grid">
+      <div class="prf-dim">
+        <div class="prf-dim-label">Beliefs</div>
+        <div class="prf-dim-title">Shared and Redeemable Humanity</div>
+        <div class="prf-dim-text">Reality is fundamentally social and interconnected. Our humanity is bound up in the humanity of others — including our oppressors, who are also victims of an inhuman system. This is not naive hope; it is strategic necessity. Denying others their humanity diminishes our own. The capacity for change exists in every person, even when all evidence appears to contradict it. A lasting peace can only be built on this foundation.</div>
+      </div>
+      <div class="prf-dim">
+        <div class="prf-dim-label">Rules</div>
+        <div class="prf-dim-title">The Process Is the Outcome</div>
+        <div class="prf-dim-text">Find the good in even your greatest enemies — if you hate your captors, they have truly imprisoned you. Your freedom begins the moment you decide not to be a victim of bitterness. The reconciliation process is as important as its outcome: you cannot build a democratic future using the tools of oppression. This means negotiating with enemies, choosing restorative justice over retribution. The new South Africa must be for everyone, including those who fought against it.</div>
+      </div>
+      <div class="prf-dim">
+        <div class="prf-dim-label">Ontology</div>
+        <div class="prf-dim-title">Identity Is Forged, Not Fixed</div>
+        <div class="prf-dim-text">Personal identity is not fixed. It is forged in the crucible of struggle. He entered prison a hot-headed young man and emerged a patient leader. The core commitment — to justice — did not change; but his understanding of how to achieve it was transformed. The most real things in the transition were not political structures but symbols, memories, and fears. The battle was not just for political power but for the narrative of the country. What was being built was trust and a new national identity.</div>
+      </div>
+      <div class="prf-dim">
+        <div class="prf-dim-label">Authenticity</div>
+        <div class="prf-dim-title">The Necessary Performance</div>
+        <div class="prf-dim-text">For many years there was a great difference between internal and external selves. The world saw an unwavering symbol; inside was a man who missed his family, felt fear and doubt. True authenticity is not about having no fear — it is about acting in service of your values despite your fear. During negotiations, the mask of absolute certainty was not inauthenticity; it was the role required to achieve the authentic goal. The tension between internal feelings and external role was real, but resolved by a higher purpose.</div>
+      </div>
+      <div class="prf-dim">
+        <div class="prf-dim-label">Assembly History</div>
+        <div class="prf-dim-title">Robben Island as University</div>
+        <div class="prf-dim-text">Rooted in Thembu royal lineage — but true formation began in struggle. Early years as a lawyer defending apartheid victims, organizing the Defiance Campaign, founding MK. Then 27 years on Robben Island, which stripped away the inessential and taught the discipline of hope and the strategy of patience. Transformed from militant activist into a leader who understood that the only path to lasting future was through reconciliation. Robben Island was not just suffering — it was formation at the most extreme scale available.</div>
+      </div>
+      <div class="prf-dim">
+        <div class="prf-dim-label">Forward Pull</div>
+        <div class="prf-dim-title">The Rainbow Nation</div>
+        <div class="prf-dim-text">An unwavering vision of a democratic, non-racial South Africa — not a vague dream but a concrete political and moral goal held through the darkest years. The Rainbow Nation, where all people could live together in peace, created a powerful present constraint: every action, every negotiation, every public statement had to be measured against whether it brought that future closer. This compelled reconciliation over revenge, unity over division, forgiveness over bitterness — consistently, when each was the harder path.</div>
+      </div>
+    </div>
+
+    <div class="card card-blue" style="margin-top:1.5rem">
+      <h4>The PRF Feature That Made the Synthesis Possible</h4>
+      <p>The most unusual thing about Mandela's PRF is the explicit acknowledgment of the internal/external gap — the "necessary performance." Most people either experience their public role as authentically continuous with their private self, or they feel the gap as a form of hypocrisy. Mandela developed a third position: the gap is real, but the performance is in service of the deeper authentic self. The mask is not the lie; it is what the authentic purpose requires.</p>
+      <p>This is the PRF configuration that makes the synthesis possible. The Commonwealth of One requires that your deepest identity be non-negotiable — but it does not require that every surface presentation match it in every situation. The Adaptive Moral Commonwealth requires that you can work with people whose motivations you do not share — which requires the ability to hold your own PRF while projecting what different stakeholders need to see. Mandela's identity was intact. His presentation was strategic. The distinction between them is the synthesis capacity.</p>
+    </div>
+  </div>
+
+  <!-- ══ TIMELINE ══ -->
+  <div id="tab-timeline" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>Timeline: Four Phases of Transformation</h2>
+    <div class="timeline">
+      <div class="tl-event">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-date">1918–1944 — Formation: Royal Lineage to Law</div>
+          <p>Born into Thembu royal family in Mvezo, Eastern Cape. Educated at Fort Hare University — the Harvard of Black South Africa. Moves to Johannesburg, studies law. Joins ANC Youth League 1944, cofounds with Oliver Tambo the first Black law firm in South Africa. Early identity: nationalist, committed to non-violent resistance, ambitious.</p>
+        </div>
+      </div>
+      <div class="tl-event crisis">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-date">1948–1960 — Escalation: Apartheid Hardens</div>
+          <p>National Party wins 1948 election, begins systematic apartheid legislation. Mandela leads Defiance Campaign 1952, mass non-violent resistance. Treason Trial 1956–1961 (acquitted). Sharpeville Massacre 1960: 69 killed, ANC banned. Mandela goes underground — his assessment that non-violence is no longer viable in the face of state violence. Cofounds MK (Umkhonto we Sizwe), the armed wing, as sabotage campaign targeting infrastructure not people.</p>
+        </div>
+      </div>
+      <div class="tl-event prison">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-date">1964–1990 — Robben Island: The Long Formation</div>
+          <p><strong>27 years.</strong> Convicted at Rivonia Trial 1964, life sentence. Arrives Robben Island — hard labor in lime quarry, eyesight permanently damaged. Studies law, Afrikaans, the psychology and culture of his captors. Maintains ATCF: reads, debates, mentors younger prisoners, refuses early release offers that required renouncing violence without reciprocal government commitments. International pressure builds through the 1980s. Oliver Tambo runs the ANC in exile, builds the international network that functions as BioBond. The identity does not fragment — it deepens.</p>
+        </div>
+      </div>
+      <div class="tl-event victory">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-date">1990–1994 — Negotiation: The Shared Task</div>
+          <p><strong>Released February 11, 1990.</strong> CODESA negotiations begin — a constitutional multiparty process including ANC, National Party, Inkatha Freedom Party, and 17 other parties. Most dangerous moment: Chris Hani assassination April 1993. Mandela's televised address (not de Klerk's) prevents civil war. April 27, 1994: first democratic election. 19 million South Africans vote in lines stretching for miles. Mandela elected president with 62% of the vote.</p>
+        </div>
+      </div>
+      <div class="tl-event victory">
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <div class="tl-date">1994–1999 — Institution Building: Designing the Future</div>
+          <p>One term as president, voluntarily steps down 1999 — itself a structural statement about democratic norms. Truth and Reconciliation Commission established under Desmond Tutu: conditional amnesty for full disclosure of politically motivated crimes. Constitutional Court established. New constitution ratified 1996 — considered one of the most progressive in the world. Wore a Springbok jersey at the 1995 Rugby World Cup final — a deliberate PRF act of communicating to Afrikaner South Africans that the new country was also for them.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NETWORK ══ -->
+  <div id="tab-network" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>The Network: Hub, Not Controller</h2>
+    <p>Mandela was the network hub — not the controller. This distinction is structural, not modest. A hub maintains vision and relationships; a controller directs and approves. The ANC network survived 27 years of Mandela's imprisonment precisely because it was not dependent on his presence in any single function. Different nodes had different capabilities that were irreplaceable and not interchangeable.</p>
+
+    <div class="network-grid">
+      <div class="net-card">
+        <div class="net-icon">✊</div>
+        <div class="net-name">Nelson Mandela</div>
+        <div class="net-role">MORAL AUTHORITY · STRATEGIC VISION · NEGOTIATION</div>
+        <div class="net-cap">Symbolic credibility built through 27 years' refusal to compromise. Strategic vision that saw negotiation as the viable path when others saw only victory or defeat. Ability to communicate simultaneously to ANC members, Afrikaner nationalists, international audiences, and white liberals in terms each recognized as addressed to them.</div>
+        <div class="net-contrib">Connected all parts of the movement. Enabled negotiation through unquestionable moral credentials that made compromise politically survivable for the ANC base.</div>
+      </div>
+      <div class="net-card">
+        <div class="net-icon">🌍</div>
+        <div class="net-name">Oliver Tambo</div>
+        <div class="net-role">INTERNATIONAL NETWORK · MOVEMENT CONTINUITY</div>
+        <div class="net-cap">Led the ANC in exile for three decades while Mandela was imprisoned. Built relationships with African governments, European social democrats, Soviet bloc, and international solidarity movements. Maintained the ANC's institutional existence as a recognized liberation movement. This is the BioBond that kept the network alive.</div>
+        <div class="net-contrib">Without Tambo's external network, Mandela's imprisonment would have been isolation rather than formation. The international pressure campaign was what eventually forced the Botha and de Klerk governments to negotiate.</div>
+      </div>
+      <div class="net-card">
+        <div class="net-icon">⛪</div>
+        <div class="net-name">Desmond Tutu</div>
+        <div class="net-role">RELIGIOUS MORAL AUTHORITY · RECONCILIATION ARCHITECTURE</div>
+        <div class="net-cap">Nobel Peace Prize 1984. Religious moral framework that could reach communities the ANC could not. Chaired the Truth and Reconciliation Commission — the specific institutional design that made coordinated post-apartheid processing of historical trauma possible for incompatible communities. Bridge-builder between secular liberation theology and traditional Christian frameworks.</div>
+        <div class="net-contrib">Provided the moral architecture for the transition that went beyond political settlement to address what people actually needed to live alongside their former enemies.</div>
+      </div>
+      <div class="net-card">
+        <div class="net-icon">🏭</div>
+        <div class="net-name">Trade Unions (COSATU)</div>
+        <div class="net-role">MASS MOBILIZATION · ECONOMIC PRESSURE</div>
+        <div class="net-cap">Congress of South African Trade Unions, formed 1985. Organized workers across industries in a racially integrated labor federation. Strikes and work stoppages made the economy ungovernable. Township organizing alongside workplace organizing. Political education programs that built democratic practices from the ground up.</div>
+        <div class="net-contrib">Made the cost of continuing apartheid economically and operationally prohibitive. Provided the mass base without which elite negotiation would have had no legitimacy.</div>
+      </div>
+      <div class="net-card">
+        <div class="net-icon">⚖️</div>
+        <div class="net-name">Constitutional Legal Team</div>
+        <div class="net-role">CONSTITUTIONAL EXPERTISE · LEGAL FRAMEWORK</div>
+        <div class="net-cap">Lawyers who defended political prisoners (Bram Fischer, Arthur Chaskalson, others). Built the legal precedents and frameworks that would become the constitutional architecture of the new South Africa. Drafted the constitutional principles that constrained both the ANC and the National Party during negotiations. Established the Constitutional Court.</div>
+        <div class="net-contrib">Translated political aspirations into enforceable constitutional architecture. Made the democratic settlement durable beyond any individual leader's life.</div>
+      </div>
+      <div class="net-card">
+        <div class="net-icon">⚔️</div>
+        <div class="net-name">MK (Umkhonto we Sizwe)</div>
+        <div class="net-role">CREDIBLE THREAT · SECURITY CAPABILITY</div>
+        <div class="net-cap">Armed wing cofounded by Mandela, deliberately limited to sabotage of infrastructure not people. The credible threat of escalation toward violence was a negotiating tool more than an operational reality. Discipline in maintaining this distinction was itself a form of moral authority. Integration into South African National Defence Force after transition was a critical negotiated outcome.</div>
+        <div class="net-contrib">Made the regime recognize that the cost of continued suppression exceeded the cost of negotiation. The threat that did not have to be fully executed is often more powerful than the threat that is.</div>
+      </div>
+    </div>
+
+    <div class="card card-gold" style="margin-top:1.5rem">
+      <h4>Network Structure vs. Command Structure</h4>
+      <p>The most important structural feature of this network is that Mandela did not and could not direct it from Robben Island. Oliver Tambo ran the ANC in exile. Tutu ran the religious resistance. COSATU ran the labor movement. The legal team built constitutional frameworks. MK operated with significant autonomy. Each node had its own leadership, its own strategies, its own relationships with different external actors.</p>
+      <p>This is not organizational weakness. It is organizational resilience. Any node that the apartheid regime neutralized could not bring down the network. And when Mandela was released, the different nodes were already functioning — he arrived as the hub that connected what already existed, not as the leader whose vision everything else was waiting to implement.</p>
+    </div>
+  </div>
+
+  <!-- ══ TRC ══ -->
+  <div id="tab-trc" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>The Truth and Reconciliation Commission as Structural Design</h2>
+    <p>The TRC was not just a policy choice. It was a structural design solution to the most extreme version of the coordination problem this course has been building toward: how do you get people who have been systematically torturing, killing, and traumatizing each other to share a country and a constitutional democracy?</p>
+    <p>The TRC succeeded — imperfectly but durably — because it was designed around functional equivalence. Different communities participated for completely incompatible reasons. Every reason was genuine. The shared task advanced regardless of motivation.</p>
+
+    <table class="trc-table">
+      <thead><tr><th>Participant Group</th><th>Why They Participated</th><th>What They Needed</th><th>What the TRC Provided</th><th>Moral Foundation</th></tr></thead>
+      <tbody>
+        <tr><td>Victims' families</td><td>Knowing what happened to their loved ones</td><td>Truth, acknowledgment, the names of perpetrators</td><td>Public testimony with legal compulsion on perpetrators to disclose</td><td>Care/Harm</td></tr>
+        <tr><td>ANC members seeking amnesty</td><td>Legal protection, clearing conscience</td><td>Amnesty, acknowledgment that their acts were politically motivated</td><td>Conditional amnesty contingent on full public disclosure</td><td>Fairness + Liberty</td></tr>
+        <tr><td>Apartheid security forces</td><td>Legal protection, avoiding prosecution</td><td>Amnesty from criminal liability for disclosed acts</td><td>Same conditional amnesty — all must disclose fully, regardless of side</td><td>Authority + Fairness</td></tr>
+        <tr><td>Church and religious communities</td><td>Theological reconciliation, healing of the nation's soul</td><td>Ritual acknowledgment, public repentance, structural forgiveness</td><td>Public testimony as a form of communal truth-telling analogous to confession</td><td>Purity/Sanctity + Care</td></tr>
+        <tr><td>International community</td><td>Demonstrating peaceful transition was possible</td><td>A model that other post-conflict nations could use</td><td>A documented, legally structured process that could be exported</td><td>Fairness + empirical precedent</td></tr>
+        <tr><td>Business/economic sector</td><td>Stability for investment and economic development</td><td>Resolution of political uncertainty, no revolution</td><td>A structured transition that did not redistribute wealth or nationalize industry</td><td>Liberty + economic order</td></tr>
+      </tbody>
+    </table>
+
+    <div class="card card-blue" style="margin-top:1rem">
+      <h4>What Made It Functional Equivalence Rather Than Compromise</h4>
+      <p>A compromise would have required each group to accept less than what they wanted — a negotiated middle position that nobody was fully satisfied with. The TRC was not a compromise between truth and amnesty. It made truth the condition of amnesty: you get legal protection precisely and only if you provide full public disclosure. These are not in tension; they are structurally linked.</p>
+      <p>Victims' families did not have to endorse amnesty to participate. Security forces did not have to express genuine remorse to participate (though many did). Religious communities did not have to accept that political criteria were sufficient for theological reconciliation to participate. The shared task — public testimony under oath — was concrete enough that incompatible motivations could advance it authentically.</p>
+      <p>This is Maathai's "one deed, many reasons" at the scale of 7,000+ formal hearings, 21,000 victims making statements, and 1,500 amnesty applications. The design made the shared task achievable regardless of why each participant was there.</p>
+    </div>
+
+    <div class="card card-gold">
+      <h4>The Limits the TRC Honestly Did Not Resolve</h4>
+      <p>The TRC was not successful in all dimensions, and the course would be dishonest to present it otherwise. Reparations were insufficient and delayed. Many perpetrators did not apply for amnesty and were never held accountable. Economic apartheid — land ownership, wealth distribution — was not addressed. The structural conditions that produced apartheid were partially reformed but not eliminated.</p>
+      <p>These limits are not evidence that the TRC failed. They are evidence of what functional equivalence can and cannot do. The shared task it was designed for — enabling different communities to occupy the same political space without civil war — it largely achieved. The shared tasks it was not designed for — economic justice, full accountability, structural transformation of wealth — it could not achieve, because those require different structural designs entirely. The lesson is not that the TRC was insufficient. It is that no single institutional design solves all coordination problems simultaneously. You need to know what problem your design is actually solving.</p>
+    </div>
+  </div>
+
+  <!-- ══ SIMULATION ══ -->
+  <div id="tab-simulation" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>UCP Simulation — Three Runs, Two Problems</h2>
+    <p>This app runs three simulations rather than two, because the Mandela case contains two structurally distinct problems. Runs 1 and 2 model identity resilience under maximum long-duration suppression — with and without the external network. Run 3 models the transition: the highest-friction worldview configuration in the suite, with the TRC as the concrete shared task.</p>
+
+    <div class="card card-blue">
+      <h4>What Each Run Models</h4>
+      <p><strong>Run 1 — Robben Island, No External Network:</strong> entropy 0.85, stress 0.72, community −0.85. 12 steps (each step represents roughly 2 years). Sacred_boundary dominant (the prisoners' identity resistance). No BioBond. Watch morphic suppression accumulate over steps — this is the simulation's account of what 27 years of sustained suppression does structurally.</p>
+      <p><strong>Run 2 — Robben Island with External Network (BioBond step 5):</strong> Same parameters. BioBond activates at step 5 — representing the intensification of Oliver Tambo's international campaign, the sanctions movement, the internal resistance of the 1980s. Watch λ Raw hold and morphic suppression contained relative to Run 1. This is the structural argument for why the network mattered — not sentiment, but measurable coordination capacity.</p>
+      <p><strong>Run 3 — The Transition (1990–1994):</strong> Completely different configuration. Lower entropy (0.52), diverse worldview distribution including role_order Afrikaner nationalists alongside ubuntu_relational ANC. All community and care blocks positive — the shared task (constitutional democracy) is active. High friction expected; OS2 Bridge should rise. This is Maathai's problem at national scale.</p>
+    </div>
+
+    <div class="run-tabs">
+      <button class="run-tab-btn active-run" id="btn-run1" onclick="selectRun('run1')">Run 1 — Robben Island</button>
+      <button class="run-tab-btn" id="btn-run2" onclick="selectRun('run2')">Run 2 — With Network</button>
+      <button class="run-tab-btn" id="btn-run3" onclick="selectRun('run3')">Run 3 — The Transition</button>
+    </div>
+
+    <div class="ucp-panel">
+      <h3>Mandela Simulation — <span id="run-label">Run 1: Robben Island, No External Network</span></h3>
+      <button class="ucp-run-btn" id="ucpRunBtn" onclick="runMandela()">▶ Run Simulation</button>
+      <div id="ucpResult" style="display:none">
+        <div class="ucp-metrics" id="ucpMetrics"></div>
+        <div id="ucpBars"></div>
+        <div class="ucp-narrative" id="ucpNarrative"></div>
+        <div class="next-run-prompt" id="nextRunPrompt">
+          <p id="nextRunText"></p>
+          <button id="nextRunBtn" onclick="nextRun()">▶ Run Next Simulation</button>
+        </div>
+      </div>
+      <div id="ucpError" class="ucp-error" style="display:none"></div>
+    </div>
+
+    <div id="compareBox" class="compare-box" style="display:none">
+      <strong style="color:#7fd8a8">Three-Run Comparison:</strong>
+      <div id="compareText" style="margin-top:.5rem"></div>
+    </div>
+
+    <div class="card card-warn" style="margin-top:1rem">
+      <h4>Reading the Three-Run Comparison</h4>
+      <p><strong>Run 1 vs Run 2 (the Hanna question at 27 years):</strong> The difference in λ Raw and morphic suppression between these runs is the simulation's measure of what Oliver Tambo's external network contributed to Mandela's identity resilience. His individual ATCF was exceptional — but the network was not incidental. It was structural.</p>
+      <p><strong>Run 3 (the Maathai question at national scale):</strong> Run 3 uses a completely different parameter set and produces different results from both prison runs. The OS2 Bridge should be higher than in the prison runs — not because entropy is lower (it's still 0.52) but because the shared task has been activated. High friction will persist because the worldview diversity is extreme. The insight: high friction does not prevent coordination when the shared task is concrete enough. The transition succeeded despite maximum worldview distance.</p>
+      <p><strong>The synthesis:</strong> Runs 1–2 are about individual identity under suppression. Run 3 is about network coordination across difference. Mandela needed both. The simulation shows why — structurally, not rhetorically.</p>
+    </div>
+  </div>
+
+  <!-- ══ TRANSFER ══ -->
+  <div id="tab-transfer" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <div class="transfer-header">
+      <div class="transfer-eyebrow">Synthesis & Transfer</div>
+      <div class="transfer-title">What This Life Means For Who You Are Becoming</div>
+      <div class="transfer-subtitle">Mandela's story is the trilogy's conclusion. This section connects what the three cases together have shown — and asks what it means for the specific arc of your own development.</div>
+    </div>
+
+    <!-- Block 1: PRF Reading -->
+    <div class="transfer-block">
+      <div class="transfer-block-header">
+        <span class="transfer-block-icon" id="prfIcon">✊</span>
+        <div>
+          <div class="transfer-block-title">Your PRF Reading of the Mandela Case</div>
+          <div class="transfer-block-subtitle" id="prfFrameworkLabel">Load your PRF-22 for a framework-specific reading</div>
+        </div>
+      </div>
+      <div id="prfReadingBox" style="padding:.875rem 1rem;border-radius:.4rem;background:var(--paper);border-left:3px solid var(--gold);margin-bottom:.75rem">
+        <div style="font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;font-weight:700;color:var(--gold-dark);margin-bottom:.4rem">What Your Framework Specifically Sees</div>
+        <div id="prfReadingText" style="font-size:.88rem;line-height:1.6;color:var(--ink)">Each ethical framework sees a different dimension of the Mandela case with particular clarity. A rights-based framework sees the systematic denial of equal personhood that apartheid enacted — and the constitutional architecture that restored it. A relational framework sees the ubuntu philosophy underlying his PRF — the fundamental interconnection of human dignity that made his forgiveness structurally necessary rather than sentimentally optional. A role-based framework sees the perversion of legitimate authority that apartheid represented — and the legitimacy that the transition restored through procedural accountability. A boundary/integrity framework sees what he refused to surrender through 27 years — and what the TRC's conditional amnesty designed into institutional form. A custodial framework sees the intergenerational inheritance he was building — a Rainbow Nation for those who would come after. Load your PRF-22 to see this case through your specific lens.</div>
+      </div>
+      <div class="transfer-prompt-label">What did your framework make immediately visible about this case that you might have missed otherwise?</div>
+      <textarea class="transfer-textarea" id="ta-prf" placeholder="Write here..." oninput="tSave('prf',this.value)"></textarea>
+      <div class="transfer-save-note" id="tsi-prf">✓ Saved</div>
+    </div>
+
+    <!-- Block 2: The Trilogy -->
+    <div class="transfer-block">
+      <div class="transfer-block-header">
+        <span class="transfer-block-icon">🔭</span>
+        <div>
+          <div class="transfer-block-title">The Trilogy: What Three Cases Together Reveal</div>
+          <div class="transfer-block-subtitle">Hanna · Maathai · Mandela — the complete arc</div>
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.65">These three cases were not chosen arbitrarily. They were chosen because together they demonstrate the complete structure of ethical life in institutional settings: what one person can do (Hanna), what a network can do (Maathai), and what happens when one person must hold both simultaneously at extreme scale (Mandela).</p>
+      <p style="color:var(--muted);font-size:.9rem;line-height:1.65">Hanna showed you that individual identity coherence is a thermodynamic achievement that requires structural support. Maathai showed you that network coordination across difference requires concrete shared tasks, not shared values. Mandela shows you that these are not separate capacities you alternate between — they are the same practice at different scales. The Identity Kernel that holds under 27 years of pressure is the Identity Kernel that can imagine the redeemable humanity in the people applying that pressure. You cannot have one without the other at the scale that matters.</p>
+      <div class="transfer-prompt-label">What does the complete trilogy reveal that no single case could show alone?</div>
+      <textarea class="transfer-textarea" id="ta-trilogy" placeholder="Write here..." oninput="tSave('trilogy',this.value)"></textarea>
+      <div class="transfer-save-note" id="tsi-trilogy">✓ Saved</div>
+    </div>
+
+    <!-- Block 3: SAGE -->
+    <div class="transfer-block">
+      <div class="transfer-block-header">
+        <span class="transfer-block-icon">🔬</span>
+        <div>
+          <div class="transfer-block-title">SAGE Capacity — What This Case Exercises</div>
+          <div class="transfer-block-subtitle">See · Analyze · Generate · Engage</div>
+        </div>
+      </div>
+      <div class="sage-cards">
+        <div class="sage-card" style="border-left-color:var(--ucp-sky)">
+          <div class="sage-card-label" style="color:var(--ucp-sky)">See</div>
+          <div class="sage-card-name">Seeing the network beneath the individual</div>
+          <div class="sage-card-reading">This case exercises See by requiring you to notice that Mandela's individual resilience was structurally supported by Oliver Tambo's network, the international sanctions campaign, and the movement he co-created before imprisonment. Can you see the network beneath every "individual" achievement you have studied?</div>
+        </div>
+        <div class="sage-card" style="border-left-color:var(--success)">
+          <div class="sage-card-label" style="color:var(--success)">Analyze</div>
+          <div class="sage-card-name">Understanding the necessary performance</div>
+          <div class="sage-card-reading">This case exercises Analyze through Mandela's "necessary performance" — the gap between his internal state and his external presentation. Can you distinguish between authentic performance in service of a deeper purpose, and inauthenticity? What criteria would you use?</div>
+        </div>
+        <div class="sage-card" style="border-left-color:var(--warn)">
+          <div class="sage-card-label" style="color:var(--warn)">Generate</div>
+          <div class="sage-card-name">Designing reconciliation structures</div>
+          <div class="sage-card-reading">This case exercises Generate through the TRC: a specific institutional design that solved a specific coordination problem without solving every problem. Can you identify a coordination problem in your current context and design a targeted structural solution for that specific problem — not all problems?</div>
+        </div>
+        <div class="sage-card" style="border-left-color:var(--danger)">
+          <div class="sage-card-label" style="color:var(--danger)">Engage</div>
+          <div class="sage-card-name">The 27-year commitment</div>
+          <div class="sage-card-reading">Engage is tested most directly by the sheer duration: 27 years of sustained commitment to an outcome he would not live to see if he died in prison. What does it mean to be committed to something whose timeline exceeds your ability to control outcomes? What is your equivalent of refusing early release?</div>
+        </div>
+      </div>
+      <div class="transfer-prompt-label">Which SAGE capacity does this case most directly challenge in you?</div>
+      <textarea class="transfer-textarea" id="ta-sage" placeholder="Write here..." oninput="tSave('sage',this.value)"></textarea>
+      <div class="transfer-save-note" id="tsi-sage">✓ Saved</div>
+    </div>
+
+    <!-- Block 4: ABCD -->
+    <div class="transfer-block">
+      <div class="transfer-block-header">
+        <span class="transfer-block-icon">🧭</span>
+        <div>
+          <div class="transfer-block-title">ABCD — The Mandela Dimensions</div>
+          <div class="transfer-block-subtitle">Agency · Beauty/Awe · Context · Dynamism</div>
+        </div>
+      </div>
+      <div class="abcd-grid">
+        <div class="abcd-card">
+          <div class="abcd-letter">A</div>
+          <div class="abcd-name">Agency</div>
+          <div class="abcd-text">His λ Raw held across 27 years in the simulation when BioBond was active. But his individual agency during imprisonment was dramatically constrained — hard labor, censored mail, controlled visits. He found agency in what he could control: his response to conditions, the choice not to hate, the ongoing education of himself and other prisoners. This is the Stoic insight made structurally precise: agency is the capacity to act within whatever range of action is available, not the capacity to act without constraint.</div>
+        </div>
+        <div class="abcd-card" style="border-top-color:var(--gold)">
+          <div class="abcd-letter" style="color:var(--gold-dark)">B</div>
+          <div class="abcd-name">Beauty / Awe</div>
+          <div class="abcd-text">The inaugural address, the Springbok jersey, the queues of voters stretching for miles on April 27, 1994 — these are among the most documented moments of collective awe in the twentieth century. People who were there report that they wept without knowing why. The beauty is not sentimental: it is the astonishment of a coordination problem being solved at a scale that everyone had been told was impossible.</div>
+        </div>
+        <div class="abcd-card" style="border-top-color:var(--success)">
+          <div class="abcd-letter" style="color:var(--success)">C</div>
+          <div class="abcd-name">Context</div>
+          <div class="abcd-text">His context was specific: post-colonial South Africa, Cold War geopolitics that shaped which forms of international solidarity were available, the specific economic vulnerabilities of the apartheid regime, the particular cultural dynamics of the Xhosa, Zulu, and Afrikaner communities he had to reach. Your context is different. What structural features of your specific situation — your profession, community, historical moment — shape which coordination problems you are positioned to address?</div>
+        </div>
+        <div class="abcd-card" style="border-top-color:var(--ucp-sky)">
+          <div class="abcd-letter" style="color:var(--ucp-sky)">D</div>
+          <div class="abcd-name">Dynamism</div>
+          <div class="abcd-text">27 years is not a linear trajectory. There are phases — building under suppression, mass mobilization, negotiation, institution building — each requiring different capabilities, different strategies, different tolerances for uncertainty. Dynamism asks: can you read which phase you are in, and apply the right capacity for that phase? The capacity that sustains you during building-under-suppression (patience, identity maintenance) is different from the capacity you need during negotiation (strategic performance, functional equivalence design).</div>
+        </div>
+      </div>
+      <div class="transfer-prompt-label">Which ABCD dimension does the Mandela case most activate for you right now, and why?</div>
+      <textarea class="transfer-textarea" id="ta-abcd" placeholder="Write here..." oninput="tSave('abcd',this.value)"></textarea>
+      <div class="transfer-save-note" id="tsi-abcd">✓ Saved</div>
+    </div>
+
+    <!-- Block 5: Growth Pathway -->
+    <div class="transfer-block">
+      <div class="transfer-block-header">
+        <span class="transfer-block-icon">🌱</span>
+        <div>
+          <div class="transfer-block-title">Your Growth Pathway</div>
+          <div class="transfer-block-subtitle" id="growthSubtitle">The trilogy's invitation for your own development</div>
+        </div>
+      </div>
+      <div id="growthContent">
+        <div class="growth-pathway">
+          <div class="growth-pathway-label">What the Trilogy Builds</div>
+          <div class="growth-pathway-text">Three cases, one developing capacity: the ability to hold individual identity coherence and network coordination simultaneously, under conditions designed to prevent both. This is not a skill you either have or don't. It is a structural capacity that develops through the same mechanism Mandela used — building the Identity Kernel depth and the network relationships before you need them, so that when the conditions test you, you have something to draw on.</div>
+        </div>
+        <div class="growth-pathway" style="border-color:var(--warn);background:var(--warn-light)">
+          <div class="growth-pathway-label" style="color:var(--warn)">Growing Edge</div>
+          <div class="growth-pathway-text">The most common growing edge revealed by this trilogy: most people are stronger at one than the other. Some have deep individual identity coherence but struggle with coordination across difference — they know who they are, but they cannot work with people who see the problem completely differently. Others are skilled at coordination and coalition-building but have not built the individual identity depth that allows them to maintain their own position under sustained institutional pressure. The trilogy reveals which is your developing edge.</div>
+          <div class="growth-pathway-invitation" id="growthInvitation">Specific invitation: Identify which of the three cases required the most from you — which was hardest to inhabit, which revealed the most discomfort. That is your growing edge. What would it mean to take one concrete step toward the capacity that case demands?</div>
+        </div>
+      </div>
+      <div class="transfer-prompt-label">Which of the three cases was hardest to inhabit, and what does that reveal about your growing edge?</div>
+      <textarea class="transfer-textarea" id="ta-growth" placeholder="Write here..." oninput="tSave('growth',this.value)"></textarea>
+      <div class="transfer-save-note" id="tsi-growth">✓ Saved</div>
+    </div>
+
+    <!-- Block 6: Investment -->
+    <div class="investment-block">
+      <div style="font-size:1.2rem;font-weight:700;margin-bottom:.75rem">The Investment You Made Across This Trilogy</div>
+      <div style="font-size:.88rem;opacity:.8;max-width:42rem;margin:0 auto 1.25rem;line-height:1.7">You have now spent real attention on three people who faced the most extreme versions of the ethical challenges this course is built around. You know what identity resilience looks like from the inside. You know what network coordination across radical worldview difference requires. You know what it looks like when one life holds both. None of that knowledge required what it cost them to acquire it. The course's final invitation is the one all three cases converge on: not "could you do what they did?" but "what would you need to build, starting now, so that the version of these challenges that appears in your life finds you more ready than you would otherwise have been?"</div>
+      <div class="transfer-prompt-label" style="color:rgba(255,255,255,.6);margin-top:1.25rem">Final reflection: What will you build, starting this week?</div>
+      <textarea class="transfer-textarea" id="ta-final" style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.2)" placeholder="The specific thing I will begin building..." oninput="tSave('final',this.value)"></textarea>
+      <div class="transfer-save-note" id="tsi-final" style="color:rgba(255,255,255,.7)">✓ Saved</div>
+    </div>
+  </div>
+
+  <!-- ══ JOURNAL ══ -->
+  <div id="tab-journal" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none">
+    <h2>Ethics Journal — Personal Exercises</h2>
+
+    <div class="exercise-box">
+      <h4>📝 Exercise 1: Your Necessary Performance</h4>
+      <p>Mandela distinguished between the mask (the calm, certain leader the negotiations required) and his authentic self (the man committed to a free South Africa). The mask was in service of the authentic goal — not a betrayal of it. Identify one role you play that involves a gap between your internal state and your external presentation. Is this gap in service of a deeper authentic purpose, or is it a form of inauthenticity? How would you know the difference?</p>
+      <textarea class="journal-textarea" id="jt-mask" placeholder="The gap I maintain: ...&#10;Whether it serves an authentic purpose: ...&#10;How I would know if it crossed into inauthenticity: ..." oninput="jSave('mask',this.value)"></textarea>
+    </div>
+
+    <div class="exercise-box">
+      <h4>🔗 Exercise 2: Your Robben Island Question</h4>
+      <p>The simulation shows that what sustained Mandela's identity over 27 years was not just individual character but the BioBond of Oliver Tambo's external network. What is your equivalent structural support — the relationships, institutions, and resources that would sustain your identity under conditions of sustained institutional pressure? And how fragile is that support?</p>
+      <textarea class="journal-textarea" id="jt-biobond" placeholder="My structural supports: ...&#10;How fragile they are: ...&#10;What I could do to strengthen them: ..." oninput="jSave('biobond',this.value)"></textarea>
+    </div>
+
+    <div class="exercise-box">
+      <h4>🤝 Exercise 3: Your TRC Design</h4>
+      <p>The TRC solved one specific coordination problem — enabling different communities to occupy the same political space — through a targeted structural design. It did not solve economic justice, full accountability, or wealth redistribution. Identify a coordination problem in your current life. Design a specific institutional structure for that specific problem. What is the shared task concrete enough to advance for incompatible motivations? What is the auditable outcome?</p>
+      <textarea class="journal-textarea" id="jt-trc" placeholder="The coordination problem: ...&#10;The shared task concrete enough for incompatible motivations: ...&#10;The auditable outcome: ..." oninput="jSave('trc',this.value)"></textarea>
+    </div>
+
+    <div class="exercise-box">
+      <h4>⏳ Exercise 4: Your 27-Year Commitment</h4>
+      <p>Mandela refused early release offers repeatedly — because accepting would have required renouncing commitments he was not prepared to renounce. The refusals were costly. They were also the acts that built the moral authority that made the transition possible. What is the commitment in your current life that you would not renounce even at significant personal cost? And what are you building now so that commitment has structural support when it is tested?</p>
+      <textarea class="journal-textarea" id="jt-commitment" placeholder="The commitment I would not renounce: ...&#10;What it has cost me to hold it so far: ...&#10;What structural support it currently has: ..." oninput="jSave('commitment',this.value)"></textarea>
+    </div>
+
+    <div class="exercise-box">
+      <h4>🌍 Exercise 5: Redeemable Humanity — The Hardest Case</h4>
+      <p>Mandela's belief that "our oppressors are also victims of an inhuman system" was not sentimentality. It was strategic analysis: you cannot build a lasting peace on the assumption that some people are simply incapable of change. Identify the person or group in your current life whose "redeemable humanity" is hardest for you to believe in. What would it mean — practically, structurally — to act as if it were true?</p>
+      <textarea class="journal-textarea" id="jt-humanity" placeholder="The person/group whose redeemability I struggle to believe: ...&#10;What acting as if it were true would practically require: ...&#10;What I would need to change in my approach: ..." oninput="jSave('humanity',this.value)"></textarea>
+    </div>
+
+    <div class="card card-gold" style="margin-top:1.5rem">
+      <h4>💾 Export Your Work</h4>
+      <div class="btn-row">
+        <button class="btn btn-export" onclick="exportJournal()">📥 Download All Responses</button>
+        <button class="btn btn-primary" onclick="copyJournal()">📋 Copy to Clipboard</button>
+        <button class="btn btn-danger" onclick="clearJournal()">🗑️ Clear All</button>
+      </div>
+      <p style="margin-top:.75rem;font-size:.85rem;color:var(--muted)">To submit to Canvas: download and upload, or copy and paste.</p>
+    </div>
+    <div id="exportPreview" style="display:none;margin-top:1.25rem;padding:1rem;background:var(--paper);border-radius:.5rem;border:1px solid var(--border)">
+      <pre id="exportContent" style="white-space:pre-wrap;font-family:'Courier New',monospace;font-size:.82rem;max-height:400px;overflow-y:auto"></pre>
+      <button class="btn btn-primary" onclick="document.getElementById('exportPreview').style.display='none'" style="margin-top:.75rem">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>Ethics Beyond Boundaries · Ethics Institute, Saint Petersburg College · Nelson Mandela — The Synthesis Case</footer>
+
+<script>
+// ── PRF Loader ────────────────────────────────────────────
+const PRF={
+  _fw:null,_tier:null,
+  FW:{
+    individual_rights:{name:'Individual / Rights-Based',icon:'⚖️',color:'#4a7fb5'},
+    relational_we:{name:'Relational / We-Centered',icon:'🤝',color:'#3a8a5c'},
+    hierarchical_role:{name:'Hierarchical / Role-Based',icon:'🏛️',color:'#8a6fb5'},
+    boundary_integrity:{name:'Boundary / Integrity-Centered',icon:'🛡️',color:'#c9a84c'},
+    custodial_stewardship:{name:'Custodial / Stewardship',icon:'🌱',color:'#4a9a7a'},
+  },
+  load(text){
+    try{
+      const p=JSON.parse(text);let f,a;
+      if(p.prf22?.moralFoundations){
+        const mf=p.prf22.moralFoundations,vals=p.prf22.values||{};
+        const z=x=>(x-3.0);
+        f={CareWeight:z(mf.Care||3),FairnessWeight:z(mf.Fairness||3),
+           BindingWeight:(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3,
+           IndividualizingWeight:(z(mf.Care||3)+z(mf.Fairness||3))/2,
+           Conservation:(z(mf.Authority||3)+z(mf.Purity||3))/2,
+           Openness:z(vals.Openness||3)};
+        const s=(5-((p.prf22.resilience||{}).ATCF||3))/4;
+        a={ConstraintSensitivity:s,DepletionSensitivity:s};
+      } else if(p.foundations&&p.atcf){f=p.foundations;a=p.atcf;
+      } else return{ok:false,error:'Unrecognised format'};
+      const sc={
+        individual_rights:0.40*f.FairnessWeight+0.30*f.IndividualizingWeight-0.30*f.BindingWeight,
+        relational_we:0.40*f.CareWeight+0.30*f.IndividualizingWeight-0.10*f.BindingWeight,
+        hierarchical_role:0.40*f.BindingWeight-0.20*f.Openness-0.10*f.Conservation,
+        boundary_integrity:0.30*f.BindingWeight+0.40*f.Conservation-0.10*f.Openness,
+        custodial_stewardship:0.30*f.Conservation+0.20*f.BindingWeight+0.05,
+      };
+      this._fw=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0][0];
+      const s=(a.ConstraintSensitivity+a.DepletionSensitivity)/2;
+      this._tier=s<0.20?'low':s<0.60?'medium':'high';
+      return{ok:true};
+    }catch(e){return{ok:false,error:e.message};}
+  },
+  isLoaded(){return this._fw!==null},
+  fw(){return this._fw},
+  fwName(){return this._fw?(this.FW[this._fw]?.name||''):''},
+  fwIcon(){return this._fw?(this.FW[this._fw]?.icon||''):''},
+  fwColor(){return this._fw?(this.FW[this._fw]?.color||'#C9A84C'):'#C9A84C'},
+  tier(){return this._tier},
+};
+
+document.getElementById('prfFileInput').addEventListener('change',function(){
+  const file=this.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const res=PRF.load(e.target.result);
+    const wrap=document.getElementById('prfStatusWrap');
+    if(res.ok){
+      wrap.innerHTML=`${PRF.fwIcon()} <strong style="color:${PRF.fwColor()}">${PRF.fwName()}</strong>`;
+      wrap.style.color=PRF.fwColor();
+      updatePRF();
+    } else {wrap.textContent=`Error: ${res.error}`;wrap.style.color='#f08080';}
+  };r.readAsText(file);
+});
+
+const PRF_READINGS={
+  individual_rights:{
+    reading:`Your rights-based framework sees the Mandela case as the most complete available demonstration of what epistemic and political rights violations look like at the institutional scale — and what restoring them requires. Apartheid was not merely an injustice to individuals; it was a structural denial of equal rational standing to an entire population, which the simulation models as a catastrophic suppression gap. The constitutional architecture of 1996 — which your framework is naturally calibrated to evaluate — was the specific instrument through which equal standing was formally restored. The TRC was not sufficient from your framework's perspective: the structural conditions that produced apartheid (economic inequality, land distribution) were not addressed. But it was targeted: it solved the specific coordination problem of enabling different communities to occupy shared political space without requiring prior agreement on the meaning of what had happened.`,
+    growth:`Rights-based frameworks excel at diagnosing violations and demanding equal standing. The growing edge in the Mandela case is the pragmatic dimension: the transition succeeded because rights advocates accepted a process that did not deliver full accountability (many perpetrators were never prosecuted) in exchange for a process that was achievable and stable. The question for your framework is not whether the TRC was just by rights criteria — it was not, fully. The question is whether a purely rights-based demand for full accountability would have produced a better or worse outcome for the actual rights of actual people in South Africa.`,
+    invitation:`Identify one current situation where you hold a rights-based position that is correct but that has failed to produce the coordination it demands. What would a TRC-style design look like — a concrete shared task that advances the rights claim through functional equivalence rather than through value-agreement?`
+  },
+  relational_we:{
+    reading:`Your relational framework hears the ubuntu philosophy in Mandela's PRF with immediate recognition: "I am because we are" is the ontological foundation of his belief in shared and redeemable humanity. The simulation's community block parameter — which in the transition run is strongly positive — models the relational condition that the negotiations required to work: the creation of a structural space in which different communities could begin to recognize each other's humanity even before they agreed on anything else. The TRC hearings were, from your framework, acts of mutual recognition at national scale: the perpetrator who disclosed and the victim who testified were not agreeing about the meaning of what happened — they were occupying the same relational space with shared acknowledgment that it mattered.`,
+    growth:`Your framework naturally sees what the reconciliation created at the relational level. The growing edge is the structural dimension: the relational repair the TRC enabled was not produced by individual acts of forgiveness or individual relationships being rebuilt. It was produced by an institutional design that created the structural conditions for relational repair to become possible at scale. The relational instinct may underweight how much the design contributed — and overweight how much individual goodwill alone could have achieved.`,
+    invitation:`In a current relational conflict — personal, professional, or community — identify what structural conditions would need to be in place for genuine mutual recognition to become possible. What is the equivalent of the TRC's conditional disclosure requirement: the concrete structural arrangement that creates the space for relational repair without requiring prior forgiveness?`
+  },
+  hierarchical_role:{
+    reading:`Your role-based framework sees the Mandela case as a study in what happens when legitimate authority is systematically perverted — and what it takes to restore it. The apartheid regime's authority was not legitimate because it served the interests only of a racial minority at the systematic expense of the majority. Mandela's moral authority was legitimate because it was built through demonstrated sacrifice in service of the shared constitutional goal. Your framework is calibrated to detect when authority is functioning as it should versus when it has inverted its own purpose. The transition succeeded in part because the formal transfer of authority — the election, the constitutional court, the voluntarily limited presidential term — was designed to establish the legitimacy of the new authority structure, not just to transfer power from one group to another.`,
+    growth:`Role-based frameworks excel at recognizing when authority is legitimate or perverted. The growing edge in this case is the patience dimension: Mandela spent 27 years building moral authority before he was in a position to exercise political authority. The hierarchical/role framework may be more comfortable with authority that is formally granted than with authority that is built through demonstrated sacrifice over decades. The Mandela model suggests these are not interchangeable.`,
+    invitation:`Identify one authority structure you operate within that you believe has failed its own stated purpose. What would it take to build the kind of alternative authority — through demonstrated competence and sacrifice — that could eventually replace or reform it? What is your first step in that 27-year process?`
+  },
+  boundary_integrity:{
+    reading:`Your boundary/integrity framework sees what Mandela refused to surrender with particular clarity: 27 years of refusals. The Botha government offered conditional release multiple times; Mandela's refusals were each a categorical assertion that the non-negotiable limits of his Identity Kernel could not be purchased through early release. Your framework makes these refusals immediately visible as integrity acts — and makes the cost of them comprehensible as the price of maintaining categorical limits. The TRC's conditional amnesty structure is also visible to your framework as a boundary design: it drew a categorical line between disclosed political acts (potentially protected) and undisclosed or non-political acts (not protected). The boundary was not infinitely negotiable; it was structurally defined.`,
+    growth:`Your framework makes you excellent at holding categorical limits and recognizing when others are doing the same. The growing edge in this case is the reconciliation dimension: Mandela's non-negotiable limits did not prevent him from imagining the redeemable humanity of those who had been trying to erase him. The boundary/integrity orientation may experience reconciliation as a violation of limits — as if forgiving perpetrators meant accepting what they did. The Mandela model shows that forgiveness and non-negotiable limits are not in conflict; they operate at different levels of the Identity Kernel.`,
+    invitation:`Identify one categorical limit you hold that has made coordination with someone or some group more difficult. Is the limit protecting something genuinely non-negotiable, or is it standing in for a practical disagreement that could be addressed through a shared task? How would you know the difference?`
+  },
+  custodial_stewardship:{
+    reading:`Your custodial framework sees what Mandela was building for those who would come after him with the greatest natural clarity of all five frameworks. The Rainbow Nation was explicitly a vision of the nation his grandchildren would inhabit — not just the political arrangements of 1994. Every structural choice — the constitutional court, the voluntary departure from the presidency after one term, the TRC — was a gift to future generations, designed to be more durable than any individual leader's life. The simulation's long steps model what your framework naturally attends to: the accumulation of structural effects over time. Run 1's morphic suppression building across 12 steps is not just a measure of Mandela's experience; it is a measure of what 27 years of systematic suppression deposits in the Identity Kernel of an entire generation.`,
+    growth:`Your framework gives you the strongest natural alignment with the transgenerational horizon that the Mandela case demands. The growing edge is the tactical dimension: sustaining commitment across decades while remaining tactically adaptive — knowing when patience is right and when decisive action is required, when the movement-building phase requires one capacity and the negotiation phase requires another. The custodial orientation may be more comfortable with the long horizon than with the moment-to-moment tactical flexibility that executing it requires.`,
+    invitation:`What is the institution, practice, or knowledge that you are most responsible for transmitting to those who come after you? What specific structural choices would you make this year to ensure that transmission is durable — designed to survive beyond your own involvement?`
+  }
+};
+
+function updatePRF(){
+  if(!PRF.isLoaded())return;
+  const fw=PRF.fw();const d=PRF_READINGS[fw];
+  document.getElementById('prfIcon').textContent=PRF.fwIcon();
+  document.getElementById('prfFrameworkLabel').textContent=`${PRF.fwName()} · ${PRF.tier()} ATCF sensitivity`;
+  document.getElementById('prfReadingBox').style.borderLeftColor=PRF.fwColor();
+  document.getElementById('prfReadingText').textContent=d.reading;
+  document.getElementById('growthSubtitle').textContent=`${PRF.fwIcon()} ${PRF.fwName()} pathway`;
+  document.getElementById('growthContent').innerHTML=`
+    <div class="growth-pathway">
+      <div class="growth-pathway-label" style="color:${PRF.fwColor()}">${PRF.fwIcon()} Your ${PRF.fwName()} — Strength in Context</div>
+      <div class="growth-pathway-text">${d.reading.split('.').slice(0,2).join('.')+'.'}</div>
+    </div>
+    <div class="growth-pathway" style="border-color:var(--warn);background:var(--warn-light)">
+      <div class="growth-pathway-label" style="color:var(--warn)">Growing Edge</div>
+      <div class="growth-pathway-text">${d.growth}</div>
+      <div class="growth-pathway-invitation">Specific invitation: ${d.invitation}</div>
+    </div>`;
+  document.getElementById('growthInvitation').textContent=d.invitation;
+}
+
+// ── Tabs ─────────────────────────────────────────────────
+function showTab(name,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>{p.style.display='none';p.classList.remove('active')});
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const pane=document.getElementById('tab-'+name);
+  pane.style.display='block';pane.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='transfer')loadTransferFields();
+  if(name==='journal')loadJournalFields();
+}
+
+// ── UCP Simulation ────────────────────────────────────────
+const BACKEND='https://ucp-backend-4dig.onrender.com';
+let _run='run1';let _results={};
+
+const RUN_CONFIGS={
+  run1:{
+    label:'Run 1: Robben Island — No External Network',
+    next:'run2',
+    nextLabel:'▶ Run 2 — With External Network (BioBond)',
+    nextPrompt:'Run 1 complete — now see what Oliver Tambo\'s external network changed structurally.',
+    scenario_name:'whistleblower',num_agents:16,steps:12,seed:42,
+    scenario_physics:{base_entropy:0.85,base_stress:0.72,
+      block_fields:{care:-0.3,fairness:-0.9,community:-0.85,boundary:0.80}},
+    worldview_distribution:{sacred_boundary:0.62,role_order:0.22,ubuntu_relational:0.08,liberal_individualist:0.05,indigenous_custodial:0.03},
+    evidence_distribution:{authority_weighted:0.65,tradition_weighted:0.20,empirical_calibrated:0.10,alternative_facts:0.05},
+  },
+  run2:{
+    label:'Run 2: Robben Island — With External Network',
+    next:'run3',
+    nextLabel:'▶ Run 3 — The Transition (1990–1994)',
+    nextPrompt:'Run 2 complete — now model the transition: the highest-friction configuration in the suite.',
+    scenario_name:'whistleblower',num_agents:16,steps:12,seed:42,
+    scenario_physics:{base_entropy:0.85,base_stress:0.72,
+      block_fields:{care:-0.3,fairness:-0.9,community:-0.85,boundary:0.80}},
+    worldview_distribution:{sacred_boundary:0.62,role_order:0.22,ubuntu_relational:0.08,liberal_individualist:0.05,indigenous_custodial:0.03},
+    evidence_distribution:{authority_weighted:0.65,tradition_weighted:0.20,empirical_calibrated:0.10,alternative_facts:0.05},
+    activate_biobond_at:5,
+  },
+  run3:{
+    label:'Run 3: The Transition — Shared Task Coordination',
+    next:null,
+    nextLabel:null,
+    nextPrompt:null,
+    scenario_name:'baseline',num_agents:18,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.52,base_stress:0.55,
+      block_fields:{care:0.40,fairness:0.50,community:0.45,boundary:0.30}},
+    worldview_distribution:{role_order:0.30,ubuntu_relational:0.28,sacred_boundary:0.22,liberal_individualist:0.15,indigenous_custodial:0.05},
+    evidence_distribution:{authority_weighted:0.30,empirical_calibrated:0.30,tradition_weighted:0.25,alternative_facts:0.15},
+  }
+};
+
+function selectRun(r){
+  _run=r;
+  document.querySelectorAll('.run-tab-btn').forEach(b=>b.classList.remove('active-run'));
+  document.getElementById('btn-'+r).classList.add('active-run');
+  document.getElementById('run-label').textContent=RUN_CONFIGS[r].label;
+  document.getElementById('ucpResult').style.display='none';
+  document.getElementById('ucpError').style.display='none';
+  document.getElementById('nextRunPrompt').style.display='none';
+}
+
+async function runMandela(){
+  const btn=document.getElementById('ucpRunBtn');
+  btn.disabled=true;btn.innerHTML='<span class="ucp-spinner"></span>Running...';
+  document.getElementById('ucpResult').style.display='none';
+  document.getElementById('ucpError').style.display='none';
+  const cfg={...RUN_CONFIGS[_run]};
+  // Remove UI-only keys
+  delete cfg.label;delete cfg.next;delete cfg.nextLabel;delete cfg.nextPrompt;
+  try{
+    const resp=await fetch(BACKEND+'/api/simulate/custom',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(cfg)
+    });
+    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+    const data=await resp.json();
+    _results[_run]=data;
+    renderRun(data);
+    if(Object.keys(_results).length===3)renderComparison();
+  }catch(e){
+    document.getElementById('ucpError').style.display='block';
+    document.getElementById('ucpError').textContent=`Error: ${e.message}. Backend may be starting — wait 30s and retry.`;
+  }
+  btn.disabled=false;btn.innerHTML='▶ Run Simulation';
+}
+
+function nextRun(){
+  const next=RUN_CONFIGS[_run].next;
+  if(!next)return;
+  selectRun(next);
+  runMandela();
+}
+
+function vc(v,hi=true){if(hi)return v>.60?'val-great':v>.40?'val-warn':'val-bad';return v<.30?'val-great':v<.55?'val-warn':'val-bad';}
+
+function renderRun(data){
+  const m=data.metrics||{};
+  const raw=m.lambda_raw||0,perc=m.lambda_perceived||0,fric=m.friction||0;
+  const os2=m.os2_synergy||0,bridge=m.os2_synergy_bridge??os2,morph=m.morphic_suppression||0;
+  const gap=raw-perc;const isRun3=_run==='run3';
+
+  document.getElementById('ucpMetrics').innerHTML=`
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Raw</div><div class="ucp-metric-value ${vc(raw)}">${raw.toFixed(3)}</div><div class="ucp-metric-phrase">${raw>.55?'Capacity intact':raw>.30?'Strained':'Collapsed'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Perceived</div><div class="ucp-metric-value ${vc(perc)}">${perc.toFixed(3)}</div><div class="ucp-metric-phrase">${perc>.55?'Voice intact':perc>.28?'Suppressed':'Absent'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Gap</div><div class="ucp-metric-value ${vc(gap,false)}">${(gap*100).toFixed(1)}%</div><div class="ucp-metric-phrase">${gap>.20?'Large':gap>.08?'Moderate':'Minimal'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">OS2 Bridge</div><div class="ucp-metric-value ${vc(bridge)}">${bridge.toFixed(3)}</div><div class="ucp-metric-phrase">${bridge>.50?'Converging':bridge>.30?'Partial':'Siloed'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Friction</div><div class="ucp-metric-value ${vc(fric,false)}">${fric.toFixed(3)}</div><div class="ucp-metric-phrase">Translation cost</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Morphic</div><div class="ucp-metric-value" style="color:#e879f9">${morph.toFixed(3)}</div><div class="ucp-metric-phrase">${morph>.12?'Building':morph>.05?'Emerging':_run==='run2'?'Contained':'Low'}</div></div>`;
+
+  const pct=v=>`${Math.round(v*100)}%`;
+  document.getElementById('ucpBars').innerHTML=`
+    <div style="margin:.75rem 0">
+      <div style="font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;opacity:.5;margin-bottom:.5rem">Key metrics — ${isRun3?'transition coordination':'long-duration suppression'}</div>
+      <div class="ucp-bar-row"><span class="ucp-bar-name">λ Raw</span><div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${pct(raw)}"></div></div><span class="ucp-bar-num">${raw.toFixed(2)}</span></div>
+      <div class="ucp-bar-row"><span class="ucp-bar-name">λ Perceived</span><div class="ucp-bar-track"><div class="ucp-bar-fill fill-perc" style="width:${pct(perc)}"></div></div><span class="ucp-bar-num">${perc.toFixed(2)}</span></div>
+      <div class="ucp-bar-row"><span class="ucp-bar-name">OS2 Bridge</span><div class="ucp-bar-track"><div class="ucp-bar-fill fill-bridge" style="width:${pct(bridge)}"></div></div><span class="ucp-bar-num">${bridge.toFixed(2)}</span></div>
+      <div class="ucp-bar-row"><span class="ucp-bar-name">Morphic</span><div class="ucp-bar-track"><div class="ucp-bar-fill fill-morph" style="width:${pct(morph)}"></div></div><span class="ucp-bar-num">${morph.toFixed(2)}</span></div>
+    </div>`;
+
+  const narratives={
+    run1:`Run 1 — Robben Island without external network: λ Raw = ${raw.toFixed(3)}, morphic suppression = ${morph.toFixed(3)}. At entropy 0.85 and stress 0.72, the Sapolsky gate is pushing most agents toward AUTOMATIC mode. The community block (−0.85) models the deliberate severing of prisoners from their relational networks. Over 12 steps, morphic suppression is accumulating — agents are learning to expect that their deliberate capacity will not reach decisions. This is the simulation's structural account of what 27 years of sustained isolation does beyond any individual step.`,
+    run2:`Run 2 — Robben Island with external network (BioBond step 5): λ Raw = ${raw.toFixed(3)}, morphic suppression = ${morph.toFixed(3)}. The BioBond activating at step 5 models the intensification of Oliver Tambo's international campaign, the sanctions movement, and the internal resistance of the 1980s. Compare λ Raw and morphic suppression with Run 1 to see the structural contribution of the network. The prison conditions are identical. What changed is the structural support — and the simulation predicts it made a measurable difference.`,
+    run3:`Run 3 — The transition (1990–1994): λ Raw = ${raw.toFixed(3)}, OS2 Bridge = ${bridge.toFixed(3)}, friction = ${fric.toFixed(3)}. This is a completely different configuration from Runs 1 and 2. Entropy is 0.52 — still high, but not at the maximum of the prison scenarios. All block fields are positive — the shared task (constitutional democracy) is being rewarded rather than suppressed. The worldview diversity is at its maximum in the suite: role_order Afrikaner nationalists alongside ubuntu_relational ANC alongside sacred_boundary religious communities. Friction will be high. That is expected. The question is whether the OS2 Bridge rises despite the friction — and whether it does more than in the prison runs.`
+  };
+
+  document.getElementById('ucpNarrative').textContent=narratives[_run];
+
+  const cfg=RUN_CONFIGS[_run];
+  const prompt=document.getElementById('nextRunPrompt');
+  if(cfg.next){
+    document.getElementById('nextRunText').textContent=cfg.nextPrompt;
+    document.getElementById('nextRunBtn').textContent=cfg.nextLabel;
+    prompt.style.display='block';
+  } else {prompt.style.display='none';}
+
+  document.getElementById('ucpResult').style.display='block';
+}
+
+function renderComparison(){
+  const r1=_results.run1?.metrics||{},r2=_results.run2?.metrics||{},r3=_results.run3?.metrics||{};
+  const morphDiff=((r1.morphic_suppression||0)-(r2.morphic_suppression||0));
+  const rawDiff=((r2.lambda_raw||0)-(r1.lambda_raw||0));
+  const bridgeDiff=((r3.os2_synergy_bridge||0)-((r1.os2_synergy_bridge||0)+(r2.os2_synergy_bridge||0))/2);
+  document.getElementById('compareText').innerHTML=`
+    <strong>Identity resilience (Runs 1 vs 2):</strong> λ Raw: ${(r1.lambda_raw||0).toFixed(3)} → ${(r2.lambda_raw||0).toFixed(3)} (BioBond added ${rawDiff>=0?'+':''}${rawDiff.toFixed(3)}). Morphic suppression: ${(r1.morphic_suppression||0).toFixed(3)} → ${(r2.morphic_suppression||0).toFixed(3)} (${morphDiff>=0?'contained by '+morphDiff.toFixed(3):'higher with network'}).<br>
+    <strong>Transition coordination (Run 3):</strong> OS2 Bridge = ${(r3.os2_synergy_bridge||0).toFixed(3)}, friction = ${(r3.friction||0).toFixed(3)}. ${(r3.os2_synergy_bridge||0)>(r2.os2_synergy_bridge||0)?'Bridge higher in transition than in prison runs — shared task is working despite maximum worldview distance.':'Both bridge values similar — run again with different seed to explore the stochastic variation.'}<br>
+    <em>${morphDiff>0.02?'The external network measurably contained morphic suppression — structural support is not optional, it is load-bearing.':'The pattern emerges clearly across runs: identical suppression conditions, different structural support, different coordination capacity outcomes.'}</em>`;
+  document.getElementById('compareBox').style.display='block';
+}
+
+// ── Transfer localStorage ─────────────────────────────────
+const TP='mandela_transfer_';
+function tSave(k,v){try{localStorage.setItem(TP+k,v);const s=document.getElementById('tsi-'+k);if(s){s.classList.add('show');setTimeout(()=>s.classList.remove('show'),2000);}}catch(e){}}
+function tLoad(k){try{return localStorage.getItem(TP+k)||'';}catch(e){return '';}}
+function loadTransferFields(){['prf','trilogy','sage','abcd','growth','final'].forEach(k=>{const el=document.getElementById('ta-'+k);if(el)el.value=tLoad(k);});}
+
+// ── Journal localStorage ──────────────────────────────────
+const JP='mandela_journal_';
+function jSave(k,v){try{localStorage.setItem(JP+k,v);}catch(e){}}
+function jLoad(k){try{return localStorage.getItem(JP+k)||'';}catch(e){return '';}}
+function loadJournalFields(){['mask','biobond','trc','commitment','humanity'].forEach(k=>{const el=document.getElementById('jt-'+k);if(el)el.value=jLoad(k);});}
+
+// ── Export ────────────────────────────────────────────────
+function buildExport(){
+  const d=new Date().toLocaleDateString();
+  return `NELSON MANDELA — SYNTHESIS CASE — ETHICS JOURNAL\nDate: ${d}\nStudent: [YOUR NAME]\n\n` +
+  `EXERCISE 1: NECESSARY PERFORMANCE\n${jLoad('mask')||'[not completed]'}\n\n` +
+  `EXERCISE 2: YOUR ROBBEN ISLAND QUESTION\n${jLoad('biobond')||'[not completed]'}\n\n` +
+  `EXERCISE 3: YOUR TRC DESIGN\n${jLoad('trc')||'[not completed]'}\n\n` +
+  `EXERCISE 4: YOUR 27-YEAR COMMITMENT\n${jLoad('commitment')||'[not completed]'}\n\n` +
+  `EXERCISE 5: REDEEMABLE HUMANITY\n${jLoad('humanity')||'[not completed]'}\n\n` +
+  `TRANSFER — PRF READING\n${tLoad('prf')||'[not completed]'}\n\n` +
+  `TRANSFER — THE TRILOGY\n${tLoad('trilogy')||'[not completed]'}\n\n` +
+  `TRANSFER — SAGE\n${tLoad('sage')||'[not completed]'}\n\n` +
+  `TRANSFER — ABCD\n${tLoad('abcd')||'[not completed]'}\n\n` +
+  `TRANSFER — GROWTH PATHWAY\n${tLoad('growth')||'[not completed]'}\n\n` +
+  `TRANSFER — FINAL REFLECTION\n${tLoad('final')||'[not completed]'}\n`;
+}
+function exportJournal(){
+  const txt=buildExport();
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='Mandela_SynthesisCase_Journal.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+function copyJournal(){
+  const txt=buildExport();
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>fallback(txt));
+  else fallback(txt);
+  document.getElementById('exportContent').textContent=txt;
+  document.getElementById('exportPreview').style.display='block';
+}
+function fallback(txt){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+}
+function clearJournal(){
+  if(!confirm('Clear all saved responses?'))return;
+  ['mask','biobond','trc','commitment','humanity'].forEach(k=>localStorage.removeItem(JP+k));
+  ['prf','trilogy','sage','abcd','growth','final'].forEach(k=>localStorage.removeItem(TP+k));
+  location.reload();
+}
+</script>
+</body>
+</html>
