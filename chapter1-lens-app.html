@@ -224,7 +224,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </nav>
 
   <!-- ═══ §1 THE NAIL CASE ═══ -->
-  <div id="tab-nail" class="tab-pane active glass fade-in" style="border-radius:.875rem;padding:2rem" role="tabpanel" aria-labelledby="tab-nail">
+  <div id="pane-nail" class="tab-pane active glass fade-in" style="border-radius:.875rem;padding:2rem" role="tabpanel" aria-labelledby="tab-nail">
     <h2>§1 — The Nail in the Boot</h2>
 
     <p>Before we look at any ethical theory, any philosophical framework, or any simulation, we need to understand something about how your mind works right now — before this chapter, before this course, before you had any of this vocabulary. This section uses one dramatic case to show you the most important thing Chapter 1 establishes.</p>
@@ -280,7 +280,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </div>
 
   <!-- ═══ §2 THE PREDICTIVE BRAIN ═══ -->
-  <div id="tab-brain" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-brain">
+  <div id="pane-brain" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-brain">
     <h2>§2 — The Predictive Brain</h2>
 
     <p>The nail case established the principle. This section names the mechanism precisely — because understanding the mechanism is what makes your PRF profile from Day 1 meaningful rather than just descriptive.</p>
@@ -365,7 +365,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </div>
 
   <!-- ═══ §3 YOUR PRF ═══ -->
-  <div id="tab-prf" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-prf">
+  <div id="pane-prf" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-prf">
     <h2>§3 — Your PRF as Generative Model</h2>
 
     <p>You now have the vocabulary to understand what your Day 1 PRF profile is describing — not philosophically, but cognitively. This section makes that connection precise.</p>
@@ -433,7 +433,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </div>
 
   <!-- ═══ §4 SAPOLSKY GATE ═══ -->
-  <div id="tab-sapo" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-sapo">
+  <div id="pane-sapo" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-sapo">
     <h2>§4 — The Sapolsky Gate</h2>
 
     <p>The predictive processing account of moral perception has an implication that is not abstract for most students in this course. It is immediate, personal, and urgent — because the capacity for active inference depends on neural hardware that is sensitive to conditions you inhabit every day.</p>
@@ -527,7 +527,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </div>
 
   <!-- ═══ §5 THE EXTENDED MIND ═══ -->
-  <div id="tab-mind" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-mind">
+  <div id="pane-mind" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-mind">
     <h2>§5 — The Extended Mind</h2>
 
     <p>The third mechanism is the one that turns individual cognitive science into ethical and institutional insight. It is Andy Clark's extended mind thesis — and it is why BioBond in the simulation is not a metaphor for emotional warmth but a technically precise term for a structural contribution to moral reasoning capacity.</p>
@@ -587,7 +587,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </div>
 
   <!-- ═══ §6 THE FOUR THEORIES ═══ -->
-  <div id="tab-four" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-four">
+  <div id="pane-four" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-four">
     <h2>§6 — Why the Four Theories Are Each Right — and Each Partial</h2>
 
     <p>We are now in a position to understand something about the four canonical ethical theories that the standard survey approach cannot reveal. Each theory is not just a philosophical framework. Each is the most precise available articulation of what one strongly configured predictive prior, developed by a philosopher of genius over a lifetime of active inference, produces as its fullest systematic expression.</p>
@@ -677,7 +677,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </div>
 
   <!-- ═══ §7 JOURNAL ═══ -->
-  <div id="tab-journal" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-journal">
+  <div id="pane-journal" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-journal">
     <h2>§7 — Chapter Journal & Looking Ahead</h2>
 
     <p>These are the five reflection questions from Chapter 1 that you should complete before moving to Chapter 2. The fifth question is your prediction for the Challenger simulation — the first applied test of the three mechanisms you have now studied.</p>
@@ -973,12 +973,11 @@ function analyseScaffolds(){
 // ── Tab navigation ────────────────────────────────────────
 function showTab(name, btn){
   TABS.forEach(t=>{
-    const pane=document.getElementById('tab-'+t);
-    const navBtn=document.getElementById('tab-'+t);
+    const pane=document.getElementById('pane-'+t);
     if(pane){pane.style.display='none';pane.classList.remove('active');}
   });
   document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
-  const pane=document.getElementById('tab-'+name);
+  const pane=document.getElementById('pane-'+name);
   if(pane){pane.style.display='block';pane.classList.add('active');}
   if(btn){btn.classList.add('active');btn.setAttribute('aria-selected','true');}
   // Render PRF section if navigating to it
