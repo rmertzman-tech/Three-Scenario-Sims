@@ -197,6 +197,29 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
   .tl-event{padding-left:50px}
   .tl-dot{left:8px}
 }
+
+/* Prediction Panel */
+.pred-panel{background:var(--ucp-navy,#1a2744);border:2px solid rgba(201,168,76,.35);border-radius:.875rem;padding:1.25rem;margin-bottom:1.25rem}
+.pred-stage{margin-bottom:1rem}
+.pred-stage:last-child{margin-bottom:0}
+.pred-stage-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.pred-stage-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;font-family:'Courier New',monospace;flex-shrink:0}
+.pred-stage-num.s1{background:rgba(201,168,76,.25);color:#C9A84C;border:1px solid rgba(201,168,76,.4)}
+.pred-stage-num.s2{background:rgba(74,127,181,.25);color:#7fb5e8;border:1px solid rgba(74,127,181,.4)}
+.pred-stage-num.s3{background:rgba(127,216,168,.25);color:#7fd8a8;border:1px solid rgba(127,216,168,.4)}
+.pred-stage-title{font-size:.78rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em}
+.pred-stage-title.s1{color:#C9A84C}
+.pred-stage-title.s2{color:#7fb5e8}
+.pred-stage-title.s3{color:#7fd8a8}
+.pred-prompt{font-size:.84rem;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:.5rem;font-style:italic}
+.pred-ta{width:100%;min-height:80px;padding:.65rem .75rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:.4rem;color:#fff;font-family:'Georgia',serif;font-size:.86rem;resize:vertical;transition:.2s}
+.pred-ta:focus{outline:none;border-color:rgba(201,168,76,.6);background:rgba(255,255,255,.1)}
+.pred-ta::placeholder{color:rgba(255,255,255,.3);font-style:italic}
+.pred-save{font-size:.7rem;font-family:'Courier New',monospace;color:rgba(127,216,168,.7);opacity:0;transition:opacity .3s;margin-top:.2rem;height:.95rem}
+.pred-save.show{opacity:1}
+.pred-stage-locked{opacity:.35;pointer-events:none}
+.pred-unlock-note{font-size:.75rem;color:rgba(255,255,255,.35);font-style:italic;margin-top:.3rem}
+
 </style>
 </head>
 <body>
@@ -600,6 +623,49 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-toggle-btn active-run" id="btn-no-biobond" onclick="selectRun('no-biobond')">Without Institutional Support</button>
       <button class="run-toggle-btn" id="btn-biobond" onclick="selectRun('biobond')">With Institutional Support (BioBond step 4)</button>
     </div>
+
+    <!-- ═══ PREDICTION PANEL ═══ -->
+    <div class="pred-panel" id="predPanel">
+      <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem">🔬 Prediction — Active Inference Practice</div>
+      
+      <div class="pred-stage" id="pred-stage-pred">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s1">1</div>
+          <div class="pred-stage-title s1">Before Running — Write Your Prediction</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-pred">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-pred"
+          placeholder="I predict that λ Raw will... and morphic suppression will... because my framework is most sensitive to..."
+          oninput="predSave('hanna','pred',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-pred">✓ Saved</div>
+        
+      </div>
+      <div class="pred-stage pred-stage-locked" id="pred-stage-gap">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s2">2</div>
+          <div class="pred-stage-title s2">After Results — Gap Analysis</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-gap">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-gap"
+          placeholder="The largest gap between my prediction and the result was... This reveals that my generative model expected..."
+          oninput="predSave('hanna','gap',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-gap">✓ Saved</div>
+        <div class="pred-unlock-note" id="unlock-note-gap">Complete Stage 1 first, then run the simulation.</div>
+      </div>
+      <div class="pred-stage pred-stage-locked" id="pred-stage-inhabit">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s3">3</div>
+          <div class="pred-stage-title s3">Inhabitation Bridge — You in This Structure</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-inhabit">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-inhabit"
+          placeholder="If I had inhabited this structure, the parameter hardest on my specific PRF would be... because my framework is calibrated to..."
+          oninput="predSave('hanna','inhabit',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-inhabit">✓ Saved</div>
+        <div class="pred-unlock-note" id="unlock-note-inhabit">Complete Stage 2 first.</div>
+      </div>
+    </div>
+
     <div class="ucp-panel">
       <h3>Captivity Simulation — <span id="run-label">No Institutional Support</span></h3>
       <button class="ucp-run-btn" id="ucpRunBtn" onclick="runHannaSimulation()">▶ Run Simulation</button>
@@ -1014,6 +1080,7 @@ let _results={};
 
 function selectRun(mode){
   _currentRun=mode;
+  predUpdatePrompts_hanna(mode);
   document.getElementById('btn-no-biobond').classList.toggle('active-run',mode==='no-biobond');
   document.getElementById('btn-biobond').classList.toggle('active-run',mode==='biobond');
   document.getElementById('run-label').textContent=mode==='no-biobond'?'No Institutional Support':'With Institutional Support (BioBond step 4)';
@@ -1226,7 +1293,8 @@ function buildExportText(){
   out+=`TRANSFER — ABCD\n${tLoad('abcd')||'[not completed]'}\n\n`;
   out+=`TRANSFER — WHAT I LEARNED\n${tLoad('learned')||'[not completed]'}\n\n`;
   out+=`TRANSFER — GROWTH PATHWAY\n${tLoad('growth')||'[not completed]'}\n\n`;
-  out+=`TRANSFER — FINAL REFLECTION\n${tLoad('final')||'[not completed]'}\n`;
+  out+=`TRANSFER — FINAL REFLECTION\n${tLoad('final')||'[not completed]'}\n` +
+  predBuildExport_hanna('run1') + predBuildExport_hanna('run2');
   return out;
 }
 function exportJournal(){
@@ -1264,9 +1332,134 @@ function clearJournal(){
 
 // ── On load ────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
+  predUpdatePrompts_hanna('run1');
   // Load transfer fields if on transfer tab (not normally active at load)
   // PRF readings update if PRF was previously loaded in this session
 });
+
+// ── Prediction Panel ──────────────────────────────────────────
+const PRED_PROMPTS_HANNA = {
+  "run1": {
+    "_default": "Before you run the simulation, form a specific prediction. The Hanna configuration has entropy 0.88, stress 0.72, and community block \u22120.85 \u2014 modelling 28 days of maximum isolation designed to destroy identity. What do you predict will happen to \u03bb Raw, morphic suppression, and the OS2 Bridge? Write your prediction precisely enough that you will know whether the simulation confirmed or disconfirmed it.",
+    "individual_rights": "Your rights-based framework is calibrated to detect suppression of equal standing and rational voice. The community block \u22120.85 models systematic silencing of the prisoner's testimony and institutional identity. What do you predict happens to \u03bb Raw (coordination capacity) and the suppression gap (\u03bb Raw \u2212 \u03bb Perceived) across the simulation steps? Will the gap widen, narrow, or hold? Write your prediction before running.",
+    "relational_we": "Your relational framework is most sensitive to severed connection networks. The community block \u22120.85 models the deliberate dismantling of every relational scaffold \u2014 family, congregation, colleagues, community. What do you predict happens to morphic suppression as those scaffolds are removed step by step? Does your framework predict collapse, partial resilience, or something else? Write before running.",
+    "hierarchical_role": "Your role-based framework is sensitive to illegitimate authority \u2014 authority that has inverted its own purpose. In this configuration, captors are exercising maximum institutional control with no legitimate mandate. What do you predict happens to the agents' coordination capacity when authority is this thoroughly perverted? Specifically: does \u03bb Raw collapse or find a floor? Write your prediction before running.",
+    "boundary_integrity": "Your boundary/integrity framework is most sensitive to what happens to non-negotiable limits under maximum pressure. Entropy 0.88, stress 0.72, community block \u22120.85 \u2014 this is the structure designed to make categorical refusal biologically unsustainable. What do you predict happens to morphic suppression and \u03bb Raw across 8 steps under these conditions? Does the Identity Kernel hold? Write your prediction precisely before running.",
+    "custodial": "Your custodial framework is sensitive to what institutional pressure does to the capacity to maintain what has been built and transmit what matters. With community block \u22120.85 severing every generational and communal connection: what do you predict happens to the agents' forward-pull orientation \u2014 their capacity to remain oriented toward what they are custodians of? Write your prediction before running."
+  },
+  "run2": {
+    "_default": "Run 2 adds BioBond \u2014 the Church mobilization that activated at step 4. The suppression conditions are identical to Run 1. Based on Run 1's results: what do you predict BioBond adds to \u03bb Raw and what does it do to morphic suppression? Write your specific prediction before running.",
+    "individual_rights": "Your rights-based framework is calibrated to detect suppression of equal standing and rational voice. The community block \u22120.85 models systematic silencing of the prisoner's testimony and institutional identity. What do you predict happens to \u03bb Raw (coordination capacity) and the suppression gap (\u03bb Raw \u2212 \u03bb Perceived) across the simulation steps? Will the gap widen, narrow, or hold? Write your prediction before running Run 2 (with BioBond).",
+    "relational_we": "Your relational framework is most sensitive to severed connection networks. The community block \u22120.85 models the deliberate dismantling of every relational scaffold \u2014 family, congregation, colleagues, community. What do you predict happens to morphic suppression as those scaffolds are removed step by step? Does your framework predict collapse, partial resilience, or something else? Write before running Run 2 (with BioBond).",
+    "hierarchical_role": "Your role-based framework is sensitive to illegitimate authority \u2014 authority that has inverted its own purpose. In this configuration, captors are exercising maximum institutional control with no legitimate mandate. What do you predict happens to the agents' coordination capacity when authority is this thoroughly perverted? Specifically: does \u03bb Raw collapse or find a floor? Write your prediction before running Run 2 (with BioBond).",
+    "boundary_integrity": "Your boundary/integrity framework is most sensitive to what happens to non-negotiable limits under maximum pressure. Entropy 0.88, stress 0.72, community block \u22120.85 \u2014 this is the structure designed to make categorical refusal biologically unsustainable. What do you predict happens to morphic suppression and \u03bb Raw across 8 steps under these conditions? Does the Identity Kernel hold? Write your prediction precisely before running Run 2 (with BioBond).",
+    "custodial": "Your custodial framework is sensitive to what institutional pressure does to the capacity to maintain what has been built and transmit what matters. With community block \u22120.85 severing every generational and communal connection: what do you predict happens to the agents' forward-pull orientation \u2014 their capacity to remain oriented toward what they are custodians of? Write your prediction before running Run 2 (with BioBond)."
+  }
+};
+
+const PRED_STAGE_CONFIGS_HANNA = {
+  pred: {
+    s2: "After you run the simulation, compare your prediction to the results. Which metric produced the largest gap between what you predicted and what the simulation showed? What does that gap reveal about what your generative model expected — but the structural configuration did not confirm?",
+    s3: "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which parameter would have been hardest on your specific generative model? Which cognitive scaffold would this structure have dismantled first for you personally?"
+  }
+};
+
+function predGetPrompt_hanna(runKey){
+  const map = PRED_PROMPTS_HANNA;
+  const prompts = map[runKey] || {};
+  let fw = 'unknown';
+  try{ fw = localStorage.getItem('d1_prf_fw') || localStorage.getItem('prf_framework') || 'unknown'; }catch(e){}
+  return prompts[fw] || prompts['_default'] || 'Before running the simulation, write your specific prediction about what it will show.';
+}
+
+function predUpdatePrompts_hanna(runKey){
+  const prompt = predGetPrompt_hanna(runKey);
+  const el = document.getElementById('pred-prompt-pred');
+  if(el) el.textContent = prompt;
+  // Load saved values
+  ['pred-pred', 'pred-gap', 'pred-inhabit'].forEach(k => {
+    const full = 'hanna_' + runKey + '_' + k;
+    const ta = document.getElementById('pred-ta-' + k.replace('pred-',''));
+    try{ if(ta) ta.value = localStorage.getItem(full) || ''; }catch(e){}
+  });
+  // Lock stage 2 and 3 if stage 1 is empty
+  predCheckLocks_hanna(runKey);
+}
+
+function predCheckLocks_hanna(runKey){
+  const s1val = (document.getElementById('pred-ta-pred')?.value||'').trim();
+  const s2val = (document.getElementById('pred-ta-gap')?.value||'').trim();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s2stage){
+    s2stage.classList.toggle('pred-stage-locked', s1val.length < 20);
+    const note2 = document.getElementById('unlock-note-gap');
+    if(note2) note2.style.display = s1val.length < 20 ? 'block' : 'none';
+  }
+  if(s3stage){
+    s3stage.classList.toggle('pred-stage-locked', s2val.length < 20);
+    const note3 = document.getElementById('unlock-note-inhabit');
+    if(note3) note3.style.display = s2val.length < 20 ? 'block' : 'none';
+  }
+}
+
+function predSave(appId, stageId, val){
+  const runKey = predGetRunKey_hanna();
+  const storageKey = appId + '_' + runKey + '_pred-' + stageId;
+  try{ localStorage.setItem(storageKey, val); }catch(e){}
+  const sv = document.getElementById('pred-sv-' + stageId);
+  if(sv){ sv.classList.add('show'); setTimeout(()=>sv.classList.remove('show'),2000); }
+  predCheckLocks_hanna(runKey);
+}
+
+function predUnlockStage2_hanna(){
+  // Called after simulation results render
+  const runKey = predGetRunKey_hanna();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const el2 = document.getElementById('pred-prompt-gap');
+  if(el2) el2.textContent = "Compare your prediction (Stage 1) to the simulation results. Which metric showed the largest gap between what you predicted and what the structure produced? What does that gap reveal about what your generative model expected — that the structural configuration did not confirm?";
+  const savedGap = (() => { try{ return localStorage.getItem('hanna_'+runKey+'_pred-gap')||''; }catch(e){return '';} })();
+  const taGap = document.getElementById('pred-ta-gap');
+  if(taGap && !taGap.value) taGap.value = savedGap;
+  if(s2stage) s2stage.classList.remove('pred-stage-locked');
+  const note2 = document.getElementById('unlock-note-gap');
+  if(note2) note2.style.display = 'none';
+  predCheckLocks_hanna(runKey);
+  // Scroll prediction panel into view gently
+  const panel = document.getElementById('predPanel');
+  if(panel) setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}), 800);
+}
+
+function predLoadInhabit_hanna(){
+  const runKey = predGetRunKey_hanna();
+  const el3 = document.getElementById('pred-prompt-inhabit');
+  if(el3) el3.textContent = "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which structural parameter would have been hardest on your generative model? Which cognitive scaffold would this configuration have dismantled first for you? How does your PRF's precision-weighting determine where the pressure hits hardest?";
+  const savedInh = (() => { try{ return localStorage.getItem('hanna_'+runKey+'_pred-inhabit')||''; }catch(e){return '';} })();
+  const taInh = document.getElementById('pred-ta-inhabit');
+  if(taInh && !taInh.value) taInh.value = savedInh;
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s3stage) s3stage.classList.remove('pred-stage-locked');
+  const note3 = document.getElementById('unlock-note-inhabit');
+  if(note3) note3.style.display = 'none';
+}
+
+function predBuildExport_hanna(runKey){
+  const get = k => { try{ return localStorage.getItem('hanna_'+runKey+'_pred-'+k)||'[not completed]'; }catch(e){return '[not completed]';} };
+  return '\n═══════════════════════\nPREDICTION PANEL — ' + runKey.toUpperCase() + '\n═══════════════════════\n' +
+    'Stage 1 — My Prediction:\n' + get('pred') + '\n\n' +
+    'Stage 2 — Gap Analysis:\n' + get('gap') + '\n\n' +
+    'Stage 3 — Inhabitation Bridge:\n' + get('inhabit') + '\n';
+}
+
+function predGetRunKey_hanna(){
+  // Hanna uses 'no-biobond' and 'biobond' as run modes
+  if(typeof _currentRun !== 'undefined'){
+    return _currentRun === 'no-biobond' ? 'run1' : 'run2';
+  }
+  const btn = document.getElementById('btn-no-biobond');
+  return (btn && btn.classList.contains('active-run')) ? 'run1' : 'run2';
+}
+
 </script>
 </body>
 </html>

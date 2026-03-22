@@ -187,6 +187,29 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
   .tl-dot{left:8px}
   .stat-row{grid-template-columns:1fr 1fr}
 }
+
+/* Prediction Panel */
+.pred-panel{background:var(--ucp-navy,#1a2744);border:2px solid rgba(201,168,76,.35);border-radius:.875rem;padding:1.25rem;margin-bottom:1.25rem}
+.pred-stage{margin-bottom:1rem}
+.pred-stage:last-child{margin-bottom:0}
+.pred-stage-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.pred-stage-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;font-family:'Courier New',monospace;flex-shrink:0}
+.pred-stage-num.s1{background:rgba(201,168,76,.25);color:#C9A84C;border:1px solid rgba(201,168,76,.4)}
+.pred-stage-num.s2{background:rgba(74,127,181,.25);color:#7fb5e8;border:1px solid rgba(74,127,181,.4)}
+.pred-stage-num.s3{background:rgba(127,216,168,.25);color:#7fd8a8;border:1px solid rgba(127,216,168,.4)}
+.pred-stage-title{font-size:.78rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em}
+.pred-stage-title.s1{color:#C9A84C}
+.pred-stage-title.s2{color:#7fb5e8}
+.pred-stage-title.s3{color:#7fd8a8}
+.pred-prompt{font-size:.84rem;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:.5rem;font-style:italic}
+.pred-ta{width:100%;min-height:80px;padding:.65rem .75rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:.4rem;color:#fff;font-family:'Georgia',serif;font-size:.86rem;resize:vertical;transition:.2s}
+.pred-ta:focus{outline:none;border-color:rgba(201,168,76,.6);background:rgba(255,255,255,.1)}
+.pred-ta::placeholder{color:rgba(255,255,255,.3);font-style:italic}
+.pred-save{font-size:.7rem;font-family:'Courier New',monospace;color:rgba(127,216,168,.7);opacity:0;transition:opacity .3s;margin-top:.2rem;height:.95rem}
+.pred-save.show{opacity:1}
+.pred-stage-locked{opacity:.35;pointer-events:none}
+.pred-unlock-note{font-size:.75rem;color:rgba(255,255,255,.35);font-style:italic;margin-top:.3rem}
+
 </style>
 </head>
 <body>
@@ -484,6 +507,49 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
     <div class="run-toggle">
       <button class="run-toggle-btn active-run" id="btn-phase1" onclick="selectPhase('phase1')">Phase 1 — Value-Agreement Attempt</button>
       <button class="run-toggle-btn" id="btn-phase2" onclick="selectPhase('phase2')">Phase 2 — Shared-Task Coordination</button>
+    </div>
+
+
+    <!-- ═══ PREDICTION PANEL ═══ -->
+    <div class="pred-panel" id="predPanel">
+      <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem">🔬 Prediction — Active Inference Practice</div>
+      
+      <div class="pred-stage" id="pred-stage-pred">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s1">1</div>
+          <div class="pred-stage-title s1">Before Running — Write Your Prediction</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-pred">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-pred"
+          placeholder="I predict that OS2 Bridge will... and morphic suppression will... because my framework is most sensitive to..."
+          oninput="predSave('maathai','pred',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-pred">✓ Saved</div>
+        
+      </div>
+      <div class="pred-stage pred-stage-locked" id="pred-stage-gap">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s2">2</div>
+          <div class="pred-stage-title s2">After Results — Gap Analysis</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-gap">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-gap"
+          placeholder="The largest gap between my prediction and the result was... This reveals that my generative model expected..."
+          oninput="predSave('maathai','gap',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-gap">✓ Saved</div>
+        <div class="pred-unlock-note" id="unlock-note-gap">Complete Stage 1 first, then run the simulation.</div>
+      </div>
+      <div class="pred-stage pred-stage-locked" id="pred-stage-inhabit">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s3">3</div>
+          <div class="pred-stage-title s3">Inhabitation Bridge — You in This Structure</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-inhabit">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-inhabit"
+          placeholder="If I were one of the five stakeholder groups, my PRF would be most aligned with... and the coordination challenge hardest for my framework would be..."
+          oninput="predSave('maathai','inhabit',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-inhabit">✓ Saved</div>
+        <div class="pred-unlock-note" id="unlock-note-inhabit">Complete Stage 2 first.</div>
+      </div>
     </div>
 
     <div class="ucp-panel">
@@ -856,6 +922,7 @@ let _results={};
 
 function selectPhase(phase){
   _currentPhase=phase;
+  predUpdatePrompts_maathai(phase);
   document.getElementById('btn-phase1').classList.toggle('active-run',phase==='phase1');
   document.getElementById('btn-phase2').classList.toggle('active-run',phase==='phase2');
   document.getElementById('phase-label').textContent=
@@ -1000,6 +1067,7 @@ function renderResult(data){
 
   document.getElementById('ucpNarrative').textContent=narrative;
   document.getElementById('ucpResult').style.display='block';
+  predUnlockStage2_maathai();
   // Show next-phase prompt after Phase 1, hide it after Phase 2
   const prompt = document.getElementById('nextPhasePrompt');
   if (prompt) prompt.style.display = _currentPhase === 'phase1' ? 'block' : 'none';
@@ -1168,6 +1236,125 @@ function renderSxS() {
   }
   document.getElementById('sxsBody').innerHTML = html;
 }
+
+// ── Prediction Panel ──────────────────────────────────────────
+const PRED_PROMPTS_MAATHAI = {
+  "phase1": {
+    "_default": "Phase 1 models the value-agreement attempt \u2014 five stakeholder groups with incompatible worldviews trying to coordinate by first reaching consensus on why trees matter. Entropy 0.65, stress 0.55, community block \u22120.60 \u2014 coordination is being attempted but the structural conditions are not favourable. What do you predict happens to the OS2 Bridge and morphic suppression? Write your specific prediction before running Phase 1.",
+    "individual_rights": "Your rights-based framework will immediately see the epistemic justice dimension: the five groups do not have equal standing as environmental authorities \u2014 traditional knowledge, scientific expertise, and religious authority are weighted differently. What do you predict Phase 1's value-agreement attempt produces for the OS2 Bridge when epistemic standing is unequal across groups? Write before running.",
+    "relational_we": "Your relational framework is most sensitive to whether the coordination attempt builds genuine mutual recognition or produces a surface agreement that leaves relational distance intact. What do you predict Phase 1's ubuntu-relational agents produce in terms of OS2 Bridge when they are required to agree on values before acting together? Does forced value-agreement build or damage the relational network? Write before running.",
+    "hierarchical_role": "Your role-based framework will see the authority question immediately: who has legitimate standing to define what the trees mean and why planting them matters? When role_order agents (30% of the population) encounter ubuntu_relational agents (28%) in a value-agreement process, what do you predict happens to coordination capacity? Write your prediction before running.",
+    "boundary_integrity": "Your boundary/integrity framework will notice that Phase 1 requires groups to reach value agreement \u2014 which means potentially compromising categorical commitments in order to find common ground. What do you predict happens to morphic suppression when agents with high boundary-integrity are asked to dilute their framework to achieve consensus? Write before running.",
+    "custodial": "Your custodial framework is sensitive to whether coordination serves the long-term stewardship of what matters, or produces short-term agreement that undermines sustainable practice. What do you predict Phase 1's value-agreement attempt produces for long-arc coordination capacity \u2014 OS2 Bridge across the full run? Write your prediction before running."
+  },
+  "phase2": {
+    "_default": "Phase 2 models the shared-task coordination \u2014 the same five groups, now organized around a concrete shared task (tree planting) rather than value agreement. Entropy 0.38, all block fields positive. Based on what Phase 1 produced, what do you now predict Phase 2 will show for OS2 Bridge and morphic suppression? Write before running.",
+    "individual_rights": "Phase 1 likely showed that value-agreement fails when epistemic standing is unequal. Phase 2 uses a concrete shared task instead \u2014 which bypasses the standing question. What do you predict happens to the OS2 Bridge when the shared task replaces value-consensus as the coordination mechanism? Does removing the standing requirement change the Bridge? Write before running.",
+    "relational_we": "Your relational framework predicts that shared action builds the mutual recognition that forced value-agreement cannot produce. With the concrete shared task now active and community block +0.80: what specific Bridge value do you predict Phase 2 produces compared to Phase 1? Write a number range before running.",
+    "hierarchical_role": "Phase 2 establishes Maathai's bootstrap authority \u2014 legitimacy through demonstrated competence in the shared task rather than through formal role assignment. Your role-based framework will want to know: does the OS2 Bridge rise when authority is earned through the task rather than assigned before it? Write your prediction before running.",
+    "boundary_integrity": "Phase 2 removes the value-compromise requirement. Groups can plant trees for their own reasons without diluting their framework. Your boundary/integrity framework predicts this should reduce morphic suppression relative to Phase 1 \u2014 because agents no longer face the suppression of their categorical commitments. Predict the morphic suppression value for Phase 2 relative to Phase 1. Write before running.",
+    "custodial": "The shared task \u2014 planting trees \u2014 is the most custodial possible act: something that produces its value across decades, for those who come after. Your custodial framework should feel most at home in Phase 2. What do you predict happens to the forward-pull orientation of custodial agents when the task is inherently transgenerational? Write before running."
+  }
+};
+
+const PRED_STAGE_CONFIGS_MAATHAI = {
+  pred: {
+    s2: "After you run the simulation, compare your prediction to the results. Which metric produced the largest gap between what you predicted and what the simulation showed? What does that gap reveal about what your generative model expected — but the structural configuration did not confirm?",
+    s3: "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which parameter would have been hardest on your specific generative model? Which cognitive scaffold would this structure have dismantled first for you personally?"
+  }
+};
+
+function predGetPrompt_maathai(runKey){
+  const map = PRED_PROMPTS_MAATHAI;
+  const prompts = map[runKey] || {};
+  let fw = 'unknown';
+  try{ fw = localStorage.getItem('d1_prf_fw') || localStorage.getItem('prf_framework') || 'unknown'; }catch(e){}
+  return prompts[fw] || prompts['_default'] || 'Before running the simulation, write your specific prediction about what it will show.';
+}
+
+function predUpdatePrompts_maathai(runKey){
+  const prompt = predGetPrompt_maathai(runKey);
+  const el = document.getElementById('pred-prompt-pred');
+  if(el) el.textContent = prompt;
+  // Load saved values
+  ['pred-pred', 'pred-gap', 'pred-inhabit'].forEach(k => {
+    const full = 'maathai_' + runKey + '_' + k;
+    const ta = document.getElementById('pred-ta-' + k.replace('pred-',''));
+    try{ if(ta) ta.value = localStorage.getItem(full) || ''; }catch(e){}
+  });
+  // Lock stage 2 and 3 if stage 1 is empty
+  predCheckLocks_maathai(runKey);
+}
+
+function predCheckLocks_maathai(runKey){
+  const s1val = (document.getElementById('pred-ta-pred')?.value||'').trim();
+  const s2val = (document.getElementById('pred-ta-gap')?.value||'').trim();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s2stage){
+    s2stage.classList.toggle('pred-stage-locked', s1val.length < 20);
+    const note2 = document.getElementById('unlock-note-gap');
+    if(note2) note2.style.display = s1val.length < 20 ? 'block' : 'none';
+  }
+  if(s3stage){
+    s3stage.classList.toggle('pred-stage-locked', s2val.length < 20);
+    const note3 = document.getElementById('unlock-note-inhabit');
+    if(note3) note3.style.display = s2val.length < 20 ? 'block' : 'none';
+  }
+}
+
+function predSave(appId, stageId, val){
+  const runKey = predGetRunKey_maathai();
+  const storageKey = appId + '_' + runKey + '_pred-' + stageId;
+  try{ localStorage.setItem(storageKey, val); }catch(e){}
+  const sv = document.getElementById('pred-sv-' + stageId);
+  if(sv){ sv.classList.add('show'); setTimeout(()=>sv.classList.remove('show'),2000); }
+  predCheckLocks_maathai(runKey);
+}
+
+function predUnlockStage2_maathai(){
+  // Called after simulation results render
+  const runKey = predGetRunKey_maathai();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const el2 = document.getElementById('pred-prompt-gap');
+  if(el2) el2.textContent = "Compare your prediction (Stage 1) to the simulation results. Which metric showed the largest gap between what you predicted and what the structure produced? What does that gap reveal about what your generative model expected — that the structural configuration did not confirm?";
+  const savedGap = (() => { try{ return localStorage.getItem('maathai_'+runKey+'_pred-gap')||''; }catch(e){return '';} })();
+  const taGap = document.getElementById('pred-ta-gap');
+  if(taGap && !taGap.value) taGap.value = savedGap;
+  if(s2stage) s2stage.classList.remove('pred-stage-locked');
+  const note2 = document.getElementById('unlock-note-gap');
+  if(note2) note2.style.display = 'none';
+  predCheckLocks_maathai(runKey);
+  // Scroll prediction panel into view gently
+  const panel = document.getElementById('predPanel');
+  if(panel) setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}), 800);
+}
+
+function predLoadInhabit_maathai(){
+  const runKey = predGetRunKey_maathai();
+  const el3 = document.getElementById('pred-prompt-inhabit');
+  if(el3) el3.textContent = "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which structural parameter would have been hardest on your generative model? Which cognitive scaffold would this configuration have dismantled first for you? How does your PRF's precision-weighting determine where the pressure hits hardest?";
+  const savedInh = (() => { try{ return localStorage.getItem('maathai_'+runKey+'_pred-inhabit')||''; }catch(e){return '';} })();
+  const taInh = document.getElementById('pred-ta-inhabit');
+  if(taInh && !taInh.value) taInh.value = savedInh;
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s3stage) s3stage.classList.remove('pred-stage-locked');
+  const note3 = document.getElementById('unlock-note-inhabit');
+  if(note3) note3.style.display = 'none';
+}
+
+function predBuildExport_maathai(runKey){
+  const get = k => { try{ return localStorage.getItem('maathai_'+runKey+'_pred-'+k)||'[not completed]'; }catch(e){return '[not completed]';} };
+  return '\n═══════════════════════\nPREDICTION PANEL — ' + runKey.toUpperCase() + '\n═══════════════════════\n' +
+    'Stage 1 — My Prediction:\n' + get('pred') + '\n\n' +
+    'Stage 2 — Gap Analysis:\n' + get('gap') + '\n\n' +
+    'Stage 3 — Inhabitation Bridge:\n' + get('inhabit') + '\n';
+}
+
+function predGetRunKey_maathai(){
+  return typeof _currentPhase !== 'undefined' ? _currentPhase : 'phase1';
+}
+
 </script>
 </body>
 </html>

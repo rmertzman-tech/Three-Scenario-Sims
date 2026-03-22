@@ -183,6 +183,29 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
   .timeline::before{left:16px}.tl-event{padding-left:50px}.tl-dot{left:8px}
   .run-tabs{flex-direction:column}
 }
+
+/* Prediction Panel */
+.pred-panel{background:var(--ucp-navy,#1a2744);border:2px solid rgba(201,168,76,.35);border-radius:.875rem;padding:1.25rem;margin-bottom:1.25rem}
+.pred-stage{margin-bottom:1rem}
+.pred-stage:last-child{margin-bottom:0}
+.pred-stage-header{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.pred-stage-num{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;font-family:'Courier New',monospace;flex-shrink:0}
+.pred-stage-num.s1{background:rgba(201,168,76,.25);color:#C9A84C;border:1px solid rgba(201,168,76,.4)}
+.pred-stage-num.s2{background:rgba(74,127,181,.25);color:#7fb5e8;border:1px solid rgba(74,127,181,.4)}
+.pred-stage-num.s3{background:rgba(127,216,168,.25);color:#7fd8a8;border:1px solid rgba(127,216,168,.4)}
+.pred-stage-title{font-size:.78rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em}
+.pred-stage-title.s1{color:#C9A84C}
+.pred-stage-title.s2{color:#7fb5e8}
+.pred-stage-title.s3{color:#7fd8a8}
+.pred-prompt{font-size:.84rem;color:rgba(255,255,255,.72);line-height:1.6;margin-bottom:.5rem;font-style:italic}
+.pred-ta{width:100%;min-height:80px;padding:.65rem .75rem;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:.4rem;color:#fff;font-family:'Georgia',serif;font-size:.86rem;resize:vertical;transition:.2s}
+.pred-ta:focus{outline:none;border-color:rgba(201,168,76,.6);background:rgba(255,255,255,.1)}
+.pred-ta::placeholder{color:rgba(255,255,255,.3);font-style:italic}
+.pred-save{font-size:.7rem;font-family:'Courier New',monospace;color:rgba(127,216,168,.7);opacity:0;transition:opacity .3s;margin-top:.2rem;height:.95rem}
+.pred-save.show{opacity:1}
+.pred-stage-locked{opacity:.35;pointer-events:none}
+.pred-unlock-note{font-size:.75rem;color:rgba(255,255,255,.35);font-style:italic;margin-top:.3rem}
+
 </style>
 </head>
 <body>
@@ -447,6 +470,49 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-tab-btn active-run" id="btn-run1" onclick="selectRun('run1')">Run 1 — Robben Island</button>
       <button class="run-tab-btn" id="btn-run2" onclick="selectRun('run2')">Run 2 — With Network</button>
       <button class="run-tab-btn" id="btn-run3" onclick="selectRun('run3')">Run 3 — The Transition</button>
+    </div>
+
+
+    <!-- ═══ PREDICTION PANEL ═══ -->
+    <div class="pred-panel" id="predPanel">
+      <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem">🔬 Prediction — Active Inference Practice</div>
+      
+      <div class="pred-stage" id="pred-stage-pred">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s1">1</div>
+          <div class="pred-stage-title s1">Before Running — Write Your Prediction</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-pred">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-pred"
+          placeholder="I predict that λ Raw will... OS2 Bridge will... morphic suppression will... because my PRF is most sensitive to..."
+          oninput="predSave('mandela','pred',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-pred">✓ Saved</div>
+        
+      </div>
+      <div class="pred-stage pred-stage-locked" id="pred-stage-gap">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s2">2</div>
+          <div class="pred-stage-title s2">After Results — Gap Analysis</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-gap">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-gap"
+          placeholder="The largest gap between my prediction and the result was... This reveals that my generative model expected..."
+          oninput="predSave('mandela','gap',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-gap">✓ Saved</div>
+        <div class="pred-unlock-note" id="unlock-note-gap">Complete Stage 1 first, then run the simulation.</div>
+      </div>
+      <div class="pred-stage pred-stage-locked" id="pred-stage-inhabit">
+        <div class="pred-stage-header">
+          <div class="pred-stage-num s3">3</div>
+          <div class="pred-stage-title s3">Inhabitation Bridge — You in This Structure</div>
+        </div>
+        <div class="pred-prompt" id="pred-prompt-inhabit">Loading...</div>
+        <textarea class="pred-ta" id="pred-ta-inhabit"
+          placeholder="If I had inhabited this structure with my specific PRF, the hardest parameter would be... because my framework is calibrated to detect..."
+          oninput="predSave('mandela','inhabit',this.value)"></textarea>
+        <div class="pred-save" id="pred-sv-inhabit">✓ Saved</div>
+        <div class="pred-unlock-note" id="unlock-note-inhabit">Complete Stage 2 first.</div>
+      </div>
     </div>
 
     <div class="ucp-panel">
@@ -867,6 +933,7 @@ const RUN_CONFIGS={
 
 function selectRun(r){
   _run=r;
+  predUpdatePrompts_mandela(r);
   document.querySelectorAll('.run-tab-btn').forEach(b=>b.classList.remove('active-run'));
   document.getElementById('btn-'+r).classList.add('active-run');
   document.getElementById('run-label').textContent=RUN_CONFIGS[r].label;
@@ -957,6 +1024,7 @@ function renderRun(data){
   } else {prompt.style.display='none';}
 
   document.getElementById('ucpResult').style.display='block';
+  predUnlockStage2_mandela();
   // Show external Run 3 prompt after Run 2; hide otherwise
   const ext3 = document.getElementById('run3ExternalPrompt');
   if (ext3) ext3.style.display = (_run === 'run2') ? 'block' : 'none';
@@ -1146,7 +1214,8 @@ function buildExport(){
   `TRANSFER — ABCD\n${tLoad('abcd')||'[not completed]'}\n\n` +
   `TRANSFER — GROWTH PATHWAY\n${tLoad('growth')||'[not completed]'}\n\n` +
   `TRANSFER — FINAL REFLECTION\n${tLoad('final')||'[not completed]'}\n` +
-  `\nEXERCISE 6: YOUR 7x7 CELL\n${jLoad('7x7')||'[not completed]'}\n`;
+  `\nEXERCISE 6: YOUR 7x7 CELL\n${jLoad('7x7')||'[not completed]'}\n` +
+  predBuildExport_mandela('run1') + predBuildExport_mandela('run2') + predBuildExport_mandela('run3');
 }
 function exportJournal(){
   const txt=buildExport();
@@ -1173,6 +1242,141 @@ function clearJournal(){
   ['prf','trilogy','sage','abcd','growth','final'].forEach(k=>localStorage.removeItem(TP+k));
   location.reload();
 }
+
+// ── Prediction Panel ──────────────────────────────────────────
+const PRED_PROMPTS_MANDELA = {
+  "run1": {
+    "_default": "Run 1 models Robben Island without external network support \u2014 entropy 0.88, stress 0.72, community block \u22120.85, 12 steps. Each step represents roughly two years. No BioBond. What do you predict happens to \u03bb Raw and morphic suppression across 12 steps of sustained maximum suppression? Write your prediction \u2014 including whether you think \u03bb Raw reaches zero \u2014 before running.",
+    "individual_rights": "27 years of imprisonment without trial review, without equal standing, without the rational voice that your framework treats as inviolable. Entropy 0.88, community \u22120.85, 12 steps. What do you predict the suppression gap (\u03bb Raw \u2212 \u03bb Perceived) looks like after 12 steps? Does it widen monotonically, or does it stabilize? Write before running.",
+    "relational_we": "Your relational framework is most sensitive to what community block \u22120.85 models: the systematic severing of every relational scaffold across 12 steps \u2014 roughly 24 years of accumulating isolation. What do you predict happens to morphic suppression when cognitive scaffolding is removed step by step across that duration? Does it accumulate linearly or accelerate? Write before running.",
+    "hierarchical_role": "The captors represent illegitimate authority at its most extreme \u2014 using institutional power to prevent the prisoner from exercising any legitimate role. Your role-based framework is sensitive to this inversion. What do you predict happens to agents' capacity to maintain role-based identity under 12 steps of authority-inversion? Write before running.",
+    "boundary_integrity": "Each of Mandela's refusals of conditional release was an assertion of non-negotiable limits under conditions designed to make those limits biologically unsustainable. Your boundary/integrity framework is directly calibrated to this question. Entropy 0.88, 12 steps, no BioBond: what do you predict happens to \u03bb Raw? Does it hold above zero? Does it find a floor? Write before running.",
+    "custodial": "Mandela was maintaining a custodial commitment to a nation that did not yet exist \u2014 across 12 steps representing 24 years of conditions designed to make that forward orientation impossible to sustain. Your custodial framework is most sensitive to what happens to transgenerational commitment under maximum sustained suppression. Write your prediction before running."
+  },
+  "run2": {
+    "_default": "Run 2 is identical to Run 1 in all suppression parameters \u2014 except BioBond activates at step 5, representing the intensification of Oliver Tambo's international network and the sanctions campaign. Based on Run 1's results: what do you predict BioBond adds to \u03bb Raw and what do you predict it does to morphic suppression accumulation? Write a specific prediction before running.",
+    "individual_rights": "Run 1 showed what happens without external network support. BioBond at step 5 restores a partial structural scaffold \u2014 not the full community, but the knowledge that the rights claim is being heard and acted on externally. What do you predict this adds to \u03bb Perceived specifically? Will the suppression gap narrow? Write before running.",
+    "relational_we": "Your relational framework predicts that even partial relational scaffolding should interrupt the accumulation of morphic suppression. BioBond at step 5: what specific reduction in morphic suppression do you predict relative to Run 1? Name a value range. Write before running.",
+    "hierarchical_role": "Tambo's network provided legitimacy \u2014 the ANC's international recognition was a form of authority that countered the captors' institutional authority. Your role-based framework predicts this matters structurally. What do you predict happens to coordination capacity when legitimate counter-authority becomes available through BioBond at step 5? Write before running.",
+    "boundary_integrity": "Run 1 showed whether the Identity Kernel's floor held without external support. Run 2 asks: does external structural support raise that floor? Your boundary/integrity framework is precisely calibrated to this question. Predict the \u03bb Raw difference between Run 1 and Run 2 before running.",
+    "custodial": "The international network confirmed that what Mandela was custodian of was real, recognised, and being transmitted beyond his cell. Your custodial framework predicts this should meaningfully affect the forward-pull orientation of the agents. What do you predict happens to coordination capacity when custodial continuity is externally confirmed? Write before running."
+  },
+  "run3": {
+  "_default": "Run 3 is a completely different structural problem \u2014 not suppression but coordination across maximum worldview diversity. Entropy 0.52, all blocks positive, five worldview types including Afrikaner nationalists alongside ANC members. This is Maathai's question at national scale. What do you predict Run 3 produces for OS2 Bridge and friction relative to the prison runs? Write before running.",
+  "individual_rights": "The transition required five groups with incompatible rights claims to share a constitutional democracy. Your framework sees the epistemic justice question at its most extreme scale. What do you predict the OS2 Bridge shows when equal constitutional standing is the shared task \u2014 despite maximum worldview distance? Write before running.",
+  "relational_we": "The TRC was, from your relational framework, mutual recognition at national scale \u2014 the ubuntu foundation applied to people who had been torturing and killing each other. What do you predict Run 3's OS2 Bridge shows when ubuntu-relational agents are 28% of the population alongside role-order Afrikaner nationalists at 30%? Write before running.",
+  "hierarchical_role": "The transition required the transfer of legitimate authority from one constitutional order to another \u2014 through procedural accountability rather than military victory. Your role-based framework is precisely calibrated to this question. What do you predict happens to OS2 Bridge when role_order agents participate in a process that transfers authority away from them? Write before running.",
+  "boundary_integrity": "The TRC's conditional amnesty required perpetrators to disclose fully \u2014 a categorical boundary designed into institutional form. Your boundary/integrity framework will want to see whether that categorical structure produces coordination or resistance. What do you predict happens to friction when a categorical boundary is the shared task's structural spine? Write before running.",
+  "custodial": "The transition was, at its core, a custodial act \u2014 Mandela designing institutions he would not need and would not live to see fully tested. Your custodial framework is most naturally aligned with this run. What do you predict Run 3 shows about whether custodial motivation produces higher coordination capacity than other motivations? Write before running."
+},
+  "run3": {
+    "_default": "Run 3 is a completely different structural problem \u2014 not suppression but coordination across maximum worldview diversity. Entropy 0.52, all blocks positive, five worldview types including Afrikaner nationalists alongside ANC members. This is Maathai's question at national scale. What do you predict Run 3 produces for OS2 Bridge and friction relative to the prison runs? Write before running.",
+    "individual_rights": "The transition required five groups with incompatible rights claims to share a constitutional democracy. Your framework sees the epistemic justice question at its most extreme scale. What do you predict the OS2 Bridge shows when equal constitutional standing is the shared task \u2014 despite maximum worldview distance? Write before running.",
+    "relational_we": "The TRC was, from your relational framework, mutual recognition at national scale \u2014 the ubuntu foundation applied to people who had been torturing and killing each other. What do you predict Run 3's OS2 Bridge shows when ubuntu-relational agents are 28% of the population alongside role-order Afrikaner nationalists at 30%? Write before running.",
+    "hierarchical_role": "The transition required the transfer of legitimate authority from one constitutional order to another \u2014 through procedural accountability rather than military victory. Your role-based framework is precisely calibrated to this question. What do you predict happens to OS2 Bridge when role_order agents participate in a process that transfers authority away from them? Write before running.",
+    "boundary_integrity": "The TRC's conditional amnesty required perpetrators to disclose fully \u2014 a categorical boundary designed into institutional form. Your boundary/integrity framework will want to see whether that categorical structure produces coordination or resistance. What do you predict happens to friction when a categorical boundary is the shared task's structural spine? Write before running.",
+    "custodial": "The transition was, at its core, a custodial act \u2014 Mandela designing institutions he would not need and would not live to see fully tested. Your custodial framework is most naturally aligned with this run. What do you predict Run 3 shows about whether custodial motivation produces higher coordination capacity than other motivations? Write before running."
+  }
+};
+
+const PRED_STAGE_CONFIGS_MANDELA = {
+  pred: {
+    s2: "After you run the simulation, compare your prediction to the results. Which metric produced the largest gap between what you predicted and what the simulation showed? What does that gap reveal about what your generative model expected — but the structural configuration did not confirm?",
+    s3: "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which parameter would have been hardest on your specific generative model? Which cognitive scaffold would this structure have dismantled first for you personally?"
+  }
+};
+
+function predGetPrompt_mandela(runKey){
+  const map = PRED_PROMPTS_MANDELA;
+  const prompts = map[runKey] || {};
+  let fw = 'unknown';
+  try{ fw = localStorage.getItem('d1_prf_fw') || localStorage.getItem('prf_framework') || 'unknown'; }catch(e){}
+  return prompts[fw] || prompts['_default'] || 'Before running the simulation, write your specific prediction about what it will show.';
+}
+
+function predUpdatePrompts_mandela(runKey){
+  const prompt = predGetPrompt_mandela(runKey);
+  const el = document.getElementById('pred-prompt-pred');
+  if(el) el.textContent = prompt;
+  // Load saved values
+  ['pred-pred', 'pred-gap', 'pred-inhabit'].forEach(k => {
+    const full = 'mandela_' + runKey + '_' + k;
+    const ta = document.getElementById('pred-ta-' + k.replace('pred-',''));
+    try{ if(ta) ta.value = localStorage.getItem(full) || ''; }catch(e){}
+  });
+  // Lock stage 2 and 3 if stage 1 is empty
+  predCheckLocks_mandela(runKey);
+}
+
+function predCheckLocks_mandela(runKey){
+  const s1val = (document.getElementById('pred-ta-pred')?.value||'').trim();
+  const s2val = (document.getElementById('pred-ta-gap')?.value||'').trim();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s2stage){
+    s2stage.classList.toggle('pred-stage-locked', s1val.length < 20);
+    const note2 = document.getElementById('unlock-note-gap');
+    if(note2) note2.style.display = s1val.length < 20 ? 'block' : 'none';
+  }
+  if(s3stage){
+    s3stage.classList.toggle('pred-stage-locked', s2val.length < 20);
+    const note3 = document.getElementById('unlock-note-inhabit');
+    if(note3) note3.style.display = s2val.length < 20 ? 'block' : 'none';
+  }
+}
+
+function predSave(appId, stageId, val){
+  const runKey = predGetRunKey_mandela();
+  const storageKey = appId + '_' + runKey + '_pred-' + stageId;
+  try{ localStorage.setItem(storageKey, val); }catch(e){}
+  const sv = document.getElementById('pred-sv-' + stageId);
+  if(sv){ sv.classList.add('show'); setTimeout(()=>sv.classList.remove('show'),2000); }
+  predCheckLocks_mandela(runKey);
+}
+
+function predUnlockStage2_mandela(){
+  // Called after simulation results render
+  const runKey = predGetRunKey_mandela();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const el2 = document.getElementById('pred-prompt-gap');
+  if(el2) el2.textContent = "Compare your prediction (Stage 1) to the simulation results. Which metric showed the largest gap between what you predicted and what the structure produced? What does that gap reveal about what your generative model expected — that the structural configuration did not confirm?";
+  const savedGap = (() => { try{ return localStorage.getItem('mandela_'+runKey+'_pred-gap')||''; }catch(e){return '';} })();
+  const taGap = document.getElementById('pred-ta-gap');
+  if(taGap && !taGap.value) taGap.value = savedGap;
+  if(s2stage) s2stage.classList.remove('pred-stage-locked');
+  const note2 = document.getElementById('unlock-note-gap');
+  if(note2) note2.style.display = 'none';
+  predCheckLocks_mandela(runKey);
+  // Scroll prediction panel into view gently
+  const panel = document.getElementById('predPanel');
+  if(panel) setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}), 800);
+}
+
+function predLoadInhabit_mandela(){
+  const runKey = predGetRunKey_mandela();
+  const el3 = document.getElementById('pred-prompt-inhabit');
+  if(el3) el3.textContent = "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which structural parameter would have been hardest on your generative model? Which cognitive scaffold would this configuration have dismantled first for you? How does your PRF's precision-weighting determine where the pressure hits hardest?";
+  const savedInh = (() => { try{ return localStorage.getItem('mandela_'+runKey+'_pred-inhabit')||''; }catch(e){return '';} })();
+  const taInh = document.getElementById('pred-ta-inhabit');
+  if(taInh && !taInh.value) taInh.value = savedInh;
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s3stage) s3stage.classList.remove('pred-stage-locked');
+  const note3 = document.getElementById('unlock-note-inhabit');
+  if(note3) note3.style.display = 'none';
+}
+
+function predBuildExport_mandela(runKey){
+  const get = k => { try{ return localStorage.getItem('mandela_'+runKey+'_pred-'+k)||'[not completed]'; }catch(e){return '[not completed]';} };
+  return '\n═══════════════════════\nPREDICTION PANEL — ' + runKey.toUpperCase() + '\n═══════════════════════\n' +
+    'Stage 1 — My Prediction:\n' + get('pred') + '\n\n' +
+    'Stage 2 — Gap Analysis:\n' + get('gap') + '\n\n' +
+    'Stage 3 — Inhabitation Bridge:\n' + get('inhabit') + '\n';
+}
+
+function predGetRunKey_mandela(){
+  return typeof _run !== 'undefined' ? _run : 'run1';
+}
+
 </script>
 </body>
 </html>
