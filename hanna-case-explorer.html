@@ -687,6 +687,16 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <h4>Run Both to Compare</h4>
       <p id="comparisonText"></p>
     </div>
+    <!-- ═══ SIDE-BY-SIDE COMPARISON PANEL ═══ -->
+    <div id="sxsPanel" style="margin-top:1.5rem">
+      <div style="background:var(--ucp-navy);border:1px solid rgba(201,168,76,.25);border-radius:.875rem;padding:1.25rem">
+        <div style="font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem">Side-by-Side Run Comparison</div>
+        <div id="sxsBody">
+          <div style="font-size:.84rem;color:rgba(255,255,255,.35);font-style:italic;text-align:center;padding:1.25rem 0">Run both simulations to populate the comparison.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="card card-warn" style="margin-top:1rem">
       <h4>Reading the Simulation Results</h4>
       <p><strong>λ Raw:</strong> In this extreme configuration, λ Raw measures whether the agents have any residual capacity for principled deliberation despite the environment. Under captivity conditions without support, this should be very low. With BioBond active, it should be meaningfully higher — modeling how institutional support (Church, community, faith infrastructure) maintains the conditions for deliberate agency.</p>
@@ -1227,6 +1237,7 @@ function renderUCPResult(data,biobond){
 
   document.getElementById('ucpResult').style.display='block';
   predUnlockStage2_hanna();
+  renderSxS(); // update comparison panel after every run
   // Show BioBond prompt after no-biobond run; hide after biobond run
   const bbPrompt = document.getElementById('biobondExternalPrompt');
   if(bbPrompt) bbPrompt.style.display = (_currentRun === 'no-biobond') ? 'block' : 'none';
@@ -1246,6 +1257,7 @@ function checkComparison(){
     Morphic suppression: without support (${(mNo.morphic_suppression||0).toFixed(3)}) vs with support (${(mYes.morphic_suppression||0).toFixed(3)}) — ${morphDiff>0.01?`BioBond reduced learned self-censorship by ${morphDiff.toFixed(3)}`:'small difference in this run'}.
     This directly models the structural claim: Bishop Saad's resilience was individual virtue <em>and</em> institutional support. Both contributed to the outcome.`;
   document.getElementById('comparisonNote').style.display='block';
+  renderSxS();
 }
 
 // ── ATCF sliders ───────────────────────────────────────────────
@@ -1483,6 +1495,86 @@ function predGetRunKey_hanna(){
   return (btn && btn.classList.contains('active-run')) ? 'run1' : 'run2';
 }
 
+
+// ── Side-by-Side Comparison ───────────────────────────────
+function renderSxS() {
+  const RUNS = ['no-biobond','biobond'];
+  const LABELS = {'no-biobond':'Without BioBond','biobond':'With BioBond (step 4)'};
+  const COLORS = {'no-biobond':'#f08080','biobond':'#7fd8a8'};
+  const METRICS = [
+    {key:'lambda_raw',          label:'λ Raw',         hi:true,  desc:'Coordination capacity available'},
+    {key:'lambda_perceived',    label:'λ Perceived',   hi:true,  desc:'Coordination reaching decisions'},
+    {key:'os2_synergy_bridge',  label:'OS2 Bridge',    hi:true,  desc:'Cross-worldview convergence'},
+    {key:'friction',            label:'Friction',      hi:false, desc:'Translation cost'},
+    {key:'morphic_suppression', label:'Morphic Supp.', hi:false, desc:'Accumulated learned self-censorship'},
+  ];
+  const gv = (run,key) => {
+    const m = _results[run]?.metrics || {};
+    return key==='os2_synergy_bridge' ? (m.os2_synergy_bridge??m.os2_synergy??0) : (m[key]||0);
+  };
+  const done = RUNS.filter(r => _results[r]);
+  if (!done.length) return;
+
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">`;
+  html += `<tr><td style="width:38%;padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em">Metric</td>`;
+  RUNS.forEach(r => {
+    const d = !!_results[r];
+    html += `<td style="width:31%;padding:.4rem .5rem;text-align:center">
+      <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${d?COLORS[r]:'rgba(255,255,255,.2)'}">${LABELS[r]}</div>
+    </td>`;
+  });
+  html += `</tr>`;
+
+  METRICS.forEach(m => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">`;
+    html += `<td style="padding:.5rem .6rem">
+      <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${m.label}</div>
+      <div style="font-size:.66rem;color:rgba(255,255,255,.32);margin-top:.1rem">${m.desc}</div>
+    </td>`;
+    RUNS.forEach(r => {
+      const d = !!_results[r];
+      const val = d ? gv(r, m.key) : null;
+      const pct = d ? Math.round(val*100) : 0;
+      const nc = d ? (m.hi?(val>.60?'#7fd8a8':val>.35?'#f5c842':'#f08080'):(val<.10?'#7fd8a8':val<.20?'#f5c842':'#f08080')) : 'rgba(255,255,255,.2)';
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (d) {
+        html += `<div style="font-size:1.12rem;font-weight:700;font-family:'Courier New',monospace;color:${nc};line-height:1.1">${val.toFixed(3)}</div>`;
+        html += `<div style="margin:.25rem auto 0;width:76%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${COLORS[r]};border-radius:3px;transition:width 1s ease"></div>
+        </div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table></div>`;
+
+  // Annotations — only when both runs complete
+  if (_results['no-biobond'] && _results['biobond']) {
+    const rawDiff = gv('biobond','lambda_raw') - gv('no-biobond','lambda_raw');
+    const morphDiff = gv('no-biobond','morphic_suppression') - gv('biobond','morphic_suppression');
+    const sign = v => v>=0?'+':'';
+    const anns = [
+      { color:'#7fd8a8', label:'λ Raw — What BioBond Added',
+        text:`Without BioBond: ${gv('no-biobond','lambda_raw').toFixed(3)} → With BioBond: ${gv('biobond','lambda_raw').toFixed(3)} (${sign(rawDiff)}${rawDiff.toFixed(3)}). ${rawDiff>0.02?'The Church mobilization provided structurally measurable support — not emotional encouragement but cognitive scaffolding that maintained coordination capacity under conditions designed to destroy it.':'Close values in this run — the structural difference appears more clearly in morphic suppression. Run again with a different seed to explore variation.'}`},
+      { color:'#f5c842', label:'Morphic Suppression — Learned Self-Censorship Contained',
+        text:`Without BioBond: ${gv('no-biobond','morphic_suppression').toFixed(3)} → With BioBond: ${gv('biobond','morphic_suppression').toFixed(3)}. ${morphDiff>0.01?'BioBond reduced accumulated learned self-censorship by '+morphDiff.toFixed(3)+' — the external network interrupted the build-up of the expectation that deliberate contribution will not reach outcomes.':'Similar morphic suppression across both runs — the accumulation is driven by the high entropy (0.88) which both runs share. The BioBond effect on λ Raw is the clearer signal here.'}`},
+      { color:'#C9A84C', label:'The Structural Argument',
+        text:`Bishop Saad\'s resilience was not purely individual virtue — it was individual virtue operating within a structure that provided external cognitive scaffolding. Andy Clark\'s extended mind thesis: the Church network was part of his cognitive system, not a supplement to it. Severing it (no-biobond) and restoring it (biobond) are structural changes, not personal ones. The simulation measures that structural difference.`}
+    ];
+    html += `<div style="margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem">`;
+    anns.forEach(a => {
+      html += `<div style="background:rgba(255,255,255,.05);border-left:3px solid ${a.color};border-radius:0 .4rem .4rem 0;padding:.65rem .875rem">
+        <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:${a.color};font-weight:700;margin-bottom:.22rem">${a.label}</div>
+        <div style="font-size:.83rem;color:rgba(255,255,255,.72);line-height:1.55">${a.text}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  document.getElementById('sxsBody').innerHTML = html;
+}
 </script>
 </body>
 </html>
