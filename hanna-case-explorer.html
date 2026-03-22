@@ -624,6 +624,12 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-toggle-btn" id="btn-biobond" onclick="selectRun('biobond')">With Institutional Support (BioBond step 4)</button>
     </div>
 
+    <!-- External BioBond prompt — appears after no-biobond run completes -->
+    <div id="biobondExternalPrompt" style="display:none;margin-top:.875rem;padding:.875rem 1.25rem;background:var(--gold-light);border:2px solid var(--gold);border-radius:.75rem;text-align:center">
+      <div style="font-size:.85rem;color:var(--gold-dark);margin-bottom:.55rem;font-weight:700;font-style:italic">Run 1 complete — now run With Institutional Support to see what the Church mobilization changed structurally.</div>
+      <button onclick="selectRun('biobond');runHannaSimulation();document.getElementById('biobondExternalPrompt').style.display='none'" style="padding:.6rem 1.5rem;border:none;border-radius:.4rem;background:var(--gold-dark);color:#fff;font-family:'Georgia',serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s" onmouseover="this.style.background='#1a2744'" onmouseout="this.style.background='var(--gold-dark)'">▶ Run With Institutional Support (BioBond)</button>
+    </div>
+
     <!-- ═══ PREDICTION PANEL ═══ -->
     <div class="pred-panel" id="predPanel">
       <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem">🔬 Prediction — Active Inference Practice</div>
@@ -1084,14 +1090,24 @@ function selectRun(mode){
   document.getElementById('btn-no-biobond').classList.toggle('active-run',mode==='no-biobond');
   document.getElementById('btn-biobond').classList.toggle('active-run',mode==='biobond');
   document.getElementById('run-label').textContent=mode==='no-biobond'?'No Institutional Support':'With Institutional Support (BioBond step 4)';
-  document.getElementById('ucpResult').style.display='none';
   document.getElementById('ucpError').style.display='none';
+  document.getElementById('biobondExternalPrompt').style.display='none';
+  // If this run has already completed, restore its results immediately
+  if(_results[mode]){
+    renderHannaResult(_results[mode]);
+    document.getElementById('ucpRunBtn').innerHTML='↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display='none';
+    document.getElementById('ucpRunBtn').innerHTML='▶ Run Simulation';
+  }
 }
 
 async function runHannaSimulation(){
   const btn=document.getElementById('ucpRunBtn');
   btn.disabled=true;
   btn.innerHTML='<span class="ucp-spinner"></span>Running simulation...';
+  const bbp = document.getElementById('biobondExternalPrompt');
+  if(bbp) bbp.style.display='none';
   document.getElementById('ucpResult').style.display='none';
   document.getElementById('ucpError').style.display='none';
 
@@ -1130,7 +1146,7 @@ async function runHannaSimulation(){
     document.getElementById('ucpError').textContent=`Simulation error: ${e.message}. The backend may be starting up — wait 30 seconds and try again.`;
   }
   btn.disabled=false;
-  btn.innerHTML='▶ Run Simulation';
+  btn.innerHTML=_results[_currentRun]?'↺ Re-run Simulation':'▶ Run Simulation';
 }
 
 function vc(v,higher=true){
@@ -1210,6 +1226,13 @@ function renderUCPResult(data,biobond){
   }
 
   document.getElementById('ucpResult').style.display='block';
+  predUnlockStage2_hanna();
+  // Show BioBond prompt after no-biobond run; hide after biobond run
+  const bbPrompt = document.getElementById('biobondExternalPrompt');
+  if(bbPrompt) bbPrompt.style.display = (_currentRun === 'no-biobond') ? 'block' : 'none';
+  // Update button label to re-run
+  const runBtn = document.getElementById('ucpRunBtn');
+  if(runBtn) runBtn.innerHTML = '↺ Re-run Simulation';
 }
 
 function checkComparison(){
