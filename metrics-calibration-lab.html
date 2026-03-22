@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metrics Calibration Lab — Ethics Beyond Boundaries</title>
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-light:#ccfbf1;--teal-mid:#14b8a6;
+  --amber:#f59e0b;--amber-dark:#d97706;--amber-light:#fef3c7;
+  --navy:#1a2744;--charcoal:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --success:#16a34a;--success-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --info:#3b82f6;--info-light:#dbeafe;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(135deg,#0d5e57 0%,#1a2744 60%,#0f766e 100%);background-attachment:fixed;min-height:100vh;color:var(--charcoal);line-height:1.65;padding-bottom:3rem}
+.glass{background:rgba(255,255,255,.97);backdrop-filter:blur(10px)}
+.glass-dark{background:rgba(15,118,110,.95);backdrop-filter:blur(10px);color:#fff}
+.fade-in{animation:fadeIn .6s ease-out both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes reveal{from{opacity:0;transform:scaleY(.95)}to{opacity:1;transform:none}}
+.reveal-anim{animation:reveal .5s ease-out}
+
+/* ── Header ── */
+header{position:sticky;top:0;z-index:50;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.header-inner{max-width:72rem;margin:0 auto;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.header-titles h1{font-size:1.4rem;font-weight:700;margin-bottom:.15rem}
+.header-titles p{font-size:.8rem;opacity:.65;font-style:italic}
+.overall-progress{display:flex;align-items:center;gap:.75rem}
+.op-label{font-size:.75rem;font-family:'Courier New',monospace;opacity:.65}
+.op-track{width:160px;height:8px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden}
+.op-fill{height:100%;background:var(--amber);border-radius:4px;transition:width .5s ease}
+.op-frac{font-size:.75rem;font-family:'Courier New',monospace;color:var(--amber)}
+
+/* ── Page ── */
+.page{max-width:72rem;margin:2rem auto;padding:0 1rem}
+
+/* ── Welcome ── */
+.welcome-card{background:rgba(255,255,255,.97);border-radius:.875rem;padding:2.5rem;margin-bottom:2rem;box-shadow:0 4px 24px rgba(0,0,0,.12)}
+.welcome-card h2{color:var(--teal-dark);font-size:1.75rem;margin-bottom:1rem;border-bottom:3px solid var(--teal-mid);padding-bottom:.6rem}
+.metric-pill{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .8rem;border-radius:2rem;font-size:.8rem;font-family:'Courier New',monospace;font-weight:700;margin:.2rem;cursor:pointer;border:2px solid transparent;transition:.2s}
+.metric-pill:hover{transform:translateY(-1px)}
+.pill-raw{background:#dbeafe;color:#1e3a8a;border-color:#93c5fd}
+.pill-perc{background:#dcfce7;color:#166534;border-color:#86efac}
+.pill-gap{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+.pill-morph{background:#fce7f3;color:#9d174d;border-color:#f9a8d4}
+.pill-fid{background:#ede9fe;color:#4c1d95;border-color:#c4b5fd}
+.pill-bridge{background:#ccfbf1;color:#134e4a;border-color:#5eead4}
+.pill-fric{background:#fff7ed;color:#9a3412;border-color:#fdba74}
+
+/* ── Round card ── */
+.round-card{background:rgba(255,255,255,.97);border-radius:.875rem;padding:2rem;margin-bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.1);display:none}
+.round-card.active{display:block}
+.round-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;padding-bottom:.875rem;border-bottom:3px solid var(--teal-mid)}
+.round-num{width:48px;height:48px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Courier New',monospace;font-size:1.2rem;font-weight:700;flex-shrink:0}
+.round-title{font-size:1.3rem;font-weight:700;color:var(--teal-dark)}
+.round-metric-badge{font-size:.75rem;font-family:'Courier New',monospace;padding:.25rem .65rem;border-radius:.25rem;margin-top:.2rem;display:inline-block}
+
+/* ── Scenario ── */
+.scenario-box{background:var(--paper);border-left:4px solid var(--teal-mid);border-radius:0 .5rem .5rem 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.scenario-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);font-weight:700;margin-bottom:.4rem}
+.scenario-text{font-size:.95rem;line-height:1.7;color:var(--charcoal)}
+
+/* ── Prediction sliders ── */
+.pred-section{background:var(--amber-light);border:2px solid var(--amber);border-radius:.5rem;padding:1.25rem;margin-bottom:1.25rem}
+.pred-section-label{font-size:.78rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--amber-dark);font-weight:700;margin-bottom:.875rem}
+.slider-row{margin-bottom:1.1rem}
+.slider-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.slider-name{font-size:.88rem;font-weight:700;color:var(--charcoal)}
+.slider-val{font-size:1.1rem;font-family:'Courier New',monospace;font-weight:700;color:var(--teal-dark);min-width:3.5rem;text-align:right}
+.slider-track{position:relative;margin:.2rem 0 .4rem}
+input[type=range]{width:100%;-webkit-appearance:none;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--teal-mid) var(--pct,50%),#d1d5db var(--pct,50%));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--teal-dark);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer}
+.slider-anchors{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);font-family:'Courier New',monospace}
+.lock-btn{width:100%;padding:.75rem;background:var(--teal);color:#fff;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:.5rem}
+.lock-btn:hover{background:var(--teal-dark)}
+.lock-btn:disabled{opacity:.4;cursor:not-allowed}
+.pred-locked-display{background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.25);border-radius:.4rem;padding:.65rem .875rem;font-size:.85rem;color:var(--teal-dark);margin-top:.5rem;font-family:'Courier New',monospace;display:none}
+
+/* ── Run section ── */
+.run-section{text-align:center;margin-bottom:1.25rem;display:none}
+.run-btn{padding:.75rem 2.5rem;background:var(--navy);color:#fff;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s}
+.run-btn:hover{background:var(--teal-dark)}
+.run-btn:disabled{opacity:.4;cursor:wait}
+.ucp-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Results reveal ── */
+.result-section{display:none}
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.comp-box{border-radius:.5rem;padding:1.25rem;text-align:center}
+.comp-pred{background:#ede9fe;border:2px solid #c4b5fd}
+.comp-actual{background:var(--teal-light);border:2px solid var(--teal-mid)}
+.comp-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:.4rem}
+.comp-pred .comp-label{color:#4c1d95}
+.comp-actual .comp-label{color:var(--teal-dark)}
+.comp-value{font-size:2rem;font-family:'Courier New',monospace;font-weight:700;line-height:1}
+.comp-pred .comp-value{color:#4c1d95}
+.comp-actual .comp-value{color:var(--teal-dark)}
+.comp-sub{font-size:.78rem;color:var(--muted);margin-top:.25rem}
+.gap-display{text-align:center;padding:.875rem;border-radius:.5rem;margin:.5rem 0}
+.gap-good{background:var(--success-light);border:2px solid #86efac;color:var(--success)}
+.gap-ok{background:var(--amber-light);border:2px solid #fcd34d;color:var(--amber-dark)}
+.gap-far{background:var(--danger-light);border:2px solid #fca5a5;color:var(--danger)}
+.gap-label{font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem}
+.gap-text{font-size:.9rem;font-weight:700}
+
+/* ── All-metrics display ── */
+.metrics-row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.metric-chip{padding:.4rem .75rem;border-radius:.35rem;font-size:.82rem;font-family:'Courier New',monospace;font-weight:700}
+
+/* ── Explanation and case connection ── */
+.explain-box{background:var(--paper);border-left:4px solid var(--teal-mid);padding:1.25rem 1.5rem;border-radius:0 .5rem .5rem 0;margin:1rem 0}
+.explain-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);font-weight:700;margin-bottom:.5rem}
+.explain-text{font-size:.88rem;line-height:1.65;color:var(--charcoal)}
+.case-box{background:var(--navy);color:#fff;border-radius:.5rem;padding:1.25rem;margin:1rem 0}
+.case-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:.4rem}
+.case-text{font-size:.86rem;line-height:1.6;color:rgba(255,255,255,.85)}
+
+/* ── Number range guide ── */
+.range-guide{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:.75rem 0}
+.range-cell{border-radius:.35rem;padding:.6rem .5rem;text-align:center}
+.range-cell-label{font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;margin-bottom:.2rem}
+.range-cell-num{font-size:.9rem;font-family:'Courier New',monospace;font-weight:700}
+.range-cell-desc{font-size:.65rem;margin-top:.2rem;line-height:1.3}
+.r-low{background:var(--danger-light);color:var(--danger)}
+.r-med{background:var(--amber-light);color:var(--amber-dark)}
+.r-good{background:var(--success-light);color:var(--success)}
+.r-hi{background:var(--info-light);color:var(--info)}
+
+/* ── Next button ── */
+.next-btn{width:100%;padding:.875rem;background:var(--teal);color:#fff;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:1.05rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:1.25rem;display:none}
+.next-btn:hover{background:var(--teal-dark)}
+
+/* ── Progress dots ── */
+.round-nav{display:flex;gap:.4rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap}
+.round-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-family:'Courier New',monospace;font-weight:700;border:2px solid rgba(255,255,255,.3);color:rgba(255,255,255,.5);background:transparent;cursor:default;transition:.3s}
+.round-dot.done{background:var(--amber);border-color:var(--amber);color:#fff}
+.round-dot.active{background:var(--teal-mid);border-color:var(--teal-mid);color:#fff;box-shadow:0 0 0 3px rgba(20,184,166,.35)}
+
+/* ── Journal ── */
+.journal-box{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:.5rem;padding:1.25rem 1.5rem;margin:1rem 0}
+.journal-box h4{color:var(--amber-dark);margin-bottom:.5rem;font-size:.95rem}
+.journal-ta{width:100%;min-height:80px;padding:.65rem .75rem;border:1px solid var(--amber);border-radius:.4rem;font-family:'Georgia',serif;font-size:.88rem;resize:vertical;background:rgba(255,255,255,.85)}
+.journal-ta:focus{outline:none;border-color:var(--amber-dark);background:#fff}
+.save-note{font-size:.7rem;color:var(--success);opacity:0;transition:.3s;height:.9rem}
+.save-note.show{opacity:1}
+
+/* ── Summary ── */
+.summary-card{background:rgba(255,255,255,.97);border-radius:.875rem;padding:2rem;margin-bottom:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.1);display:none}
+.calibration-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:1rem 0}
+.calibration-table th{background:var(--navy);color:#fff;padding:.6rem .875rem;text-align:left;font-family:'Courier New',monospace;font-size:.78rem}
+.calibration-table td{padding:.55rem .875rem;border-bottom:1px solid var(--border)}
+.calibration-table tr:nth-child(even) td{background:var(--paper)}
+.accuracy-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden;margin-top:.2rem}
+.accuracy-fill{height:100%;border-radius:4px;transition:width 1s ease}
+
+.btn{padding:.65rem 1.5rem;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn-teal{background:var(--teal);color:#fff}.btn-teal:hover{background:var(--teal-dark)}
+.btn-amber{background:var(--amber-dark);color:#fff}.btn-amber:hover{background:var(--charcoal)}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.875rem}
+
+footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;color:rgba(255,255,255,.4);font-size:.8rem;font-style:italic}
+@media(max-width:640px){.comparison-grid{grid-template-columns:1fr}.range-guide{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<header class="glass-dark">
+  <div class="header-inner">
+    <div class="header-titles">
+      <h1>🔬 Metrics Calibration Lab</h1>
+      <p>Build your intuition before you use the case simulations</p>
+    </div>
+    <div class="overall-progress">
+      <span class="op-label">Progress</span>
+      <div class="op-track"><div class="op-fill" id="opFill" style="width:0%"></div></div>
+      <span class="op-frac" id="opFrac">0 / 7</span>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- Round navigation dots -->
+  <div class="round-nav" id="roundNav">
+    <div class="round-dot active" id="dot-0">1</div>
+    <div class="round-dot" id="dot-1">2</div>
+    <div class="round-dot" id="dot-2">3</div>
+    <div class="round-dot" id="dot-3">4</div>
+    <div class="round-dot" id="dot-4">5</div>
+    <div class="round-dot" id="dot-5">6</div>
+    <div class="round-dot" id="dot-6">7</div>
+  </div>
+
+  <!-- ═══ WELCOME ═══ -->
+  <div class="welcome-card fade-in" id="welcomeCard">
+    <h2>Welcome to the Metrics Calibration Lab</h2>
+    <p style="margin-bottom:.875rem;font-size:.95rem">Before you use any of the case simulation apps, this lab builds your intuition for what the simulation metrics actually mean — not as definitions to memorize, but as numbers you can feel in terms of real human situations.</p>
+    <p style="margin-bottom:.875rem;font-size:.95rem">Seven rounds. Each one gives you a situation described in plain language, asks you to predict the numbers <em>before</em> seeing the results, runs the actual simulation, and then explains the gap between your prediction and what the structure produced.</p>
+    <p style="margin-bottom:1.25rem;font-size:.95rem">By the end, when the Hanna simulation shows λ Raw = 0.23, you will already know — from your own calibration experience — exactly what that number means in human terms.</p>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">The seven metrics you will calibrate:</p>
+    <div style="margin-bottom:1.5rem">
+      <span class="metric-pill pill-raw">λ Raw — Coordination Capacity</span>
+      <span class="metric-pill pill-perc">λ Perceived — Capacity Reaching Decisions</span>
+      <span class="metric-pill pill-gap">Suppression Gap — What Doesn't Get Heard</span>
+      <span class="metric-pill pill-morph">Morphic Suppression — Learned Silence</span>
+      <span class="metric-pill pill-fid">Morphic Fidelity — Identity Signal Surviving</span>
+      <span class="metric-pill pill-bridge">OS2 Bridge — Cross-Worldview Convergence</span>
+      <span class="metric-pill pill-fric">Friction — Translation Cost</span>
+    </div>
+    <button class="btn btn-teal" style="font-size:1rem;padding:.75rem 2.5rem" onclick="startLab()">Begin Calibration →</button>
+  </div>
+
+  <!-- ═══ ROUNDS ═══ -->
+
+  <!-- ROUND 1 — λ Raw -->
+  <div class="round-card fade-in" id="round-0">
+    <div class="round-header">
+      <div class="round-num">1</div>
+      <div>
+        <div class="round-title">λ Raw — Coordination Capacity Available</div>
+        <span class="metric-pill pill-raw" style="margin-top:.2rem">λ Raw</span>
+      </div>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">The Situation</div>
+      <div class="scenario-text">
+        <strong>The Overruled Nurses.</strong> A hospital unit has 14 experienced nurses. Over the past eight months, a new administrator — with no clinical background — has required that every clinical recommendation be approved before implementation. In practice, 80% of recommendations are delayed or overruled, regardless of patient outcome. The nurses still have the same knowledge and skills they always had. But their ability to act on that knowledge has been structurally blocked.<br><br>
+        Before we show you any numbers: how much coordination capacity do you think exists in this system right now?
+      </div>
+    </div>
+
+    <div class="explain-box" style="margin-bottom:1rem">
+      <div class="explain-label">What λ Raw Measures</div>
+      <div class="explain-text">λ Raw is the coordination capacity <em>available</em> in a system — how much the structural conditions allow agents to act effectively together, based on entropy (how chaotic/unpredictable the environment is), stress loading, and which behaviors the institution rewards or suppresses. It is not about individual skill or willingness. It is about what the structure makes possible. Range: 0.0 (no capacity available) to 1.0 (full capacity).</div>
+    </div>
+
+    <div class="range-guide">
+      <div class="range-cell r-low"><div class="range-cell-label">VERY LOW</div><div class="range-cell-num">0.00–0.25</div><div class="range-cell-desc">Structure nearly prevents coordination. Individual effort cannot overcome it.</div></div>
+      <div class="range-cell r-med"><div class="range-cell-label">LOW-MED</div><div class="range-cell-num">0.26–0.45</div><div class="range-cell-desc">Significant constraints. Some coordination possible but costly.</div></div>
+      <div class="range-cell r-good"><div class="range-cell-label">MODERATE</div><div class="range-cell-num">0.46–0.65</div><div class="range-cell-desc">Reasonable capacity. Structural conditions are not ideal but workable.</div></div>
+      <div class="range-cell r-hi"><div class="range-cell-label">HIGH</div><div class="range-cell-num">0.66–1.0</div><div class="range-cell-desc">Structure supports effective coordination. Capabilities reach outcomes.</div></div>
+    </div>
+
+    <div class="pred-section" id="pred-section-0">
+      <div class="pred-section-label">Your Prediction — Lock It In Before Running</div>
+      <div class="slider-row">
+        <div class="slider-meta">
+          <span class="slider-name">λ Raw (Coordination Capacity)</span>
+          <span class="slider-val" id="sv-0-raw">0.50</span>
+        </div>
+        <div class="slider-track">
+          <input type="range" id="sl-0-raw" min="0" max="100" value="50"
+            oninput="updateSlider('0-raw',this.value)">
+        </div>
+        <div class="slider-anchors"><span>0.0 — No capacity</span><span>0.5 — Half</span><span>1.0 — Full capacity</span></div>
+      </div>
+      <button class="lock-btn" id="lock-0" onclick="lockPrediction(0)">🔒 Lock In My Prediction</button>
+      <div class="pred-locked-display" id="locked-display-0"></div>
+    </div>
+
+    <div class="run-section" id="run-section-0">
+      <button class="run-btn" id="run-btn-0" onclick="runRound(0)">▶ Run Simulation</button>
+    </div>
+
+    <div class="result-section reveal-anim" id="result-0"></div>
+    <button class="next-btn" id="next-0" onclick="nextRound(0)">Next: λ Perceived →</button>
+  </div>
+
+  <!-- ROUND 2 — λ Perceived -->
+  <div class="round-card fade-in" id="round-1">
+    <div class="round-header">
+      <div class="round-num">2</div>
+      <div>
+        <div class="round-title">λ Perceived — Coordination Capacity Reaching Decisions</div>
+        <span class="metric-pill pill-perc" style="margin-top:.2rem">λ Perceived</span>
+      </div>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">The Situation</div>
+      <div class="scenario-text">
+        <strong>The Hidden Safety Reports.</strong> An engineering company has highly skilled safety analysts. They write detailed reports identifying structural risks in the company's products. The reports are complete, accurate, and based on solid data. But they pass through three layers of middle management before reaching the executives who make decisions — and at each layer, the most alarming findings are softened to avoid "unnecessary alarm." By the time the reports reach decision-makers, the critical warnings have been removed.<br><br>
+        Notice: the analysts have real capability. The capability exists. The question is: how much of it is actually reaching the decisions that matter?
+      </div>
+    </div>
+
+    <div class="explain-box" style="margin-bottom:1rem">
+      <div class="explain-label">What λ Perceived Measures — and Why It Differs from λ Raw</div>
+      <div class="explain-text">λ Perceived measures how much of the available coordination capacity is <em>actually reaching decisions</em>. In a healthy system, λ Raw and λ Perceived are close together. When institutions filter, soften, or block information before it reaches decision-makers, a gap opens. The gap (λ Raw − λ Perceived) is the <strong>suppression gap</strong> — structurally measurable knowledge being prevented from influencing outcomes. In the engineers' case: λ Raw may be moderate (they have real capability) but λ Perceived will be much lower (the capability is filtered before it reaches decisions).</div>
+    </div>
+
+    <div class="range-guide">
+      <div class="range-cell r-low"><div class="range-cell-label">LARGE GAP</div><div class="range-cell-num">Gap &gt; 0.30</div><div class="range-cell-desc">Severe filtering. Most capability is being lost before reaching decisions.</div></div>
+      <div class="range-cell r-med"><div class="range-cell-label">MOD. GAP</div><div class="range-cell-num">Gap 0.15–0.30</div><div class="range-cell-desc">Significant filtering. Important information is being systematically softened.</div></div>
+      <div class="range-cell r-good"><div class="range-cell-label">SMALL GAP</div><div class="range-cell-num">Gap 0.05–0.15</div><div class="range-cell-desc">Some filtering but most capability is reaching decisions.</div></div>
+      <div class="range-cell r-hi"><div class="range-cell-label">NO GAP</div><div class="range-cell-num">Gap &lt; 0.05</div><div class="range-cell-desc">Healthy system. Capability and perceived contribution closely aligned.</div></div>
+    </div>
+
+    <div class="pred-section" id="pred-section-1">
+      <div class="pred-section-label">Predict Both Values Before Running</div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">λ Raw (Capability exists)</span><span class="slider-val" id="sv-1-raw">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-1-raw" min="0" max="100" value="50" oninput="updateSlider('1-raw',this.value)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">λ Perceived (Reaches decisions)</span><span class="slider-val" id="sv-1-perc">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-1-perc" min="0" max="100" value="50" oninput="updateSlider('1-perc',this.value)"></div>
+        <div class="slider-anchors"><span>0.0 — Nothing gets through</span><span>0.5</span><span>1.0 — All gets through</span></div>
+      </div>
+      <button class="lock-btn" id="lock-1" onclick="lockPrediction(1)">🔒 Lock In My Prediction</button>
+      <div class="pred-locked-display" id="locked-display-1"></div>
+    </div>
+
+    <div class="run-section" id="run-section-1">
+      <button class="run-btn" id="run-btn-1" onclick="runRound(1)">▶ Run Simulation</button>
+    </div>
+    <div class="result-section reveal-anim" id="result-1"></div>
+    <button class="next-btn" id="next-1" onclick="nextRound(1)">Next: Suppression Gap →</button>
+  </div>
+
+  <!-- ROUND 3 — Suppression Gap -->
+  <div class="round-card fade-in" id="round-2">
+    <div class="round-header">
+      <div class="round-num">3</div>
+      <div>
+        <div class="round-title">Suppression Gap — What Doesn't Get Heard</div>
+        <span class="metric-pill pill-gap" style="margin-top:.2rem">Suppression Gap</span>
+      </div>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">The Situation</div>
+      <div class="scenario-text">
+        <strong>The Junior Faculty.</strong> A university department has 12 faculty members. The five most junior members hold the most current expertise in the field — they completed their degrees recently and have skills the senior faculty do not have. But departmental culture requires deference to seniority. In every committee meeting, junior faculty self-censor before speaking: they gauge what senior faculty want to hear and adjust accordingly. Their knowledge exists. It is just rarely expressed in forms that could change decisions.<br><br>
+        This situation has been going on for four years. How much of the department's available expertise do you think is actually reaching its decisions?
+      </div>
+    </div>
+
+    <div class="explain-box" style="margin-bottom:1rem">
+      <div class="explain-label">The Suppression Gap — Why It Matters Ethically</div>
+      <div class="explain-text">The suppression gap (λ Raw − λ Perceived) is not just a technical measure. It is the structurally measurable Kantian violation in the simulation suite. Kant's Formula of Humanity says: treat every rational agent as an end in themselves, never merely as a means. A suppression gap of 0.40 means that 40% of the available rational agency in this system is being structurally prevented from contributing to decisions — treated, effectively, as if it does not matter. The gap does not require anyone to intend harm. The structure produces it whether or not any individual chose it.</div>
+    </div>
+
+    <div class="pred-section" id="pred-section-2">
+      <div class="pred-section-label">Predict the Gap</div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">λ Raw (Expertise available)</span><span class="slider-val" id="sv-2-raw">0.55</span></div>
+        <div class="slider-track"><input type="range" id="sl-2-raw" min="0" max="100" value="55" oninput="updateSlider('2-raw',this.value)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">λ Perceived (Reaching decisions)</span><span class="slider-val" id="sv-2-perc">0.35</span></div>
+        <div class="slider-track"><input type="range" id="sl-2-perc" min="0" max="100" value="35" oninput="updateSlider('2-perc',this.value)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div style="background:var(--paper);border-radius:.35rem;padding:.5rem .75rem;font-family:'Courier New',monospace;font-size:.82rem;color:var(--charcoal);margin:.5rem 0">
+        Your predicted gap: <strong id="pred-gap-display-2">0.20</strong> — meaning <strong id="pred-gap-pct-2">20%</strong> of available expertise is not reaching decisions
+      </div>
+      <button class="lock-btn" id="lock-2" onclick="lockPrediction(2)">🔒 Lock In My Prediction</button>
+      <div class="pred-locked-display" id="locked-display-2"></div>
+    </div>
+
+    <div class="run-section" id="run-section-2">
+      <button class="run-btn" id="run-btn-2" onclick="runRound(2)">▶ Run Simulation</button>
+    </div>
+    <div class="result-section reveal-anim" id="result-2"></div>
+    <button class="next-btn" id="next-2" onclick="nextRound(2)">Next: Morphic Suppression →</button>
+  </div>
+
+  <!-- ROUND 4 — Morphic Suppression -->
+  <div class="round-card fade-in" id="round-3">
+    <div class="round-header">
+      <div class="round-num">4</div>
+      <div>
+        <div class="round-title">Morphic Suppression — Learned Silence</div>
+        <span class="metric-pill pill-morph" style="margin-top:.2rem">Morphic Suppression</span>
+      </div>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">The Situation</div>
+      <div class="scenario-text">
+        <strong>Five Years of Being Ignored.</strong> A city planning department employs community liaisons — people hired specifically to bring neighborhood concerns into planning decisions. For five years, their reports have been received, filed, and consistently set aside when decisions are made. Nothing the liaisons report changes any outcome. Initially they wrote thorough, detailed reports. After two years, the reports got shorter. After three years, they stopped including the most controversial findings. After five years, they primarily report what they expect the planners want to hear.<br><br>
+        Nobody told them to do this. They learned it. The suppression was structural, and the response to it became automatic.
+      </div>
+    </div>
+
+    <div class="explain-box" style="margin-bottom:1rem">
+      <div class="explain-label">What Morphic Suppression Measures — and Why It Builds Over Time</div>
+      <div class="explain-text">Morphic suppression is <em>accumulated learned self-censorship</em>. It builds across simulation steps — each step representing a period of time where the agent's deliberate contribution consistently fails to reach outcomes. The brain's predictive machinery updates: "trying does not produce results." Eventually agents stop expressing capabilities they still have, because the expectation of futility has been incorporated into their predictive model. This is not weakness or laziness. It is the brain doing exactly what it is designed to do — calibrating predictions to match experience. The ethical claim: the institution produced this change without any individual choosing it.</div>
+    </div>
+
+    <div class="range-guide">
+      <div class="range-cell r-hi"><div class="range-cell-label">VERY LOW</div><div class="range-cell-num">0.00–0.05</div><div class="range-cell-desc">Early stages or healthy system. Agents still express full capability.</div></div>
+      <div class="range-cell r-good"><div class="range-cell-label">LOW</div><div class="range-cell-num">0.06–0.12</div><div class="range-cell-desc">Building. Some self-censorship but not yet entrenched.</div></div>
+      <div class="range-cell r-med"><div class="range-cell-label">MODERATE</div><div class="range-cell-num">0.13–0.20</div><div class="range-cell-desc">Significant suppression. Agents are regularly not expressing what they know.</div></div>
+      <div class="range-cell r-low"><div class="range-cell-label">HIGH</div><div class="range-cell-num">&gt; 0.20</div><div class="range-cell-desc">Entrenched learned silence. Recovery requires structural change, not individual will.</div></div>
+    </div>
+
+    <div class="pred-section" id="pred-section-3">
+      <div class="pred-section-label">Predict After 10 Steps (Five Years)</div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">Morphic Suppression (accumulated)</span><span class="slider-val" id="sv-3-morph">0.12</span></div>
+        <div class="slider-track"><input type="range" id="sl-3-morph" min="0" max="40" value="12" oninput="updateSlider('3-morph',this.value,40)"></div>
+        <div class="slider-anchors"><span>0.0 — None</span><span>0.20 — High</span><span>0.40 — Extreme</span></div>
+      </div>
+      <button class="lock-btn" id="lock-3" onclick="lockPrediction(3)">🔒 Lock In My Prediction</button>
+      <div class="pred-locked-display" id="locked-display-3"></div>
+    </div>
+
+    <div class="run-section" id="run-section-3">
+      <button class="run-btn" id="run-btn-3" onclick="runRound(3)">▶ Run Simulation (10 steps)</button>
+    </div>
+    <div class="result-section reveal-anim" id="result-3"></div>
+    <button class="next-btn" id="next-3" onclick="nextRound(3)">Next: Morphic Fidelity →</button>
+  </div>
+
+  <!-- ROUND 5 — Morphic Fidelity -->
+  <div class="round-card fade-in" id="round-4">
+    <div class="round-header">
+      <div class="round-num">5</div>
+      <div>
+        <div class="round-title">Morphic Fidelity — Identity Signal Surviving</div>
+        <span class="metric-pill pill-fid" style="margin-top:.2rem">Morphic Fidelity</span>
+      </div>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">The Situation — Two Versions</div>
+      <div class="scenario-text">
+        <strong>The Isolated Organizer.</strong> A community organizer in an authoritarian country is under sustained government surveillance and harassment. Her previous organizational network has been systematically dismantled. She is still committed to her values. She still has her skills. But the community around her — the relational scaffolding that sustained and confirmed her identity — is being severed piece by piece.<br><br>
+        <strong>Version A:</strong> She has no external support — no international network, no allied organizations, no communication with others who share her framework.<br>
+        <strong>Version B:</strong> A small international solidarity organization is aware of her case and publicly advocates for her. Her work is documented and known outside the country.<br><br>
+        In both versions the suppression is severe. The question is: how much of her original identity signal survives?
+      </div>
+    </div>
+
+    <div class="explain-box" style="margin-bottom:1rem">
+      <div class="explain-label">What Morphic Fidelity Measures</div>
+      <div class="explain-text">Morphic fidelity measures how much of the original coordination capacity signal is surviving under suppression — the ratio of what remains coherent to what is being eroded. High fidelity under high suppression means the identity is holding: something is maintaining the coherence of the signal despite the pressure applied to it. Low fidelity means the suppression is winning — the identity is fragmenting. In this lab we compute it as: λ Raw ÷ (λ Raw + morphic suppression) — the proportion of the capacity that is not being lost to accumulated learned silence. Range: 0.0 (identity completely fragmented) to 1.0 (identity fully intact).</div>
+    </div>
+
+    <div class="pred-section" id="pred-section-4">
+      <div class="pred-section-label">Predict Morphic Fidelity — Both Versions</div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">Version A — No external support</span><span class="slider-val" id="sv-4-a">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-4-a" min="0" max="100" value="50" oninput="updateSlider('4-a',this.value)"></div>
+        <div class="slider-anchors"><span>0.0 — Fragmented</span><span>0.5</span><span>1.0 — Intact</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">Version B — With BioBond (international network)</span><span class="slider-val" id="sv-4-b">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-4-b" min="0" max="100" value="50" oninput="updateSlider('4-b',this.value)"></div>
+        <div class="slider-anchors"><span>0.0 — Fragmented</span><span>0.5</span><span>1.0 — Intact</span></div>
+      </div>
+      <button class="lock-btn" id="lock-4" onclick="lockPrediction(4)">🔒 Lock In My Prediction</button>
+      <div class="pred-locked-display" id="locked-display-4"></div>
+    </div>
+
+    <div class="run-section" id="run-section-4">
+      <button class="run-btn" id="run-btn-4" onclick="runRound(4)">▶ Run Both Versions</button>
+    </div>
+    <div class="result-section reveal-anim" id="result-4"></div>
+    <button class="next-btn" id="next-4" onclick="nextRound(4)">Next: OS2 Bridge →</button>
+  </div>
+
+  <!-- ROUND 6 — OS2 Bridge -->
+  <div class="round-card fade-in" id="round-5">
+    <div class="round-header">
+      <div class="round-num">6</div>
+      <div>
+        <div class="round-title">OS2 Bridge — Cross-Worldview Convergence</div>
+        <span class="metric-pill pill-bridge" style="margin-top:.2rem">OS2 Bridge</span>
+        <span class="metric-pill pill-fric" style="margin-top:.2rem">+ Friction</span>
+      </div>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">The Situation</div>
+      <div class="scenario-text">
+        <strong>The Neighborhood Coalition.</strong> Five groups are working to clean up a polluted creek running through their neighborhood. They have completely different reasons for caring: an evangelical church (stewardship of God's creation), a Somali immigrant community (practical water access for families), a group of environmental science students (ecological restoration for its own sake), a Latino community organization (environmental justice — this neighborhood was deliberately targeted for industrial dumping), and a neighborhood homeowners association (property values).<br><br>
+        They disagree about almost everything — religion, politics, what justice means, whose fault this is. But they all show up on Saturday mornings to clean the creek.<br><br>
+        What do you predict happens to coordination across these groups when the shared task is present?
+      </div>
+    </div>
+
+    <div class="explain-box" style="margin-bottom:1rem">
+      <div class="explain-label">OS2 Bridge and Friction — The Key Counterintuitive Relationship</div>
+      <div class="explain-text">OS2 Bridge measures whether agents with genuinely different frameworks are moving toward the same outcomes — not whether they agree, but whether their different capabilities are converging on shared goals. Friction measures the translation cost of that difference — how much effort it takes for different frameworks to communicate effectively enough to act together. Here is the counterintuitive truth: <strong>high friction and high OS2 Bridge can coexist.</strong> The coalition experiences real friction — it takes effort to coordinate across five genuinely different worldviews. But the shared task (cleaning the creek) makes that friction cost worth paying. The question is never "is friction high?" but "is the coordination worth the friction cost?"</div>
+    </div>
+
+    <div class="range-guide">
+      <div class="range-cell r-low"><div class="range-cell-label">LOW BRIDGE</div><div class="range-cell-num">0.0–0.3</div><div class="range-cell-desc">Groups operating in parallel, not converging. Different frameworks not finding common ground.</div></div>
+      <div class="range-cell r-med"><div class="range-cell-label">BUILDING</div><div class="range-cell-num">0.3–0.5</div><div class="range-cell-desc">Some convergence. Shared task is beginning to create coordination despite difference.</div></div>
+      <div class="range-cell r-good"><div class="range-cell-label">GOOD BRIDGE</div><div class="range-cell-num">0.5–0.7</div><div class="range-cell-desc">Meaningful convergence. Different capabilities moving toward shared outcomes.</div></div>
+      <div class="range-cell r-hi"><div class="range-cell-label">HIGH BRIDGE</div><div class="range-cell-num">0.7+</div><div class="range-cell-desc">Strong cross-worldview coordination. Functional equivalence operating.</div></div>
+    </div>
+
+    <div class="pred-section" id="pred-section-5">
+      <div class="pred-section-label">Predict OS2 Bridge AND Friction for the Coalition</div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">OS2 Bridge (convergence)</span><span class="slider-val" id="sv-5-bridge">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-5-bridge" min="0" max="100" value="50" oninput="updateSlider('5-bridge',this.value)"></div>
+        <div class="slider-anchors"><span>0.0 — No convergence</span><span>0.5</span><span>1.0 — Full convergence</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">Friction (translation cost)</span><span class="slider-val" id="sv-5-fric">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-5-fric" min="0" max="100" value="50" oninput="updateSlider('5-fric',this.value)"></div>
+        <div class="slider-anchors"><span>0.0 — No friction</span><span>0.5</span><span>1.0 — Maximum friction</span></div>
+      </div>
+      <button class="lock-btn" id="lock-5" onclick="lockPrediction(5)">🔒 Lock In My Prediction</button>
+      <div class="pred-locked-display" id="locked-display-5"></div>
+    </div>
+
+    <div class="run-section" id="run-section-5">
+      <button class="run-btn" id="run-btn-5" onclick="runRound(5)">▶ Run Simulation</button>
+    </div>
+    <div class="result-section reveal-anim" id="result-5"></div>
+    <button class="next-btn" id="next-5" onclick="nextRound(5)">Final Round: Synthesis Challenge →</button>
+  </div>
+
+  <!-- ROUND 7 — Synthesis -->
+  <div class="round-card fade-in" id="round-6">
+    <div class="round-header">
+      <div class="round-num">7</div>
+      <div>
+        <div class="round-title">Synthesis Challenge — All Metrics Together</div>
+        <span class="metric-pill pill-raw" style="margin-top:.2rem">All Metrics</span>
+      </div>
+    </div>
+
+    <div class="scenario-box">
+      <div class="scenario-label">The Situation — Read This Carefully</div>
+      <div class="scenario-text">
+        <strong>The Hospital During a Crisis.</strong> A hospital is six months into a staffing shortage caused by a wave of retirements. Experienced staff have left; new staff are undertrained. Administration has responded by centralizing all decisions — only senior administrators can approve protocol changes, even in emergencies. Staff have learned that raising concerns gets them scheduled for extra documentation. An informal survey found that 70% of clinical staff had identified patient safety issues they chose not to report in the last month.<br><br>
+        The hospital has a diverse staff — religious communities, secular staff, political conservatives and progressives — who used to coordinate well. Six months ago they had a functional team. Now what?<br><br>
+        Using everything you have calibrated in this lab: predict <em>all five metrics</em> for this situation.
+      </div>
+    </div>
+
+    <div class="pred-section" id="pred-section-6">
+      <div class="pred-section-label">Predict All Five Metrics</div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">λ Raw (capacity available)</span><span class="slider-val" id="sv-6-raw">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-6-raw" min="0" max="100" value="50" oninput="updateSlider('6-raw',this.value)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">λ Perceived (reaching decisions)</span><span class="slider-val" id="sv-6-perc">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-6-perc" min="0" max="100" value="50" oninput="updateSlider('6-perc',this.value)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">Morphic Suppression (learned silence)</span><span class="slider-val" id="sv-6-morph">0.12</span></div>
+        <div class="slider-track"><input type="range" id="sl-6-morph" min="0" max="40" value="12" oninput="updateSlider('6-morph',this.value,40)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.20 (high)</span><span>0.40 (extreme)</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">OS2 Bridge (cross-worldview convergence)</span><span class="slider-val" id="sv-6-bridge">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-6-bridge" min="0" max="100" value="50" oninput="updateSlider('6-bridge',this.value)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-meta"><span class="slider-name">Friction (translation cost)</span><span class="slider-val" id="sv-6-fric">0.50</span></div>
+        <div class="slider-track"><input type="range" id="sl-6-fric" min="0" max="100" value="50" oninput="updateSlider('6-fric',this.value)"></div>
+        <div class="slider-anchors"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+      </div>
+      <div class="journal-box" style="margin-top:.875rem">
+        <h4>📝 Before Locking: Why These Numbers?</h4>
+        <textarea class="journal-ta" id="syn-reasoning" placeholder="In 2-3 sentences: why did you choose these specific values? What in the scenario made you predict high/low for each metric?" oninput="jSave('syn_reasoning',this.value)"></textarea>
+        <div class="save-note" id="sn-syn">✓ Saved</div>
+      </div>
+      <button class="lock-btn" id="lock-6" onclick="lockPrediction(6)">🔒 Lock In My Predictions</button>
+      <div class="pred-locked-display" id="locked-display-6"></div>
+    </div>
+
+    <div class="run-section" id="run-section-6">
+      <button class="run-btn" id="run-btn-6" onclick="runRound(6)">▶ Run Synthesis Simulation</button>
+    </div>
+    <div class="result-section reveal-anim" id="result-6"></div>
+    <button class="next-btn" id="next-6" onclick="showSummary()">View Your Calibration Summary →</button>
+  </div>
+
+  <!-- ═══ SUMMARY ═══ -->
+  <div class="summary-card fade-in" id="summaryCard">
+    <h2 style="color:var(--teal-dark);border-bottom:3px solid var(--teal-mid);padding-bottom:.6rem;margin-bottom:1.25rem">Your Calibration Summary</h2>
+    <p style="margin-bottom:1rem;color:var(--muted);font-size:.9rem">Below is your accuracy across all seven rounds. The goal is not to be right — it is to understand what surprised you and why.</p>
+    <table class="calibration-table" id="calibrationTable"></table>
+
+    <div class="journal-box" style="margin-top:1.5rem">
+      <h4>📝 Calibration Reflection — For Your Ethics Journal</h4>
+      <p style="font-size:.85rem;margin-bottom:.5rem">Looking across your predictions and the actual values: which metric consistently surprised you? What does your pattern of surprises reveal about how your framework is calibrated — and what structural features your PRF automatically attends to versus needs active inference to see?</p>
+      <textarea class="journal-ta" id="jt-reflection" placeholder="The metric that most consistently surprised me was... because my framework automatically attends to... but needed more active effort to see..." oninput="jSave('reflection',this.value)"></textarea>
+      <div class="save-note" id="sn-ref">✓ Saved</div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Design Your Own Calibration Scenario</h4>
+      <p style="font-size:.85rem;margin-bottom:.5rem">Pick one metric from this lab. Describe a situation from your own experience — your workplace, your community, your family — where that metric was clearly high or clearly low. Write it in the plain-language style of the scenarios above, so that another student could use it to calibrate their own intuition for that metric.</p>
+      <textarea class="journal-ta" id="jt-design" placeholder="Metric: ...\n\nSituation: ...\n\nWhy this metric was [high/low]: ..." oninput="jSave('design',this.value)" style="min-height:120px"></textarea>
+      <div class="save-note" id="sn-des">✓ Saved</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-amber" onclick="exportSummary()">📥 Download Calibration Report</button>
+      <button class="btn btn-teal" onclick="copyReport()">📋 Copy to Clipboard</button>
+    </div>
+    <div id="exportPreview" style="display:none;margin-top:1rem;padding:1rem;background:var(--paper);border-radius:.5rem;border:1px solid var(--border)">
+      <pre id="exportContent" style="white-space:pre-wrap;font-family:'Courier New',monospace;font-size:.8rem;max-height:400px;overflow-y:auto"></pre>
+      <button class="btn btn-teal" style="margin-top:.5rem" onclick="document.getElementById('exportPreview').style.display='none'">Close</button>
+    </div>
+  </div>
+
+</div>
+<footer>Ethics Beyond Boundaries · Metrics Calibration Lab · Saint Petersburg College Ethics Institute</footer>
+
+<script>
+const BACKEND='https://ucp-backend-4dig.onrender.com';
+const JP='mcl_';
+let predictions={}, actuals={}, currentRound=-1;
+
+// ── Slider updates ─────────────────────────────────────
+function updateSlider(id,val,max=100){
+  const v=(parseFloat(val)/max).toFixed(2);
+  const el=document.getElementById('sv-'+id);
+  if(el)el.textContent=v;
+  const sl=document.getElementById('sl-'+id);
+  if(sl)sl.style.setProperty('--pct',(val/max*100)+'%');
+  // Live gap update for round 2
+  if(id==='2-raw'||id==='2-perc'){
+    const raw=parseFloat(document.getElementById('sv-2-raw')?.textContent||'0.55');
+    const perc=parseFloat(document.getElementById('sv-2-perc')?.textContent||'0.35');
+    const gap=(raw-perc).toFixed(2);
+    const gd=document.getElementById('pred-gap-display-2');
+    const gp=document.getElementById('pred-gap-pct-2');
+    if(gd)gd.textContent=Math.max(0,gap);
+    if(gp)gp.textContent=Math.round(Math.max(0,gap)*100)+'%';
+  }
+  try{localStorage.setItem(JP+'slider_'+id,val);}catch(e){}
+}
+
+function getSliderVal(id,max=100){
+  const el=document.getElementById('sv-'+id);
+  return el?parseFloat(el.textContent):0.5;
+}
+
+// ── Lock prediction ─────────────────────────────────────
+function lockPrediction(r){
+  const pred={};
+  if(r===0) pred.raw=getSliderVal('0-raw');
+  if(r===1){pred.raw=getSliderVal('1-raw');pred.perc=getSliderVal('1-perc');}
+  if(r===2){pred.raw=getSliderVal('2-raw');pred.perc=getSliderVal('2-perc');pred.gap=Math.max(0,pred.raw-pred.perc);}
+  if(r===3) pred.morph=getSliderVal('3-morph',40);
+  if(r===4){pred.fid_a=getSliderVal('4-a');pred.fid_b=getSliderVal('4-b');}
+  if(r===5){pred.bridge=getSliderVal('5-bridge');pred.fric=getSliderVal('5-fric');}
+  if(r===6){pred.raw=getSliderVal('6-raw');pred.perc=getSliderVal('6-perc');pred.morph=getSliderVal('6-morph',40);pred.bridge=getSliderVal('6-bridge');pred.fric=getSliderVal('6-fric');}
+  predictions[r]=pred;
+  try{localStorage.setItem(JP+'pred_'+r,JSON.stringify(pred));}catch(e){}
+
+  // Show locked display
+  const lines=Object.entries(pred).map(([k,v])=>`${k}: ${v.toFixed(3)}`).join(' · ');
+  const ld=document.getElementById('locked-display-'+r);
+  if(ld){ld.textContent='Locked: '+lines;ld.style.display='block';}
+
+  // Show run button
+  const rs=document.getElementById('run-section-'+r);
+  if(rs)rs.style.display='block';
+
+  // Disable lock button
+  const lb=document.getElementById('lock-'+r);
+  if(lb){lb.disabled=true;lb.innerHTML='✓ Prediction Locked';}
+}
+
+// ── Simulation payloads ─────────────────────────────────
+const PAYLOADS={
+  0:{// λ Raw — overruled nurses
+    scenario_name:'whistleblower',num_agents:14,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.82,base_stress:0.70,
+      block_fields:{care:-0.70,fairness:-0.80,community:-0.60,boundary:0.30}},
+    worldview_distribution:{role_order:0.45,sacred_boundary:0.20,liberal_individualist:0.20,ubuntu_relational:0.10,indigenous_custodial:0.05},
+    evidence_distribution:{authority_weighted:0.60,tradition_weighted:0.20,empirical_calibrated:0.15,alternative_facts:0.05}
+  },
+  1:{// λ Perceived — hidden safety reports
+    scenario_name:'whistleblower',num_agents:12,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.62,base_stress:0.58,
+      block_fields:{care:-0.30,fairness:-0.70,community:-0.50,boundary:0.40}},
+    worldview_distribution:{role_order:0.50,liberal_individualist:0.25,sacred_boundary:0.15,ubuntu_relational:0.07,indigenous_custodial:0.03},
+    evidence_distribution:{authority_weighted:0.65,tradition_weighted:0.15,empirical_calibrated:0.15,alternative_facts:0.05}
+  },
+  2:{// Suppression gap — junior faculty
+    scenario_name:'whistleblower',num_agents:12,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.55,base_stress:0.50,
+      block_fields:{care:-0.20,fairness:-0.65,community:-0.45,boundary:0.55}},
+    worldview_distribution:{role_order:0.55,liberal_individualist:0.25,sacred_boundary:0.10,ubuntu_relational:0.07,indigenous_custodial:0.03},
+    evidence_distribution:{authority_weighted:0.70,tradition_weighted:0.15,empirical_calibrated:0.10,alternative_facts:0.05}
+  },
+  3:{// Morphic suppression — 10 steps, long campaign
+    scenario_name:'whistleblower',num_agents:14,steps:10,seed:42,
+    scenario_physics:{base_entropy:0.70,base_stress:0.60,
+      block_fields:{care:-0.30,fairness:-0.60,community:-0.75,boundary:0.35}},
+    worldview_distribution:{ubuntu_relational:0.35,liberal_individualist:0.30,sacred_boundary:0.20,role_order:0.10,indigenous_custodial:0.05},
+    evidence_distribution:{authority_weighted:0.45,empirical_calibrated:0.30,tradition_weighted:0.20,alternative_facts:0.05}
+  },
+  '4a':{// Morphic fidelity — no BioBond
+    scenario_name:'whistleblower',num_agents:12,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.80,base_stress:0.72,
+      block_fields:{care:-0.30,fairness:-0.65,community:-0.80,boundary:0.75}},
+    worldview_distribution:{sacred_boundary:0.60,indigenous_custodial:0.20,ubuntu_relational:0.10,role_order:0.07,liberal_individualist:0.03},
+    evidence_distribution:{tradition_weighted:0.50,authority_weighted:0.25,empirical_calibrated:0.15,alternative_facts:0.10}
+  },
+  '4b':{// Morphic fidelity — with BioBond step 3
+    scenario_name:'whistleblower',num_agents:12,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.80,base_stress:0.72,
+      block_fields:{care:-0.30,fairness:-0.65,community:-0.80,boundary:0.75}},
+    worldview_distribution:{sacred_boundary:0.60,indigenous_custodial:0.20,ubuntu_relational:0.10,role_order:0.07,liberal_individualist:0.03},
+    evidence_distribution:{tradition_weighted:0.50,authority_weighted:0.25,empirical_calibrated:0.15,alternative_facts:0.10},
+    activate_biobond_at:3
+  },
+  5:{// OS2 Bridge — diverse coalition, shared task
+    scenario_name:'baseline',num_agents:15,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.44,base_stress:0.42,
+      block_fields:{care:0.60,fairness:0.50,community:0.65,boundary:0.25}},
+    worldview_distribution:{ubuntu_relational:0.25,sacred_boundary:0.22,liberal_individualist:0.22,role_order:0.18,indigenous_custodial:0.13},
+    evidence_distribution:{empirical_calibrated:0.32,tradition_weighted:0.30,authority_weighted:0.25,alternative_facts:0.13}
+  },
+  6:{// Synthesis — hospital crisis
+    scenario_name:'whistleblower',num_agents:16,steps:8,seed:42,
+    scenario_physics:{base_entropy:0.75,base_stress:0.68,
+      block_fields:{care:-0.40,fairness:-0.65,community:-0.55,boundary:0.50}},
+    worldview_distribution:{role_order:0.30,sacred_boundary:0.25,liberal_individualist:0.22,ubuntu_relational:0.15,indigenous_custodial:0.08},
+    evidence_distribution:{authority_weighted:0.55,tradition_weighted:0.20,empirical_calibrated:0.18,alternative_facts:0.07}
+  }
+};
+
+// ── Metric helpers ──────────────────────────────────────
+function getMetrics(data){
+  const m=data?.metrics||{};
+  const raw=m.lambda_raw||0;
+  const perc=m.lambda_perceived||0;
+  const morph=m.morphic_suppression||0;
+  const bridge=m.os2_synergy_bridge??m.os2_synergy??0;
+  const fric=m.friction||0;
+  const gap=Math.max(0,raw-perc);
+  const fid=raw>0?(raw/(raw+morph)):0; // morphic fidelity computed
+  return{raw,perc,gap,morph,bridge,fric,fid};
+}
+
+function numColor(v,hi=true){
+  if(hi)return v>.60?'#166534':v>.35?'#d97706':'#dc2626';
+  return v<.10?'#166534':v<.20?'#d97706':'#dc2626';
+}
+
+function gapClass(pred,actual){
+  const diff=Math.abs(pred-actual);
+  if(diff<0.08)return{cls:'gap-good',txt:`Close! Within ${(diff*100).toFixed(0)}% of the actual value.`};
+  if(diff<0.18)return{cls:'gap-ok',txt:`Off by ${(diff*100).toFixed(0)}%. Your calibration is developing.`};
+  return{cls:'gap-far',txt:`${(diff*100).toFixed(0)}% away — this metric surprised you. The explanation below shows why.`};
+}
+
+// ── Run round ───────────────────────────────────────────
+async function runRound(r){
+  const btn=document.getElementById('run-btn-'+r);
+  btn.disabled=true;btn.innerHTML='<span class="ucp-spinner"></span>Running...';
+  try{
+    let data,dataB=null;
+    if(r===4){
+      const [rA,rB]=await Promise.all([
+        fetch(BACKEND+'/api/simulate/custom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(PAYLOADS['4a'])}),
+        fetch(BACKEND+'/api/simulate/custom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(PAYLOADS['4b'])})
+      ]);
+      data=await rA.json();dataB=await rB.json();
+    } else {
+      const resp=await fetch(BACKEND+'/api/simulate/custom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(PAYLOADS[r])});
+      data=await resp.json();
+    }
+    const m=getMetrics(data);
+    const mB=dataB?getMetrics(dataB):null;
+    actuals[r]={m,mB};
+    try{localStorage.setItem(JP+'actual_'+r,JSON.stringify(actuals[r]));}catch(e){}
+    renderResult(r,m,mB);
+    btn.innerHTML='↺ Re-run';btn.disabled=false;
+  }catch(e){
+    btn.innerHTML='▶ Run Simulation';btn.disabled=false;
+    document.getElementById('result-'+r).innerHTML=`<div style="padding:.875rem;background:#fee2e2;border-radius:.5rem;color:#dc2626;font-size:.85rem">Error: ${e.message}. Backend may be starting — wait 30 seconds and retry.</div>`;
+    document.getElementById('result-'+r).style.display='block';
+  }
+}
+
+// ── Render results ──────────────────────────────────────
+function renderResult(r,m,mB){
+  const pred=predictions[r]||{};
+  const div=document.getElementById('result-'+r);
+  let html='';
+
+  // ── Round-specific result rendering ──────────────────
+  if(r===0){
+    const g=gapClass(pred.raw||0.5,m.raw);
+    html+=compPair('λ Raw',pred.raw,m.raw);
+    html+=gapBox(g);
+    html+=allMetricsRow(m);
+    html+=explainBox('Why λ Raw is '+m.raw.toFixed(3)+' in this scenario','With entropy 0.82, stress loading 0.70, and the care and fairness blocks both deeply suppressed (−0.70, −0.80), the structural conditions for effective coordination are severely degraded. The agents have not changed — they have the same capabilities they always had. But the structure prevents those capabilities from operating effectively. λ Raw measures the structural availability of coordination capacity, not individual skill. When the institution systematically overrules agent contributions, the predictive machinery of those agents begins calibrating to the suppression — and the system’s coordination capacity falls as a result.');
+    html+=caseBox('In the Hanna simulation (Case App 2), Run 1 produces a similar profile: high entropy, severe block field suppression, λ Raw in the low range. The nurse scenario gives you the human-scale version of what that number represents — 14 capable professionals whose capabilities are being structurally blocked, not personally diminished.');
+  }
+  if(r===1){
+    const gRaw=gapClass(pred.raw||0.5,m.raw);
+    const gPerc=gapClass(pred.perc||0.5,m.perc);
+    const actualGap=m.gap;
+    html+=`<div class="comparison-grid">`;
+    html+=compBox('Your λ Raw Prediction',pred.raw?.toFixed(3)||'?','comp-pred');
+    html+=compBox('Actual λ Raw',m.raw.toFixed(3),'comp-actual',numColor(m.raw));
+    html+=`</div>`;
+    html+=`<div class="comparison-grid">`;
+    html+=compBox('Your λ Perceived Prediction',pred.perc?.toFixed(3)||'?','comp-pred');
+    html+=compBox('Actual λ Perceived',m.perc.toFixed(3),'comp-actual',numColor(m.perc));
+    html+=`</div>`;
+    html+=`<div style="background:#fef3c7;border:2px solid #fcd34d;border-radius:.5rem;padding:1rem;margin:.75rem 0;text-align:center">`;
+    html+=`<div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:#92400e;font-weight:700;margin-bottom:.3rem">Actual Suppression Gap</div>`;
+    html+=`<div style="font-size:2.2rem;font-family:'Courier New',monospace;font-weight:700;color:#92400e">${actualGap.toFixed(3)}</div>`;
+    html+=`<div style="font-size:.82rem;color:#92400e;margin-top:.2rem">${(actualGap*100).toFixed(0)}% of available coordination capacity is not reaching decisions</div></div>`;
+    html+=gapBox(gRaw,'λ Raw prediction accuracy');
+    html+=gapBox(gPerc,'λ Perceived prediction accuracy');
+    html+=explainBox('The gap: '+actualGap.toFixed(3),'The suppression gap is the most ethically direct metric in the suite. In this scenario, even with moderate overall entropy (0.62), the authority_weighted evidence distribution (0.65) and strong fairness suppression (−0.70) create a structural filtering effect. The agents have real capability — λ Raw reflects that. But the institutional architecture filters what reaches decisions, producing a λ Perceived significantly lower. The gap represents rational agency that exists but is structurally prevented from contributing. This is the Kantian violation operationalized: persons treated as means rather than ends, not by any individual\'s choice, but by structural design.');
+    html+=caseBox('In the Challenger disaster (Course Case App), the suppression gap between what Boisjoly and the engineers knew and what reached the launch decision was the structural cause of the disaster. The gap was not produced by anyone lying. It was produced by the communication architecture of NASA that systematically filtered technical dissent before it reached decision authority.');
+  }
+  if(r===2){
+    const actualGap=m.gap;
+    const predGap=pred.gap||Math.max(0,(pred.raw||0.55)-(pred.perc||0.35));
+    const g=gapClass(predGap,actualGap);
+    html+=`<div class="comparison-grid">`;
+    html+=compBox('Your Gap Prediction',predGap.toFixed(3),'comp-pred');
+    html+=compBox('Actual Gap',actualGap.toFixed(3),'comp-actual',numColor(actualGap,false));
+    html+=`</div>`;
+    html+=`<div class="comparison-grid">`;
+    html+=compBox('Actual λ Raw',m.raw.toFixed(3),'comp-actual',numColor(m.raw));
+    html+=compBox('Actual λ Perceived',m.perc.toFixed(3),'comp-actual',numColor(m.perc));
+    html+=`</div>`;
+    html+=gapBox(g,'Suppression gap prediction accuracy');
+    html+=explainBox('Why the junior faculty scenario produces this gap','The role_order worldview dominance (0.55) combined with authority_weighted evidence distribution (0.70) creates an institutional architecture where hierarchical deference is the primary norm. The agents still have capabilities (λ Raw moderate) but the structural expectation that junior faculty defer to senior faculty produces a significant λ Perceived suppression. Note that the authority_weighted evidence distribution is what operationalizes the "how it\'s always been done" culture — it amplifies established patterns and attenuates novel expert contributions, regardless of their merit.');
+    html+=caseBox('In the Maathai simulation, Phase 1 shows a similar dynamic: agents have capabilities (λ Raw moderate) but value-agreement requirements suppress what reaches decisions. Phase 2\'s shared task structure is what closes this gap — not by changing the agents but by changing what the institution rewards.');
+  }
+  if(r===3){
+    const predM=pred.morph||0.12;
+    const g=gapClass(predM,m.morph);
+    html+=compPair('Morphic Suppression',predM,m.morph,false);
+    html+=gapBox(g);
+    html+=`<div style="background:var(--paper);border-radius:.5rem;padding:.875rem 1rem;margin:.75rem 0;font-size:.84rem;color:var(--muted)">`;
+    html+=`<strong style="color:var(--charcoal)">λ Raw:</strong> ${m.raw.toFixed(3)} &nbsp;·&nbsp; <strong style="color:var(--charcoal)">λ Perceived:</strong> ${m.perc.toFixed(3)} &nbsp;·&nbsp; <strong style="color:var(--charcoal)">Gap:</strong> ${m.gap.toFixed(3)}`;
+    html+=`</div>`;
+    html+=explainBox('Why morphic suppression accumulates — and why 10 steps matters','In this scenario the community block is −0.75 — systematically preventing relational coordination — combined with entropy 0.70 across 10 steps. Each step in which agent contributions are suppressed updates the agents\' predictive machinery: "trying to reach decisions through this channel does not work." The suppression is not immediate — it builds as the pattern of futility accumulates. By step 10, the agents have been trained by the structure to reduce their expressive behavior, not because they chose to but because their predictive machinery calibrated to the structural reality. This is why Robben Island at 12 steps (24 years in the Mandela simulation) produces different morphic suppression than Hanna\'s case at 8 steps — duration is structural, not just temporal.');
+    html+=caseBox('The city planning liaison scenario is structurally equivalent to the five-year period in any extractive institution where expert contribution is systematically ignored. The Mandela simulation Run 1 shows this at 12 steps without BioBond. Run 2 shows how BioBond activation at step 5 interrupts the accumulation.');
+  }
+  if(r===4&&mB){
+    const mA=m;
+    const predA=pred.fid_a||0.5;const predB=pred.fid_b||0.5;
+    const actualA=mA.fid;const actualB=mB.fid;
+    const diff=actualB-actualA;
+    const gA=gapClass(predA,actualA);const gB=gapClass(predB,actualB);
+    html+=`<div style="font-size:.82rem;color:var(--muted);margin-bottom:.5rem;font-family:'Courier New',monospace">Morphic Fidelity = λ Raw ÷ (λ Raw + Morphic Suppression)</div>`;
+    html+=`<div class="comparison-grid">`;
+    html+=`<div style="background:#ede9fe;border:2px solid #c4b5fd;border-radius:.5rem;padding:1rem;text-align:center"><div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:#4c1d95;font-weight:700;margin-bottom:.3rem">Version A — No Support</div><div style="font-size:.72rem;color:#4c1d95;margin-bottom:.3rem">Your prediction: <strong>${predA.toFixed(2)}</strong></div><div style="font-size:2rem;font-family:'Courier New',monospace;font-weight:700;color:#134e4a">${actualA.toFixed(3)}</div></div>`;
+    html+=`<div style="background:var(--teal-light);border:2px solid var(--teal-mid);border-radius:.5rem;padding:1rem;text-align:center"><div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:var(--teal-dark);font-weight:700;margin-bottom:.3rem">Version B — With BioBond</div><div style="font-size:.72rem;color:var(--teal-dark);margin-bottom:.3rem">Your prediction: <strong>${predB.toFixed(2)}</strong></div><div style="font-size:2rem;font-family:'Courier New',monospace;font-weight:700;color:#134e4a">${actualB.toFixed(3)}</div></div>`;
+    html+=`</div>`;
+    html+=`<div style="background:#f0fdf4;border:2px solid #86efac;border-radius:.5rem;padding:.875rem;text-align:center;margin:.75rem 0">`;
+    html+=`<div style="font-size:.72rem;font-family:'Courier New',monospace;color:var(--success);font-weight:700;margin-bottom:.2rem">BioBond Contribution to Fidelity</div>`;
+    html+=`<div style="font-size:1.6rem;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">+${diff.toFixed(3)}</div>`;
+    html+=`<div style="font-size:.82rem;color:var(--success)">The external network added ${(diff*100).toFixed(0)}% fidelity</div></div>`;
+    html+=gapBox(gA,'Version A accuracy');html+=gapBox(gB,'Version B accuracy');
+    html+=explainBox('Why BioBond changes morphic fidelity','Both versions have identical suppression parameters — same entropy, same block fields, same steps. The only difference is BioBond activating at step 3 in Version B. The external network is not reducing the suppression conditions. It is providing cognitive scaffolding that maintains the precision weighting on the agent\'s identity priors even when the immediate environment is dismantling them. In Clark\'s terms: the extended mind system is larger in Version B — it includes the external network as a component that keeps the generative model stable under conditions designed to destabilize it. λ Raw stays higher, morphic suppression builds more slowly, and the fidelity ratio reflects both differences.');
+    html+=caseBox('This is the Hanna simulation\'s core comparison. Run 1 (no BioBond) vs Run 2 (Church mobilization at step 4) shows the same structural difference. When you run the Hanna simulation, you now have the calibration to know exactly what the fidelity difference represents: not emotional support, but cognitive scaffolding maintaining the identity signal under conditions designed to erase it.');
+  }
+  if(r===5){
+    const gBridge=gapClass(pred.bridge||0.5,m.bridge);
+    const gFric=gapClass(pred.fric||0.5,m.fric);
+    const both=m.bridge>0.4&&m.fric>0.4;
+    html+=`<div class="comparison-grid">`;
+    html+=`<div style="background:var(--teal-light);border:2px solid var(--teal-mid);border-radius:.5rem;padding:1rem;text-align:center"><div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:var(--teal-dark);font-weight:700;margin-bottom:.2rem">OS2 Bridge</div><div style="font-size:.75rem;color:var(--teal-dark);margin-bottom:.2rem">Pred: ${(pred.bridge||0.5).toFixed(2)}</div><div style="font-size:2rem;font-family:'Courier New',monospace;font-weight:700;color:var(--teal-dark)">${m.bridge.toFixed(3)}</div></div>`;
+    html+=`<div style="background:#fff7ed;border:2px solid #fdba74;border-radius:.5rem;padding:1rem;text-align:center"><div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:#9a3412;font-weight:700;margin-bottom:.2rem">Friction</div><div style="font-size:.75rem;color:#9a3412;margin-bottom:.2rem">Pred: ${(pred.fric||0.5).toFixed(2)}</div><div style="font-size:2rem;font-family:'Courier New',monospace;font-weight:700;color:#9a3412">${m.fric.toFixed(3)}</div></div>`;
+    html+=`</div>`;
+    if(both){
+      html+=`<div style="background:#ecfdf5;border:2px solid #6ee7b7;border-radius:.5rem;padding:.875rem;margin:.75rem 0;text-align:center;font-size:.9rem;color:var(--success)">⚡ <strong>High Bridge AND High Friction:</strong> This is functional equivalence — coordination happening despite genuine worldview distance because the shared task makes the friction cost worth paying.</div>`;
+    }
+    html+=gapBox(gBridge,'OS2 Bridge accuracy');html+=gapBox(gFric,'Friction accuracy');
+    html+=explainBox('Why high friction and high OS2 Bridge coexist in this scenario','The five worldview groups have genuine, deep differences — this is modeled in the worldview distribution (five roughly equal groups) and the evidence distribution (tradition, empirical, and authority all substantially present). The friction is real: it takes effort for an evangelical theology of stewardship and an environmental justice framework to communicate effectively. But the positive block fields model what the shared task contributes: every agent benefits from the community, care, and fairness dimensions being rewarded rather than suppressed. Different reasons, same creek. The bridge rises not because the friction disappeared but because the shared task provided enough structural pull to make the friction worth paying.');
+    html+=caseBox('This is exactly what the Maathai simulation models at larger scale. Phase 1 (value-agreement attempt) produces low Bridge and high friction because there is no shared task to pay the friction cost. Phase 2 (tree planting) produces high Bridge and similar friction because the concrete shared task is present. Now that you have calibrated on the coalition scenario, you know what to expect in the Maathai simulation — and you can explain why the numbers change between phases.');
+  }
+  if(r===6){
+    const predRaw=pred.raw||0.5;const predPerc=pred.perc||0.5;
+    const predMorph=pred.morph||0.12;const predBridge=pred.bridge||0.5;const predFric=pred.fric||0.5;
+    html+=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.84rem">`;
+    html+=`<tr style="background:var(--navy);color:#fff"><th style="padding:.5rem .75rem;text-align:left;font-family:'Courier New',monospace;font-size:.75rem">Metric</th><th style="padding:.5rem .75rem;font-family:'Courier New',monospace;font-size:.75rem">Your Prediction</th><th style="padding:.5rem .75rem;font-family:'Courier New',monospace;font-size:.75rem">Actual</th><th style="padding:.5rem .75rem;font-family:'Courier New',monospace;font-size:.75rem">Accuracy</th></tr>`;
+    const rows=[
+      {name:'λ Raw',pred:predRaw,actual:m.raw,hi:true},
+      {name:'λ Perceived',pred:predPerc,actual:m.perc,hi:true},
+      {name:'Supp. Gap',pred:Math.max(0,predRaw-predPerc),actual:m.gap,hi:false},
+      {name:'Morphic Supp.',pred:predMorph,actual:m.morph,hi:false,max:0.4},
+      {name:'OS2 Bridge',pred:predBridge,actual:m.bridge,hi:true},
+      {name:'Friction',pred:predFric,actual:m.fric},
+    ];
+    rows.forEach((row,i)=>{
+      const diff=Math.abs(row.pred-row.actual);
+      const acc=Math.max(0,1-diff/0.5);
+      const accColor=diff<0.08?'#166534':diff<0.18?'#d97706':'#dc2626';
+      html+=`<tr style="background:${i%2===0?'var(--paper)':'#fff'}">`;
+      html+=`<td style="padding:.5rem .75rem;font-weight:700;font-family:'Courier New',monospace">${row.name}</td>`;
+      html+=`<td style="padding:.5rem .75rem;font-family:'Courier New',monospace;color:#4c1d95">${row.pred.toFixed(3)}</td>`;
+      html+=`<td style="padding:.5rem .75rem;font-family:'Courier New',monospace;color:${numColor(row.actual,row.hi??true)};font-weight:700">${row.actual.toFixed(3)}</td>`;
+      html+=`<td style="padding:.5rem .75rem"><div style="width:80px;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:${(acc*100).toFixed(0)}%;background:${accColor};border-radius:3px"></div></div><div style="font-size:.7rem;font-family:'Courier New',monospace;color:${accColor};margin-top:.15rem">${diff<0.08?'Close':diff<0.18?'Developing':'Surprise'}</div></td>`;
+      html+=`</tr>`;
+    });
+    html+=`</table></div>`;
+    html+=explainBox('Reading your synthesis results','The hospital crisis scenario combines multiple suppression mechanisms simultaneously: high entropy (0.75) from the staffing crisis, authority-weighted decision architecture (0.55), strong care and fairness suppression (−0.40, −0.65) from the centralisation and the 70% non-reporting culture, and moderate role_order dominance (0.30). Notice how the different metrics interact: λ Raw is suppressed by the structural conditions; λ Perceived is suppressed further by the filtering architecture; morphic suppression builds because agents have learned that raising concerns produces documentation burdens not changes; friction may remain moderate or high because the worldview diversity is still present even though coordination capacity is degraded; OS2 Bridge may be low because the institution is no longer providing a shared task that pays the friction cost.');
+    html+=caseBox('The hospital scenario is structurally equivalent to the Challenger pre-launch environment. You now have calibrated intuitions for all five metrics. When you encounter these numbers in the Challenger Case Explorer or the CTE Challenge, you will know from your own calibration experience what each number represents in human terms — not because you memorized a definition, but because you predicted it, missed it, and understood why.');
+  }
+
+  // Show result section
+  div.innerHTML=html;div.style.display='block';
+  const nb=document.getElementById('next-'+r);if(nb)nb.style.display='block';
+  updateOverallProgress();
+}
+
+// ── Helper HTML builders ────────────────────────────────
+function compPair(name,pred,actual,hi=true){
+  return `<div class="comparison-grid">
+    <div class="comp-box comp-pred"><div class="comp-label">Your Prediction</div><div class="comp-value">${(pred||0).toFixed(3)}</div><div class="comp-sub">${name}</div></div>
+    <div class="comp-box comp-actual"><div class="comp-label">Simulation Result</div><div class="comp-value" style="color:${numColor(actual,hi)}">${actual.toFixed(3)}</div><div class="comp-sub">${name}</div></div>
+  </div>`;
+}
+function compBox(label,val,cls,color=null){
+  return `<div class="comp-box ${cls}"><div class="comp-label">${label}</div><div class="comp-value" ${color?`style="color:${color}"`:''}">${val}</div></div>`;
+}
+function gapBox(g,label='Prediction accuracy'){
+  return `<div class="gap-display ${g.cls}"><div class="gap-label">${label}</div><div class="gap-text">${g.txt}</div></div>`;
+}
+function explainBox(title,text){
+  return `<div class="explain-box"><div class="explain-label">What This Tells You: ${title}</div><div class="explain-text">${text}</div></div>`;
+}
+function caseBox(text){
+  return `<div class="case-box"><div class="case-label">Connection to the Course Cases</div><div class="case-text">${text}</div></div>`;
+}
+function allMetricsRow(m){
+  const chips=[
+    ['λ Raw',m.raw.toFixed(3),'#dbeafe','#1e3a8a'],
+    ['λ Perc',m.perc.toFixed(3),'#dcfce7','#166534'],
+    ['Gap',m.gap.toFixed(3),'#fef3c7','#92400e'],
+    ['Morph',m.morph.toFixed(3),'#fce7f3','#9d174d'],
+    ['Bridge',m.bridge.toFixed(3),'#ccfbf1','#134e4a'],
+    ['Fric',m.fric.toFixed(3),'#fff7ed','#9a3412'],
+  ];
+  return '<div class="metrics-row">' + chips.map(([n,v,bg,tc])=>
+    `<span class="metric-chip" style="background:${bg};color:${tc}">${n}: ${v}</span>`
+  ).join('')+'</div>';
+}
+
+// ── Navigation ──────────────────────────────────────────
+function startLab(){
+  document.getElementById('welcomeCard').style.display='none';
+  showRound(0);
+}
+function showRound(r){
+  document.querySelectorAll('.round-card').forEach(c=>c.style.display='none');
+  const card=document.getElementById('round-'+r);
+  if(card){card.style.display='block';currentRound=r;}
+  document.querySelectorAll('.round-dot').forEach((d,i)=>{
+    d.classList.remove('active');
+    if(actuals[i]!==undefined)d.classList.add('done');
+  });
+  const dot=document.getElementById('dot-'+r);
+  if(dot){dot.classList.add('active');dot.classList.remove('done');}
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Load saved slider values
+  loadSavedSliders(r);
+}
+function nextRound(r){
+  if(r<6){showRound(r+1);}else{showSummary();}
+}
+function loadSavedSliders(r){
+  const IDS={
+    0:['0-raw'],1:['1-raw','1-perc'],2:['2-raw','2-perc'],
+    3:['3-morph'],4:['4-a','4-b'],5:['5-bridge','5-fric'],
+    6:['6-raw','6-perc','6-morph','6-bridge','6-fric']
+  };
+  (IDS[r]||[]).forEach(id=>{
+    try{
+      const saved=localStorage.getItem(JP+'slider_'+id);
+      if(saved){
+        const sl=document.getElementById('sl-'+id);
+        if(sl){sl.value=saved;updateSlider(id,saved,id.includes('morph')?40:100);}
+      }
+    }catch(e){}
+  });
+  // Restore prediction lock state
+  try{
+    const savedPred=localStorage.getItem(JP+'pred_'+r);
+    if(savedPred){
+      predictions[r]=JSON.parse(savedPred);
+      const lines=Object.entries(predictions[r]).map(([k,v])=>`${k}: ${v.toFixed(3)}`).join(' · ');
+      const ld=document.getElementById('locked-display-'+r);
+      if(ld){ld.textContent='Locked: '+lines;ld.style.display='block';}
+      const lb=document.getElementById('lock-'+r);
+      if(lb){lb.disabled=true;lb.innerHTML='✓ Prediction Locked';}
+      const rs=document.getElementById('run-section-'+r);
+      if(rs)rs.style.display='block';
+    }
+  }catch(e){}
+}
+
+function updateOverallProgress(){
+  const done=Object.keys(actuals).length;
+  document.getElementById('opFill').style.width=(done/7*100)+'%';
+  document.getElementById('opFrac').textContent=done+' / 7';
+}
+
+// ── Summary ─────────────────────────────────────────────
+function showSummary(){
+  document.querySelectorAll('.round-card').forEach(c=>c.style.display='none');
+  const sc=document.getElementById('summaryCard');sc.style.display='block';
+  buildSummaryTable();
+  window.scrollTo({top:0,behavior:'smooth'});
+  try{const jv=localStorage.getItem(JP+'reflection');if(jv)document.getElementById('jt-reflection').value=jv;}catch(e){}
+  try{const jd=localStorage.getItem(JP+'design');if(jd)document.getElementById('jt-design').value=jd;}catch(e){}
+}
+
+function buildSummaryTable(){
+  const rows=[
+    {r:0,name:'λ Raw',metric:'raw',hi:true},
+    {r:1,name:'λ Perceived',metric:'perc',hi:true},
+    {r:2,name:'Suppression Gap',metric:'gap',hi:false},
+    {r:3,name:'Morphic Suppression',metric:'morph',hi:false},
+    {r:4,name:'Morphic Fidelity (A)',metric:'fid',hi:true,mBKey:'m'},
+    {r:5,name:'OS2 Bridge',metric:'bridge',hi:true},
+    {r:5,name:'Friction',metric:'fric',hi:false},
+    {r:6,name:'Synthesis — All Metrics',metric:null},
+  ];
+  const t=document.getElementById('calibrationTable');
+  t.innerHTML=`<tr><th>Metric</th><th>Your Prediction</th><th>Actual</th><th>Accuracy</th><th>Status</th></tr>`;
+  rows.forEach(row=>{
+    if(!actuals[row.r])return;
+    const m=actuals[row.r]?.m||{};
+    const pred=predictions[row.r]||{};
+    const actual=row.metric?m[row.metric]:null;
+    const predVal=row.metric?pred[row.metric]:null;
+    if(actual===null||predVal===null)return;
+    const diff=Math.abs(predVal-actual);
+    const acc=Math.max(0,Math.min(100,Math.round((1-diff/0.5)*100)));
+    const accColor=diff<0.08?'#166534':diff<0.18?'#d97706':'#dc2626';
+    const status=diff<0.08?'✓ Calibrated':diff<0.18?'~ Developing':'⚡ Surprised';
+    t.innerHTML+=`<tr>
+      <td style="font-weight:700">${row.name}</td>
+      <td style="font-family:'Courier New',monospace">${predVal.toFixed(3)}</td>
+      <td style="font-family:'Courier New',monospace;color:${accColor};font-weight:700">${actual.toFixed(3)}</td>
+      <td><div class="accuracy-bar"><div class="accuracy-fill" style="width:${acc}%;background:${accColor}"></div></div></td>
+      <td style="font-size:.82rem;color:${accColor}">${status}</td>
+    </tr>`;
+  });
+}
+
+// ── Journal persistence ─────────────────────────────────
+function jSave(k,v){
+  try{
+    localStorage.setItem(JP+k,v);
+    const snId=k==='reflection'?'sn-ref':k==='design'?'sn-des':'sn-syn';
+    const sn=document.getElementById(snId);
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+  }catch(e){}
+}
+
+// ── Export ───────────────────────────────────────────────
+function buildReport(){
+  const get=k=>{try{return localStorage.getItem(JP+k)||'';}catch(e){return '';}};
+  let out=`METRICS CALIBRATION LAB — COMPLETION REPORT\nDate: ${new Date().toLocaleDateString()}\nStudent: [YOUR NAME]\n\n`;
+  const names=['λ Raw','λ Perceived','Suppression Gap','Morphic Suppression','Morphic Fidelity','OS2 Bridge + Friction','Synthesis'];
+  for(let r=0;r<7;r++){
+    out+=`ROUND ${r+1}: ${names[r]}\n`;
+    const pred=predictions[r];const actual=actuals[r];
+    if(pred)out+=`  Prediction: ${JSON.stringify(pred,null,2).replace(/\n/g,'\n  ')}\n`;
+    if(actual){
+      const m=actual.m;
+      out+=`  Actual: λRaw=${m.raw.toFixed(3)} λPerc=${m.perc.toFixed(3)} Gap=${m.gap.toFixed(3)} Morph=${m.morph.toFixed(3)} Bridge=${m.bridge.toFixed(3)} Fric=${m.fric.toFixed(3)} Fidelity=${m.fid.toFixed(3)}\n`;
+    }
+    out+='\n';
+  }
+  out+=`SYNTHESIS REASONING\n${get('syn_reasoning')||'[not completed]'}\n\n`;
+  out+=`CALIBRATION REFLECTION\n${get('reflection')||'[not completed]'}\n\n`;
+  out+=`STUDENT-DESIGNED SCENARIO\n${get('design')||'[not completed]'}\n`;
+  return out;
+}
+function exportSummary(){
+  const txt=buildReport();
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='MCL_Calibration_Report.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+function copyReport(){
+  const txt=buildReport();
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>fallback(txt));
+  else fallback(txt);
+  document.getElementById('exportContent').textContent=txt;
+  document.getElementById('exportPreview').style.display='block';
+}
+function fallback(txt){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+}
+
+// ── On load ──────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  // Restore any saved actual results to show progress
+  for(let r=0;r<7;r++){
+    try{
+      const saved=localStorage.getItem(JP+'actual_'+r);
+      if(saved){
+        actuals[r]=JSON.parse(saved);
+        const dot=document.getElementById('dot-'+r);
+        if(dot&&r!==currentRound)dot.classList.add('done');
+      }
+    }catch(e){}
+  }
+  updateOverallProgress();
+});
+</script>
+</body>
+</html>
