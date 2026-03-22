@@ -217,6 +217,11 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <h1>🔬 Metrics Calibration Lab</h1>
       <p>Build your intuition before you use the case simulations</p>
     </div>
+    <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap">
+      <span id="prfBadge" style="font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4)">No PRF loaded</span>
+      <label style="display:inline-flex;align-items:center;gap:.35rem;padding:.35rem .8rem;border-radius:.4rem;font-size:.75rem;font-family:'Courier New',monospace;cursor:pointer;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);transition:.2s" for="mclPrfInput">📂 Load My PRF</label>
+      <input type="file" id="mclPrfInput" accept=".json" style="display:none">
+    </div>
     <div class="overall-progress">
       <span class="op-label">Progress</span>
       <div class="op-track"><div class="op-fill" id="opFill" style="width:0%"></div></div>
@@ -629,7 +634,42 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-btn" id="run-btn-6" onclick="runRound(6)">▶ Run Synthesis Simulation</button>
     </div>
     <div class="result-section reveal-anim" id="result-6"></div>
-    <button class="next-btn" id="next-6" onclick="showSummary()">View Your Calibration Summary →</button>
+    <button class="next-btn" id="next-6" onclick="showPRFIntegration()">Continue: Your PRF Meets the Numbers →</button>
+  </div>
+
+  <!-- ═══ PRF INTEGRATION LAYER ═══ -->
+  <div class="glass fade-in" id="prfIntegration" style="border-radius:.875rem;padding:2rem;margin-bottom:1.5rem;display:none">
+    <h2 style="color:var(--teal-dark)">Your PRF Meets the Numbers</h2>
+    <p style="margin-bottom:1rem;color:var(--muted);font-size:.9rem">You have now calibrated your intuition for what these numbers mean structurally. This section asks a different question: <strong>through your specific ethical lens, which of these numbers feels most urgent — and which do you weight most differently from someone with a different framework?</strong></p>
+    <p style="margin-bottom:1.25rem;color:var(--muted);font-size:.88rem;font-style:italic">These numbers are not verdicts. They are inputs to your reasoning. Your PRF determines which inputs feel most urgent, what story you tell about why the numbers look this way, and what intervention you think the situation calls for. Two people with identical simulation results can reach different — and both legitimate — analyses because their frameworks are calibrated to different moral frequencies.</p>
+
+    <!-- PRF Status / Personalization prompt -->
+    <div id="prfIntegrationStatus" style="background:var(--paper);border-radius:.5rem;padding:1.1rem 1.25rem;margin-bottom:1.25rem;border-left:4px solid var(--teal-mid)">
+      <div style="font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);font-weight:700;margin-bottom:.5rem" id="prfIntStatusLabel">Load Your PRF-22 File for a Personalised Reading</div>
+      <div style="font-size:.88rem;color:var(--charcoal);line-height:1.6" id="prfIntStatusText">If you completed the Day 1 Orientation and downloaded your PRF-22 file, load it using the button in the header. Your reading of each metric below will be personalised to your specific framework profile.</div>
+    </div>
+
+    <!-- Synthesis scenario metric values — pulled from Round 7 actual results -->
+    <div id="prfMetricReadings"></div>
+
+    <!-- Comparative framework table — always shown -->
+    <div style="margin-top:1.5rem">
+      <div style="font-size:.82rem;font-weight:700;color:var(--charcoal);margin-bottom:.75rem;border-bottom:2px solid var(--teal-mid);padding-bottom:.4rem">How Different PRF Configurations Weight the Same Numbers</div>
+      <p style="font-size:.85rem;color:var(--muted);margin-bottom:.875rem">The table below shows how five different ethical framework configurations respond differently to identical simulation metrics. This is not showing who is right — it is showing which moral features each framework makes automatically visible, and which require active inference to see.</p>
+      <div id="comparativeTable"></div>
+    </div>
+
+    <!-- Journal prompt -->
+    <div class="journal-box" style="margin-top:1.25rem">
+      <h4>📝 PRF Interpretation Journal Entry</h4>
+      <p style="font-size:.85rem;margin-bottom:.5rem">Using the Synthesis scenario numbers from Round 7: which metric does your framework make feel most urgent? Which feels least urgent but probably matters more to a classmate with a different PRF? Write a two-framework comparison — your reading of the numbers versus how someone with a different PRF would read the same data.</p>
+      <textarea class="journal-ta" id="jt-prf-interp"
+        placeholder="Through my framework, the number that feels most urgent is... because my PRF is calibrated to...&#10;&#10;A classmate with a [different framework] would likely weight [different metric] more heavily because...&#10;&#10;What this means for how we would advise the same institution differently:"
+        oninput="jSave('prf_interp',this.value)" style="min-height:130px"></textarea>
+      <div class="save-note" id="sn-prf">✓ Saved</div>
+    </div>
+
+    <button class="btn btn-teal" style="width:100%;padding:.85rem;font-size:1rem;margin-top:.75rem" onclick="showSummary()">View Calibration Summary & Certificate →</button>
   </div>
 
   <!-- ═══ SUMMARY ═══ -->
@@ -637,6 +677,12 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
     <h2 style="color:var(--teal-dark);border-bottom:3px solid var(--teal-mid);padding-bottom:.6rem;margin-bottom:1.25rem">Your Calibration Summary</h2>
     <p style="margin-bottom:1rem;color:var(--muted);font-size:.9rem">Below is your accuracy across all seven rounds. The goal is not to be right — it is to understand what surprised you and why.</p>
     <table class="calibration-table" id="calibrationTable"></table>
+
+    <!-- PRF Summary reading inside summary card -->
+    <div id="summaryPrfBlock" style="background:var(--paper);border-radius:.5rem;padding:1.25rem;margin-bottom:1.25rem;border-left:4px solid var(--teal-mid);display:none">
+      <div style="font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);font-weight:700;margin-bottom:.5rem" id="summaryPrfLabel">Your PRF — Calibration Implications</div>
+      <div style="font-size:.88rem;color:var(--charcoal);line-height:1.65" id="summaryPrfText"></div>
+    </div>
 
     <div class="journal-box" style="margin-top:1.5rem">
       <h4>📝 Calibration Reflection — For Your Ethics Journal</h4>
@@ -1151,6 +1197,8 @@ function showSummary(){
   // Show certificate section
   document.getElementById('certWrapper').classList.add('visible');
   updateCertState();
+  // Render PRF block in summary
+  renderSummaryPRFBlock();
   window.scrollTo({top:0,behavior:'smooth'});
   try{const jv=localStorage.getItem(JP+'reflection');if(jv)document.getElementById('jt-reflection').value=jv;}catch(e){}
   try{const jd=localStorage.getItem(JP+'design');if(jd)document.getElementById('jt-design').value=jd;}catch(e){}
@@ -1254,6 +1302,17 @@ window.addEventListener('load',()=>{
     }catch(e){}
   }
   updateOverallProgress();
+  // Try restore PRF from localStorage
+  try{
+    const fw=localStorage.getItem('d1_prf_fw');
+    if(fw&&MCL_PRF.FW_NAMES[fw]){
+      MCL_PRF._fw=fw;
+      const badge=document.getElementById('prfBadge');
+      if(badge) badge.innerHTML=MCL_PRF.icon()+' <strong style="color:'+MCL_PRF.color()+'">'+MCL_PRF.name()+'</strong>';
+    }
+  }catch(e){}
+  // Restore prf-interp journal
+  try{const v=localStorage.getItem(JP+'prf_interp');if(v&&document.getElementById('jt-prf-interp'))document.getElementById('jt-prf-interp').value=v;}catch(e){}
   // If all 7 complete, show cert wrapper in summary
   if(completedCount()===7 && document.getElementById('summaryCard')?.style.display==='block'){
     document.getElementById('certWrapper').classList.add('visible');
@@ -1415,6 +1474,264 @@ function copyCertText(){
 function fallbackCopy(txt){
   const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
   document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+}
+
+// ── PRF Integration Layer ─────────────────────────────────
+
+// PRF framework data — what each framework sees in each metric
+const MCL_PRF = {
+  _fw: null,
+
+  FW_NAMES: {
+    individual_rights:  {name:'Individual / Rights-Based',  icon:'⚖️',  color:'#4a7fb5'},
+    relational_we:      {name:'Relational / We-Centered',   icon:'🤝',  color:'#3a8a5c'},
+    hierarchical_role:  {name:'Hierarchical / Role-Based',  icon:'🏛️',  color:'#8a6fb5'},
+    boundary_integrity: {name:'Boundary / Integrity-Centered',icon:'🛡️',color:'#c9a84c'},
+    custodial:          {name:'Custodial / Stewardship',    icon:'🌱',  color:'#4a9a7a'},
+  },
+
+  // What each framework makes automatically salient in each metric
+  METRIC_READINGS: {
+    lambda_raw: {
+      individual_rights:  'λ Raw tells you whether rational agents have equal structural access to participate in decisions. A low value means rational agency is being systematically denied equal standing — your framework reads this as a rights violation before anything else.',
+      relational_we:      'λ Raw tells you whether the relational network is functioning — whether people can reach each other through the institutional structure. Low λ Raw means the community fabric is structurally severed.',
+      hierarchical_role:  'λ Raw tells you whether legitimate authority is functioning as it should — directing capability toward proper ends. Low λ Raw suggests authority has inverted its own purpose: blocking rather than enabling.',
+      boundary_integrity: 'λ Raw tells you whether the institution respects the non-negotiable capabilities of those within it. Low λ Raw is a categorical violation — the structure is treating persons as objects to be managed rather than agents to be enabled.',
+      custodial:          'λ Raw tells you whether the institution is maintaining what it was built to preserve. Low λ Raw means the institution is consuming its own capacity — extracting rather than building.',
+    },
+    suppression_gap: {
+      individual_rights:  'The suppression gap is the most direct measure your framework attends to: the exact quantity of rational agency being prevented from contributing to decisions. A gap of 0.30 means 30% of the available voice is structurally silenced — your Kantian instinct names this immediately.',
+      relational_we:      'The gap measures how much of what people know and feel is not reaching the shared space of decision. This is relational rupture made numerical — the community is not fully present in its own governance.',
+      hierarchical_role:  'The gap shows how much legitimate expert contribution is being filtered by hierarchical deference. Your framework asks: is the filtering serving the institution\'s stated purpose, or has hierarchy become self-serving?',
+      boundary_integrity: 'The suppression gap measures how much categorical commitment is being prevented from reaching outcomes. Every point of gap represents a limit that matters being treated as if it does not matter.',
+      custodial:          'The gap measures knowledge being lost that should be transmitted — the institution failing to use what it has been entrusted with. High gaps represent a form of intergenerational waste: capability built over time being systematically discarded.',
+    },
+    morphic_suppression: {
+      individual_rights:  'Morphic suppression shows that the rights violation has become self-reinforcing: agents have internalized the suppression. Your framework notes that this moves the violation from structural to psychological — repairing the structure is necessary but no longer sufficient.',
+      relational_we:      'This is the most painful metric for your framework: people have learned to be less themselves in relation to each other. The community has partially disappeared inside its members through learned self-erasure.',
+      hierarchical_role:  'Morphic suppression means the hierarchy has corrupted its own pipeline: agents have stopped bringing their best contribution because experience has taught them it will not be valued. The institution is degrading its own legitimate functioning.',
+      boundary_integrity: 'High morphic suppression means the boundary violations have been so sustained that agents have stopped asserting what matters most to them. The Identity Kernel is under threat — not from a single assault but from accumulated erosion.',
+      custodial:          'Morphic suppression measures accumulated loss — not just present incapacity but the progressive erosion of what was once expressed. Your framework sees this as damage to the inheritance: future members will receive a diminished institution.',
+    },
+    os2_bridge: {
+      individual_rights:  'OS2 Bridge measures whether different rational agents are finding common ground through the structure. Your framework asks: is this convergence producing genuine equal participation, or are some frameworks bearing more of the friction cost than others?',
+      relational_we:      'A rising OS2 Bridge means the relational network is forming across difference — people are recognizing each other as genuine contributors even where they disagree. Your framework reads high Bridge as evidence of ubuntu in practice.',
+      hierarchical_role:  'OS2 Bridge measures whether different role-based authorities are functioning in coordination. High Bridge under a shared task means the hierarchy is directing different capabilities toward common ends — authority doing what it is supposed to do.',
+      boundary_integrity: 'OS2 Bridge tells you whether the shared task is strong enough to maintain categorical commitments while still enabling coordination. Your framework is most interested in whether the convergence requires agents to compromise what should not be compromised.',
+      custodial:          'High OS2 Bridge means the institution is weaving together diverse inheritances into a shared future. Your framework reads rising Bridge as evidence that the institution is building something that will last beyond any single framework\'s dominance.',
+    },
+    friction: {
+      individual_rights:  'Friction is the cost of genuine pluralism — and your framework neither celebrates nor condemns it. The question is whether the friction is distributed fairly: are some frameworks bearing disproportionate translation costs while others have their vocabulary treated as default?',
+      relational_we:      'Friction is the honest measure of genuine difference — and your framework treats it as information about what relational work remains to be done. High friction with high Bridge means the community is doing real work. High friction with low Bridge means the structure is not providing the shared task that makes the work worth doing.',
+      hierarchical_role:  'Your framework asks whether friction is productive or pathological. Productive friction means different roles are genuinely negotiating their contributions. Pathological friction means the hierarchy has failed to clarify which role bears which responsibility.',
+      boundary_integrity: 'Friction is what you pay to maintain your categorical commitments in a context of genuine difference. Your framework distinguishes between friction that protects what must be protected and friction that is merely habitual or territorial.',
+      custodial:          'Your framework reads friction as the cost of genuine diversity — and considers it a reasonable price to pay for an institution that will survive the dominance of any single tradition. Low friction in a diverse community is often a warning sign: either difference has been suppressed or the shared task has narrowed to what only one tradition finds meaningful.',
+    },
+  },
+
+  // Calibration implications — what each PRF tends to over/under-weight
+  CALIBRATION_IMPLICATIONS: {
+    individual_rights:  'Your rights-based framework tends to make the suppression gap feel most urgent — it is the most direct measure of rights violation. You may under-weight morphic suppression relative to its actual significance, because it is psychologically located rather than structurally visible. Watch for the tendency to recommend structural repair without attending to the psychological repair that sustained rights violations also require.',
+    relational_we:      'Your relational framework tends to make morphic suppression feel most urgent — the internalized damage to community connection. You may under-weight the OS2 Bridge metric relative to students from other frameworks, because you are more sensitive to what coordination costs relationally than what it produces structurally. Watch for the tendency to prioritize relational healing before structural change when both may be needed simultaneously.',
+    hierarchical_role:  'Your role-based framework tends to make the λ Raw metric feel most urgent — whether capability is being directed toward its proper institutional function. You may under-weight friction relative to its actual significance, treating it as noise rather than as information about genuine value difference that the institution needs to address. Watch for the tendency to diagnose authority failures without attending to whether the legitimate authority structure itself is producing the problem.',
+    boundary_integrity: 'Your boundary/integrity framework tends to make morphic suppression feel most urgent — because it represents the erosion of non-negotiable identity under sustained pressure. You may under-weight the OS2 Bridge metric, treating cross-worldview convergence as a threat to categorical commitments rather than as evidence that the shared task is strong enough to be worth the friction cost. Watch for the tendency to diagnose identity threats accurately while being slow to see coordination opportunities.',
+    custodial:          'Your custodial framework tends to make the long-run metrics — morphic suppression accumulation and OS2 Bridge trend — feel most urgent. You may under-weight λ Raw in the present tense, because your framework is more sensitive to trajectory than to current state. Watch for the tendency to focus on what is being lost over time while being slow to act on what requires immediate structural intervention.',
+  },
+
+  load(text){
+    try{
+      const p=JSON.parse(text);let fw;
+      if(p.framework){fw=p.framework;}
+      else if(p.prf22?.moralFoundations){
+        const mf=p.prf22.moralFoundations;
+        const z=x=>((x||3)-3);
+        const sc={
+          individual_rights: 0.40*z(mf.Fairness)+0.30*(z(mf.Care)+z(mf.Fairness))/2-0.30*(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3,
+          relational_we:     0.40*z(mf.Care)+0.30*(z(mf.Care)+z(mf.Fairness))/2,
+          hierarchical_role: 0.40*(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3,
+          boundary_integrity:0.30*(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3+0.40*z(mf.Purity||3),
+          custodial:         0.30*(z(mf.Authority||3)+z(mf.Purity||3))/2+0.20*(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3+0.05,
+        };
+        fw=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0][0];
+      }
+      if(fw&&this.FW_NAMES[fw]){this._fw=fw;return{ok:true};}
+      return{ok:false,error:'Unrecognised format'};
+    }catch(e){return{ok:false,error:e.message};}
+  },
+  fw(){return this._fw;},
+  isLoaded(){return this._fw!==null;},
+  name(){return this._fw?this.FW_NAMES[this._fw].name:'';},
+  icon(){return this._fw?this.FW_NAMES[this._fw].icon:'';},
+  color(){return this._fw?this.FW_NAMES[this._fw].color:'var(--teal)';},
+};
+
+// PRF file loader
+document.getElementById('mclPrfInput').addEventListener('change',function(){
+  const file=this.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const res=MCL_PRF.load(e.target.result);
+    const badge=document.getElementById('prfBadge');
+    if(res.ok){
+      badge.innerHTML=`${MCL_PRF.icon()} <strong style="color:${MCL_PRF.color()}">${MCL_PRF.name()}</strong>`;
+      // Also store for other apps
+      try{localStorage.setItem('d1_prf_fw',MCL_PRF.fw());}catch(err){}
+      // Refresh PRF integration if visible
+      if(document.getElementById('prfIntegration').style.display!=='none') renderPRFIntegration();
+      // Refresh summary PRF block if visible
+      if(document.getElementById('summaryCard').style.display==='block') renderSummaryPRFBlock();
+    } else {
+      badge.textContent=`Error: ${res.error}`;
+      badge.style.color='#f08080';
+    }
+  };
+  r.readAsText(file);
+});
+
+// Try to load PRF from localStorage on startup
+(function(){
+  try{
+    const fw=localStorage.getItem('d1_prf_fw');
+    if(fw&&MCL_PRF.FW_NAMES[fw]){
+      MCL_PRF._fw=fw;
+      const badge=document.getElementById('prfBadge');
+      if(badge) badge.innerHTML=`${MCL_PRF.icon()} <strong style="color:${MCL_PRF.color()}">${MCL_PRF.name()}</strong>`;
+    }
+  }catch(e){}
+})();
+
+function showPRFIntegration(){
+  document.querySelectorAll('.round-card').forEach(c=>c.style.display='none');
+  document.getElementById('summaryCard').style.display='none';
+  const pi=document.getElementById('prfIntegration');
+  pi.style.display='block';
+  renderPRFIntegration();
+  window.scrollTo({top:0,behavior:'smooth'});
+  try{const v=localStorage.getItem(JP+'prf_interp');if(v)document.getElementById('jt-prf-interp').value=v;}catch(e){}
+}
+
+function renderPRFIntegration(){
+  const fw=MCL_PRF.fw();
+  const fwInfo=fw?MCL_PRF.FW_NAMES[fw]:null;
+
+  // Update status block
+  const label=document.getElementById('prfIntStatusLabel');
+  const text=document.getElementById('prfIntStatusText');
+  if(label&&text){
+    if(fw&&fwInfo){
+      label.innerHTML=`${fwInfo.icon} Your ${fwInfo.name} Framework — Personalised Reading`;
+      label.style.color=fwInfo.color;
+      text.textContent=MCL_PRF.CALIBRATION_IMPLICATIONS[fw];
+    } else {
+      label.textContent='No PRF Loaded — Showing Generic Reading';
+      text.textContent='Load your PRF-22 file using the button in the header to see a personalised reading for your specific framework. The readings below show the generic version until then.';
+    }
+  }
+
+  // Build per-metric readings using Round 7 actuals (or Round 6 OS2)
+  const syn=actuals[6]?.m||{};
+  const synRaw=syn.lambda_raw||0, synPerc=syn.lambda_perceived||0;
+  const synGap=syn.gap||0, synMorph=syn.morphic_suppression||0;
+  const synBridge=syn.os2_synergy_bridge??syn.os2_synergy??0;
+  const synFric=syn.friction||0;
+
+  const METRICS=[
+    {key:'lambda_raw',    label:'λ Raw',              val:synRaw,    hi:true,  readingKey:'lambda_raw',    pill:'pill-raw'},
+    {key:'gap',           label:'Suppression Gap',    val:synGap,    hi:false, readingKey:'suppression_gap',pill:'pill-gap'},
+    {key:'morphic',       label:'Morphic Suppression',val:synMorph,  hi:false, readingKey:'morphic_suppression',pill:'pill-morph'},
+    {key:'bridge',        label:'OS2 Bridge',         val:synBridge, hi:true,  readingKey:'os2_bridge',    pill:'pill-bridge'},
+    {key:'friction',      label:'Friction',           val:synFric,   hi:false, readingKey:'friction',      pill:'pill-fric'},
+  ];
+
+  const nc=v=>v>.60?'#166534':v>.35?'#d97706':'#dc2626';
+  const ncLow=v=>v<.10?'#166534':v<.20?'#d97706':'#dc2626';
+
+  let html='';
+  if(!actuals[6]){
+    html='<div style="background:var(--paper);border-radius:.5rem;padding:1rem;color:var(--muted);font-size:.88rem;font-style:italic;text-align:center">Complete Round 7 (Synthesis) to see your PRF reading of the metric values.</div>';
+  } else {
+    html+='<div style="font-size:.82rem;font-weight:700;color:var(--charcoal);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:2px solid var(--teal-mid)">Your PRF Reading of the Synthesis Scenario Metrics</div>';
+    METRICS.forEach(m=>{
+      const reading=(fw&&MCL_PRF.METRIC_READINGS[m.readingKey])?MCL_PRF.METRIC_READINGS[m.readingKey][fw]:`This metric (${m.label}) measures a structural feature your simulation has now calibrated. Load your PRF-22 file for a framework-specific reading.`;
+      const valColor=m.hi?nc(m.val):ncLow(m.val);
+      html+=`<div style="background:var(--paper);border-radius:.5rem;padding:1rem;margin-bottom:.75rem;display:flex;gap:1rem;align-items:flex-start">
+        <div style="text-align:center;min-width:72px;flex-shrink:0">
+          <div style="font-size:.72rem;font-family:'Courier New',monospace;color:var(--muted);margin-bottom:.2rem">${m.label}</div>
+          <div style="font-size:1.6rem;font-weight:700;font-family:'Courier New',monospace;color:${valColor};line-height:1">${m.val.toFixed(3)}</div>
+          <div style="margin:.25rem auto 0;width:52px;height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:${Math.round(m.val*100)}%;background:${valColor};border-radius:3px"></div></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:.3rem" ${fw?`style="color:${MCL_PRF.color()}"`:''}>
+            ${fw&&fwInfo?`${fwInfo.icon} Through Your ${fwInfo.name} Lens`:'What This Number Means'}
+          </div>
+          <div style="font-size:.85rem;color:var(--charcoal);line-height:1.6">${reading}</div>
+        </div>
+      </div>`;
+    });
+  }
+  document.getElementById('prfMetricReadings').innerHTML=html;
+
+  // Build comparative framework table
+  renderComparativeTable();
+}
+
+function renderComparativeTable(){
+  const FWS=['individual_rights','relational_we','hierarchical_role','boundary_integrity','custodial'];
+  const METRICS_SHORT=[
+    {rk:'lambda_raw',       label:'λ Raw',         bg:'#dbeafe', tc:'#1e3a8a'},
+    {rk:'suppression_gap',  label:'Supp. Gap',     bg:'#fef3c7', tc:'#92400e'},
+    {rk:'morphic_suppression',label:'Morphic Supp.',bg:'#fce7f3',tc:'#9d174d'},
+    {rk:'os2_bridge',       label:'OS2 Bridge',    bg:'#ccfbf1', tc:'#134e4a'},
+    {rk:'friction',         label:'Friction',      bg:'#fff7ed', tc:'#9a3412'},
+  ];
+
+  const URGENCY={
+    individual_rights: {lambda_raw:'HIGH',suppression_gap:'HIGHEST',morphic_suppression:'MEDIUM',os2_bridge:'MEDIUM',friction:'MEDIUM'},
+    relational_we:     {lambda_raw:'HIGH',suppression_gap:'HIGH',morphic_suppression:'HIGHEST',os2_bridge:'HIGH',friction:'MEDIUM'},
+    hierarchical_role: {lambda_raw:'HIGHEST',suppression_gap:'HIGH',morphic_suppression:'HIGH',os2_bridge:'HIGH',friction:'MEDIUM'},
+    boundary_integrity:{lambda_raw:'HIGH',suppression_gap:'HIGHEST',morphic_suppression:'HIGHEST',os2_bridge:'MEDIUM',friction:'HIGH'},
+    custodial:         {lambda_raw:'MEDIUM',suppression_gap:'HIGH',morphic_suppression:'HIGHEST',os2_bridge:'HIGHEST',friction:'MEDIUM'},
+  };
+
+  const uc={HIGHEST:'#166534',HIGH:'#d97706',MEDIUM:'#6b7280'};
+  const ub={HIGHEST:'#dcfce7',HIGH:'#fef3c7',MEDIUM:'var(--paper)'};
+
+  let html=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.8rem">`;
+  html+=`<thead><tr><th style="background:var(--navy);color:#fff;padding:.5rem .75rem;text-align:left;font-family:'Courier New',monospace;font-size:.72rem">Framework</th>`;
+  METRICS_SHORT.forEach(m=>{
+    html+=`<th style="background:var(--navy);color:#fff;padding:.5rem .5rem;text-align:center;font-family:'Courier New',monospace;font-size:.72rem">${m.label}</th>`;
+  });
+  html+=`</tr></thead><tbody>`;
+
+  FWS.forEach(fw=>{
+    const fi=MCL_PRF.FW_NAMES[fw];
+    const isUser=(MCL_PRF.fw()===fw);
+    html+=`<tr style="${isUser?'outline:2px solid '+fi.color+';outline-offset:-1px':''}">`;
+    html+=`<td style="padding:.5rem .75rem;font-weight:700;background:${isUser?fi.color+'18':'var(--paper)'};white-space:nowrap">${fi.icon} ${fi.name}${isUser?' ← You':''}</td>`;
+    METRICS_SHORT.forEach(m=>{
+      const u=URGENCY[fw][m.rk];
+      html+=`<td style="padding:.4rem .5rem;text-align:center;background:${ub[u]};color:${uc[u]};font-family:'Courier New',monospace;font-size:.75rem;font-weight:700">${u}</td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  html+=`<div style="font-size:.72rem;color:var(--muted);margin-top:.4rem;font-style:italic">HIGHEST = automatic salience / HIGH = strongly weighted / MEDIUM = requires active inference to weight fully</div>`;
+  document.getElementById('comparativeTable').innerHTML=html;
+}
+
+function renderSummaryPRFBlock(){
+  const fw=MCL_PRF.fw();
+  if(!fw) return;
+  const fi=MCL_PRF.FW_NAMES[fw];
+  const block=document.getElementById('summaryPrfBlock');
+  const label=document.getElementById('summaryPrfLabel');
+  const text=document.getElementById('summaryPrfText');
+  if(!block) return;
+  block.style.borderLeftColor=fi.color;
+  block.style.display='block';
+  label.innerHTML=`${fi.icon} ${fi.name} — Calibration Implications for Your Course Work`;
+  label.style.color=fi.color;
+  text.textContent=MCL_PRF.CALIBRATION_IMPLICATIONS[fw];
 }
 </script>
 </body>
