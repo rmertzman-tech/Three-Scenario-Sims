@@ -137,7 +137,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 /* ── Progress dots ── */
 .round-nav{display:flex;gap:.4rem;justify-content:center;margin-bottom:1.5rem;flex-wrap:wrap}
-.round-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-family:'Courier New',monospace;font-weight:700;border:2px solid rgba(255,255,255,.3);color:rgba(255,255,255,.5);background:transparent;cursor:default;transition:.3s}
+.round-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-family:'Courier New',monospace;font-weight:700;border:2px solid rgba(255,255,255,.3);color:rgba(255,255,255,.5);background:transparent;cursor:pointer;transition:.3s}
+.round-dot:hover{border-color:rgba(255,255,255,.7);color:#fff;transform:scale(1.1)}
 .round-dot.done{background:var(--amber);border-color:var(--amber);color:#fff}
 .round-dot.active{background:var(--teal-mid);border-color:var(--teal-mid);color:#fff;box-shadow:0 0 0 3px rgba(20,184,166,.35)}
 
@@ -165,6 +166,47 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 
 footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;color:rgba(255,255,255,.4);font-size:.8rem;font-style:italic}
 @media(max-width:640px){.comparison-grid{grid-template-columns:1fr}.range-guide{grid-template-columns:1fr 1fr}}
+
+/* ── Certificate ── */
+.cert-wrapper{display:none;margin-top:2rem}
+.cert-wrapper.visible{display:block}
+@media print{
+  body > *:not(.cert-print-target){display:none!important}
+  .cert-print-target{display:block!important}
+  .cert-no-print{display:none!important}
+}
+.certificate{background:#fff;border:3px solid var(--teal-dark);border-radius:1rem;padding:2.5rem;max-width:680px;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,.15);position:relative;overflow:hidden}
+.cert-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:8rem;font-weight:900;color:rgba(15,118,110,.04);white-space:nowrap;pointer-events:none;font-family:'Georgia',serif;user-select:none}
+.cert-header{text-align:center;border-bottom:2px solid var(--teal-mid);padding-bottom:1.25rem;margin-bottom:1.25rem}
+.cert-seal{font-size:3rem;margin-bottom:.4rem}
+.cert-institution{font-size:.78rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.12em;color:var(--teal-dark);font-weight:700;margin-bottom:.2rem}
+.cert-title{font-size:1.5rem;font-weight:700;color:var(--charcoal);margin-bottom:.15rem}
+.cert-subtitle{font-size:.82rem;color:var(--muted);font-style:italic}
+.cert-body{text-align:center;margin:1rem 0}
+.cert-awarded-to{font-size:.78rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.3rem}
+.cert-name{font-size:1.9rem;font-family:'Georgia',serif;color:var(--teal-dark);font-weight:700;border-bottom:2px solid var(--teal-mid);display:inline-block;padding:0 2rem .25rem;margin-bottom:.75rem}
+.cert-statement{font-size:.88rem;line-height:1.7;color:var(--charcoal);max-width:480px;margin:0 auto .875rem}
+.cert-data{background:var(--paper);border-radius:.5rem;padding:1rem;margin:1rem 0;text-align:left}
+.cert-data-title{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);font-weight:700;margin-bottom:.6rem;text-align:center}
+.cert-data-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.cert-data-table th{background:var(--teal);color:#fff;padding:.35rem .6rem;font-family:'Courier New',monospace;font-size:.7rem}
+.cert-data-table td{padding:.3rem .6rem;border-bottom:1px solid var(--border);font-family:'Courier New',monospace}
+.cert-data-table tr:nth-child(even) td{background:#f0fdf4}
+.cert-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.cert-sig{text-align:center;flex:1}
+.cert-sig-line{border-top:1px solid var(--charcoal);margin:0 auto .3rem;width:140px}
+.cert-sig-label{font-size:.7rem;font-family:'Courier New',monospace;color:var(--muted)}
+.cert-date{font-family:'Courier New',monospace;font-size:.8rem;color:var(--muted);text-align:center;flex:1}
+.cert-score{text-align:center;flex:1}
+.cert-score-num{font-size:2rem;font-weight:700;color:var(--teal-dark);font-family:'Courier New',monospace;line-height:1}
+.cert-score-label{font-size:.7rem;font-family:'Courier New',monospace;color:var(--muted)}
+.cert-locked{background:#e2f0ff;border:2px dashed #93c5fd;border-radius:.5rem;padding:1.25rem;text-align:center;margin-top:1.25rem}
+.cert-locked-icon{font-size:2rem;margin-bottom:.4rem}
+.cert-locked-text{font-size:.88rem;color:#1e3a8a;font-weight:700;margin-bottom:.3rem}
+.cert-locked-sub{font-size:.78rem;color:#3b82f6}
+.cert-progress-bar{width:100%;height:10px;background:var(--border);border-radius:5px;overflow:hidden;margin:.5rem 0}
+.cert-progress-fill{height:100%;background:var(--teal);border-radius:5px;transition:width .5s ease}
+
 </style>
 </head>
 <body>
@@ -187,13 +229,16 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 
   <!-- Round navigation dots -->
   <div class="round-nav" id="roundNav">
-    <div class="round-dot active" id="dot-0">1</div>
-    <div class="round-dot" id="dot-1">2</div>
-    <div class="round-dot" id="dot-2">3</div>
-    <div class="round-dot" id="dot-3">4</div>
-    <div class="round-dot" id="dot-4">5</div>
-    <div class="round-dot" id="dot-5">6</div>
-    <div class="round-dot" id="dot-6">7</div>
+    <button class="round-dot active" id="dot-0" onclick="goToRound(0)" title="λ Raw">1</button>
+    <button class="round-dot" id="dot-1" onclick="goToRound(1)" title="λ Perceived">2</button>
+    <button class="round-dot" id="dot-2" onclick="goToRound(2)" title="Suppression Gap">3</button>
+    <button class="round-dot" id="dot-3" onclick="goToRound(3)" title="Morphic Suppression">4</button>
+    <button class="round-dot" id="dot-4" onclick="goToRound(4)" title="Morphic Fidelity">5</button>
+    <button class="round-dot" id="dot-5" onclick="goToRound(5)" title="OS2 Bridge">6</button>
+    <button class="round-dot" id="dot-6" onclick="goToRound(6)" title="Synthesis">7</button>
+  </div>
+  <div style="text-align:center;font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4);margin-bottom:.75rem">
+    Click any round to jump to it directly — rounds can be revisited at any time
   </div>
 
   <!-- ═══ WELCOME ═══ -->
@@ -618,6 +663,74 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
   </div>
 
 </div>
+
+  <!-- ═══ CERTIFICATE ═══ -->
+  <div class="cert-wrapper" id="certWrapper">
+    <!-- Locked state — shows while completion is pending -->
+    <div class="cert-locked" id="certLocked">
+      <div class="cert-locked-icon">🎓</div>
+      <div class="cert-locked-text">Certificate of Completion</div>
+      <div class="cert-locked-sub" id="certLockedSub">Complete all 7 rounds to unlock your certificate.</div>
+      <div class="cert-progress-bar"><div class="cert-progress-fill" id="certProgressFill" style="width:0%"></div></div>
+      <div style="font-size:.75rem;font-family:'Courier New',monospace;color:#3b82f6;margin-top:.3rem" id="certProgressText">0 of 7 rounds complete</div>
+    </div>
+
+    <!-- Certificate — shows when all 7 complete -->
+    <div class="certificate cert-print-target" id="certificate" style="display:none">
+      <div class="cert-watermark">CALIBRATED</div>
+      <div class="cert-header">
+        <div class="cert-seal">🔬</div>
+        <div class="cert-institution">Ethics Beyond Boundaries · Saint Petersburg College Ethics Institute</div>
+        <div class="cert-title">Certificate of Calibration</div>
+        <div class="cert-subtitle">Metrics Calibration Lab — Pre-Simulation Training</div>
+      </div>
+      <div class="cert-body">
+        <div class="cert-awarded-to">This certifies that</div>
+        <div class="cert-name" id="certName">_________________________</div>
+        <div class="cert-statement">
+          has completed all seven rounds of the Metrics Calibration Lab, demonstrating active-inference calibration for each simulation metric used in the Ethics Beyond Boundaries case simulation suite: λ Raw, λ Perceived, Suppression Gap, Morphic Suppression, Morphic Fidelity, OS2 Bridge, and Friction.
+        </div>
+        <div class="cert-data">
+          <div class="cert-data-title">Calibration Record</div>
+          <table class="cert-data-table" id="certDataTable">
+            <tr><th>Metric</th><th>Prediction</th><th>Actual</th><th>Accuracy</th></tr>
+          </table>
+        </div>
+      </div>
+      <div class="cert-footer">
+        <div class="cert-sig">
+          <div class="cert-sig-line"></div>
+          <div class="cert-sig-label">Student Signature</div>
+        </div>
+        <div class="cert-date">
+          <div style="font-size:1.1rem;font-weight:700;color:var(--teal-dark)" id="certDate"></div>
+          <div class="cert-sig-label">Date Completed</div>
+        </div>
+        <div class="cert-score">
+          <div class="cert-score-num" id="certScore">—</div>
+          <div class="cert-score-label">Overall Score</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Name input + action buttons — hidden after cert shows -->
+    <div id="certActions" style="max-width:680px;margin:.875rem auto 0;display:none">
+      <div style="background:var(--paper);border-radius:.5rem;padding:1rem;margin-bottom:.875rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+        <label style="font-size:.85rem;font-weight:700;color:var(--charcoal);white-space:nowrap">Your name for the certificate:</label>
+        <input type="text" id="certNameInput" placeholder="First Last"
+          style="flex:1;padding:.5rem .75rem;border:2px solid var(--border);border-radius:.4rem;font-family:'Georgia',serif;font-size:.9rem;min-width:160px"
+          oninput="updateCertName(this.value)">
+      </div>
+      <div class="btn-row" style="justify-content:center">
+        <button class="btn btn-teal cert-no-print" onclick="window.print()">🖨️ Print Certificate</button>
+        <button class="btn btn-amber cert-no-print" onclick="exportCertText()">📥 Download as Text</button>
+        <button class="btn" style="background:var(--success);color:#fff" onclick="copyCertText()">📋 Copy for Canvas</button>
+      </div>
+      <p style="text-align:center;font-size:.78rem;color:var(--muted);margin-top:.6rem;font-style:italic">To submit to your instructor: print as PDF, or copy the text version and paste into Canvas.</p>
+    </div>
+  </div>
+
+
 <footer>Ethics Beyond Boundaries · Metrics Calibration Lab · Saint Petersburg College Ethics Institute</footer>
 
 <script>
@@ -962,19 +1075,27 @@ function startLab(){
   document.getElementById('welcomeCard').style.display='none';
   showRound(0);
 }
-function showRound(r){
+function goToRound(r){
+  // Free navigation — any round accessible at any time
   document.querySelectorAll('.round-card').forEach(c=>c.style.display='none');
+  document.getElementById('welcomeCard').style.display='none';
+  document.getElementById('summaryCard').style.display='none';
+  document.getElementById('certWrapper').classList.remove('visible');
   const card=document.getElementById('round-'+r);
   if(card){card.style.display='block';currentRound=r;}
-  document.querySelectorAll('.round-dot').forEach((d,i)=>{
-    d.classList.remove('active');
-    if(actuals[i]!==undefined)d.classList.add('done');
-  });
-  const dot=document.getElementById('dot-'+r);
-  if(dot){dot.classList.add('active');dot.classList.remove('done');}
+  updateDots(r);
   window.scrollTo({top:0,behavior:'smooth'});
-  // Load saved slider values
   loadSavedSliders(r);
+}
+function showRound(r){ goToRound(r); } // alias for existing calls
+
+function updateDots(activeR){
+  document.querySelectorAll('.round-dot').forEach((d,i)=>{
+    d.classList.remove('active','done');
+    if(actuals[i]!==undefined) d.classList.add('done');
+  });
+  const dot=document.getElementById('dot-'+activeR);
+  if(dot){dot.classList.add('active');dot.classList.remove('done');}
 }
 function nextRound(r){
   if(r<6){showRound(r+1);}else{showSummary();}
@@ -1011,9 +1132,15 @@ function loadSavedSliders(r){
 }
 
 function updateOverallProgress(){
-  const done=Object.keys(actuals).length;
+  const done=completedCount();
   document.getElementById('opFill').style.width=(done/7*100)+'%';
   document.getElementById('opFrac').textContent=done+' / 7';
+  // Also update dot completion markers
+  updateDots(currentRound);
+  // Update cert state if visible
+  if(document.getElementById('certWrapper')?.classList.contains('visible')){
+    updateCertState();
+  }
 }
 
 // ── Summary ─────────────────────────────────────────────
@@ -1021,9 +1148,14 @@ function showSummary(){
   document.querySelectorAll('.round-card').forEach(c=>c.style.display='none');
   const sc=document.getElementById('summaryCard');sc.style.display='block';
   buildSummaryTable();
+  // Show certificate section
+  document.getElementById('certWrapper').classList.add('visible');
+  updateCertState();
   window.scrollTo({top:0,behavior:'smooth'});
   try{const jv=localStorage.getItem(JP+'reflection');if(jv)document.getElementById('jt-reflection').value=jv;}catch(e){}
   try{const jd=localStorage.getItem(JP+'design');if(jd)document.getElementById('jt-design').value=jd;}catch(e){}
+  // Restore saved name
+  try{const sn=localStorage.getItem(JP+'cert_name');if(sn){document.getElementById('certNameInput').value=sn;updateCertName(sn);}}catch(e){}
 }
 
 function buildSummaryTable(){
@@ -1116,15 +1248,174 @@ window.addEventListener('load',()=>{
   for(let r=0;r<7;r++){
     try{
       const saved=localStorage.getItem(JP+'actual_'+r);
-      if(saved){
-        actuals[r]=JSON.parse(saved);
-        const dot=document.getElementById('dot-'+r);
-        if(dot&&r!==currentRound)dot.classList.add('done');
-      }
+      if(saved) actuals[r]=JSON.parse(saved);
+      const savedPred=localStorage.getItem(JP+'pred_'+r);
+      if(savedPred) predictions[r]=JSON.parse(savedPred);
     }catch(e){}
   }
   updateOverallProgress();
+  // If all 7 complete, show cert wrapper in summary
+  if(completedCount()===7 && document.getElementById('summaryCard')?.style.display==='block'){
+    document.getElementById('certWrapper').classList.add('visible');
+    updateCertState();
+  }
 });
+
+// ── Certificate ──────────────────────────────────────────
+
+function isRoundComplete(r){
+  // A round is complete when it has both a locked prediction AND actual results
+  return predictions[r] !== undefined && actuals[r] !== undefined;
+}
+
+function completedCount(){
+  let n=0;
+  for(let r=0;r<7;r++) if(isRoundComplete(r)) n++;
+  return n;
+}
+
+function updateCertState(){
+  const done=completedCount();
+  const pct=Math.round(done/7*100);
+  // Update progress bar
+  const pf=document.getElementById('certProgressFill');
+  if(pf) pf.style.width=pct+'%';
+  const pt=document.getElementById('certProgressText');
+  if(pt) pt.textContent=done+' of 7 rounds complete';
+  // Update locked sub-text
+  const ls=document.getElementById('certLockedSub');
+  if(ls){
+    if(done===0) ls.textContent='Complete all 7 rounds to unlock your certificate.';
+    else if(done<7) ls.textContent=`${7-done} more round${7-done>1?'s':''} to go.`;
+    else ls.textContent='All rounds complete!';
+  }
+  if(done===7){
+    // Unlock certificate
+    document.getElementById('certLocked').style.display='none';
+    document.getElementById('certificate').style.display='block';
+    document.getElementById('certActions').style.display='block';
+    buildCertData();
+    try{localStorage.setItem(JP+'cert_unlocked','1');}catch(e){}
+  } else {
+    document.getElementById('certLocked').style.display='block';
+    document.getElementById('certificate').style.display='none';
+    document.getElementById('certActions').style.display='none';
+  }
+}
+
+function buildCertData(){
+  const METRIC_ROWS=[
+    {r:0,name:'λ Raw',predKey:'raw',actualKey:'lambda_raw',hi:true},
+    {r:1,name:'λ Perceived',predKey:'perc',actualKey:'lambda_perceived',hi:true},
+    {r:2,name:'Suppression Gap',predKey:'gap',actualKey:'gap',hi:false},
+    {r:3,name:'Morphic Suppression',predKey:'morph',actualKey:'morphic_suppression',hi:false},
+    {r:4,name:'Morphic Fidelity',predKey:'fid_a',actualKey:'fid',hi:true},
+    {r:5,name:'OS2 Bridge',predKey:'bridge',actualKey:'os2_synergy_bridge',hi:true},
+    {r:5,name:'Friction',predKey:'fric',actualKey:'friction',hi:false},
+    {r:6,name:'Synthesis λ Raw',predKey:'raw',actualKey:'lambda_raw',hi:true},
+  ];
+  const t=document.getElementById('certDataTable');
+  t.innerHTML='<tr><th>Metric</th><th>Predicted</th><th>Actual</th><th>Accuracy</th></tr>';
+  let totalAcc=0;let count=0;
+  METRIC_ROWS.forEach(row=>{
+    const pred=predictions[row.r];
+    const act=actuals[row.r];
+    if(!pred||!act) return;
+    const predVal=pred[row.predKey];
+    const m=act.m||{};
+    const actualVal=row.actualKey==='gap'?m.gap:(row.actualKey==='fid'?m.fid:(m[row.actualKey]??m.os2_synergy??0));
+    if(predVal===undefined||actualVal===undefined) return;
+    const diff=Math.abs(predVal-actualVal);
+    const acc=Math.max(0,Math.min(100,Math.round((1-diff/0.5)*100)));
+    totalAcc+=acc;count++;
+    const color=diff<0.08?'#166534':diff<0.18?'#d97706':'#dc2626';
+    const status=diff<0.08?'✓':diff<0.18?'~':'⚡';
+    t.innerHTML+=`<tr>
+      <td>${row.name}</td>
+      <td>${predVal.toFixed(3)}</td>
+      <td style="color:${color};font-weight:700">${actualVal.toFixed(3)}</td>
+      <td style="color:${color}">${status} ${acc}%</td>
+    </tr>`;
+  });
+  const overall=count>0?Math.round(totalAcc/count):0;
+  document.getElementById('certScore').textContent=overall+'%';
+  document.getElementById('certScore').style.color=overall>=80?'var(--success)':overall>=60?'var(--teal)':'var(--amber-dark)';
+  document.getElementById('certDate').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  try{localStorage.setItem(JP+'cert_score',overall);localStorage.setItem(JP+'cert_date',new Date().toISOString());}catch(e){}
+}
+
+function updateCertName(val){
+  const display=document.getElementById('certName');
+  if(display) display.textContent=val||'_________________________';
+  try{localStorage.setItem(JP+'cert_name',val);}catch(e){}
+}
+
+function buildCertText(){
+  let name='';
+  try{name=localStorage.getItem(JP+'cert_name')||'[Student Name]';}catch(e){}
+  const score=(()=>{try{return localStorage.getItem(JP+'cert_score')||'?';}catch(e){return '?';}})();
+  const date=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  let out=`CERTIFICATE OF CALIBRATION\n`;
+  out+=`Ethics Beyond Boundaries — Metrics Calibration Lab\n`;
+  out+=`Saint Petersburg College, Ethics Institute\n`;
+  out+=`${'═'.repeat(52)}\n\n`;
+  out+=`This certifies that ${name} has completed all seven\n`;
+  out+=`rounds of the Metrics Calibration Lab, demonstrating\n`;
+  out+=`active-inference calibration for the simulation metrics\n`;
+  out+=`used throughout Ethics Beyond Boundaries.\n\n`;
+  out+=`Date completed: ${date}\n`;
+  out+=`Overall calibration score: ${score}%\n\n`;
+  out+=`CALIBRATION RECORD\n${'─'.repeat(52)}\n`;
+  const ROWS=[
+    {r:0,name:'λ Raw',p:'raw',a:'lambda_raw'},
+    {r:1,name:'λ Perceived',p:'perc',a:'lambda_perceived'},
+    {r:2,name:'Suppression Gap',p:'gap',a:'gap'},
+    {r:3,name:'Morphic Suppression',p:'morph',a:'morphic_suppression'},
+    {r:4,name:'Morphic Fidelity',p:'fid_a',a:'fid'},
+    {r:5,name:'OS2 Bridge',p:'bridge',a:'os2_synergy_bridge'},
+    {r:5,name:'Friction',p:'fric',a:'friction'},
+    {r:6,name:'Synthesis',p:'raw',a:'lambda_raw'},
+  ];
+  ROWS.forEach(row=>{
+    const pred=predictions[row.r];const act=actuals[row.r];
+    if(!pred||!act) return;
+    const pv=pred[row.p];const m=act.m||{};
+    const av=row.a==='gap'?m.gap:(row.a==='fid'?m.fid:(m[row.a]??m.os2_synergy??0));
+    if(pv===undefined) return;
+    const diff=Math.abs(pv-av);
+    const acc=Math.max(0,Math.min(100,Math.round((1-diff/0.5)*100)));
+    const status=diff<0.08?'CALIBRATED':diff<0.18?'DEVELOPING':'SURPRISED';
+    out+=`${row.name.padEnd(22)} Pred: ${pv.toFixed(3)}  Actual: ${av.toFixed(3)}  ${acc}% — ${status}\n`;
+  });
+  out+=`\n${'═'.repeat(52)}\n`;
+  out+=`Instructor verification: Student predictions and actual\n`;
+  out+=`simulation values shown above confirm completion of\n`;
+  out+=`active-inference calibration training.\n`;
+  return out;
+}
+
+function exportCertText(){
+  const txt=buildCertText();
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  let name='';try{name='_'+(localStorage.getItem(JP+'cert_name')||'').replace(/\s+/g,'_');}catch(e){}
+  a.download=`MCL_Certificate${name}.txt`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+
+function copyCertText(){
+  const txt=buildCertText();
+  if(navigator.clipboard) navigator.clipboard.writeText(txt).catch(()=>fallbackCopy(txt));
+  else fallbackCopy(txt);
+  alert('Certificate text copied to clipboard. Paste into Canvas or email to your instructor.');
+}
+
+function fallbackCopy(txt){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+}
 </script>
 </body>
 </html>
