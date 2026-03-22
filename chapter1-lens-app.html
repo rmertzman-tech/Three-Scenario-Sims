@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1: The Lens Before the Argument — Ethics Beyond Boundaries</title>
+<style>
+:root{
+  --indigo:#3730a3;--indigo-dark:#1e1b4b;--indigo-mid:#4f46e5;
+  --indigo-light:#e0e7ff;--indigo-pale:#f5f3ff;
+  --violet:#7c3aed;--violet-light:#ede9fe;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --teal:#0f766e;--teal-light:#ccfbf1;
+  --success:#16a34a;--success-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --ink:#1f2937;--muted:#6b7280;--border:#e5e7eb;--paper:#f9fafb;
+  --white:#ffffff;--navy:#1a2744;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia','Times New Roman',serif;background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 50%,#1e1b4b 100%);background-attachment:fixed;min-height:100vh;color:var(--ink);line-height:1.7;padding-bottom:3rem}
+.glass{background:rgba(255,255,255,.97);backdrop-filter:blur(10px)}
+.glass-dark{background:rgba(30,27,75,.96);backdrop-filter:blur(10px);color:#fff}
+.fade-in{animation:fadeIn .6s ease-out both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* Skip link */
+.skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+.skip-link:focus{position:fixed;top:0;left:0;width:auto;height:auto;padding:.5rem 1rem;background:var(--indigo);color:#fff;z-index:9999;font-size:1rem;border-radius:0 0 .4rem 0}
+
+/* Header */
+header{position:sticky;top:0;z-index:50;box-shadow:0 4px 24px rgba(0,0,0,.4)}
+.header-inner{max-width:72rem;margin:0 auto;padding:.875rem 1.5rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.header-titles h1{font-size:1.3rem;font-weight:700;margin-bottom:.1rem}
+.header-titles p{font-size:.78rem;opacity:.6;font-style:italic}
+.prf-wrap{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap}
+.prf-badge{font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5)}
+.prf-file-label{display:inline-flex;align-items:center;gap:.3rem;padding:.35rem .8rem;border-radius:.4rem;font-size:.75rem;font-family:'Courier New',monospace;cursor:pointer;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.1);color:rgba(255,255,255,.75);transition:.2s}
+.prf-file-label:hover,.prf-file-label:focus-within{background:rgba(255,255,255,.2);color:#fff}
+
+/* Progress */
+.prog-bar-wrap{display:flex;align-items:center;gap:.6rem}
+.prog-label{font-size:.72rem;font-family:'Courier New',monospace;opacity:.55}
+.prog-track{width:120px;height:6px;background:rgba(255,255,255,.15);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--amber);border-radius:3px;transition:width .4s ease}
+
+/* Page */
+.page{max-width:72rem;margin:1.5rem auto;padding:0 1rem}
+
+/* Tab nav */
+.tab-nav{display:flex;gap:.3rem;flex-wrap:wrap;background:rgba(30,27,75,.7);backdrop-filter:blur(8px);border-radius:.75rem;padding:.45rem;margin-bottom:1.25rem}
+.tab-btn{padding:.5rem .95rem;border:none;background:transparent;color:rgba(255,255,255,.55);font-family:'Georgia',serif;font-size:.85rem;border-radius:.45rem;cursor:pointer;transition:.2s;white-space:nowrap;position:relative}
+.tab-btn:hover{background:rgba(99,102,241,.2);color:#fff}
+.tab-btn.active{background:rgba(99,102,241,.3);color:#fff;font-weight:700}
+.tab-btn.completed::after{content:'✓';position:absolute;top:2px;right:4px;font-size:.55rem;color:var(--amber);font-weight:700}
+.tab-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* Cards */
+.card{border-radius:.875rem;padding:1.75rem;margin-bottom:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.card-indigo{background:var(--indigo-light);border-left:4px solid var(--indigo-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-violet{background:var(--violet-light);border-left:4px solid var(--violet)}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal)}
+.card-dark{background:var(--indigo-dark);color:#fff;border-radius:.875rem;padding:1.75rem;margin-bottom:1.25rem}
+.card-quote{background:var(--paper);border-left:4px solid var(--amber);padding:1.25rem 1.5rem;border-radius:0 .5rem .5rem 0;font-style:italic;font-size:1.05rem;margin:1rem 0;color:var(--amber-dark)}
+
+h2{font-size:1.5rem;color:var(--indigo-dark);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:3px solid var(--indigo-mid)}
+h3{font-size:1.15rem;color:var(--indigo-mid);margin-top:1.5rem;margin-bottom:.6rem;font-weight:700}
+h4{font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:.4rem}
+p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-bottom:.35rem}
+
+/* Interactive: Nail Reveal */
+.nail-scenario{background:var(--paper);border-radius:.875rem;padding:1.75rem;margin:1.25rem 0;border:2px solid var(--border)}
+.nail-step{display:none}.nail-step.active{display:block;animation:fadeIn .5s ease-out}
+.nail-reveal-btn{padding:.65rem 1.6rem;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;width:100%;margin-top:.875rem}
+.nail-reveal-btn.stage0{background:var(--indigo-mid);color:#fff}
+.nail-reveal-btn.stage0:hover{background:var(--indigo-dark)}
+.nail-reveal-btn.stage1{background:var(--violet);color:#fff}
+.nail-reveal-btn.stage1:hover{background:#5b21b6}
+.nail-reveal-btn.stage2{background:var(--teal);color:#fff}
+.nail-reveal-btn.stage2:hover{background:var(--teal-dark,#0d5e57)}
+.nail-stage-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.09em;font-weight:700;margin-bottom:.5rem}
+.s-setup{color:var(--indigo-mid)}.s-predict{color:var(--violet)}.s-reveal{color:var(--teal)}
+.predict-choice{display:flex;gap:.75rem;flex-wrap:wrap;margin:.875rem 0}
+.predict-btn{flex:1;min-width:130px;padding:.7rem;border:2px solid var(--border);background:#fff;border-radius:.5rem;cursor:pointer;font-family:'Georgia',serif;font-size:.88rem;transition:.2s;text-align:center}
+.predict-btn:hover,.predict-btn:focus-visible{border-color:var(--indigo-mid);background:var(--indigo-pale)}
+.predict-btn.selected{border-color:var(--indigo-mid);background:var(--indigo-light);font-weight:700}
+.predict-btn:focus-visible{outline:2px solid var(--indigo-mid);outline-offset:2px}
+.verdict-box{border-radius:.5rem;padding:1.1rem 1.25rem;margin-top:.875rem}
+.verdict-correct{background:var(--success-light);border:2px solid #86efac}
+.verdict-wrong{background:var(--danger-light);border:2px solid #fca5a5}
+.verdict-label{font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;font-weight:700;margin-bottom:.3rem}
+.verdict-correct .verdict-label{color:var(--success)}.verdict-wrong .verdict-label{color:var(--danger)}
+
+/* PRF display */
+.prf-dim-bar{margin-bottom:1rem}
+.prf-dim-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.prf-dim-name{font-size:.85rem;font-weight:700;color:var(--ink)}
+.prf-dim-score{font-family:'Courier New',monospace;font-size:.82rem;color:var(--indigo-mid);font-weight:700}
+.prf-track{height:12px;background:var(--border);border-radius:6px;overflow:hidden}
+.prf-fill{height:100%;background:linear-gradient(90deg,var(--indigo-mid),var(--violet));border-radius:6px;transition:width 1.2s ease}
+.prf-dim-label{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+
+/* Sapolsky self-check */
+.sapo-slider-row{margin-bottom:1.1rem}
+.sapo-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.sapo-name{font-size:.9rem;font-weight:700;color:var(--ink)}
+.sapo-val{font-family:'Courier New',monospace;font-size:.85rem;font-weight:700}
+input[type=range]{width:100%;-webkit-appearance:none;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--success) var(--pct,50%),#d1d5db var(--pct,50%));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--indigo-mid);border:3px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer}
+input[type=range]:focus-visible{outline:2px solid var(--amber);outline-offset:4px}
+.sapo-anchors{display:flex;justify-content:space-between;font-size:.68rem;color:var(--muted);font-family:'Courier New',monospace;margin-top:.2rem}
+.sapo-result{background:var(--paper);border-radius:.75rem;padding:1.25rem;margin-top:1.25rem;border:2px solid var(--border);display:none}
+.sapo-gauge{text-align:center;margin-bottom:1rem}
+.sapo-gauge-num{font-size:3rem;font-weight:700;font-family:'Courier New',monospace;line-height:1}
+.sapo-gauge-label{font-size:.8rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;margin-top:.2rem}
+
+/* Four theories interaction */
+.theory-accordion{margin-bottom:.5rem;border-radius:.5rem;overflow:hidden;border:2px solid var(--border)}
+.theory-accord-btn{width:100%;padding:.875rem 1.25rem;background:var(--paper);border:none;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;transition:.2s}
+.theory-accord-btn:hover{background:var(--indigo-pale)}
+.theory-accord-btn:focus-visible{outline:2px solid var(--indigo-mid);outline-offset:-2px}
+.theory-accord-btn[aria-expanded=true]{background:var(--indigo-light);color:var(--indigo-dark)}
+.theory-accord-icon{font-size:1.1rem;transition:transform .25s;flex-shrink:0}
+.theory-accord-btn[aria-expanded=true] .theory-accord-icon{transform:rotate(90deg)}
+.theory-accord-body{display:none;padding:1rem 1.25rem;background:#fff;border-top:1px solid var(--border)}
+.theory-accord-body.open{display:block;animation:fadeIn .3s ease-out}
+.theory-pill{display:inline-block;padding:.2rem .65rem;border-radius:2rem;font-size:.72rem;font-family:'Courier New',monospace;font-weight:700;margin-bottom:.4rem}
+.tp-virtue{background:#dbeafe;color:#1e3a8a}
+.tp-deont{background:#ede9fe;color:#4c1d95}
+.tp-conseq{background:#fef3c7;color:#92400e}
+.tp-care{background:#dcfce7;color:#166534}
+
+/* Scaffold identifier */
+.scaffold-input{width:100%;padding:.65rem .875rem;border:2px solid var(--border);border-radius:.4rem;font-family:'Georgia',serif;font-size:.9rem;margin-bottom:.5rem;transition:.2s}
+.scaffold-input:focus{outline:none;border-color:var(--indigo-mid);background:var(--indigo-pale)}
+.scaffold-tags{display:flex;flex-wrap:wrap;gap:.4rem;min-height:2rem;padding:.4rem;background:var(--paper);border-radius:.4rem;border:1px solid var(--border);margin-top:.4rem}
+.scaffold-tag{display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .65rem;background:var(--indigo-light);color:var(--indigo-dark);border-radius:2rem;font-size:.8rem;font-family:'Courier New',monospace}
+.scaffold-tag button{background:none;border:none;cursor:pointer;color:var(--indigo-dark);font-size:.9rem;padding:0;line-height:1}
+.scaffold-tag button:focus-visible{outline:2px solid var(--indigo-dark);border-radius:50%}
+.scaffold-btn{padding:.5rem 1.1rem;background:var(--indigo-mid);color:#fff;border:none;border-radius:.4rem;font-family:'Georgia',serif;font-size:.88rem;cursor:pointer;transition:.2s}
+.scaffold-btn:hover{background:var(--indigo-dark)}
+.scaffold-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+/* Journal */
+.journal-box{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:.5rem;padding:1.25rem 1.5rem;margin:1rem 0}
+.journal-box h4{color:var(--amber-dark);margin-bottom:.5rem}
+.journal-ta{width:100%;min-height:90px;padding:.7rem .875rem;border:1px solid #d97706;border-radius:.4rem;font-family:'Georgia',serif;font-size:.9rem;resize:vertical;background:rgba(255,255,255,.85);line-height:1.6}
+.journal-ta:focus{outline:none;border-color:var(--amber-dark);background:#fff}
+.save-note{font-size:.72rem;color:var(--success);opacity:0;transition:.3s;height:.9rem;margin-top:.2rem}
+.save-note.show{opacity:1}
+
+/* Buttons */
+.btn{padding:.65rem 1.5rem;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:.2s}
+.btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.btn-primary{background:var(--indigo-mid);color:#fff}.btn-primary:hover{background:var(--indigo-dark)}
+.btn-amber{background:var(--amber-dark);color:#fff}.btn-amber:hover{background:var(--ink)}
+.btn-success{background:var(--success);color:#fff}
+.btn-lg{padding:.8rem 2.5rem;font-size:1rem;width:100%;margin-top:.75rem}
+.btn-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.875rem}
+
+/* Nav between sections */
+.section-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.75rem;padding-top:1rem;border-top:1px solid var(--border)}
+.section-nav-btn{padding:.55rem 1.25rem;border:2px solid var(--indigo-mid);background:transparent;color:var(--indigo-mid);border-radius:.4rem;font-family:'Georgia',serif;font-size:.88rem;cursor:pointer;transition:.2s}
+.section-nav-btn:hover{background:var(--indigo-light)}
+.section-nav-btn:focus-visible{outline:2px solid var(--indigo-mid);outline-offset:2px}
+.section-nav-btn.primary{background:var(--indigo-mid);color:#fff}
+.section-nav-btn.primary:hover{background:var(--indigo-dark)}
+
+/* Completion */
+.completion-card{background:var(--indigo-dark);color:#fff;border-radius:.875rem;padding:2rem;text-align:center;margin-top:1.5rem}
+.completion-card h3{color:var(--amber);margin-top:0;margin-bottom:.75rem}
+.completion-card p{opacity:.82;font-size:.9rem;max-width:40rem;margin:0 auto .875rem}
+
+footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center;color:rgba(255,255,255,.38);font-size:.78rem;font-style:italic}
+
+/* Accessibility */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:640px){
+  .header-titles h1{font-size:1.1rem}
+  .tab-nav{gap:.2rem}
+  .tab-btn{font-size:.78rem;padding:.4rem .65rem}
+  .predict-choice{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="glass-dark" role="banner">
+  <div class="header-inner">
+    <div class="header-titles">
+      <h1>Chapter 1: The Lens Before the Argument</h1>
+      <p>How Your Beliefs Shape What You See</p>
+    </div>
+    <div class="prf-wrap">
+      <span class="prf-badge" id="prfBadge" aria-live="polite">No PRF loaded</span>
+      <label class="prf-file-label" for="prfFileInput">
+        <span aria-hidden="true">📂</span> Load My PRF
+      </label>
+      <input type="file" id="prfFileInput" accept=".json" aria-label="Load PRF-22 JSON file" style="display:none">
+      <div class="prog-bar-wrap" aria-label="Chapter progress">
+        <span class="prog-label" id="progLabel">0/6</span>
+        <div class="prog-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="6" aria-label="Sections completed">
+          <div class="prog-fill" id="progFill" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page" id="main-content">
+  <nav class="tab-nav" aria-label="Chapter sections">
+    <button class="tab-btn active" id="tab-nail" onclick="showTab('nail',this)" aria-selected="true" role="tab">§1 The Nail</button>
+    <button class="tab-btn" id="tab-brain" onclick="showTab('brain',this)" aria-selected="false" role="tab">§2 The Predictive Brain</button>
+    <button class="tab-btn" id="tab-prf" onclick="showTab('prf',this)" aria-selected="false" role="tab">§3 Your PRF</button>
+    <button class="tab-btn" id="tab-sapo" onclick="showTab('sapo',this)" aria-selected="false" role="tab">§4 The Sapolsky Gate</button>
+    <button class="tab-btn" id="tab-mind" onclick="showTab('mind',this)" aria-selected="false" role="tab">§5 The Extended Mind</button>
+    <button class="tab-btn" id="tab-four" onclick="showTab('four',this)" aria-selected="false" role="tab">§6 The Four Theories</button>
+    <button class="tab-btn" id="tab-journal" onclick="showTab('journal',this)" aria-selected="false" role="tab">§7 Journal</button>
+  </nav>
+
+  <!-- ═══ §1 THE NAIL CASE ═══ -->
+  <div id="tab-nail" class="tab-pane active glass fade-in" style="border-radius:.875rem;padding:2rem" role="tabpanel" aria-labelledby="tab-nail">
+    <h2>§1 — The Nail in the Boot</h2>
+
+    <p>Before we look at any ethical theory, any philosophical framework, or any simulation, we need to understand something about how your mind works right now — before this chapter, before this course, before you had any of this vocabulary. This section uses one dramatic case to show you the most important thing Chapter 1 establishes.</p>
+
+    <div class="nail-scenario" role="region" aria-label="Interactive: The Nail Case">
+      <div class="nail-step active" id="nail-step-0">
+        <div class="nail-stage-label s-setup">Setup — Read This Carefully</div>
+        <p style="font-size:.95rem;line-height:1.75"><strong>A construction worker falls from scaffolding onto a large nail.</strong> The nail pierces straight through his boot. He is brought to the emergency department in agony — screaming, unable to let anyone approach the foot. The medical team administers fentanyl before they can safely remove the boot.</p>
+        <p style="font-size:.95rem">Before you read further: what do you expect they find when the boot comes off?</p>
+        <div class="predict-choice" role="group" aria-label="Predict what happens">
+          <button class="predict-btn" onclick="selectNailPred('injury',this)" aria-pressed="false">The nail went through his foot. He is seriously injured.</button>
+          <button class="predict-btn" onclick="selectNailPred('partial',this)" aria-pressed="false">The nail grazed his foot. Minor injury.</button>
+          <button class="predict-btn" onclick="selectNailPred('none',this)" aria-pressed="false">The nail missed entirely. No injury.</button>
+        </div>
+        <button class="nail-reveal-btn stage0" id="nailRevealBtn0" onclick="showNailReveal()" disabled aria-disabled="true">Select a prediction to continue</button>
+      </div>
+
+      <div class="nail-step" id="nail-step-1">
+        <div class="nail-stage-label s-reveal">The Reveal</div>
+        <div id="nail-verdict" class="verdict-box" role="alert"></div>
+        <div style="margin-top:1rem">
+          <p><strong>When the boot came off, the nail had passed cleanly between the first and second toe. There was no wound. No tissue damage. No injury whatsoever.</strong></p>
+          <p>The fentanyl had been real. The agony had been real. The injury it was treating did not exist.</p>
+        </div>
+        <button class="nail-reveal-btn stage1" onclick="showNailExplain()">What does this prove? →</button>
+      </div>
+
+      <div class="nail-step" id="nail-step-2">
+        <div class="nail-stage-label s-predict">What Andy Clark Says This Demonstrates</div>
+        <div class="card card-violet">
+          <p>Andy Clark opens <em>The Experience Machine</em> (2023) with this case — not as a curiosity about pain, but as the clearest available proof of something that transforms how we understand all human experience, including moral experience.</p>
+          <div class="card-quote">The pain was real and excruciating. But it was rooted solely in the construction worker's strong predictions. The deeper point is that ordinary pain experiences are likewise constructed from complex mixtures of prediction and sensory information.</div>
+        </div>
+        <p><strong>Pain is the most immediate, most unquestionable phenomenal experience we have.</strong> If you are in pain, the certainty that something is wrong is as close to bedrock reality as experience gets. Descartes thought the external world could be an illusion — but even he believed the experience of suffering was indubitable.</p>
+        <p>And yet: the nail case shows that even pain is a <strong>predictive inference</strong>. The brain generated the agony before it knew whether the foot was injured — because in every prior case in the evolutionary history of beings who step on sharp things, nail-through-boot means injury. The prediction was so strong it produced the full phenomenal experience of severe injury, requiring an opioid to manage, in the complete absence of the injury that justified it.</p>
+        <div class="card card-amber">
+          <h4>Why This Matters For Ethics</h4>
+          <p>If pain — the most viscerally certain of all experiences — is a predictive construction, then moral perception — which is far more complex, far less direct, far more dependent on prior beliefs — is certainly a predictive construction.</p>
+          <p><strong>Your PRF is the generative model your brain uses for moral situations.</strong> It determines, before any conscious deliberation begins, what moral features you notice, what you weight as urgent, and what you may miss entirely — not through inattention but through the architecture of how your predictive machinery is built.</p>
+        </div>
+        <div class="journal-box">
+          <h4>📝 Quick Reflection</h4>
+          <p style="font-size:.85rem;margin-bottom:.4rem">You predicted the outcome before the reveal. Were you right or wrong? Write one sentence about what that prediction reveals about how your mind was running its own inference — what prior was generating your expectation?</p>
+          <textarea class="journal-ta" id="jt-nail" aria-label="Reflection on your nail prediction" placeholder="My prediction was... which suggests my prior about pain and injury was..." oninput="jSave('nail',this.value)" style="min-height:60px"></textarea>
+          <div class="save-note" id="sn-nail" aria-live="polite">✓ Saved</div>
+        </div>
+        <div class="section-nav">
+          <span></span>
+          <button class="section-nav-btn primary" onclick="goNext('nail','brain')">Next: The Predictive Brain →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ §2 THE PREDICTIVE BRAIN ═══ -->
+  <div id="tab-brain" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-brain">
+    <h2>§2 — The Predictive Brain</h2>
+
+    <p>The nail case established the principle. This section names the mechanism precisely — because understanding the mechanism is what makes your PRF profile from Day 1 meaningful rather than just descriptive.</p>
+
+    <h3>The Generative Model</h3>
+    <p>At any given moment, your brain maintains what researchers in Karl Friston's tradition call a <strong>generative model</strong> — a hierarchically organized set of probabilistic expectations about what is probably causing the signals arriving at your senses. At the lowest levels: what sensory input do I expect right now? At the highest levels: what are the stable features of reality that make everything below them coherent?</p>
+    <p><strong>Perception is not the process of receiving information.</strong> It is the process of comparing predictions to incoming signals and generating a <em>prediction error</em> when they diverge. What you experience as seeing, hearing, and feeling is primarily your brain's best current model being confirmed. Only the signals that deviate from prediction require genuine processing and rise to conscious awareness as distinct experiences.</p>
+
+    <div class="card card-indigo">
+      <h4>🌦 Clark's Weather Forecast Image</h4>
+      <p>Imagine a world where the weather forecast played a role in actually <em>causing</em> the weather. We don't live in that world for meteorology. But if predictive processing accounts are correct, <strong>that is exactly the world we inhabit for human experience.</strong> What we predict — with enough confidence, with enough neural resources behind the prediction — partially shapes what we experience. The construction worker's brain predicted injury so confidently that it created the experience of injury. The prediction constituted the experience.</p>
+    </div>
+
+    <h3>Precision Weighting — Why Some Priors Are Louder Than Others</h3>
+    <p>Not all predictions are held with equal confidence. The brain assigns <strong>precision weights</strong> to both its predictions and to incoming sensory signals. High precision on a prior means that prior dominates experience even in the face of contradictory evidence. High precision on incoming signals means the brain updates readily when signals deviate from prediction.</p>
+
+    <div class="card card-violet">
+      <h4>What This Means For Your Moral Perception</h4>
+      <p>When your Day 1 PRF profile showed high scores on a particular moral foundation — say, Care/Harm — it was not reporting a philosophical preference. It was reporting that your predictive machinery assigns <strong>high precision to harm-related signals</strong> in social situations. You detect harm automatically, efficiently, and early — before you have consciously processed the situation at all.</p>
+      <p>Conversely: the moral dimension your profile scored lower on is not invisible to you. But detecting it requires <strong>active inference</strong> — deliberately running your generative model against incoming evidence to find features that your automatic precision-weighting would otherwise attenuate. This is possible. It is expensive. And it is exactly what chronic stress makes unavailable.</p>
+    </div>
+
+    <!-- Interactive: What did your Day 1 responses measure? -->
+    <div style="background:var(--paper);border-radius:.75rem;padding:1.5rem;margin:1.25rem 0;border:2px solid var(--border)">
+      <h3 style="margin-top:0;color:var(--indigo-dark)">What Your Day 1 Responses Were Actually Measuring</h3>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">Expand each response type to see what Chapter 1 reveals it was measuring in cognitive terms.</p>
+      <div role="list">
+        <div class="theory-accordion" role="listitem">
+          <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+            <span>The theory that felt <em>immediately like home</em></span>
+            <span class="theory-accord-icon" aria-hidden="true">›</span>
+          </button>
+          <div class="theory-accord-body" role="region">
+            <span class="theory-pill tp-virtue">Predictive Processing Term</span>
+            <p>Your <strong>highest-precision moral prior</strong>. The theory whose central question your predictive machinery surfaces automatically, with minimal processing cost. Recognition felt immediate because your brain was confirming a prediction, not making a discovery. This is not "this theory matches my values" — it is "this theory names what my predictive machinery was already doing."</p>
+          </div>
+        </div>
+        <div class="theory-accordion" role="listitem">
+          <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+            <span>The theory that generated <em>friction</em></span>
+            <span class="theory-accord-icon" aria-hidden="true">›</span>
+          </button>
+          <div class="theory-accord-body" role="region">
+            <span class="theory-pill tp-deont">Predictive Processing Term</span>
+            <p>A <strong>low-precision moral domain</strong> for your generative model. Detecting its central question requires active inference — deliberate, effortful processing against your system's default precision weights. The friction you felt was the cognitive cost of running the brain's error-correction machinery against a prediction that wasn't automatically generating.</p>
+          </div>
+        </div>
+        <div class="theory-accordion" role="listitem">
+          <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+            <span>The belief you traced to its Socratic foundations</span>
+            <span class="theory-accord-icon" aria-hidden="true">›</span>
+          </button>
+          <div class="theory-accord-body" role="region">
+            <span class="theory-pill tp-conseq">Predictive Processing Term</span>
+            <p>The <strong>highest-level prior in your predictive hierarchy</strong> for that moral domain. The assumption so deeply embedded that it generates expectations for everything below it, but is rarely itself subject to incoming prediction error. Socratic questioning is the deliberate process of generating prediction error against your highest-level priors — which is why it feels unsettling when it works.</p>
+          </div>
+        </div>
+        <div class="theory-accordion" role="listitem">
+          <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+            <span>Your moral foundations score pattern</span>
+            <span class="theory-accord-icon" aria-hidden="true">›</span>
+          </button>
+          <div class="theory-accord-body" role="region">
+            <span class="theory-pill tp-care">Predictive Processing Term</span>
+            <p>Your <strong>precision-weighting profile</strong> across the moral landscape — which signals your predictive system amplifies versus attenuates. High Care/Harm means your brain treats harm signals as high-precision priors: you notice them first, weight them heavily, and act on them before deliberation. Low Authority means authority-violation signals are low-precision: detecting them requires active inference you may not deploy automatically.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Check Your Understanding</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">In your own words — not the course vocabulary, your own words — describe what it means that "perception is prediction-confirmation." Give one example from your own daily experience where your brain was clearly running a prediction rather than receiving raw reality.</p>
+      <textarea class="journal-ta" id="jt-brain" aria-label="Predictive processing reflection" placeholder="In my own words, perception is prediction-confirmation means... An example from my daily life: ..." oninput="jSave('brain',this.value)"></textarea>
+      <div class="save-note" id="sn-brain" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="section-nav">
+      <button class="section-nav-btn" onclick="goNext('brain','nail')">← §1 The Nail</button>
+      <button class="section-nav-btn primary" onclick="goNext('brain','prf')">Next: Your PRF →</button>
+    </div>
+  </div>
+
+  <!-- ═══ §3 YOUR PRF ═══ -->
+  <div id="tab-prf" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-prf">
+    <h2>§3 — Your PRF as Generative Model</h2>
+
+    <p>You now have the vocabulary to understand what your Day 1 PRF profile is describing — not philosophically, but cognitively. This section makes that connection precise.</p>
+
+    <!-- PRF display — adapts to loaded profile -->
+    <div id="prfDisplay">
+      <div class="card card-indigo" id="prfNoLoad">
+        <h4>Load Your PRF-22 File for a Personalised Reading</h4>
+        <p>If you completed the Day 1 Orientation and downloaded your <code>MyPRF22.json</code> file, load it using the button in the header. This section will then show your specific precision-weighting profile and what it means for your moral perception — which moral features your brain detects automatically versus which require active inference.</p>
+        <p style="color:var(--muted);font-size:.88rem">Without a PRF file the generic content below still applies — you simply won't see your specific profile scores.</p>
+      </div>
+      <div id="prfPersonal" style="display:none">
+        <div class="card card-teal">
+          <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap">
+            <span id="prfIconDisplay" style="font-size:2rem" aria-hidden="true"></span>
+            <div>
+              <div style="font-size:1.1rem;font-weight:700;color:var(--indigo-dark)" id="prfNameDisplay"></div>
+              <div style="font-size:.78rem;font-family:'Courier New',monospace;color:var(--muted)" id="prfSubDisplay"></div>
+            </div>
+          </div>
+          <div id="prfDimBars"></div>
+        </div>
+        <div class="card card-violet" id="prfInterpCard">
+          <h4 id="prfInterpTitle">Your Precision-Weighting Pattern</h4>
+          <div id="prfInterpText" style="font-size:.9rem;line-height:1.65"></div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Your PRF Is Both Asset and Limit</h3>
+    <p>The PRF profile you generated on Day 1 is simultaneously your greatest moral perceptual asset and your most reliable source of moral perceptual error — and understanding both sides is what makes the profile genuinely useful rather than merely interesting.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0" role="group" aria-label="Asset and limit comparison">
+      <div style="background:#dcfce7;border-radius:.5rem;padding:1.25rem;border-top:3px solid #16a34a">
+        <div style="font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:#166534;font-weight:700;margin-bottom:.4rem">Your Asset</div>
+        <p style="font-size:.88rem;color:var(--ink);margin-bottom:0">Your highest-precision moral dimension gives you automatic, efficient, early detection of the moral features it is calibrated for. You notice things others miss. You feel urgency others don't feel. This is a genuine moral perceptual capacity — a real contribution to shared ethical reasoning.</p>
+      </div>
+      <div style="background:#fee2e2;border-radius:.5rem;padding:1.25rem;border-top:3px solid #dc2626">
+        <div style="font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:#991b1b;font-weight:700;margin-bottom:.4rem">Your Limit</div>
+        <p style="font-size:.88rem;color:var(--ink);margin-bottom:0">Your highest-precision priors generate the most confident predictions — and therefore the least prediction error when those predictions are wrong. The moral feature your framework is not tuned for may be missing entirely from your experience of a situation, while you remain entirely confident you have seen everything relevant.</p>
+      </div>
+    </div>
+
+    <div class="card card-amber">
+      <h4>The Most Important Thing Chapter 1 Teaches About Your PRF</h4>
+      <p>Your PRF is not a problem to be corrected. It is the instrument you have — the specific precision-weighting configuration that your history, community, relationships, and deliberate development have produced. The course's job is not to give you a better PRF. It is to help you:</p>
+      <ol style="margin-top:.5rem">
+        <li>See what your PRF makes automatically visible — and use that capacity deliberately</li>
+        <li>Identify what your PRF attenuates — and develop the active inference capacity to detect it when it matters</li>
+        <li>Coordinate with people whose PRFs are differently calibrated — so the collective moral perception of the group exceeds what any individual instrument can provide</li>
+      </ol>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 PRF Self-Examination</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">Name one moral situation from recent experience where your framework's high-precision dimension was immediately activated — where you noticed something before consciously processing it. Then name one situation where you realised, in retrospect, that your framework had attenuated a morally relevant feature someone else saw right away. What does the contrast between these two situations reveal about your specific precision-weighting?</p>
+      <textarea class="journal-ta" id="jt-prf" aria-label="PRF self-examination journal entry" placeholder="Situation where my framework activated automatically: ...&#10;&#10;Situation where I missed what someone else saw: ...&#10;&#10;What the contrast reveals: ..." oninput="jSave('prf',this.value)" style="min-height:130px"></textarea>
+      <div class="save-note" id="sn-prf" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="section-nav">
+      <button class="section-nav-btn" onclick="goNext('prf','brain')">← §2 The Predictive Brain</button>
+      <button class="section-nav-btn primary" onclick="goNext('prf','sapo')">Next: The Sapolsky Gate →</button>
+    </div>
+  </div>
+
+  <!-- ═══ §4 SAPOLSKY GATE ═══ -->
+  <div id="tab-sapo" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-sapo">
+    <h2>§4 — The Sapolsky Gate</h2>
+
+    <p>The predictive processing account of moral perception has an implication that is not abstract for most students in this course. It is immediate, personal, and urgent — because the capacity for active inference depends on neural hardware that is sensitive to conditions you inhabit every day.</p>
+
+    <h3>The Mechanism</h3>
+    <p>The <strong>prefrontal cortex (PFC)</strong> is the neural substrate of active inference — the capacity to deliberately probe your generative model against incoming evidence, to notice what your strongest priors would miss, to reason from principles rather than from automatic pattern-completion.</p>
+    <p>Robert Sapolsky's decades of glucocorticoid research establish something precise: <strong>the PFC is exquisitely sensitive to sustained cortisol elevation.</strong> Under acute stress — a brief threat that resolves — cortisol is adaptive. Under chronic stress — the sustained, low-to-moderate elevation produced by financial precarity, academic overload, difficult relationships, inadequate sleep — cortisol damages the dendritic connectivity of PFC neurons. Literally: the branches connecting neurons to each other are structurally damaged.</p>
+
+    <div class="card card-indigo">
+      <h4>What "The Gate Closes" Means Precisely</h4>
+      <p>Think of the PFC's active inference capacity as a gate between your brain's automatic predictive responses and deliberate principled reasoning. Under baseline conditions the gate is open: automatic predictions run, prediction errors surface them, the PFC evaluates them and updates the generative model when the evidence justifies it.</p>
+      <p><strong>Under chronic stress, the gate narrows.</strong> The automatic predictions still run — faster and more confidently, because the feedback mechanism that would modulate their precision is degraded. But the active inference process that would check them, that would notice the moral feature your framework is not automatically calibrated for, becomes increasingly unavailable. Your moral reasoning becomes increasingly indistinguishable from automatic pattern-completion from your strongest priors.</p>
+    </div>
+
+    <!-- Sapolsky Gate Self-Check -->
+    <div style="background:var(--paper);border-radius:.875rem;padding:1.5rem;margin:1.25rem 0;border:2px solid var(--border)" role="region" aria-label="Sapolsky Gate self-assessment">
+      <h3 style="margin-top:0;color:var(--indigo-dark)">Your Sapolsky Gate — Right Now</h3>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:1.25rem">Rate each condition on the slider. This is not graded — it is diagnostic. The goal is honest self-knowledge about the conditions under which you are currently expected to develop your moral reasoning capacity.</p>
+
+      <div class="sapo-slider-row">
+        <div class="sapo-meta">
+          <span class="sapo-name">Sleep (hours per night, this week)</span>
+          <span class="sapo-val" id="sv-sleep" style="color:var(--success)">7</span>
+        </div>
+        <input type="range" id="sl-sleep" min="3" max="9" value="7" aria-label="Sleep hours per night" oninput="updateSapo('sleep',this.value,3,9,true)">
+        <div class="sapo-anchors"><span>3h — Gate closing fast</span><span>6h</span><span>9h — Gate supported</span></div>
+      </div>
+
+      <div class="sapo-slider-row">
+        <div class="sapo-meta">
+          <span class="sapo-name">Financial stress (right now)</span>
+          <span class="sapo-val" id="sv-finance" style="color:var(--success)">3</span>
+        </div>
+        <input type="range" id="sl-finance" min="1" max="10" value="3" aria-label="Financial stress level 1 to 10" oninput="updateSapo('finance',this.value,1,10,false)">
+        <div class="sapo-anchors"><span>1 — Stable</span><span>5</span><span>10 — Crisis</span></div>
+      </div>
+
+      <div class="sapo-slider-row">
+        <div class="sapo-meta">
+          <span class="sapo-name">Sense of control over your circumstances</span>
+          <span class="sapo-val" id="sv-control" style="color:var(--success)">7</span>
+        </div>
+        <input type="range" id="sl-control" min="1" max="10" value="7" aria-label="Sense of control level 1 to 10" oninput="updateSapo('control',this.value,1,10,true)">
+        <div class="sapo-anchors"><span>1 — None</span><span>5</span><span>10 — High</span></div>
+      </div>
+
+      <div class="sapo-slider-row">
+        <div class="sapo-meta">
+          <span class="sapo-name">Social connection (feel seen and supported)</span>
+          <span class="sapo-val" id="sv-social" style="color:var(--success)">7</span>
+        </div>
+        <input type="range" id="sl-social" min="1" max="10" value="7" aria-label="Social connection level 1 to 10" oninput="updateSapo('social',this.value,1,10,true)">
+        <div class="sapo-anchors"><span>1 — Isolated</span><span>5</span><span>10 — Well connected</span></div>
+      </div>
+
+      <div class="sapo-slider-row">
+        <div class="sapo-meta">
+          <span class="sapo-name">Work/school hours per week (total load)</span>
+          <span class="sapo-val" id="sv-load" style="color:var(--success)">35</span>
+        </div>
+        <input type="range" id="sl-load" min="20" max="80" value="35" aria-label="Total work and school hours per week" oninput="updateSapo('load',this.value,20,80,false)">
+        <div class="sapo-anchors"><span>20h</span><span>50h</span><span>80h — Gate under severe threat</span></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="calcSapo()" style="margin-top:.5rem" aria-label="Calculate my gate status">Calculate My Gate Status</button>
+
+      <div class="sapo-result" id="sapoResult" role="alert" aria-live="polite">
+        <div class="sapo-gauge">
+          <div class="sapo-gauge-num" id="sapoScore" style="color:var(--success)">0</div>
+          <div class="sapo-gauge-label" id="sapoLabel">Gate Status</div>
+        </div>
+        <div id="sapoInterpText" style="font-size:.88rem;line-height:1.65;color:var(--ink)"></div>
+        <div class="card card-amber" style="margin-top:.875rem">
+          <h4>This Is Not a Counseling Assessment</h4>
+          <p style="font-size:.85rem;margin-bottom:0">This is a structural observation about the conditions under which you are being asked to develop your moral reasoning capacity. An ethics course that proceeds as if all students arrive with equivalent prefrontal resources is making exactly the individual-centered category error this course exists to correct. The daily practices that maintain PFC function under chronic stress conditions are not optional enrichment — they are the biological preconditions for what this course requires.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 The Maintenance Question</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">What daily practice currently maintains your C_PFC above the Sapolsky threshold — your capacity for active inference above the floor below which moral reasoning becomes automatic pattern-completion from your strongest priors? Not what you aspire to practice, but what you actually do. And the harder version: when the chronic stress conditions intensify, is this practice the first thing you protect or the first thing you drop?</p>
+      <textarea class="journal-ta" id="jt-sapo" aria-label="Maintenance practice journal entry" placeholder="My current daily practice that maintains my gate open: ...&#10;&#10;Whether it holds under high-stress conditions: ...&#10;&#10;What Mandela's 7×7 cell routine suggests I should consider: ..." oninput="jSave('sapo',this.value)"></textarea>
+      <div class="save-note" id="sn-sapo" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="section-nav">
+      <button class="section-nav-btn" onclick="goNext('sapo','prf')">← §3 Your PRF</button>
+      <button class="section-nav-btn primary" onclick="goNext('sapo','mind')">Next: The Extended Mind →</button>
+    </div>
+  </div>
+
+  <!-- ═══ §5 THE EXTENDED MIND ═══ -->
+  <div id="tab-mind" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-mind">
+    <h2>§5 — The Extended Mind</h2>
+
+    <p>The third mechanism is the one that turns individual cognitive science into ethical and institutional insight. It is Andy Clark's extended mind thesis — and it is why BioBond in the simulation is not a metaphor for emotional warmth but a technically precise term for a structural contribution to moral reasoning capacity.</p>
+
+    <h3>Where Does the Mind End?</h3>
+    <p>Andy Clark and David Chalmers argued in a 1998 paper — now one of the most cited in the philosophy of mind — that the boundary between the mind and its environment is not fixed at the skull. When we ask where a cognitive process is happening, the right answer is often: <strong>partly inside the brain and partly in the tools, artifacts, relationships, and environmental structures the organism reliably uses to accomplish the process.</strong></p>
+    <p>The notebook of a person with severe memory impairment is not merely a tool that compensates for a missing capacity. It <em>is part of the memory system.</em> Remove it and the memory fails — just as it would fail if the hippocampus were damaged. The relevant unit of analysis is not the isolated brain. It is the brain-body-environment system as a functional whole.</p>
+
+    <div class="card card-violet">
+      <h4>Your PRF Is Scaffolded — Right Now, Continuously</h4>
+      <p>Your generative model was not generated by your brain in isolation. It was built through years of embedding in specific community structures, institutional environments, relationships, cultural materials, and social practices. The high Care sensitivity in your profile, if you have it, was not installed by your genes. It was calibrated through thousands of experiences of care and harm in specific relational contexts.</p>
+      <p>And it is currently being maintained by those contexts. The community you belong to, the institutions you work and study within, the relationships you maintain — all are actively updating your generative model, adjusting your precision weightings, reinforcing or challenging your deepest moral priors. <strong>You are never just using your PRF independently of context. You are being shaped by the context that scaffolds it.</strong></p>
+    </div>
+
+    <!-- Scaffold identifier activity -->
+    <div style="background:var(--paper);border-radius:.875rem;padding:1.5rem;margin:1.25rem 0;border:2px solid var(--border)" role="region" aria-label="Identify your cognitive scaffolds">
+      <h3 style="margin-top:0;color:var(--indigo-dark)">Map Your Cognitive Scaffolds</h3>
+      <p style="font-size:.88rem;color:var(--muted);margin-bottom:1rem">Name the people, communities, practices, or materials that are currently part of your distributed cognitive system — the external components that maintain your generative model's stability and your active inference capacity.</p>
+
+      <div>
+        <label for="scaffoldInput" style="font-size:.85rem;font-weight:700;color:var(--ink);display:block;margin-bottom:.4rem">Add a scaffold (person, community, practice, or material):</label>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <input type="text" id="scaffoldInput" class="scaffold-input" style="flex:1;min-width:200px;margin-bottom:0" placeholder="e.g. my study group, daily walk, church community..." aria-label="Name a cognitive scaffold" onkeydown="if(event.key==='Enter'){addScaffold();event.preventDefault()}">
+          <button class="scaffold-btn" onclick="addScaffold()" aria-label="Add scaffold to your map">Add</button>
+        </div>
+        <div class="scaffold-tags" id="scaffoldTags" aria-label="Your identified scaffolds" aria-live="polite">
+          <span style="color:var(--muted);font-size:.8rem;font-style:italic;padding:.2rem">None identified yet — add one above</span>
+        </div>
+      </div>
+
+      <div id="scaffoldAnalysis" style="display:none;margin-top:1rem;padding:1rem;background:var(--indigo-pale);border-radius:.5rem;border-left:3px solid var(--indigo-mid)">
+        <div style="font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:var(--indigo-mid);font-weight:700;margin-bottom:.4rem">Structural Analysis</div>
+        <div id="scaffoldAnalysisText" style="font-size:.85rem;color:var(--ink);line-height:1.6"></div>
+      </div>
+    </div>
+
+    <h3>BioBond Is Cognitive Scaffolding</h3>
+    <p>When Bishop Saad Hanna's captors severed his connection to his Church community, his family, and his congregation, they were not merely isolating him emotionally. In Clark's terms: <strong>they were dismantling part of his cognitive system.</strong> The Church community was not just emotional support — it was the external component of a distributed cognitive architecture that maintained the precision weighting on his sacred-boundary priors and provided the social confirmation that kept his generative model stable.</p>
+    <p>BioBond — the simulation's term for the external structural support that maintains identity coherence under institutional pressure — is therefore not a metaphor for warmth. When the simulation models BioBond activation and measures its effect on λ Raw, it is measuring the structural contribution of cognitive scaffolding to the system's capacity for active inference under suppression conditions.</p>
+
+    <div class="card card-amber">
+      <h4>The Most Important Structural Insight in Chapter 1</h4>
+      <p>The primary threat to moral reasoning capacity is not primarily internal — not weakness of character, insufficient virtue, or inadequate philosophical training. It is the systematic dismantling of the cognitive scaffolds that moral reasoning depends on. An institution that isolates, fragments community networks, imposes chronic stress, removes control, and severs relational scaffolding is not making it harder for people to be ethical. It is making the biological and cognitive conditions for ethical reasoning unavailable. The OS2 reference frame — seeing the system of individuals rather than isolated individuals — is the only reference frame from which this structural threat is visible.</p>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 BioBond and Your Own Cognitive System</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">Look at the scaffolds you named above. Which one, if removed suddenly, would most affect your capacity for deliberate moral reasoning — not your emotional state, but your cognitive capacity? In Clark's terms: which is most load-bearing for your generative model's stability? What would you do to maintain active inference capacity if that scaffold were suddenly unavailable?</p>
+      <textarea class="journal-ta" id="jt-mind" aria-label="BioBond and cognitive scaffolding journal entry" placeholder="The scaffold most load-bearing for my active inference capacity is... because...&#10;&#10;If it were removed, the specific cognitive effect would be...&#10;&#10;What I would do to maintain capacity: ..." oninput="jSave('mind',this.value)"></textarea>
+      <div class="save-note" id="sn-mind" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="section-nav">
+      <button class="section-nav-btn" onclick="goNext('mind','sapo')">← §4 The Sapolsky Gate</button>
+      <button class="section-nav-btn primary" onclick="goNext('mind','four')">Next: The Four Theories →</button>
+    </div>
+  </div>
+
+  <!-- ═══ §6 THE FOUR THEORIES ═══ -->
+  <div id="tab-four" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-four">
+    <h2>§6 — Why the Four Theories Are Each Right — and Each Partial</h2>
+
+    <p>We are now in a position to understand something about the four canonical ethical theories that the standard survey approach cannot reveal. Each theory is not just a philosophical framework. Each is the most precise available articulation of what one strongly configured predictive prior, developed by a philosopher of genius over a lifetime of active inference, produces as its fullest systematic expression.</p>
+
+    <p>They are each right — and each generates characteristic anomalies — at the same location: the scale of institutional life. The individual-agent reference frame, however carefully applied, cannot see what the system-of-individuals reference frame can see.</p>
+
+    <div role="list" aria-label="The four ethical theories">
+      <div class="theory-accordion" role="listitem">
+        <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+          <span><span class="theory-pill tp-virtue">Virtue Ethics</span> Aristotle · MacIntyre · Foot — <em>Who are you becoming?</em></span>
+          <span class="theory-accord-icon" aria-hidden="true">›</span>
+        </button>
+        <div class="theory-accord-body" role="region">
+          <p><strong>What it sees:</strong> Aristotle's moral perception was calibrated to detect features of character — the stable dispositions that make a person excellent and a life worth living. His question "who are you becoming?" is one that every serious ethical life must answer. Virtue ethics is right that character matters, and right that community structures either support or undermine character development.</p>
+          <p><strong>Its characteristic blind spot:</strong> Virtue ethics cannot easily explain why people of apparently good character consistently produce harmful institutions. Individual virtue cannot explain collective failures that emerge from structural features no individual chose. The anomalies appear at the system level because the generative model that produced virtue ethics was calibrated at the individual level.</p>
+          <p><strong>What the OS2 extension adds:</strong> At the system level, virtue ethics' central question becomes: what institutional design produces or destroys the conditions for virtue in the people who inhabit it? This is a question individual-centered virtue ethics cannot ask — but one that the system-level reference frame makes immediately visible.</p>
+          <div class="journal-box" style="margin-top:.75rem">
+            <h4>📝 Quick Reflection</h4>
+            <textarea class="journal-ta" id="jt-virtue" aria-label="Virtue ethics reflection" placeholder="Identify one institutional structure in your life that either supports or undermines the development of a specific virtue you care about. Name the virtue, name the institution, name the mechanism." oninput="jSave('virtue',this.value)" style="min-height:70px"></textarea>
+            <div class="save-note" id="sn-virtue" aria-live="polite">✓ Saved</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="theory-accordion" role="listitem">
+        <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+          <span><span class="theory-pill tp-deont">Deontology</span> Kant · Korsgaard · O'Neill — <em>What is your duty?</em></span>
+          <span class="theory-accord-icon" aria-hidden="true">›</span>
+        </button>
+        <div class="theory-accord-body" role="region">
+          <p><strong>What it sees:</strong> Kant's moral perception was calibrated to detect features of rational agency — the categorical demands of reason that apply to all rational beings regardless of circumstance, the dignity that attaches to persons as ends in themselves. He was right that there are things you cannot do to persons simply because doing them would produce good outcomes.</p>
+          <p><strong>Its characteristic blind spot:</strong> Deontology cannot easily explain why fulfilled individual duties still produce structural Kantian violations that cannot be attributed to any individual's choice. The suppression gap — rational agency being prevented from reaching decisions — is a Kantian violation produced by institutional architecture, not individual failing. No individual's categorical imperative addresses it.</p>
+          <p><strong>What the OS2 extension adds:</strong> At the system level, deontology's central question becomes: what institutional design enables or suppresses rational agency's contribution to collective decisions? The suppression gap (λ Raw − λ Perceived) is the deontological metric made structurally precise.</p>
+          <div class="journal-box" style="margin-top:.75rem">
+            <h4>📝 Quick Reflection</h4>
+            <textarea class="journal-ta" id="jt-deont" aria-label="Deontology reflection" placeholder="Describe a situation where you fulfilled your individual duty but the structural outcome was still a Kantian violation — where rational agency was prevented from reaching decisions despite individual good intentions." oninput="jSave('deont',this.value)" style="min-height:70px"></textarea>
+            <div class="save-note" id="sn-deont" aria-live="polite">✓ Saved</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="theory-accordion" role="listitem">
+        <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+          <span><span class="theory-pill tp-conseq">Consequentialism</span> Mill · Bentham · Singer — <em>What does this produce?</em></span>
+          <span class="theory-accord-icon" aria-hidden="true">›</span>
+        </button>
+        <div class="theory-accord-body" role="region">
+          <p><strong>What it sees:</strong> Mill's moral perception was calibrated to detect features of aggregate welfare — what actions produce for sentient beings, calculated impartially. He was right that outcomes matter and that impartiality is essential. A framework that ignores consequences in favor of pure principle is not more rigorous — it is less honest about what is at stake.</p>
+          <p><strong>Its characteristic blind spot:</strong> Consequentialism cannot easily see the structural distortions that make individual utility calculations systematically wrong in institutional settings. Morphic suppression means agents have learned to suppress their capabilities — so the aggregate utility calculation is based on a distorted input. The structural suppression effects make individual aggregation systematically misleading.</p>
+          <p><strong>What the OS2 extension adds:</strong> At the system level, consequentialism's question becomes: what does this institutional design produce as a population-level emergent pattern across time? Agent-based simulation is consequentialism at the correct scale — it calculates what the structure produces across a heterogeneous population without averaging away what matters most.</p>
+          <div class="journal-box" style="margin-top:.75rem">
+            <h4>📝 Quick Reflection</h4>
+            <textarea class="journal-ta" id="jt-conseq" aria-label="Consequentialism reflection" placeholder="Describe a situation where individual expected-value calculations were all reasonable, but the aggregate structural outcome was harmful in ways no individual's calculation could have predicted." oninput="jSave('conseq',this.value)" style="min-height:70px"></textarea>
+            <div class="save-note" id="sn-conseq" aria-live="polite">✓ Saved</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="theory-accordion" role="listitem">
+        <button class="theory-accord-btn" aria-expanded="false" onclick="toggleAccord(this)">
+          <span><span class="theory-pill tp-care">Care Ethics</span> Noddings · Gilligan · Held — <em>Who are you in relation with?</em></span>
+          <span class="theory-accord-icon" aria-hidden="true">›</span>
+        </button>
+        <div class="theory-accord-body" role="region">
+          <p><strong>What it sees:</strong> Noddings and Gilligan's moral perception was calibrated to detect features of relational networks — the particular other in front of you, the web of mutual recognition and dependency within which any justice worth having becomes possible. They were right that abstract principle-following can systematically miss what matters most in the concrete lives of particular persons.</p>
+          <p><strong>Its characteristic blind spot:</strong> Care ethics cannot easily diagnose the institutional designs that sever relational networks at scale. Individual caring consistently fails inside structurally hostile institutions — not because the carers lack commitment but because the institutional design makes the conditions for sustained caring structurally unavailable.</p>
+          <p><strong>What the OS2 extension adds:</strong> At the system level, care ethics' question becomes: what institutional design enables or severs the relational networks that care requires? The community block field in the simulation (care: −0.85 in Hanna's captivity scenario) is care ethics' central concern made structurally measurable.</p>
+          <div class="journal-box" style="margin-top:.75rem">
+            <h4>📝 Quick Reflection</h4>
+            <textarea class="journal-ta" id="jt-care" aria-label="Care ethics reflection" placeholder="Describe a situation where an institution made genuine caring relationships difficult or impossible to sustain — not through any individual's choice, but through its structural design. What would the institution need to do differently?" oninput="jSave('care',this.value)" style="min-height:70px"></textarea>
+            <div class="save-note" id="sn-care" aria-live="polite">✓ Saved</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-teal" style="margin-top:1.25rem">
+      <h4>What the OS2 Reference Frame Adds</h4>
+      <p>The shift to the OS2 reference frame — the system-of-individuals view — is, in the terms of this chapter, the shift to a generative model that assigns precision to structural and emergent features of moral situations in addition to the individual-level features each theory attends to. It does not replace any of the four theories. It extends the predictive machinery's sensitivity to the scale at which each theory's central claims become fully coherent.</p>
+      <p><strong>The four theories are not competing explanations. They are four precision-tuned instruments, each revealing a different frequency of the same moral landscape.</strong> The OS2 reference frame is the wideband receiver that integrates all four signals simultaneously — and makes visible the structural features that no single-frequency instrument can detect alone.</p>
+    </div>
+
+    <div class="section-nav">
+      <button class="section-nav-btn" onclick="goNext('four','mind')">← §5 The Extended Mind</button>
+      <button class="section-nav-btn primary" onclick="goNext('four','journal')">Next: Journal & Looking Ahead →</button>
+    </div>
+  </div>
+
+  <!-- ═══ §7 JOURNAL ═══ -->
+  <div id="tab-journal" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel" aria-labelledby="tab-journal">
+    <h2>§7 — Chapter Journal & Looking Ahead</h2>
+
+    <p>These are the five reflection questions from Chapter 1 that you should complete before moving to Chapter 2. The fifth question is your prediction for the Challenger simulation — the first applied test of the three mechanisms you have now studied.</p>
+
+    <div class="journal-box">
+      <h4>📝 Q1 — Your Highest-Precision Moral Foundation</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">Return to your Day 1 PRF profile. Which moral foundation dimension has the highest precision weighting in your generative model? Name a specific situation from your recent life where that dimension was automatically salient — where you noticed a morally relevant feature before you had consciously processed the situation.</p>
+      <textarea class="journal-ta" id="jt-q1" aria-label="Reflection question 1" placeholder="My highest-precision moral foundation is... &#10;A situation where it activated automatically: ..." oninput="jSave('q1',this.value)"></textarea>
+      <div class="save-note" id="sn-q1" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Q2 — Your Attenuated Moral Dimension</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">Which moral dimension generates the most friction — requires the most active inference to detect? Describe a situation where you later realised you had missed a morally relevant feature that someone with a different PRF profile saw immediately. What does the mechanism of precision-weighting predict about why you missed it?</p>
+      <textarea class="journal-ta" id="jt-q2" aria-label="Reflection question 2" placeholder="The dimension I most need active inference to detect: ...&#10;A situation where I missed what someone else saw: ...&#10;Why precision-weighting predicts I missed it: ..." oninput="jSave('q2',this.value)"></textarea>
+      <div class="save-note" id="sn-q2" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Q3 — Your Sapolsky Gate Status</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">Assess your current Sapolsky gate status honestly. Use the self-check you completed in §4 as your starting point. What are the two conditions most responsible for your current position? And what is the one daily practice you would most need to protect — or build — to maintain your active inference capacity through this course?</p>
+      <textarea class="journal-ta" id="jt-q3" aria-label="Reflection question 3" placeholder="My current gate status: ...&#10;The two conditions most responsible: ...&#10;The practice I would most need to protect or build: ..." oninput="jSave('q3',this.value)"></textarea>
+      <div class="save-note" id="sn-q3" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="journal-box">
+      <h4>📝 Q4 — Your Most Load-Bearing Cognitive Scaffold</h4>
+      <p style="font-size:.85rem;margin-bottom:.4rem">Identify one external cognitive scaffold — one component of the environment or community that is currently supporting your generative model's stability and your active inference capacity. What would the loss of that scaffold do to your moral reasoning capacity, in the specific terms Chapter 1 has provided?</p>
+      <textarea class="journal-ta" id="jt-q4" aria-label="Reflection question 4" placeholder="My most load-bearing cognitive scaffold: ...&#10;In Clark's terms, what it provides: ...&#10;What its loss would do to my active inference capacity: ..." oninput="jSave('q4',this.value)"></textarea>
+      <div class="save-note" id="sn-q4" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <div class="journal-box" style="border-color:var(--indigo-mid);background:var(--indigo-pale)">
+      <h4 style="color:var(--indigo-dark)">📝 Q5 — Your Challenger Prediction (Before Chapter 2)</h4>
+      <p style="font-size:.85rem;margin-bottom:.5rem">This is your active inference exercise before the Telescope chapter. Roger Boisjoly was a Thiokol engineer whose precision-weighting was strongly calibrated to empirical safety data. The NASA decision architecture had authority-weighted evidence distribution embedded in its culture and schedule-pressure embedded in its block fields. Given what you now know about the suppression gap as a structural mechanism — what do you predict the simulation will show about how much of Boisjoly's knowledge reached the launch decision? Write your prediction precisely enough that you will know whether the simulation confirmed or disconfirmed it.</p>
+      <textarea class="journal-ta" id="jt-q5" aria-label="Challenger simulation prediction" placeholder="My prediction for the Challenger simulation:&#10;&#10;λ Raw (Boisjoly and the engineers' actual knowledge): ...&#10;λ Perceived (what reached the launch decision): ...&#10;Suppression gap I predict: ...&#10;&#10;Structural reasoning: the authority-weighted decision culture and schedule pressure would...&#10;&#10;Through my specific PRF lens, the feature of this structure I notice first is..." oninput="jSave('q5',this.value)" style="min-height:160px"></textarea>
+      <div class="save-note" id="sn-q5" aria-live="polite">✓ Saved</div>
+    </div>
+
+    <!-- Looking Ahead -->
+    <div class="card card-dark" style="margin-top:1.5rem">
+      <h3 style="color:var(--amber);margin-top:0">Looking Ahead: Chapter 2 — The Telescope</h3>
+      <p>The next chapter introduces the OS2 reference frame and demonstrates it through the Challenger disaster — specifically through Roger Boisjoly's testimony and the institutional architecture that prevented his knowledge from reaching the launch decision. The chapter does not present Boisjoly as a hero or the managers as villains. It presents both as agents operating within a structural configuration that the simulation will now measure.</p>
+      <p style="opacity:.82">Complete all five journal questions above — including your Challenger prediction — before beginning Chapter 2. Your predictions, formed from your current generative model, are the raw material the course works with.</p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-amber" onclick="exportJournal()"><span aria-hidden="true">📥</span> Download All Responses</button>
+      <button class="btn btn-primary" onclick="copyJournal()"><span aria-hidden="true">📋</span> Copy to Clipboard</button>
+    </div>
+
+    <div id="exportPreview" style="display:none;margin-top:1rem;padding:1rem;background:var(--paper);border-radius:.5rem;border:1px solid var(--border)" aria-label="Export preview">
+      <pre id="exportContent" style="white-space:pre-wrap;font-family:'Courier New',monospace;font-size:.8rem;max-height:400px;overflow-y:auto"></pre>
+      <button class="btn btn-primary" style="margin-top:.5rem" onclick="document.getElementById('exportPreview').style.display='none'">Close</button>
+    </div>
+
+    <div class="completion-card" id="completionCard" style="display:none" role="status" aria-live="polite">
+      <h3>Chapter 1 Complete</h3>
+      <p>You have worked through all six sections of Chapter 1 — the nail case, the predictive brain, your PRF as generative model, the Sapolsky gate, the extended mind, and the four theories. You now have the conceptual apparatus to read the Challenger simulation as measurement rather than illustration. Proceed to Chapter 2: The Telescope.</p>
+    </div>
+
+    <div class="section-nav">
+      <button class="section-nav-btn" onclick="goNext('journal','four')">← §6 The Four Theories</button>
+    </div>
+  </div>
+</div>
+
+<footer role="contentinfo">Ethics Beyond Boundaries · Chapter 1: The Lens Before the Argument · Saint Petersburg College Ethics Institute</footer>
+
+<script>
+// ── State ─────────────────────────────────────────────────
+const JP = 'ch1_';
+const TABS = ['nail','brain','prf','sapo','mind','four','journal'];
+const completed = new Set();
+let nailPrediction = null;
+let scaffolds = [];
+
+// ── PRF ──────────────────────────────────────────────────
+const CH1_PRF = {
+  _fw: null,
+  FW: {
+    individual_rights: {name:'Individual / Rights-Based', icon:'⚖️', color:'#4a7fb5',
+      interp:'Your rights-based framework is most sensitive to the suppression of equal rational standing — the suppression gap is your most urgent metric. Your precision-weighting makes the Kantian violation (rational agency prevented from reaching decisions) immediately visible. The moral dimension your framework most needs active inference to detect is the relational texture of care — the particular person in front of you whose suffering may not rise to the level of a rights violation but is morally significant nonetheless.',
+      highest:'Fairness/Cheating',lowest:'Loyalty/Authority'},
+    relational_we: {name:'Relational / We-Centered', icon:'🤝', color:'#3a8a5c',
+      interp:'Your relational framework is most sensitive to the severing of mutual recognition networks — morphic suppression is your most urgent metric, because it represents the internalization of disconnection. Your precision-weighting makes relational rupture immediately visible. The moral dimension your framework most needs active inference to detect is the structural account of why relational repair requires institutional design change, not just individual reconciliation.',
+      highest:'Care/Harm',lowest:'Fairness/Authority'},
+    hierarchical_role: {name:'Hierarchical / Role-Based', icon:'🏛️', color:'#8a6fb5',
+      interp:'Your role-based framework is most sensitive to inversions of legitimate authority — when hierarchical structures fail to direct capability toward proper institutional ends. Your precision-weighting makes legitimacy violations immediately visible. The moral dimension your framework most needs active inference to detect is the way legitimate authority can produce structural harm without any individual exceeding their role — the distributed causation of institutional failures.',
+      highest:'Authority/Loyalty',lowest:'Care/Fairness'},
+    boundary_integrity: {name:'Boundary / Integrity-Centered', icon:'🛡️', color:'#c9a84c',
+      interp:'Your boundary/integrity framework is most sensitive to violations of non-negotiable limits — the suppression gap and morphic suppression are both urgent to you because they represent categorical commitments being eroded. Your precision-weighting makes categorical violations immediately visible. The moral dimension your framework most needs active inference to detect is the coordination value of cross-worldview convergence — when the OS2 Bridge rises despite your framework\'s discomfort with compromise.',
+      highest:'Purity/Authority',lowest:'Care/Openness'},
+    custodial: {name:'Custodial / Stewardship', icon:'🌱', color:'#4a9a7a',
+      interp:'Your custodial framework is most sensitive to what is being built or destroyed across time — morphic suppression accumulation and OS2 Bridge trajectory are your most urgent metrics, because they measure what the institution is transmitting to those who come after. Your precision-weighting makes transgenerational consequences immediately visible. The moral dimension your framework most needs active inference to detect is the urgency of present-tense interventions before the trajectory becomes irreversible.',
+      highest:'Loyalty/Purity',lowest:'Fairness/Openness'},
+  },
+  load(text){
+    try{
+      const p=JSON.parse(text);let fw;
+      if(p.framework&&this.FW[p.framework]){fw=p.framework;}
+      else if(p.prf22?.moralFoundations){
+        const mf=p.prf22.moralFoundations;
+        const z=x=>((x||3)-3);
+        const sc={
+          individual_rights:0.40*z(mf.Fairness)+0.30*(z(mf.Care)+z(mf.Fairness))/2-0.30*(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3,
+          relational_we:0.40*z(mf.Care)+0.30*(z(mf.Care)+z(mf.Fairness))/2,
+          hierarchical_role:0.40*(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3,
+          boundary_integrity:0.30*(z(mf.Loyalty||3)+z(mf.Authority||3)+z(mf.Purity||3))/3+0.40*z(mf.Purity||3),
+          custodial:0.30*(z(mf.Authority||3)+z(mf.Purity||3))/2+0.05,
+        };
+        fw=Object.entries(sc).sort((a,b)=>b[1]-a[1])[0][0];
+        // Store scores for dim bars
+        this._mf=mf;
+      }
+      this._fw=fw;return{ok:true};
+    }catch(e){return{ok:false,error:e.message};}
+  },
+  fw(){return this._fw;},
+  info(){return this._fw?this.FW[this._fw]:null;},
+  isLoaded(){return this._fw!==null;},
+};
+
+document.getElementById('prfFileInput').addEventListener('change',function(){
+  const file=this.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{
+    const res=CH1_PRF.load(e.target.result);
+    const badge=document.getElementById('prfBadge');
+    if(res.ok){
+      const info=CH1_PRF.info();
+      badge.innerHTML=`${info.icon} <strong style="color:${info.color}">${info.name}</strong>`;
+      try{localStorage.setItem('d1_prf_fw',CH1_PRF.fw());}catch(err){}
+      renderPRFSection();
+    } else {
+      badge.textContent=`Error: ${res.error}`;
+    }
+  };r.readAsText(file);
+});
+
+function renderPRFSection(){
+  const info=CH1_PRF.info();if(!info)return;
+  document.getElementById('prfNoLoad').style.display='none';
+  document.getElementById('prfPersonal').style.display='block';
+  document.getElementById('prfIconDisplay').textContent=info.icon;
+  document.getElementById('prfNameDisplay').textContent=info.name;
+  document.getElementById('prfSubDisplay').textContent='Your dominant ethical framework profile';
+  document.getElementById('prfInterpTitle').textContent=`${info.icon} Your ${info.name} Precision-Weighting Pattern`;
+  document.getElementById('prfInterpText').textContent=info.interp;
+  // Dim bars from MF scores
+  const mf=CH1_PRF._mf||{};
+  const DIMS=[
+    {k:'Care',label:'Care / Harm',desc:'Sensitivity to suffering and protection'},
+    {k:'Fairness',label:'Fairness / Justice',desc:'Sensitivity to equal treatment'},
+    {k:'Loyalty',label:'Loyalty / Community',desc:'Group bonds and collective identity'},
+    {k:'Authority',label:'Authority / Tradition',desc:'Legitimate structure and accumulated wisdom'},
+    {k:'Purity',label:'Integrity / Sanctity',desc:'Non-negotiable limits and inviolable dignity'},
+  ];
+  let html='';
+  DIMS.forEach(d=>{
+    const score=mf[d.k]||3;const pct=Math.round((score-1)/4*100);
+    html+=`<div class="prf-dim-bar">
+      <div class="prf-dim-header"><span class="prf-dim-name">${d.label}</span><span class="prf-dim-score">${score.toFixed(1)}/5.0</span></div>
+      <div class="prf-track"><div class="prf-fill" style="width:${pct}%" role="img" aria-label="${d.label}: ${score.toFixed(1)} out of 5"></div></div>
+      <div class="prf-dim-label">${d.desc}</div>
+    </div>`;
+  });
+  document.getElementById('prfDimBars').innerHTML=html;
+}
+
+// Try to load PRF from localStorage on startup
+(function(){
+  try{
+    const fw=localStorage.getItem('d1_prf_fw');
+    if(fw&&CH1_PRF.FW[fw]){
+      CH1_PRF._fw=fw;
+      const info=CH1_PRF.info();
+      document.getElementById('prfBadge').innerHTML=`${info.icon} <strong style="color:${info.color}">${info.name}</strong>`;
+    }
+  }catch(e){}
+})();
+
+// ── Nail interaction ──────────────────────────────────────
+function selectNailPred(choice, btn){
+  nailPrediction=choice;
+  document.querySelectorAll('.predict-btn').forEach(b=>{b.classList.remove('selected');b.setAttribute('aria-pressed','false');});
+  btn.classList.add('selected');btn.setAttribute('aria-pressed','true');
+  const revBtn=document.getElementById('nailRevealBtn0');
+  revBtn.disabled=false;revBtn.removeAttribute('aria-disabled');
+  revBtn.textContent='Reveal What Happened →';
+}
+
+function showNailReveal(){
+  document.getElementById('nail-step-0').classList.remove('active');
+  document.getElementById('nail-step-1').classList.add('active');
+  const vb=document.getElementById('nail-verdict');
+  const wasRight=(nailPrediction==='none');
+  vb.className='verdict-box '+(wasRight?'verdict-correct':'verdict-wrong');
+  const _vTitle = wasRight ? '✓ You predicted correctly' : '✗ Most people predict incorrectly — and that matters';
+  const _predLbl = nailPrediction==='injury' ? 'serious injury' : 'a minor injury';
+  const _vBody = wasRight
+    ? 'You predicted no injury — which is the outcome. But notice: even knowing this intellectually before the reveal, you may have felt the pull toward predicting injury. That pull is your generative model running its prior about nails and feet.'
+    : 'You predicted ' + _predLbl + ' — which is what almost everyone predicts, because the prior about nail-through-boot meaning injury is extremely strong in every human brain. That strong prior is precisely what the nail case is demonstrating.';
+  vb.innerHTML = '<div class="verdict-label">' + _vTitle + '</div><p style="margin-bottom:0;font-size:.9rem">' + _vBody + '</p>';  vb.focus();
+}
+
+function showNailExplain(){
+  document.getElementById('nail-step-1').classList.remove('active');
+  document.getElementById('nail-step-2').classList.add('active');
+  markCompleted('nail');
+}
+
+// ── Accordion ─────────────────────────────────────────────
+function toggleAccord(btn){
+  const body=btn.nextElementSibling;
+  const expanded=btn.getAttribute('aria-expanded')==='true';
+  btn.setAttribute('aria-expanded',!expanded);
+  body.classList.toggle('open',!expanded);
+}
+
+// ── Sapolsky self-check ───────────────────────────────────
+const sapoVals={sleep:7,finance:3,control:7,social:7,load:35};
+function updateSapo(k,v,min,max,hi){
+  sapoVals[k]=parseFloat(v);
+  const pct=((v-min)/(max-min)*100).toFixed(0);
+  const el=document.getElementById('sl-'+k);
+  if(el) el.style.setProperty('--pct',(hi?pct:(100-pct))+'%');
+  const sv=document.getElementById('sv-'+k);
+  if(sv){sv.textContent=v;
+    const score=hi?(parseFloat(v)-min)/(max-min):(1-(parseFloat(v)-min)/(max-min));
+    sv.style.color=score>.65?'var(--success)':score>.35?'var(--amber)':'var(--danger)';
+  }
+  try{localStorage.setItem(JP+'sapo_'+k,v);}catch(e){}
+}
+function calcSapo(){
+  const sleep=(sapoVals.sleep-3)/6;
+  const finance=1-(sapoVals.finance-1)/9;
+  const control=(sapoVals.control-1)/9;
+  const social=(sapoVals.social-1)/9;
+  const load=1-(sapoVals.load-20)/60;
+  const score=Math.round((sleep+finance+control+social+load)/5*100);
+  const el=document.getElementById('sapoResult');
+  el.style.display='block';
+  const scoreEl=document.getElementById('sapoScore');
+  scoreEl.textContent=score+'%';
+  scoreEl.style.color=score>=65?'var(--success)':score>=40?'var(--amber)':'var(--danger)';
+  const label=score>=65?'Gate Substantially Open':score>=40?'Gate Partially Narrowed':'Gate Significantly Narrowed';
+  document.getElementById('sapoLabel').textContent=label;
+  const interps={
+    high:`Your current conditions are providing reasonable support for the PFC's active inference capacity. Sleep, social connection, and perceived control are at levels that research associates with maintained prefrontal function. This does not mean your gate is fully open — some narrowing exists under all real-world conditions — but the structural conditions for deliberate moral reasoning are substantially available. Protect the practices that produced this score: they are doing load-bearing work.`,
+    mid:`Your current conditions are producing moderate Sapolsky gate narrowing. One or more of the four main gate-degrading conditions (sleep deprivation, social isolation, loss of perceived control, excessive load) is significantly present. Under these conditions, your active inference capacity is functioning but constrained — you are more likely to default to your strongest priors, and the threshold for deliberate moral reasoning is higher than it should be. Identify which condition is most responsible and what one change would most open the gate.`,
+    low:`Your current conditions are producing significant Sapolsky gate narrowing. Multiple gate-degrading conditions are present at levels associated with meaningful PFC connectivity degradation. Under these conditions, your moral reasoning is increasingly becoming automatic pattern-completion from your strongest priors, with reduced capacity to notice what your framework would otherwise miss. This is not a character assessment — it is a structural observation about the conditions you are being asked to develop your moral reasoning capacity within. The course and your instructor need to understand that you are doing this work under significant structural disadvantage.`
+  };
+  document.getElementById('sapoInterpText').textContent=score>=65?interps.high:score>=40?interps.mid:interps.low;
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  markCompleted('sapo');
+}
+
+// ── Scaffold identifier ───────────────────────────────────
+function addScaffold(){
+  const input=document.getElementById('scaffoldInput');
+  const val=input.value.trim();
+  if(!val)return;
+  scaffolds.push(val);input.value='';
+  renderScaffolds();
+  try{localStorage.setItem(JP+'scaffolds',JSON.stringify(scaffolds));}catch(e){}
+  if(scaffolds.length>=2) analyseScaffolds();
+  markCompleted('mind');
+}
+function removeScaffold(i){
+  scaffolds.splice(i,1);renderScaffolds();
+  try{localStorage.setItem(JP+'scaffolds',JSON.stringify(scaffolds));}catch(e){}
+}
+function renderScaffolds(){
+  const container=document.getElementById('scaffoldTags');
+  if(!scaffolds.length){container.innerHTML='<span style="color:var(--muted);font-size:.8rem;font-style:italic;padding:.2rem">None identified yet — add one above</span>';return;}
+  container.innerHTML=scaffolds.map((s,i)=>
+    `<span class="scaffold-tag">${s}<button onclick="removeScaffold(${i})" aria-label="Remove scaffold: ${s}">×</button></span>`
+  ).join('');
+}
+function analyseScaffolds(){
+  const n=scaffolds.length;
+  const analysis=document.getElementById('scaffoldAnalysis');
+  const text=document.getElementById('scaffoldAnalysisText');
+  analysis.style.display='block';
+  let msg;
+  if(n===1) msg='You have identified one scaffold. In Clark’s terms this is a single-node distributed cognitive system — functional but fragile. Consider what would maintain your generative model’s stability if this scaffold were suddenly unavailable.';
+  else if(n<=3) msg='You have identified ' + n + ' scaffolds. This is a small network — more resilient than a single node, but each scaffold is still heavily load-bearing. Consider which is most critical to your generative model’s stability.';
+  else msg='You have identified ' + n + ' scaffolds — a substantive distributed cognitive system. The redundancy provides resilience. Consider whether these scaffolds are mutually reinforcing or independent.';
+  text.textContent=msg;
+}
+
+// ── Tab navigation ────────────────────────────────────────
+function showTab(name, btn){
+  TABS.forEach(t=>{
+    const pane=document.getElementById('tab-'+t);
+    const navBtn=document.getElementById('tab-'+t);
+    if(pane){pane.style.display='none';pane.classList.remove('active');}
+  });
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+  const pane=document.getElementById('tab-'+name);
+  if(pane){pane.style.display='block';pane.classList.add('active');}
+  if(btn){btn.classList.add('active');btn.setAttribute('aria-selected','true');}
+  // Render PRF section if navigating to it
+  if(name==='prf'&&CH1_PRF.isLoaded()) renderPRFSection();
+  // Restore saved scaffold
+  if(name==='mind'){
+    try{const s=localStorage.getItem(JP+'scaffolds');if(s){scaffolds=JSON.parse(s);renderScaffolds();if(scaffolds.length>=2)analyseScaffolds();}}catch(e){}
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goNext(from, to){
+  markCompleted(from);
+  const btn=document.getElementById('tab-'+to);
+  showTab(to,btn);
+}
+function markCompleted(name){
+  completed.add(name);
+  const btn=document.getElementById('tab-'+name);
+  if(btn)btn.classList.add('completed');
+  updateProgress();
+  if(completed.size>=6) document.getElementById('completionCard').style.display='block';
+}
+function updateProgress(){
+  const n=completed.size;const max=6;
+  const pct=Math.round(n/max*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progLabel').textContent=n+'/'+max;
+  const track=document.querySelector('.prog-track');
+  if(track){track.setAttribute('aria-valuenow',n);}
+}
+
+// ── Journal persistence ───────────────────────────────────
+const J_KEYS=['nail','brain','prf','sapo','mind','virtue','deont','conseq','care','q1','q2','q3','q4','q5'];
+function jSave(k,v){
+  try{
+    localStorage.setItem(JP+k,v);
+    const sn=document.getElementById('sn-'+k);
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+    // Mark section complete when journal entry written
+    const sectionMap={nail:'nail',brain:'brain',prf:'prf',sapo:'sapo',mind:'mind',virtue:'four',deont:'four',conseq:'four',care:'four',q1:'journal',q2:'journal',q3:'journal',q4:'journal',q5:'journal'};
+    if(v.length>30&&sectionMap[k]) markCompleted(sectionMap[k]);
+  }catch(e){}
+}
+function jLoad(k){try{return localStorage.getItem(JP+k)||'';}catch(e){return '';}}
+function loadAllJournal(){
+  J_KEYS.forEach(k=>{
+    const el=document.getElementById('jt-'+k);
+    if(el) el.value=jLoad(k);
+  });
+  // Restore sapo sliders
+  ['sleep','finance','control','social','load'].forEach(k=>{
+    try{
+      const saved=localStorage.getItem(JP+'sapo_'+k);
+      if(saved){
+        const sl=document.getElementById('sl-'+k);
+        if(sl){sl.value=saved;}
+        const defaults={sleep:{min:3,max:9,hi:true},finance:{min:1,max:10,hi:false},control:{min:1,max:10,hi:true},social:{min:1,max:10,hi:true},load:{min:20,max:80,hi:false}};
+        const d=defaults[k];
+        updateSapo(k,saved,d.min,d.max,d.hi);
+      }
+    }catch(e){}
+  });
+}
+
+// ── Export ─────────────────────────────────────────────────
+function buildExport(){
+  return `CHAPTER 1: THE LENS BEFORE THE ARGUMENT\nEthics Beyond Boundaries · ${new Date().toLocaleDateString()}\nStudent: [YOUR NAME]\n\n` +
+  `NAIL CASE REFLECTION\n${jLoad('nail')||'[not completed]'}\n\n` +
+  `PREDICTIVE BRAIN — CHECK YOUR UNDERSTANDING\n${jLoad('brain')||'[not completed]'}\n\n` +
+  `PRF SELF-EXAMINATION\n${jLoad('prf')||'[not completed]'}\n\n` +
+  `SAPOLSKY GATE — MAINTENANCE QUESTION\n${jLoad('sapo')||'[not completed]'}\n\n` +
+  `EXTENDED MIND — BIOBOND AND YOUR COGNITIVE SYSTEM\n${jLoad('mind')||'[not completed]'}\n\n` +
+  `FOUR THEORIES — VIRTUE ETHICS\n${jLoad('virtue')||'[not completed]'}\n\n` +
+  `FOUR THEORIES — DEONTOLOGY\n${jLoad('deont')||'[not completed]'}\n\n` +
+  `FOUR THEORIES — CONSEQUENTIALISM\n${jLoad('conseq')||'[not completed]'}\n\n` +
+  `FOUR THEORIES — CARE ETHICS\n${jLoad('care')||'[not completed]'}\n\n` +
+  `CHAPTER QUESTIONS\nQ1 — Highest-Precision Foundation:\n${jLoad('q1')||'[not completed]'}\n\n` +
+  `Q2 — Attenuated Dimension:\n${jLoad('q2')||'[not completed]'}\n\n` +
+  `Q3 — Sapolsky Gate Status:\n${jLoad('q3')||'[not completed]'}\n\n` +
+  `Q4 — Most Load-Bearing Scaffold:\n${jLoad('q4')||'[not completed]'}\n\n` +
+  `Q5 — CHALLENGER PREDICTION (before Chapter 2):\n${jLoad('q5')||'[not completed]'}\n`;
+}
+function exportJournal(){
+  const txt=buildExport();
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='Ch1_Lens_Before_Argument.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+function copyJournal(){
+  const txt=buildExport();
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>fallback(txt));
+  else fallback(txt);
+  document.getElementById('exportContent').textContent=txt;
+  document.getElementById('exportPreview').style.display='block';
+}
+function fallback(txt){
+  const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);
+}
+
+// ── On load ───────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  loadAllJournal();
+  // Restore PRF from localStorage
+  try{
+    const fw=localStorage.getItem('d1_prf_fw');
+    if(fw&&CH1_PRF.FW[fw]){
+      CH1_PRF._fw=fw;
+      const info=CH1_PRF.info();
+      document.getElementById('prfBadge').innerHTML=`${info.icon} <strong style="color:${info.color}">${info.name}</strong>`;
+    }
+  }catch(e){}
+  // Restore completion state
+  try{
+    const cs=localStorage.getItem(JP+'completed');
+    if(cs){JSON.parse(cs).forEach(s=>{completed.add(s);const b=document.getElementById('tab-'+s);if(b)b.classList.add('completed');});}
+  }catch(e){}
+  updateProgress();
+});
+
+// Save completion state
+function markCompleted(name){
+  completed.add(name);
+  const btn=document.getElementById('tab-'+name);
+  if(btn)btn.classList.add('completed');
+  updateProgress();
+  if(completed.size>=6) document.getElementById('completionCard').style.display='block';
+  try{localStorage.setItem(JP+'completed',JSON.stringify([...completed]));}catch(e){}
+}
+</script>
+</body>
+</html>
