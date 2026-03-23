@@ -918,23 +918,29 @@ const PAYLOADS={
     evidence_distribution:{authority_weighted:0.60,tradition_weighted:0.20,empirical_calibrated:0.15,alternative_facts:0.05}
   },
   1:{// λ Perceived — hidden safety reports
+    // Functioning company: low entropy, low stress, positive safety culture
+    // The GAP comes from authority_weighted evidence filter — not from structural collapse
     scenario_name:'whistleblower',num_agents:12,steps:8,seed:42,
-    scenario_physics:{base_entropy:0.62,base_stress:0.58,
-      block_fields:{care:-0.30,fairness:-0.70,community:-0.50,boundary:0.40}},
+    scenario_physics:{base_entropy:0.35,base_stress:0.38,
+      block_fields:{care:0.20,fairness:-0.45,community:-0.10,boundary:0.65}},
     worldview_distribution:{role_order:0.50,liberal_individualist:0.25,sacred_boundary:0.15,ubuntu_relational:0.07,indigenous_custodial:0.03},
-    evidence_distribution:{authority_weighted:0.65,tradition_weighted:0.15,empirical_calibrated:0.15,alternative_facts:0.05}
+    evidence_distribution:{authority_weighted:0.72,tradition_weighted:0.13,empirical_calibrated:0.10,alternative_facts:0.05}
   },
   2:{// Suppression gap — junior faculty
+    // Functional department: moderate entropy, moderate-low stress
+    // The GAP comes from role_order + authority_weighted deference culture
     scenario_name:'whistleblower',num_agents:12,steps:8,seed:42,
-    scenario_physics:{base_entropy:0.55,base_stress:0.50,
-      block_fields:{care:-0.20,fairness:-0.65,community:-0.45,boundary:0.55}},
+    scenario_physics:{base_entropy:0.45,base_stress:0.44,
+      block_fields:{care:-0.10,fairness:-0.55,community:-0.30,boundary:0.55}},
     worldview_distribution:{role_order:0.55,liberal_individualist:0.25,sacred_boundary:0.10,ubuntu_relational:0.07,indigenous_custodial:0.03},
     evidence_distribution:{authority_weighted:0.70,tradition_weighted:0.15,empirical_calibrated:0.10,alternative_facts:0.05}
   },
   3:{// Morphic suppression — 10 steps, long campaign
+    // Moderate entropy so λ Raw starts in readable range
+    // Community deeply suppressed → morphic suppression builds over 10 steps
     scenario_name:'whistleblower',num_agents:14,steps:10,seed:42,
-    scenario_physics:{base_entropy:0.70,base_stress:0.60,
-      block_fields:{care:-0.30,fairness:-0.60,community:-0.75,boundary:0.35}},
+    scenario_physics:{base_entropy:0.52,base_stress:0.50,
+      block_fields:{care:-0.25,fairness:-0.55,community:-0.68,boundary:0.42}},
     worldview_distribution:{ubuntu_relational:0.35,liberal_individualist:0.30,sacred_boundary:0.20,role_order:0.10,indigenous_custodial:0.05},
     evidence_distribution:{authority_weighted:0.45,empirical_calibrated:0.30,tradition_weighted:0.20,alternative_facts:0.05}
   },
@@ -961,9 +967,12 @@ const PAYLOADS={
     evidence_distribution:{empirical_calibrated:0.32,tradition_weighted:0.30,authority_weighted:0.25,alternative_facts:0.13}
   },
   6:{// Synthesis — hospital crisis
+    // Moderate entropy so all 5 metrics land in readable, distinguishable ranges
+    // λ Raw low (crisis), gap visible (authority filter), morphic suppression building,
+    // OS2 Bridge low-moderate (diverse staff, no shared task), friction moderate
     scenario_name:'whistleblower',num_agents:16,steps:8,seed:42,
-    scenario_physics:{base_entropy:0.75,base_stress:0.68,
-      block_fields:{care:-0.40,fairness:-0.65,community:-0.55,boundary:0.50}},
+    scenario_physics:{base_entropy:0.62,base_stress:0.56,
+      block_fields:{care:-0.38,fairness:-0.55,community:-0.45,boundary:0.50}},
     worldview_distribution:{role_order:0.30,sacred_boundary:0.25,liberal_individualist:0.22,ubuntu_relational:0.15,indigenous_custodial:0.08},
     evidence_distribution:{authority_weighted:0.55,tradition_weighted:0.20,empirical_calibrated:0.18,alternative_facts:0.07}
   }
