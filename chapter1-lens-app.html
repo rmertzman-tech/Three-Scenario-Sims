@@ -904,7 +904,16 @@ function updateSapo(k,v,min,max,hi){
   sapoVals[k]=parseFloat(v);
   const pct=((v-min)/(max-min)*100).toFixed(0);
   const el=document.getElementById('sl-'+k);
-  if(el) el.style.setProperty('--pct',(hi?pct:(100-pct))+'%');
+  if(el){
+    // Always set --pct to actual thumb position so fill boundary aligns with thumb
+    // hi=true:  green left of thumb (more = good)
+    // hi=false: amber left of thumb (more = bad), green right of thumb (good direction)
+    if(hi){
+      el.style.background=`linear-gradient(90deg,var(--success) ${pct}%,#d1d5db ${pct}%)`;
+    } else {
+      el.style.background=`linear-gradient(90deg,var(--amber) ${pct}%,var(--success) ${pct}%)`;
+    }
+  }
   const sv=document.getElementById('sv-'+k);
   if(sv){sv.textContent=v;
     const score=hi?(parseFloat(v)-min)/(max-min):(1-(parseFloat(v)-min)/(max-min));
@@ -1082,6 +1091,19 @@ function fallback(txt){
 
 // ── On load ───────────────────────────────────────────────
 window.addEventListener('load',()=>{
+  // Init slider backgrounds on load so defaults look correct before interaction
+  const _sapoDefaults={sleep:{v:7,min:3,max:9,hi:true},finance:{v:3,min:1,max:10,hi:false},control:{v:7,min:1,max:10,hi:true},social:{v:7,min:1,max:10,hi:true},load:{v:35,min:20,max:80,hi:false}};
+  Object.entries(_sapoDefaults).forEach(([k,d])=>{
+    try{
+      const saved=localStorage.getItem(JP+'sapo_'+k);
+      const v=saved?parseFloat(saved):d.v;
+      updateSapo(k,v,d.min,d.max,d.hi);
+      const sl=document.getElementById('sl-'+k);
+      if(sl) sl.value=v;
+      const sv=document.getElementById('sv-'+k);
+      if(sv) sv.textContent=v;
+    }catch(e){}
+  });
   loadAllJournal();
   // Restore PRF from localStorage
   try{
