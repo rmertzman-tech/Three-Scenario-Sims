@@ -78,6 +78,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;heigh
 .lock-btn{width:100%;padding:.75rem;background:var(--teal);color:#fff;border:none;border-radius:.5rem;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;margin-top:.5rem}
 .lock-btn:hover{background:var(--teal-dark)}
 .lock-btn:disabled{opacity:.4;cursor:not-allowed}
+.update-pred-btn{width:100%;padding:.45rem;background:transparent;color:var(--teal-dark);border:1px solid var(--teal-mid);border-radius:.4rem;font-family:'Georgia',serif;font-size:.82rem;cursor:pointer;transition:.2s;margin-top:.4rem}
+.update-pred-btn:hover{background:var(--teal-light)}
+.update-pred-btn:focus-visible{outline:2px solid var(--teal-dark);outline-offset:2px}
 .pred-locked-display{background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.25);border-radius:.4rem;padding:.65rem .875rem;font-size:.85rem;color:var(--teal-dark);margin-top:.5rem;font-family:'Courier New',monospace;display:none}
 
 /* ── Run section ── */
@@ -312,6 +315,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
       <button class="lock-btn" id="lock-0" onclick="lockPrediction(0)">🔒 Lock In My Prediction</button>
       <div class="pred-locked-display" id="locked-display-0"></div>
+      <button class="update-pred-btn" id="update-pred-0" onclick="unlockPrediction(0)" style="display:none" aria-label="Change my prediction for round 0">✎ Change My Prediction</button>
     </div>
 
     <div class="run-section" id="run-section-0">
@@ -366,6 +370,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
       <button class="lock-btn" id="lock-1" onclick="lockPrediction(1)">🔒 Lock In My Prediction</button>
       <div class="pred-locked-display" id="locked-display-1"></div>
+      <button class="update-pred-btn" id="update-pred-1" onclick="unlockPrediction(1)" style="display:none" aria-label="Change my prediction for round 1">✎ Change My Prediction</button>
     </div>
 
     <div class="run-section" id="run-section-1">
@@ -415,6 +420,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
       <button class="lock-btn" id="lock-2" onclick="lockPrediction(2)">🔒 Lock In My Prediction</button>
       <div class="pred-locked-display" id="locked-display-2"></div>
+      <button class="update-pred-btn" id="update-pred-2" onclick="unlockPrediction(2)" style="display:none" aria-label="Change my prediction for round 2">✎ Change My Prediction</button>
     </div>
 
     <div class="run-section" id="run-section-2">
@@ -463,6 +469,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
       <button class="lock-btn" id="lock-3" onclick="lockPrediction(3)">🔒 Lock In My Prediction</button>
       <div class="pred-locked-display" id="locked-display-3"></div>
+      <button class="update-pred-btn" id="update-pred-3" onclick="unlockPrediction(3)" style="display:none" aria-label="Change my prediction for round 3">✎ Change My Prediction</button>
     </div>
 
     <div class="run-section" id="run-section-3">
@@ -511,6 +518,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
       <button class="lock-btn" id="lock-4" onclick="lockPrediction(4)">🔒 Lock In My Prediction</button>
       <div class="pred-locked-display" id="locked-display-4"></div>
+      <button class="update-pred-btn" id="update-pred-4" onclick="unlockPrediction(4)" style="display:none" aria-label="Change my prediction for round 4">✎ Change My Prediction</button>
     </div>
 
     <div class="run-section" id="run-section-4">
@@ -566,6 +574,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
       <button class="lock-btn" id="lock-5" onclick="lockPrediction(5)">🔒 Lock In My Prediction</button>
       <div class="pred-locked-display" id="locked-display-5"></div>
+      <button class="update-pred-btn" id="update-pred-5" onclick="unlockPrediction(5)" style="display:none" aria-label="Change my prediction for round 5">✎ Change My Prediction</button>
     </div>
 
     <div class="run-section" id="run-section-5">
@@ -628,6 +637,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
       <button class="lock-btn" id="lock-6" onclick="lockPrediction(6)">🔒 Lock In My Predictions</button>
       <div class="pred-locked-display" id="locked-display-6"></div>
+      <button class="update-pred-btn" id="update-pred-6" onclick="unlockPrediction(6)" style="display:none" aria-label="Change my prediction for round 6">✎ Change My Prediction</button>
     </div>
 
     <div class="run-section" id="run-section-6">
@@ -831,9 +841,40 @@ function lockPrediction(r){
   const rs=document.getElementById('run-section-'+r);
   if(rs)rs.style.display='block';
 
-  // Disable lock button
+  // Disable lock button, show update button
   const lb=document.getElementById('lock-'+r);
   if(lb){lb.disabled=true;lb.innerHTML='✓ Prediction Locked';}
+  const ub=document.getElementById('update-pred-'+r);
+  if(ub) ub.style.display='block';
+}
+
+function unlockPrediction(r){
+  // Re-enable the lock button so student can adjust slider and re-lock
+  const lb=document.getElementById('lock-'+r);
+  if(lb){lb.disabled=false;lb.innerHTML='🔒 Lock In My Prediction';}
+  // Hide the locked display and update button
+  const ld=document.getElementById('locked-display-'+r);
+  if(ld){ld.textContent='';ld.style.display='none';}
+  const ub=document.getElementById('update-pred-'+r);
+  if(ub) ub.style.display='none';
+  // Hide run section until re-locked (only if simulation hasn't already run)
+  if(!actuals[r]){
+    const rs=document.getElementById('run-section-'+r);
+    if(rs) rs.style.display='none';
+  }
+  // Clear stored prediction so it won't contaminate results if they don't re-lock
+  delete predictions[r];
+  try{localStorage.removeItem(JP+'pred_'+r);}catch(e){}
+  // Update live gap display for round 2
+  if(r===2){
+    const raw=parseFloat(document.getElementById('sv-2-raw')?.textContent||'0.55');
+    const perc=parseFloat(document.getElementById('sv-2-perc')?.textContent||'0.35');
+    const gap=Math.max(0,raw-perc).toFixed(2);
+    const gd=document.getElementById('pred-gap-display-2');
+    const gp=document.getElementById('pred-gap-pct-2');
+    if(gd)gd.textContent=gap;
+    if(gp)gp.textContent=Math.round(parseFloat(gap)*100)+'%';
+  }
 }
 
 // ── Simulation payloads ─────────────────────────────────
@@ -1173,6 +1214,8 @@ function loadSavedSliders(r){
       if(lb){lb.disabled=true;lb.innerHTML='✓ Prediction Locked';}
       const rs=document.getElementById('run-section-'+r);
       if(rs)rs.style.display='block';
+      const ub=document.getElementById('update-pred-'+r);
+      if(ub) ub.style.display='block';
     }
   }catch(e){}
 }
