@@ -210,6 +210,30 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .cert-progress-bar{width:100%;height:10px;background:var(--border);border-radius:5px;overflow:hidden;margin:.5rem 0}
 .cert-progress-fill{height:100%;background:var(--teal);border-radius:5px;transition:width .5s ease}
 
+
+/* ── Structural Story MCQ ── */
+.ssq-panel{background:#fff;border-radius:.75rem;border:2px solid var(--navy);margin:1.25rem 0;overflow:hidden;display:none}
+.ssq-header{background:var(--navy);color:#fff;padding:.875rem 1.25rem}
+.ssq-header-label{font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.5);margin-bottom:.2rem}
+.ssq-header-title{font-size:1rem;font-weight:700;line-height:1.35}
+.ssq-body{padding:1.1rem 1.25rem}
+.ssq-q{margin-bottom:1.25rem}
+.ssq-q-text{font-size:.92rem;font-weight:700;color:var(--charcoal);margin-bottom:.65rem;line-height:1.5}
+.ssq-options{display:flex;flex-direction:column;gap:.45rem}
+.ssq-opt{display:flex;align-items:flex-start;gap:.6rem;padding:.6rem .875rem;border:2px solid var(--border);border-radius:.45rem;cursor:pointer;background:var(--paper);transition:.18s;text-align:left;width:100%;font-family:'Georgia','Times New Roman',serif;font-size:.88rem;line-height:1.5;color:var(--charcoal)}
+.ssq-opt:hover:not(:disabled){border-color:var(--teal-mid);background:var(--teal-light)}
+.ssq-opt:focus-visible{outline:2px solid var(--teal-dark);outline-offset:2px}
+.ssq-opt:disabled{cursor:default}
+.ssq-opt.correct{border-color:#16a34a;background:#dcfce7;color:#14532d}
+.ssq-opt.wrong{border-color:#dc2626;background:#fee2e2;color:#7f1d1d}
+.ssq-opt.revealed-correct{border-color:#16a34a;background:#dcfce7;color:#14532d;opacity:.7}
+.ssq-opt-letter{font-family:'Courier New',monospace;font-size:.82rem;font-weight:700;min-width:1.4rem;margin-top:.05rem;flex-shrink:0}
+.ssq-feedback{border-radius:.4rem;padding:.75rem 1rem;margin-top:.6rem;font-size:.85rem;line-height:1.6;display:none}
+.ssq-feedback.correct{background:#dcfce7;border-left:4px solid #16a34a;color:#14532d}
+.ssq-feedback.wrong{background:#fef3c7;border-left:4px solid var(--amber);color:var(--amber-dark)}
+.ssq-feedback-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:.3rem}
+.ssq-progress{font-size:.75rem;font-family:'Courier New',monospace;color:var(--muted);text-align:center;padding:.5rem;border-top:1px solid var(--border)}
+
 </style>
 </head>
 <body>
@@ -323,6 +347,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
     </div>
 
     <div class="result-section reveal-anim" id="result-0"></div>
+    <div class="ssq-panel" id="ssq-0" role="region" aria-label="Structural understanding check round 1"></div>
     <button class="next-btn" id="next-0" onclick="nextRound(0)">Next: λ Perceived →</button>
   </div>
 
@@ -377,6 +402,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-btn" id="run-btn-1" onclick="runRound(1)">▶ Run Simulation</button>
     </div>
     <div class="result-section reveal-anim" id="result-1"></div>
+    <div class="ssq-panel" id="ssq-1" role="region" aria-label="Structural understanding check round 2"></div>
     <button class="next-btn" id="next-1" onclick="nextRound(1)">Next: Suppression Gap →</button>
   </div>
 
@@ -427,6 +453,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-btn" id="run-btn-2" onclick="runRound(2)">▶ Run Simulation</button>
     </div>
     <div class="result-section reveal-anim" id="result-2"></div>
+    <div class="ssq-panel" id="ssq-2" role="region" aria-label="Structural understanding check round 3"></div>
     <button class="next-btn" id="next-2" onclick="nextRound(2)">Next: Morphic Suppression →</button>
   </div>
 
@@ -476,6 +503,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-btn" id="run-btn-3" onclick="runRound(3)">▶ Run Simulation (10 steps)</button>
     </div>
     <div class="result-section reveal-anim" id="result-3"></div>
+    <div class="ssq-panel" id="ssq-3" role="region" aria-label="Structural understanding check round 4"></div>
     <button class="next-btn" id="next-3" onclick="nextRound(3)">Next: Morphic Fidelity →</button>
   </div>
 
@@ -525,6 +553,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-btn" id="run-btn-4" onclick="runRound(4)">▶ Run Both Versions</button>
     </div>
     <div class="result-section reveal-anim" id="result-4"></div>
+    <div class="ssq-panel" id="ssq-4" role="region" aria-label="Structural understanding check round 5"></div>
     <button class="next-btn" id="next-4" onclick="nextRound(4)">Next: OS2 Bridge →</button>
   </div>
 
@@ -581,6 +610,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-btn" id="run-btn-5" onclick="runRound(5)">▶ Run Simulation</button>
     </div>
     <div class="result-section reveal-anim" id="result-5"></div>
+    <div class="ssq-panel" id="ssq-5" role="region" aria-label="Structural understanding check round 6"></div>
     <button class="next-btn" id="next-5" onclick="nextRound(5)">Final Round: Synthesis Challenge →</button>
   </div>
 
@@ -644,6 +674,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-btn" id="run-btn-6" onclick="runRound(6)">▶ Run Synthesis Simulation</button>
     </div>
     <div class="result-section reveal-anim" id="result-6"></div>
+    <div class="ssq-panel" id="ssq-6" role="region" aria-label="Structural understanding check round 7"></div>
     <button class="next-btn" id="next-6" onclick="showPRFIntegration()">Continue: Your PRF Meets the Numbers →</button>
   </div>
 
@@ -1120,7 +1151,18 @@ function renderResult(r,m,mB){
 
   // Show result section
   div.innerHTML=html;div.style.display='block';
-  const nb=document.getElementById('next-'+r);if(nb)nb.style.display='block';
+  // Show MCQ panel — Next button stays hidden until all questions answered
+  renderSSQ(r);
+  const nb=document.getElementById('next-'+r);
+  // Next button revealed by checkSSQComplete once all questions answered
+  // But if already answered (return visit), show it
+  try{
+    const saved=JSON.parse(localStorage.getItem(JP+'ssq_'+r)||'{}');
+    const data=SSQ_DATA[r];
+    if(data&&Object.keys(saved).length>=data.questions.length){
+      if(nb)nb.style.display='block';
+    }
+  }catch(e){if(nb)nb.style.display='block';}
   updateOverallProgress();
 }
 
@@ -1775,6 +1817,457 @@ function renderSummaryPRFBlock(){
   label.innerHTML=`${fi.icon} ${fi.name} — Calibration Implications for Your Course Work`;
   label.style.color=fi.color;
   text.textContent=MCL_PRF.CALIBRATION_IMPLICATIONS[fw];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STRUCTURAL STORY — Multiple Choice Questions
+// One set per round. Each set has 2 questions.
+// Q1 = structural mechanism (what produced the number)
+// Q2 = human translation (what it means for people inside)
+// ═══════════════════════════════════════════════════════════════
+
+const SSQ_DATA = {
+
+  0: {
+    title: "What This Simulation Shows — λ Raw",
+    questions: [
+      {
+        text: "The simulation produced a low λ Raw for the overruled nurses. What is the primary structural reason for this?",
+        options: [
+          "The nurses have lost clinical skills after eight months of not being allowed to use them.",
+          "The administration's approval requirement creates a block field that structurally prevents the nurses' capabilities from operating effectively — regardless of their skill level.",
+          "Low λ Raw means there are too few nurses for the number of patients.",
+          "The nurses have stopped caring about their patients due to repeated frustration."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Exactly right. λ Raw measures what the structure makes possible, not what individuals are capable of. The fourteen nurses have identical skills to the day the administrator arrived. What changed is the structural configuration — the approval requirement acts as a block field that prevents those skills from reaching patient care decisions. This is the OS2 insight: the institution changed, not the people.",
+          wrong: [
+            "Not quite. The nurses haven't lost any skills — they have exactly the same clinical knowledge they always had. λ Raw is not measuring individual capability. The nurses could demonstrate their skills in a different institutional context immediately. What the simulation is measuring is what the structure makes possible, and the approval requirement has structurally blocked their capabilities from operating.",
+            null, // correct option — no wrong feedback needed
+            "Not quite. λ Raw doesn't measure staffing ratios. It measures the coordination capacity the structural conditions make available. Even with optimal staffing, an institution whose approval architecture blocks clinical judgment from reaching care decisions will produce low λ Raw. The problem is the architecture, not the headcount.",
+            "Not quite. The simulation doesn't model nurses' motivation or caring. Morphic suppression measures learned self-censorship over time, but even that is a structural product — not a character failure. The key insight is that low λ Raw appears before anyone has given up. It appears the moment the structural block is put in place."
+          ]
+        }
+      },
+      {
+        text: "What does a low λ Raw value tell you about the experience of working in this institution — for a nurse who still cares deeply about patient outcomes?",
+        options: [
+          "She will probably leave the job soon because the pay isn't worth it.",
+          "She experiences her competence as functionally irrelevant — she knows what to do, but the structure routes around her knowledge as if it doesn't exist.",
+          "She will find ways to work around the administrator and get her recommendations implemented anyway.",
+          "She will become a better nurse because the approval process forces her to justify every decision."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Yes. This is the human experience that λ Raw is measuring. The nurse hasn't lost anything — her knowledge, her training, her judgment are all intact. But the structural configuration has made those things structurally irrelevant to what actually happens to patients. Her expertise reaches the administrator's desk and disappears. This is the ethical weight behind the number: competence made structurally invisible.",
+          wrong: [
+            "That may happen eventually, but it's not what λ Raw is measuring. The simulation captures the structural situation, not the nurse's ultimate response to it. And importantly — many nurses won't leave. They'll stay, and they'll experience exactly the structural situation λ Raw describes: their expertise systematically failing to reach the decisions that affect their patients.",
+            null,
+            "This describes individual resourcefulness, which the simulation doesn't capture — and which, even when it works, doesn't fix the structural problem. A nurse who finds workarounds is an individual response to a structural failure. λ Raw measures the structure, not whether creative individuals can occasionally circumvent it.",
+            "This is the management rationale, but the simulation shows the structural reality: the approval process doesn't improve clinical judgment. It routes clinical judgment out of the decision chain. A process that overrules 80% of recommendations regardless of patient outcome is not a quality-improvement mechanism — it is a suppression architecture."
+          ]
+        }
+      }
+    ]
+  },
+
+  1: {
+    title: "What This Simulation Shows — λ Perceived vs λ Raw",
+    questions: [
+      {
+        text: "The simulation shows a significant gap between λ Raw and λ Perceived. What specific structural feature is producing this gap?",
+        options: [
+          "The safety analysts are not communicating clearly enough — they need better writing skills.",
+          "The three management layers are functioning as a systematic filter, softening the most alarming findings at each level before they reach decision-makers.",
+          "The executives don't have time to read complete safety reports, so the summaries are necessary.",
+          "The gap is just normal variation — no report makes it through completely unchanged."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Exactly. The management layers are not failing to summarize — they are functioning as a systematic attenuation mechanism. Each layer reduces the alarm level of the findings, not because any individual manager decides to mislead, but because the institutional incentive at each layer rewards avoiding 'unnecessary alarm.' The structure produces the gap. No individual chooses it.",
+          wrong: [
+            "Not quite. The analysts' communication isn't the variable — the reports are described as complete, accurate, and based on solid data. λ Raw measures that capability: the analysts have it. The gap isn't produced by poor communication; it's produced by what happens to clear communication as it passes through three management layers calibrated to attenuate alarming findings.",
+            null,
+            "This describes why management summaries exist, but it doesn't explain why the critical warnings are systematically removed. A summary that accurately conveys the most alarming findings doesn't require reading the full report. The gap is produced by institutional incentives that reward reducing alarm levels — not by the time constraints of executives.",
+            "This treats the gap as random noise, but it's not random — it's systematic and directional. The findings that get softened at each layer are specifically the most alarming ones. That pattern is the signature of a structural filter, not normal variation. If the gap were random, some reports would arrive more alarming than written. They never do."
+          ]
+        }
+      },
+      {
+        text: "An executive makes a decision based on the filtered report she receives. Later, a product failure occurs that the original report had flagged. Which of these best describes the ethical situation?",
+        options: [
+          "The executive is responsible — she should have demanded the original reports.",
+          "The safety analysts are responsible — they should have escalated past their managers.",
+          "The institutional architecture is the primary causal agent — it systematically prevented accurate information from reaching the decision, and neither the executive nor the analysts individually chose to create this gap.",
+          "Nobody is responsible because everyone followed the proper process."
+        ],
+        correct: 2,
+        feedback: {
+          correct: "Yes. This is the OS2 claim precisely. The executive made the best decision available to her given the information the architecture delivered. The analysts communicated accurately through the channels available to them. The suppression gap wasn't produced by any individual's bad choice — it was produced by a structural configuration that systematically filtered technical alarm before it reached decision authority. Individual responsibility isn't eliminated, but structural responsibility is primary. Fixing the people doesn't fix the architecture.",
+          wrong: [
+            "The executive shares some responsibility, but this framing keeps the analysis at the individual level. The architecture delivered filtered information to her as standard procedure — she had no reason to know the filter existed. More importantly: even if she had demanded original reports once, the structural filter would continue operating for every future decision. Individual accountability doesn't address the architectural cause.",
+            "The analysts also share some responsibility, but again — this keeps the analysis individual. They communicated accurately through the institutional channels available to them. The institutional channels filtered their communication. Holding analysts responsible for a structural attenuation mechanism they didn't design is the individual-blame response the OS2 frame exists to correct.",
+            null,
+            "This is the most dangerous framing: it mistakes the absence of rule-breaking for the absence of moral failure. The process was designed to filter alarming findings. Following it faithfully produced exactly the harmful outcome the process was structurally generating. 'Following proper process' is not an ethical absolution when the process is the problem."
+          ]
+        }
+      }
+    ]
+  },
+
+  2: {
+    title: "What This Simulation Shows — The Suppression Gap",
+    questions: [
+      {
+        text: "The junior faculty's knowledge exists (λ Raw is moderate) but the suppression gap is significant. What is the specific structural mechanism producing this gap?",
+        options: [
+          "The junior faculty are not confident enough to speak up assertively in meetings.",
+          "The role_order worldview dominance and authority_weighted evidence distribution combine to create an architecture where hierarchical deference is the primary norm — structurally attenuating contributions that don't come from senior positions.",
+          "Senior faculty are deliberately silencing junior colleagues to protect their own status.",
+          "The junior faculty are too junior to have valid expertise worth hearing."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Exactly right. The suppression gap is produced by two interacting structural features: the role_order worldview distribution (0.55), which makes hierarchical deference the dominant coordination mechanism, and the authority_weighted evidence distribution (0.70), which makes the institution amplify conclusions endorsed by authority and attenuate conclusions supported by data alone. No individual chose this architecture. The junior faculty self-censor not because they've decided to, but because the structure has trained them — through consistent experience — that non-deferential contributions create friction without changing outcomes.",
+          wrong: [
+            "This locates the problem in the junior faculty's psychology rather than the structure. But the simulation shows the same gap would appear with maximally confident junior faculty — because the gap is produced by the evidence weighting policy, not by individual confidence levels. More assertive individuals inside the same architecture would produce slightly smaller gaps, but the gap would persist. The structure is the cause.",
+            null,
+            "The simulation doesn't require individual intent to produce the gap. The senior faculty may not be consciously silencing anyone — they may genuinely believe that seniority correlates with wisdom. The suppression gap is produced by the institutional architecture that encodes that belief, whether or not any individual endorses it deliberately. This is the critical OS2 insight: structural harm doesn't require structural villains.",
+            "This confuses position with expertise — which is exactly the category error the authority_weighted evidence distribution encodes. The junior faculty have the most current training in the field. Their expertise is real. The gap is produced by an institutional architecture that systematically discounts expertise that doesn't come attached to positional authority."
+          ]
+        }
+      },
+      {
+        text: "The suppression gap is described as 'the Kantian violation operationalized.' What does this mean?",
+        options: [
+          "Kant believed that knowledge should flow upward in hierarchies, so the gap violates this principle.",
+          "Kant's Formula of Humanity says to treat rational agents as ends in themselves — the gap means the junior faculty's rational agency is being structurally treated as if it doesn't matter, which is treating them as means rather than ends.",
+          "Kant would have approved of the deference norm because it maintains social order.",
+          "It means the institution is breaking the law."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Yes. The Formula of Humanity says: treat every rational agent as an end in themselves, never merely as a means. A suppression gap of 0.35 means 35% of the available rational agency in this system is being structurally prevented from contributing to decisions — treated as if it does not exist. The junior faculty are rational agents with real expertise. The structure treats that expertise as a means to the end of maintaining hierarchy, rather than as an end in itself. Nobody chose to violate Kant. The structure produces the violation as its normal output.",
+          wrong: [
+            "Kant said the opposite of this. His Formula of Humanity is about treating rational agents as ends in themselves — which means their contributions to reasoning should be valued intrinsically, not filtered by positional authority. The hierarchical deference norm is closer to what Kant criticized: treating persons instrumentally according to their social role rather than respecting their rational agency directly.",
+            null,
+            "Kant's political philosophy did support certain forms of social order, but his ethics specifically forbid treating rational agents as mere means. A deference norm that systematically routes expert knowledge around the decision process is treating the junior faculty's expertise as irrelevant to the institution — which is precisely the treatment of persons as means rather than ends that Kant's Formula of Humanity prohibits.",
+            "This is not a legal claim. 'Kantian violation' refers to an ethical framework, not a legal code. The suppression gap may not be illegal — institutions can legally have authority-weighted evidence policies. The Kantian violation is moral, not legal: the structure treats rational agents as if their rational contributions don't matter."
+          ]
+        }
+      }
+    ]
+  },
+
+  3: {
+    title: "What This Simulation Shows — Morphic Suppression",
+    questions: [
+      {
+        text: "After 10 steps, the city planning liaisons are primarily reporting what planners want to hear. The simulation shows significant morphic suppression. What is the most accurate description of what caused this change?",
+        options: [
+          "The liaisons decided to stop doing their jobs properly because they don't care anymore.",
+          "The liaisons are afraid of being fired if they submit honest reports.",
+          "The structure consistently failed to use their contributions, which trained their predictive machinery to expect futility — so they gradually stopped expressing what they knew, without anyone telling them to.",
+          "The planners gave the liaisons explicit instructions to soften their reports."
+        ],
+        correct: 2,
+        feedback: {
+          correct: "Exactly. This is what morphic suppression measures: the structural product of sustained experience of futility. The liaisons didn't decide to stop doing their jobs. Nobody instructed them. The brain's predictive machinery updated its priors based on consistent experience: 'submitting thorough reports does not produce outcomes.' Once that prior is calibrated at a low precision weight, the behavior changes — not as a choice, but as a structural consequence of how the brain learns. The institution produced this change without any individual choosing it.",
+          wrong: [
+            "This locates the cause in individual character — it implies the liaisons lack professional commitment. But morphic suppression is specifically not about character. A highly committed professional in this structural position for five years would show the same pattern. The predictive machinery updates to match structural reality regardless of individual values. Character is not the variable.",
+            "Fear might be a component in some situations, but the simulation doesn't model fear — it models the structural experience of futility. The liaisons may not be afraid at all. They may have rationalized the change ('I'm being strategic'), or not consciously noticed it. Morphic suppression doesn't require fear. It requires consistent experience of contributions not reaching outcomes.",
+            null,
+            "Explicit instructions would produce a different pattern — one where the liaison knows she's being asked to soften reports and experiences it as a conflict. Morphic suppression is more insidious: no instruction is given. The structural environment trains the behavior change without anyone having to ask. This is what makes it a structural phenomenon rather than a directive compliance one."
+          ]
+        }
+      },
+      {
+        text: "After five years of this structure, you change the management and bring in planners who genuinely want community input. But morphic suppression is at 0.18. What does this number tell you about what will happen next?",
+        options: [
+          "Everything will go back to normal quickly once the liaisons see that new planners are different.",
+          "The liaisons will immediately begin submitting thorough reports because the structural conditions have changed.",
+          "Recovery will be slow and uneven — because morphic suppression is not a rule the liaisons are following but a calibration of their predictive machinery that requires new experience over time to update.",
+          "The morphic suppression number doesn't matter once the management changes."
+        ],
+        correct: 2,
+        feedback: {
+          correct: "Yes. This is why morphic suppression is more serious than a policy failure. Changing the policy — even changing the people — doesn't immediately change the calibration that five years of structural experience has produced. The liaisons' predictive machinery has learned, through 260 weeks of consistent experience, that detailed reports don't change outcomes. That learning doesn't reverse in a month because new managers seem more receptive. The structural change is necessary but not sufficient. Recovery requires new experience, accumulated over time, that demonstrates the prior is no longer accurate. This is why early wins matter: the new planners need to visibly act on liaison input, repeatedly, to begin updating the prior in the other direction.",
+          wrong: [
+            "This underestimates how structural the change in behavior has become. The liaisons may want to believe the new planners are different, but their predictive machinery has been calibrated by five years of contrary experience. Belief and behavior are different things. The behavior will lag behind the belief, sometimes significantly, because the prior is deeply embedded.",
+            "This describes what would happen if morphic suppression were just a policy compliance issue — if the liaisons had been following a rule to soften reports. But morphic suppression is a calibration, not a rule. Removing the condition that produced it doesn't immediately reverse it. The predictive machinery needs new contrary experience to update.",
+            null,
+            "The number continues to matter because it describes what the liaisons' behavior will look like even after management changes. A morphic suppression of 0.18 means the institution is receiving significantly less thorough community input than the liaisons are capable of producing — and that deficit will persist even under new management until the prior is updated through sustained positive experience."
+          ]
+        }
+      }
+    ]
+  },
+
+  4: {
+    title: "What This Simulation Shows — Morphic Fidelity",
+    questions: [
+      {
+        text: "Version B (with BioBond) shows significantly higher morphic fidelity than Version A, despite identical suppression conditions. What is BioBond actually providing — in structural, not emotional, terms?",
+        options: [
+          "Emotional comfort and encouragement that helps her feel better about a difficult situation.",
+          "External cognitive scaffolding that maintains the precision weighting on her identity priors when the immediate environment is systematically dismantling them — keeping her generative model stable under conditions designed to destabilize it.",
+          "Legal protection that reduces the actual threat level she faces.",
+          "A distraction from the suppression that makes it easier to ignore."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Yes. This is Andy Clark's extended mind thesis made precise. The international solidarity network is not providing emotional support in a loose sense — it is a component of her distributed cognitive system. Her generative model's stability depends on external scaffolding as well as internal resources. When the immediate environment systematically severs every source of external scaffolding, the network provides substitute scaffolding that maintains the precision weighting on her identity priors. Version A and Version B have identical suppression parameters. The only structural difference is the presence of this external cognitive component — and the fidelity difference is its measurable contribution.",
+          wrong: [
+            "Emotional comfort is a real effect but it's the folk-psychology description of what Clark's framework describes structurally. The simulation doesn't model emotions — it models cognitive scaffolding. The international network is maintaining her generative model's coherence, which allows her to sustain the precision weighting on her deepest commitments under conditions designed to erode it. 'Feeling better' is the first-person experience of a third-person structural phenomenon.",
+            null,
+            "The threat level is identical in both versions — same entropy, same block fields. BioBond doesn't reduce the actual suppression conditions. This is the crucial point: it doesn't change what is being done to her, it changes how much of her original identity signal survives despite what is being done. The structural conditions are the same; the scaffolding that maintains coherence under those conditions differs.",
+            "This mischaracterizes how cognitive scaffolding works. The network isn't providing distraction — it's providing confirmation. When every element of her immediate environment is generating prediction error against her identity priors (trying to make 'I am who I am' feel false), the external network generates confirmation (your identity is real, your work matters, you are seen). This isn't distraction from the suppression — it's structural resistance to the suppression's mechanism."
+          ]
+        }
+      },
+      {
+        text: "The suppression conditions in both versions are designed to destroy identity coherence. Which statement best describes what morphic fidelity measures in this context?",
+        options: [
+          "How brave or strong-willed the organizer is as an individual.",
+          "How much her identity signal has survived despite the structural pressure — the ratio of what remains coherent to what has been eroded by accumulated learned self-censorship.",
+          "How much the suppression conditions have changed over the simulation run.",
+          "How many people are supporting her cause internationally."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Exactly. Morphic fidelity = λ Raw ÷ (λ Raw + morphic suppression). It's the proportion of coordination capacity that is not being lost to accumulated learned self-censorship — the ratio of what remains coherent to the total signal. High fidelity under high suppression doesn't mean the suppression isn't working — it means something is maintaining the signal despite the suppression. That something is what BioBond models: the external scaffolding that keeps the generative model stable when the immediate environment is designed to destabilize it.",
+          wrong: [
+            "Morphic fidelity is explicitly not measuring individual character. The same suppression conditions applied to an agent with stronger or weaker individual will would produce approximately the same fidelity numbers — because the dominant variable is the presence or absence of external cognitive scaffolding, not the individual's psychological resources. This is the structural claim the simulation is making: individual strength of character is not the primary determinant of identity coherence under sustained suppression.",
+            null,
+            "The suppression conditions are fixed across the simulation run — same entropy, same block fields, same steps. What changes across the run is the accumulation of morphic suppression in response to those conditions. Morphic fidelity measures the proportion of the original signal that remains coherent despite that accumulation. It's measuring the agent's situation, not the suppressor's behavior.",
+            "The number of international supporters is a real-world variable, but it maps onto the BioBond parameter in the simulation — the presence or absence of the network, not its size. Morphic fidelity itself measures the ratio of coherent to eroded identity signal in the agent, regardless of what produced the BioBond effect."
+          ]
+        }
+      }
+    ]
+  },
+
+  5: {
+    title: "What This Simulation Shows — OS2 Bridge and Friction",
+    questions: [
+      {
+        text: "The simulation shows high OS2 Bridge AND high friction simultaneously. Many students initially think this combination is impossible — that high friction means low coordination. What is the structural explanation for why both can be high at the same time?",
+        options: [
+          "The simulation has a bug — high friction and high Bridge genuinely can't coexist.",
+          "The groups have secretly agreed on their values even though they appear to disagree.",
+          "The shared task of cleaning the creek provides enough structural pull to make the friction cost worth paying — the groups don't need to agree to converge on the same physical action.",
+          "High friction doesn't affect OS2 Bridge because they measure completely different things."
+        ],
+        correct: 2,
+        feedback: {
+          correct: "Yes. This is the most counterintuitive insight in the simulation suite. Friction and coordination are not opposites — friction is the cost of genuine diversity, and OS2 Bridge is the output when that cost is paid. The five groups disagree about almost everything. That disagreement generates real friction — it takes effort to coordinate across five genuinely different worldviews. But the creek doesn't care about their disagreement. It needs cleaning. The concrete shared task creates a structural pull that makes the friction worth paying. Different reasons, same Saturday morning action. This is functional equivalence — not agreement, but convergent outcomes from divergent frameworks.",
+          wrong: [
+            "The combination is not only possible — it is what healthy diverse institutions produce when functioning well. An institution with zero friction and diverse participants is almost certainly suppressing its diversity rather than navigating it. The simulation is showing you what genuine diversity looks like when it is structurally enabled to coordinate: real friction, real bridge.",
+            "The whole point of the scenario is that they haven't agreed on their values — and they don't need to. The evangelical church believes creek stewardship is religious duty. The environmental justice organization believes the creek was deliberately contaminated and justice requires restoration. These are genuinely different frameworks. OS2 Bridge measures whether they converge on outcomes despite this disagreement — not whether the disagreement has been resolved.",
+            null,
+            "They do measure different things — friction measures translation cost, Bridge measures convergence on outcomes. But they're not independent: the shared task is what makes it rational to pay the friction cost. Without the shared task, you get high friction and low Bridge — groups talking across each other without converging. The shared task is the structural condition that connects friction to Bridge."
+          ]
+        }
+      },
+      {
+        text: "What would the simulation show if these same five groups tried to coordinate without the shared task — say, in a meeting to discuss neighborhood values instead of cleaning the creek?",
+        options: [
+          "They would coordinate just as well because they've built relationships through the creek cleaning.",
+          "OS2 Bridge would likely drop significantly because without the concrete shared task, there's no structural pull making the friction cost worth paying — the groups would operate in parallel without converging.",
+          "Friction would disappear because they've learned to understand each other.",
+          "λ Raw would increase because they'd be talking rather than doing physical labor."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Yes. This is exactly what Phase 1 of the Maathai simulation shows — and it's the most important structural lesson in this round. The same diverse groups, without a concrete shared task, produce high friction and low Bridge. The relationships built through creek cleaning are real, but relationships don't substitute for the structural pull of a shared task. 'Discussing neighborhood values' doesn't have the same structural property as 'this specific section of creek needs to be clean by noon.' The abstract shared goal doesn't generate convergence the way the concrete shared task does. This is why the Maathai case's Phase 2 — tree planting — is structurally different from Phase 1's value-agreement attempt.",
+          wrong: [
+            "Relationships help — they reduce some friction and build trust. But the simulation would still show significantly lower Bridge without the shared task, because the shared task is providing the structural pull that makes it rational for five different frameworks to pay the translation cost of coordinating. Without that pull, the frameworks operate according to their internal logic, which sends them in different directions even when the participants like each other.",
+            null,
+            "Friction would likely remain similar or even increase without the task, because the worldview diversity is still present and there's now no shared object (the creek, the work) that focuses the groups' different frameworks on the same thing. Abstract discussion about values surfaces the disagreements more directly than physical shared work, which can proceed in parallel even when frameworks differ.",
+            "λ Raw isn't primarily determined by whether the coordination involves physical labor — it's determined by the structural conditions (entropy, stress, block fields). A meeting that surfaces value disagreements without resolution might actually increase the stress loading and reduce the positive community block field, potentially lowering λ Raw."
+          ]
+        }
+      }
+    ]
+  },
+
+  6: {
+    title: "What This Simulation Shows — Synthesis: All Metrics Together",
+    questions: [
+      {
+        text: "Looking at the complete metric profile of the hospital crisis, which of these describes the overall structural situation most accurately?",
+        options: [
+          "The hospital has a staffing problem — the solution is to hire more experienced nurses.",
+          "The hospital has a leadership problem — the solution is to replace the senior administrators.",
+          "The hospital has an architectural problem: centralized decision authority, authority-weighted evidence policy, and negative block fields on safety expression have combined to structurally prevent clinical knowledge from reaching decisions — and morphic suppression means staff have learned not to try.",
+          "The hospital has a morale problem — the solution is team-building activities and recognition programs."
+        ],
+        correct: 2,
+        feedback: {
+          correct: "Yes. Look at the metric pattern: low λ Raw (structure preventing coordination capacity), significant suppression gap (clinical knowledge not reaching decisions), building morphic suppression (staff learning futility), low or declining OS2 Bridge (diverse staff no longer converging on shared clinical mission). This is an architectural failure, not a staffing, leadership, or morale failure. Hiring more nurses into this architecture would give you more nurses experiencing the same structural suppression. Replacing the administrators without changing the approval architecture would give you new administrators making the same structural errors. Morale programs address the symptom while the structure continues producing the cause.",
+          wrong: [
+            "Staffing affects some metrics — entropy increases when experienced staff retire and new staff are undertrained. But the metric profile shows the primary problem is not a headcount issue. More nurses in the same structural configuration would produce the same suppression gap, the same morphic suppression accumulation, and the same OS2 Bridge decline. The architecture is what needs to change, not the staffing level.",
+            "Leadership change addresses an individual variable while leaving the structural variables unchanged. A new administrator inside the same approval architecture faces the same structural pressures. The centralized decision requirement, the evidence weighting policy, the block fields on safety expression — these are architectural, not personal. New administrators tend to reproduce the patterns the architecture generates.",
+            null,
+            "Morale programs address the psychological experience of structural suppression while the suppression continues. Staff who feel appreciated still face the approval requirement. Their morphic suppression may slow slightly if recognition reduces the experience of futility, but the structural mechanism — contributions consistently not reaching decisions — remains. Morale is a symptom the structure is producing, not a cause the structure is responding to."
+          ]
+        }
+      },
+      {
+        text: "The simulation predicts this pattern for the hospital six months in. A new manager reads the results and says: 'We need to empower our staff to speak up — it's a culture problem.' What is missing from this diagnosis?",
+        options: [
+          "Nothing — culture change is exactly what's needed and the simulation supports this.",
+          "The manager is right that culture matters, but the diagnosis misses the structural mechanisms producing the culture: approval architecture, evidence weighting policy, and the block fields that punish safety expression. Changing culture without changing structure produces exhortation without effect.",
+          "The manager should focus only on metrics and ignore culture entirely.",
+          "The manager needs to fire the staff who are not speaking up."
+        ],
+        correct: 1,
+        feedback: {
+          correct: "Yes. 'Culture' is the folk-psychology name for what the simulation's structural parameters are describing. The culture of not speaking up is being produced by: an approval architecture that routes clinical judgment out of the decision chain, a documentation burden that punishes raising concerns, and six months of morphic suppression accumulation that has trained staff to expect futility. Telling staff to 'speak up more' without changing the structure that punishes speaking up is asking individuals to change their behavior against structural incentives. It occasionally works for the most resilient individuals. It doesn't change the structural output. This is the Copernican shift the course is teaching: culture change that doesn't address structural change is epicycles.",
+          wrong: [
+            "The simulation specifically shows that culture is structurally produced — the 70% non-reporting rate, the morphic suppression accumulation, the OS2 Bridge decline are all outputs of the structural configuration, not independent cultural failures that the structure could fix. Culture change that doesn't address the approval architecture, the evidence weighting, and the block fields will produce exhortations that the structure quietly absorbs and continues to override.",
+            null,
+            "Firing staff for not speaking up is the most damaging possible response, because it treats a structural product as individual misconduct. The 70% of staff who identified safety issues and chose not to report them were responding rationally to a structure that punishes reporting with documentation burdens and routes reports away from decisions anyway. Firing them removes the people while leaving the architecture intact. The next cohort will make the same rational response to the same structural incentives."
+          ]
+        }
+      }
+    ]
+  }
+
+}; // end SSQ_DATA
+
+
+// ── Render MCQ panel after simulation result ─────────────────
+function renderSSQ(r) {
+  const data = SSQ_DATA[r];
+  if (!data) return;
+  const panel = document.getElementById('ssq-' + r);
+  if (!panel) return;
+
+  const LETTERS = ['A', 'B', 'C', 'D'];
+  let html = `
+    <div class="ssq-header">
+      <div class="ssq-header-label">Structural Understanding — Check Your Reading</div>
+      <div class="ssq-header-title">${data.title}</div>
+    </div>
+    <div class="ssq-body">`;
+
+  data.questions.forEach((q, qi) => {
+    html += `<div class="ssq-q" id="ssq-${r}-q${qi}">
+      <div class="ssq-q-text">${qi + 1}. ${q.text}</div>
+      <div class="ssq-options" role="group" aria-label="Options for question ${qi + 1}">`;
+    q.options.forEach((opt, oi) => {
+      html += `<button class="ssq-opt" id="ssq-${r}-q${qi}-o${oi}"
+        onclick="handleSSQ(${r},${qi},${oi})"
+        aria-label="Option ${LETTERS[oi]}: ${opt}">
+        <span class="ssq-opt-letter">${LETTERS[oi]}.</span>
+        <span>${opt}</span>
+      </button>`;
+    });
+    html += `</div>
+      <div class="ssq-feedback" id="ssq-${r}-q${qi}-fb" role="alert" aria-live="polite"></div>
+    </div>`;
+  });
+
+  html += `</div>
+    <div class="ssq-progress" id="ssq-${r}-prog" aria-live="polite">
+      Answer both questions to continue →
+    </div>`;
+
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+
+  // Restore any saved answers
+  try {
+    const saved = JSON.parse(localStorage.getItem(JP + 'ssq_' + r) || '{}');
+    Object.entries(saved).forEach(([qi, oi]) => {
+      applySSQAnswer(r, parseInt(qi), parseInt(oi), true);
+    });
+  } catch(e) {}
+}
+
+function handleSSQ(r, qi, oi) {
+  const data = SSQ_DATA[r];
+  const q = data.questions[qi];
+
+  // Disable all options for this question
+  q.options.forEach((_, idx) => {
+    const btn = document.getElementById(`ssq-${r}-q${qi}-o${idx}`);
+    if (btn) btn.disabled = true;
+  });
+
+  applySSQAnswer(r, qi, oi, false);
+
+  // Save answer
+  try {
+    const saved = JSON.parse(localStorage.getItem(JP + 'ssq_' + r) || '{}');
+    saved[qi] = oi;
+    localStorage.setItem(JP + 'ssq_' + r, JSON.stringify(saved));
+  } catch(e) {}
+
+  // Check if all questions answered → unlock Next button
+  checkSSQComplete(r);
+}
+
+function applySSQAnswer(r, qi, oi, isRestore) {
+  const data = SSQ_DATA[r];
+  const q = data.questions[qi];
+  const isCorrect = oi === q.correct;
+  const LETTERS = ['A','B','C','D'];
+
+  // Style the chosen option
+  const chosenBtn = document.getElementById(`ssq-${r}-q${qi}-o${oi}`);
+  if (chosenBtn) {
+    chosenBtn.classList.add(isCorrect ? 'correct' : 'wrong');
+    chosenBtn.disabled = true;
+  }
+
+  // If wrong, also reveal the correct option subtly
+  if (!isCorrect) {
+    const correctBtn = document.getElementById(`ssq-${r}-q${qi}-o${q.correct}`);
+    if (correctBtn) {
+      correctBtn.classList.add('revealed-correct');
+      correctBtn.disabled = true;
+    }
+  }
+
+  // Disable all other options
+  q.options.forEach((_, idx) => {
+    if (idx !== oi) {
+      const btn = document.getElementById(`ssq-${r}-q${qi}-o${idx}`);
+      if (btn) btn.disabled = true;
+    }
+  });
+
+  // Show feedback
+  const fb = document.getElementById(`ssq-${r}-q${qi}-fb`);
+  if (fb) {
+    const fbText = isCorrect
+      ? q.feedback.correct
+      : (q.feedback.wrong[oi] || 'Not quite — the correct answer is highlighted above. Read the explanation for the correct option to understand why.');
+    fb.className = 'ssq-feedback ' + (isCorrect ? 'correct' : 'wrong');
+    fb.innerHTML = `<div class="ssq-feedback-label">${isCorrect ? '✓ Correct' : '✗ Not quite'}</div>${fbText}`;
+    fb.style.display = 'block';
+  }
+}
+
+function checkSSQComplete(r) {
+  const data = SSQ_DATA[r];
+  try {
+    const saved = JSON.parse(localStorage.getItem(JP + 'ssq_' + r) || '{}');
+    const answeredCount = Object.keys(saved).length;
+    const totalQ = data.questions.length;
+    const prog = document.getElementById('ssq-' + r + '-prog');
+    if (answeredCount >= totalQ) {
+      // All answered — unlock Next
+      const nb = document.getElementById('next-' + r);
+      if (nb) nb.style.display = 'block';
+      if (prog) prog.textContent = '✓ All questions answered — continue when ready';
+    } else {
+      if (prog) prog.textContent = `${answeredCount} of ${totalQ} answered — answer all to continue`;
+    }
+  } catch(e) {}
 }
 </script>
 </body>
