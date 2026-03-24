@@ -220,6 +220,32 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .pred-stage-locked{opacity:.35;pointer-events:none}
 .pred-unlock-note{font-size:.75rem;color:rgba(255,255,255,.35);font-style:italic;margin-top:.3rem}
 
+
+/* ── Hanna Structural MCQ ── */
+.hanna-ssq{background:var(--ucp-navy);border:1px solid rgba(201,168,76,.3);border-radius:.75rem;overflow:hidden;margin-bottom:1rem}
+.hanna-ssq-header{background:rgba(0,0,0,.35);padding:.875rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.hanna-ssq-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:.2rem}
+.hanna-ssq-title{font-size:.92rem;font-weight:700;color:rgba(255,255,255,.85)}
+.hanna-ssq-body{padding:1rem 1.1rem}
+.hanna-ssq-q{margin-bottom:1.1rem}
+.hanna-ssq-q-text{font-size:.85rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.6rem;line-height:1.5}
+.hanna-ssq-opts{display:flex;flex-direction:column;gap:.4rem}
+.hanna-ssq-opt{display:flex;align-items:flex-start;gap:.5rem;padding:.55rem .875rem;border:1px solid rgba(255,255,255,.15);border-radius:.4rem;cursor:pointer;background:rgba(255,255,255,.05);transition:.15s;text-align:left;width:100%;font-family:'Georgia',serif;font-size:.82rem;line-height:1.5;color:rgba(255,255,255,.75)}
+.hanna-ssq-opt:hover:not(:disabled){border-color:rgba(20,184,166,.6);background:rgba(20,184,166,.1)}
+.hanna-ssq-opt:focus-visible{outline:2px solid #C9A84C;outline-offset:2px}
+.hanna-ssq-opt:disabled{cursor:default}
+.hanna-ssq-opt.correct{border-color:#4ade80;background:rgba(74,222,128,.12);color:#bbf7d0}
+.hanna-ssq-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.1);color:#fecaca}
+.hanna-ssq-opt.revealed-correct{border-color:#4ade80;background:rgba(74,222,128,.07);color:#86efac;opacity:.8}
+.hanna-ssq-opt-letter{font-family:'Courier New',monospace;font-size:.78rem;font-weight:700;min-width:1.3rem;margin-top:.05rem;flex-shrink:0;color:rgba(255,255,255,.4)}
+.hanna-ssq-fb{border-radius:.35rem;padding:.65rem .875rem;margin-top:.5rem;font-size:.82rem;line-height:1.6;display:none}
+.hanna-ssq-fb.correct{background:rgba(74,222,128,.12);border-left:3px solid #4ade80;color:#bbf7d0}
+.hanna-ssq-fb.wrong{background:rgba(251,191,36,.1);border-left:3px solid #C9A84C;color:rgba(255,255,255,.75)}
+.hanna-ssq-fb-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:.25rem}
+.hanna-ssq-fb.correct .hanna-ssq-fb-label{color:#4ade80}
+.hanna-ssq-fb.wrong .hanna-ssq-fb-label{color:#C9A84C}
+.hanna-ssq-prog{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-align:center;padding:.5rem;border-top:1px solid rgba(255,255,255,.07)}
+
 </style>
 </head>
 <body>
@@ -619,10 +645,19 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <p>The captivity scenario configures the engine to represent the structural conditions of 28 days of torture: maximum entropy (0.88), maximum stress loading (0.78), and severe suppression of the community block (−0.9) — representing the systematic attempt to sever the agent from their relational community — with a strong positive boundary field (+0.9) representing the non-negotiable limits the agent is defending.</p>
       <p>The <strong>two comparison runs</strong> show: <em>without BioBond</em> (no institutional support, isolated), morphic suppression climbs and λ Raw degrades. <em>With BioBond</em> at step 4 (representing Church mobilization — Pope praying publicly, ransom being organized), λ Raw holds and morphic suppression is contained. This directly models Bishop Saad's situation: his PRF was strong, but he was also not alone.</p>
     </div>
+    <!-- Chapter 2 prediction retrieval -->
+    <div id="ch2PredDisplay" style="background:rgba(15,118,110,.12);border:1px solid rgba(20,184,166,.3);border-radius:.5rem;padding:.875rem 1.1rem;margin-bottom:1rem;display:none">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:.35rem">Your Chapter 2 Prediction (retrieved from journal)</div>
+      <div id="ch2PredText" style="font-size:.85rem;color:rgba(255,255,255,.75);line-height:1.6;font-style:italic;border-left:3px solid #C9A84C;padding-left:.75rem"></div>
+    </div>
+
     <div class="run-toggle">
       <button class="run-toggle-btn active-run" id="btn-no-biobond" onclick="selectRun('no-biobond')">Without Institutional Support</button>
       <button class="run-toggle-btn" id="btn-biobond" onclick="selectRun('biobond')">With Institutional Support (BioBond step 4)</button>
     </div>
+
+    <!-- MCQ Structural Understanding panels -->
+    <div id="hannaSSQPanel" style="display:none;margin:1rem 0" role="region" aria-label="Structural understanding check"></div>
 
     <!-- External BioBond prompt — appears after no-biobond run completes -->
     <div id="biobondExternalPrompt" style="display:none;margin-top:.875rem;padding:.875rem 1.25rem;background:var(--gold-light);border:2px solid var(--gold);border-radius:.75rem;text-align:center">
@@ -1238,6 +1273,7 @@ function renderUCPResult(data,biobond){
   document.getElementById('ucpResult').style.display='block';
   predUnlockStage2_hanna();
   renderSxS(); // update comparison panel after every run
+  renderHannaSSQ(_currentRun); // structural understanding questions
   // Show BioBond prompt after no-biobond run; hide after biobond run
   const bbPrompt = document.getElementById('biobondExternalPrompt');
   if(bbPrompt) bbPrompt.style.display = (_currentRun === 'no-biobond') ? 'block' : 'none';
@@ -1574,6 +1610,221 @@ function renderSxS() {
     html += `</div>`;
   }
   document.getElementById('sxsBody').innerHTML = html;
+}
+
+// ── Chapter 2 prediction retrieval ───────────────────────────────────────
+(function loadCh2Pred(){
+  try{
+    const pred = localStorage.getItem('ch2_cq5') || '';
+    const el = document.getElementById('ch2PredText');
+    const wrapper = document.getElementById('ch2PredDisplay');
+    if(el && wrapper){
+      if(pred.trim()){
+        el.textContent = pred;
+        wrapper.style.display = 'block';
+      }
+    }
+  }catch(e){}
+})();
+
+// ── Hanna MCQ data ────────────────────────────────────────────────────────
+const HANNA_SSQ = {
+  'no-biobond': {
+    title: 'What This Simulation Shows — Run 1: Without BioBond',
+    questions: [
+      {
+        text: 'The simulation produces very low λ Raw (typically 0.10–0.20) for Run 1. What is the primary structural reason for this — not the individual reason?',
+        options: [
+          'Bishop Hanna was losing his faith under sustained torture and his willpower was diminishing.',
+          'The combination of entropy 0.88 and community block −0.9 structurally eliminates the conditions for sustained deliberate coordination — the environment is producing near-maximum cognitive disorder while systematically severing every relational scaffold.',
+          'Low λ Raw means Bishop Hanna had few supporters willing to help him.',
+          'The simulation is measuring how little the captors could coordinate with each other.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Exactly right. λ Raw measures structural conditions, not individual character. Entropy 0.88 models the near-maximum cognitive disorder of captivity — pain, isolation, uncertainty, the threat of death. Community −0.9 models the deliberate severing of every relational cognitive scaffold. Together they structurally constrain the capacity for deliberate action regardless of who inhabits this environment. The simulation cannot model Hanna\'s individual response. It models what the structural conditions make possible — and these conditions made sustained deliberate action extraordinarily costly, not impossible.',
+          wrong: [
+            'The simulation does not model faith, willpower, or individual psychological states. λ Raw is a structural measure — it tells you what the environment makes possible, not what the individual chooses. The same parameters applied to any agent with any level of faith would produce a similarly low λ Raw, because the measure is about structural conditions rather than individual character.',
+            null,
+            'λ Raw is not measuring support networks or interpersonal relationships in a social sense. It is measuring structural coordination capacity — how much the structural conditions allow agents to act effectively together. The community block field (−0.9) is modelling the deliberate elimination of relational scaffolding, not the counting of supporters.',
+            'The simulation is modelling the structural conditions experienced by the agents in the scenario — in this case, the person inhabiting this suppression environment. The captors are the structural force producing the conditions, not the subject of the measurement.'
+          ]
+        }
+      },
+      {
+        text: 'Morphic suppression is building across the 8 steps in Run 1. What does this number reveal about what is happening structurally — not just in the moment but over time?',
+        options: [
+          'Hanna is gradually becoming less morally committed as the captivity continues.',
+          'The structural conditions are training agents\' predictive machinery to expect that deliberate expression will not reach outcomes — accumulated learned self-censorship is building because the environment consistently prevents contributions from making a difference.',
+          'Morphic suppression measures how much physical pain is being applied over time.',
+          'It shows that the captors are becoming more organized and effective at suppression.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. Morphic suppression is accumulated learned self-censorship — the structural product of consistent experience where deliberate expression does not reach outcomes. Across 8 steps in this environment, the agents\' predictive machinery is updating: "trying does not produce results." The important distinction is that this is a structural accumulation, not a character failure. Any agent in this environment for this duration would show building morphic suppression. This is why Chapter 3\'s distinction between acute and chronic suppression matters: acute suppression reduces λ Perceived in the moment; chronic suppression begins to change what the agent expects to be able to express at all.',
+          wrong: [
+            'Morphic suppression does not measure moral commitment or faith. It measures a structural dynamic: when an environment consistently prevents deliberate contribution from reaching outcomes, the predictive machinery calibrates to expect futility. This can happen to a person of maximum commitment — it is a structural response to structural conditions, not a reflection of individual character.',
+            null,
+            'Morphic suppression does not measure physical pain or the mechanics of the suppression itself. It measures what happens in the agents being suppressed: the gradual calibration of their predictive machinery toward expecting that deliberate expression will not matter. The cause is the suppressive environment; the metric is the accumulated effect on expressive behavior.',
+            'Morphic suppression measures what is happening to the agents being suppressed, not to the suppressors. The building value across steps tells you about the cumulative structural effect on the agent\'s predictive system, not about the efficiency of the captor\'s methods.'
+          ]
+        }
+      }
+    ]
+  },
+  'biobond': {
+    title: 'What This Simulation Shows — Run 2: With BioBond',
+    questions: [
+      {
+        text: 'Run 2 shows higher λ Raw and lower morphic suppression than Run 1, despite identical entropy and block fields. What structural mechanism explains the difference?',
+        options: [
+          'Hanna prayed harder in Run 2, which gave him more strength to resist.',
+          'The Church network provided emotional comfort that made him feel better about his situation.',
+          'BioBond activating at step 4 restores an external component of the distributed cognitive system — maintaining the precision weighting on Hanna\'s identity priors when the immediate environment is systematically dismantling them. Same suppression conditions; different cognitive scaffolding.',
+          'The simulation has different random seeds for the two runs, which is why the numbers differ.'
+        ],
+        correct: 2,
+        feedback: {
+          correct: 'Exactly. This is Andy Clark\'s extended mind thesis made numerically precise. The entropy is identical between runs. The block fields are identical. The agents\' PRF configurations are identical. The only structural difference is the presence of an external cognitive network from step 4. That network is not changing what is being done to Hanna — it is maintaining the external component of his distributed cognitive system that the suppression conditions were designed to dismantle. The fidelity improvement between Run 1 and Run 2 is the structural measure of what cognitive scaffolding provides: not courage, not faith, not willpower — the external component of the system that keeps the generative model stable under conditions designed to destabilize it.',
+          wrong: [
+            'The simulation does not model prayer, individual spiritual practice, or personal strength. BioBond is a structural parameter — it models the presence or absence of an external network that functions as cognitive scaffolding. Two runs with identical parameters except BioBond activation will produce systematically different outcomes because the structural configuration differs, not because individuals are trying harder.',
+            'Emotional comfort is the folk-psychology description of what BioBond provides structurally. The simulation models the structural effect: the external network maintains the precision weighting on the agent\'s identity priors, which keeps the generative model stable and prevents the morphic suppression accumulation that would occur without it. Feeling better is the first-person experience of a third-person structural phenomenon.',
+            null,
+            'Both runs use the same seed (42). The difference between runs is not stochastic variation — it is the structural change produced by BioBond activation at step 4. You can verify this by examining the payload parameters: all values are identical except activate_biobond_at.'
+          ]
+        }
+      },
+      {
+        text: 'The simulation\'s most important claim about the Hanna case is that "his resilience was not solely produced by personal virtue." What does this claim mean — and what does it NOT mean?',
+        options: [
+          'It means Hanna was not actually virtuous — the Church did everything and he just survived passively.',
+          'It means his individual virtue was real AND that structural scaffolding was a contributing cause. The simulation cannot model what would have happened to him individually — it models what the structural conditions predict. The BioBond contribution is a structural claim, not a claim about his personal merit.',
+          'It means virtue is unimportant and only institutions matter.',
+          'It means the Church deserves the credit for his survival, not him.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. This is the OS2 reference frame\'s most careful claim. Individual virtue is real. Hanna\'s courage, faith, and depth of formation are genuine and significant. The simulation adds something the individual-virtue account cannot provide: a structural account of why those virtues were able to hold under these conditions — specifically, that the structural scaffolding provided by the Church network was a causally relevant feature of the outcome, not merely incidental context. Both are true simultaneously. The simulation is not replacing the individual account. It is making the structural account visible alongside it.',
+          wrong: [
+            'This is the opposite of the claim. The simulation explicitly cannot model whether Hanna would have held without BioBond — it can only show what the structural conditions predict at the population level. His personal virtue was real and significant. What the simulation adds is a structural account of the contributing causes, not a replacement for the individual account.',
+            null,
+            'The chapter is explicit: "This is not a criticism of Bishop Saad. His courage was real and his achievement was extraordinary regardless of the structural enablers." The structural claim is additive, not substitutive. Virtue matters. Structural conditions also matter. The simulation makes the second claim visible without eliminating the first.',
+            'The claim is about structural causation, not credit allocation. Both Hanna\'s character and the Church\'s structural response were causally relevant. Assigning credit is a different and harder question that the simulation does not answer. What it answers is: given these structural conditions with and without BioBond, what does the model predict? The difference between runs shows BioBond\'s structural contribution. It does not adjudicate who deserves credit.'
+          ]
+        }
+      }
+    ]
+  }
+};
+
+const hannaSaved = {};
+
+function renderHannaSSQ(runKey){
+  const data = HANNA_SSQ[runKey];
+  if(!data) return;
+  const panel = document.getElementById('hannaSSQPanel');
+  if(!panel) return;
+
+  const LETTERS = ['A','B','C','D'];
+  let html = `<div class="hanna-ssq">
+    <div class="hanna-ssq-header">
+      <div class="hanna-ssq-label">Structural Understanding — Check Your Reading</div>
+      <div class="hanna-ssq-title">${data.title}</div>
+    </div>
+    <div class="hanna-ssq-body">`;
+
+  data.questions.forEach((q, qi) => {
+    html += `<div class="hanna-ssq-q" id="hssq-${runKey}-q${qi}">
+      <div class="hanna-ssq-q-text">${qi+1}. ${q.text}</div>
+      <div class="hanna-ssq-opts" role="group" aria-label="Options for question ${qi+1}">`;
+    q.options.forEach((opt, oi) => {
+      html += `<button class="hanna-ssq-opt" id="hssq-${runKey}-q${qi}-o${oi}"
+        onclick="handleHannaSSQ('${runKey}',${qi},${oi})"
+        aria-label="Option ${LETTERS[oi]}: ${opt}">
+        <span class="hanna-ssq-opt-letter">${LETTERS[oi]}.</span>
+        <span>${opt}</span>
+      </button>`;
+    });
+    html += `</div>
+      <div class="hanna-ssq-fb" id="hssq-${runKey}-q${qi}-fb" role="alert" aria-live="polite"></div>
+    </div>`;
+  });
+
+  html += `</div>
+    <div class="hanna-ssq-prog" id="hssq-${runKey}-prog" aria-live="polite">Answer both questions to continue</div>
+  </div>`;
+
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+
+  // Restore saved answers
+  try{
+    const saved = JSON.parse(localStorage.getItem('hanna_ssq_' + runKey) || '{}');
+    Object.entries(saved).forEach(([qi, oi]) => {
+      applyHannaSSQ(runKey, parseInt(qi), parseInt(oi), true);
+    });
+    updateHannaSSQProgress(runKey);
+  }catch(e){}
+}
+
+function handleHannaSSQ(runKey, qi, oi){
+  applyHannaSSQ(runKey, qi, oi, false);
+  try{
+    const saved = JSON.parse(localStorage.getItem('hanna_ssq_' + runKey) || '{}');
+    saved[qi] = oi;
+    localStorage.setItem('hanna_ssq_' + runKey, JSON.stringify(saved));
+  }catch(e){}
+  updateHannaSSQProgress(runKey);
+}
+
+function applyHannaSSQ(runKey, qi, oi, isRestore){
+  const data = HANNA_SSQ[runKey];
+  if(!data) return;
+  const q = data.questions[qi];
+  const isCorrect = oi === q.correct;
+
+  // Disable all options for this question
+  q.options.forEach((_,idx) => {
+    const btn = document.getElementById(`hssq-${runKey}-q${qi}-o${idx}`);
+    if(btn) btn.disabled = true;
+  });
+
+  // Style chosen option
+  const chosen = document.getElementById(`hssq-${runKey}-q${qi}-o${oi}`);
+  if(chosen) chosen.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  // If wrong, reveal correct
+  if(!isCorrect){
+    const correctBtn = document.getElementById(`hssq-${runKey}-q${qi}-o${q.correct}`);
+    if(correctBtn) correctBtn.classList.add('revealed-correct');
+  }
+
+  // Show feedback
+  const fb = document.getElementById(`hssq-${runKey}-q${qi}-fb`);
+  if(fb){
+    const fbText = isCorrect
+      ? q.feedback.correct
+      : (q.feedback.wrong[oi] || 'Not quite — the correct answer is highlighted. Read its explanation to understand the structural reasoning.');
+    fb.className = 'hanna-ssq-fb ' + (isCorrect ? 'correct' : 'wrong');
+    fb.innerHTML = `<div class="hanna-ssq-fb-label">${isCorrect ? '✓ Correct' : '✗ Not quite'}</div>${fbText}`;
+    fb.style.display = 'block';
+  }
+}
+
+function updateHannaSSQProgress(runKey){
+  const data = HANNA_SSQ[runKey];
+  if(!data) return;
+  try{
+    const saved = JSON.parse(localStorage.getItem('hanna_ssq_' + runKey) || '{}');
+    const done = Object.keys(saved).length;
+    const total = data.questions.length;
+    const prog = document.getElementById('hssq-' + runKey + '-prog');
+    if(prog){
+      prog.textContent = done >= total
+        ? '✓ Both questions answered'
+        : `${done} of ${total} answered`;
+    }
+  }catch(e){}
 }
 </script>
 </body>
