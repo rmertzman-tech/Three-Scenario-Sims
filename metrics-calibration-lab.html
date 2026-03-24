@@ -234,6 +234,18 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .ssq-feedback-label{font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:.3rem}
 .ssq-progress{font-size:.75rem;font-family:'Courier New',monospace;color:var(--muted);text-align:center;padding:.5rem;border-top:1px solid var(--border)}
 
+
+/* ── Structural Configuration Block ── */
+.struct-config{background:var(--navy);border-radius:.5rem;padding:1.1rem 1.25rem;margin-bottom:1.25rem}
+.struct-config-label{font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:.5rem}
+.struct-config-title{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:.75rem}
+.struct-config-table{width:100%;border-collapse:collapse}
+.struct-config-table tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.07)}
+.struct-config-table td{padding:.35rem .5rem;font-size:.82rem;vertical-align:top}
+.struct-config-key{font-family:'Courier New',monospace;color:rgba(255,255,255,.5);width:38%;white-space:nowrap}
+.struct-config-val{color:rgba(255,255,255,.8);line-height:1.5}
+.struct-config-reading{margin-top:.75rem;padding:.65rem .875rem;background:rgba(255,255,255,.07);border-left:3px solid var(--amber);border-radius:0 .35rem .35rem 0;font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.6;font-style:italic}
+
 </style>
 </head>
 <body>
@@ -312,7 +324,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
     </div>
 
-    <div class="explain-box" style="margin-bottom:1rem">
+    
+    <div class="struct-config">
+      <div class="struct-config-label">🔬 Before You Predict</div>
+      <div class="struct-config-title">Structural Configuration — What the Simulation Is Modelling</div>
+      <table class="struct-config-table"><tr><td class="struct-config-key">Environmental entropy</td><td class="struct-config-val">0.82 — Very high. The environment is unpredictable and chaotic. Things change without warning.</td></tr><tr><td class="struct-config-key">Stress loading</td><td class="struct-config-val">0.70 — High. Sustained pressure is being applied to every agent in the system.</td></tr><tr><td class="struct-config-key">Care block field</td><td class="struct-config-val">−0.70 — Strongly suppressed. The institution actively penalises caring responses.</td></tr><tr><td class="struct-config-key">Fairness block field</td><td class="struct-config-val">−0.80 — Very strongly suppressed. Equal treatment is structurally discouraged.</td></tr><tr><td class="struct-config-key">Community block field</td><td class="struct-config-val">−0.60 — Strongly suppressed. Relational coordination is being blocked.</td></tr><tr><td class="struct-config-key">Boundary block field</td><td class="struct-config-val">+0.30 — Slightly positive. Some capacity to hold limits remains.</td></tr><tr><td class="struct-config-key">Evidence policy</td><td class="struct-config-val">Authority-weighted 0.60 — Conclusions endorsed by authority carry far more weight than data.</td></tr></table>
+      <div class="struct-config-reading">Read these together: a high-entropy, high-stress environment where caring, fairness, and community are all structurally penalised, and where authority trumps evidence. Given this configuration — before you see the result — what coordination capacity do you expect the structure to make available?</div>
+    </div>
+<div class="explain-box" style="margin-bottom:1rem">
       <div class="explain-label">What λ Raw Measures</div>
       <div class="explain-text">λ Raw is the coordination capacity <em>available</em> in a system — how much the structural conditions allow agents to act effectively together, based on entropy (how chaotic/unpredictable the environment is), stress loading, and which behaviors the institution rewards or suppresses. It is not about individual skill or willingness. It is about what the structure makes possible. Range: 0.0 (no capacity available) to 1.0 (full capacity).</div>
     </div>
@@ -369,7 +388,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
     </div>
 
-    <div class="explain-box" style="margin-bottom:1rem">
+    
+    <div class="struct-config">
+      <div class="struct-config-label">🔬 Before You Predict</div>
+      <div class="struct-config-title">Structural Configuration — What the Simulation Is Modelling</div>
+      <table class="struct-config-table"><tr><td class="struct-config-key">Environmental entropy</td><td class="struct-config-val">0.35 — Low. The company is stable and functional overall.</td></tr><tr><td class="struct-config-key">Stress loading</td><td class="struct-config-val">0.38 — Low-moderate. Normal corporate pressure, not a crisis.</td></tr><tr><td class="struct-config-key">Care block field</td><td class="struct-config-val">+0.20 — Slightly positive. The analysts genuinely care about product safety.</td></tr><tr><td class="struct-config-key">Fairness block field</td><td class="struct-config-val">−0.45 — Moderately suppressed. The filtering process is structurally unfair.</td></tr><tr><td class="struct-config-key">Community block field</td><td class="struct-config-val">−0.10 — Mildly suppressed. Some silo between analysts and management.</td></tr><tr><td class="struct-config-key">Boundary block field</td><td class="struct-config-val">+0.65 — Positive. Safety culture is real — analysts hold professional limits.</td></tr><tr><td class="struct-config-key">Evidence policy</td><td class="struct-config-val">Authority-weighted 0.72 — This is the primary filter. Authority-endorsed conclusions receive much higher weight than empirically-calibrated data.</td></tr></table>
+      <div class="struct-config-reading">Key question: the company is functioning well (low entropy, real safety culture). The specific pathology is the evidence policy. Given that the analysts' empirical-calibrated expertise is systematically downweighted before it reaches decision-makers — what gap do you expect between the capability that exists and the capability that reaches decisions?</div>
+    </div>
+<div class="explain-box" style="margin-bottom:1rem">
       <div class="explain-label">What λ Perceived Measures — and Why It Differs from λ Raw</div>
       <div class="explain-text">λ Perceived measures how much of the available coordination capacity is <em>actually reaching decisions</em>. In a healthy system, λ Raw and λ Perceived are close together. When institutions filter, soften, or block information before it reaches decision-makers, a gap opens. The gap (λ Raw − λ Perceived) is the <strong>suppression gap</strong> — structurally measurable knowledge being prevented from influencing outcomes. In the engineers' case: λ Raw may be moderate (they have real capability) but λ Perceived will be much lower (the capability is filtered before it reaches decisions).</div>
     </div>
@@ -424,7 +450,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
     </div>
 
-    <div class="explain-box" style="margin-bottom:1rem">
+    
+    <div class="struct-config">
+      <div class="struct-config-label">🔬 Before You Predict</div>
+      <div class="struct-config-title">Structural Configuration — What the Simulation Is Modelling</div>
+      <table class="struct-config-table"><tr><td class="struct-config-key">Environmental entropy</td><td class="struct-config-val">0.45 — Moderate. A functional university department, not in crisis.</td></tr><tr><td class="struct-config-key">Stress loading</td><td class="struct-config-val">0.44 — Moderate. Academic pressure but workable conditions.</td></tr><tr><td class="struct-config-key">Care block field</td><td class="struct-config-val">−0.10 — Mildly suppressed. Not actively hostile, just deferential.</td></tr><tr><td class="struct-config-key">Fairness block field</td><td class="struct-config-val">−0.55 — Moderately suppressed. The deference culture is structurally unfair to junior members.</td></tr><tr><td class="struct-config-key">Community block field</td><td class="struct-config-val">−0.30 — Moderately suppressed. Seniority norms silo the department.</td></tr><tr><td class="struct-config-key">Boundary block field</td><td class="struct-config-val">+0.55 — Positive. The department still has academic integrity norms.</td></tr><tr><td class="struct-config-key">Worldview dominance</td><td class="struct-config-val">Role-order 0.55 — Hierarchical deference is the primary coordination mechanism.</td></tr><tr><td class="struct-config-key">Evidence policy</td><td class="struct-config-val">Authority-weighted 0.70 — Conclusions from senior positions carry far more weight than conclusions from data or recent expertise.</td></tr></table>
+      <div class="struct-config-reading">The department functions — entropy is moderate, stress is manageable. The pathology is concentrated in two places: the role_order worldview dominance and the authority-weighted evidence policy. Both systematically attenuate contributions that do not come with positional authority. Given that the junior faculty's expertise is specifically the type the evidence policy downweights — what gap do you expect?</div>
+    </div>
+<div class="explain-box" style="margin-bottom:1rem">
       <div class="explain-label">The Suppression Gap — Why It Matters Ethically</div>
       <div class="explain-text">The suppression gap (λ Raw − λ Perceived) is not just a technical measure. It is the structurally measurable Kantian violation in the simulation suite. Kant's Formula of Humanity says: treat every rational agent as an end in themselves, never merely as a means. A suppression gap of 0.40 means that 40% of the available rational agency in this system is being structurally prevented from contributing to decisions — treated, effectively, as if it does not matter. The gap does not require anyone to intend harm. The structure produces it whether or not any individual chose it.</div>
     </div>
@@ -475,7 +508,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
     </div>
 
-    <div class="explain-box" style="margin-bottom:1rem">
+    
+    <div class="struct-config">
+      <div class="struct-config-label">🔬 Before You Predict</div>
+      <div class="struct-config-title">Structural Configuration — What the Simulation Is Modelling</div>
+      <table class="struct-config-table"><tr><td class="struct-config-key">Environmental entropy</td><td class="struct-config-val">0.52 — Moderate. The planning department is functional but under pressure.</td></tr><tr><td class="struct-config-key">Stress loading</td><td class="struct-config-val">0.50 — Moderate. Sustained but not acute.</td></tr><tr><td class="struct-config-key">Care block field</td><td class="struct-config-val">−0.25 — Mildly suppressed. Limited care for what liaisons bring.</td></tr><tr><td class="struct-config-key">Fairness block field</td><td class="struct-config-val">−0.55 — Moderately suppressed. Liaison contributions treated unequally to planner priorities.</td></tr><tr><td class="struct-config-key">Community block field</td><td class="struct-config-val">−0.68 — Strongly suppressed. Relational connection between liaisons and decision-makers is systematically severed.</td></tr><tr><td class="struct-config-key">Boundary block field</td><td class="struct-config-val">+0.42 — Moderately positive. Liaisons retain some professional identity.</td></tr><tr><td class="struct-config-key">Simulation duration</td><td class="struct-config-val">10 steps — representing five years of sustained structural experience.</td></tr></table>
+      <div class="struct-config-reading">Notice the community block field (−0.68) — this is the primary driver. The structure is severing the relational channel through which liaison contributions would normally reach planning decisions. Over 10 steps, what do you expect to happen to the liaisons' expressive behaviour as their predictive machinery calibrates to this consistent structural experience?</div>
+    </div>
+<div class="explain-box" style="margin-bottom:1rem">
       <div class="explain-label">What Morphic Suppression Measures — and Why It Builds Over Time</div>
       <div class="explain-text">Morphic suppression is <em>accumulated learned self-censorship</em>. It builds across simulation steps — each step representing a period of time where the agent's deliberate contribution consistently fails to reach outcomes. The brain's predictive machinery updates: "trying does not produce results." Eventually agents stop expressing capabilities they still have, because the expectation of futility has been incorporated into their predictive model. This is not weakness or laziness. It is the brain doing exactly what it is designed to do — calibrating predictions to match experience. The ethical claim: the institution produced this change without any individual choosing it.</div>
     </div>
@@ -527,7 +567,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
     </div>
 
-    <div class="explain-box" style="margin-bottom:1rem">
+    
+    <div class="struct-config">
+      <div class="struct-config-label">🔬 Before You Predict</div>
+      <div class="struct-config-title">Structural Configuration — Both Versions</div>
+      <table class="struct-config-table"><tr><td class="struct-config-key">Environmental entropy</td><td class="struct-config-val">0.80 — Very high. Sustained authoritarian surveillance and harassment.</td></tr><tr><td class="struct-config-key">Stress loading</td><td class="struct-config-val">0.72 — High. Maximum pressure applied consistently.</td></tr><tr><td class="struct-config-key">Care block field</td><td class="struct-config-val">−0.30 — Suppressed. Relational care is penalised.</td></tr><tr><td class="struct-config-key">Fairness block field</td><td class="struct-config-val">−0.65 — Strongly suppressed. Equal standing is denied.</td></tr><tr><td class="struct-config-key">Community block field</td><td class="struct-config-val">−0.80 — Very strongly suppressed. Organisational network is being systematically dismantled.</td></tr><tr><td class="struct-config-key">Boundary block field</td><td class="struct-config-val">+0.75 — Strongly positive. Her identity commitments are non-negotiable — this is her highest-precision prior.</td></tr><tr><td class="struct-config-key">Version A</td><td class="struct-config-val">No BioBond — no external cognitive scaffolding. Identity priors must be maintained by internal resources alone.</td></tr><tr><td class="struct-config-key">Version B</td><td class="struct-config-val">BioBond activates at step 3 — an international solidarity network provides external cognitive scaffolding from that point forward.</td></tr></table>
+      <div class="struct-config-reading">Both versions have identical suppression conditions — same entropy, same stress, same block fields. The only structural difference is whether an external cognitive network is present. Given that the community block is −0.80 (her relational scaffolding is being dismantled) but her boundary block is +0.75 (her identity commitments are strong) — how much of her original identity signal do you expect to survive in each version?</div>
+    </div>
+<div class="explain-box" style="margin-bottom:1rem">
       <div class="explain-label">What Morphic Fidelity Measures</div>
       <div class="explain-text">Morphic fidelity measures how much of the original coordination capacity signal is surviving under suppression — the ratio of what remains coherent to what is being eroded. High fidelity under high suppression means the identity is holding: something is maintaining the coherence of the signal despite the pressure applied to it. Low fidelity means the suppression is winning — the identity is fragmenting. In this lab we compute it as: λ Raw ÷ (λ Raw + morphic suppression) — the proportion of the capacity that is not being lost to accumulated learned silence. Range: 0.0 (identity completely fragmented) to 1.0 (identity fully intact).</div>
     </div>
@@ -577,7 +624,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
     </div>
 
-    <div class="explain-box" style="margin-bottom:1rem">
+    
+    <div class="struct-config">
+      <div class="struct-config-label">🔬 Before You Predict</div>
+      <div class="struct-config-title">Structural Configuration — What the Simulation Is Modelling</div>
+      <table class="struct-config-table"><tr><td class="struct-config-key">Environmental entropy</td><td class="struct-config-val">0.44 — Low-moderate. The neighbourhood is stable; the creek task is concrete.</td></tr><tr><td class="struct-config-key">Stress loading</td><td class="struct-config-val">0.42 — Low-moderate. The work is real but not a crisis.</td></tr><tr><td class="struct-config-key">Care block field</td><td class="struct-config-val">+0.60 — Strongly positive. All groups care about the creek for their own reasons.</td></tr><tr><td class="struct-config-key">Fairness block field</td><td class="struct-config-val">+0.50 — Positive. Environmental justice and equal community access are both present.</td></tr><tr><td class="struct-config-key">Community block field</td><td class="struct-config-val">+0.65 — Strongly positive. The shared task is building relational connection.</td></tr><tr><td class="struct-config-key">Boundary block field</td><td class="struct-config-val">+0.25 — Mildly positive. Each group maintains its distinct identity.</td></tr><tr><td class="struct-config-key">Worldview distribution</td><td class="struct-config-val">Five groups roughly equal — ubuntu_relational 0.25, sacred_boundary 0.22, liberal_individualist 0.22, role_order 0.18, indigenous_custodial 0.13.</td></tr><tr><td class="struct-config-key">Evidence policy</td><td class="struct-config-val">Empirical-calibrated 0.32, tradition-weighted 0.30 — diverse evidence sources with no single dominant filter.</td></tr></table>
+      <div class="struct-config-reading">Notice: all block fields are positive — the shared task is rewarding care, fairness, and community for all five groups simultaneously. But the worldview distribution is genuinely diverse with five distinct frameworks. Given that the task creates positive conditions for all groups while the frameworks remain genuinely different — what do you predict happens to OS2 Bridge (convergence) and Friction (translation cost) simultaneously?</div>
+    </div>
+<div class="explain-box" style="margin-bottom:1rem">
       <div class="explain-label">OS2 Bridge and Friction — The Key Counterintuitive Relationship</div>
       <div class="explain-text">OS2 Bridge measures whether agents with genuinely different frameworks are moving toward the same outcomes — not whether they agree, but whether their different capabilities are converging on shared goals. Friction measures the translation cost of that difference — how much effort it takes for different frameworks to communicate effectively enough to act together. Here is the counterintuitive truth: <strong>high friction and high OS2 Bridge can coexist.</strong> The coalition experiences real friction — it takes effort to coordinate across five genuinely different worldviews. But the shared task (cleaning the creek) makes that friction cost worth paying. The question is never "is friction high?" but "is the coordination worth the friction cost?"</div>
     </div>
@@ -631,6 +685,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
         The hospital has a diverse staff — religious communities, secular staff, political conservatives and progressives — who used to coordinate well. Six months ago they had a functional team. Now what?<br><br>
         Using everything you have calibrated in this lab: predict <em>all five metrics</em> for this situation.
       </div>
+    </div>
+
+
+    <div class="struct-config">
+      <div class="struct-config-label">🔬 Before You Predict</div>
+      <div class="struct-config-title">Structural Configuration — What the Simulation Is Modelling</div>
+      <table class="struct-config-table"><tr><td class="struct-config-key">Environmental entropy</td><td class="struct-config-val">0.62 — High. Six months of staffing crisis has created significant unpredictability.</td></tr><tr><td class="struct-config-key">Stress loading</td><td class="struct-config-val">0.56 — High. Sustained pressure throughout the system.</td></tr><tr><td class="struct-config-key">Care block field</td><td class="struct-config-val">−0.38 — Moderately suppressed. Raising safety concerns produces documentation burdens.</td></tr><tr><td class="struct-config-key">Fairness block field</td><td class="struct-config-val">−0.55 — Moderately suppressed. Centralised authority treats all clinical judgment unequally.</td></tr><tr><td class="struct-config-key">Community block field</td><td class="struct-config-val">−0.45 — Moderately suppressed. Staff coordination is being fragmented by centralisation.</td></tr><tr><td class="struct-config-key">Boundary block field</td><td class="struct-config-val">+0.50 — Positive. The hospital still has a care mission — professional identity holds.</td></tr><tr><td class="struct-config-key">Evidence policy</td><td class="struct-config-val">Authority-weighted 0.55 — Centralised administrative decisions carry much more weight than clinical judgment.</td></tr><tr><td class="struct-config-key">Worldview distribution</td><td class="struct-config-val">Five frameworks present — role_order 0.30, sacred_boundary 0.25, liberal_individualist 0.22, ubuntu_relational 0.15, indigenous_custodial 0.08.</td></tr></table>
+      <div class="struct-config-reading">Use everything you have calibrated in this lab. High entropy and stress pull λ Raw down. The authority-weighted evidence policy creates a gap between what exists and what reaches decisions. The negative community and care fields drive morphic suppression as staff learn that raising concerns is penalised. The worldview diversity is still present but the shared task conditions are deteriorating. Predict all five metrics before running.</div>
     </div>
 
     <div class="pred-section" id="pred-section-6">
