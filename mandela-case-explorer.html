@@ -206,6 +206,29 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .pred-stage-locked{opacity:.35;pointer-events:none}
 .pred-unlock-note{font-size:.75rem;color:rgba(255,255,255,.35);font-style:italic;margin-top:.3rem}
 
+
+/* ── Mandela Structural Config (reuses Maathai .m-scfg classes) ── */
+.m-scfg{background:rgba(0,0,0,.35);border:1px solid rgba(20,184,166,.25);
+  border-radius:.5rem;padding:.875rem 1rem;margin-bottom:1rem}
+.m-scfg-label{font-size:.68rem;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.6);margin-bottom:.3rem}
+.m-scfg-title{font-size:.85rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.6rem;
+  font-family:'Georgia',serif}
+.m-scfg-table{width:100%;border-collapse:collapse;margin-bottom:.6rem}
+.m-scfg-table tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.06)}
+.m-scfg-table td{padding:.3rem .4rem;font-size:.78rem;vertical-align:top}
+.m-scfg-key{font-family:'Courier New',monospace;color:rgba(255,255,255,.4);width:36%;white-space:nowrap}
+.m-scfg-val{color:rgba(255,255,255,.75);line-height:1.5}
+.m-scfg-reading{padding:.55rem .75rem;background:rgba(201,168,76,.08);
+  border-left:3px solid rgba(201,168,76,.5);border-radius:0 .3rem .3rem 0;
+  font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.6;font-style:italic}
+.m-pred-scaffold{background:rgba(15,118,110,.12);border:1px solid rgba(20,184,166,.2);
+  border-radius:.4rem;padding:.65rem .875rem;margin-bottom:.75rem}
+.m-pred-scaffold-label{font-size:.65rem;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.08em;color:rgba(20,184,166,.7);margin-bottom:.4rem}
+.m-pred-scaffold-item{font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.6;
+  padding-left:.75rem;border-left:2px solid rgba(20,184,166,.3);margin-bottom:.3rem}
+.m-pred-scaffold-item strong{color:rgba(20,184,166,.9);font-weight:600}
 </style>
 </head>
 <body>
@@ -472,11 +495,23 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <button class="run-tab-btn" id="btn-run3" onclick="selectRun('run3')">Run 3 — The Transition</button>
     </div>
 
+    <!-- Chapter 4 prediction retrieval -->
+    <div id="ch4PredDisplay" style="background:rgba(15,118,110,.12);border:1px solid rgba(20,184,166,.3);border-radius:.5rem;padding:.875rem 1.1rem;margin-bottom:1rem;display:none">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:.35rem">Your Chapter 4 Prediction (retrieved from journal)</div>
+      <div id="ch4PredText" style="font-size:.85rem;color:rgba(255,255,255,.75);line-height:1.6;font-style:italic;border-left:3px solid #C9A84C;padding-left:.75rem"></div>
+    </div>
 
     <!-- ═══ PREDICTION PANEL ═══ -->
     <div class="pred-panel" id="predPanel">
       <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem">🔬 Prediction — Active Inference Practice</div>
       
+      <!-- Structural config + scaffold panels -->
+      <div id="m5-config-panel" class="m-scfg" style="display:none"></div>
+      <div id="m5-scaffold-panel" class="m-pred-scaffold" style="display:none">
+        <div class="m-pred-scaffold-label">💡 Reasoning Scaffold — Consider These Before Predicting</div>
+        <div id="m5-scaffold-items"></div>
+      </div>
+
       <div class="pred-stage" id="pred-stage-pred">
         <div class="pred-stage-header">
           <div class="pred-stage-num s1">1</div>
@@ -522,7 +557,8 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
         <div class="ucp-metrics" id="ucpMetrics"></div>
         <div id="ucpBars"></div>
         <div class="ucp-narrative" id="ucpNarrative"></div>
-        <div class="next-run-prompt" id="nextRunPrompt">
+        <div class="next-run-prompt" <div id="mandelaSSQPanel" style="display:none;margin:1rem 0" role="region" aria-label="Structural understanding check"></div>
+    id="nextRunPrompt">
           <p id="nextRunText"></p>
           <button id="nextRunBtn" onclick="nextRun()">▶ Run Next Simulation</button>
         </div>
@@ -749,6 +785,23 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <textarea class="journal-textarea" id="jt-7x7"
         placeholder="My current daily practice(s) that maintain C_PFC: ...&#10;&#10;Whether they hold when base_entropy is high: ...&#10;&#10;What Mandela's model suggests I should protect even when — especially when — conditions are difficult: ..."
         oninput="jSave('7x7',this.value)"></textarea>
+    </div>
+
+    <div class="exercise-box" style="border:1px solid rgba(201,168,76,.35);background:rgba(201,168,76,.05);margin-top:1.25rem">
+      <h4 style="color:#C9A84C">🔭 Journal Q5 — Prediction for Palmer / Farmer (Chapter 6)</h4>
+      <p>Chapters 6 and 7 introduce Tim Palmer and Doyne Farmer — scientists who use the same heterogeneous agent simulation methodology you have been practicing in this course to make real predictions about hurricane survival and economic stability. Before encountering their cases, commit to a prediction about what you expect to find.</p>
+      <p style="margin-top:.6rem">Palmer runs ensemble weather models — multiple simultaneous simulations with varied initial conditions — reporting the distribution of outcomes rather than a single forecast. Farmer runs agent-based economic models that treat economies as heterogeneous populations rather than aggregate averages.</p>
+      <div class="m-pred-scaffold" style="margin:.75rem 0">
+        <div class="m-pred-scaffold-label">💡 Reasoning Scaffold — Consider These Before Predicting</div>
+        <div class="m-pred-scaffold-item"><strong>The reference frame question:</strong> Every simulation in this course has shown that the choice of reference frame determines what you can see. Palmer's ensemble vs single-model forecasting, and Farmer's agent-based vs representative-agent economics, are choices of reference frame. <strong>What do you predict each alternative framework makes visible that the standard framework cannot see?</strong></div>
+        <div class="m-pred-scaffold-item"><strong>The ethical dimension:</strong> The course has argued that choosing a reference frame is a moral choice — certain people become invisible when you use aggregate models. <strong>Predict: which specific population was made invisible by the standard framework in each case, and what was the cost of that invisibility in lives or livelihoods?</strong></div>
+        <div class="m-pred-scaffold-item"><strong>Connection to the trilogy:</strong> Hanna showed identity coherence requires structural scaffolding. Maathai showed coordination requires shared task design. Mandela showed both are the same practice at different scales. <strong>What question does the human trilogy leave unanswered that you expect Palmer and Farmer to address?</strong></div>
+        <div class="m-pred-scaffold-item"><strong>Your specific prediction:</strong> In one sentence each — what do you predict Palmer's ensemble approach revealed that single-model forecasting could not show, and what do you predict Farmer's agent-based model predicted that standard macroeconomic models could not predict?</div>
+      </div>
+      <textarea class="journal-textarea" id="jt-ch5q5"
+        placeholder="My Palmer/Farmer prediction:&#10;&#10;Palmer's ensemble approach: I predict it revealed...&#10;Farmer's agent-based model: I predict it showed...&#10;The invisible population: in each case, the standard framework could not see...&#10;Connection to the trilogy: the unanswered question is..."
+        oninput="saveCh5Q5(this.value)"></textarea>
+      <div class="pred-save" id="sv-ch5q5" style="margin-top:.35rem">✓ Saved for Chapter 6</div>
     </div>
 
     <div class="card card-gold" style="margin-top:1.5rem">
@@ -1025,6 +1078,7 @@ function renderRun(data){
 
   document.getElementById('ucpResult').style.display='block';
   predUnlockStage2_mandela();
+  renderMandelaSSQ(_run);
   // Show external Run 3 prompt after Run 2; hide otherwise
   const ext3 = document.getElementById('run3ExternalPrompt');
   if (ext3) ext3.style.display = (_run === 'run2') ? 'block' : 'none';
@@ -1197,7 +1251,17 @@ function loadTransferFields(){['prf','trilogy','sage','abcd','growth','final'].f
 const JP='mandela_journal_';
 function jSave(k,v){try{localStorage.setItem(JP+k,v);}catch(e){}}
 function jLoad(k){try{return localStorage.getItem(JP+k)||'';}catch(e){return '';}}
-function loadJournalFields(){['mask','biobond','trc','commitment','humanity','7x7'].forEach(k=>{const el=document.getElementById('jt-'+k);if(el)el.value=jLoad(k);});}
+function saveCh5Q5(val){
+  try{
+    localStorage.setItem('ch5_cq5',val);
+    const sv=document.getElementById('sv-ch5q5');
+    if(sv){sv.classList.add('show');setTimeout(()=>sv.classList.remove('show'),2000);}
+  }catch(e){}
+}
+
+function loadJournalFields(){['mask','biobond','trc','commitment','humanity','7x7'].forEach(k=>{const el=document.getElementById('jt-'+k);if(el)el.value=jLoad(k);});
+  try{const v=localStorage.getItem('ch5_cq5')||'';const ta=document.getElementById('jt-ch5q5');if(ta&&v)ta.value=v;}catch(e){}
+}
 
 // ── Export ────────────────────────────────────────────────
 function buildExport(){
@@ -1216,7 +1280,9 @@ function buildExport(){
   `TRANSFER — FINAL REFLECTION\n${tLoad('final')||'[not completed]'}\n` +
   `\nEXERCISE 6: YOUR 7x7 CELL\n${jLoad('7x7')||'[not completed]'}\n` +
   predBuildExport_mandela('run1') + predBuildExport_mandela('run2') + predBuildExport_mandela('run3');
-}
+
+  const ch5q5val=(()=>{try{return localStorage.getItem('ch5_cq5')||'[not completed]';}catch(e){return '[not completed]';}})();
+  out+=`JOURNAL Q5: PALMER/FARMER PREDICTION (for Chapter 6)\n${ch5q5val}\n\n`;}
 function exportJournal(){
   const txt=buildExport();
   const blob=new Blob([txt],{type:'text/plain'});
@@ -1246,7 +1312,7 @@ function clearJournal(){
 // ── Prediction Panel ──────────────────────────────────────────
 const PRED_PROMPTS_MANDELA = {
   "run1": {
-    "_default": "Run 1 models Robben Island without external network support \u2014 entropy 0.88, stress 0.72, community block \u22120.85, 12 steps. Each step represents roughly two years. No BioBond. What do you predict happens to \u03bb Raw and morphic suppression across 12 steps of sustained maximum suppression? Write your prediction \u2014 including whether you think \u03bb Raw reaches zero \u2014 before running.",
+    "_default": "Run 1 models Robben Island without external network support \u2014 entropy 0.85, stress 0.72, community block \u22120.85, 12 steps. Each step represents roughly two years. No BioBond. What do you predict happens to \u03bb Raw and morphic suppression across 12 steps of sustained maximum suppression? Write your prediction \u2014 including whether you think \u03bb Raw reaches zero \u2014 before running.",
     "individual_rights": "27 years of imprisonment without trial review, without equal standing, without the rational voice that your framework treats as inviolable. Entropy 0.88, community \u22120.85, 12 steps. What do you predict the suppression gap (\u03bb Raw \u2212 \u03bb Perceived) looks like after 12 steps? Does it widen monotonically, or does it stabilize? Write before running.",
     "relational_we": "Your relational framework is most sensitive to what community block \u22120.85 models: the systematic severing of every relational scaffold across 12 steps \u2014 roughly 24 years of accumulating isolation. What do you predict happens to morphic suppression when cognitive scaffolding is removed step by step across that duration? Does it accumulate linearly or accelerate? Write before running.",
     "hierarchical_role": "The captors represent illegitimate authority at its most extreme \u2014 using institutional power to prevent the prisoner from exercising any legitimate role. Your role-based framework is sensitive to this inversion. What do you predict happens to agents' capacity to maintain role-based identity under 12 steps of authority-inversion? Write before running.",
@@ -1286,6 +1352,337 @@ const PRED_STAGE_CONFIGS_MANDELA = {
   }
 };
 
+
+// ═══════════════════════════════════════════════════════════════
+// CHAPTER 4 PREDICTION RETRIEVAL
+// ═══════════════════════════════════════════════════════════════
+(function loadCh4Pred(){
+  try{
+    const pred = localStorage.getItem('ch4_cq5') || '';
+    const el = document.getElementById('ch4PredText');
+    const wrapper = document.getElementById('ch4PredDisplay');
+    if(el && wrapper && pred.trim()){
+      el.textContent = pred;
+      wrapper.style.display = 'block';
+    }
+  }catch(e){}
+})();
+
+// ═══════════════════════════════════════════════════════════════
+// STRUCTURAL CONFIG PANELS + PREDICTION SCAFFOLDING
+// ═══════════════════════════════════════════════════════════════
+const M5_CONFIG = {
+  run1: {
+    title: 'Run 1 Structural Configuration — Robben Island, No External Network',
+    rows: [
+      ['Environmental entropy','0.85 — Near-maximum. 27 years of isolation, hard labour, censored communication, systematic identity destruction.'],
+      ['Stress loading','0.72 — High. Accumulated biological burden of long-duration suppression.'],
+      ['Care block field','−0.30 — Suppressed. Relational care is penalised within the institution.'],
+      ['Fairness block field','−0.90 — Very strongly suppressed. Apartheid system structurally denies equal standing.'],
+      ['Community block field','−0.85 — Very strongly suppressed. Every relational network — colleagues, family, movement — is systematically severed.'],
+      ['Boundary block field','+0.80 — Strongly positive. The identity commitments are non-negotiable — this is the highest-precision prior.'],
+      ['Simulation duration','12 steps — each representing roughly 2 years. 27 years total.'],
+      ['BioBond','None. No external network support. Internal discipline only.'],
+    ],
+    reading: 'Key question: entropy 0.85 + community −0.85 should produce near-zero λ Raw and rapidly building morphic suppression. But λ Raw does not reach zero. Why not? What structural feature of Mandela\'s situation provides a floor? Predict: morphic fidelity at step 12 — how much of the original identity signal survives 27 years of maximum suppression with internal discipline as the only buffer?'
+  },
+  run2: {
+    title: 'Run 2 Structural Configuration — Robben Island, With External Network (BioBond Step 5)',
+    rows: [
+      ['Environmental entropy','0.85 — IDENTICAL to Run 1. The prison conditions did not change.'],
+      ['Stress loading','0.72 — IDENTICAL to Run 1.'],
+      ['All block fields','IDENTICAL to Run 1. The suppression conditions did not change.'],
+      ['BioBond activates','Step 5 — representing Oliver Tambo\'s international sanctions campaign and the global anti-apartheid movement intensifying in the 1980s.'],
+      ['Key contrast','Run 1 and Run 2 have the same suppression. The only structural difference is the presence of an external network from step 5.'],
+      ['What BioBond models','Not emotional support — the material change in suppression conditions: sanctions making apartheid economically prohibitive, movement maintaining institutional legitimacy, network protecting prisoners from the worst reprisals.'],
+    ],
+    reading: 'Same suppression, different scaffolding. Before running: predict the morphic fidelity difference between Run 1 and Run 2. How much additional identity signal does Tambo\'s network preserve? Is the improvement primarily in λ Raw, in morphic suppression reduction, or in both? Compare your Chapter 4 Q5 prediction to what you predicted for Run 1.'
+  },
+  run3: {
+    title: 'Run 3 Structural Configuration — The Transition (1990–1994)',
+    rows: [
+      ['Environmental entropy','0.52 — Moderate. A functioning country in political transition, not a prison.'],
+      ['Stress loading','0.55 — Moderate. High-stakes negotiations under sustained pressure.'],
+      ['Care block field','+0.40 — Positive. The transition architecture rewards caring for what the other side needs to stay at the table.'],
+      ['Fairness block field','+0.50 — Positive. Constitutional democracy as shared task rewards fairness norms — equal votes, equal rights.'],
+      ['Community block field','+0.45 — Positive. Coalition-building is structurally rewarded — the process requires relational coordination.'],
+      ['Boundary block field','+0.30 — Mildly positive. Each group retains its distinct identity — no one must abandon their framework.'],
+      ['Worldview distribution','role_order (Afrikaner nationalists) 0.30 · ubuntu_relational (ANC) 0.28 · sacred_boundary (religious) 0.22 · liberal_individualist (white liberals) 0.15 · indigenous_custodial 0.05'],
+      ['Key contrast','Run 3 is a COMPLETELY different structural problem from Runs 1 and 2. Different entropy, different stress, different block fields. Not a continuation — a new question.'],
+    ],
+    reading: 'This is Maathai\'s question at national scale, with former enemies instead of diverse stakeholders. All block fields positive — the shared task (constitutional democracy) rewards every framework\'s contribution simultaneously. But these five groups have been at war. Friction will be very high. Before running: can OS2 Bridge and friction both be high simultaneously? What structural argument from Chapter 4 supports your prediction?'
+  }
+};
+
+const M5_SCAFFOLD = {
+  run1: [
+    {label:'λ Raw and the floor', hint:'Entropy 0.85 and community −0.85 produce near-zero coordination capacity in most institutional configurations. But Mandela\'s morning routine provided biological resistance to the Sapolsky gate closing completely. <strong>Predict: will λ Raw be near-zero, or will there be a visible floor? What provides that floor structurally?</strong>'},
+    {label:'Morphic suppression accumulation', hint:'12 steps of sustained maximum suppression — each step two years. With community at −0.85, every contribution fails to reach outcomes. Over 24 years of this experience, what does the predictive machinery learn? <strong>Predict: small / moderate / large morphic suppression at step 12?</strong>'},
+    {label:'Morphic fidelity', hint:'Fidelity = λ Raw ÷ (λ Raw + morphic suppression). Given your predictions for both — what proportion of the original identity signal do you expect to survive? <strong>Predict a specific number: 0.X</strong>'},
+    {label:'Compare to Hanna Run 1', hint:'Hanna faced entropy 0.88 for 8 steps with community −0.90. Mandela faces entropy 0.85 for 12 steps with community −0.85. Longer duration but slightly lower parameters. <strong>Do you predict Mandela\'s Run 1 fidelity to be higher or lower than Hanna\'s Run 1? What accounts for the difference?</strong>'},
+  ],
+  run2: [
+    {label:'Fidelity improvement', hint:'Run 1 gave you a baseline fidelity. BioBond activates at step 5 — halfway through. The suppression conditions are identical. What does restoring one component of the distributed cognitive system add to fidelity? <strong>Predict: small / moderate / large improvement over Run 1?</strong>'},
+    {label:'Morphic suppression at step 5', hint:'Five steps of accumulation occur before BioBond arrives. Some learned futility is already embedded. BioBond cannot reverse what accumulated in steps 1–5 — it can only prevent further accumulation and begin rebuilding. <strong>Does this mean Run 2 fidelity will always be less than Hanna\'s Run 2 fidelity?</strong>'},
+    {label:'Compare to Chapter 4 Q5 prediction', hint:'You predicted this specific number in your journal. <strong>Before running: is your prediction for Run 2 fidelity higher, lower, or the same as what you wrote in Chapter 4 Q5?</strong>'},
+  ],
+  run3: [
+    {label:'OS2 Bridge', hint:'Five groups who have been at war. All block fields positive — the shared task rewards every framework simultaneously. Apply Chapter 4\'s Phase 2 insight. <strong>Predict: low / moderate / high OS2 Bridge? Is it higher or lower than Maathai\'s Phase 2?</strong>'},
+    {label:'Friction', hint:'These groups do not just have incompatible values — they have mutual atrocities in their recent history. The worldview diversity is genuine and the grievances are real. <strong>Predict: higher or lower friction than Maathai\'s Phase 2? Why?</strong>'},
+    {label:'The counterintuitive result', hint:'Chapter 4 showed high OS2 Bridge and high friction coexisting. The same structural mechanism is present here — shared task making friction worth paying. <strong>Before running: commit to a prediction about whether Bridge and friction will both be high simultaneously in Run 3.</strong>'},
+    {label:'Morphic suppression in Run 3', hint:'Run 3 has moderate entropy and positive block fields. Contributions reach outcomes. <strong>Do you expect morphic suppression to be higher, lower, or about the same as in Runs 1 and 2? Why does the structural change produce a different pattern?</strong>'},
+  ]
+};
+
+function renderMandelaConfig(runKey){
+  const data = M5_CONFIG[runKey];
+  if(!data) return;
+  const panel = document.getElementById('m5-config-panel');
+  const scaffold = document.getElementById('m5-scaffold-panel');
+  const scaffoldItems = document.getElementById('m5-scaffold-items');
+  if(!panel||!scaffold||!scaffoldItems) return;
+  const rows = data.rows.map(([k,v])=>
+    `<tr><td class="m-scfg-key">${k}</td><td class="m-scfg-val">${v}</td></tr>`
+  ).join('');
+  panel.innerHTML = `
+    <div class="m-scfg-label">🔬 Before You Predict</div>
+    <div class="m-scfg-title">${data.title}</div>
+    <table class="m-scfg-table">${rows}</table>
+    <div class="m-scfg-reading">${data.reading}</div>`;
+  panel.style.display = 'block';
+  const items = M5_SCAFFOLD[runKey] || [];
+  scaffoldItems.innerHTML = items.map(item=>
+    `<div class="m-pred-scaffold-item"><strong>${item.label}:</strong> ${item.hint}</div>`
+  ).join('');
+  scaffold.style.display = 'block';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MCQ STRUCTURAL UNDERSTANDING PANELS — 2 QUESTIONS PER RUN
+// ═══════════════════════════════════════════════════════════════
+const M5_SSQ = {
+  run1: {
+    title: 'What This Simulation Shows — Run 1: Robben Island Without Network',
+    questions: [
+      {
+        text: 'Run 1 produces low λ Raw but does not reach zero — there is a visible floor. What structural mechanism produces this floor?',
+        options: [
+          'The simulation engine has a minimum value that prevents λ Raw from reaching zero regardless of parameters.',
+          'Mandela\'s internal discipline practices — the morning exercise routine, sustained reading, debates with fellow prisoners — maintained a biological floor on prefrontal capacity that external suppression could not fully eliminate.',
+          'The boundary block field (+0.80) is preventing complete coordination collapse by protecting agent identity.',
+          'Mandela had powerful supporters who reduced the effective suppression over time.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Exactly right. The λ Raw floor represents the biological reality of what internal discipline provides — the exercise routine maintained BDNF levels and suppressed cortisol accumulation enough to keep the Sapolsky gate from closing completely. The floor is not a model artifact. It is the model\'s representation of what embodied daily practice contributes to prefrontal maintenance under chronic stress. Boundary block +0.80 protects identity orientation but does not prevent λ Raw from falling — it is the daily physical practice that establishes the floor.',
+          wrong: [
+            'The simulation engine does allow λ Raw to reach near-zero — you can see this in other simulation runs across the course. The floor in Run 1 is not a technical minimum. It is a structural feature representing a specific biological reality: Mandela\'s morning routine maintained a floor on C_PFC that the suppression parameters alone would not have preserved.',
+            null,
+            'The boundary block field (+0.80) models the strength of Mandela\'s identity commitments — his non-negotiable priors. This does contribute to morphic fidelity by maintaining the precision weighting on his deepest priors. But it does not explain the λ Raw floor specifically. The floor is about prefrontal capacity for deliberate action, not the strength of the identity commitments themselves.',
+            'Run 1 has no BioBond — no external network support. The floor is produced entirely by internal factors. Any external support is specifically absent in this run. That is the point of having Run 1 and Run 2 as separate runs: to isolate the contribution of internal discipline (Run 1 floor) from external scaffolding (Run 2 BioBond uplift).'
+          ]
+        }
+      },
+      {
+        text: 'Morphic suppression builds across all 12 steps despite Mandela\'s extraordinary discipline. What does this tell you structurally — and what does it NOT tell you?',
+        options: [
+          'It tells you Mandela was gradually losing his commitment to his cause across the 27 years.',
+          'Building morphic suppression tells you the structural conditions were consistently preventing deliberate contributions from reaching outcomes — the predictive machinery was learning futility. It does NOT tell you Mandela\'s values or courage were eroding. Morphic suppression is a structural metric, not a character metric.',
+          'It tells you the simulation is wrong — we know historically that Mandela maintained full commitment.',
+          'Morphic suppression building means λ Raw was falling to zero by step 12.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. This distinction is one of the most important in the entire course. Morphic suppression measures what the structural conditions produce in the predictive machinery — the accumulated expectation of futility. It is not measuring commitment, courage, or character. A person of maximum commitment in this structural environment would still accumulate morphic suppression, because the mechanism is structural: contributions consistently fail to reach outcomes, and the brain\'s predictive machinery updates accordingly. What Mandela\'s exercise routine did was interrupt this accumulation daily — providing one domain of deliberate action that always reached its outcome. That is why morphic suppression builds but does not consume his capacity entirely.',
+          wrong: [
+            'Morphic suppression is not measuring commitment or courage. It is measuring what the structural conditions do to the predictive machinery over time — the accumulation of expected futility. Mandela\'s commitment was intact; what was building was the structural residue of 27 years of having deliberate contributions blocked from reaching outcomes. The two are completely different phenomena.',
+            null,
+            'The simulation is consistent with the historical record. Mandela maintained his commitments — the historical record shows this clearly. What the simulation is measuring is not commitment but something different: the structural accumulation of learned futility in the predictive machinery. Both can be true simultaneously: extraordinary commitment and building morphic suppression. The simulation is showing you the structural cost, not contradicting the human achievement.',
+            'Morphic suppression building does not mean λ Raw reaches zero. λ Raw and morphic suppression are related but distinct. Morphic fidelity = λ Raw ÷ (λ Raw + morphic suppression) is the ratio that shows how much of the λ Raw that exists is not being consumed by accumulated learned self-censorship. You can have both a stable λ Raw floor AND building morphic suppression — the floor says some deliberate capacity remains, the suppression says the capacity is being progressively eroded by structural experience.'
+          ]
+        }
+      }
+    ]
+  },
+  run2: {
+    title: 'What This Simulation Shows — Run 2: With External Network (BioBond)',
+    questions: [
+      {
+        text: 'Run 2 shows higher morphic fidelity than Run 1 despite identical suppression conditions. Five steps of morphic suppression accumulated before BioBond arrived. What structural claim is the Run 1→2 difference making?',
+        options: [
+          'Oliver Tambo was more important to the anti-apartheid movement than Mandela himself.',
+          'BioBond restores external cognitive scaffolding from step 5 onward — maintaining the precision weighting on Mandela\'s identity priors when the suppression conditions were designed to erode them. The difference is not emotional support but the structural contribution of a distributed cognitive system having its external component restored.',
+          'International sanctions changed the prison conditions enough to reduce the suppression parameters.',
+          'Run 2 proves that individual discipline is insufficient — only external support matters.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Exactly. This is Andy Clark\'s extended mind thesis applied to identity coherence under maximum suppression. The suppression parameters are identical — same entropy, same stress, same block fields. What BioBond adds is the restoration of one component of the distributed cognitive system that the prison conditions had been systematically dismantling: the external network that confirms identity, maintains institutional legitimacy, and prevents the predictive machinery from concluding that nothing will reach outcomes. The fidelity improvement is the numerical measure of what that external component contributes.',
+          wrong: [
+            'The simulation does not adjudicate the relative importance of Mandela and Tambo — that is a historical and moral question the simulation cannot answer. What it does measure is the structural contribution of the external network to morphic fidelity. Both contributions were load-bearing. Neither alone was sufficient. The simulation shows why: Run 1\'s floor is what Mandela\'s internal discipline provided; Run 2\'s uplift is what Tambo\'s network added.',
+            null,
+            'The suppression parameters in Run 2 are explicitly identical to Run 1 — the sim is designed this way to isolate the BioBond variable. International sanctions did not change what happened inside Robben Island directly — they changed the political calculus of the regime. What BioBond models is the structural contribution of the external network to the agent\'s cognitive scaffolding, not a change in the suppression environment itself.',
+            'Run 1 demonstrates that individual discipline provides a real floor — λ Raw does not reach zero. Run 2 demonstrates that external scaffolding adds additional fidelity on top of that floor. Both are necessary. The conclusion is not that individual discipline is insufficient — it is that individual discipline and external scaffolding are complementary structural contributions, not alternatives. Neither cancels the other.'
+          ]
+        }
+      },
+      {
+        text: 'Run 2\'s morphic fidelity is higher than Run 1\'s but is it as high as Hanna\'s Run 2? What structural feature explains any difference?',
+        options: [
+          'Mandela\'s Run 2 fidelity should be identical to Hanna\'s Run 2 because both have BioBond.',
+          'Mandela\'s Run 2 fidelity is likely lower than Hanna\'s Run 2 because 5 steps of morphic suppression accumulated before BioBond arrived (vs Hanna\'s 4 steps), across 12 total steps (vs 8), and the suppression parameters are slightly higher overall.',
+          'Mandela\'s Run 2 fidelity should be higher than Hanna\'s because his Identity Kernel was deeper after 27 years of formation.',
+          'The comparison is meaningless because the two cases are structurally incomparable.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. Three structural factors make Mandela\'s Run 2 fidelity likely lower than Hanna\'s Run 2: (1) BioBond arrives at step 5 of 12 in Mandela\'s case vs step 4 of 8 in Hanna\'s — both halfway, but Mandela has more accumulation time before BioBond; (2) the total simulation is longer — more steps of suppression compound the morphic suppression; (3) Mandela\'s suppression parameters, while slightly lower than Hanna\'s, operate across a much longer duration. This is not a judgment about who was more resilient — it is a structural prediction about what the parameters produce. Running the simulation and comparing the numbers to Hanna\'s app results is the most direct way to verify this prediction.',
+          wrong: [
+            'BioBond activation is not the only variable determining fidelity — the timing, duration, and severity of prior suppression all affect how much morphic suppression has accumulated before BioBond can prevent further erosion. Same BioBond mechanism, different prior accumulation trajectory.',
+            null,
+            'The depth of the Identity Kernel — modeled through the boundary block field and worldview distribution — affects the floor of λ Raw and the strength of resistance to suppression. But morphic fidelity is a ratio that includes the morphic suppression accumulated before BioBond arrived. A deeper Identity Kernel does not automatically produce higher fidelity if more suppression has accumulated in the pre-BioBond period.',
+            'The comparison is structurally meaningful — both cases use the same simulation engine with the same metrics. The differences in fidelity between the two cases are precisely the information the cross-case comparison is designed to produce. Comparing specific numbers from the two apps is one of the chapter\'s core analytical exercises.'
+          ]
+        }
+      }
+    ]
+  },
+  run3: {
+    title: 'What This Simulation Shows — Run 3: The Transition',
+    questions: [
+      {
+        text: 'Run 3 produces high OS2 Bridge despite maximum worldview diversity and maximum friction. How is this structurally possible — and why is it the same mechanism as Maathai\'s Phase 2?',
+        options: [
+          'The five groups secretly agreed on a shared vision of South Africa\'s future during the CODESA negotiations.',
+          'The positive block fields model what the concrete shared task (constitutional democracy) provides structurally: it rewards every framework\'s contribution simultaneously, making the friction cost worth paying. Same agents with incompatible values can produce convergent outcomes when the shared task creates functional equivalence. The mechanism is identical to Maathai\'s Phase 2.',
+          'High OS2 Bridge in Run 3 proves that the groups stopped fighting and genuinely forgave each other.',
+          'Run 3 has lower entropy than Runs 1 and 2, which automatically produces higher Bridge.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Exactly — and this is the chapter\'s synthesis claim made structurally explicit. The five groups at CODESA had genuinely incompatible ultimate values: the ANC wanted liberation, the NP wanted managed exit, the Afrikaner right wanted cultural preservation, business wanted stability, the international community wanted a model. They did not agree on these things. What they shared was the concrete shared task: a constitutional transfer of power that averted civil war. Democratic transition was the functional equivalent — each group could advance it for their own authentic reasons. This is Maathai\'s mechanism at national scale, with former enemies instead of diverse stakeholders.',
+          wrong: [
+            'No value agreement was reached at CODESA — this is historically documented. The negotiations were explicitly about creating a framework that different groups could accept for different reasons, not about producing a shared vision. The structural claim is that value agreement was not required. The concrete shared task (avoiding civil war through constitutional transition) provided functional equivalence without value agreement.',
+            null,
+            'Forgiveness and reconciliation happened in some cases through the TRC process, but they were not the mechanism that produced OS2 Bridge in the transition negotiations. Many of the actors at CODESA did not forgive each other and did not reconcile. What they did was recognize that constitutional transition was the only alternative to civil war that each of them could survive. That recognition — not forgiveness — is what produced convergence.',
+            'Lower entropy does contribute to higher λ Raw and better general coordination conditions. But OS2 Bridge specifically measures cross-worldview convergence — it is not simply a function of entropy. The positive block fields are the primary mechanism: they model what the shared task provides structurally, rewarding every framework\'s contribution toward the shared outcome. Lower entropy alone, without a shared task, would produce the Phase 1 pattern: moderate λ Raw with low Bridge.'
+          ]
+        }
+      },
+      {
+        text: 'The three-run comparison panel shows Runs 1, 2, and 3 side by side. Which statement best captures what the three runs together argue that no single run could show alone?',
+        options: [
+          'Mandela was the greatest leader of the twentieth century and his case proves it.',
+          'Individual resilience (Run 1), structural scaffolding (Run 2), and functional equivalence design (Run 3) are three separate structural mechanisms that Mandela\'s life contained simultaneously — and the synthesis of all three is what made the transition possible.',
+          'The simulation proves that peaceful transitions are always possible if the right person leads them.',
+          'Run 3\'s high OS2 Bridge shows that the prison experience was worth it because it built Mandela\'s character for the transition.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. This is the synthesis argument the three-run structure is designed to make visible. Run 1 shows what internal discipline provides under maximum suppression — the floor. Run 2 shows what external scaffolding adds — the BioBond uplift. Run 3 shows what a completely different structural mechanism produces: functional equivalence through shared task design. Each run answers a different structural question. Together they show that the Mandela case contains all three mechanisms simultaneously — and that none of the three alone was sufficient for the outcome. The synthesis claim is structural, not biographical.',
+          wrong: [
+            'The simulation cannot evaluate historical greatness or rank leaders. It models structural mechanisms and measures their outputs. The three runs show three specific structural contributions — internal discipline floor, external scaffolding contribution, functional equivalence design — not the moral worth or relative greatness of the person who embodied all three.',
+            null,
+            'The simulation cannot generalize from one case to all possible cases. It models what specific structural configurations produce in the Mandela case. Whether peaceful transitions are always possible depends on structural conditions that vary across cases. The Mandela case shows that under these specific structural conditions — with these specific parameter configurations — the outcomes the simulation predicts were approximately what occurred. It cannot establish that similar outcomes are achievable in all cases with different structural conditions.',
+            'This framing treats the prison experience as instrumentally valuable for building character — a folk-psychological reading the simulation cannot support. The simulation is measuring structural conditions and structural outputs. Run 3\'s high OS2 Bridge is produced by the positive block field configuration and the worldview diversity in the transition context. It is not caused by Run 1 and Run 2 producing character development in Mandela. The causal claim about the prison forming the leader may be historically true but it is not what the simulation is modeling.'
+          ]
+        }
+      }
+    ]
+  }
+};
+
+// ── MCQ render engine ─────────────────────────────────────────
+function renderMandelaSSQ(runKey){
+  const data = M5_SSQ[runKey];
+  if(!data) return;
+  const panel = document.getElementById('mandelaSSQPanel');
+  if(!panel) return;
+  const LETTERS = ['A','B','C','D'];
+  let html = `<div style="background:rgba(0,0,0,.35);border:1px solid rgba(20,184,166,.3);border-radius:.75rem;overflow:hidden;margin-bottom:1rem">
+    <div style="background:rgba(0,0,0,.35);padding:.875rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:.2rem">Structural Understanding — Check Your Reading</div>
+      <div style="font-size:.92rem;font-weight:700;color:rgba(255,255,255,.85)">${data.title}</div>
+    </div>
+    <div style="padding:1rem 1.1rem">`;
+  data.questions.forEach((q,qi)=>{
+    html+=`<div style="margin-bottom:1.1rem" id="m5ssq-${runKey}-q${qi}">
+      <div style="font-size:.85rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.6rem;line-height:1.5">${qi+1}. ${q.text}</div>
+      <div role="group" aria-label="Options for question ${qi+1}" style="display:flex;flex-direction:column;gap:.4rem">`;
+    q.options.forEach((opt,oi)=>{
+      html+=`<button id="m5ssq-${runKey}-q${qi}-o${oi}"
+        onclick="handleM5SSQ('${runKey}',${qi},${oi})"
+        style="display:flex;align-items:flex-start;gap:.5rem;padding:.55rem .875rem;border:1px solid rgba(255,255,255,.15);border-radius:.4rem;cursor:pointer;background:rgba(255,255,255,.05);text-align:left;width:100%;font-family:'Georgia',serif;font-size:.82rem;line-height:1.5;color:rgba(255,255,255,.75);transition:.15s"
+        onmouseover="if(!this.disabled)this.style.borderColor='rgba(20,184,166,.6)'"
+        onmouseout="if(!this.disabled&&!this.classList.contains('m5correct')&&!this.classList.contains('m5wrong'))this.style.borderColor='rgba(255,255,255,.15)'"
+        aria-label="Option ${LETTERS[oi]}: ${opt}">
+        <span style="font-family:'Courier New',monospace;font-size:.78rem;font-weight:700;min-width:1.3rem;color:rgba(255,255,255,.4)">${LETTERS[oi]}.</span>
+        <span>${opt}</span>
+      </button>`;
+    });
+    html+=`</div><div id="m5ssq-${runKey}-q${qi}-fb" style="display:none;border-radius:.35rem;padding:.65rem .875rem;margin-top:.5rem;font-size:.82rem;line-height:1.6" role="alert" aria-live="polite"></div></div>`;
+  });
+  html+=`</div><div id="m5ssq-${runKey}-prog" style="font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-align:center;padding:.5rem;border-top:1px solid rgba(255,255,255,.07)" aria-live="polite">Answer both questions to continue</div></div>`;
+  panel.innerHTML=html;
+  panel.style.display='block';
+  try{
+    const saved=JSON.parse(localStorage.getItem('mandela_ssq_'+runKey)||'{}');
+    Object.entries(saved).forEach(([qi,oi])=>applyM5SSQ(runKey,parseInt(qi),parseInt(oi),true));
+    updateM5SSQProg(runKey);
+  }catch(e){}
+}
+
+function handleM5SSQ(runKey,qi,oi){
+  applyM5SSQ(runKey,qi,oi,false);
+  try{
+    const saved=JSON.parse(localStorage.getItem('mandela_ssq_'+runKey)||'{}');
+    saved[qi]=oi;
+    localStorage.setItem('mandela_ssq_'+runKey,JSON.stringify(saved));
+  }catch(e){}
+  updateM5SSQProg(runKey);
+}
+
+function applyM5SSQ(runKey,qi,oi,isRestore){
+  const data=M5_SSQ[runKey];if(!data)return;
+  const q=data.questions[qi];
+  const isCorrect=oi===q.correct;
+  q.options.forEach((_,idx)=>{
+    const btn=document.getElementById(`m5ssq-${runKey}-q${qi}-o${idx}`);
+    if(btn){btn.disabled=true;btn.style.cursor='default';}
+  });
+  const chosen=document.getElementById(`m5ssq-${runKey}-q${qi}-o${oi}`);
+  if(chosen){
+    chosen.style.borderColor=isCorrect?'#4ade80':'#f87171';
+    chosen.style.background=isCorrect?'rgba(74,222,128,.12)':'rgba(248,113,113,.1)';
+    chosen.style.color=isCorrect?'#bbf7d0':'#fecaca';
+  }
+  if(!isCorrect){
+    const cb=document.getElementById(`m5ssq-${runKey}-q${qi}-o${q.correct}`);
+    if(cb){cb.style.borderColor='#4ade80';cb.style.background='rgba(74,222,128,.07)';cb.style.color='#86efac';cb.style.opacity='.8';}
+  }
+  const fb=document.getElementById(`m5ssq-${runKey}-q${qi}-fb`);
+  if(fb){
+    const fbText=isCorrect?q.feedback.correct:(q.feedback.wrong[oi]||'Not quite — the correct answer is highlighted. Read its explanation to understand the structural reasoning.');
+    fb.style.background=isCorrect?'rgba(74,222,128,.12)':'rgba(251,191,36,.1)';
+    fb.style.borderLeft=isCorrect?'3px solid #4ade80':'3px solid #C9A84C';
+    fb.style.color=isCorrect?'#bbf7d0':'rgba(255,255,255,.75)';
+    fb.innerHTML=`<div style="font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;font-weight:700;margin-bottom:.25rem;color:${isCorrect?'#4ade80':'#C9A84C'}">${isCorrect?'✓ Correct':'✗ Not quite'}</div>${fbText}`;
+    fb.style.display='block';
+  }
+}
+
+function updateM5SSQProg(runKey){
+  const data=M5_SSQ[runKey];if(!data)return;
+  try{
+    const saved=JSON.parse(localStorage.getItem('mandela_ssq_'+runKey)||'{}');
+    const done=Object.keys(saved).length;
+    const prog=document.getElementById(`m5ssq-${runKey}-prog`);
+    if(prog) prog.textContent=done>=data.questions.length?'✓ Both questions answered':`${done} of ${data.questions.length} answered`;
+  }catch(e){}
+}
+
+// ── Wire renderMandelaConfig into predUpdatePrompts ───────────
+
 function predGetPrompt_mandela(runKey){
   const map = PRED_PROMPTS_MANDELA;
   const prompts = map[runKey] || {};
@@ -1298,6 +1695,7 @@ function predUpdatePrompts_mandela(runKey){
   const prompt = predGetPrompt_mandela(runKey);
   const el = document.getElementById('pred-prompt-pred');
   if(el) el.textContent = prompt;
+  renderMandelaConfig(runKey);
   // Load saved values
   ['pred-pred', 'pred-gap', 'pred-inhabit'].forEach(k => {
     const full = 'mandela_' + runKey + '_' + k;
