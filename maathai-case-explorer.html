@@ -210,6 +210,32 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .pred-stage-locked{opacity:.35;pointer-events:none}
 .pred-unlock-note{font-size:.75rem;color:rgba(255,255,255,.35);font-style:italic;margin-top:.3rem}
 
+
+/* ── Maathai Structural MCQ ── */
+.maathai-ssq{background:var(--ucp-navy);border:1px solid rgba(20,184,166,.3);border-radius:.75rem;overflow:hidden;margin-bottom:1rem}
+.maathai-ssq-header{background:rgba(0,0,0,.35);padding:.875rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.08)}
+.maathai-ssq-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:.2rem}
+.maathai-ssq-title{font-size:.92rem;font-weight:700;color:rgba(255,255,255,.85)}
+.maathai-ssq-body{padding:1rem 1.1rem}
+.maathai-ssq-q{margin-bottom:1.1rem}
+.maathai-ssq-q-text{font-size:.85rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.6rem;line-height:1.5}
+.maathai-ssq-opts{display:flex;flex-direction:column;gap:.4rem}
+.maathai-ssq-opt{display:flex;align-items:flex-start;gap:.5rem;padding:.55rem .875rem;border:1px solid rgba(255,255,255,.15);border-radius:.4rem;cursor:pointer;background:rgba(255,255,255,.05);transition:.15s;text-align:left;width:100%;font-family:'Georgia',serif;font-size:.82rem;line-height:1.5;color:rgba(255,255,255,.75)}
+.maathai-ssq-opt:hover:not(:disabled){border-color:rgba(20,184,166,.6);background:rgba(20,184,166,.1)}
+.maathai-ssq-opt:focus-visible{outline:2px solid #C9A84C;outline-offset:2px}
+.maathai-ssq-opt:disabled{cursor:default}
+.maathai-ssq-opt.correct{border-color:#4ade80;background:rgba(74,222,128,.12);color:#bbf7d0}
+.maathai-ssq-opt.wrong{border-color:#f87171;background:rgba(248,113,113,.1);color:#fecaca}
+.maathai-ssq-opt.revealed-correct{border-color:#4ade80;background:rgba(74,222,128,.07);color:#86efac;opacity:.8}
+.maathai-ssq-opt-letter{font-family:'Courier New',monospace;font-size:.78rem;font-weight:700;min-width:1.3rem;margin-top:.05rem;flex-shrink:0;color:rgba(255,255,255,.4)}
+.maathai-ssq-fb{border-radius:.35rem;padding:.65rem .875rem;margin-top:.5rem;font-size:.82rem;line-height:1.6;display:none}
+.maathai-ssq-fb.correct{background:rgba(74,222,128,.12);border-left:3px solid #4ade80;color:#bbf7d0}
+.maathai-ssq-fb.wrong{background:rgba(251,191,36,.1);border-left:3px solid #C9A84C;color:rgba(255,255,255,.75)}
+.maathai-ssq-fb-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;font-weight:700;margin-bottom:.25rem}
+.maathai-ssq-fb.correct .maathai-ssq-fb-label{color:#4ade80}
+.maathai-ssq-fb.wrong .maathai-ssq-fb-label{color:#C9A84C}
+.maathai-ssq-prog{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-align:center;padding:.5rem;border-top:1px solid rgba(255,255,255,.07)}
+
 </style>
 </head>
 <body>
@@ -498,6 +524,12 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
     <h2>UCP Simulation — Coordination Without Consensus</h2>
     <p>The Maathai simulation demonstrates the most important structural contrast in the suite: what happens when diverse-worldview groups try to coordinate through <strong>value agreement</strong> versus through <strong>shared task</strong>. This is the OS2 insight made structurally visible.</p>
 
+    <!-- Chapter 3 prediction retrieval -->
+    <div id="ch3PredDisplay" style="background:rgba(15,118,110,.12);border:1px solid rgba(20,184,166,.3);border-radius:.5rem;padding:.875rem 1.1rem;margin-bottom:1rem;display:none">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-bottom:.35rem">Your Chapter 3 Prediction (retrieved from journal)</div>
+      <div id="ch3PredText" style="font-size:.85rem;color:rgba(255,255,255,.75);line-height:1.6;font-style:italic;border-left:3px solid #C9A84C;padding-left:.75rem"></div>
+    </div>
+
     <div class="card card-blue">
       <h4>What These Two Runs Model</h4>
       <p><strong>Phase 1 — Value-agreement attempt:</strong> Models the period before the Green Belt Movement's structure emerged, when reformers tried to coordinate through shared ideology — demanding that government, scientists, and communities agree on democratic values first. High role_order dominance, high friction, low OS2 bridge. Coordination fails because value agreement is required before action can begin.</p>
@@ -582,6 +614,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       </div>
     </div>
 
+    <div id="maathaiSSQPanel" style="display:none;margin:1rem 0" role="region" aria-label="Structural understanding check"></div>
     <div class="card card-warn" style="margin-top:1rem">
       <h4>Reading These Results</h4>
       <p><strong>OS2 Synergy Bridge (the key metric):</strong> This is what distinguishes the two phases. In Phase 1, different-worldview agents are not converging on shared felt coordination — they are each operating within their own framework without a shared task to bridge them. In Phase 2, the shared task (plant trees) creates convergence across frameworks — different agents arriving at similar felt coordination through different means. The Bridge score rises.</p>
@@ -943,12 +976,15 @@ const PHASE_CONFIGS={
     // Value-agreement coordination: government-dominant, authority-weighted
     // Models attempts to coordinate through shared ideology — fails because
     // requires value agreement before action
+    // Phase 1: diverse agents trying to coordinate through value-agreement
+    // Moderate entropy — Kenya functions, people have real capability
+    // Low OS2 Bridge emerges from worldview diversity without shared task
     scenario_name:'resource_scarcity',
     num_agents:16,steps:8,seed:42,
     scenario_physics:{
-      base_entropy:0.65,
-      base_stress:0.55,
-      block_fields:{care:-0.2,fairness:-0.5,community:-0.6,boundary:0.4}
+      base_entropy:0.48,
+      base_stress:0.45,
+      block_fields:{care:-0.15,fairness:-0.40,community:-0.45,boundary:0.40}
     },
     worldview_distribution:{
       role_order:0.50,sacred_boundary:0.20,
@@ -1068,6 +1104,7 @@ function renderResult(data){
   document.getElementById('ucpNarrative').textContent=narrative;
   document.getElementById('ucpResult').style.display='block';
   predUnlockStage2_maathai();
+  renderMaathaiSSQ(_currentPhase);
   // Show next-phase prompt after Phase 1, hide it after Phase 2
   const prompt = document.getElementById('nextPhasePrompt');
   if (prompt) prompt.style.display = _currentPhase === 'phase1' ? 'block' : 'none';
@@ -1355,6 +1392,193 @@ function predGetRunKey_maathai(){
   return typeof _currentPhase !== 'undefined' ? _currentPhase : 'phase1';
 }
 
+
+// ── Chapter 3 prediction retrieval ───────────────────────
+(function loadCh3Pred(){
+  try{
+    const pred = localStorage.getItem('ch3_cq5') || '';
+    const el = document.getElementById('ch3PredText');
+    const wrapper = document.getElementById('ch3PredDisplay');
+    if(el && wrapper && pred.trim()){
+      el.textContent = pred;
+      wrapper.style.display = 'block';
+    }
+  }catch(e){}
+})();
+
+// ── Maathai MCQ data ──────────────────────────────────────
+const MAATHAI_SSQ = {
+  'phase1': {
+    title: 'What This Simulation Shows — Phase 1: The Value-Agreement Attempt',
+    questions: [
+      {
+        text: 'Phase 1 produces moderate λ Raw but low-to-moderate OS2 Bridge despite the agents having real capability. What structural mechanism explains the low Bridge?',
+        options: [
+          'The agents in Phase 1 do not have enough capability to coordinate effectively.',
+          'The five worldview groups have no common interest and fundamentally cannot work together.',
+          'The coordination architecture requires value agreement before action — and genuine worldview diversity cannot produce value agreement. The different frameworks are operating in parallel without converging, not because the agents lack capability or goodwill, but because no shared task is creating the structural conditions for convergent outcomes.',
+          'Phase 1 has higher entropy than Phase 2, which is why coordination fails.'
+        ],
+        correct: 2,
+        feedback: {
+          correct: 'Exactly right. This is the OS1 trap made visible. λ Raw is moderate — the agents have real capability and the environment is functional. The problem is not capability. The problem is the coordination architecture: when agents must agree on values before acting, genuine worldview diversity produces parallel operation rather than convergence. Each framework is operating according to its own logic, producing outputs that do not connect to the others\' outcomes. The shared task is the structural mechanism that changes this in Phase 2 — not value agreement, but functional equivalence through compatible capabilities.',
+          wrong: [
+            'Phase 1 agents have the same capabilities as Phase 2 agents — the simulation uses identical worldview distributions in both phases. λ Raw being moderate confirms that structural capacity exists. The gap is not about capability. It is about the coordination architecture failing to channel those capabilities toward convergent outcomes.',
+            'This framing treats the worldview difference as inherently preventing coordination — which is the assumption Phase 2 directly refutes. The same five groups produce dramatically different OS2 Bridge in Phase 2. The difference is not the groups. It is the structural conditions that channel their capabilities. Genuine worldview diversity can produce extraordinary coordination when the shared task creates compatible contributions.',
+            null,
+            'The entropy difference between Phase 1 (0.48) and Phase 2 (0.38) is real but secondary. The primary structural variable is the block field configuration — Phase 2\'s positive care, community, and fairness fields model what the shared task provides: rewarding every framework\'s contribution simultaneously. The entropy reduction matters but it is not the primary mechanism producing the OS2 Bridge difference.'
+          ]
+        }
+      },
+      {
+        text: 'Which of these best describes what friction means in Phase 1 — and what it tells you about the agents?',
+        options: [
+          'High friction means the agents are hostile to each other and the coordination is failing completely.',
+          'High friction is evidence of genuine worldview diversity — it is the translation cost of five frameworks trying to communicate across real difference. It is not a sign of failure. It is a sign that the diversity is authentic.',
+          'Friction should be zero in a well-functioning diverse organization.',
+          'High friction means morphic suppression will build rapidly and agents will stop trying.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. Friction in the simulation measures the translation cost of genuine worldview diversity — how much effort it takes for different frameworks to communicate effectively enough to act together. High friction in Phase 1 tells you the five groups have genuinely different frameworks, genuinely different ways of understanding the problem, genuinely different priorities. This is information, not failure. The question is whether the coordination architecture provides a shared task that makes the friction cost worth paying. Phase 1 does not. Phase 2 does. Notice: friction does not disappear in Phase 2. The same diversity is present. What changes is whether the friction produces convergence.',
+          wrong: [
+            'High friction is not the same as hostility. The Green Belt Movement\'s five stakeholder groups were not hostile to each other — they simply had incompatible ultimate values and different primary motivations. Friction is the structural measure of how much translation work genuine diversity requires. It is consistent with mutual respect, shared commitment to the concrete task, and ultimately productive coordination.',
+            null,
+            'Zero friction in a diverse organization almost always means one of two things: the diversity is being suppressed (one framework is dominant and others are self-censoring) or the diversity is superficial (people appear different but share the same underlying framework). Genuine diversity produces genuine friction. The goal is not to eliminate friction but to ensure the coordination is worth the friction cost.',
+            'Friction and morphic suppression are related but distinct. Morphic suppression builds when contributions consistently fail to reach outcomes — when the predictive machinery learns futility. High friction does not automatically produce morphic suppression. If the shared task is present and contributions are reaching outcomes through the friction, agents learn that the effort is worth making.'
+          ]
+        }
+      }
+    ]
+  },
+  'phase2': {
+    title: 'What This Simulation Shows — Phase 2: Functional Equivalence in Operation',
+    questions: [
+      {
+        text: 'Phase 2 shows high OS2 Bridge AND high friction simultaneously. Most students initially predict that this is impossible — that high friction means low coordination. What structural explanation makes both high simultaneously?',
+        options: [
+          'The five groups secretly agreed on their values during Phase 1 and are now acting on that agreement.',
+          'The simulation has an error — high friction and high OS2 Bridge genuinely cannot coexist.',
+          'The positive block fields in Phase 2 model what the concrete shared task provides: it rewards every framework\'s contribution simultaneously, making the friction cost worth paying. Different reasons, same trees. The groups do not need to agree — they need a task that makes their different capabilities compatible contributions to the same outcome.',
+          'Phase 2 uses fewer agents, so coordination is easier.'
+        ],
+        correct: 2,
+        feedback: {
+          correct: 'Exactly. This is functional equivalence in operation — the most structurally important result in the simulation suite. The five groups have the same incompatible ultimate values in Phase 2 as in Phase 1. The friction is real: it still takes effort to coordinate across five genuinely different frameworks. What changes is the block field configuration: care +0.55, community +0.65, fairness +0.45 model what the concrete shared task provides structurally — every framework\'s contribution is being rewarded simultaneously through the practice. The rural woman\'s ecological knowledge, the conservationist\'s biodiversity focus, the feminist\'s empowerment mission, the democratic activist\'s anti-authoritarian energy — the tree-planting practice produces outcomes each framework values through its own capabilities. Different reasons. Same trees. The friction is worth paying because the convergence is real.',
+          wrong: [
+            'No value agreement occurred between phases. The worldview distribution is identical — same five groups, same proportions, same incompatible ultimate values. What changed is the structural conditions, not the agents\' beliefs. This is the chapter\'s central demonstration: the people are the same, the structure is different, the structure is the variable.',
+            null,
+            'Both phases use the same 16 agents with the same worldview distribution. The difference is entirely in the structural parameters — entropy, stress, and block fields. The simulation is designed to isolate the structural variable by holding everything else constant.',
+            'Phase 2 uses the same 16 agents. The parameter that changes is the block field configuration, not the agent count. Read the structural configuration panel before running to verify: num_agents is identical in both phases.'
+          ]
+        }
+      },
+      {
+        text: 'Maathai\'s three structural rules (start small but think big; empower the grassroots; speak truth to power through demonstrated competence) are reflected in the simulation parameters. Which rule does the positive community block field most directly model?',
+        options: [
+          'Speak truth to power — the community field models political confrontation with the regime.',
+          'Empower the grassroots — the positive community block field models the institutional condition in which knowledge and authority flow toward practitioners rather than away from them, rewarding relational coordination and community networks rather than suppressing them.',
+          'Start small but think big — the positive community field models the scale of the movement.',
+          'The block fields model external environmental conditions, not Maathai\'s rules.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. The community block field models what the institution\'s architecture does to relational coordination: reward it or suppress it. In Phase 1, community is negative (−0.45) — the value-agreement architecture suppresses community-based coordination because community networks do not provide the ideological consensus the architecture demands. In Phase 2, community is strongly positive (+0.65) — the shared task architecture rewards community networks because they are the channel through which the practical work happens. Empowering the grassroots means designing the institutional architecture so that community-based knowledge and coordination reach decisions and outcomes — which is exactly what the positive community block field models.',
+          wrong: [
+            'The political confrontation dimension is better captured in the fairness and boundary block fields — particularly in the Phase 2 configuration where fairness is positive, modeling the institutional norm that equitable participation is rewarded rather than suppressed. The community field specifically models whether relational networks and community-based coordination are rewarded or attenuated by the institutional architecture.',
+            null,
+            'The scale of the movement is not directly modeled in the block fields. The community field models the quality of institutional conditions for relational coordination — whether the institution rewards or suppresses community networks as coordination channels. The Green Belt Movement started small precisely because it began with institutional conditions that empowered community networks (positive community field) rather than requiring them to prove ideological compliance first.',
+            'The block fields model what the institutional architecture rewards or suppresses — which is a direct translation of Maathai\'s structural rules into simulation parameters. The rules describe what the institutional design should do; the block fields measure whether the institution is doing it. This mapping between the historical case and the simulation parameters is exactly what the Structural Configuration panels in the app are designed to show you before you run.'
+          ]
+        }
+      }
+    ]
+  }
+};
+
+function renderMaathaiSSQ(phaseKey){
+  const data = MAATHAI_SSQ[phaseKey];
+  if(!data) return;
+  const panel = document.getElementById('maathaiSSQPanel');
+  if(!panel) return;
+  const LETTERS = ['A','B','C','D'];
+  let html = `<div class="maathai-ssq">
+    <div class="maathai-ssq-header">
+      <div class="maathai-ssq-label">Structural Understanding — Check Your Reading</div>
+      <div class="maathai-ssq-title">${data.title}</div>
+    </div>
+    <div class="maathai-ssq-body">`;
+  data.questions.forEach((q,qi)=>{
+    html += `<div class="maathai-ssq-q" id="mssq-${phaseKey}-q${qi}">
+      <div class="maathai-ssq-q-text">${qi+1}. ${q.text}</div>
+      <div class="maathai-ssq-opts" role="group" aria-label="Options for question ${qi+1}">`;
+    q.options.forEach((opt,oi)=>{
+      html += `<button class="maathai-ssq-opt" id="mssq-${phaseKey}-q${qi}-o${oi}"
+        onclick="handleMaathaiSSQ('${phaseKey}',${qi},${oi})"
+        aria-label="Option ${LETTERS[oi]}: ${opt}">
+        <span class="maathai-ssq-opt-letter">${LETTERS[oi]}.</span>
+        <span>${opt}</span>
+      </button>`;
+    });
+    html += `</div>
+      <div class="maathai-ssq-fb" id="mssq-${phaseKey}-q${qi}-fb" role="alert" aria-live="polite"></div>
+    </div>`;
+  });
+  html += `</div>
+    <div class="maathai-ssq-prog" id="mssq-${phaseKey}-prog" aria-live="polite">Answer both questions to continue</div>
+  </div>`;
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+  try{
+    const saved = JSON.parse(localStorage.getItem('maathai_ssq_'+phaseKey)||'{}');
+    Object.entries(saved).forEach(([qi,oi])=>applyMaathaiSSQ(phaseKey,parseInt(qi),parseInt(oi),true));
+    updateMaathaiSSQProg(phaseKey);
+  }catch(e){}
+}
+
+function handleMaathaiSSQ(phaseKey,qi,oi){
+  applyMaathaiSSQ(phaseKey,qi,oi,false);
+  try{
+    const saved = JSON.parse(localStorage.getItem('maathai_ssq_'+phaseKey)||'{}');
+    saved[qi]=oi;
+    localStorage.setItem('maathai_ssq_'+phaseKey,JSON.stringify(saved));
+  }catch(e){}
+  updateMaathaiSSQProg(phaseKey);
+}
+
+function applyMaathaiSSQ(phaseKey,qi,oi,isRestore){
+  const data = MAATHAI_SSQ[phaseKey];
+  if(!data) return;
+  const q = data.questions[qi];
+  const isCorrect = oi===q.correct;
+  q.options.forEach((_,idx)=>{
+    const btn=document.getElementById(`mssq-${phaseKey}-q${qi}-o${idx}`);
+    if(btn) btn.disabled=true;
+  });
+  const chosen=document.getElementById(`mssq-${phaseKey}-q${qi}-o${oi}`);
+  if(chosen) chosen.classList.add(isCorrect?'correct':'wrong');
+  if(!isCorrect){
+    const correctBtn=document.getElementById(`mssq-${phaseKey}-q${qi}-o${q.correct}`);
+    if(correctBtn) correctBtn.classList.add('revealed-correct');
+  }
+  const fb=document.getElementById(`mssq-${phaseKey}-q${qi}-fb`);
+  if(fb){
+    const fbText=isCorrect?q.feedback.correct:(q.feedback.wrong[oi]||'Not quite — the correct answer is highlighted. Read its explanation to understand the structural reasoning.');
+    fb.className='maathai-ssq-fb '+(isCorrect?'correct':'wrong');
+    fb.innerHTML=`<div class="maathai-ssq-fb-label">${isCorrect?'✓ Correct':'✗ Not quite'}</div>${fbText}`;
+    fb.style.display='block';
+  }
+}
+
+function updateMaathaiSSQProg(phaseKey){
+  const data=MAATHAI_SSQ[phaseKey];if(!data)return;
+  try{
+    const saved=JSON.parse(localStorage.getItem('maathai_ssq_'+phaseKey)||'{}');
+    const done=Object.keys(saved).length;
+    const prog=document.getElementById(`mssq-${phaseKey}-prog`);
+    if(prog) prog.textContent=done>=data.questions.length?'✓ Both questions answered':`${done} of ${data.questions.length} answered`;
+  }catch(e){}
+}
 </script>
 </body>
 </html>
