@@ -236,6 +236,31 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .maathai-ssq-fb.wrong .maathai-ssq-fb-label{color:#C9A84C}
 .maathai-ssq-prog{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-align:center;padding:.5rem;border-top:1px solid rgba(255,255,255,.07)}
 
+
+/* ── Maathai Structural Config Panels ── */
+.m-scfg{background:rgba(0,0,0,.35);border:1px solid rgba(20,184,166,.25);
+  border-radius:.5rem;padding:.875rem 1rem;margin-bottom:1rem}
+.m-scfg-label{font-size:.68rem;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.6);margin-bottom:.3rem}
+.m-scfg-title{font-size:.85rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.6rem;
+  font-family:'Georgia',serif}
+.m-scfg-table{width:100%;border-collapse:collapse;margin-bottom:.6rem}
+.m-scfg-table tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.06)}
+.m-scfg-table td{padding:.3rem .4rem;font-size:.78rem;vertical-align:top}
+.m-scfg-key{font-family:'Courier New',monospace;color:rgba(255,255,255,.4);width:36%;white-space:nowrap}
+.m-scfg-val{color:rgba(255,255,255,.75);line-height:1.5}
+.m-scfg-reading{padding:.55rem .75rem;background:rgba(201,168,76,.08);
+  border-left:3px solid rgba(201,168,76,.5);border-radius:0 .3rem .3rem 0;
+  font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.6;font-style:italic}
+/* ── Scaffolded prediction hints ── */
+.m-pred-scaffold{background:rgba(15,118,110,.12);border:1px solid rgba(20,184,166,.2);
+  border-radius:.4rem;padding:.65rem .875rem;margin-bottom:.75rem}
+.m-pred-scaffold-label{font-size:.65rem;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.08em;color:rgba(20,184,166,.7);margin-bottom:.4rem}
+.m-pred-scaffold-item{font-size:.78rem;color:rgba(255,255,255,.65);line-height:1.6;
+  padding-left:.75rem;border-left:2px solid rgba(20,184,166,.3);margin-bottom:.3rem}
+.m-pred-scaffold-item:last-child{margin-bottom:0}
+.m-pred-scaffold-item strong{color:rgba(20,184,166,.9);font-weight:600}
 </style>
 </head>
 <body>
@@ -546,6 +571,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
     <div class="pred-panel" id="predPanel">
       <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem">🔬 Prediction — Active Inference Practice</div>
       
+      <!-- Structural config panel — updated by predUpdatePrompts_maathai -->
+      <div id="m-scfg-panel" class="m-scfg" style="display:none"></div>
+      <!-- Prediction scaffold — reasoning hints -->
+      <div id="m-scaffold-panel" class="m-pred-scaffold" style="display:none">
+        <div class="m-pred-scaffold-label">💡 Reasoning Scaffold — Consider These Before Predicting</div>
+        <div id="m-scaffold-items"></div>
+      </div>
+
       <div class="pred-stage" id="pred-stage-pred">
         <div class="pred-stage-header">
           <div class="pred-stage-num s1">1</div>
@@ -804,6 +837,26 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <h4>🌐 Exercise 5: Friction as the Cost of Coordination</h4>
       <p>The simulation showed high friction in both phases — genuine worldview distance is real and does not disappear when coordination succeeds. But high friction did not prevent the Green Belt Movement from working. Identify a coordination challenge in your life where you have been avoiding action because of the friction involved. Is the shared task valuable enough to pay the friction cost? What would make the task concrete enough to attempt?</p>
       <textarea class="journal-textarea" id="jt-friction" placeholder="The coordination I've been avoiding because of friction: ...&#10;The friction involved: ...&#10;Whether the shared task is worth it: ..." oninput="jSave('friction',this.value)"></textarea>
+    </div>
+
+    <div class="exercise-box" style="border:1px solid rgba(201,168,76,.35);background:rgba(201,168,76,.05);margin-top:1.25rem">
+      <h4 style="color:#C9A84C">🔭 Journal Q5 — Prediction for Chapter 5 (Mandela)</h4>
+      <p>Chapter 5 introduces Nelson Mandela — a person who must do both things simultaneously that Chapters 3 and 4 present as separate challenges: maintaining his own Identity Kernel coherence under 27 years of institutional suppression (Chapter 3's challenge) while operating as the network hub for a five-framework coalition coordinating without value agreement (Chapter 4's challenge).</p>
+      <p style="margin-top:.6rem">The Chapter 5 simulation will model a single agent with extraordinary Identity Kernel depth operating as the coordination hub for five worldview groups across 12 simulation steps — sustained suppression (entropy ~0.75, community −0.70) AND BioBond (ANC network) activating at step 6.</p>
+
+      <div class="m-pred-scaffold" style="margin:.75rem 0 .75rem">
+        <div class="m-pred-scaffold-label">💡 Reasoning Scaffold — Consider These Before Predicting</div>
+        <div class="m-pred-scaffold-item"><strong>Morphic fidelity (individual coherence):</strong> Entropy ~0.75 and community −0.70 are more severe than Hanna's conditions. 12 steps instead of 8. BioBond activates at step 6 rather than step 4 — meaning more suppression accumulates before the scaffold arrives. Will fidelity be higher or lower than Hanna's Run 2? What structural features of Mandela's situation differ from Hanna's?</div>
+        <div class="m-pred-scaffold-item"><strong>OS2 Bridge (network convergence):</strong> Mandela's 1990–1994 coalition included the ANC, Afrikaner nationalists, the business community, the South African religious establishment, and the international community — five frameworks with genuinely incompatible ultimate values. Apply what Phase 2 taught: what was the concrete shared task that made democratic transition a functional equivalent for all five groups? What do you predict for OS2 Bridge?</div>
+        <div class="m-pred-scaffold-item"><strong>The compound challenge:</strong> Chapters 3 and 4 were separate challenges. Mandela must do both simultaneously. Does maintaining individual morphic fidelity under suppression help or hinder OS2 Bridge generation? Does being the network hub consume resources that would otherwise maintain the Identity Kernel? Predict the structural interaction.</div>
+        <div class="m-pred-scaffold-item"><strong>BioBond timing:</strong> Morphic suppression accumulates across 6 steps before BioBond arrives. In the Hanna simulation, step 4 BioBond activation still left accumulated suppression visible. With 6 steps of pre-BioBond suppression and 12 total steps — predict morphic suppression at step 12.</div>
+        <div class="m-pred-scaffold-item"><strong>Commit to numbers:</strong> λ Raw ___ · Morphic fidelity ___ · OS2 Bridge ___ · Friction ___ · Morphic suppression at step 12 ___</div>
+      </div>
+
+      <textarea class="journal-textarea" id="jt-ch4q5"
+        placeholder="My Mandela simulation prediction:&#10;&#10;Morphic fidelity: I predict [low/moderate/high, ~0.X] because the structural conditions...&#10;OS2 Bridge: I predict [low/moderate/high, ~0.X] because the shared task of democratic transition...&#10;The compound challenge: Doing both simultaneously will...&#10;BioBond timing: With 6 steps before BioBond, morphic suppression will...&#10;&#10;Specific numbers: λ Raw ___ · Fidelity ___ · OS2 Bridge ___ · Friction ___ · Suppression ___"
+        oninput="saveCh4Q5(this.value)"></textarea>
+      <div class="pred-save" id="sv-ch4q5" style="margin-top:.35rem">✓ Saved for Chapter 5</div>
     </div>
 
     <div class="card card-green" style="margin-top:1.5rem">
@@ -1147,12 +1200,27 @@ function loadTransferFields(){
 
 // ── Journal localStorage ──────────────────────────────────
 const JPREFIX='maathai_journal_';
+
+function saveCh4Q5(val){
+  try{
+    localStorage.setItem('ch4_cq5', val);
+    const sv=document.getElementById('sv-ch4q5');
+    if(sv){sv.classList.add('show');setTimeout(()=>sv.classList.remove('show'),2000);}
+  }catch(e){}
+}
+
 function jSave(key,val){try{localStorage.setItem(JPREFIX+key,val);}catch(e){}}
 function jLoad(key){try{return localStorage.getItem(JPREFIX+key)||'';}catch(e){return '';}}
 function loadJournalFields(){
   ['stakeholders','seventrees','bridge','bootstrap','friction'].forEach(k=>{
     const el=document.getElementById('jt-'+k);if(el)el.value=jLoad(k);
   });
+  // Load Ch4 Q5 prediction
+  try{
+    const q5val=localStorage.getItem('ch4_cq5')||'';
+    const q5ta=document.getElementById('jt-ch4q5');
+    if(q5ta && q5val) q5ta.value=q5val;
+  }catch(e){}
 }
 
 // ── Export ────────────────────────────────────────────────
@@ -1164,6 +1232,8 @@ function buildExportText(){
   out+=`EXERCISE 3: YOUR PRF AS A BRIDGE\n${jLoad('bridge')||'[not completed]'}\n\n`;
   out+=`EXERCISE 4: BOOTSTRAP AUTHORITY\n${jLoad('bootstrap')||'[not completed]'}\n\n`;
   out+=`EXERCISE 5: FRICTION AS COST\n${jLoad('friction')||'[not completed]'}\n\n`;
+  const ch4q5val=(()=>{try{return localStorage.getItem('ch4_cq5')||'[not completed]';}catch(e){return '[not completed]';}})();
+  out+=`JOURNAL Q5: MANDELA PREDICTION (for Chapter 5)\n${ch4q5val}\n\n`;
   out+=`TRANSFER — PRF READING\n${tLoad('prf')||'[not completed]'}\n\n`;
   out+=`TRANSFER — SAGE\n${tLoad('sage')||'[not completed]'}\n\n`;
   out+=`TRANSFER — ABCD\n${tLoad('abcd')||'[not completed]'}\n\n`;
@@ -1277,7 +1347,7 @@ function renderSxS() {
 // ── Prediction Panel ──────────────────────────────────────────
 const PRED_PROMPTS_MAATHAI = {
   "phase1": {
-    "_default": "Phase 1 models the value-agreement attempt \u2014 five stakeholder groups with incompatible worldviews trying to coordinate by first reaching consensus on why trees matter. Entropy 0.65, stress 0.55, community block \u22120.60 \u2014 coordination is being attempted but the structural conditions are not favourable. What do you predict happens to the OS2 Bridge and morphic suppression? Write your specific prediction before running Phase 1.",
+    "_default": "Phase 1 models the value-agreement attempt \u2014 five stakeholder groups with incompatible worldviews trying to coordinate by first reaching consensus on why trees matter. Entropy 0.48, stress 0.45, community block \u22120.45 \u2014 coordination is being attempted but the structural conditions are not favourable. What do you predict happens to the OS2 Bridge and morphic suppression? Write your specific prediction before running Phase 1.",
     "individual_rights": "Your rights-based framework will immediately see the epistemic justice dimension: the five groups do not have equal standing as environmental authorities \u2014 traditional knowledge, scientific expertise, and religious authority are weighted differently. What do you predict Phase 1's value-agreement attempt produces for the OS2 Bridge when epistemic standing is unequal across groups? Write before running.",
     "relational_we": "Your relational framework is most sensitive to whether the coordination attempt builds genuine mutual recognition or produces a surface agreement that leaves relational distance intact. What do you predict Phase 1's ubuntu-relational agents produce in terms of OS2 Bridge when they are required to agree on values before acting together? Does forced value-agreement build or damage the relational network? Write before running.",
     "hierarchical_role": "Your role-based framework will see the authority question immediately: who has legitimate standing to define what the trees mean and why planting them matters? When role_order agents (30% of the population) encounter ubuntu_relational agents (28%) in a value-agreement process, what do you predict happens to coordination capacity? Write your prediction before running.",
@@ -1301,6 +1371,89 @@ const PRED_STAGE_CONFIGS_MAATHAI = {
   }
 };
 
+
+// ═══════════════════════════════════════════════════════════════
+// STRUCTURAL CONFIG PANELS + PREDICTION SCAFFOLDING
+// ═══════════════════════════════════════════════════════════════
+
+const M_CONFIG_PANELS = {
+  phase1: {
+    title: 'Phase 1 Structural Configuration — Value-Agreement Attempt',
+    rows: [
+      ['Environmental entropy','0.48 — Moderate. Kenya is a functioning society; the agents have real capability and real energy.'],
+      ['Stress loading','0.45 — Moderate. Not a crisis — sustained but workable pressure.'],
+      ['Care block field','−0.15 — Mildly suppressed. The institutional architecture is not actively rewarding caring responses.'],
+      ['Fairness block field','−0.40 — Moderately suppressed. The value-agreement process treats different knowledge frameworks unequally.'],
+      ['Community block field','−0.45 — Moderately suppressed. Relational coordination is not being rewarded — the architecture routes through ideological consensus instead.'],
+      ['Boundary block field','+0.40 — Positive. Each group maintains its distinct identity and is not being asked to abandon it.'],
+      ['Worldview distribution','role_order 0.50 · sacred_boundary 0.20 · liberal_individualist 0.15 · ubuntu_relational 0.10 · indigenous_custodial 0.05'],
+      ['Evidence distribution','authority_weighted 0.55 · tradition_weighted 0.20 · empirical_calibrated 0.15 · alternative_facts 0.10'],
+      ['Coordination mechanism','Value-agreement: agents must reach consensus on WHY trees matter before acting together.'],
+    ],
+    reading: 'Key question: the agents have real capability (λ Raw should be moderate — entropy is not catastrophic). The specific pathology is the coordination architecture. With role_order dominating at 0.50 and authority_weighted evidence at 0.55, and community block negative, what structural prediction do you make about OS2 Bridge — convergence on shared outcomes — when these five frameworks are asked to agree on values before acting?'
+  },
+  phase2: {
+    title: 'Phase 2 Structural Configuration — Shared-Task Coordination',
+    rows: [
+      ['Environmental entropy','0.38 — Low-moderate. The concrete shared task has stabilised the coordination environment.'],
+      ['Stress loading','0.40 — Moderate. Real work, not a crisis.'],
+      ['Care block field','+0.55 — Positive. The shared task rewards caring responses from every framework simultaneously.'],
+      ['Fairness block field','+0.45 — Positive. The shared task distributes outcomes fairly — rural women get firewood, conservationists get biodiversity, democrats get participation.'],
+      ['Community block field','+0.65 — Strongly positive. Relational coordination is being actively rewarded. Community networks are the delivery mechanism.'],
+      ['Boundary block field','+0.25 — Mildly positive. Each group still maintains its distinct identity — they do not need to merge.'],
+      ['Worldview distribution','IDENTICAL to Phase 1 — same five groups, same proportions, same incompatible ultimate values.'],
+      ['Evidence distribution','empirical_calibrated 0.35 · tradition_weighted 0.30 · authority_weighted 0.20 · alternative_facts 0.15'],
+      ['Coordination mechanism','Shared task: agents coordinate through WHAT they do (plant trees) rather than WHY they do it (their values).'],
+      ['Key contrast','Phase 1 and Phase 2 have the same agents. The only change is the structural conditions. The structure is the variable.'],
+    ],
+    reading: 'Key question: all block fields are now positive — the shared task is rewarding every framework\'s contribution simultaneously. But the worldview distribution is identical — genuine friction from five incompatible frameworks is still present. Before running: predict OS2 Bridge AND friction together. Can both be high simultaneously? What structural argument supports your prediction?'
+  }
+};
+
+const M_SCAFFOLD_ITEMS = {
+  phase1: [
+    {label:'λ Raw', hint:'Entropy is 0.48 and stress is 0.45 — moderate, not catastrophic. The agents have real capability. λ Raw should reflect a functional environment. <strong>Predict: low / moderate / high?</strong>'},
+    {label:'OS2 Bridge', hint:'Five frameworks with incompatible values are trying to coordinate through consensus on why trees matter. The community block field is −0.45. Role-order dominates at 0.50. When groups must agree on meaning before acting, what happens to convergence on outcomes? <strong>Predict: low / moderate / high?</strong>'},
+    {label:'Friction', hint:'Genuine worldview diversity is present regardless of coordination architecture. The five groups have different ontologies, different rules, different beliefs about what matters. <strong>Predict: low / moderate / high?</strong>'},
+    {label:'Morphic suppression', hint:'With community at −0.45 and the coordination process consistently routing around community-based knowledge, what happens to agents whose contributions do not reach outcomes over 8 steps? <strong>Predict: small / moderate / building?</strong>'},
+    {label:'The key relationship', hint:'Think about OS2 Bridge and friction together. Can both be high? Can both be low? What does your framework predict about this relationship under value-agreement conditions?'},
+  ],
+  phase2: [
+    {label:'OS2 Bridge change', hint:'Phase 1 likely produced low Bridge. Phase 2 has the same agents but positive block fields — the shared task rewards every framework simultaneously. What change in Bridge do you predict? <strong>How large a shift?</strong>'},
+    {label:'Friction change', hint:'The worldview distribution is identical. The five groups have not agreed on anything. Their frameworks are as incompatible as ever. Does friction rise, fall, or stay similar to Phase 1? <strong>Why?</strong>'},
+    {label:'The counterintuitive possibility', hint:'Most people predict that higher coordination means lower friction. The simulation may show something different. Before running: is it structurally possible for OS2 Bridge and friction to both be high simultaneously? What would that mean?'},
+    {label:'Morphic suppression', hint:'With all block fields positive, contributions are now reaching outcomes. What does this predict about the learned-futility accumulation that was building in Phase 1? <strong>Will it reverse, stabilise, or continue building?</strong>'},
+    {label:'What the shared task does structurally', hint:'The positive community block field (+0.65) models what Maathai\'s three rules produced: knowledge flowing toward practitioners, relational coordination rewarded, grassroots contributions reaching outcomes. What does this predict for the gap between λ Raw and λ Perceived?'},
+  ]
+};
+
+function renderMaathaiConfigPanel(phaseKey){
+  const data = M_CONFIG_PANELS[phaseKey];
+  if(!data) return;
+  const panel = document.getElementById('m-scfg-panel');
+  const scaffold = document.getElementById('m-scaffold-panel');
+  const scaffoldItems = document.getElementById('m-scaffold-items');
+  if(!panel || !scaffold || !scaffoldItems) return;
+
+  // Config table
+  let rows = data.rows.map(([k,v])=>
+    `<tr><td class="m-scfg-key">${k}</td><td class="m-scfg-val">${v}</td></tr>`
+  ).join('');
+  panel.innerHTML = `
+    <div class="m-scfg-label">🔬 Before You Predict</div>
+    <div class="m-scfg-title">${data.title}</div>
+    <table class="m-scfg-table">${rows}</table>
+    <div class="m-scfg-reading">${data.reading}</div>`;
+  panel.style.display = 'block';
+
+  // Scaffold items
+  const items = M_SCAFFOLD_ITEMS[phaseKey] || [];
+  scaffoldItems.innerHTML = items.map(item=>
+    `<div class="m-pred-scaffold-item"><strong>${item.label}:</strong> ${item.hint}</div>`
+  ).join('');
+  scaffold.style.display = 'block';
+}
+
 function predGetPrompt_maathai(runKey){
   const map = PRED_PROMPTS_MAATHAI;
   const prompts = map[runKey] || {};
@@ -1313,6 +1466,7 @@ function predUpdatePrompts_maathai(runKey){
   const prompt = predGetPrompt_maathai(runKey);
   const el = document.getElementById('pred-prompt-pred');
   if(el) el.textContent = prompt;
+  renderMaathaiConfigPanel(runKey);
   // Load saved values
   ['pred-pred', 'pred-gap', 'pred-inhabit'].forEach(k => {
     const full = 'maathai_' + runKey + '_' + k;
