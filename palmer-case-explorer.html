@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tim Palmer Case Explorer — The Ethics of Uncertainty</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+  --orange:#9a3412;--orange-light:#ffedd5;
+  --red:#dc2626;--red-light:#fee2e2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:960px;margin:0 auto;padding:1rem}
+
+/* ── HEADER ── */
+.app-header{text-align:center;padding:2rem 1rem 1.25rem;color:white}
+.ch-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.7);margin-bottom:.4rem}
+.app-header h1{font-size:2rem;font-weight:700;color:white;margin-bottom:.35rem;line-height:1.2}
+.app-header .sub{font-size:.95rem;color:rgba(255,255,255,.5);font-style:italic}
+
+/* ── TABS ── */
+.tab-nav{display:flex;gap:.25rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:.4rem .75rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.4rem;cursor:pointer;transition:.18s;white-space:nowrap}
+.tab-btn:hover{color:white;background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+
+/* ── PANE ── */
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 28px rgba(0,0,0,.2)}
+.tab-pane.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── TYPOGRAPHY ── */
+h2{font-size:1.55rem;font-weight:700;color:var(--teal-dark);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.15rem;font-weight:700;color:var(--navy);margin:1.2rem 0 .45rem}
+h4{font-size:.97rem;font-weight:700;color:var(--amber-dark);margin:.85rem 0 .3rem}
+p{line-height:1.75;margin-bottom:.85rem;font-size:.96rem;color:var(--ink)}
+strong{color:var(--navy)}
+ul{margin:.3rem 0 .7rem 1.3rem;line-height:1.8}
+ul li{font-size:.92rem;color:var(--ink);margin-bottom:.2rem}
+
+/* ── CARDS ── */
+.card{border-radius:.7rem;padding:1.2rem;margin-bottom:1rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-navy{background:var(--navy);color:white;padding:1.35rem}
+.card-navy p,.card-navy li{color:rgba(255,255,255,.8)}
+.card-navy h3,.card-navy h4{color:var(--teal-mid)}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky-mid)}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-orange{background:var(--orange-light);border-left:4px solid var(--orange)}
+.card-red{background:var(--red-light);border-left:4px solid var(--red)}
+
+/* ── COMPARISON TABLE ── */
+.cmp-table{width:100%;border-collapse:collapse;font-size:.84rem;margin:1rem 0}
+.cmp-table th{padding:.55rem .65rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:white}
+.cmp-table td{padding:.5rem .65rem;border:1px solid var(--border);vertical-align:top;line-height:1.5}
+.cmp-table .row-label{font-weight:700;color:var(--navy);background:var(--paper);font-size:.82rem}
+.col-single{background:var(--red-light)}
+.col-ens{background:var(--green-light)}
+
+/* ── ENSEMBLE VIZ ── */
+.ensemble-viz{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem;margin:1rem 0}
+.ensemble-bar-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.ensemble-bar-label{font-size:.8rem;font-family:'JetBrains Mono',monospace;color:var(--navy);min-width:100px}
+.ensemble-bar-track{flex:1;height:22px;background:var(--border);border-radius:4px;overflow:hidden}
+.ensemble-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.ensemble-bar-fill span{font-size:.72rem;font-weight:700;color:white;font-family:'JetBrains Mono',monospace}
+.single-track{height:4px;background:var(--red);margin:.75rem 0;position:relative}
+.single-track::after{content:'Single-model track';position:absolute;right:0;top:-18px;font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--red);font-weight:600}
+
+/* ── SIMULATION ── */
+.run-tabs{display:flex;gap:.3rem;margin-bottom:1rem}
+.run-tab-btn{padding:.4rem .9rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.85rem;cursor:pointer;transition:.15s}
+.run-tab-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
+.run-tab-btn.active-run{background:var(--teal-dark);color:white;border-color:var(--teal-dark);font-weight:600}
+.ucp-panel{background:var(--paper);border:1px solid var(--border);border-radius:.7rem;padding:1.25rem;margin-top:1rem}
+.ucp-run-btn{background:var(--teal-dark);color:white;border:none;padding:.65rem 1.5rem;border-radius:.45rem;font-size:.95rem;font-weight:600;cursor:pointer;transition:.15s;font-family:'Cormorant Garamond',serif}
+.ucp-run-btn:hover{background:var(--teal)}
+.ucp-run-btn:disabled{background:var(--muted);cursor:not-allowed}
+.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5rem;margin:.75rem 0}
+.ucp-metric{background:white;border:1px solid var(--border);border-radius:.45rem;padding:.5rem .65rem;text-align:center}
+.ucp-metric .m-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.15rem}
+.ucp-metric .m-val{font-size:1.2rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal-dark)}
+.ucp-metric .m-val.gap{color:var(--amber-dark)}
+.ucp-metric .m-val.supp{color:var(--red)}
+.ucp-bars{margin:.6rem 0}
+.ucp-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem}
+.ucp-bar-label{font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:140px}
+.ucp-bar-track{flex:1;height:14px;background:var(--border);border-radius:3px;overflow:hidden}
+.ucp-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.ucp-narrative{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.82rem;color:var(--ink);line-height:1.6;margin-top:.6rem}
+.ucp-error{background:var(--red-light);border:1px solid var(--red);border-radius:.45rem;padding:.65rem;font-size:.82rem;color:var(--red);margin-top:.5rem;display:none}
+.next-run-prompt{background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:.5rem;padding:.85rem;margin-top:.75rem;font-size:.85rem;display:none}
+.sxs-panel{display:none;margin-top:1rem;overflow-x:auto}
+.sxs-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.sxs-table th{background:var(--navy);color:white;padding:.5rem .65rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase}
+.sxs-table td{padding:.45rem .65rem;border:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace}
+.sxs-table tr:nth-child(odd) td{background:var(--paper)}
+
+/* ── PREDICTION PANEL ── */
+.pred-panel{background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.2);border-radius:.7rem;padding:1.1rem;margin-bottom:1rem}
+.pred-stage{padding:.85rem;background:white;border-radius:.5rem;border:1px solid var(--border);margin-bottom:.6rem}
+.pred-stage-locked{opacity:.45;pointer-events:none}
+.pred-stage-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.pred-stage-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.s1{background:var(--teal-dark);color:white}
+.s2{background:var(--amber-dark);color:white}
+.s3{background:var(--sky);color:white}
+.pred-stage-title{font-size:.85rem;font-weight:700;color:var(--navy)}
+.pred-prompt{font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:.5rem;font-style:italic}
+.pred-ta{width:100%;min-height:80px;border:1px solid var(--border);border-radius:.35rem;padding:.5rem .65rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;resize:vertical;line-height:1.55;color:var(--ink)}
+.pred-ta:focus{outline:none;border-color:var(--teal-mid)}
+.pred-save{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;margin-top:.2rem;opacity:0;transition:.3s;height:.9rem}
+.pred-save.show{opacity:1}
+.pred-unlock-note{font-size:.72rem;color:var(--muted);margin-top:.3rem}
+
+/* ── STRUCTURAL CONFIG ── */
+.m-scfg{background:rgba(0,0,0,.32);border:1px solid rgba(20,184,166,.22);border-radius:.5rem;padding:.85rem 1rem;margin-bottom:.85rem}
+.m-scfg-label{font-size:.67rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.6);margin-bottom:.25rem}
+.m-scfg-title{font-size:.84rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.5rem;font-family:'Georgia',serif}
+.m-scfg-table{width:100%;border-collapse:collapse;margin-bottom:.5rem}
+.m-scfg-table tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.06)}
+.m-scfg-table td{padding:.28rem .38rem;font-size:.77rem;vertical-align:top}
+.m-scfg-key{font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);width:36%;white-space:nowrap}
+.m-scfg-val{color:rgba(255,255,255,.73);line-height:1.5}
+.m-scfg-reading{padding:.5rem .7rem;background:rgba(201,168,76,.07);border-left:3px solid rgba(201,168,76,.45);border-radius:0 .3rem .3rem 0;font-size:.77rem;color:rgba(255,255,255,.62);line-height:1.6;font-style:italic}
+.m-pred-scaffold{background:rgba(15,118,110,.1);border:1px solid rgba(20,184,166,.18);border-radius:.4rem;padding:.6rem .85rem;margin-bottom:.7rem}
+.m-pred-scaffold-label{font-size:.64rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.07em;color:rgba(20,184,166,.65);margin-bottom:.35rem}
+.m-pred-scaffold-item{font-size:.77rem;color:rgba(255,255,255,.62);line-height:1.6;padding-left:.7rem;border-left:2px solid rgba(20,184,166,.28);margin-bottom:.28rem}
+.m-pred-scaffold-item strong{color:rgba(20,184,166,.85);font-weight:600}
+.m-pred-scaffold-item:last-child{margin-bottom:0}
+
+/* ── CH5 PRED DISPLAY ── */
+.ch5-pred{background:rgba(15,118,110,.1);border:1px solid rgba(20,184,166,.28);border-radius:.5rem;padding:.85rem 1rem;margin-bottom:.85rem;display:none}
+.ch5-pred-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.38);margin-bottom:.3rem}
+.ch5-pred-text{font-size:.84rem;color:rgba(255,255,255,.72);line-height:1.6;font-style:italic;border-left:3px solid var(--amber);padding-left:.7rem}
+
+/* ── SSQ / MCQ ── */
+.palmer-ssq-wrap{display:none;margin:1rem 0}
+.palmer-ssq-inner{background:rgba(0,0,0,.3);border:1px solid rgba(20,184,166,.25);border-radius:.7rem;overflow:hidden}
+.palmer-ssq-head{background:rgba(0,0,0,.3);padding:.8rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.palmer-ssq-head-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:.15rem}
+.palmer-ssq-head-title{font-size:.9rem;font-weight:700;color:rgba(255,255,255,.82)}
+.palmer-ssq-body{padding:.9rem 1rem}
+.palmer-ssq-q{margin-bottom:1rem}
+.palmer-ssq-q-text{font-size:.84rem;font-weight:700;color:rgba(255,255,255,.78);margin-bottom:.55rem;line-height:1.5}
+.palmer-ssq-opts{display:flex;flex-direction:column;gap:.35rem}
+.palmer-ssq-opt{display:flex;align-items:flex-start;gap:.45rem;padding:.5rem .8rem;border:1px solid rgba(255,255,255,.13);border-radius:.38rem;cursor:pointer;background:rgba(255,255,255,.04);font-family:'Georgia',serif;font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.5;transition:.14s;text-align:left;width:100%}
+.palmer-ssq-opt:hover:not(:disabled){border-color:rgba(20,184,166,.5)}
+.palmer-ssq-opt .opt-letter{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;min-width:1.2rem;color:rgba(255,255,255,.35)}
+.palmer-ssq-fb{display:none;border-radius:.32rem;padding:.6rem .8rem;margin-top:.45rem;font-size:.8rem;line-height:1.6}
+.palmer-ssq-prog{font-size:.7rem;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.28);text-align:center;padding:.45rem;border-top:1px solid rgba(255,255,255,.06)}
+
+/* ── JOURNAL ── */
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.38rem}
+.journal-q p{font-size:.87rem;margin-bottom:.45rem}
+textarea.jta{width:100%;min-height:95px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;height:1.1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:.9rem 1.1rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.92rem}
+blockquote cite{display:block;margin-top:.35rem;font-style:normal;font-size:.78rem;font-weight:600;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries · Chapter 6 · Movement 2</div>
+  <h1>The Ethics of Uncertainty</h1>
+  <div class="sub">Tim Palmer · Ensemble Forecasting · The Moral Argument for Honest Uncertainty</div>
+</div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-overview" onclick="showTab('overview',this)" role="tab">Overview</button>
+  <button class="tab-btn" id="tb-method" onclick="showTab('method',this)" role="tab">Palmer's Method</button>
+  <button class="tab-btn" id="tb-compare" onclick="showTab('compare',this)" role="tab">Single vs. Ensemble</button>
+  <button class="tab-btn" id="tb-simulation" onclick="showTab('simulation',this)" role="tab">UCP Simulation</button>
+  <button class="tab-btn" id="tb-transfer" onclick="showTab('transfer',this)" role="tab">Synthesis & Transfer</button>
+  <button class="tab-btn" id="tb-journal" onclick="showTab('journal',this)" role="tab">Ethics Journal</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     OVERVIEW
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-overview">
+  <h2>Overview — The Hinge Between the Human Trilogy and the Methodology</h2>
+
+  <p><strong>Chapters 3, 4, and 5 demonstrated three structural capacities through lived human cases.</strong> In each case, the central agent had to run mental models of what different structural configurations would produce — Hanna modeling what capitulation would cost, Maathai modeling how different coordination architectures would produce different outcomes, Mandela modeling what the TRC's design would produce in terms of transition stability.</p>
+
+  <p>They did this through political intuition and strategic experience. These are powerful tools. They are also limited: the number of variables in a real complex system exceeds what any individual mind can track, and the consequences of errors are measured in deaths and democratic collapses.</p>
+
+  <p><strong>Chapter 6 asks: what if you could actually run the models?</strong> Not imagine them — computationally simulate the structural configurations and observe what they produce. This is not a hypothetical. It is what Tim Palmer built at the European Centre for Medium-Range Weather Forecasts — and it saves thousands of lives per decade.</p>
+
+  <div class="card card-teal">
+    <h4>Your Chapter 5 Q5 Prediction</h4>
+    <p>In Chapter 5's journal Q5, you predicted what Palmer's ensemble approach would reveal that single-model forecasting could not show. Retrieve that prediction before reading further — this chapter tests whether your structural prediction was correct.</p>
+    <div class="ch5-pred" id="ch5PredDisplay">
+      <div class="ch5-pred-label">Your Chapter 5 Q5 Prediction (retrieved)</div>
+      <div class="ch5-pred-text" id="ch5PredText"></div>
+    </div>
+  </div>
+
+  <h3>The Central Argument</h3>
+  <p>In chaotic systems — the atmosphere, economies, ecosystems, institutional networks — deterministic prediction beyond a short horizon is mathematically impossible. The information required for a definite prediction does not exist in the present measurable state of the system. This is not a limitation that better technology will overcome. It is a mathematical property of the system.</p>
+
+  <p><strong>Presenting a single-model forecast as the answer is therefore not a technical limitation — it is a moral choice.</strong> It suppresses the genuine uncertainty distribution that the people whose lives depend on the forecast need to know. Palmer's contribution was designing a forecasting architecture that routes uncertainty information toward decisions rather than filtering it out before it arrives.</p>
+
+  <div class="card card-amber">
+    <h4>The Body Count</h4>
+    <p>Hurricane fatality rates in the United States declined by roughly 50% following improvements in ensemble-based uncertainty communication over recent decades. That is thousands of lives per decade. The ethical dimension of forecasting methodology is not philosophical — it is the body count. The choice of how to communicate uncertainty determines who evacuates, how early, and where.</p>
+  </div>
+
+  <h3>Connection to the Course</h3>
+  <p>Every time you ran a simulation and compared results across runs — the side-by-side comparison panel, the Run 1 vs. Run 2 contrast, the Phase 1 vs. Phase 2 comparison — you were doing ensemble thinking. You were not looking for the single correct answer. You were reading the distribution of outcomes across varied structural configurations as the information. That is exactly what Palmer operationalized for hurricane forecasting.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PALMER'S METHOD
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-method">
+  <h2>Palmer's Method — Ensemble Forecasting</h2>
+
+  <p><strong>Tim Palmer</strong> joined the European Centre for Medium-Range Weather Forecasts (ECMWF) in 1986. He was appointed Royal Society Research Professor at Oxford in 2010 and has received numerous honors for his work on predictability and climate modeling. His 2022 book <em>The Primacy of Doubt</em> is the accessible account of his central insight: honest acknowledgment of genuine uncertainty is not weakness — it is the ethical and epistemological foundation of responsible science.</p>
+
+  <h3>The Butterfly Effect and Why Certainty Is Unavailable</h3>
+  <p>The atmosphere is a chaotic system in the precise mathematical sense: tiny differences in initial conditions compound exponentially across the nonlinear dynamics of the global atmosphere. Beyond approximately 10 days, deterministic weather forecasting is impossible regardless of computational power or sensor density. This is the butterfly effect — not a metaphor but a mathematical property.</p>
+
+  <h3>The Traditional Response — and Why It Was Wrong</h3>
+  <p>The traditional meteorological response to chaos was to find the best initial conditions estimate and run one simulation to produce one forecast track. Present that track as the forecast. When it was wrong — and it was often wrong — explain that the initial conditions were imperfect or the model was incomplete. Promise to improve both.</p>
+
+  <p><strong>Palmer recognized that this was the wrong response.</strong> It treated uncertainty as a failure to be minimized rather than as genuine information to be communicated. The single-track forecast said: "the hurricane will be here." The honest representation said: "there is a 40% probability it will be here, a 30% probability it will be there, and a 20% probability it will be somewhere else entirely." These are categorically different pieces of information — and the second is both more accurate and more useful.</p>
+
+  <div class="card card-sky">
+    <h4>The Ensemble Method — Step by Step</h4>
+    <ul>
+      <li><strong>Step 1 — Perturb initial conditions:</strong> Take the best estimate of the current atmospheric state and generate 50–100 slightly different versions, each within the genuine measurement uncertainty of the observations.</li>
+      <li><strong>Step 2 — Run all models simultaneously:</strong> Each perturbed initial condition produces a different forecast trajectory across the 10-day forecast window.</li>
+      <li><strong>Step 3 — Report the distribution:</strong> Instead of collapsing the 100 trajectories to a single "most likely" track, report the distribution — what proportion of ensemble members show each outcome, what the spread is, where the ensemble converges vs. diverges.</li>
+      <li><strong>Step 4 — Communicate the uncertainty structure:</strong> The narrowness or breadth of the distribution tells decision-makers and the public how confident the forecast genuinely is. A tight ensemble = high confidence. A spread ensemble = genuine uncertainty about which outcome will occur.</li>
+    </ul>
+  </div>
+
+  <h3>What the Ensemble Changed</h3>
+  <p>The ensemble method produced a specific, measurable improvement: forecasts issued 7 days in advance became as accurate as 5-day forecasts had been 20 years earlier. But the more important change was in how decisions could be made. Emergency managers could now see not just "where is the hurricane going" but "how certain are we about that" — and that second piece of information was essential for calibrating evacuation scope, timing, and resource pre-positioning.</p>
+
+  <blockquote>
+    "The primacy of doubt is not a counsel of despair. It is the beginning of honest communication. When we acknowledge what we do not know, we give people the information they need to make decisions appropriate to their actual situation — not to the false certainty we found it convenient to present."
+    <cite>Tim Palmer, The Primacy of Doubt, 2022</cite>
+  </blockquote>
+
+  <h3>The Suppression Gap Connection</h3>
+  <p>Chapter 2 established the suppression gap as the distance between what exists in a system and what reaches its decisions. Boisjoly's suppression gap was the distance between the O-ring data and the launch decision. <strong>Single-model forecasting creates a suppression gap in the forecast itself.</strong> The genuine uncertainty distribution exists — in the ensemble of models, in the measurement uncertainty, in the chaotic sensitivity of the system. The single-track communication compresses it to false certainty before it reaches the decision-makers and the public. The people who need the uncertainty information most receive a forecast with a high suppression gap built in.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SINGLE VS. ENSEMBLE
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-compare">
+  <h2>Single-Model vs. Ensemble — The Structural Comparison</h2>
+
+  <p>The difference between single-model and ensemble forecasting is not primarily technical. It is architectural — a different design for how uncertainty information flows through the forecasting institution to decisions and the public.</p>
+
+  <h3>What a Forecast Actually Looks Like — The Visual</h3>
+
+  <div class="ensemble-viz" role="region" aria-label="Ensemble visualization">
+    <h4 style="margin-top:0;color:var(--navy)">Ensemble Forecast: Hurricane Landfall Probability Distribution</h4>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:.75rem">50 ensemble members, each with slightly different initial conditions. This IS the forecast.</p>
+
+    <div class="ensemble-bar-row">
+      <div class="ensemble-bar-label">Miami (40%)</div>
+      <div class="ensemble-bar-track">
+        <div class="ensemble-bar-fill" style="width:40%;background:#0f766e"><span>40%</span></div>
+      </div>
+    </div>
+    <div class="ensemble-bar-row">
+      <div class="ensemble-bar-label">Ft. Lauderdale (28%)</div>
+      <div class="ensemble-bar-track">
+        <div class="ensemble-bar-fill" style="width:28%;background:#14b8a6"><span>28%</span></div>
+      </div>
+    </div>
+    <div class="ensemble-bar-row">
+      <div class="ensemble-bar-label">Key West (18%)</div>
+      <div class="ensemble-bar-track">
+        <div class="ensemble-bar-fill" style="width:18%;background:#f59e0b"><span>18%</span></div>
+      </div>
+    </div>
+    <div class="ensemble-bar-row">
+      <div class="ensemble-bar-label">Offshore miss (14%)</div>
+      <div class="ensemble-bar-track">
+        <div class="ensemble-bar-fill" style="width:14%;background:#6b7280"><span>14%</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:.85rem;padding-top:.75rem;border-top:1px solid var(--border)">
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:.35rem;font-weight:600">What single-model forecasting would report from the same data:</p>
+      <div class="single-track"></div>
+      <p style="font-size:.8rem;color:var(--red);margin-top:.4rem;font-style:italic">"Hurricane will hit Miami." — 60 characters. Suppresses the 60% of ensemble members who show a different outcome.</p>
+    </div>
+  </div>
+
+  <h3>Structural Comparison</h3>
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th style="background:var(--navy);width:20%">Dimension</th>
+        <th class="col-single" style="background:var(--red);width:40%">Single-Model Forecast</th>
+        <th class="col-ens" style="background:var(--green);width:40%">Ensemble Forecast (Palmer)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row-label">What it produces</td>
+        <td class="col-single">One prediction: 'The hurricane will hit Miami at 3pm Tuesday.'</td>
+        <td class="col-ens">A distribution: '40% Miami, 28% Fort Lauderdale, 18% Key West, 14% offshore miss — each with confidence intervals.'</td>
+      </tr>
+      <tr>
+        <td class="row-label">Uncertainty communication</td>
+        <td class="col-single">Suppressed before reaching decision-makers and public — false certainty.</td>
+        <td class="col-ens">Communicated as the primary information — uncertainty structure IS the forecast.</td>
+      </tr>
+      <tr>
+        <td class="row-label">Decision quality</td>
+        <td class="col-single">Evacuate one zone. If wrong, people in the actual path stayed. People outside the path evacuated unnecessarily — eroding trust.</td>
+        <td class="col-ens">Evacuate proportional to probability distribution. Resources allocated where risk is highest. Moderate-risk zones get tiered guidance.</td>
+      </tr>
+      <tr>
+        <td class="row-label">When wrong</td>
+        <td class="col-single">Trust in forecasting collapses. False certainty that failed is worse than no certainty at all.</td>
+        <td class="col-ens">System was never claiming certainty. An outcome within the predicted distribution confirms the method. Trust increases.</td>
+      </tr>
+      <tr>
+        <td class="row-label">Ethical dimension</td>
+        <td class="col-single">False certainty is a moral choice. Presenting one model's output as the answer suppresses genuine uncertainty that better decisions require.</td>
+        <td class="col-ens">Honest uncertainty is an ethical stance. It respects the people whose lives depend on the forecast enough to tell them what is genuinely unknown.</td>
+      </tr>
+      <tr>
+        <td class="row-label">Suppression gap</td>
+        <td class="col-single">HIGH — the forecasting architecture filters the genuine uncertainty distribution before it reaches decisions.</td>
+        <td class="col-ens">LOW — the uncertainty structure is what reaches decisions. The information most relevant to evacuation calibration is present.</td>
+      </tr>
+      <tr>
+        <td class="row-label">Course equivalent</td>
+        <td class="col-single">Running one simulation with fixed parameters and reading its output as 'the answer.'</td>
+        <td class="col-ens">Running multiple simulations with varied parameters and reading the distribution as the information. Every side-by-side comparison panel in this course.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-navy">
+    <h4>You Have Been Doing Ensemble Thinking All Semester</h4>
+    <p>Every side-by-side comparison panel in this course is an ensemble visualization. You ran the Hanna simulation with and without BioBond and compared morphic fidelity. You ran Maathai Phase 1 vs. Phase 2 and compared OS2 Bridge. You ran Mandela's three runs and read the distribution across them. You were not looking for the single correct answer. You were reading the distribution of outcomes as the information. That is precisely what Palmer operationalized. The scale differs — 100 atmospheric models vs. 3 simulation runs. The epistemological and ethical structure is identical.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SIMULATION
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-simulation">
+  <h2>UCP Simulation — Decision-Making Under Genuine Uncertainty</h2>
+
+  <p>The Palmer simulation models a regional emergency management institution facing a hurricane forecast decision — the structural problem Palmer's ensemble methodology was designed to solve. Three runs model the same institution with different evidence architectures, then examine what those architectures produce for the most vulnerable population.</p>
+
+  <div id="ch5PredSimDisplay" class="ch5-pred" style="margin-bottom:.85rem">
+    <div class="ch5-pred-label">Your Chapter 5 Q5 Prediction (retrieved)</div>
+    <div class="ch5-pred-text" id="ch5PredTextSim"></div>
+  </div>
+
+  <div class="run-tabs">
+    <button class="run-tab-btn active-run" id="btn-run1" onclick="selectRun('run1')">Run 1 — Single-Model</button>
+    <button class="run-tab-btn" id="btn-run2" onclick="selectRun('run2')">Run 2 — Ensemble</button>
+    <button class="run-tab-btn" id="btn-run3" onclick="selectRun('run3')">Run 3 — Vulnerable Pop.</button>
+  </div>
+  <div style="font-size:.78rem;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:.5rem" id="run-label">Run 1: Single-Model Institution</div>
+
+  <!-- Config + scaffold panels -->
+  <div id="palmer-config-panel" class="m-scfg" style="display:none"></div>
+  <div id="palmer-scaffold-panel" class="m-pred-scaffold" style="display:none">
+    <div class="m-pred-scaffold-label">💡 Reasoning Scaffold — Consider These Before Predicting</div>
+    <div id="palmer-scaffold-items"></div>
+  </div>
+
+  <div class="pred-panel" id="predPanel">
+    <div style="font-size:.7rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.6);margin-bottom:.75rem">🔬 Prediction — Active Inference Practice</div>
+
+    <div class="pred-stage" id="pred-stage-pred">
+      <div class="pred-stage-header">
+        <div class="pred-stage-num s1">1</div>
+        <div class="pred-stage-title s1">Before Running — Write Your Prediction</div>
+      </div>
+      <div class="pred-prompt" id="pred-prompt-pred">Loading…</div>
+      <textarea class="pred-ta" id="pred-ta-pred" placeholder="I predict the suppression gap will… and OS2 Bridge will… because…" oninput="predSave('palmer','pred',this.value)"></textarea>
+      <div class="pred-save" id="pred-sv-pred">✓ Saved</div>
+    </div>
+
+    <div class="pred-stage pred-stage-locked" id="pred-stage-gap">
+      <div class="pred-stage-header">
+        <div class="pred-stage-num s2">2</div>
+        <div class="pred-stage-title s2">After Results — Gap Analysis</div>
+      </div>
+      <div class="pred-prompt" id="pred-prompt-gap">Complete Stage 1 and run the simulation first.</div>
+      <textarea class="pred-ta" id="pred-ta-gap" placeholder="The largest gap between my prediction and the result was…" oninput="predSave('palmer','gap',this.value)"></textarea>
+      <div class="pred-save" id="pred-sv-gap">✓ Saved</div>
+      <div class="pred-unlock-note" id="unlock-note-gap">Complete Stage 1 first, then run the simulation.</div>
+    </div>
+
+    <div class="pred-stage pred-stage-locked" id="pred-stage-inhabit">
+      <div class="pred-stage-header">
+        <div class="pred-stage-num s3">3</div>
+        <div class="pred-stage-title s3">Inhabitation Bridge — Your Institution</div>
+      </div>
+      <div class="pred-prompt" id="pred-prompt-inhabit">Complete Stage 2 first.</div>
+      <textarea class="pred-ta" id="pred-ta-inhabit" placeholder="In my own institutional context, the evidence architecture most resembles…" oninput="predSave('palmer','inhabit',this.value)"></textarea>
+      <div class="pred-save" id="pred-sv-inhabit">✓ Saved</div>
+      <div class="pred-unlock-note" id="unlock-note-inhabit">Complete Stage 2 first.</div>
+    </div>
+  </div>
+
+  <div class="ucp-panel">
+    <h3>Palmer Simulation — <span id="phase-label">Run 1: Single-Model Institution</span></h3>
+    <button class="ucp-run-btn" id="ucpRunBtn" onclick="runSimulation()">▶ Run Simulation</button>
+    <div id="ucpError" class="ucp-error"></div>
+    <div id="ucpResult" style="display:none">
+      <div class="ucp-metrics" id="ucpMetrics"></div>
+      <div class="ucp-bars" id="ucpBars"></div>
+      <div class="ucp-narrative" id="ucpNarrative"></div>
+      <div class="next-run-prompt" id="nextRunPrompt">
+        <p id="nextRunText"></p>
+        <button id="nextRunBtn" class="ucp-run-btn" style="margin-top:.5rem;font-size:.82rem"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MCQ panels -->
+  <div id="palmerSSQPanel" style="display:none;margin:1rem 0" role="region" aria-label="Structural understanding check"></div>
+
+  <!-- Side-by-side comparison -->
+  <div class="sxs-panel" id="sxsPanel">
+    <h3>Three-Run Comparison</h3>
+    <div style="overflow-x:auto">
+      <table class="sxs-table" id="sxsTable">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th>Run 1 — Single-Model</th>
+            <th>Run 2 — Ensemble</th>
+            <th>Run 3 — Vulnerable Pop.</th>
+          </tr>
+        </thead>
+        <tbody id="sxsBody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:.75rem;font-size:.82rem;color:var(--muted);font-style:italic">Run 1→2: the suppression gap difference measures Palmer's architectural contribution. Run 2→3: measures the capability gap that honest forecasting does not automatically close.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     SYNTHESIS & TRANSFER
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-transfer">
+  <h2>Synthesis & Transfer — The Everyday Ensemble Question</h2>
+
+  <h3>The Institutional Suppression of Uncertainty</h3>
+  <p>The forecasting problem Palmer identified is not unique to meteorology. Every institution that manages complex information faces the same structural choice: present the genuine uncertainty distribution of what is known, or compress it to false certainty before it reaches decisions and the people affected by those decisions.</p>
+
+  <div class="card card-sky">
+    <h4>Healthcare</h4>
+    <p>A doctor who presents a treatment recommendation without communicating the genuine uncertainty of the evidence base, the range of outcomes across patients with similar profiles, or the real probability that the recommended treatment will fail for this specific patient — that doctor has created a forecasting suppression gap. The patient makes decisions calibrated to a certainty that does not exist.</p>
+  </div>
+  <div class="card card-sky">
+    <h4>Financial Advice</h4>
+    <p>An advisor who presents projected returns without communicating the genuine distribution of outcomes, the probability of loss, or the range of scenarios under which the recommendation fails — that advisor has suppressed information the client needs to make decisions calibrated to their actual risk tolerance.</p>
+  </div>
+  <div class="card card-sky">
+    <h4>Educational Assessment</h4>
+    <p>An institution that presents a single test score as the definitive measure of a student's capability, when the genuine measurement uncertainty is substantial and the distribution of outcomes for students with that score spans a wide range — that institution has created a suppression gap between what is genuinely known about the student and what reaches decisions about their future.</p>
+  </div>
+
+  <div class="card card-amber">
+    <h4>The Everyday Ensemble Question</h4>
+    <p>Before communicating anything that represents certainty about a complex situation — a prediction, a recommendation, a diagnosis, an assessment — ask: am I presenting the single most likely outcome, or the genuine distribution of outcomes? If you are presenting only the most likely outcome, you are making a choice about what information reaches the people who depend on your analysis. That choice has consequences. The ensemble question is not only for meteorologists. It is the ethical posture appropriate to anyone communicating about genuinely complex systems.</p>
+  </div>
+
+  <h3>The Capability Gap — What Honest Forecasting Cannot Do Alone</h3>
+  <p>Run 3 showed that closing the forecasting suppression gap does not automatically close the capability gap for the most structurally constrained population. The highest-entropy, lowest-BioBond agents received the same honest uncertainty information as everyone else — and still had lower λ Raw, less capacity to act on it.</p>
+  <p>Knowing the risk accurately does not equalize the capacity to respond to risk. An agent with no car, no savings, irregular work, and no social network with vehicles receives an accurate probability distribution about hurricane track — and still cannot evacuate if the evacuation architecture assumes personal vehicle access, advance booking ability, and financial buffer for hotels. The institution that communicates genuine risk honestly and then provides no differential support for agents who cannot act on that risk has fulfilled its epistemic obligation while failing its moral one.</p>
+
+  <div class="card card-teal">
+    <h4>Transfer Questions</h4>
+    <p style="font-size:.85rem">Use the journal tab to answer these before Chapter 7:</p>
+    <ul style="font-size:.85rem">
+      <li>Identify one domain in your own life where you receive information compressed into false certainty. What is the genuine uncertainty distribution being suppressed?</li>
+      <li>In your institution or workplace, who is most like the Run 3 high-entropy agents — receiving accurate information but lacking the structural capacity to act on it?</li>
+      <li>Doyne Farmer is next. Standard macroeconomics uses a 'representative agent' — one idealized rational actor standing in for the entire economy. What does this assumption suppress, and who does it make invisible?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     JOURNAL
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+  <h2>Ethics Journal — Chapter 6</h2>
+  <p>Complete these questions before opening Chapter 7 (Farmer). Your responses are saved automatically.</p>
+
+  <div class="journal-q">
+    <div class="q-label">Q1 — Your Chapter 5 Prediction Test</div>
+    <p>Compare your Chapter 5 Q5 prediction to what this chapter actually argued. What was accurate in your prediction? Where was the gap? What structural concept from earlier in the course was missing from your prediction — and why?</p>
+    <textarea class="jta" id="jt-q1" placeholder="My prediction was accurate about… The gap between my prediction and the actual argument was… The missing structural concept was…" oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q2 — The Three-Run Comparison</div>
+    <p>After completing all three simulation runs: explain in structural terms (not just descriptively) why the evidence architecture change between Run 1 and Run 2 produces the suppression gap change you observed. Which specific parameter shift was most responsible? Then: what does Run 3 add that Run 2 alone cannot show?</p>
+    <textarea class="jta" id="jt-q2" placeholder="The suppression gap change between Run 1 and Run 2 was produced by… The most responsible parameter was… Run 3 adds…" oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q3 — Uncertainty in Your Domain</div>
+    <p>Identify one domain in your own life — healthcare, finance, education, work — where you receive information compressed into false certainty. What is the genuine uncertainty distribution that is being suppressed? What would change about your decisions if you received the honest distribution instead of the single-track answer?</p>
+    <textarea class="jta" id="jt-q3" placeholder="The domain: …&#10;The false certainty I receive: …&#10;The genuine uncertainty being suppressed: …&#10;What would change: …" oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q4 — The Capability Gap Intervention</div>
+    <p>Run 3 shows that honest uncertainty communication does not equalize response capacity. Design a specific institutional intervention — not a general principle but a concrete structural change — that would close the capability gap for the highest-entropy, lowest-BioBond population in your community. What would it cost? Who would resist it and why? What is the smallest concrete step that begins to address it?</p>
+    <textarea class="jta" id="jt-q4" placeholder="The intervention: …&#10;Structural mechanism: …&#10;Cost: …&#10;Who resists and why: …&#10;Smallest concrete first step: …" oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">✓ Saved</div>
+  </div>
+
+  <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.04)">
+    <div class="q-label" style="color:var(--amber-dark)">Q5 — Prediction for Chapter 7 (Farmer)</div>
+    <p>Chapter 7 introduces Doyne Farmer and agent-based economic modeling. Standard macroeconomics uses a <em>representative agent</em> — a single idealized rational actor whose behavior is treated as representing the entire economy. Before reading Chapter 7, predict:</p>
+    <ul style="font-size:.87rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
+      <li><strong>The structural parallel to Palmer:</strong> how is the representative agent assumption structurally equivalent to the single-model forecast? What does it suppress, and what is the equivalent of Palmer's ensemble for economics?</li>
+      <li><strong>Who becomes invisible:</strong> the representative agent makes certain populations structurally invisible. Which populations, and why? What is the cost of that invisibility in a crisis?</li>
+      <li><strong>The COVID prediction:</strong> Farmer's agent-based model predicted UK GDP behavior during COVID better than standard models. Before reading why — predict the structural reason. What did the standard models miss that agent-based modeling preserved?</li>
+      <li><strong>Specific numbers:</strong> if you were to run a simulation equivalent to the Palmer Run 1 vs. Run 2 comparison but for economics — what would you change in the parameters to model the shift from representative-agent to heterogeneous-agent thinking?</li>
+    </ul>
+    <textarea class="jta q5" id="jt-q5" placeholder="The structural parallel to Palmer: the representative agent assumption suppresses…&#10;Who becomes invisible: …&#10;The COVID prediction structural reason: Farmer's model preserved…&#10;Parameter changes for the economic ensemble: …" oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-q5">✓ Saved for Chapter 7</div>
+  </div>
+
+  <div class="card" style="background:#052e16;color:white;margin-top:1.25rem;border-radius:.75rem;padding:1.35rem">
+    <h3 style="color:var(--amber);font-size:1rem;margin-top:0">Looking Ahead: Chapter 7 — Doyne Farmer and the Invisible Population</h3>
+    <p style="color:rgba(255,255,255,.75)">Palmer showed that collapsing a genuine probability distribution to a single track suppresses information that better decisions require. Doyne Farmer showed that the same structural problem appears in macroeconomics — and that it produces the same consequence: the people most harmed by economic crises are precisely the people made invisible by the modeling choice.</p>
+    <p style="color:rgba(255,255,255,.75);margin-top:.5rem">Standard macroeconomic models use a representative agent — a single idealized rational actor standing in for the entire economy. A lockdown's economic impact, modeled this way, looks like one person weighing options. It does not look like a restaurant worker, a hospital nurse, a remote software engineer, and a manufacturing supply chain all responding to the same lockdown in completely different ways. Farmer's agent-based approach kept all of them visible — and produced better predictions precisely because it did.</p>
+  </div>
+</div>
+
+</div><!-- /app-wrap -->
+
+<script>
+'use strict';
+const JP = 'palmer_journal_';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+let _run = 'run1';
+let _results = {};
+
+// ── Run configurations ────────────────────────────────────────
+const RUN_CONFIGS = {
+  run1: {
+    label: 'Run 1: Single-Model Institution',
+    next: 'run2',
+    nextLabel: '▶ Run 2 — Ensemble Architecture',
+    nextPrompt: 'Run 1 complete. Now see what changes when the evidence architecture shifts from authority-weighted certainty to empirical-calibrated ensemble thinking.',
+    scenario_name: 'whistleblower',
+    num_agents: 16, steps: 10, seed: 42,
+    scenario_physics: {
+      base_entropy: 0.52, base_stress: 0.48,
+      block_fields: { care: -0.15, fairness: -0.55, community: -0.45, boundary: 0.35 }
+    },
+    worldview_distribution: {
+      role_order: 0.55, sacred_boundary: 0.20,
+      liberal_individualist: 0.15, ubuntu_relational: 0.07, indigenous_custodial: 0.03
+    },
+    evidence_distribution: {
+      authority_weighted: 0.78, tradition_weighted: 0.10,
+      empirical_calibrated: 0.08, alternative_facts: 0.04
+    }
+  },
+  run2: {
+    label: 'Run 2: Ensemble Institution',
+    next: 'run3',
+    nextLabel: '▶ Run 3 — Vulnerable Population',
+    nextPrompt: 'Run 2 complete. The ensemble architecture closes the suppression gap. Now examine what honest forecasting alone cannot do for the most structurally constrained population.',
+    scenario_name: 'resource_scarcity',
+    num_agents: 16, steps: 10, seed: 42,
+    scenario_physics: {
+      base_entropy: 0.52, base_stress: 0.48,
+      block_fields: { care: 0.35, fairness: 0.40, community: 0.45, boundary: 0.20 }
+    },
+    worldview_distribution: {
+      liberal_individualist: 0.30, role_order: 0.25,
+      ubuntu_relational: 0.25, sacred_boundary: 0.12, indigenous_custodial: 0.08
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.55, authority_weighted: 0.22,
+      tradition_weighted: 0.15, alternative_facts: 0.08
+    }
+  },
+  run3: {
+    label: 'Run 3: Vulnerable Population (High-Entropy Agents)',
+    next: null,
+    nextLabel: null,
+    nextPrompt: null,
+    scenario_name: 'resource_scarcity',
+    num_agents: 16, steps: 10, seed: 99,
+    scenario_physics: {
+      base_entropy: 0.72, base_stress: 0.64,
+      block_fields: { care: 0.38, fairness: 0.35, community: 0.42, boundary: 0.18 }
+    },
+    worldview_distribution: {
+      ubuntu_relational: 0.35, indigenous_custodial: 0.28,
+      liberal_individualist: 0.20, role_order: 0.12, sacred_boundary: 0.05
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.50, authority_weighted: 0.25,
+      tradition_weighted: 0.18, alternative_facts: 0.07
+    }
+  }
+};
+
+// ── Config panels ─────────────────────────────────────────────
+const PALMER_CONFIG = {
+  run1: {
+    title: 'Run 1 — Single-Model Institution: Evidence Architecture',
+    rows: [
+      ['Base entropy', '0.52 — Moderate. A functioning institution with real capability.'],
+      ['Base stress', '0.48 — Moderate. Pressure exists but not collapse conditions.'],
+      ['Care block', '−0.15 — Mildly suppressed.'],
+      ['Fairness block', '−0.55 — Moderately suppressed. Different models not given equal standing.'],
+      ['Community block', '−0.45 — Moderately suppressed. Cross-disciplinary information exchange penalized.'],
+      ['Boundary block', '+0.35 — Positive. The single authoritative model maintains clear identity.'],
+      ['Evidence distribution', 'authority_weighted 0.78 · tradition_weighted 0.10 · empirical_calibrated 0.08 · alternative_facts 0.04'],
+      ['Worldview distribution', 'role_order 0.55 · sacred_boundary 0.20 · liberal_individualist 0.15 · ubuntu_relational 0.07'],
+      ['Key mechanism', 'The institution has real capability (λ Raw moderate) but authority-weighted evidence at 0.78 means the single senior model dominates. The suppression gap measures how much of the genuine uncertainty distribution fails to reach decisions.'],
+    ],
+    reading: 'Key prediction question: the institution is not incompetent — base_entropy is only 0.52. The pathology is specifically in the evidence architecture. How large a suppression gap does authority_weighted 0.78 produce? What does OS2 Bridge look like when role_order 0.55 dominates?'
+  },
+  run2: {
+    title: 'Run 2 — Ensemble Institution: Evidence Architecture',
+    rows: [
+      ['Base entropy', '0.52 — IDENTICAL to Run 1. Same institution, same storm.'],
+      ['Base stress', '0.48 — IDENTICAL to Run 1.'],
+      ['All block fields', 'ALL POSITIVE: care +0.35, fairness +0.40, community +0.45, boundary +0.20'],
+      ['Evidence distribution', 'empirical_calibrated 0.55 · authority_weighted 0.22 · tradition_weighted 0.15 · alternative_facts 0.08'],
+      ['Worldview distribution', 'liberal_individualist 0.30 · role_order 0.25 · ubuntu_relational 0.25 · sacred_boundary 0.12'],
+      ['Key contrast', 'Same entropy and stress as Run 1. The ONLY changes are (1) evidence architecture and (2) worldview diversity. Palmer\'s contribution was not more computing power — it was redesigning how evidence reaches decisions.'],
+    ],
+    reading: 'The Run 1→2 difference is the structural measure of Palmer\'s architectural contribution. Before running: predict how large the suppression gap change will be. Will it reach near-zero, or will some gap remain? What does the positive community block (+0.45) contribute specifically?'
+  },
+  run3: {
+    title: 'Run 3 — Vulnerable Population: High-Entropy Structural Conditions',
+    rows: [
+      ['Base entropy', '0.72 — HIGH. These agents face chronic resource constraint, information overload, unstable employment, housing insecurity.'],
+      ['Base stress', '0.64 — HIGH. Accumulated depletion — limited recovery windows.'],
+      ['Evidence distribution', 'IDENTICAL to Run 2 — the ensemble institution is doing its job. Honest uncertainty information is being communicated.'],
+      ['Worldview distribution', 'ubuntu_relational 0.35 · indigenous_custodial 0.28 · liberal_individualist 0.20 · role_order 0.12'],
+      ['Key question', 'The forecasting institution is now operating correctly (ensemble architecture, honest uncertainty). But the most vulnerable population has base_entropy 0.72 and high stress. What does λ Raw look like for these agents? What does that mean for their capacity to act on accurate forecast information?'],
+    ],
+    reading: 'Run 3 is the Rawlsian question made structural: the ensemble architecture benefits the most structurally advantaged first. Compare Run 3 λ Raw to Run 2. The difference is the capability gap — what honest forecasting alone cannot close. Before running: predict whether the positive block fields (from the ensemble institution) partially offset the high entropy for these agents, or whether the entropy dominates.'
+  }
+};
+
+const PALMER_SCAFFOLD = {
+  run1: [
+    {label:'Suppression gap', hint:'Authority_weighted evidence at 0.78 means one model\'s output dominates. Fairness block at −0.55 means alternative models face structural penalties. <strong>Predict: small / moderate / large suppression gap?</strong>'},
+    {label:'OS2 Bridge', hint:'Role_order 0.55 dominates the worldview distribution. With authority-weighted evidence architecture, does convergence across worldview types increase or decrease? <strong>Predict: low / moderate / high Bridge?</strong>'},
+    {label:'λ Raw', hint:'Base entropy 0.52 and stress 0.48 — moderate, not catastrophic. The institution has real capability. <strong>Predict: will λ Raw be near the theoretical maximum, or will the evidence architecture depress it?</strong>'},
+    {label:'Morphic suppression', hint:'With community block −0.45 and fairness block −0.55, contributions from non-authoritative sources consistently fail to reach outcomes. What does this predict for morphic suppression accumulation across 10 steps? <strong>Predict: building / stable / low?</strong>'},
+  ],
+  run2: [
+    {label:'Suppression gap change', hint:'Run 1 established a baseline suppression gap. Run 2 has empirical_calibrated 0.55 (vs. 0.08 in Run 1) and community block +0.45 (vs. −0.45). <strong>How large a suppression gap reduction do you predict?</strong>'},
+    {label:'OS2 Bridge change', hint:'The worldview distribution is more diverse in Run 2 (five frameworks more balanced) AND the evidence architecture rewards cross-framework contributions. Compare to Phase 2 Maathai. <strong>Do you predict higher or lower Bridge than Maathai Phase 2?</strong>'},
+    {label:'Friction', hint:'Genuine worldview diversity has increased in Run 2. More perspectives are active and weighted. Does more diversity + better evidence architecture produce more or less friction than Run 1? <strong>Can high Bridge and high friction coexist here?</strong>'},
+    {label:'The architectural claim', hint:'If λ Raw is similar in Run 1 and Run 2 (same entropy and stress) but suppression gap is different, what does that prove structurally? <strong>What is the precise claim this comparison makes about the source of the forecasting failure?</strong>'},
+  ],
+  run3: [
+    {label:'λ Raw reduction', hint:'Base entropy rises from 0.52 to 0.72 and stress from 0.48 to 0.64. The block fields are identical to Run 2 (positive). <strong>Does the positive evidence architecture partially offset the higher entropy, or does entropy dominate?</strong>'},
+    {label:'Capability gap size', hint:'Compare Run 3 λ Raw to Run 2 λ Raw. The difference is the capability gap — what the ensemble architecture cannot close for the most constrained population. <strong>Predict: small / moderate / large capability gap?</strong>'},
+    {label:'The moral implication', hint:'If honest forecasting (Run 2 architecture) is present but the high-entropy agents still have substantially lower λ Raw — what is the institution\'s remaining moral obligation? <strong>What structural intervention would the simulation predict as necessary to close the remaining gap?</strong>'},
+  ]
+};
+
+// ── MCQ data ──────────────────────────────────────────────────
+const PALMER_SSQ = {
+  run1: {
+    title: 'What This Simulation Shows — Run 1: Single-Model Institution',
+    questions: [
+      {
+        text: 'Run 1 shows moderate λ Raw but a significant suppression gap. What structural mechanism produces the gap — and why is it NOT simply the institution lacking information?',
+        options: [
+          'The suppression gap occurs because the institution has incomplete data — if they had more sensors, the gap would close.',
+          'The suppression gap is produced by the evidence architecture: authority_weighted 0.78 means contributions from non-dominant models are systematically filtered before reaching decisions. The institution has real capability (moderate λ Raw) — the gap is the distance between what exists and what reaches decisions due to architectural filtering, not information absence.',
+          'The high role_order worldview distribution (0.55) makes agents resist new information, producing the gap.',
+          'The suppression gap reflects the mathematical impossibility of certainty in chaotic systems — it cannot be reduced by architectural changes.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Exactly. This is the Palmer case stated as a structural measurement. The institution is not incompetent — λ Raw is moderate, meaning real capability exists. The suppression gap measures what the evidence architecture filters out before it reaches decisions. Authority_weighted 0.78 routes the dominant model\'s output to decisions while systematically downweighting the uncertainty information that the ensemble of models produces. This is structurally identical to the Challenger suppression gap: capability exists, architecture filters it before it reaches the decision.',
+          wrong: [
+            'The simulation parameters include entropy 0.52 — the institution is functioning, not data-starved. More sensors would not change an evidence architecture that weights one model\'s output at 0.78. The gap is in how evidence reaches decisions, not in whether evidence exists.',
+            null,
+            'The worldview distribution affects how agents process information and coordinate — it contributes to OS2 Bridge and friction. But the suppression gap is specifically the distance between λ Raw and λ Perceived, which is primarily produced by the evidence distribution weighting. The role_order worldview affects who communicates, not the institutional architecture for how information is weighted.',
+            'The mathematical impossibility of certainty in chaotic systems is real — it is why the single-model forecast is intellectually dishonest. But the suppression gap is a structural measurement of what the existing institutional architecture filters. Palmer\'s intervention shows that architectural changes DO reduce the gap — Run 2 will demonstrate this with identical entropy parameters.'
+          ]
+        }
+      },
+      {
+        text: 'The simulation shows OS2 Bridge is lower in Run 1 than you might expect given the moderate entropy. What structural feature of Run 1\'s configuration produces this low Bridge?',
+        options: [
+          'Low OS2 Bridge in Run 1 reflects the genuine incompatibility of the five worldview types — nothing can produce convergence when frameworks are truly incompatible.',
+          'OS2 Bridge is low because the single-model evidence architecture routes all legitimate information through one source, preventing the cross-worldview coordination that produces convergence. When authority_weighted evidence dominates, agents whose knowledge comes from different epistemic traditions cannot contribute to outcomes, reducing convergence regardless of their individual capability.',
+          'OS2 Bridge is low because community block is negative (−0.45), meaning relational coordination is penalized.',
+          'Low OS2 Bridge in Run 1 is the correct result — institutions should not have high cross-worldview coordination when managing uncertainty.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes — and this is the connection to Chapter 4. In the Maathai simulation, Phase 1 produced low OS2 Bridge because the coordination architecture required value agreement before action. Here, low Bridge is produced by an evidence architecture that routes legitimacy through one source. In both cases, the coordination failure is not about the agents\' incompatibility — it is about the institutional design that prevents their contributions from reaching outcomes. The architectural fix is the same structural move: change what reaches decisions from one authoritative source to a distribution that represents genuine diversity.',
+          wrong: [
+            'The Chapter 4 simulations showed that the same worldview configurations produce very different OS2 Bridge in Phase 1 vs. Phase 2 — same agents, different coordination architecture, different convergence. True incompatibility would produce identical Bridge regardless of architecture. That is not what the simulation shows.',
+            null,
+            'Community block −0.45 contributes to the suppression gap by penalizing relational coordination pathways. But OS2 Bridge specifically measures cross-worldview convergence on shared outcomes — it is primarily affected by the evidence architecture (what information reaches decisions) and the worldview distribution. The community block effect is real but secondary to the authority-weighted evidence mechanism in this configuration.',
+            'This inverts the course\'s central argument. High OS2 Bridge is the simulation\'s measure of what Palmer\'s ensemble institution produces — cross-worldview convergence on outcomes through a shared evidence architecture that weights empirical calibration. The goal of the ensemble is precisely to produce high Bridge: convergence across meteorological traditions, model types, and institutional stakeholders on the honest probability distribution.'
+          ]
+        }
+      }
+    ]
+  },
+  run2: {
+    title: 'What This Simulation Shows — Run 2: Ensemble Architecture',
+    questions: [
+      {
+        text: 'Run 2 has identical entropy and stress to Run 1 but a dramatically different suppression gap. What structural argument does this comparison make — and what does it prove about the source of the Run 1 failure?',
+        options: [
+          'The comparison proves that higher institutional capability (more resources, better sensors) reduces the suppression gap.',
+          'The comparison isolates the evidence architecture as the causal variable: with entropy and stress held constant, the only changes are how evidence is weighted and how diverse the worldview distribution is. The suppression gap improvement measures what those architectural changes produce — not better information, not more resources, but a different design for how existing information reaches decisions.',
+          'The improvement proves that diverse worldview distributions automatically produce better outcomes, independent of evidence architecture.',
+          'The comparison shows that positive block fields always produce lower suppression gaps than negative ones.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'This is the critical scientific contribution of the comparison. By holding entropy and stress constant across Run 1 and Run 2, the simulation isolates the evidence architecture as the causal variable. The improvement in suppression gap is specifically attributable to shifting from authority_weighted 0.78 to empirical_calibrated 0.55 — and the positive block fields that reward rather than penalize the contributions of non-dominant information sources. Palmer\'s actual contribution to meteorology was exactly this: not a new supercomputer, not more weather stations, but a redesign of how existing model outputs were weighted and communicated.',
+          wrong: [
+            'Resources and sensors are identical in Run 1 and Run 2 — the entropy parameter is the same (0.52), which models general institutional health and capability. The improvement comes from the evidence architecture change, not from more capability. This distinction is the entire point of the comparison.',
+            null,
+            'The worldview distribution in Run 2 is more diverse than Run 1, which contributes to OS2 Bridge. But if diverse worldviews automatically produced low suppression gaps, Phase 1 of the Maathai simulation (which also had diverse worldviews) would have had a low suppression gap — it did not. The evidence architecture determines what contributions from diverse agents actually reach decisions, and that is the primary mechanism here.',
+            'Positive block fields contribute to lower suppression by rewarding rather than penalizing cross-framework contributions. But the specific mechanism is the evidence distribution — authority_weighted vs. empirical_calibrated. You can have positive block fields with an authority-weighted evidence distribution and still have a significant suppression gap if one model\'s output dominates.'
+          ]
+        }
+      },
+      {
+        text: 'Run 2 shows high OS2 Bridge AND significant friction simultaneously. Why is this not a contradiction — and what does the coexistence of high Bridge and high friction tell you about what the ensemble architecture actually produces?',
+        options: [
+          'High Bridge and high friction cannot genuinely coexist — if friction is high, coordination must be impaired, which would lower Bridge.',
+          'High Bridge and high friction coexist because the ensemble architecture creates genuine cross-worldview convergence on the probability distribution (high Bridge) while the actual worldview diversity — five frameworks with genuinely different epistemic traditions — remains present and active (high friction). The friction is real. The convergence is also real. The ensemble architecture makes the friction worth paying by creating conditions where each framework\'s distinctive contribution improves the shared outcome.',
+          'The high friction in Run 2 indicates that the ensemble architecture is not working as intended — genuine coordination should reduce friction.',
+          'High friction in Run 2 reflects the simulation engine\'s tendency to increase friction when worldview diversity increases, regardless of coordination outcomes.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes — and this is the same structural insight from Chapter 4\'s Phase 2. The Maathai simulation showed that high Bridge and high friction can coexist when a concrete shared task (or in this case, a shared evidence architecture) creates convergence on outcomes while genuine worldview diversity remains present. The ensemble forecasting institution does not eliminate the different epistemic traditions of its meteorologists — it creates conditions where those differences productively generate a better probability distribution rather than producing paralysis or single-source dominance. The friction is not waste; it is the productive tension that generates better forecasts.',
+          wrong: [
+            'This is the most common misconception about coordination across difference. Chapter 4 demonstrated — and this run confirms — that genuine convergence on shared outcomes and genuine diversity-generated friction are not mutually exclusive. The shared evidence architecture (what Palmer designed) creates convergence on the probability distribution without requiring the meteorologists to abandon their distinctive models and traditions.',
+            null,
+            'This reading would require friction to be a failure indicator — but throughout the course, friction has been a measure of genuine worldview diversity, not a measure of coordination failure. High friction WITH high Bridge is the signature of functional equivalence: different frameworks contributing to the same outcome for different authentic reasons through different epistemic traditions. The ensemble is successful precisely because it preserves and utilizes the diversity that generates friction.',
+            'The simulation engine does not have an automatic friction increase mechanism tied to worldview diversity independent of other parameters. Friction rises when diverse agents interact with conflicting epistemic approaches in an architecture that cannot route them toward convergent outcomes. When the evidence architecture changes (Run 1→2), friction behavior changes accordingly — it does not track only worldview diversity.'
+          ]
+        }
+      }
+    ]
+  },
+  run3: {
+    title: 'What This Simulation Shows — Run 3: The Capability Gap',
+    questions: [
+      {
+        text: 'Run 3 uses the same ensemble evidence architecture as Run 2 but shows substantially lower λ Raw. What is the structural argument this comparison makes about the limits of forecasting ethics?',
+        options: [
+          'Run 3 shows the ensemble architecture fails for high-entropy populations — the method needs to be redesigned for vulnerable communities.',
+          'Run 3 shows that honest uncertainty communication (ensemble architecture) closes the forecasting suppression gap but does not close the capability gap. The most structurally constrained agents receive accurate probability distributions but have less capacity to act on them due to high base entropy and stress. The institution has fulfilled its epistemic obligation (honest forecasting) while leaving a moral obligation unaddressed (the capability to act on the forecast).',
+          'Run 3 demonstrates that the high-entropy agents\' low λ Raw is primarily caused by the worldview distribution — ubuntu_relational and indigenous_custodial frameworks are less capable of processing ensemble information.',
+          'The capability gap in Run 3 is an unavoidable consequence of complexity — no institutional design can equalize capacity across different populations.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'This is Run 3\'s specific contribution to the course\'s argument. The ensemble architecture is functioning as designed — positive block fields, empirical_calibrated evidence dominant, same as Run 2. The capability gap emerges from the population\'s structural position, not from the forecasting institution\'s design. This is the course\'s most direct operationalization of Rawls\' difference principle: an institutional design that produces benefits primarily for the structurally advantaged while leaving the most constrained with lower capacity to act on those benefits has not fulfilled its complete moral obligation. Run 3 tells you what else is needed beyond better forecasting.',
+          wrong: [
+            'The ensemble architecture is not failing for high-entropy agents — it is working correctly (low suppression gap, positive block fields). The problem is that λ Raw is structurally lower for these agents because their base conditions limit their capacity to act on accurate information, regardless of how well the forecasting institution communicates. The fix is not in the forecasting architecture but in the structural conditions that constrain these agents\' capacity to respond.',
+            null,
+            'The worldview distribution in Run 3 (ubuntu_relational 0.35, indigenous_custodial 0.28) does not reflect lower information-processing capacity — it reflects communities that tend to be in structurally constrained positions. The simulation is not making a claim about cognitive capacity by worldview type. The lower λ Raw comes from base_entropy 0.72 and stress 0.64, not from the worldview distribution.',
+            'The course has been building toward the opposite claim: institutional design choices determine what is structurally possible for different populations. Run 3 shows that the capability gap exists — it does not show that no intervention can address it. Run 3 is the diagnostic that tells you what intervention is needed: not better forecasting (already present in Run 2 architecture) but structural support for the populations whose high entropy limits their capacity to act on accurate information.'
+          ]
+        }
+      },
+      {
+        text: 'Run 3 represents the most vulnerable population receiving honest uncertainty communication. What does the simulation suggest is the complete moral obligation of a forecasting institution — beyond accurate uncertainty communication?',
+        options: [
+          'The forecasting institution\'s moral obligation ends with honest uncertainty communication. What populations can do with that information is outside the institution\'s ethical domain.',
+          'The complete moral obligation includes both honest uncertainty communication (closing the epistemic suppression gap) AND designing support structures that close the capability gap — ensuring that the populations most at risk can actually act on the accurate probability distribution they receive.',
+          'The institution\'s obligation is to simplify the probability distribution for high-entropy populations — they should receive a different, less complex forecast.',
+          'The moral obligation is met by providing equal information access — if everyone receives the same forecast, the institution has fulfilled its duty regardless of differential capacity to act.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes — and this is the chapter\'s move beyond Palmer\'s individual scientific contribution toward the institutional ethics question. Palmer\'s ensemble methodology closes the epistemic suppression gap: honest uncertainty information now reaches everyone. But Run 3 shows that the same honest information reaches different populations with different capacities to act on it. The Rawlsian argument is structural: an institution that communicates genuine risk honestly and then provides no differential support for populations who cannot act on that risk without structural assistance has fulfilled its epistemic obligation while failing its distributive moral obligation. The complete ethical stance requires both.',
+          wrong: [
+            'This is the epistemic-only view of institutional obligation — it accurately describes Palmer\'s scientific contribution but stops before the institutional ethics question. The course has been building toward a more complete account: the ethical obligation of institutions that manage risk information extends to what populations can do with that information, not just to what they receive.',
+            null,
+            'Simplifying the forecast for high-entropy populations would recreate the suppression gap that Palmer\'s ensemble eliminated — it would substitute a different form of paternalism for the original one. The problem is not that the probability distribution is too complex for vulnerable populations to understand. The problem is that acting on an accurate probability distribution (evacuating, preparing, seeking shelter) requires resources and structural support that high-entropy populations disproportionately lack.',
+            'Equal information access is a necessary but not sufficient condition. The simulation demonstrates directly that equal information access with unequal structural capacity produces unequal outcomes. The moral frame that asks only "did everyone receive the same forecast?" is the representative-agent assumption applied to institutional ethics — it treats all recipients as structurally identical and makes capability differences invisible.'
+          ]
+        }
+      }
+    ]
+  }
+};
+
+// ── Tab navigation ────────────────────────────────────────────
+function showTab(name, btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>{p.style.display='none';});
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const pane = document.getElementById('tab-'+name);
+  if(pane){ pane.style.display='block'; }
+  if(btn){ btn.classList.add('active'); }
+  if(name==='journal') loadJournalFields();
+}
+
+// ── Run selection ─────────────────────────────────────────────
+function selectRun(r){
+  _run = r;
+  renderPalmerConfig(r);
+  document.querySelectorAll('.run-tab-btn').forEach(b=>b.classList.remove('active-run'));
+  document.getElementById('btn-'+r).classList.add('active-run');
+  document.getElementById('run-label').textContent = RUN_CONFIGS[r].label;
+  document.getElementById('ucpError').style.display='none';
+  if(_results[r]){
+    renderResult(_results[r]);
+    document.getElementById('ucpRunBtn').innerHTML='↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display='none';
+    document.getElementById('nextRunPrompt').style.display='none';
+    document.getElementById('ucpRunBtn').innerHTML='▶ Run Simulation';
+  }
+  predUpdatePrompts(r);
+}
+
+// ── Config + scaffold panels ──────────────────────────────────
+function renderPalmerConfig(runKey){
+  const data = PALMER_CONFIG[runKey];
+  if(!data) return;
+  const panel = document.getElementById('palmer-config-panel');
+  const scaffold = document.getElementById('palmer-scaffold-panel');
+  const scaffoldItems = document.getElementById('palmer-scaffold-items');
+  if(!panel||!scaffold||!scaffoldItems) return;
+  const rows = data.rows.map(([k,v])=>
+    `<tr><td class="m-scfg-key">${k}</td><td class="m-scfg-val">${v}</td></tr>`
+  ).join('');
+  panel.innerHTML = `
+    <div class="m-scfg-label">🔬 Before You Predict</div>
+    <div class="m-scfg-title">${data.title}</div>
+    <table class="m-scfg-table">${rows}</table>
+    <div class="m-scfg-reading">${data.reading}</div>`;
+  panel.style.display = 'block';
+  const items = PALMER_SCAFFOLD[runKey] || [];
+  scaffoldItems.innerHTML = items.map(item=>
+    `<div class="m-pred-scaffold-item"><strong>${item.label}:</strong> ${item.hint}</div>`
+  ).join('');
+  scaffold.style.display = 'block';
+}
+
+// ── Prediction prompts ────────────────────────────────────────
+const PRED_PROMPTS = {
+  run1: 'Run 1 models a single-model institution — authority_weighted evidence 0.78, role_order worldview 0.55. The institution has real capability (entropy 0.52) but its evidence architecture filters genuine uncertainty before it reaches decisions. What do you predict for the suppression gap and OS2 Bridge? Write before running.',
+  run2: 'Run 2 has identical entropy and stress to Run 1. The ONLY changes: empirical_calibrated evidence rises from 0.08 to 0.55, authority_weighted falls from 0.78 to 0.22, and all block fields turn positive. Based on Run 1\'s results: predict the suppression gap change and OS2 Bridge change. How large a shift do you expect from the evidence architecture change alone?',
+  run3: 'Run 3 uses the same ensemble evidence architecture as Run 2 but with base_entropy 0.72 and stress 0.64 — modeling the most structurally constrained population. Before running: predict whether the positive block fields (from the ensemble architecture) partially offset the higher entropy for these agents, or whether the entropy dominates. What is the capability gap between Run 2 and Run 3?'
+};
+
+function predUpdatePrompts(runKey){
+  const el = document.getElementById('pred-prompt-pred');
+  if(el) el.textContent = PRED_PROMPTS[runKey] || '';
+  ['pred','gap','inhabit'].forEach(k=>{
+    const ta = document.getElementById('pred-ta-'+k);
+    try{ if(ta) ta.value = localStorage.getItem('palmer_'+runKey+'_pred-'+k)||''; }catch(e){}
+  });
+  predCheckLocks(runKey);
+}
+
+function predCheckLocks(runKey){
+  const s1val=(document.getElementById('pred-ta-pred')?.value||'').trim();
+  const s2val=(document.getElementById('pred-ta-gap')?.value||'').trim();
+  const s2stage=document.getElementById('pred-stage-gap');
+  const s3stage=document.getElementById('pred-stage-inhabit');
+  if(s2stage){s2stage.classList.toggle('pred-stage-locked',s1val.length<20);
+    const n2=document.getElementById('unlock-note-gap');if(n2)n2.style.display=s1val.length<20?'block':'none';}
+  if(s3stage){s3stage.classList.toggle('pred-stage-locked',s2val.length<20);
+    const n3=document.getElementById('unlock-note-inhabit');if(n3)n3.style.display=s2val.length<20?'block':'none';}
+}
+
+function predSave(appId,stageId,val){
+  const storageKey=appId+'_'+_run+'_pred-'+stageId;
+  try{localStorage.setItem(storageKey,val);}catch(e){}
+  const sv=document.getElementById('pred-sv-'+stageId);
+  if(sv){sv.classList.add('show');setTimeout(()=>sv.classList.remove('show'),2000);}
+  predCheckLocks(_run);
+}
+
+// ── Simulation ────────────────────────────────────────────────
+async function runSimulation(){
+  const btn = document.getElementById('ucpRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Running…';
+  const errEl = document.getElementById('ucpError');
+  errEl.style.display = 'none';
+  const cfg = RUN_CONFIGS[_run];
+  const payload = {
+    scenario_name: cfg.scenario_name,
+    num_agents: cfg.num_agents,
+    steps: cfg.steps,
+    seed: cfg.seed,
+    scenario_physics: cfg.scenario_physics,
+    worldview_distribution: cfg.worldview_distribution,
+    evidence_distribution: cfg.evidence_distribution
+  };
+  try{
+    const resp = await fetch(`${BACKEND}/api/simulate/custom`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    _results[_run] = data;
+    renderResult(data);
+    btn.innerHTML = '↺ Re-run Simulation';
+    renderPalmerSSQ(_run);
+    predUnlockStage2();
+    updateSxS();
+  }catch(err){
+    errEl.textContent='Simulation error: '+err.message+'. Please try again.';
+    errEl.style.display='block';
+    btn.innerHTML='▶ Run Simulation';
+  }
+  btn.disabled = false;
+}
+
+function renderResult(data){
+  const m = data.metrics||{};
+  const raw=+(m.lambda_raw||0).toFixed(3);
+  const perc=+(m.lambda_perceived||0).toFixed(3);
+  const gap=+(m.suppression_gap||raw-perc||0).toFixed(3);
+  const supp=+(m.morphic_suppression||0).toFixed(3);
+  const bridge=+(m.os2_synergy_bridge||0).toFixed(3);
+  const friction=+(m.friction||0).toFixed(3);
+  const fidelity=raw>0?+(raw/(raw+supp)).toFixed(3):0;
+
+  const metricsEl = document.getElementById('ucpMetrics');
+  metricsEl.innerHTML = [
+    ['λ Raw',raw,''],['λ Perceived',perc,''],
+    ['Supp. Gap',gap,'gap'],['Morphic Supp.',supp,'supp'],
+    ['OS2 Bridge',bridge,''],['Friction',friction,''],['Fidelity',fidelity,'']
+  ].map(([l,v,cls])=>`<div class="ucp-metric"><div class="m-label">${l}</div><div class="m-val ${cls}">${v}</div></div>`).join('');
+
+  const barsEl = document.getElementById('ucpBars');
+  const bars=[['λ Raw',raw,TEAL_MID],['λ Perceived',perc,'#0ea5e9'],['OS2 Bridge',bridge,'#10b981'],['Friction',friction,'#f59e0b'],['Morphic Supp.',supp,'#dc2626']];
+  barsEl.innerHTML=bars.map(([l,v,c])=>`<div class="ucp-bar-row"><div class="ucp-bar-label">${l}</div><div class="ucp-bar-track"><div class="ucp-bar-fill" style="width:${Math.min(100,v*100)}%;background:${c}"></div></div></div>`).join('');
+
+  const narr = document.getElementById('ucpNarrative');
+  narr.textContent = data.narrative || generateNarrative(data,_run);
+
+  document.getElementById('ucpResult').style.display='block';
+
+  const cfg = RUN_CONFIGS[_run];
+  if(cfg.next){
+    const prompt=document.getElementById('nextRunPrompt');
+    const text=document.getElementById('nextRunText');
+    const btn=document.getElementById('nextRunBtn');
+    text.textContent=cfg.nextPrompt||'';
+    btn.textContent=cfg.nextLabel||'';
+    btn.onclick=()=>selectRun(cfg.next);
+    prompt.style.display='block';
+  }
+}
+
+function generateNarrative(data,runKey){
+  const m=data.metrics||{};
+  const raw=+(m.lambda_raw||0).toFixed(3);
+  const gap=+(m.suppression_gap||0).toFixed(3);
+  const bridge=+(m.os2_synergy_bridge||0).toFixed(3);
+  const supp=+(m.morphic_suppression||0).toFixed(3);
+  if(runKey==='run1') return `Run 1 — Single-Model Institution: λ Raw ${raw} shows real institutional capability, but suppression gap ${gap} measures what the authority-weighted evidence architecture (0.78) filtered before it reached decisions. OS2 Bridge ${bridge} reflects the cross-worldview coordination the architecture produced. This is the forecasting suppression gap — structurally equivalent to Boisjoly's gap but in the evidence architecture of a forecasting institution.`;
+  if(runKey==='run2') return `Run 2 — Ensemble Architecture: Same entropy and stress as Run 1. Suppression gap ${gap} — compare to Run 1's gap: this is the structural measure of what the evidence architecture change produced. OS2 Bridge ${bridge} — compare to Run 1: this is what empirical_calibrated evidence (0.55) and positive block fields generate when the architecture routes genuine uncertainty toward decisions rather than filtering it.`;
+  return `Run 3 — Vulnerable Population: λ Raw ${raw} — compare to Run 2's λ Raw. This is the capability gap: the ensemble architecture is functioning correctly (positive block fields, same evidence distribution as Run 2), but base_entropy 0.72 limits what the most constrained agents can do with accurate probability information. Morphic suppression ${supp}. This is the structural argument for why forecasting ethics extends beyond better models.`;
+}
+
+function updateSxS(){
+  const runs=['run1','run2','run3'];
+  const ready=runs.filter(r=>_results[r]);
+  if(ready.length<2) return;
+  const panel=document.getElementById('sxsPanel');
+  panel.style.display='block';
+  const metrics=['lambda_raw','lambda_perceived','suppression_gap','morphic_suppression','os2_synergy_bridge','friction'];
+  const labels={'lambda_raw':'λ Raw','lambda_perceived':'λ Perceived','suppression_gap':'Supp. Gap','morphic_suppression':'Morphic Supp.','os2_synergy_bridge':'OS2 Bridge','friction':'Friction'};
+  const body=document.getElementById('sxsBody');
+  body.innerHTML=metrics.map(k=>{
+    const cells=runs.map(r=>{
+      if(!_results[r]) return '<td>—</td>';
+      const v=(_results[r].metrics||{})[k];
+      return `<td>${v!==undefined?v.toFixed(3):'—'}</td>`;
+    }).join('');
+    return `<tr><td style="font-weight:700;color:var(--navy);background:var(--paper)">${labels[k]||k}</td>${cells}</tr>`;
+  }).join('');
+}
+
+// ── SSQ / MCQ ─────────────────────────────────────────────────
+function renderPalmerSSQ(runKey){
+  const data = PALMER_SSQ[runKey];
+  if(!data) return;
+  const panel = document.getElementById('palmerSSQPanel');
+  if(!panel) return;
+  const LETTERS=['A','B','C','D'];
+  let html=`<div class="palmer-ssq-inner">
+    <div class="palmer-ssq-head">
+      <div class="palmer-ssq-head-label">Structural Understanding — Check Your Reading</div>
+      <div class="palmer-ssq-head-title">${data.title}</div>
+    </div>
+    <div class="palmer-ssq-body">`;
+  data.questions.forEach((q,qi)=>{
+    html+=`<div class="palmer-ssq-q" id="palmer-ssq-${runKey}-q${qi}">
+      <div class="palmer-ssq-q-text">${qi+1}. ${q.text}</div>
+      <div class="palmer-ssq-opts">`;
+    q.options.forEach((opt,oi)=>{
+      html+=`<button id="palmer-ssq-${runKey}-q${qi}-o${oi}"
+        onclick="handlePalmerSSQ('${runKey}',${qi},${oi})"
+        class="palmer-ssq-opt" aria-label="Option ${LETTERS[oi]}">
+        <span class="opt-letter">${LETTERS[oi]}.</span><span>${opt}</span>
+      </button>`;
+    });
+    html+=`</div><div id="palmer-ssq-${runKey}-q${qi}-fb" class="palmer-ssq-fb" role="alert"></div></div>`;
+  });
+  html+=`</div><div class="palmer-ssq-prog" id="palmer-ssq-${runKey}-prog" aria-live="polite">Answer both questions to continue</div></div>`;
+  const wrap=document.createElement('div');
+  wrap.className='palmer-ssq-wrap';
+  wrap.style.display='block';
+  wrap.innerHTML=html;
+  panel.innerHTML='';
+  panel.appendChild(wrap);
+  panel.style.display='block';
+  try{
+    const saved=JSON.parse(localStorage.getItem('palmer_ssq_'+runKey)||'{}');
+    Object.entries(saved).forEach(([qi,oi])=>applyPalmerSSQ(runKey,parseInt(qi),parseInt(oi),true));
+    updatePalmerSSQProg(runKey);
+  }catch(e){}
+}
+
+function handlePalmerSSQ(runKey,qi,oi){
+  applyPalmerSSQ(runKey,qi,oi,false);
+  try{
+    const saved=JSON.parse(localStorage.getItem('palmer_ssq_'+runKey)||'{}');
+    saved[qi]=oi;
+    localStorage.setItem('palmer_ssq_'+runKey,JSON.stringify(saved));
+  }catch(e){}
+  updatePalmerSSQProg(runKey);
+}
+
+function applyPalmerSSQ(runKey,qi,oi,isRestore){
+  const data=PALMER_SSQ[runKey];if(!data)return;
+  const q=data.questions[qi];
+  const isCorrect=oi===q.correct;
+  q.options.forEach((_,idx)=>{
+    const btn=document.getElementById(`palmer-ssq-${runKey}-q${qi}-o${idx}`);
+    if(btn)btn.disabled=true;
+  });
+  const chosen=document.getElementById(`palmer-ssq-${runKey}-q${qi}-o${oi}`);
+  if(chosen){
+    chosen.style.borderColor=isCorrect?'#4ade80':'#f87171';
+    chosen.style.background=isCorrect?'rgba(74,222,128,.12)':'rgba(248,113,113,.1)';
+    chosen.style.color=isCorrect?'#bbf7d0':'#fecaca';
+  }
+  if(!isCorrect){
+    const cb=document.getElementById(`palmer-ssq-${runKey}-q${qi}-o${q.correct}`);
+    if(cb){cb.style.borderColor='#4ade80';cb.style.background='rgba(74,222,128,.07)';cb.style.color='#86efac';cb.style.opacity='.8';}
+  }
+  const fb=document.getElementById(`palmer-ssq-${runKey}-q${qi}-fb`);
+  if(fb){
+    const fbText=isCorrect?q.feedback.correct:(q.feedback.wrong[oi]||'Not quite — the correct answer is highlighted. Read its explanation to understand the structural reasoning.');
+    fb.style.background=isCorrect?'rgba(74,222,128,.12)':'rgba(251,191,36,.1)';
+    fb.style.borderLeft=isCorrect?'3px solid #4ade80':'3px solid #C9A84C';
+    fb.style.color=isCorrect?'#bbf7d0':'rgba(255,255,255,.75)';
+    fb.innerHTML=`<div style="font-size:.66rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;font-weight:700;margin-bottom:.22rem;color:${isCorrect?'#4ade80':'#C9A84C'}">${isCorrect?'✓ Correct':'✗ Not quite'}</div>${fbText}`;
+    fb.style.display='block';
+  }
+}
+
+function updatePalmerSSQProg(runKey){
+  const data=PALMER_SSQ[runKey];if(!data)return;
+  try{
+    const saved=JSON.parse(localStorage.getItem('palmer_ssq_'+runKey)||'{}');
+    const done=Object.keys(saved).length;
+    const prog=document.getElementById(`palmer-ssq-${runKey}-prog`);
+    if(prog)prog.textContent=done>=data.questions.length?'✓ Both questions answered':`${done} of ${data.questions.length} answered`;
+  }catch(e){}
+}
+
+function predUnlockStage2(){
+  const el2=document.getElementById('pred-prompt-gap');
+  if(el2) el2.textContent="Compare your prediction (Stage 1) to the simulation results. Which metric showed the largest gap between what you predicted and what the evidence architecture produced? What does that gap reveal about what you expected the architecture to do?";
+  const s2=document.getElementById('pred-stage-gap');
+  if(s2)s2.classList.remove('pred-stage-locked');
+  const n2=document.getElementById('unlock-note-gap');
+  if(n2)n2.style.display='none';
+  const saved=(()=>{try{return localStorage.getItem('palmer_'+_run+'_pred-gap')||'';}catch(e){return '';}})();
+  const ta=document.getElementById('pred-ta-gap');
+  if(ta&&!ta.value)ta.value=saved;
+  predCheckLocks(_run);
+  const panel=document.getElementById('predPanel');
+  if(panel)setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),700);
+}
+
+// ── Journal ───────────────────────────────────────────────────
+function jSave(k, v){
+  const key = k==='cq5' ? 'ch6_cq5' : JP+k;
+  try{
+    localStorage.setItem(key,v);
+    const sn=k==='cq5'?document.getElementById('sn-q5'):document.getElementById('sn-'+k);
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+  }catch(e){}
+}
+
+function loadJournalFields(){
+  ['q1','q2','q3','q4'].forEach(k=>{
+    const el=document.getElementById('jt-'+k);
+    if(el)el.value=(()=>{try{return localStorage.getItem(JP+k)||'';}catch(e){return '';}})();
+  });
+  const q5=document.getElementById('jt-q5');
+  if(q5)q5.value=(()=>{try{return localStorage.getItem('ch6_cq5')||'';}catch(e){return '';}})();
+}
+
+// ── Load Ch5 prediction ───────────────────────────────────────
+(function loadCh5Pred(){
+  try{
+    const pred=localStorage.getItem('ch5_cq5')||'';
+    ['ch5PredDisplay','ch5PredSimDisplay'].forEach(id=>{
+      const wrapper=document.getElementById(id);
+      const textEl=id==='ch5PredDisplay'?document.getElementById('ch5PredText'):document.getElementById('ch5PredTextSim');
+      if(wrapper&&textEl&&pred.trim()){
+        textEl.textContent=pred;
+        wrapper.style.display='block';
+      }
+    });
+  }catch(e){}
+})();
+
+// ── Init ──────────────────────────────────────────────────────
+renderPalmerConfig('run1');
+predUpdatePrompts('run1');
+</script>
+</body>
+</html>
