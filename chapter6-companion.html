@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 6 — The Ethics of Uncertainty</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+  --red:#dc2626;--red-light:#fee2e2;
+  --success:#166534;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#0f1e38 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:900px;margin:0 auto;padding:1rem}
+.app-header{text-align:center;padding:2rem 1rem 1.5rem;color:white}
+.ch-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.7);margin-bottom:.5rem}
+.app-header h1{font-size:2.1rem;font-weight:700;color:white;margin-bottom:.4rem;line-height:1.2}
+.app-header .subtitle{font-size:1rem;color:rgba(255,255,255,.5);font-style:italic}
+.tab-nav{display:flex;gap:.3rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.35rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab-btn{padding:.45rem .8rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.45rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab-btn:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+.tab-btn.done::after{content:'✓';margin-left:.3rem;font-size:.7rem;color:var(--teal-mid)}
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.18)}
+.tab-pane.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.6rem;font-weight:700;color:var(--teal-dark);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.2rem;font-weight:700;color:var(--navy);margin:1.25rem 0 .5rem}
+h4{font-size:1rem;font-weight:700;color:var(--amber-dark);margin:.9rem 0 .35rem}
+p{line-height:1.75;margin-bottom:.9rem;font-size:.97rem;color:var(--ink)}
+strong{color:var(--navy)}
+.card{border-radius:.75rem;padding:1.35rem;margin-bottom:1.1rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-navy{background:var(--navy);color:white;padding:1.5rem}
+.card-navy p{color:rgba(255,255,255,.8)}
+.card-navy h3,.card-navy h4{color:var(--teal-mid)}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky-mid)}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-red{background:var(--red-light);border-left:4px solid var(--red)}
+.card-dark{background:#0a1628;color:white;border-radius:.75rem;padding:1.5rem;margin-bottom:1.1rem}
+.card-dark h3{color:var(--amber);font-size:1.05rem;margin-top:0}
+.card-dark p{color:rgba(255,255,255,.73)}
+
+/* ── Ensemble builder ── */
+.ens-builder{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem;margin:1rem 0}
+.ens-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.ens-loc{font-size:.8rem;font-family:'JetBrains Mono',monospace;color:var(--navy);min-width:120px}
+.ens-track{flex:1;height:24px;background:var(--border);border-radius:4px;overflow:hidden;cursor:pointer;position:relative}
+.ens-fill{height:100%;border-radius:4px;transition:width .3s;display:flex;align-items:center;justify-content:flex-end;padding-right:6px}
+.ens-fill span{font-size:.72rem;font-weight:700;color:white;font-family:'JetBrains Mono',monospace}
+.ens-pct-input{width:52px;border:1px solid var(--border);border-radius:.3rem;padding:.25rem .4rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;text-align:center}
+.ens-pct-input:focus{outline:none;border-color:var(--teal-mid)}
+.ens-total{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;text-align:right;padding:.4rem;border-top:1px solid var(--border);margin-top:.3rem}
+
+/* ── Suppression gap demo ── */
+.gap-demo{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin:1rem 0}
+.gap-demo-bar{height:32px;border-radius:4px;background:var(--border);overflow:hidden;position:relative;margin:.5rem 0}
+.gap-demo-raw{height:100%;background:var(--teal-mid);position:absolute;left:0;transition:width .4s}
+.gap-demo-perc{height:100%;background:var(--sky-mid);position:absolute;left:0;transition:width .4s;opacity:.7}
+.gap-demo-gap{height:100%;background:var(--amber);position:absolute;transition:width .4s}
+
+/* ── Journal ── */
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.4rem}
+.journal-q p{font-size:.88rem;margin-bottom:.5rem}
+textarea.jta{width:100%;min-height:95px;border:1px solid var(--border);border-radius:.4rem;padding:.65rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.7rem;color:var(--success);font-family:'JetBrains Mono',monospace;height:1.1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+.pred-retrieve{background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.22);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.pred-retrieve .pr-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.3rem}
+.pred-retrieve .pr-text{font-size:.88rem;color:var(--ink);font-style:italic;line-height:1.6;border-left:3px solid var(--amber);padding-left:.6rem}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal-mid),var(--amber));transition:.4s}
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:1rem 1.25rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.95rem}
+blockquote cite{display:block;margin-top:.4rem;font-style:normal;font-size:.78rem;font-weight:600;color:var(--muted)}
+.nav-row{display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.nav-btn{padding:.5rem 1.1rem;border-radius:.45rem;border:1px solid var(--border);background:white;color:var(--navy);font-family:'Cormorant Garamond',serif;font-size:.9rem;cursor:pointer;transition:.15s}
+.nav-btn:hover{background:var(--teal-light);border-color:var(--teal-mid)}
+.nav-btn.primary{background:var(--teal-dark);color:white;border-color:var(--teal-dark)}
+.nav-btn.primary:hover{background:var(--teal)}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries · Chapter 6</div>
+  <h1>The Ethics of Uncertainty</h1>
+  <div class="subtitle">Tim Palmer · Ensemble Forecasting · The Primacy of Doubt</div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:14%"></div></div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-hinge" onclick="showTab('hinge',this)" role="tab">§1 The Hinge</button>
+  <button class="tab-btn" id="tb-chaos" onclick="showTab('chaos',this)" role="tab">§2 Chaos and Certainty</button>
+  <button class="tab-btn" id="tb-ensemble" onclick="showTab('ensemble',this)" role="tab">§3 The Ensemble Method</button>
+  <button class="tab-btn" id="tb-ethical" onclick="showTab('ethical',this)" role="tab">§4 The Ethical Argument</button>
+  <button class="tab-btn" id="tb-everyday" onclick="showTab('everyday',this)" role="tab">§5 The Gap in Your Life</button>
+  <button class="tab-btn" id="tb-capability" onclick="showTab('capability',this)" role="tab">§6 The Capability Gap</button>
+  <button class="tab-btn" id="tb-journal" onclick="showTab('journal',this)" role="tab">§7 Journal</button>
+</div>
+
+<!-- ══ §1 THE HINGE ══ -->
+<div class="tab-pane active" id="pane-hinge">
+  <h2>§1 — The Hinge: From Human Cases to Scientific Cases</h2>
+
+  <p><strong>Chapters 3, 4, and 5 demonstrated three structural capacities through human cases.</strong> Hanna needed to model what capitulation would cost his Identity Kernel. Maathai needed to model how different coordination architectures would produce different outcomes. Mandela needed to model what the TRC's design would produce across five incompatible groups.</p>
+
+  <p>In Chapter 5's final section, you were told that Palmer and Farmer represent the methodological payoff — evidence that the simulation approach you have been practicing is what real scientists use when the stakes are hurricane survival and economic stability. <strong>This chapter tests that claim directly.</strong></p>
+
+  <div class="card card-amber">
+    <h4>Your Chapter 5 Q5 Prediction</h4>
+    <p>In Chapter 5's journal Q5, you predicted what Palmer's ensemble approach would reveal that single-model forecasting could not show. Retrieve that prediction — this chapter will tell you whether your structural diagnosis was correct.</p>
+    <div class="pred-retrieve">
+      <div class="pr-label">Your Chapter 5 Q5 Prediction (retrieved)</div>
+      <div class="pr-text" id="ch5PredDisplay">Loading…</div>
+    </div>
+  </div>
+
+  <h3>What the Move From Human Cases to Scientific Cases Changes</h3>
+  <p>The human cases were about individuals navigating structural conditions they did not choose. The scientific cases are about the methodology itself — showing that the same analytical approach that explains why Mandela succeeded and Challenger failed is what scientists use to predict hurricanes and model pandemic economics.</p>
+
+  <p><strong>The specific argument:</strong> every time you ran two simulations and compared them — Run 1 vs. Run 2, Phase 1 vs. Phase 2, Runs 1/2 vs. Run 3 — you were running an ensemble. You were not looking for the single correct answer. You were reading the distribution of outcomes across varied configurations as the information. That is exactly what Palmer operationalized for hurricane forecasting. The scale differs. The epistemological and ethical structure is identical.</p>
+
+  <div class="nav-row">
+    <span></span>
+    <button class="nav-btn primary" onclick="showTab('chaos',document.getElementById('tb-chaos'))">Next: Chaos and Certainty →</button>
+  </div>
+</div>
+
+<!-- ══ §2 CHAOS AND CERTAINTY ══ -->
+<div class="tab-pane" id="pane-chaos">
+  <h2>§2 — Chaos and the Impossibility of Certainty</h2>
+
+  <p>The atmosphere is a chaotic system in the precise mathematical sense: <strong>sensitive dependence on initial conditions.</strong> An unmeasured difference in the atmosphere's state today — smaller than any instrument can measure — compounds through the nonlinear dynamics of global circulation until it produces a measurably different weather pattern two weeks from now. This is not a poetic metaphor. It is a mathematical property that places a hard limit on deterministic prediction.</p>
+
+  <p><strong>Beyond approximately 10 days, deterministic weather forecasting is mathematically impossible</strong> regardless of computational power, sensor density, or model sophistication. The information required to produce a definite prediction does not exist in the present measurable state of the system.</p>
+
+  <h3>The Traditional Response — and Why It Was Dishonest</h3>
+  <p>The traditional meteorological response to this mathematical limit was: find the best estimate of current conditions, run one simulation, present that simulation's output as the forecast. When it was wrong, explain that the initial conditions were imperfect and promise to improve them.</p>
+
+  <p>This response was epistemologically dishonest. It treated the genuine uncertainty of a chaotic system as a temporary limitation to be minimized rather than as a real property of the system that the people depending on the forecast needed to know about. It presented false certainty.</p>
+
+  <div class="card card-amber">
+    <h4>The Suppression Gap in Forecasting</h4>
+    <p>In Chapter 2, the suppression gap measured the distance between what Boisjoly knew and what reached the launch decision. Single-model forecasting creates a suppression gap in the forecast itself: the genuine uncertainty distribution exists in the ensemble of possible atmospheric states — and the communication architecture compresses it to false certainty before it reaches the public. The people who most need the uncertainty information receive a forecast with a built-in suppression gap.</p>
+  </div>
+
+  <div class="card card-teal">
+    <h4>The Body Count Is Not a Metaphor</h4>
+    <p>Hurricane fatality rates in the United States declined by roughly 50% following improvements in ensemble-based uncertainty communication. That is thousands of lives per decade. When a single-track forecast puts the storm path elsewhere and people in the actual path don't evacuate — that is a direct consequence of the forecasting suppression gap. The ethical dimension of how uncertainty is communicated is not philosophical. It is measured in bodies.</p>
+  </div>
+
+  <blockquote>
+    "The primacy of doubt is not a counsel of despair. It is the beginning of honest communication. When we acknowledge what we do not know, we give people the information they need to make decisions appropriate to their actual situation — not to the false certainty we found it convenient to present."
+    <cite>Tim Palmer, The Primacy of Doubt, 2022</cite>
+  </blockquote>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('hinge',document.getElementById('tb-hinge'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('ensemble',document.getElementById('tb-ensemble'))">Next: The Ensemble Method →</button>
+  </div>
+</div>
+
+<!-- ══ §3 THE ENSEMBLE METHOD ══ -->
+<div class="tab-pane" id="pane-ensemble">
+  <h2>§3 — Palmer's Ensemble Method</h2>
+
+  <p><strong>Palmer's contribution</strong> was not building a faster computer or deploying more weather stations. It was redesigning the evidence architecture of forecasting — changing how existing model outputs were weighted and communicated to decision-makers and the public.</p>
+
+  <h3>The Method — Step by Step</h3>
+  <div class="card card-sky">
+    <p><strong>Step 1:</strong> Take the best estimate of current atmospheric conditions and generate 50–100 slightly different versions, each within the genuine measurement uncertainty of the observations.</p>
+    <p style="margin-top:.5rem"><strong>Step 2:</strong> Run all models simultaneously. Each produces a different forecast trajectory across the 10-day window.</p>
+    <p style="margin-top:.5rem"><strong>Step 3:</strong> Report the distribution — what proportion of ensemble members show each outcome, how spread the ensemble is, where it converges vs. diverges.</p>
+    <p style="margin-top:.5rem"><strong>Step 4:</strong> Communicate the uncertainty structure as the primary information. A narrow ensemble = high confidence. A spread ensemble = genuine uncertainty about which outcome will occur.</p>
+  </div>
+
+  <h3>Interactive — Build an Ensemble Forecast</h3>
+  <p>Adjust the probability percentages for each location to build a hurricane ensemble forecast. The total must equal 100%. Notice how the distribution itself communicates something about the situation that a single track cannot.</p>
+
+  <div class="ens-builder">
+    <h4 style="margin-top:0;color:var(--navy)">Ensemble Forecast Builder — Hurricane Landfall</h4>
+    <div id="ens-rows">
+      <div class="ens-row">
+        <div class="ens-loc">Miami</div>
+        <div class="ens-track">
+          <div class="ens-fill" id="ens-fill-0" style="width:40%;background:#0f766e"><span id="ens-pct-label-0">40%</span></div>
+        </div>
+        <input type="number" class="ens-pct-input" id="ens-0" value="40" min="0" max="100" oninput="updateEnsemble(0,this.value)">
+      </div>
+      <div class="ens-row">
+        <div class="ens-loc">Fort Lauderdale</div>
+        <div class="ens-track">
+          <div class="ens-fill" id="ens-fill-1" style="width:28%;background:#14b8a6"><span id="ens-pct-label-1">28%</span></div>
+        </div>
+        <input type="number" class="ens-pct-input" id="ens-1" value="28" min="0" max="100" oninput="updateEnsemble(1,this.value)">
+      </div>
+      <div class="ens-row">
+        <div class="ens-loc">Key West</div>
+        <div class="ens-track">
+          <div class="ens-fill" id="ens-fill-2" style="width:18%;background:#f59e0b"><span id="ens-pct-label-2">18%</span></div>
+        </div>
+        <input type="number" class="ens-pct-input" id="ens-2" value="18" min="0" max="100" oninput="updateEnsemble(2,this.value)">
+      </div>
+      <div class="ens-row">
+        <div class="ens-loc">Offshore miss</div>
+        <div class="ens-track">
+          <div class="ens-fill" id="ens-fill-3" style="width:14%;background:#6b7280"><span id="ens-pct-label-3">14%</span></div>
+        </div>
+        <input type="number" class="ens-pct-input" id="ens-3" value="14" min="0" max="100" oninput="updateEnsemble(3,this.value)">
+      </div>
+    </div>
+    <div class="ens-total" id="ens-total">Total: 100% ✓</div>
+    <div id="ens-reading" class="card card-teal" style="margin-top:.75rem;margin-bottom:0">
+      <h4 style="margin-top:0">Ensemble Reading</h4>
+      <p id="ens-reading-text" style="margin:0;font-size:.88rem">This ensemble is moderately spread — Miami is the most likely outcome at 40% but one in three ensemble members shows a different landfall location. An evacuation decision calibrated to this distribution would prepare Miami most heavily while issuing tiered warnings for Fort Lauderdale and Key West.</p>
+    </div>
+  </div>
+
+  <h3>What This Means for Every Simulation You Have Run</h3>
+  <p>Every side-by-side comparison panel in this course — Hanna Run 1 vs. Run 2, Maathai Phase 1 vs. Phase 2, Mandela's three runs — is an ensemble visualization. You were reading the distribution of outcomes across varied structural configurations as the information, not collapsing it to a single answer. You have been practicing ensemble thinking since Chapter 2. Palmer operationalized it for forecasting institutions. The method is the same.</p>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('chaos',document.getElementById('tb-chaos'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('ethical',document.getElementById('tb-ethical'))">Next: The Ethical Argument →</button>
+  </div>
+</div>
+
+<!-- ══ §4 THE ETHICAL ARGUMENT ══ -->
+<div class="tab-pane" id="pane-ethical">
+  <h2>§4 — The Ethical Argument: Uncertainty as Information</h2>
+
+  <p>The argument for ensemble forecasting is not primarily that it produces better predictions. It does produce better predictions — but that is a scientific argument. The ethical argument is different: <strong>honest communication of genuine uncertainty is what institutions owe the people whose lives depend on their forecasts.</strong></p>
+
+  <h3>The Traditional View vs. Palmer's View</h3>
+  <div class="card card-red" style="margin-bottom:.6rem">
+    <h4>The Traditional View: Uncertainty as Failure</h4>
+    <p>Uncertainty is the absence of information — the thing you have when you don't know enough yet. Communicating uncertainty to the public means communicating that you don't have the answer yet. The goal is to reduce uncertainty until you can present something definite.</p>
+  </div>
+  <div class="card card-green">
+    <h4>Palmer's View: Uncertainty as Primary Information</h4>
+    <p>In a chaotic system, the uncertainty structure IS the information. A narrow distribution (90% of ensemble members agree) tells you something categorically different from a broad distribution (each outcome at 20%). Both are more informative than a single-track forecast. A narrow distribution confirms near-certainty. A broad distribution warns of genuine complexity. The primacy of doubt means leading with the honest structure of what you know and don't know.</p>
+  </div>
+
+  <h3>The Moral Argument Made Personal</h3>
+  <p>Imagine you are driving to work and the weather forecast says "Rain: 40%." You understand that as a genuine probability — you bring an umbrella or leave it, calibrated to real uncertainty. Now imagine the forecast system decided that 40% was not "certain enough" to report, so it reported "No rain" because no rain is the single most likely outcome at 60%. You leave the umbrella home. It rains. You are soaked — not because the forecast was wrong but because information about the genuine risk was suppressed before it reached you.</p>
+
+  <p><strong>This is what single-model hurricane forecasting did at scale.</strong> The most likely track was reported as the track. One in three storms exited the forecast cone. People in the actual path had calibrated their decisions to false certainty. Some of them died.</p>
+
+  <div class="card card-navy">
+    <h4>The Institutional Ethics Principle</h4>
+    <p>If a forecasting institution has an ensemble that shows genuine uncertainty and compresses it to false certainty before communicating it to the public, it is making a moral choice: it is deciding that the people depending on that forecast do not need — or cannot handle — the genuine complexity of the situation. This paternalism has a body count. The institution owes the people an honest account of what it actually knows, including what it genuinely does not know.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('ensemble',document.getElementById('tb-ensemble'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('everyday',document.getElementById('tb-everyday'))">Next: The Gap in Your Life →</button>
+  </div>
+</div>
+
+<!-- ══ §5 THE EVERYDAY ENSEMBLE QUESTION ══ -->
+<div class="tab-pane" id="pane-everyday">
+  <h2>§5 — The Everyday Ensemble Question</h2>
+
+  <p>Before communicating anything that represents certainty about a complex situation — a prediction, a recommendation, a diagnosis, an assessment — ask yourself: <strong>am I presenting the single most likely outcome, or the genuine distribution of outcomes?</strong></p>
+
+  <p>If you are presenting only the most likely outcome, you are making a choice about what information reaches the people who depend on your analysis. That choice has consequences. The ensemble question is not only for meteorologists.</p>
+
+  <h3>Forecasting Suppression Gaps in Your World</h3>
+
+  <div class="card card-sky" style="margin-bottom:.6rem">
+    <h4>Healthcare</h4>
+    <p>A doctor who presents a treatment recommendation without communicating the genuine uncertainty of the evidence base — the range of outcomes across similar patients, the real probability that the treatment will fail for this specific person — has created a forecasting suppression gap. The patient makes decisions calibrated to certainty that does not exist. The honest version: "This treatment works in roughly 70% of cases with your profile. The 30% who don't respond tend to be in these circumstances. Here is what we would do next in that case."</p>
+  </div>
+
+  <div class="card card-sky" style="margin-bottom:.6rem">
+    <h4>Financial Advice</h4>
+    <p>An advisor who presents projected returns without communicating the genuine distribution of outcomes, the probability of loss scenarios, or the range of situations under which the recommendation fails — has suppressed the uncertainty information the client needs to make decisions calibrated to their actual risk tolerance. The ensemble version: "Our best estimate is X% annual return. But there is a 15% chance of a negative year and a 5% chance of a significant loss. Here is what we would do in each scenario."</p>
+  </div>
+
+  <div class="card card-sky">
+    <h4>Educational Assessment</h4>
+    <p>An institution that presents a single test score as the definitive measure of a student's capability — when the genuine measurement uncertainty of standardized testing is substantial — has created a suppression gap between what is genuinely known about the student and what reaches decisions about their future. The ensemble version acknowledges the confidence interval: a score of 1240 could represent students who would score anywhere from 1150 to 1310 on a different day with a different version of the test.</p>
+  </div>
+
+  <h3>Interactive — Identify a Suppression Gap in Your Domain</h3>
+  <div class="card card-teal">
+    <p>Think of a domain in your own life — work, healthcare, education, finances — where you routinely receive information expressed as false certainty. What is the genuine uncertainty being suppressed? Write a brief "ensemble version" of the information you receive — what it would look like if the institution communicated honestly about what it knows and doesn't know.</p>
+    <textarea style="width:100%;min-height:80px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.88rem;resize:vertical;margin-top:.5rem" id="everyday-reflection" placeholder="Domain: …&#10;False certainty I receive: …&#10;The genuine uncertainty being suppressed: …&#10;The honest ensemble version would say: …" oninput="saveLocal('everyday',this.value)"></textarea>
+    <div class="save-note" id="sn-everyday">✓ Saved</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('ethical',document.getElementById('tb-ethical'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('capability',document.getElementById('tb-capability'))">Next: The Capability Gap →</button>
+  </div>
+</div>
+
+<!-- ══ §6 THE CAPABILITY GAP ══ -->
+<div class="tab-pane" id="pane-capability">
+  <h2>§6 — The Capability Gap: What Honest Forecasting Cannot Do Alone</h2>
+
+  <p>The Palmer simulation's Run 3 made a specific structural argument: closing the forecasting suppression gap does not automatically close the capability gap. The most structurally constrained population received the same honest probability distribution as everyone else — and still had lower capacity to act on it.</p>
+
+  <h3>The Gap Between Information and Action</h3>
+  <p>Knowing the genuine risk accurately does not equalize the capacity to respond to risk. An agent with no personal vehicle, no savings buffer for hotel and food costs, irregular hourly employment, and no social network with vehicles — receives an accurate 40% probability distribution for their neighborhood's hurricane landfall — and still cannot evacuate. The information is honest. The structural conditions that constrain action have not changed.</p>
+
+  <div class="card card-amber">
+    <h4>The Simulation Measurement</h4>
+    <p>Run 3 used identical ensemble evidence architecture to Run 2 (honest forecasting, positive block fields) but with base_entropy 0.72 and stress 0.64 — modeling the most structurally constrained population. The lower λ Raw in Run 3 is not caused by worse forecasting. It is caused by higher structural constraint on the agents' capacity to act on accurate information. This is the capability gap made measurable.</p>
+  </div>
+
+  <h3>The Complete Moral Obligation</h3>
+  <p>The institution that communicates genuine risk honestly (closing the epistemic suppression gap) and then provides no differential support for populations who cannot act on that risk without structural assistance has fulfilled its epistemic obligation while leaving a moral obligation unaddressed.</p>
+
+  <p><strong>The complete ethical stance requires both:</strong> honest uncertainty communication AND institutional support structures designed to close the capability gap for the most constrained populations. This is Rawls' difference principle applied to forecasting ethics: the institutional design must be evaluated not just by its average outputs but by what it produces for the least structurally advantaged.</p>
+
+  <div class="card card-navy">
+    <h4>Practical Application: Two Obligations</h4>
+    <p><strong>Obligation 1 — Epistemic:</strong> Communicate genuine uncertainty honestly. Do not compress the probability distribution to false certainty. The primacy of doubt is an institutional obligation, not just a scientific nicety.</p>
+    <p style="margin-top:.5rem"><strong>Obligation 2 — Structural:</strong> Design support structures that ensure the most constrained populations can act on accurate information. For hurricane forecasting: transportation networks, pre-positioned shelter capacity, early evacuation support for carless households, income-protection for hourly workers who evacuate early. Honest forecasting tells you who is at risk. Structural support determines whether knowing you are at risk translates into surviving it.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('everyday',document.getElementById('tb-everyday'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('journal',document.getElementById('tb-journal'))">Next: Journal →</button>
+  </div>
+</div>
+
+<!-- ══ §7 JOURNAL ══ -->
+<div class="tab-pane" id="pane-journal">
+  <h2>§7 — Chapter Reflection Questions</h2>
+  <p>Complete these questions before opening Chapter 7 (Farmer). Responses are saved automatically.</p>
+
+  <div class="journal-q">
+    <div class="q-label">Q1 — Your Chapter 5 Prediction Assessment</div>
+    <p>Compare your Chapter 5 Q5 prediction (shown above) to what this chapter actually argued. What was accurate in your prediction? Where was the gap — what did the chapter argue that your prediction missed? What structural concept would have produced a more accurate prediction?</p>
+    <textarea class="jta" id="jt-q1" placeholder="My prediction was accurate about… The gap was… The structural concept I was missing was…" oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q2 — The Suppression Gap in Forecasting</div>
+    <p>Explain the structural parallel between Boisjoly's suppression gap (Chapter 2) and the single-model forecasting suppression gap (Chapter 6). What is being suppressed in each case? What is the institutional architecture that produces the suppression? What would close each gap?</p>
+    <textarea class="jta" id="jt-q2" placeholder="Boisjoly's suppression gap: what was suppressed was… produced by the architecture of…&#10;Single-model forecasting suppression gap: what is suppressed is… produced by…&#10;What closes each gap: …" oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q3 — The Ensemble in Your Own Work</div>
+    <p>Identify a domain in your own life, institution, or planned career where you communicate (or will communicate) about uncertain outcomes. What would it mean to apply Palmer's ensemble principle there — presenting the distribution rather than the single most likely outcome? What resistance would you encounter and from whom? Why?</p>
+    <textarea class="jta" id="jt-q3" placeholder="The domain: …&#10;The ensemble version of what I currently communicate as certainty: …&#10;The resistance I would face: … Why: …" oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q4 — The Two Obligations</div>
+    <p>The chapter argues that honest forecasting fulfills the epistemic obligation but not necessarily the structural one. Identify a specific population in your community that faces a capability gap — people who would receive accurate risk information but lack the structural capacity to act on it. Design a specific institutional intervention (not a general principle) that would close that gap. What is the smallest concrete step?</p>
+    <textarea class="jta" id="jt-q4" placeholder="The population: …&#10;The capability gap they face: …&#10;The institutional intervention: …&#10;The smallest concrete first step: …" oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">✓ Saved</div>
+  </div>
+
+  <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.04)">
+    <div class="q-label" style="color:var(--amber-dark)">Q5 — Prediction for Chapter 7 (Farmer)</div>
+    <p>Chapter 7 introduces Doyne Farmer and agent-based economic modeling. Standard macroeconomics uses a <em>representative agent</em> — a single idealized rational actor standing in for the entire economy. This is structurally analogous to Palmer's single-model forecast. Before reading Chapter 7, predict:</p>
+    <ul style="font-size:.87rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
+      <li><strong>The structural parallel:</strong> how is the representative agent assumption structurally equivalent to the single-model forecast? What does it suppress?</li>
+      <li><strong>Who becomes invisible:</strong> which populations does the representative agent make structurally invisible, and what is the cost in a crisis like COVID?</li>
+      <li><strong>The ensemble equivalent for economics:</strong> what would a "Palmer approach" to economic modeling look like? What would change?</li>
+      <li><strong>The COVID prediction:</strong> Farmer's agent-based model predicted UK GDP during COVID better than standard models. Before reading why — what did the standard models miss?</li>
+    </ul>
+    <textarea class="jta q5" id="jt-q5" placeholder="The structural parallel: the representative agent suppresses…&#10;Who becomes invisible: …&#10;The economic ensemble approach: …&#10;What standard models missed in COVID: …" oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-q5">✓ Saved for Chapter 7</div>
+  </div>
+
+  <div class="card-dark" style="margin-top:1.5rem">
+    <h3>Looking Ahead: Chapter 7 — Doyne Farmer and the Invisible Population</h3>
+    <p>Palmer showed that collapsing a genuine probability distribution to a single track suppresses information that better decisions require. Doyne Farmer showed the same structural problem in economics. Standard macroeconomic models use a representative agent — one rational actor standing in for the entire economy. A lockdown's impact looks like one person choosing between work and home. It does not look like a restaurant worker losing income while a remote software engineer gains productivity, while a hospital nurse faces increased risk while a manufacturing supply chain fractures.</p>
+    <p style="margin-top:.5rem">Farmer's agent-based approach kept all of them visible — and produced better predictions precisely because it did. The populations most harmed by economic crises are systematically the populations most invisible to aggregate models. That invisibility is not a technical limitation. It is a moral choice embedded in the modeling decision.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('capability',document.getElementById('tb-capability'))">← Back</button>
+    <a href="https://rmertzman-tech.github.io/Three-Scenario-Sims/palmer-case-explorer.html"
+       target="_blank" style="text-decoration:none">
+      <button class="nav-btn primary">Open Palmer Case Explorer →</button>
+    </a>
+  </div>
+</div>
+
+</div><!-- /app-wrap -->
+<script>
+'use strict';
+const JP='ch6_';
+const TABS=['hinge','chaos','ensemble','ethical','everyday','capability','journal'];
+const completedTabs=new Set();
+
+function showTab(name,btn){
+  TABS.forEach(t=>{const p=document.getElementById('pane-'+t);if(p)p.style.display='none';});
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+  const pane=document.getElementById('pane-'+name);
+  if(pane){pane.style.display='block';pane.classList.add('active');pane.scrollIntoView({behavior:'smooth',block:'start'});}
+  if(btn){btn.classList.add('active');btn.setAttribute('aria-selected','true');}
+  completedTabs.add(name);
+  updateProgress();
+  if(name==='journal') loadJournal();
+}
+function updateProgress(){
+  const pct=Math.round((completedTabs.size/TABS.length)*100);
+  const fill=document.getElementById('progressFill');
+  if(fill) fill.style.width=pct+'%';
+  TABS.forEach(t=>{if(completedTabs.has(t)){const btn=document.getElementById('tb-'+t);if(btn&&!btn.classList.contains('done'))btn.classList.add('done');}});
+}
+function jSave(k,v){
+  const key=k==='cq5'?'ch6_cq5':JP+k;
+  try{localStorage.setItem(key,v);
+    const sn=k==='cq5'?document.getElementById('sn-q5'):document.getElementById('sn-'+k);
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+  }catch(e){}
+}
+function saveLocal(k,v){
+  try{localStorage.setItem(JP+k,v);
+    const sn=document.getElementById('sn-'+k);
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+  }catch(e){}
+}
+function loadJournal(){
+  ['q1','q2','q3','q4'].forEach(k=>{const el=document.getElementById('jt-'+k);if(el)el.value=(()=>{try{return localStorage.getItem(JP+k)||'';}catch(e){return '';}})();});
+  const q5=document.getElementById('jt-q5');if(q5)q5.value=(()=>{try{return localStorage.getItem('ch6_cq5')||'';}catch(e){return '';}})();
+  const er=document.getElementById('everyday-reflection');if(er)er.value=(()=>{try{return localStorage.getItem(JP+'everyday')||'';}catch(e){return '';}})();
+}
+// Ch5 prediction retrieval
+(function loadCh5Pred(){
+  try{const pred=localStorage.getItem('ch5_cq5')||'';
+    const el=document.getElementById('ch5PredDisplay');
+    if(el)el.textContent=pred.trim()?pred:'No Chapter 5 prediction found. Complete Chapter 5 journal Q5 first.';}catch(e){}
+})();
+// Ensemble builder
+function updateEnsemble(idx,val){
+  const v=Math.max(0,Math.min(100,parseInt(val)||0));
+  const fill=document.getElementById('ens-fill-'+idx);
+  const lbl=document.getElementById('ens-pct-label-'+idx);
+  if(fill) fill.style.width=v+'%';
+  if(lbl) lbl.textContent=v+'%';
+  const inputs=[0,1,2,3].map(i=>parseInt(document.getElementById('ens-'+i)?.value||0));
+  const total=inputs.reduce((a,b)=>a+b,0);
+  const totalEl=document.getElementById('ens-total');
+  if(totalEl){totalEl.textContent='Total: '+total+'%'+(total===100?' ✓':' ← must equal 100');
+    totalEl.style.color=total===100?'var(--green)':'var(--red)';}
+  // Update reading
+  const sorted=[...inputs].sort((a,b)=>b-a);
+  const max=sorted[0];
+  const readingEl=document.getElementById('ens-reading-text');
+  if(!readingEl) return;
+  if(max>=70) readingEl.textContent=`This ensemble is narrow — ${max}% of members agree on one outcome. This is a high-confidence forecast. Decision-makers can focus resources on the dominant outcome with low uncertainty cost.`;
+  else if(max>=45) readingEl.textContent=`This ensemble is moderately spread — the most likely outcome has ${max}% of ensemble members but significant uncertainty remains. Tiered warnings for multiple locations are appropriate. The distribution tells emergency managers how to allocate resources proportionally.`;
+  else readingEl.textContent=`This ensemble is highly spread — no single outcome dominates at ${max}%. This is a genuinely uncertain forecast. Communicating this spread to the public is more important than picking a single most-likely track. Wide evacuation preparation is warranted.`;
+  try{localStorage.setItem(JP+'ensemble_'+idx,v);}catch(e){}
+}
+// Restore ensemble
+[0,1,2,3].forEach(i=>{try{const saved=localStorage.getItem(JP+'ensemble_'+i);if(saved){const el=document.getElementById('ens-'+i);if(el){el.value=saved;updateEnsemble(i,saved);}}}catch(e){}});
+completedTabs.add('hinge');
+updateProgress();
+</script>
+</body>
+</html>
