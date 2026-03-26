@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 3 — The Commonwealth of One</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --success:#16a34a;--success-light:#dcfce7;
+  --danger:#dc2626;--danger-light:#fee2e2;
+  --sky:#1e3a8a;--sky-light:#dbeafe;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#0d1e38 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:900px;margin:0 auto;padding:1rem}
+
+/* ── HEADER ── */
+.app-header{text-align:center;padding:2rem 1rem 1.5rem;color:white}
+.app-header .ch-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.7);margin-bottom:.5rem}
+.app-header h1{font-size:2.1rem;font-weight:700;line-height:1.2;color:white;margin-bottom:.4rem}
+.app-header .subtitle{font-size:1rem;color:rgba(255,255,255,.55);font-style:italic}
+
+/* ── TABS ── */
+.tab-nav{display:flex;gap:.3rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.35rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab-btn{padding:.45rem .8rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.45rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab-btn:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+.tab-btn.done::after{content:'✓';margin-left:.3rem;font-size:.7rem;color:var(--teal-mid)}
+
+/* ── PANE ── */
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.18)}
+.tab-pane.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── TYPOGRAPHY ── */
+h2{font-size:1.6rem;font-weight:700;color:var(--teal-dark);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.2rem;font-weight:700;color:var(--navy);margin:1.25rem 0 .5rem}
+h4{font-size:1rem;font-weight:700;color:var(--amber-dark);margin:.9rem 0 .35rem}
+p{line-height:1.75;margin-bottom:.9rem;font-size:.97rem;color:var(--ink)}
+strong{color:var(--navy)}
+
+/* ── CARDS ── */
+.card{border-radius:.75rem;padding:1.35rem;margin-bottom:1.1rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-navy{background:var(--navy);color:white;padding:1.5rem}
+.card-navy h3,.card-navy h4{color:var(--teal-mid)}
+.card-navy p{color:rgba(255,255,255,.8)}
+.card-dark{background:#0f1e35;color:white;border-radius:.75rem;padding:1.5rem;margin-bottom:1.1rem}
+.card-dark h3{color:var(--amber);font-size:1.1rem;margin-top:0}
+.card-dark p{color:rgba(255,255,255,.75)}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky)}
+.card-success{background:var(--success-light);border-left:4px solid var(--success)}
+
+/* ── PRF TABLE ── */
+.prf-table{width:100%;border-collapse:collapse;font-size:.88rem;margin:1rem 0}
+.prf-table th{background:var(--navy);color:white;padding:.6rem .75rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.prf-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.prf-table tr:nth-child(odd) td{background:var(--paper)}
+.prf-table tr:hover td{background:var(--teal-light)}
+.prf-table .dim{font-weight:700;color:var(--teal-dark);width:22%;font-size:.85rem}
+
+/* ── CONTRAST TABLE ── */
+.contrast-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:1rem 0}
+.contrast-table th{background:var(--navy);color:white;padding:.5rem .65rem;text-align:left;font-size:.75rem}
+.contrast-table td{padding:.5rem .65rem;border:1px solid var(--border);vertical-align:top;line-height:1.5}
+.contrast-table .row-label{font-weight:700;color:var(--navy);background:var(--paper)}
+.contrast-table .ch2-col{background:var(--sky-light)}
+.contrast-table .ch3-col{background:var(--teal-light)}
+
+/* ── ATCF SLIDERS ── */
+.atcf-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.atcf-item{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem}
+.atcf-item h4{margin:0 0 .4rem;font-size:.9rem}
+.atcf-label{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-bottom:.3rem}
+.atcf-val{font-size:1.1rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal-dark)}
+input[type=range].atcf-sl{width:100%;height:6px;border-radius:3px;-webkit-appearance:none;cursor:pointer;outline:none;margin:.3rem 0}
+input[type=range].atcf-sl::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--teal-dark);cursor:pointer;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.atcf-total{background:var(--navy);color:white;border-radius:.5rem;padding:.75rem 1rem;margin-top:.75rem;text-align:center}
+.atcf-total .val{font-size:1.6rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal-mid)}
+
+/* ── STRUCTURAL DIAGNOSTIC ── */
+.diag-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;padding:.75rem;background:var(--paper);border-radius:.5rem;border:1px solid var(--border)}
+.diag-label{font-size:.88rem;font-weight:600;color:var(--navy);min-width:160px}
+input[type=range].diag-sl{flex:1;height:6px;border-radius:3px;-webkit-appearance:none;cursor:pointer;outline:none}
+input[type=range].diag-sl::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;cursor:pointer;border:2px solid white}
+.diag-val{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:600;min-width:2.5rem;text-align:right}
+.diag-anchor{font-size:.7rem;color:var(--muted);display:flex;justify-content:space-between}
+
+/* ── JOURNAL ── */
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.4rem}
+.journal-q p{font-size:.88rem;margin-bottom:.5rem}
+textarea.jta{width:100%;min-height:100px;border:1px solid var(--border);border-radius:.4rem;padding:.65rem;font-family:'Cormorant Garamond',serif;font-size:.92rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:150px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.72rem;color:var(--success);font-family:'JetBrains Mono',monospace;height:1.2rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+
+/* ── PREDICTION RETRIEVAL ── */
+.pred-retrieve{background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.25);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.pred-retrieve .pr-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.3rem}
+.pred-retrieve .pr-text{font-size:.88rem;color:var(--ink);font-style:italic;line-height:1.6;border-left:3px solid var(--amber);padding-left:.6rem}
+
+/* ── PROGRESS ── */
+.progress-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal-mid),var(--amber));transition:.4s}
+
+/* ── QUOTE ── */
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:1rem 1.25rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.95rem}
+blockquote cite{display:block;margin-top:.4rem;font-style:normal;font-size:.8rem;font-weight:600;color:var(--muted)}
+
+/* ── NAV BUTTONS ── */
+.nav-row{display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.nav-btn{padding:.5rem 1.1rem;border-radius:.45rem;border:1px solid var(--border);background:white;color:var(--navy);font-family:'Cormorant Garamond',serif;font-size:.9rem;cursor:pointer;transition:.15s}
+.nav-btn:hover{background:var(--teal-light);border-color:var(--teal-mid)}
+.nav-btn.primary{background:var(--teal-dark);color:white;border-color:var(--teal-dark)}
+.nav-btn.primary:hover{background:var(--teal)}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries · Chapter 3</div>
+  <h1>The Commonwealth of One</h1>
+  <div class="subtitle">Identity Under Maximum Suppression · Case Study: Bishop Saad Sirop Hanna</div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:14%"></div></div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-outside" onclick="showTab('outside',this)" role="tab" aria-selected="true">§1 Outside → Inside</button>
+  <button class="tab-btn" id="tb-prf" onclick="showTab('prf',this)" role="tab">§2 Hanna's PRF</button>
+  <button class="tab-btn" id="tb-thermo" onclick="showTab('thermo',this)" role="tab">§3 The Thermodynamic Universe</button>
+  <button class="tab-btn" id="tb-atcf" onclick="showTab('atcf',this)" role="tab">§4 Commonwealth of One</button>
+  <button class="tab-btn" id="tb-biobond" onclick="showTab('biobond',this)" role="tab">§5 BioBond</button>
+  <button class="tab-btn" id="tb-diag" onclick="showTab('diag',this)" role="tab">§6 Your Diagnostic</button>
+  <button class="tab-btn" id="tb-journal" onclick="showTab('journal',this)" role="tab">§7 Journal</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §1 FROM THE OUTSIDE TO THE INSIDE
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="pane-outside" role="tabpanel">
+  <h2>§1 — From the Outside to the Inside</h2>
+
+  <p><strong>Chapter 2 showed you the suppression gap from the outside.</strong> You were the analyst. The telescope was pointed at an institution — NASA's launch decision architecture in January 1986. What you measured was structural: the distance between what Roger Boisjoly knew and what reached the launch decision.</p>
+
+  <p><strong>Chapter 3 points the same telescope at an individual from the inside.</strong> Bishop Saad Sirop Hanna, imprisoned in Baghdad in 2006, faced a suppression architecture designed not to filter his knowledge, but to destroy the Identity Kernel that generated his knowledge in the first place.</p>
+
+  <div class="card card-teal">
+    <h4>The Precise Structural Difference</h4>
+    <p>Chapter 2's suppression gap is an institutional measure — the distance between what exists in a system and what reaches its decisions. Chapter 3's morphic fidelity is an identity measure — the ratio of what remains coherent to what has been eroded under suppression. Both are structural. Neither is about individual virtue.</p>
+  </div>
+
+  <h3>The Three-Chapter Contrast</h3>
+  <p>Read this table to locate Chapter 3 precisely in the course's architecture before entering the case.</p>
+
+  <table class="contrast-table">
+    <thead>
+      <tr><th>Dimension</th><th class="ch2-col">Chapter 2 — Challenger</th><th class="ch3-col">Chapter 3 — Hanna</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-label">What it models</td><td class="ch2-col">Institutional architecture of a launch decision — 16 agents, authority-weighted evidence, schedule pressure</td><td class="ch3-col">Captivity environment of one person under maximum suppression — 14 agents, community severed, boundary strongly activated</td></tr>
+      <tr><td class="row-label">Primary metric</td><td class="ch2-col">Suppression gap (λ Raw − λ Perceived): how much knowledge failed to reach the decision</td><td class="ch3-col">Morphic fidelity (λ Raw ÷ (λ Raw + morphic suppression)): how much identity signal survived the conditions designed to destroy it</td></tr>
+      <tr><td class="row-label">The ethical claim</td><td class="ch2-col">The disaster was structurally produced by an architecture that filtered empirical input before it reached decision authority</td><td class="ch3-col">Hanna's resilience was structurally enabled by his Identity Kernel depth and external cognitive scaffolding — not individual virtue alone</td></tr>
+      <tr><td class="row-label">What cannot be shown</td><td class="ch2-col">What Boisjoly experienced from the inside</td><td class="ch3-col">Whether Hanna would have broken without institutional support — only structural probabilities</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card card-amber">
+    <h4>Your Chapter 2 Prediction</h4>
+    <p>In Chapter 2's journal Q5, you predicted what happens to λ Raw and morphic fidelity when every BioBond is systematically severed under maximum entropy conditions. The Hanna simulation will test that prediction. Find it before running the simulation.</p>
+    <div class="pred-retrieve">
+      <div class="pr-label">Your Chapter 2 Q5 Prediction (retrieved)</div>
+      <div class="pr-text" id="ch2PredDisplay">Loading…</div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <span></span>
+    <button class="nav-btn primary" onclick="showTab('prf',document.getElementById('tb-prf'))">Next: Hanna's PRF →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §2 HANNA'S PRF
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-prf" role="tabpanel">
+  <h2>§2 — Bishop Hanna's PRF</h2>
+
+  <p>Chapter 2 developed Boisjoly's PRF to explain why his configuration made him structurally positioned to see what the NASA architecture suppressed. Hanna's PRF serves a different structural purpose: it explains why his configuration made his identity structurally <strong>resistant</strong> to the suppression architecture his captors designed.</p>
+
+  <p><strong>The key structural insight:</strong> his captors needed to accomplish one thing — get Hanna to say the words of conversion. The obstacle was not physical. The obstacle was his generative model. His beliefs, rules, and ontology together constituted a predictive architecture that processed the death threat in a way that made compliance more catastrophically dissonant than death.</p>
+
+  <table class="prf-table">
+    <thead><tr><th>PRF Dimension</th><th>Hanna's Configuration</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="dim">Beliefs</td>
+        <td>God is present in suffering. All human beings — including captors — possess inherent dignity that cannot be forfeited by their actions. Reality includes dimensions that physical threat cannot reach. These were not loosely held propositions. They were the precision-weighted priors from which every experience was processed.</td>
+      </tr>
+      <tr>
+        <td class="dim">Rules</td>
+        <td>Faith cannot be renounced to preserve biological life. Protect the vulnerable even at personal cost. Forgiveness is constitutive of who he is — not a response he chooses. These rules had been practiced for decades until they became the automatic output of his generative model.</td>
+      </tr>
+      <tr>
+        <td class="dim">Ontology</td>
+        <td>Death is not the worst outcome. Betrayal of one's deepest commitments is worse than death. The spiritual dimension of reality is as real as the physical dimension — more permanent, in fact. This ontology meant the captors' primary weapon — the credible threat of death — was structurally less powerful than they intended.</td>
+      </tr>
+      <tr>
+        <td class="dim">Authenticity</td>
+        <td>No gap between internal state and external expression throughout the captivity. He told his captors directly: 'I will not become a Muslim, and I fully know that you are going to kill me for it.' The absence of a gap between knowing and expressing — under conditions specifically designed to create that gap — is what the simulation's low morphic suppression in Run 2 measures.</td>
+      </tr>
+      <tr>
+        <td class="dim">Assembly History</td>
+        <td>Engineering degree → Philosophy doctorate → Seminary formation → Pastoral ministry — 34 years deep. Each layer built the Identity Kernel deeper. By 2006, the formation was so deep that the structural conditions designed to collapse it could not reach its foundation.</td>
+      </tr>
+      <tr>
+        <td class="dim">Forward Pull</td>
+        <td>If survival: renewed service. If death: martyrdom, which his PRF experiences not as the worst outcome but as the highest honor available to a priest. Either branch was authentic and available. This is why the death threat could not destroy Prospective Coherence: it could not eliminate the thing PC was oriented toward.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-teal">
+    <h4>The Assembly History Dimension is the Structural Key</h4>
+    <p>His captors were not testing a set of beliefs he had recently adopted. They were testing a structure that had been reinforced thousands of times across three decades. The depth of the formation was the structural variable that determined the depth of the resistance. The simulation cannot model this depth directly — but the boundary block field (+0.9) and sacred_boundary worldview distribution (0.68) approximate what 34 years of Identity Kernel building produces.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('outside',document.getElementById('tb-outside'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('thermo',document.getElementById('tb-thermo'))">Next: The Thermodynamic Universe →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §3 THE THERMODYNAMIC UNIVERSE
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-thermo" role="tabpanel">
+  <h2>§3 — The Thermodynamic Universe</h2>
+
+  <p>Before we can read what the simulation measures, we need to understand the universe it is modelling — specifically what it means to be a living, thinking, choosing being inside a cosmos that trends naturally toward disorder.</p>
+
+  <h3>The Second Law and Identity</h3>
+  <p>The Second Law of Thermodynamics states that in any closed system, entropy — disorder, randomness, the degradation of organized structure — tends to increase over time. Ice melts. Buildings crumble. Complex organizations dissolve.</p>
+
+  <p><strong>A living human being is a local, temporary, energy-expensive exception to this trend.</strong> You are a low-entropy structure in a high-entropy universe. Every moment you are alive, your body is consuming energy to maintain the organized complexity that makes you you. Identity coherence is not a fixed possession — it is an ongoing thermodynamic project requiring continuous energy expenditure.</p>
+
+  <blockquote>
+    "You have approximately 37 trillion cells, each consuming energy every second to maintain its organized state. Your brain alone uses about 20% of your body's energy budget — roughly 12 watts, continuously — to maintain the electrochemical patterns that constitute your thoughts, memories, and sense of self. The idea that 'just existing' is effortless is a biological illusion. Existence is expensive. Identity is even more expensive."
+    <cite>— Chapter 3, Ethics Beyond Boundaries</cite>
+  </blockquote>
+
+  <h3>The Sapolsky Gate — Bottom-Up Causality</h3>
+  <p>Robert Sapolsky's research establishes that chronic stress measurably degrades the prefrontal cortex — the brain region responsible for deliberate reasoning. The simulation models this through the <strong>Sapolsky gate</strong>: as stress rises past approximately 0.65, C_PFC collapses and the agent is pushed from MANUAL mode (deliberate reasoning) into AUTOMATIC mode (reactive, survival responses). Compliance — conversion — was what Hanna's captors were designing for.</p>
+
+  <div class="card card-amber">
+    <h4>The Sapolsky Gate — What It Means for Ethics</h4>
+    <p>If chronic stress degrades the capacity for deliberate moral reasoning, then the conditions under which people make ethical decisions matter — not just morally, but biologically. A person carrying accumulated trauma has a literally different capacity for ethical deliberation than a person with adequate rest and safety. This is not an excuse for harmful choices. It is a structural fact about what ethics costs.</p>
+  </div>
+
+  <h3>Top-Down Causality — The Identity Kernel as Constraint</h3>
+  <p>But Sapolsky does not tell the whole story. What we call 'identity' is neurologically a set of high-precision priors: predictions about 'who I am' that are so confident, so deeply established, that they literally suppress alternative neural pathways through inhibitory synaptic connections.</p>
+
+  <p><strong>This is top-down causality:</strong> the Identity Kernel generates predictions so confident that they constrain which biological pathways activate. The psychology is implemented by the biology at a different organizational level, and it operates causally downward onto the biology beneath it.</p>
+
+  <p>Hanna's 34-year-deep formation generated predictions of extraordinary precision — "I am a priest," "my faith is non-negotiable," "death is less catastrophic than betrayal" — that were physically suppressing the alternative biological pathways even under maximum biological pressure. The result that should be impossible according to a purely bottom-up account: his deliberate reasoning capacity held.</p>
+
+  <div class="card card-sky">
+    <h4>Simulation Parameter: base_entropy 0.88</h4>
+    <p>In Hanna's simulation, base_entropy is set to 0.88 — near-maximum in the engine's scale. This models the near-maximum cognitive and relational disorder of the captivity environment: pain, isolation, uncertainty, the constant threat of death. The community block field is −0.9 — every relational cognitive scaffold has been systematically severed. These are the conditions under which his Identity Kernel had to maintain coherence.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('prf',document.getElementById('tb-prf'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('atcf',document.getElementById('tb-atcf'))">Next: Commonwealth of One →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §4 THE COMMONWEALTH OF ONE — ATCF
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-atcf" role="tabpanel">
+  <h2>§4 — The Commonwealth of One</h2>
+
+  <p>The <strong>Commonwealth of One</strong> is the internal infrastructure of individual identity coherence — four structural capacities that together constitute the self's ability to maintain coherent agency under pressure. The simulation measures it indirectly through λ Raw, morphic suppression, and morphic fidelity.</p>
+
+  <p>Use the sliders below to assess how each ATCF component operated in Hanna's captivity — then read the structural explanation beneath each one.</p>
+
+  <div class="atcf-grid">
+    <div class="atcf-item">
+      <h4>Historical Continuity (HC)</h4>
+      <div class="atcf-label"><span>Severed</span><span class="atcf-val" id="hc-val">8</span><span>Intact</span></div>
+      <input type="range" class="atcf-sl" id="hc-sl" min="0" max="10" value="8" step="1"
+        style="background:linear-gradient(90deg,var(--teal-dark) 80%,var(--border) 80%)"
+        oninput="updateATCF('hc',this.value)">
+      <p style="font-size:.8rem;margin:.5rem 0 0;color:var(--muted)">When captors demanded he renounce his priesthood, he chose death over historical rupture. HC held at near-maximum: his past was continuous with his present despite 28 days of pressure designed to sever that thread.</p>
+    </div>
+    <div class="atcf-item">
+      <h4>Present Integration (PI)</h4>
+      <div class="atcf-label"><span>Fragmented</span><span class="atcf-val" id="pi-val">9</span><span>Aligned</span></div>
+      <input type="range" class="atcf-sl" id="pi-sl" min="0" max="10" value="9" step="1"
+        style="background:linear-gradient(90deg,var(--teal-dark) 90%,var(--border) 90%)"
+        oninput="updateATCF('pi',this.value)">
+      <p style="font-size:.8rem;margin:.5rem 0 0;color:var(--muted)">No gap between values and choices throughout the captivity. He extended compassion to his captors, protected the guard who helped him. PI at maximum: values and behavior were aligned under maximum pressure to produce that gap.</p>
+    </div>
+    <div class="atcf-item">
+      <h4>Prospective Coherence (PC)</h4>
+      <div class="atcf-label"><span>Eliminated</span><span class="atcf-val" id="pc-val">9</span><span>Clear</span></div>
+      <input type="range" class="atcf-sl" id="pc-sl" min="0" max="10" value="9" step="1"
+        style="background:linear-gradient(90deg,var(--teal-dark) 90%,var(--border) 90%)"
+        oninput="updateATCF('pc',this.value)">
+      <p style="font-size:.8rem;margin:.5rem 0 0;color:var(--muted)">His forward pull was transcendent — oriented toward something death could not eliminate. If survival: renewed service. If death: martyrdom. Either branch was authentic. The death threat could not destroy PC because it could not eliminate what PC was oriented toward.</p>
+    </div>
+    <div class="atcf-item">
+      <h4>Meta-Constructor Capacity (MCC)</h4>
+      <div class="atcf-label"><span>Collapsed</span><span class="atcf-val" id="mcc-val">8</span><span>Active</span></div>
+      <input type="range" class="atcf-sl" id="mcc-sl" min="0" max="10" value="8" step="1"
+        style="background:linear-gradient(90deg,var(--teal-dark) 80%,var(--border) 80%)"
+        oninput="updateATCF('mcc',this.value)">
+      <p style="font-size:.8rem;margin:.5rem 0 0;color:var(--muted)">Under torture, he pondered love's meaning, God's presence, goodness itself. He was examining his own PRF while it was under maximum attack. His philosophy doctoral training made this possible: not detachment from experience, but processing experience at multiple levels simultaneously.</p>
+    </div>
+  </div>
+
+  <div class="atcf-total">
+    <div style="font-size:.75rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:.2rem">ATCF Score (your assessment)</div>
+    <div class="val" id="atcf-total">34</div>
+    <div style="font-size:.8rem;color:rgba(255,255,255,.55);margin-top:.2rem">out of 40</div>
+  </div>
+
+  <div class="card card-teal" style="margin-top:1rem">
+    <h4>Why the ATCF Score Matters Structurally</h4>
+    <p>The four ATCF components are not virtues to be admired — they are structural capacities that determine whether an agent can maintain coherent ethical action under conditions designed to produce incoherence. The simulation's morphic fidelity metric measures the structural output of all four operating simultaneously. Hanna's ATCF was near 9.75/10 — not a gift but the consequence of 34 years of building something specific.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('thermo',document.getElementById('tb-thermo'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('biobond',document.getElementById('tb-biobond'))">Next: BioBond →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §5 BIOBOND AND THE EXTENDED MIND
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-biobond" role="tabpanel">
+  <h2>§5 — BioBond and the Extended Mind</h2>
+
+  <p>Chapter 1 established Andy Clark's extended mind thesis: the cognitive boundary is not at the skull. Your PRF is scaffolded by the community structures, institutional environments, and relationships you inhabit. When Hanna's captors severed his connection to his Church community, his family, and his congregation, they were not merely isolating him emotionally. <strong>They were dismantling part of his cognitive system.</strong></p>
+
+  <h3>What BioBond Actually Provides</h3>
+  <p>In the simulation, BioBond models the restoration of one component of that distributed cognitive system. The Church's international network did not reduce the entropy of the captivity environment — it did not change the block fields. What it maintained was the <strong>external cognitive scaffolding</strong> that kept Hanna's generative model stable under conditions designed to destabilize it.</p>
+
+  <div class="card card-navy">
+    <h4>Run 1 vs Run 2 — The Structural Claim</h4>
+    <p>Both simulation runs have identical suppression conditions — same entropy (0.88), same stress (0.76), same block fields. The only structural difference: BioBond activates at step 4 in Run 2, representing the moment the Church network mobilized (Pope Benedict XVI praying publicly, Church leaders across multiple countries organizing the ransom).</p>
+    <p style="margin-top:.5rem">The fidelity improvement between Run 1 and Run 2 is the numerical measure of what Clark's extended mind thesis predicts: severing the external component of a distributed cognitive system degrades the coherence of the whole; restoring it partially restores that coherence.</p>
+  </div>
+
+  <h3>Not Emotional Support — Structural Scaffolding</h3>
+  <p>"Emotional comfort" is the folk-psychology description of what BioBond provides structurally. The simulation models the structural effect: the external network maintains the precision weighting on the agent's identity priors, which keeps the generative model stable and prevents the morphic suppression accumulation that would occur without it.</p>
+
+  <div class="card card-amber">
+    <h4>The Privilege Dimension</h4>
+    <p>Bishop Saad's Church mobilized on his behalf: a global organization with centuries of infrastructure directed at maintaining one person's capacity to survive. Most people facing institutional suppression have far less robust BioBond structures. The simulation predicts that without institutional support, λ Raw drops and morphic suppression rises. The implication is structural, not moral: people with less BioBond are operating under higher effective entropy, in conditions more likely to produce the kind of graduated learned self-censorship that morphic suppression measures.</p>
+    <p style="margin-top:.5rem">His resilience was individual virtue and structural enablement simultaneously. The unequal distribution of BioBond structures is itself an ethical question.</p>
+  </div>
+
+  <blockquote>
+    "That experience gave me something very valuable; I learned to respect life and to look for the good in other people and try to build on it in your relationship with them. I always will be grateful to God to give me the second chance to be His voice in this world."
+    <cite>— Bishop Saad Sirop Hanna</cite>
+  </blockquote>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('atcf',document.getElementById('tb-atcf'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('diag',document.getElementById('tb-diag'))">Next: Your Diagnostic →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §6 YOUR STRUCTURAL DIAGNOSTIC
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-diag" role="tabpanel">
+  <h2>§6 — Your Structural Diagnostic</h2>
+
+  <p>The simulation parameters map directly onto your actual life. This section asks you to estimate your own structural conditions — not to compare yourself to Hanna, but to understand what the simulation is measuring when it models your ethical situation.</p>
+
+  <p>Use the sliders to estimate your current levels. This is not a test. It is a structural diagnostic that makes the concepts personally meaningful.</p>
+
+  <h3>Your Simulation Parameters</h3>
+
+  <div class="diag-row">
+    <div class="diag-label">Base Entropy</div>
+    <input type="range" class="diag-sl" id="d-entropy" min="0" max="100" value="35" step="1"
+      style="background:linear-gradient(90deg,#dc2626 35%,var(--border) 35%)"
+      oninput="updateDiag('entropy',this.value,true)">
+    <div class="diag-val" id="dv-entropy" style="color:var(--danger)">0.35</div>
+  </div>
+  <div class="diag-anchor"><span>0 — Complete order</span><span>1 — Maximum chaos</span></div>
+  <p style="font-size:.78rem;color:var(--muted);margin:.2rem 0 .75rem">Background cognitive load: financial stress, relationship conflict, unresolved obligations, information overload. A student working 40+ hours a week while attending school has higher effective base_entropy than one who studies full-time.</p>
+
+  <div class="diag-row">
+    <div class="diag-label">Base Stress (L_GC)</div>
+    <input type="range" class="diag-sl" id="d-stress" min="0" max="100" value="30" step="1"
+      style="background:linear-gradient(90deg,#dc2626 30%,var(--border) 30%)"
+      oninput="updateDiag('stress',this.value,true)">
+    <div class="diag-val" id="dv-stress" style="color:var(--danger)">0.30</div>
+  </div>
+  <div class="diag-anchor"><span>0 — Fully recovered</span><span>1 — Chronic depletion</span></div>
+  <p style="font-size:.78rem;color:var(--muted);margin:.2rem 0 .75rem">Pre-existing depletion: accumulated sleep debt, chronic health problems, unprocessed grief, long-term exposure to hostile institutions. This is your glucocorticoid load — it determines whether you start each ethical situation above or below the Sapolsky threshold.</p>
+
+  <div class="diag-row">
+    <div class="diag-label">BioBond Strength</div>
+    <input type="range" class="diag-sl" id="d-biobond" min="0" max="100" value="55" step="1"
+      style="background:linear-gradient(90deg,var(--teal-dark) 55%,var(--border) 55%)"
+      oninput="updateDiag('biobond',this.value,false)">
+    <div class="diag-val" id="dv-biobond" style="color:var(--teal-dark)">0.55</div>
+  </div>
+  <div class="diag-anchor"><span>0 — Isolated</span><span>1 — Robust external scaffolding</span></div>
+  <p style="font-size:.78rem;color:var(--muted);margin:.2rem 0 .75rem">Your structural stress-buffers: the people and institutions that actively maintain your capacity when external conditions are trying to collapse it. Your family, community, health insurance, professional network, savings. These are not luxuries — they are structural preconditions for sustained ethical agency.</p>
+
+  <div id="diag-reading" class="card card-teal" style="margin-top:.75rem">
+    <h4>Structural Reading</h4>
+    <p id="diag-text">Adjust the sliders to generate your structural reading.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('biobond',document.getElementById('tb-biobond'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('journal',document.getElementById('tb-journal'))">Next: Journal →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §7 JOURNAL
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-journal" role="tabpanel">
+  <h2>§7 — Chapter Reflection Questions</h2>
+  <p>Complete these five questions before beginning the Hanna Case Explorer simulation. Your responses are saved automatically and can be exported from the case explorer app.</p>
+
+  <div class="journal-q">
+    <div class="q-label">Q1 — The PRF as Structural Resistance</div>
+    <p>Which of the six PRF dimensions in Hanna's configuration do you think contributed most to his structural resistance — and why structurally, not morally? Name the specific mechanism: how does that dimension prevent the suppression architecture from reaching the Identity Kernel?</p>
+    <textarea class="jta" id="jt-q1" placeholder="The dimension that contributed most structurally was… because mechanically it prevented…" oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q2 — Your ATCF Assessment</div>
+    <p>Looking at the ATCF slider values you set in §4: which of the four components — HC, PI, PC, or MCC — would be hardest for you to maintain under conditions designed to destroy it? What structural feature of your own situation makes that component most vulnerable?</p>
+    <textarea class="jta" id="jt-q2" placeholder="The ATCF component most vulnerable in my situation is… because structurally…" oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q3 — Your Structural Diagnostic</div>
+    <p>Based on §6: estimate your current base_entropy, base_stress, and BioBond strength as numbers (0–1). What institutional and relational conditions are most responsible for each? What would need to change structurally — not just personally — to improve them?</p>
+    <textarea class="jta" id="jt-q3" placeholder="My base_entropy: ___ because…&#10;My base_stress: ___ because…&#10;My BioBond: ___ because…&#10;What would need to change structurally:…" oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q4 — BioBond and Structural Privilege</div>
+    <p>The chapter argues that Hanna's resilience was individual virtue and structural enablement simultaneously — and that BioBond is not equally available. Identify who in your institution or community is operating with high base_entropy and low BioBond. What does the simulation predict about the sustainability of their ethical agency under those conditions?</p>
+    <textarea class="jta" id="jt-q4" placeholder="In my institution/community, those with high entropy and low BioBond are… The simulation predicts…" oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">✓ Saved</div>
+  </div>
+
+  <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.05)">
+    <div class="q-label" style="color:var(--amber-dark)">Q5 — Prediction for Chapter 4 (Maathai)</div>
+    <p>Chapter 4 will ask: how do five groups with genuinely incompatible values coordinate toward a shared goal? The simulation will model two phases — Phase 1 (value-agreement attempt) and Phase 2 (concrete shared task). Before reading Chapter 4, predict:</p>
+    <ul style="font-size:.88rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
+      <li><strong>Phase 1 (value-agreement):</strong> what do you predict for OS2 Bridge when diverse frameworks must agree on values before acting?</li>
+      <li><strong>Phase 2 (shared task):</strong> what changes when the same groups have a concrete shared task instead?</li>
+      <li><strong>Friction:</strong> will friction be higher or lower in Phase 2 compared to Phase 1? Why?</li>
+      <li><strong>Through your PRF:</strong> which of the five worldview frameworks (role_order, sacred_boundary, liberal_individualist, ubuntu_relational, indigenous_custodial) most resembles your dominant PRF orientation?</li>
+    </ul>
+    <textarea class="jta q5" id="jt-q5" placeholder="Phase 1 OS2 Bridge prediction: I predict ___ because…&#10;Phase 2 OS2 Bridge prediction: I predict ___ because…&#10;Friction: I predict Phase 2 friction will be ___ than Phase 1 because…&#10;My PRF is most like ___ because…" oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-q5">✓ Saved for Chapter 4</div>
+  </div>
+
+  <div class="card card-dark" style="margin-top:1.5rem">
+    <h3>Looking Ahead: Chapter 4 — From Seven Trees to Fifty-One Million</h3>
+    <p>Chapter 3 asked: how does one person hold together under maximum entropy? The answer involved the depth of the Identity Kernel, the structural scaffolding that maintained it, and the thermodynamic cost of identity coherence when the environment is designed to produce disintegration.</p>
+    <p style="margin-top:.6rem">Chapter 4 asks the opposite question at a larger scale: how do people who disagree about everything coordinate toward a shared goal? Wangari Maathai's Green Belt Movement organized Kenyan women across radical value difference — different ethnic groups, different religious traditions, different political orientations — to plant 51 million trees over three decades. No value agreement was required. Functional equivalence was enough.</p>
+    <p style="margin-top:.6rem">The same simulation engine. A different — and equally necessary — question.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('diag',document.getElementById('tb-diag'))">← Back</button>
+    <a href="https://rmertzman-tech.github.io/Three-Scenario-Sims/hanna-case-explorer.html"
+       target="_blank" style="text-decoration:none">
+      <button class="nav-btn primary">Open Hanna Case Explorer →</button>
+    </a>
+  </div>
+</div>
+
+</div><!-- /app-wrap -->
+
+<script>
+'use strict';
+const JP = 'ch3_';
+const TABS = ['outside','prf','thermo','atcf','biobond','diag','journal'];
+const completedTabs = new Set();
+
+// ── Tab navigation ────────────────────────────────────────────
+function showTab(name, btn){
+  TABS.forEach(t=>{
+    const pane = document.getElementById('pane-'+t);
+    if(pane){ pane.style.display='none'; pane.classList.remove('active'); }
+  });
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    b.classList.remove('active');
+    b.setAttribute('aria-selected','false');
+  });
+  const pane = document.getElementById('pane-'+name);
+  if(pane){ pane.style.display='block'; pane.classList.add('active'); pane.scrollIntoView({behavior:'smooth',block:'start'}); }
+  if(btn){ btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+  completedTabs.add(name);
+  updateProgress();
+}
+
+function updateProgress(){
+  const pct = Math.round((completedTabs.size / TABS.length) * 100);
+  const fill = document.getElementById('progressFill');
+  if(fill) fill.style.width = pct + '%';
+  TABS.forEach(t=>{
+    if(completedTabs.has(t)){
+      const btn = document.getElementById('tb-'+t);
+      if(btn && !btn.classList.contains('done')) btn.classList.add('done');
+    }
+  });
+}
+
+// ── Journal storage ───────────────────────────────────────────
+function jSave(k, v){
+  try{
+    localStorage.setItem(JP+k, v);
+    const sn = document.getElementById('sn-'+k) || document.getElementById('sn-q5');
+    if(sn && k==='cq5'){ const el=document.getElementById('sn-q5'); if(el){el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2000);} return; }
+    if(sn){ sn.classList.add('show'); setTimeout(()=>sn.classList.remove('show'),2000); }
+  }catch(e){}
+}
+
+function jLoad(k){
+  try{ return localStorage.getItem(JP+k)||''; }catch(e){ return ''; }
+}
+
+function loadJournal(){
+  ['q1','q2','q3','q4'].forEach(k=>{
+    const el = document.getElementById('jt-'+k);
+    if(el) el.value = jLoad(k);
+  });
+  const q5el = document.getElementById('jt-q5');
+  if(q5el) q5el.value = jLoad('cq5');
+}
+
+// ── Retrieve Ch2 Q5 prediction ────────────────────────────────
+(function loadCh2Pred(){
+  try{
+    const pred = localStorage.getItem('ch2_cq5') || '';
+    const el = document.getElementById('ch2PredDisplay');
+    if(el){ el.textContent = pred.trim() ? pred : 'No Chapter 2 prediction found. Complete Chapter 2 journal Q5 first.'; }
+  }catch(e){}
+})();
+
+// ── ATCF sliders ──────────────────────────────────────────────
+const atcfVals = {hc:8, pi:9, pc:9, mcc:8};
+
+function updateATCF(k, v){
+  atcfVals[k] = parseInt(v);
+  const valEl = document.getElementById(k+'-val');
+  if(valEl) valEl.textContent = v;
+  const sl = document.getElementById(k+'-sl');
+  if(sl) sl.style.background = `linear-gradient(90deg,var(--teal-dark) ${v*10}%,var(--border) ${v*10}%)`;
+  const total = Object.values(atcfVals).reduce((a,b)=>a+b,0);
+  const totEl = document.getElementById('atcf-total');
+  if(totEl) totEl.textContent = total;
+  try{ localStorage.setItem(JP+'atcf_'+k, v); }catch(e){}
+}
+
+// ── Structural diagnostic ─────────────────────────────────────
+const diagVals = {entropy:0.35, stress:0.30, biobond:0.55};
+
+function updateDiag(k, v, isRisk){
+  diagVals[k] = parseFloat(v)/100;
+  const el = document.getElementById('dv-'+k);
+  const sl = document.getElementById('d-'+k);
+  const val = diagVals[k].toFixed(2);
+  if(el){ el.textContent = val; el.style.color = isRisk ? (diagVals[k]>0.65?'var(--danger)':diagVals[k]>0.40?'var(--amber)':'var(--success)') : (diagVals[k]>0.65?'var(--success)':diagVals[k]>0.40?'var(--amber)':'var(--danger)'); }
+  const pct = v + '%';
+  if(sl) sl.style.background = isRisk
+    ? `linear-gradient(90deg,#dc2626 ${pct},var(--border) ${pct})`
+    : `linear-gradient(90deg,var(--teal-dark) ${pct},var(--border) ${pct})`;
+  updateDiagReading();
+  try{ localStorage.setItem(JP+'diag_'+k, v); }catch(e){}
+}
+
+function updateDiagReading(){
+  const {entropy, stress, biobond} = diagVals;
+  const combined = entropy + stress;
+  let reading = '';
+  if(combined > 1.30){
+    reading = `Your combined entropy (${entropy.toFixed(2)}) and stress (${stress.toFixed(2)}) = ${combined.toFixed(2)} — above the threshold where the Sapolsky gate closes for most people. Your BioBond (${biobond.toFixed(2)}) ${biobond > 0.60 ? 'is providing meaningful structural protection, but' : 'is not providing sufficient counterweight —'} your deliberate reasoning capacity is operating under significant structural constraint right now.`;
+  } else if(combined > 0.90){
+    reading = `Moderate combined load (${combined.toFixed(2)}). Your BioBond (${biobond.toFixed(2)}) ${biobond > 0.50 ? 'is helping maintain your ethical agency' : 'is relatively thin — worth examining what you can do to strengthen it'}. You are operating near but not past the Sapolsky threshold under current conditions.`;
+  } else {
+    reading = `Relatively low combined load (${combined.toFixed(2)}) and BioBond (${biobond.toFixed(2)}) ${biobond > 0.60 ? 'is robust' : 'is present but worth developing'}. These are good structural conditions for deliberate ethical reasoning. The question for this chapter: what maintains them, and what would destabilize them?`;
+  }
+  const el = document.getElementById('diag-text');
+  if(el) el.textContent = reading;
+}
+
+// ── Init ──────────────────────────────────────────────────────
+loadJournal();
+updateDiagReading();
+// Restore ATCF sliders
+['hc','pi','pc','mcc'].forEach(k=>{
+  try{
+    const saved = localStorage.getItem(JP+'atcf_'+k);
+    if(saved) updateATCF(k, parseInt(saved));
+  }catch(e){}
+});
+// Restore diagnostic sliders
+['entropy','stress','biobond'].forEach(k=>{
+  try{
+    const saved = localStorage.getItem(JP+'diag_'+k);
+    if(saved){
+      const sl = document.getElementById('d-'+k);
+      if(sl){ sl.value = saved; updateDiag(k, saved, k!=='biobond'); }
+    }
+  }catch(e){}
+});
+completedTabs.add('outside');
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 4 — From Seven Trees to Fifty-One Million</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#166534;--green-dark:#14532d;--green-mid:#16a34a;--green-light:#dcfce7;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --teal:#0f766e;--teal-light:#ccfbf1;--teal-mid:#14b8a6;
+  --sky:#1e3a8a;--sky-light:#dbeafe;
+  --violet:#4c1d95;--violet-light:#ede9fe;
+  --red-light:#fee2e2;--success:#166534;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#052e16 0%,#0a1f10 50%,#052e16 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:900px;margin:0 auto;padding:1rem}
+.app-header{text-align:center;padding:2rem 1rem 1.5rem;color:white}
+.app-header .ch-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(22,163,74,.8);margin-bottom:.5rem}
+.app-header h1{font-size:2.1rem;font-weight:700;line-height:1.2;color:white;margin-bottom:.4rem}
+.app-header .subtitle{font-size:1rem;color:rgba(255,255,255,.55);font-style:italic}
+.tab-nav{display:flex;gap:.3rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.35rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab-btn{padding:.45rem .8rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.45rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab-btn:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--green-dark);color:white;font-weight:600}
+.tab-btn.done::after{content:'✓';margin-left:.3rem;font-size:.7rem;color:var(--green-mid)}
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.18)}
+.tab-pane.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.6rem;font-weight:700;color:var(--green-dark);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:3px solid var(--green-mid)}
+h3{font-size:1.2rem;font-weight:700;color:var(--navy);margin:1.25rem 0 .5rem}
+h4{font-size:1rem;font-weight:700;color:var(--amber-dark);margin:.9rem 0 .35rem}
+p{line-height:1.75;margin-bottom:.9rem;font-size:.97rem;color:var(--ink)}
+strong{color:var(--navy)}
+.card{border-radius:.75rem;padding:1.35rem;margin-bottom:1.1rem}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-navy{background:var(--navy);color:white;padding:1.5rem}
+.card-navy h3,.card-navy h4{color:#86efac}
+.card-navy p{color:rgba(255,255,255,.8)}
+.card-dark{background:#052e16;color:white;border-radius:.75rem;padding:1.5rem;margin-bottom:1.1rem}
+.card-dark h3{color:var(--amber);font-size:1.1rem;margin-top:0}
+.card-dark p{color:rgba(255,255,255,.75)}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky)}
+.prf-table{width:100%;border-collapse:collapse;font-size:.88rem;margin:1rem 0}
+.prf-table th{background:var(--green-dark);color:white;padding:.6rem .75rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.prf-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.prf-table tr:nth-child(odd) td{background:var(--paper)}
+.prf-table tr:hover td{background:var(--green-light)}
+.prf-table .dim{font-weight:700;color:var(--green-dark);width:22%;font-size:.85rem}
+.stakeholder-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem 0}
+.s-card{border-radius:.6rem;padding:.9rem;border:1px solid var(--border)}
+.s-card h4{font-size:.88rem;margin:0 0 .3rem;color:var(--navy)}
+.s-card .s-motivation{font-size:.78rem;color:var(--muted);font-style:italic;margin-bottom:.3rem}
+.s-card .s-capability{font-size:.82rem;color:var(--ink);line-height:1.5}
+.fe-distinction{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin:1rem 0}
+.fe-item{border-radius:.5rem;padding:.75rem;text-align:center}
+.fe-item h4{font-size:.82rem;margin:0 0 .3rem}
+.fe-item p{font-size:.75rem;margin:0;line-height:1.4}
+.rule-cards{display:flex;flex-direction:column;gap:.75rem;margin:1rem 0}
+.rule-card{border-radius:.6rem;padding:1rem;border-left:4px solid var(--green-mid);background:var(--paper)}
+.rule-card .rule-num{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--green-dark);margin-bottom:.2rem}
+.rule-card h4{margin:0 0 .3rem;color:var(--navy)}
+.rule-card p{font-size:.88rem;margin:0;line-height:1.55}
+.stakeholder-map{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin:1rem 0}
+.sm-row{display:flex;gap:.5rem;margin-bottom:.5rem;align-items:flex-start}
+.sm-label{font-size:.8rem;font-weight:700;color:var(--navy);min-width:140px;padding-top:.4rem}
+textarea.sm-ta{flex:1;min-height:60px;border:1px solid var(--border);border-radius:.35rem;padding:.4rem .6rem;font-family:'Cormorant Garamond',serif;font-size:.88rem;resize:vertical;color:var(--ink)}
+textarea.sm-ta:focus{outline:none;border-color:var(--green-mid)}
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--green-dark);margin-bottom:.4rem}
+.journal-q p{font-size:.88rem;margin-bottom:.5rem}
+textarea.jta{width:100%;min-height:100px;border:1px solid var(--border);border-radius:.4rem;padding:.65rem;font-family:'Cormorant Garamond',serif;font-size:.92rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--green-mid)}
+textarea.jta.q5{min-height:150px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.72rem;color:var(--success);font-family:'JetBrains Mono',monospace;height:1.2rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+.pred-retrieve{background:rgba(22,101,52,.08);border:1px solid rgba(22,101,52,.25);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.pred-retrieve .pr-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--green-dark);margin-bottom:.3rem}
+.pred-retrieve .pr-text{font-size:.88rem;color:var(--ink);font-style:italic;line-height:1.6;border-left:3px solid var(--amber);padding-left:.6rem}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--green-mid),var(--amber));transition:.4s}
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:1rem 1.25rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.95rem}
+blockquote cite{display:block;margin-top:.4rem;font-style:normal;font-size:.8rem;font-weight:600;color:var(--muted)}
+.nav-row{display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.nav-btn{padding:.5rem 1.1rem;border-radius:.45rem;border:1px solid var(--border);background:white;color:var(--navy);font-family:'Cormorant Garamond',serif;font-size:.9rem;cursor:pointer;transition:.15s}
+.nav-btn:hover{background:var(--green-light);border-color:var(--green-mid)}
+.nav-btn.primary{background:var(--green-dark);color:white;border-color:var(--green-dark)}
+.nav-btn.primary:hover{background:var(--green)}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries · Chapter 4</div>
+  <h1>From Seven Trees to Fifty-One Million</h1>
+  <div class="subtitle">The Adaptive Moral Commonwealth · Case Study: Wangari Maathai and the Green Belt Movement</div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:14%"></div></div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-network" onclick="showTab('network',this)" role="tab" aria-selected="true">§1 Individual → Network</button>
+  <button class="tab-btn" id="tb-prf" onclick="showTab('prf',this)" role="tab">§2 Maathai's PRF</button>
+  <button class="tab-btn" id="tb-crisis" onclick="showTab('crisis',this)" role="tab">§3 The Systemic Crisis</button>
+  <button class="tab-btn" id="tb-fe" onclick="showTab('fe',this)" role="tab">§4 Functional Equivalence</button>
+  <button class="tab-btn" id="tb-rules" onclick="showTab('rules',this)" role="tab">§5 The Three Rules</button>
+  <button class="tab-btn" id="tb-map" onclick="showTab('map',this)" role="tab">§6 Your Coordination Map</button>
+  <button class="tab-btn" id="tb-journal" onclick="showTab('journal',this)" role="tab">§7 Journal</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §1 FROM THE INDIVIDUAL TO THE NETWORK
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="pane-network" role="tabpanel">
+  <h2>§1 — From the Individual to the Network</h2>
+
+  <p><strong>Chapter 3 asked: how does one person hold together under maximum entropy?</strong> The answer was structural — the depth of the Identity Kernel, the presence of external cognitive scaffolding, the thermodynamic cost of maintaining coherence when the environment is designed to produce disintegration.</p>
+
+  <p><strong>Chapter 4 asks the opposite question at a larger scale:</strong> how do people who disagree about everything coordinate toward a shared goal? Wangari Maathai's Green Belt Movement organized Kenyan women across radical value difference to plant 51 million trees over three decades. No value agreement was required. Functional equivalence was enough.</p>
+
+  <div class="card card-green">
+    <h4>The Structural Contrast</h4>
+    <p><strong>Chapter 3 (Hanna):</strong> individual identity coherence under maximum suppression. Primary metric: morphic fidelity. The Commonwealth of One — what one person can do when the institution is designed to destroy their identity.</p>
+    <p style="margin-top:.5rem"><strong>Chapter 4 (Maathai):</strong> network coordination across radical worldview difference. Primary metric: OS2 Bridge. The Adaptive Moral Commonwealth — what a network can do when its members disagree about everything but share a concrete task.</p>
+    <p style="margin-top:.5rem">Same simulation engine. A different — and equally necessary — view.</p>
+  </div>
+
+  <div class="card card-amber">
+    <h4>Your Chapter 3 Prediction</h4>
+    <p>In Chapter 3's journal Q5, you predicted what happens to OS2 Bridge when diverse frameworks attempt coordination without a shared task (Phase 1) versus with one (Phase 2). The Maathai simulation will test that prediction.</p>
+    <div class="pred-retrieve">
+      <div class="pr-label">Your Chapter 3 Q5 Prediction (retrieved)</div>
+      <div class="pr-text" id="ch3PredDisplay">Loading…</div>
+    </div>
+  </div>
+
+  <blockquote>
+    "On June 5, 1977 — World Environment Day — Wangari Maathai planted seven trees in Kamukunji park in Nairobi, honoring seven Kenyan environmental heroes. Twenty-seven years later, the movement she built from that action had planted 51 million trees, won the Nobel Peace Prize, helped end an authoritarian government, and demonstrated something about ethical coordination that the course's individual-centered frameworks cannot show."
+    <cite>— Chapter 4, Ethics Beyond Boundaries</cite>
+  </blockquote>
+
+  <div class="nav-row">
+    <span></span>
+    <button class="nav-btn primary" onclick="showTab('prf',document.getElementById('tb-prf'))">Next: Maathai's PRF →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §2 MAATHAI'S PRF
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-prf" role="tabpanel">
+  <h2>§2 — Wangari Maathai's PRF</h2>
+
+  <p>Chapter 2 developed Boisjoly's PRF to explain why his configuration made him structurally positioned to see what the NASA architecture suppressed. Chapter 3 developed Hanna's PRF to explain why his configuration made his identity structurally resistant to maximum suppression. Maathai's PRF serves a different structural purpose: <strong>it explains why she was the person who could see what others missed, and why her specific configuration made her the network hub without which the five incompatible stakeholder groups could not coordinate.</strong></p>
+
+  <table class="prf-table">
+    <thead><tr><th>PRF Dimension</th><th>Maathai's Configuration</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="dim">Beliefs</td>
+        <td>The health of our environment, the practice of democracy, and the rights of women are fundamentally inseparable. Peace cannot be achieved in a society that degrades its natural resources. Ordinary people — especially rural women — become powerful agents of change when given knowledge and tools. These were not positions she argued toward. They were the precision-weighted priors from which every Green Belt Movement decision flowed automatically.</td>
+      </tr>
+      <tr>
+        <td class="dim">Rules</td>
+        <td>'Start small, but think big.' 'Empower the grassroots — do not impose solutions from above.' 'Speak truth to power through demonstrated competence.' These rules were not abstract principles. They were the operational logic that made coordination across radical difference possible — and the three structural rules the simulation's positive block fields in Phase 2 model.</td>
+      </tr>
+      <tr>
+        <td class="dim">Ontology</td>
+        <td>Integrated ecosystem: what is most real is not just the individual tree but the entire forest system — soil, water, biodiversity, and the human community that depends on it. The political and the environmental are a single interconnected reality. Deforestation was a symptom of a corrupt political system. Planting a tree was therefore a political act. This ontology is what made her see a systemic intervention where others saw separate problems.</td>
+      </tr>
+      <tr>
+        <td class="dim">Authenticity</td>
+        <td>She had to live the connection between environment and good governance. It would have been inauthentic to be a trained scientist and not use that knowledge to address the suffering she witnessed. Her authentic self was the one who could not separate ecological fact from political reality from social reality. To be authentic required being a scientist, activist, and political leader simultaneously, because the problem itself was integrated across all those domains.</td>
+      </tr>
+      <tr>
+        <td class="dim">Assembly History</td>
+        <td>Rural upbringing in a Kenyan village → PhD in biology (first East African woman with doctorate) → graduate study in the United States and Germany → exposure to governance through her husband's political career → her own divorce revealing women's structural vulnerability. The critical synthesis: returning to Kenya and seeing deforestation's devastating effects on rural women — the moment where scientific training and cultural roots fused into a clear mission.</td>
+      </tr>
+      <tr>
+        <td class="dim">Forward Pull</td>
+        <td>A democratic, peaceful, and green Kenya: the landscape covered in trees, women empowered as leaders, government accountable to its people. Every tree planted was a seed of that future — a tangible piece of the world under construction. The forward pull was also specifically sequenced: start with seven trees, build to 51 million, demonstrate that the structural conditions for democratic governance and environmental health are the same conditions.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-green">
+    <h4>The Bridge-Builder PRF — Why It Matters Structurally</h4>
+    <p>Maathai's Assembly History embedded her in rural Kenya, scientific training, and political exposure simultaneously. This is not a story about an exceptional individual. It is a structural observation: the person best positioned to coordinate a multi-domain network is one whose PRF was assembled across those domains. Her Integrated Ecosystem Ontology was not a belief she chose — it was what her specific Assembly History produced. And it is reproducible by anyone who deliberately builds an Assembly History that crosses the boundaries their coordination challenge requires.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('network',document.getElementById('tb-network'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('crisis',document.getElementById('tb-crisis'))">Next: The Systemic Crisis →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §3 THE SYSTEMIC CRISIS
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-crisis" role="tabpanel">
+  <h2>§3 — The Systemic Crisis and the OS1 Trap</h2>
+
+  <p>Before we can understand what Maathai built, we need to understand the problem she diagnosed — and specifically why her diagnosis was structurally different from every other diagnosis being made of Kenya's crisis in the 1970s.</p>
+
+  <h3>Kenya's Four Interlocking Crises</h3>
+  <p>Most observers treated Kenya's problems as separate challenges requiring separate solutions. Maathai's critical strategic advantage was seeing what others missed: these were not four separate problems but a single reinforcing cycle.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0">
+    <div class="card card-green" style="margin:0">
+      <h4>Environmental</h4>
+      <p style="font-size:.82rem;margin:0">Deforestation · soil erosion · desertification · firewood scarcity · water sources drying up</p>
+    </div>
+    <div class="card card-sky" style="margin:0">
+      <h4>Social</h4>
+      <p style="font-size:.82rem;margin:0">Rural women bearing the burden · women's labour intensifying · traditional knowledge disappearing · community cohesion fragmenting</p>
+    </div>
+    <div class="card card-amber" style="margin:0">
+      <h4>Political</h4>
+      <p style="font-size:.82rem;margin:0">One-party authoritarian state · endemic corruption · civil society suppressed · ethnic tensions manipulated by regime</p>
+    </div>
+    <div style="background:var(--violet-light);border-left:4px solid var(--violet);border-radius:.75rem;padding:1.35rem;margin:0">
+      <h4 style="color:var(--violet)">Economic</h4>
+      <p style="font-size:.82rem;margin:0">IMF structural adjustment · peasant agriculture marginalized · women's economic capability constrained · rural poverty deepening</p>
+    </div>
+  </div>
+
+  <p><strong>By framing it as one system,</strong> Maathai could design an intervention that addressed the entire system simultaneously. The tree was the lever that moved the whole system — one concrete practice producing six interconnected outcomes: environmental restoration, women's empowerment, community organizing, economic development, consciousness-raising, and democratic practice.</p>
+
+  <h3>The OS1 Trap — Why Others Failed</h3>
+  <p>The most common failure mode in coordination across difference is <strong>waiting for value agreement before action</strong>. We need to agree on our values before we can work together. This sounds reasonable. It is structurally self-defeating.</p>
+
+  <div class="card card-amber">
+    <h4>Why the OS1 Trap Produces Phase 1 Results</h4>
+    <p>In the Maathai simulation, Phase 1 models exactly this failure mode: five groups with incompatible worldviews attempting to coordinate by first reaching consensus on why trees matter. The diverse agents have real capabilities. The goodwill is real. But without a concrete shared task creating structural convergence, the different frameworks operate in parallel without converging. OS2 Bridge stays low — not because the agents lack capability, but because the coordination architecture requires value agreement that genuine worldview diversity cannot produce.</p>
+    <p style="margin-top:.5rem">Phase 2 changes one variable: the coordination mechanism. Same agents. Same diversity. A concrete shared task instead of a value-agreement attempt. The OS2 Bridge difference between Phase 1 and Phase 2 is the structural measure of what the shared task adds.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('prf',document.getElementById('tb-prf'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('fe',document.getElementById('tb-fe'))">Next: Functional Equivalence →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §4 FUNCTIONAL EQUIVALENCE
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-fe" role="tabpanel">
+  <h2>§4 — The Five Stakeholders and Functional Equivalence</h2>
+
+  <p>The Green Belt Movement coordinated five distinct stakeholder groups with completely incompatible ultimate values. They did not reach agreement on any of these things. They produced 51 million trees, a Nobel Peace Prize, and the structural conditions for democratic transition.</p>
+
+  <h3>The Five Stakeholder Groups</h3>
+  <div class="stakeholder-grid">
+    <div class="s-card" style="background:var(--teal-light);border-color:var(--teal-mid)">
+      <h4>Rural Women</h4>
+      <div class="s-motivation">Primary motivation: firewood, water, food security, income</div>
+      <div class="s-capability">Indigenous ecological knowledge, community networks, sustained daily engagement with the land</div>
+    </div>
+    <div class="s-card" style="background:var(--green-light);border-color:var(--green-mid)">
+      <h4>International Environmental NGOs</h4>
+      <div class="s-motivation">Primary motivation: global biodiversity, climate mitigation</div>
+      <div class="s-capability">Funding, technical resources, international advocacy, scientific credibility</div>
+    </div>
+    <div class="s-card" style="background:var(--amber-light);border-color:var(--amber)">
+      <h4>Democratic Opposition</h4>
+      <div class="s-motivation">Primary motivation: end of authoritarian rule, civil liberties</div>
+      <div class="s-capability">Legal expertise, student organizing energy, coalition-building across opposition groups</div>
+    </div>
+    <div class="s-card" style="background:var(--violet-light);border-color:var(--violet)">
+      <h4>International Women's Movement</h4>
+      <div class="s-motivation">Primary motivation: feminist solidarity, women's rights globally</div>
+      <div class="s-capability">Global advocacy networks, feminist analytical frameworks</div>
+    </div>
+    <div class="s-card" style="background:var(--sky-light);border-color:var(--sky);grid-column:1/-1">
+      <h4>Scientific and Academic Community</h4>
+      <div class="s-motivation">Primary motivation: ecological research, evidence-based development</div>
+      <div class="s-capability">Technical credibility, research infrastructure, validation of the movement's approach</div>
+    </div>
+  </div>
+
+  <p style="margin-top:.5rem"><strong>Read this carefully:</strong> these five groups have genuinely incompatible ultimate values. A rural woman focused on her family's firewood supply and a Norwegian environmental NGO focused on global biodiversity conservation do not share a framework, a theory of change, or a vision of justice. They share a tree. That is enough.</p>
+
+  <h3>What Functional Equivalence Is — and Is Not</h3>
+  <div class="fe-distinction">
+    <div class="fe-item" style="background:var(--green-light);border:1px solid var(--green-mid)">
+      <h4 style="color:var(--green-dark)">Functional Equivalence ✓</h4>
+      <p>Different capabilities, different motivations, convergent outcomes through a concrete shared task. No one surrenders their framework. No value agreement required.</p>
+    </div>
+    <div class="fe-item" style="background:#fee2e2;border:1px solid #dc2626">
+      <h4 style="color:#7f1d1d">Value Agreement ✗</h4>
+      <p>Requires negotiating shared values before acting. Surfaces every latent conflict. Provides every potential defector with a veto. Produces Phase 1 results.</p>
+    </div>
+    <div class="fe-item" style="background:#fef3c7;border:1px solid var(--amber)">
+      <h4 style="color:var(--amber-dark)">Compromise ✗</h4>
+      <p>Each party surrenders something from their framework. Functional equivalence requires no surrender — each party advances their own authentic goals through the shared task.</p>
+    </div>
+  </div>
+
+  <div class="card card-navy">
+    <h4>Phase 2 — What the Simulation Models</h4>
+    <p>Phase 2's positive block fields (care +0.55, fairness +0.45, community +0.65) model what the concrete shared task provides structurally: the institution is rewarding every framework's contribution simultaneously through the practice. The rural woman's ecological knowledge, the conservationist's biodiversity focus, the feminist's empowerment mission, the democratic activist's anti-authoritarian energy — the tree-planting practice produces outcomes each framework values through its own capabilities.</p>
+    <p style="margin-top:.5rem">High friction and high OS2 Bridge will coexist in Phase 2. This is the most counterintuitive result in the simulation suite — and the most structurally important. Genuine diversity does not disappear when coordination improves. The friction is real. The Bridge is also real. The shared task makes the friction cost worth paying.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('crisis',document.getElementById('tb-crisis'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('rules',document.getElementById('tb-rules'))">Next: The Three Rules →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §5 THE THREE STRUCTURAL RULES
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-rules" role="tabpanel">
+  <h2>§5 — The Three Structural Rules</h2>
+
+  <p>The Green Belt Movement did not succeed by accident. Its success was the product of three structural rules that made functional equivalence operationally sustainable — rules that can be applied to any coordination challenge across difference.</p>
+
+  <div class="rule-cards">
+    <div class="rule-card">
+      <div class="rule-num">Rule 1</div>
+      <h4>Start Small, But Think Big</h4>
+      <p>The shared task must be small enough to be achievable and concrete enough to be measurable — and it must produce immediate practical benefit for the most resource-constrained participants. Planting seven trees is a starting point anyone can reach. The Nobel Prize was never the first goal. The first goal was a surviving seedling. <em>Start small</em> is not a counsel of modesty — it is the structural design principle that makes early convergence possible, and early convergence is what builds the social capital that makes later scaling possible.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">Rule 2</div>
+      <h4>Empower the Grassroots</h4>
+      <p>Knowledge and authority must flow toward the people doing the work, not away from them. Maathai did not send experts to tell rural women how to plant trees. She went to learn from rural women what they knew about which species work in which conditions — and then provided scientific vocabulary and economic incentives that amplified what they already knew. This is the structural reversal of the suppression gap: an institution where knowledge flows from practitioners to decision-makers produces low suppression gap and rising OS2 Bridge.</p>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">Rule 3</div>
+      <h4>Speak Truth to Power Through Demonstrated Competence</h4>
+      <p>Bootstrap authority is built by demonstrating what you can do before demanding recognition for what you claim. By the time the movement confronted the Uhuru Park skyscraper plan in 1989, it had 50,000 participants and 2,000 tree nurseries. The demonstrated competence was the authority. You do not need institutional permission to begin building the structural conditions for change. You need a concrete shared task, compatible capabilities, and demonstrated outcomes that establish legitimacy.</p>
+    </div>
+  </div>
+
+  <div class="card card-green">
+    <h4>Your Seven Trees</h4>
+    <p>'Your seven trees' is the answer to this question: what is the smallest, most concrete, most achievable action that begins to build the structural conditions for the coordination you need — and that produces immediate, tangible outcomes for the most resource-constrained participants? The Green Belt Movement did not begin with a plan to plant 51 million trees. It began with seven. Every subsequent development built on the structural conditions those first seven trees created.</p>
+  </div>
+
+  <blockquote>
+    "My assembly history gave me a unique bridge between two worlds. I grew up in a rural Kenyan village, which gave me a deep, intuitive understanding of the importance of the land and its resources. The key event was returning to Kenya and seeing the devastating effects of deforestation on the women in my community — a moment where my scientific training and my cultural roots fused, giving me a clear mission."
+    <cite>— Wangari Maathai</cite>
+  </blockquote>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('fe',document.getElementById('tb-fe'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('map',document.getElementById('tb-map'))">Next: Your Coordination Map →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §6 YOUR COORDINATION MAP
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-map" role="tabpanel">
+  <h2>§6 — Your Coordination Map</h2>
+
+  <p>Every coordination challenge you face has a stakeholder structure analogous to the Green Belt Movement's five groups. Map one coordination challenge from your current life before completing the journal and opening the simulation.</p>
+
+  <p>This is not a performance exercise. It is structural analysis. The goal is to identify what the concrete shared task is — or would be — before the simulation shows you why it matters.</p>
+
+  <div class="stakeholder-map">
+    <div class="sm-row">
+      <div class="sm-label">The challenge</div>
+      <textarea class="sm-ta" id="sm-challenge" placeholder="Describe the coordination challenge in one sentence…" oninput="smSave('challenge',this.value)"></textarea>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Stakeholder 1</div>
+      <textarea class="sm-ta" id="sm-s1" placeholder="Who they are, what they want, what capability they bring…" oninput="smSave('s1',this.value)"></textarea>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Stakeholder 2</div>
+      <textarea class="sm-ta" id="sm-s2" placeholder="Who they are, what they want, what capability they bring…" oninput="smSave('s2',this.value)"></textarea>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Stakeholder 3</div>
+      <textarea class="sm-ta" id="sm-s3" placeholder="Who they are, what they want, what capability they bring…" oninput="smSave('s3',this.value)"></textarea>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">The incompatibility</div>
+      <textarea class="sm-ta" id="sm-incompat" placeholder="What would these stakeholders disagree about if forced into a values conversation?…" oninput="smSave('incompat',this.value)"></textarea>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Your seven trees</div>
+      <textarea class="sm-ta" id="sm-trees" placeholder="The smallest, most concrete shared task that could produce outcomes each stakeholder values through their own framework — without requiring value agreement…" oninput="smSave('trees',this.value)"></textarea>
+    </div>
+  </div>
+
+  <div class="card card-amber">
+    <h4>The OS1 Trap Test</h4>
+    <p>Before you continue: does your proposed shared task require the stakeholders to agree on values before acting — or does it channel their different capabilities toward a convergent outcome that each can advance for their own authentic reasons? If the former, it will produce Phase 1 results. If the latter, it has the structural potential for functional equivalence.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('rules',document.getElementById('tb-rules'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('journal',document.getElementById('tb-journal'))">Next: Journal →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §7 JOURNAL
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-journal" role="tabpanel">
+  <h2>§7 — Chapter Reflection Questions</h2>
+  <p>Complete these five questions before opening the Maathai Case Explorer simulation.</p>
+
+  <div class="journal-q">
+    <div class="q-label">Q1 — Maathai's PRF as Coordination Asset</div>
+    <p>Which of the six PRF dimensions made Maathai uniquely positioned to be the network hub — not just a participant? Name the specific structural mechanism: how does that dimension allow one person to bridge groups that could not directly coordinate with each other?</p>
+    <textarea class="jta" id="jt-q1" placeholder="The PRF dimension that made Maathai the hub was… because structurally it allowed…" oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q2 — Functional Equivalence vs. the OS1 Trap</div>
+    <p>Identify a real situation — in your workplace, institution, community, or family — where coordination is failing because participants are trying to reach value agreement before acting. What is the concrete shared task that could produce functional equivalence instead? What specific outcome would each stakeholder value for their own authentic reasons?</p>
+    <textarea class="jta" id="jt-q2" placeholder="The situation where OS1 trap is operating: …&#10;The concrete shared task that would create functional equivalence: …&#10;Why each stakeholder could advance it for their own reasons: …" oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q3 — Your Seven Trees</div>
+    <p>What is the smallest, most concrete, most achievable action that begins to build the structural conditions for the coordination you need in your current situation? Be specific: what is auditable, what immediate practical benefit does it produce for the most resource-constrained participant, and what would make it concrete enough to count as a 'surviving seedling'?</p>
+    <textarea class="jta" id="jt-q3" placeholder="My seven trees: …&#10;The auditable outcome: …&#10;The immediate benefit for the most resource-constrained participant: …" oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q4 — Phase 2's Counterintuitive Result</div>
+    <p>The simulation will show high OS2 Bridge AND high friction simultaneously in Phase 2. Before running: write a one-paragraph structural explanation of why this is not only possible but expected — using the concepts from §4. What does your PRF's dominant framework predict about this combination?</p>
+    <textarea class="jta" id="jt-q4" placeholder="High OS2 Bridge and high friction can coexist because structurally…&#10;My PRF's dominant framework predicts…" oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">✓ Saved</div>
+  </div>
+
+  <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.05)">
+    <div class="q-label" style="color:var(--amber-dark)">Q5 — Prediction for Chapter 5 (Mandela)</div>
+    <p>Chapter 5 introduces Nelson Mandela — a person who must do both things simultaneously that Chapters 3 and 4 present as separate challenges: maintaining his own Identity Kernel coherence under 27 years of institutional suppression (Chapter 3's challenge) while operating as the network hub for a five-framework coalition coordinating without value agreement (Chapter 4's challenge).</p>
+    <p style="margin-top:.4rem">The Chapter 5 simulation will model entropy ~0.85, community block −0.85, 12 steps (each = ~2 years), and BioBond activating at step 5. The same agent must produce both morphic fidelity and OS2 Bridge simultaneously.</p>
+    <ul style="font-size:.88rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
+      <li><strong>Morphic fidelity:</strong> given what Hanna's simulation showed — will Mandela's fidelity be higher or lower over 12 steps vs Hanna's 8? What accounts for the difference?</li>
+      <li><strong>OS2 Bridge:</strong> Mandela's transition coalition included Afrikaner nationalists, ANC members, the business community, religious leaders, and the international community. Apply Phase 2's lesson: what was the concrete shared task that made democratic transition a functional equivalent for all five groups?</li>
+      <li><strong>The compound challenge:</strong> does maintaining individual morphic fidelity under suppression help or hinder OS2 Bridge generation? Predict the structural interaction.</li>
+    </ul>
+    <textarea class="jta q5" id="jt-q5" placeholder="Morphic fidelity prediction: I predict ___ because…&#10;OS2 Bridge prediction: I predict ___ because the shared task was…&#10;The compound challenge: doing both simultaneously will…&#10;Specific numbers: λ Raw ___ · Fidelity ___ · OS2 Bridge ___ · Friction ___" oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-q5">✓ Saved for Chapter 5</div>
+  </div>
+
+  <div class="card card-dark" style="margin-top:1.5rem">
+    <h3>Looking Ahead: Chapter 5 — Both Things at Once</h3>
+    <p>Chapters 3 and 4 present what appear to be opposing strategies: Chapter 3 is about one person holding together under maximum pressure — the deep, coherent Identity Kernel resisting the institution's attempt to destroy it. Chapter 4 is about five incompatible groups producing convergent outcomes — the network coordinating across difference without requiring any member to abandon their framework.</p>
+    <p style="margin-top:.6rem">Chapter 5 asks: what does a person look like who must do both simultaneously? Nelson Mandela spent 27 years in Robben Island prison maintaining precisely the kind of Identity Kernel coherence that Chapter 3 describes. And then he emerged and spent the next five years building precisely the kind of functional-equivalence network that Chapter 4 describes. The synthesis shows that they are not separate capacities — at this scale, you cannot have one without the other.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('map',document.getElementById('tb-map'))">← Back</button>
+    <a href="https://rmertzman-tech.github.io/Three-Scenario-Sims/maathai-case-explorer.html"
+       target="_blank" style="text-decoration:none">
+      <button class="nav-btn primary">Open Maathai Case Explorer →</button>
+    </a>
+  </div>
+</div>
+
+</div><!-- /app-wrap -->
+
+<script>
+'use strict';
+const JP = 'ch4_';
+const TABS = ['network','prf','crisis','fe','rules','map','journal'];
+const completedTabs = new Set();
+
+function showTab(name, btn){
+  TABS.forEach(t=>{
+    const pane = document.getElementById('pane-'+t);
+    if(pane){ pane.style.display='none'; pane.classList.remove('active'); }
+  });
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    b.classList.remove('active');
+    b.setAttribute('aria-selected','false');
+  });
+  const pane = document.getElementById('pane-'+name);
+  if(pane){ pane.style.display='block'; pane.classList.add('active'); pane.scrollIntoView({behavior:'smooth',block:'start'}); }
+  if(btn){ btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+  completedTabs.add(name);
+  updateProgress();
+}
+
+function updateProgress(){
+  const pct = Math.round((completedTabs.size / TABS.length) * 100);
+  const fill = document.getElementById('progressFill');
+  if(fill) fill.style.width = pct + '%';
+  TABS.forEach(t=>{
+    if(completedTabs.has(t)){
+      const btn = document.getElementById('tb-'+t);
+      if(btn && !btn.classList.contains('done')) btn.classList.add('done');
+    }
+  });
+}
+
+function jSave(k, v){
+  try{
+    const key = k === 'cq5' ? JP+'cq5' : JP+k;
+    localStorage.setItem(key, v);
+    let snId = 'sn-'+k;
+    if(k==='cq5') snId = 'sn-q5';
+    const sn = document.getElementById(snId);
+    if(sn){ sn.classList.add('show'); setTimeout(()=>sn.classList.remove('show'),2000); }
+  }catch(e){}
+}
+
+function smSave(k, v){
+  try{ localStorage.setItem(JP+'sm_'+k, v); }catch(e){}
+}
+
+function loadJournal(){
+  ['q1','q2','q3','q4'].forEach(k=>{
+    const el = document.getElementById('jt-'+k);
+    if(el) el.value = (()=>{ try{ return localStorage.getItem(JP+k)||''; }catch(e){ return ''; } })();
+  });
+  const q5el = document.getElementById('jt-q5');
+  if(q5el) q5el.value = (()=>{ try{ return localStorage.getItem(JP+'cq5')||''; }catch(e){ return ''; } })();
+  ['challenge','s1','s2','s3','incompat','trees'].forEach(k=>{
+    const el = document.getElementById('sm-'+k);
+    if(el) el.value = (()=>{ try{ return localStorage.getItem(JP+'sm_'+k)||''; }catch(e){ return ''; } })();
+  });
+}
+
+(function loadCh3Pred(){
+  try{
+    const pred = localStorage.getItem('ch3_cq5') || '';
+    const el = document.getElementById('ch3PredDisplay');
+    if(el){ el.textContent = pred.trim() ? pred : 'No Chapter 3 prediction found. Complete Chapter 3 journal Q5 first.'; }
+  }catch(e){}
+})();
+
+loadJournal();
+completedTabs.add('network');
+updateProgress();
+</script>
+</body>
+</html>

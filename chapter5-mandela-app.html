@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 5 — Both Things at Once</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#1e3a8a;--sky-dark:#1e2d6b;--sky-mid:#3b82f6;--sky-light:#dbeafe;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --teal:#0f766e;--teal-light:#ccfbf1;--teal-mid:#14b8a6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --violet:#4c1d95;--violet-light:#ede9fe;
+  --success:#166534;--danger:#dc2626;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0c1220 0%,#111827 50%,#0c1220 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:900px;margin:0 auto;padding:1rem}
+.app-header{text-align:center;padding:2rem 1rem 1.5rem;color:white}
+.app-header .ch-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(59,130,246,.7);margin-bottom:.5rem}
+.app-header h1{font-size:2.1rem;font-weight:700;line-height:1.2;color:white;margin-bottom:.4rem}
+.app-header .subtitle{font-size:1rem;color:rgba(255,255,255,.55);font-style:italic}
+.tab-nav{display:flex;gap:.3rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.35rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab-btn{padding:.45rem .8rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.45rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab-btn:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--sky-dark);color:white;font-weight:600}
+.tab-btn.done::after{content:'✓';margin-left:.3rem;font-size:.7rem;color:var(--sky-mid)}
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 24px rgba(0,0,0,.18)}
+.tab-pane.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2{font-size:1.6rem;font-weight:700;color:var(--sky);margin-bottom:.75rem;padding-bottom:.4rem;border-bottom:3px solid var(--sky-mid)}
+h3{font-size:1.2rem;font-weight:700;color:var(--navy);margin:1.25rem 0 .5rem}
+h4{font-size:1rem;font-weight:700;color:var(--amber-dark);margin:.9rem 0 .35rem}
+p{line-height:1.75;margin-bottom:.9rem;font-size:.97rem;color:var(--ink)}
+strong{color:var(--navy)}
+.card{border-radius:.75rem;padding:1.35rem;margin-bottom:1.1rem}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-navy{background:var(--navy);color:white;padding:1.5rem}
+.card-navy h3,.card-navy h4{color:var(--sky-mid)}
+.card-navy p{color:rgba(255,255,255,.8)}
+.card-dark{background:#0c1220;color:white;border-radius:.75rem;padding:1.5rem;margin-bottom:1.1rem}
+.card-dark h3{color:var(--amber);font-size:1.1rem;margin-top:0}
+.card-dark p{color:rgba(255,255,255,.75)}
+.trilogy-table{width:100%;border-collapse:collapse;font-size:.85rem;margin:1rem 0}
+.trilogy-table th{background:var(--navy);color:white;padding:.5rem .65rem;text-align:left;font-size:.75rem}
+.trilogy-table td{padding:.5rem .65rem;border:1px solid var(--border);vertical-align:top;line-height:1.5}
+.trilogy-table .row-label{font-weight:700;color:var(--navy);background:var(--paper);font-size:.82rem}
+.prf-table{width:100%;border-collapse:collapse;font-size:.88rem;margin:1rem 0}
+.prf-table th{background:var(--sky-dark);color:white;padding:.6rem .75rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.prf-table td{padding:.55rem .75rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55}
+.prf-table tr:nth-child(odd) td{background:var(--paper)}
+.prf-table tr:hover td{background:var(--sky-light)}
+.prf-table .dim{font-weight:700;color:var(--sky);width:22%;font-size:.85rem}
+.run-cards{display:flex;flex-direction:column;gap:.75rem;margin:1rem 0}
+.run-card{border-radius:.6rem;padding:1rem;border:1px solid var(--border)}
+.run-card .run-num{font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.25rem}
+.run-card h4{margin:0 0 .35rem}
+.cell-practice{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem 0}
+.cell-item{background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:.85rem;text-align:center}
+.cell-item .atcf-key{font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--sky);margin-bottom:.2rem}
+.cell-item h4{margin:0 0 .3rem;font-size:.88rem}
+.cell-item p{font-size:.78rem;margin:0;line-height:1.4;color:var(--muted)}
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--sky);margin-bottom:.4rem}
+.journal-q p{font-size:.88rem;margin-bottom:.5rem}
+textarea.jta{width:100%;min-height:100px;border:1px solid var(--border);border-radius:.4rem;padding:.65rem;font-family:'Cormorant Garamond',serif;font-size:.92rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--sky-mid)}
+textarea.jta.q5{min-height:150px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.72rem;color:var(--success);font-family:'JetBrains Mono',monospace;height:1.2rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+.pred-retrieve{background:rgba(30,58,138,.08);border:1px solid rgba(30,58,138,.2);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.pred-retrieve .pr-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--sky);margin-bottom:.3rem}
+.pred-retrieve .pr-text{font-size:.88rem;color:var(--ink);font-style:italic;line-height:1.6;border-left:3px solid var(--amber);padding-left:.6rem}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;margin-bottom:1.5rem;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--sky-mid),var(--amber));transition:.4s}
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:1rem 1.25rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.95rem}
+blockquote cite{display:block;margin-top:.4rem;font-style:normal;font-size:.8rem;font-weight:600;color:var(--muted)}
+.nav-row{display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.nav-btn{padding:.5rem 1.1rem;border-radius:.45rem;border:1px solid var(--border);background:white;color:var(--navy);font-family:'Cormorant Garamond',serif;font-size:.9rem;cursor:pointer;transition:.15s}
+.nav-btn:hover{background:var(--sky-light);border-color:var(--sky-mid)}
+.nav-btn.primary{background:var(--sky-dark);color:white;border-color:var(--sky-dark)}
+.nav-btn.primary:hover{background:var(--sky)}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries · Chapter 5</div>
+  <h1>Both Things at Once</h1>
+  <div class="subtitle">The Synthesis Case · Nelson Mandela · Commonwealth of One + Adaptive Moral Commonwealth</div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:14%"></div></div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-synthesis" onclick="showTab('synthesis',this)" role="tab" aria-selected="true">§1 The Synthesis</button>
+  <button class="tab-btn" id="tb-cell" onclick="showTab('cell',this)" role="tab">§2 The 7×7 Cell</button>
+  <button class="tab-btn" id="tb-prf" onclick="showTab('prf',this)" role="tab">§3 Mandela's PRF</button>
+  <button class="tab-btn" id="tb-stakeholders" onclick="showTab('stakeholders',this)" role="tab">§4 Five Stakeholders</button>
+  <button class="tab-btn" id="tb-runs" onclick="showTab('runs',this)" role="tab">§5 The Three Runs</button>
+  <button class="tab-btn" id="tb-hinge" onclick="showTab('hinge',this)" role="tab">§6 The Hinge</button>
+  <button class="tab-btn" id="tb-journal" onclick="showTab('journal',this)" role="tab">§7 Journal</button>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §1 THE SYNTHESIS QUESTION
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="pane-synthesis" role="tabpanel">
+  <h2>§1 — The Synthesis Question</h2>
+
+  <p><strong>On February 11, 1990, after 27 years of imprisonment, Nelson Mandela walked out of Victor Verster Prison.</strong> He raised his fist. He was 71 years old. And within four years he had led the most admired peaceful transition from authoritarian rule to constitutional democracy of the twentieth century — a transition that, by every prior analysis, should have ended in civil war.</p>
+
+  <p>This chapter asks two questions the previous two cases could not fully answer. The first is the Hanna question extended to its limit: what does identity become after 27 years of sustained institutional attempt to destroy it? The second is the Maathai question applied to the most extreme coordination problem available: how do people who have been at war with each other coordinate toward a shared constitutional future without requiring each other to become something they are not?</p>
+
+  <p><strong>The synthesis insight:</strong> these are not separate ethical capacities you alternate between. The Identity Kernel that survived 27 years of isolation is the same Identity Kernel that could imagine the redeemable humanity of the people applying that pressure. You cannot, at this scale, have one without the other.</p>
+
+  <h3>The Three-Chapter Trilogy</h3>
+  <table class="trilogy-table">
+    <thead>
+      <tr><th>Dimension</th><th style="background:var(--teal-dark)">Ch 3 — Hanna</th><th style="background:var(--green-dark)">Ch 4 — Maathai</th><th style="background:var(--sky-dark)">Ch 5 — Mandela</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row-label">Central question</td>
+        <td style="background:var(--teal-light)">How does one person hold together under maximum suppression?</td>
+        <td style="background:var(--green-light)">How do incompatible groups coordinate toward a shared goal?</td>
+        <td style="background:var(--sky-light)">What does a person look like who must do both simultaneously — for 27 years under suppression, then as network hub for former enemies?</td>
+      </tr>
+      <tr>
+        <td class="row-label">Primary metric</td>
+        <td style="background:var(--teal-light)">Morphic fidelity: ratio of coherent identity signal that survived to signal eroded</td>
+        <td style="background:var(--green-light)">OS2 Bridge: cross-worldview convergence on shared outcomes</td>
+        <td style="background:var(--sky-light)">Both simultaneously: morphic fidelity (Runs 1+2) AND OS2 Bridge (Run 3)</td>
+      </tr>
+      <tr>
+        <td class="row-label">BioBond</td>
+        <td style="background:var(--teal-light)">Church network — external cognitive scaffolding</td>
+        <td style="background:var(--green-light)">The shared task itself — structural conditions rewarding every framework</td>
+        <td style="background:var(--sky-light)">Both: Tambo's international network (Run 2) AND TRC's shared task design (Run 3)</td>
+      </tr>
+      <tr>
+        <td class="row-label">The ethical addition</td>
+        <td style="background:var(--teal-light)">Identity coherence requires structural scaffolding — build it before you need it</td>
+        <td style="background:var(--green-light)">Coordination requires shared task, not value agreement — your PRF is a coordination asset</td>
+        <td style="background:var(--sky-light)">The two capacities are the same practice at different scales — you cannot have one without the other</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-amber">
+    <h4>Your Chapter 4 Prediction</h4>
+    <div class="pred-retrieve">
+      <div class="pr-label">Your Chapter 4 Q5 Prediction (retrieved)</div>
+      <div class="pr-text" id="ch4PredDisplay">Loading…</div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <span></span>
+    <button class="nav-btn primary" onclick="showTab('cell',document.getElementById('tb-cell'))">Next: The 7×7 Cell →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §2 THE 7×7 CELL
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-cell" role="tabpanel">
+  <h2>§2 — The 7×7 Cell: Where Biology Meets Ethics</h2>
+
+  <p>In a cell measuring seven feet by seven feet, every morning before the guards arrived, Mandela ran in place, did push-ups, sit-ups, and calisthenics. He did this for the entire 27 years. It was not required by his captors. It was chosen by him, daily, regardless of conditions.</p>
+
+  <p>He describes this practice as among the most crucial contributors to his conscious work to stay himself. The course now has the vocabulary to understand precisely why.</p>
+
+  <h3>The Biological Mechanism</h3>
+  <p><strong>Exercise is one of the most robustly documented interventions for reducing glucocorticoid load and protecting prefrontal cortical function.</strong> Cortisol — chronically elevated under sustained stress — damages the dendrites of prefrontal cortex neurons, reducing the PFC's functional capacity for deliberate reasoning. This is the Sapolsky gate mechanism. Aerobic exercise directly counteracts this pathway: it reduces cortisol, promotes BDNF (which repairs PFC dendrites), and activates the hippocampus — critical for Historical Continuity.</p>
+
+  <p><strong>Mandela was, without knowing the neuroscience, doing exactly what the biology requires to keep the Sapolsky gate from closing.</strong> His morning push-ups were a daily neurological maintenance intervention — the biological precondition for everything else that followed.</p>
+
+  <div class="cell-practice">
+    <div class="cell-item">
+      <div class="atcf-key">HC</div>
+      <h4>Historical Continuity</h4>
+      <p>"I have done this every day, regardless of what they do to me." The routine created a thread of behavioral continuity — his past was something he had built, not just something that happened to him.</p>
+    </div>
+    <div class="cell-item">
+      <div class="atcf-key">PI</div>
+      <h4>Present Integration</h4>
+      <p>"My body obeys my will, not their rules." In a situation designed to reduce him to an object of institutional authority, the exercise routine created a domain of present agency that was entirely his.</p>
+    </div>
+    <div class="cell-item">
+      <div class="atcf-key">PC</div>
+      <h4>Prospective Coherence</h4>
+      <p>"I will do this again tomorrow." There is a tomorrow in which I have agency — something to do tomorrow that was genuinely chosen, not merely endured.</p>
+    </div>
+    <div class="cell-item">
+      <div class="atcf-key">MCC</div>
+      <h4>Meta-Constructor Capacity</h4>
+      <p>"I am choosing this deliberately. I know why." He was observing himself make the choice and understanding its purpose — using the experience as formation rather than merely surviving it.</p>
+    </div>
+  </div>
+
+  <div class="card card-navy">
+    <h4>Against Morphic Suppression — The Specific Mechanism</h4>
+    <p>The exercise routine was a daily categorical interruption of morphic suppression accumulation. The push-up happened because he chose it. No guard could suppress that. Every morning he demonstrated to himself, through his own body, that his deliberate capacity still reached at least one outcome — the one they could not control. This is why λ Raw does not collapse to zero in Run 1 of the simulation, even under entropy 0.85 and stress 0.72. The floor is not a model limitation. It is Mandela's biological contribution — what the 7×7 cell routine provided structurally.</p>
+  </div>
+
+  <div class="card card-amber">
+    <h4>Your Equivalent</h4>
+    <p>The question is not: 'Could you do what Mandela did?' You are not in a seven-by-seven-foot cell. The question is: 'What is the daily practice that maintains your C_PFC above the Sapolsky threshold under your actual chronic stress conditions?' And the harder version: when your base_entropy rises sharply — when the semester intensifies, when financial pressure spikes — is that practice the first thing you protect, or the first thing you drop? Those are precisely the conditions under which you need it most.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('synthesis',document.getElementById('tb-synthesis'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('prf',document.getElementById('tb-prf'))">Next: Mandela's PRF →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §3 MANDELA'S PRF — THE NECESSARY PERFORMANCE
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-prf" role="tabpanel">
+  <h2>§3 — Mandela's PRF: The Necessary Performance</h2>
+
+  <p>Mandela's PRF has six standard dimensions plus a seventh that the synthesis case requires beyond what Hanna and Maathai needed — the structural capacity that operating as both an individual under suppression and a network hub simultaneously demands.</p>
+
+  <table class="prf-table">
+    <thead><tr><th>PRF Dimension</th><th>Mandela's Configuration</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="dim">Beliefs</td>
+        <td>Reality is fundamentally social — our humanity is bound up in the humanity of others, including our oppressors. The capacity for change exists in every person. Strategic necessity and moral conviction are not in tension: seeing the redeemable humanity in your enemy is both the right thing and the effective thing.</td>
+      </tr>
+      <tr>
+        <td class="dim">Rules</td>
+        <td>Find the good in even your greatest enemies — if you hate your captors, they have truly imprisoned you. The reconciliation process is as important as its outcome: you cannot build a democratic future using the tools of oppression. Retain the non-negotiable (universal franchise, end of apartheid) while being flexible on everything else.</td>
+      </tr>
+      <tr>
+        <td class="dim">Ontology</td>
+        <td>Personal identity is not fixed — it is forged in struggle. He entered prison a hot-headed young man and emerged a patient leader. The core commitment did not change; his understanding of how to achieve it was transformed over 27 years of forced reflection. The most real things in the transition were not political structures but symbols, memories, and fears — what was being built was trust.</td>
+      </tr>
+      <tr>
+        <td class="dim">Authenticity — The Necessary Performance</td>
+        <td>A significant gap between internal state and external presentation throughout the negotiations — not inauthenticity but the role that his deepest authentic commitment required. The mask of certainty during CODESA was what authenticity demanded: expressing genuine frustration or fear would have collapsed negotiations, violating his deepest commitment far more than the performance did. The test: is the gap in service of your deepest authentic commitment?</td>
+      </tr>
+      <tr>
+        <td class="dim">Assembly History</td>
+        <td>Thembu royal lineage → legal training defending apartheid victims → Defiance Campaign and MK founding → 27 years on Robben Island. The formation sequence is what matters: the militant who could have become bitter became the patient strategist because the isolation forced exactly the metacognitive engagement — studying, debating, reflecting — that produced the synthesis capacity.</td>
+      </tr>
+      <tr>
+        <td class="dim">Forward Pull</td>
+        <td>A democratic, non-racial South Africa — concrete enough to measure every negotiating decision against, transcendent enough to hold through the darkest years. Every compromise during CODESA, every frustration suppressed, every reconciliation gesture extended to enemies had to be weighed against whether it brought that future closer. The forward pull was the architecture of the necessary performance.</td>
+      </tr>
+      <tr>
+        <td class="dim" style="background:var(--sky-light)">The Synthesis Dimension</td>
+        <td style="background:var(--sky-light)">The capacity to hold the Identity Kernel intact (Commonwealth of One) while simultaneously projecting the presence that different stakeholder groups need to see (Adaptive Moral Commonwealth). This is not theatrical performance. It is the structural requirement of operating as a network hub for groups with incompatible frameworks while under maximum identity pressure. Hanna did not need this — his survival required transparency, not projection. Maathai did not need it — her network had time. Mandela needed it in every public appearance, every negotiation session, every press conference, every day for four years.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card card-sky">
+    <h4>The Test for Necessary vs. Merely Convenient</h4>
+    <p>The test for whether a performance is necessary or merely convenient: does it serve your deepest authentic commitment, or does it substitute for it? If expressing your uncertainty would advance your authentic goal — if the people you are coordinating with need to see your doubt to trust you — then suppressing it is inauthenticity. But if expressing your uncertainty would undermine the coordination that your authentic goal requires, then the performance of certainty is what authenticity demands. The test is not whether a gap exists between internal and external. The test is what the gap is in service of.</p>
+  </div>
+
+  <blockquote>
+    "In the situation with the end of apartheid, the 'mask' I had to wear was one of absolute certainty and patience, especially during negotiations. Internally, I felt immense pressure and frustration. But to show that would have been a strategic disaster. My authentic self is the man committed to a free South Africa; the calm negotiator was the role I had to play to be true to that deepest self."
+    <cite>— Nelson Mandela, from PRF Synthesizer reflections</cite>
+  </blockquote>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('cell',document.getElementById('tb-cell'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('stakeholders',document.getElementById('tb-stakeholders'))">Next: Five Stakeholders →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §4 FIVE STAKEHOLDERS — FUNCTIONAL EQUIVALENCE AT WAR
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-stakeholders" role="tabpanel">
+  <h2>§4 — Five Stakeholders at War</h2>
+
+  <p>Chapter 4 established functional equivalence with groups that disagreed but were not enemies. Mandela's transition case applies the same structural mechanism under the most extreme conditions available: groups that had been systematically torturing, killing, and dehumanizing each other.</p>
+
+  <div class="card card-sky">
+    <h4>The Five Groups and Their Shared Task</h4>
+    <p>Democratic transition as the concrete shared task that no party preferred but all could advance for their own authentic reasons. Not value agreement — functional equivalence at its most extreme.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:.6rem;margin:1rem 0">
+    <div style="background:var(--teal-light);border-radius:.5rem;padding:.85rem;border-left:4px solid var(--teal-mid)">
+      <strong>ANC / Nelson Mandela:</strong> Political liberation — end of apartheid, universal franchise, majority rule. What democratic transition provided: liberation through the ballot.
+    </div>
+    <div style="background:var(--sky-light);border-radius:.5rem;padding:.85rem;border-left:4px solid var(--sky-mid)">
+      <strong>National Party / F.W. de Klerk:</strong> Managed exit from apartheid — avoiding civil war, retaining economic position, legal protection for security forces. What democratic transition provided: constitutional protections, property rights, political future as an opposition party.
+    </div>
+    <div style="background:var(--amber-light);border-radius:.5rem;padding:.85rem;border-left:4px solid var(--amber)">
+      <strong>Afrikaner nationalist right (CP, AWB):</strong> Preservation of Afrikaner cultural identity — fear of ANC majority rule as cultural annihilation. What democratic transition provided: constitutional protections for minority cultural and language rights, volkstaat discussions, Afrikaans official language status.
+    </div>
+    <div style="background:var(--green-light);border-radius:.5rem;padding:.85rem;border-left:4px solid var(--green-mid)">
+      <strong>Business community:</strong> Stability and investment confidence — the sanctions regime was economically catastrophic. What democratic transition provided: end of sanctions, restored investment confidence, constitutional framework protecting property rights.
+    </div>
+    <div style="background:var(--violet-light);border-radius:.5rem;padding:.85rem;border-left:4px solid var(--violet)">
+      <strong>International community:</strong> Geopolitical stability, a model for peaceful democratic transition, end of the moral embarrassment of apartheid. What democratic transition provided: a credible election they could certify, allowing sanctions to be lifted and a new relationship to be established.
+    </div>
+  </div>
+
+  <p><strong>De Klerk and the National Party are the structural equivalent of Maathai's most incompatible stakeholder.</strong> Without the NP's formal agreement, no transition was legally possible. De Klerk did not want what Mandela wanted. He wanted managed exit. That motivation is genuinely different from liberation. It was functionally equivalent: both required a peaceful, negotiated, constitutionally-grounded transfer of power.</p>
+
+  <div class="card card-amber">
+    <h4>The TRC — Functional Equivalence as Institutional Design</h4>
+    <p>The Truth and Reconciliation Commission was the design solution to the most extreme version of the coordination problem. Its insight: make truth the condition of amnesty. Different groups participated for completely incompatible reasons — victims wanted acknowledgment, perpetrators wanted amnesty, the international community wanted a model, the business sector wanted stability. Different motivations. Same testimony process. Every statement was real. The TRC solved a specific coordination problem. It did not solve economic apartheid, full accountability, or structural inequality. Knowing which problem you are solving — and designing specifically for that problem — is itself an ethical skill.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('prf',document.getElementById('tb-prf'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('runs',document.getElementById('tb-runs'))">Next: The Three Runs →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §5 THE THREE RUNS
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-runs" role="tabpanel">
+  <h2>§5 — The Three Simulation Runs</h2>
+
+  <p>Every other case app in this suite runs two simulations. The Mandela app runs three — because this case contains two structurally distinct problems that require completely different parameter configurations. Read the description of each run before opening the simulation, so you understand what you are looking at before you see the numbers.</p>
+
+  <div class="run-cards">
+    <div class="run-card" style="background:var(--sky-light);border-color:var(--sky-mid)">
+      <div class="run-num" style="color:var(--sky)">Run 1 — The Hanna Question Extended to 27 Years</div>
+      <h4>Robben Island — No External Network</h4>
+      <p>Entropy 0.85, stress 0.72, community block −0.85, boundary +0.80. 12 steps — each representing roughly 2 years. No BioBond. This is Chapter 3's question at maximum duration. Watch λ Raw — it does not collapse to zero. The floor is the 7×7 cell routine. Watch morphic suppression build across 12 steps. Morphic fidelity = λ Raw ÷ (λ Raw + morphic suppression) tells you what proportion of the original coordination capacity survived 27 years with internal discipline as the only buffer.</p>
+    </div>
+    <div class="run-card" style="background:var(--teal-light);border-color:var(--teal-mid)">
+      <div class="run-num" style="color:var(--teal-dark)">Run 2 — The BioBond Contribution</div>
+      <h4>Robben Island — With Oliver Tambo's Network (BioBond Step 5)</h4>
+      <p>Identical parameters to Run 1. BioBond activates at step 5 — representing Oliver Tambo's international sanctions campaign and the global anti-apartheid movement intensifying in the 1980s. The difference between Run 1 and Run 2 is the simulation's structural account of what Tambo's 30 years of work in exile contributed to Mandela's capacity to emerge as a functioning leader. The floor is Mandela's contribution. The BioBond uplift is Tambo's contribution. Both are load-bearing. Neither alone was sufficient.</p>
+    </div>
+    <div class="run-card" style="background:var(--green-light);border-color:var(--green-mid)">
+      <div class="run-num" style="color:var(--green-dark)">Run 3 — The Maathai Question at National Scale</div>
+      <h4>The Transition — Functional Equivalence Across Former Enemies</h4>
+      <p>A completely different structural problem. Entropy 0.52, all block fields positive (care +0.40, fairness +0.50, community +0.45, boundary +0.30). Maximum worldview diversity — Afrikaner nationalists alongside ANC members, religious communities, white liberals, and indigenous custodial groups. This is Chapter 4's question applied to former enemies. Friction will be very high. Watch OS2 Bridge. High friction and high OS2 Bridge coexisting is the structural measure of what the TRC's shared task design achieved: convergence without agreement.</p>
+    </div>
+  </div>
+
+  <div class="card card-navy">
+    <h4>Reading the Three-Run Comparison Panel</h4>
+    <p>Once all three runs are complete, the side-by-side panel holds the complete argument spatially. Run 1 shows the floor. Run 2 shows what BioBond adds. Run 3 shows a completely different structural mechanism solving a completely different structural problem. The trilogy argument: individual resilience (Run 1) + structural scaffolding (Run 2) + functional equivalence design (Run 3) = what a complete ethical actor at this scale requires. None of the three alone was sufficient. All three together is what Mandela had.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('stakeholders',document.getElementById('tb-stakeholders'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('hinge',document.getElementById('tb-hinge'))">Next: The Hinge →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §6 THE HINGE — PALMER AND FARMER
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-hinge" role="tabpanel">
+  <h2>§6 — The Hinge: Where This Trilogy Points</h2>
+
+  <p>The human trilogy — Hanna, Maathai, Mandela — has demonstrated three structural capacities through lived cases. But the three cases share a limitation that the next movement of the course addresses directly.</p>
+
+  <h3>What All Three Cases Required That None Could Guarantee</h3>
+  <p>Each of the three cases required someone to run mental models of what different structural configurations would produce. Mandela and his advisors were modeling, throughout the negotiations, what would happen to South Africa's economic stability under different constitutional designs, what would happen to the risk of civil war under different amnesty provisions.</p>
+
+  <p>They did this through political intuition, historical analogy, and strategic experience. These are powerful tools. They are also severely limited: the number of variables in a national transition exceeds what any individual mind can track, the interactions between variables are nonlinear, and the consequences of errors are measured in deaths and democratic collapses.</p>
+
+  <div class="card card-sky">
+    <h4>Tim Palmer — Ensemble Weather Forecasting</h4>
+    <p>Tim Palmer at the European Centre for Medium-Range Weather Forecasts developed ensemble forecasting — running multiple weather models simultaneously with varied initial conditions and reporting the distribution of outcomes rather than a single deterministic prediction. This is not a technical refinement. It is an ethical stance: institutions owe the people whose lives depend on their forecasts an honest account of genuine uncertainty. Improved uncertainty communication has been estimated to reduce hurricane fatality rates by roughly 50% in the United States over recent decades. That is thousands of lives per decade. The ethical dimension of forecasting methodology is not philosophical — it is the body count.</p>
+  </div>
+
+  <div class="card card-green">
+    <h4>Doyne Farmer — Agent-Based Economic Modeling</h4>
+    <p>Doyne Farmer and his group built an agent-based model that advised the UK Treasury during the COVID pandemic — and predicted GDP behavior with significantly better accuracy than the standard macroeconomic models. The standard models failed because they used a representative agent assumption that treats the entire economy as a single smoothed average person making rational optimal decisions. That assumption erases exactly what matters most in a crisis: that a lockdown hits a restaurant worker, a hospital nurse, a remote software engineer, and a manufacturing supply chain in completely different ways. The populations most harmed by economic crises are systematically the populations most invisible to aggregate models. Farmer's agent-based approach kept them visible — and produced better predictions precisely because it did.</p>
+  </div>
+
+  <div class="card card-amber">
+    <h4>What You Have Been Building</h4>
+    <p>Every time you ran a simulation in this course, configured parameters, compared runs, and read the structural implications of the outputs, you were developing the same analytical capacity that Palmer used to save lives and Farmer used to advise governments. The scale differs. The method is the same. The choice of reference frame is a moral choice. When you model individuals in isolation, certain people and certain patterns become invisible. When you model systems of heterogeneous agents in structural relationship — which is what you have been doing — those people and those patterns become visible. The difference is not just predictive accuracy. It is who bears the cost of the model's blindness when the model informs the decisions that shape their lives.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('runs',document.getElementById('tb-runs'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('journal',document.getElementById('tb-journal'))">Next: Journal →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     §7 JOURNAL
+══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="pane-journal" role="tabpanel">
+  <h2>§7 — Chapter Reflection Questions</h2>
+  <p>Complete these five questions before opening the Mandela Case Explorer simulation.</p>
+
+  <div class="journal-q">
+    <div class="q-label">Q1 — The 7×7 Cell Equivalent</div>
+    <p>Identify your current daily practice equivalent to Mandela's 7×7 cell routine — the daily, chosen, embodied practice that maintains your C_PFC above the Sapolsky threshold under your actual chronic stress conditions. If you cannot identify one, design a specific practice — not an aspiration but a commitment. Then answer: when does your base_entropy rise most sharply, and what happens to the practice under those conditions?</p>
+    <textarea class="jta" id="jt-q1" placeholder="My 7×7 equivalent: …&#10;What it maintains structurally: …&#10;When my entropy rises most sharply: …&#10;What happens to the practice: …" oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q2 — The Necessary Performance</div>
+    <p>Identify a situation in your current life where you maintain a gap between your internal state and your external presentation. Apply the test from §3: is this gap in service of your deepest authentic commitment, or does it substitute for it? What would change about the performance if you answered that question honestly?</p>
+    <textarea class="jta" id="jt-q2" placeholder="The gap I maintain: …&#10;What it is in service of: …&#10;The test result: …&#10;What would change if I answered honestly: …" oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q3 — The Five-Stakeholder Structure in Your Context</div>
+    <p>Map the five-stakeholder structure for a coordination challenge in your current institutional context. For each stakeholder, name their primary motivation, their distinctive capability, and how a concrete shared task could produce outcomes they value through their own frameworks — without requiring value agreement. Identify which stakeholder in your map is structurally equivalent to de Klerk: most incompatible with your goals, but whose participation is necessary for the transition to succeed.</p>
+    <textarea class="jta" id="jt-q3" placeholder="The coordination challenge: …&#10;Stakeholder 1 (most compatible): …&#10;Stakeholder 2: …&#10;Stakeholder 3 (most incompatible — my de Klerk): …&#10;The concrete shared task: …" oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q4 — The Three Runs and the Synthesis Argument</div>
+    <p>After completing all three simulation runs and the comparison panel: write a paragraph describing what the three runs together argue that no single run could show alone. Use the actual metric values. Then connect the three-run argument to your own life: which of the three structural capacities (individual resilience, structural scaffolding, functional equivalence design) is most underdeveloped in your current situation?</p>
+    <textarea class="jta" id="jt-q4" placeholder="What the three runs together show (using metric values): …&#10;The structural capacity most underdeveloped in my situation: …&#10;What developing it would require: …" oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">✓ Saved</div>
+  </div>
+
+  <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.05)">
+    <div class="q-label" style="color:var(--amber-dark)">Q5 — Prediction for Palmer/Farmer (Chapter 6)</div>
+    <p>Chapters 6 and 7 introduce Tim Palmer (ensemble weather forecasting) and Doyne Farmer (agent-based economic modeling) — scientists who use the same heterogeneous agent simulation methodology you have been practicing to make real predictions about hurricane survival and economic stability. Before encountering their cases, commit to a prediction.</p>
+    <ul style="font-size:.88rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
+      <li><strong>The reference frame question:</strong> what do you predict each alternative framework makes visible that the standard framework cannot see?</li>
+      <li><strong>The ethical dimension:</strong> which specific population was made invisible by the standard framework in each case, and what was the cost of that invisibility in lives or livelihoods?</li>
+      <li><strong>Connection to the trilogy:</strong> what question does the human trilogy leave unanswered that you expect Palmer and Farmer to address?</li>
+      <li><strong>Specific predictions:</strong> in one sentence each — what Palmer's ensemble revealed, and what Farmer's model predicted that standard models could not.</li>
+    </ul>
+    <textarea class="jta q5" id="jt-q5" placeholder="Palmer's ensemble approach: I predict it revealed…&#10;Farmer's agent-based model: I predict it showed…&#10;The invisible population: in each case, the standard framework could not see…&#10;The unanswered question from the trilogy: …" oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-q5">✓ Saved for Chapter 6</div>
+  </div>
+
+  <div class="card card-dark" style="margin-top:1.5rem">
+    <h3>Looking Ahead: From the Classroom Telescope to Real Stakes</h3>
+    <p>What comes next is not a validation that the tools we have been using are legitimate. It is something more important: evidence that this kind of thinking — OS2 reasoning, heterogeneous agent modeling, the refusal to average away what matters most — is what determines whether people survive hurricanes and whether governments keep their economies functioning during crises.</p>
+    <p style="margin-top:.6rem">Both Palmer and Farmer make the same ethical argument the trilogy has been building toward, now stated not philosophically but empirically: the choice of reference frame is a moral choice. When you model individuals in isolation, certain people become invisible. When you model systems of heterogeneous agents in structural relationship, those people become visible. The difference is not just predictive accuracy. It is who bears the cost of the model's blindness when the model informs the decisions that shape their lives.</p>
+    <p style="margin-top:.6rem">You have been developing this capacity all semester.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('hinge',document.getElementById('tb-hinge'))">← Back</button>
+    <a href="https://rmertzman-tech.github.io/Three-Scenario-Sims/mandela-case-explorer.html"
+       target="_blank" style="text-decoration:none">
+      <button class="nav-btn primary">Open Mandela Case Explorer →</button>
+    </a>
+  </div>
+</div>
+
+</div><!-- /app-wrap -->
+
+<script>
+'use strict';
+const JP = 'ch5_';
+const TABS = ['synthesis','cell','prf','stakeholders','runs','hinge','journal'];
+const completedTabs = new Set();
+
+function showTab(name, btn){
+  TABS.forEach(t=>{
+    const pane = document.getElementById('pane-'+t);
+    if(pane){ pane.style.display='none'; pane.classList.remove('active'); }
+  });
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    b.classList.remove('active');
+    b.setAttribute('aria-selected','false');
+  });
+  const pane = document.getElementById('pane-'+name);
+  if(pane){ pane.style.display='block'; pane.classList.add('active'); pane.scrollIntoView({behavior:'smooth',block:'start'}); }
+  if(btn){ btn.classList.add('active'); btn.setAttribute('aria-selected','true'); }
+  completedTabs.add(name);
+  updateProgress();
+}
+
+function updateProgress(){
+  const pct = Math.round((completedTabs.size / TABS.length) * 100);
+  const fill = document.getElementById('progressFill');
+  if(fill) fill.style.width = pct + '%';
+  TABS.forEach(t=>{
+    if(completedTabs.has(t)){
+      const btn = document.getElementById('tb-'+t);
+      if(btn && !btn.classList.contains('done')) btn.classList.add('done');
+    }
+  });
+}
+
+function jSave(k, v){
+  try{
+    const key = k === 'cq5' ? JP+'cq5' : JP+k;
+    localStorage.setItem(key, v);
+    let snId = k==='cq5' ? 'sn-q5' : 'sn-'+k;
+    const sn = document.getElementById(snId);
+    if(sn){ sn.classList.add('show'); setTimeout(()=>sn.classList.remove('show'),2000); }
+  }catch(e){}
+}
+
+function loadJournal(){
+  ['q1','q2','q3','q4'].forEach(k=>{
+    const el = document.getElementById('jt-'+k);
+    if(el) el.value = (()=>{ try{ return localStorage.getItem(JP+k)||''; }catch(e){ return ''; } })();
+  });
+  const q5el = document.getElementById('jt-q5');
+  if(q5el) q5el.value = (()=>{ try{ return localStorage.getItem(JP+'cq5')||''; }catch(e){ return ''; } })();
+}
+
+(function loadCh4Pred(){
+  try{
+    const pred = localStorage.getItem('ch4_cq5') || '';
+    const el = document.getElementById('ch4PredDisplay');
+    if(el){ el.textContent = pred.trim() ? pred : 'No Chapter 4 prediction found. Complete Chapter 4 journal Q5 first.'; }
+  }catch(e){}
+})();
+
+loadJournal();
+completedTabs.add('synthesis');
+updateProgress();
+</script>
+</body>
+</html>
