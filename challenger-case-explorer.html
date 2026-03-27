@@ -1282,6 +1282,17 @@ The result would be a catastrophe of the highest order — loss of the shuttle a
 
       '🔬 Run the UCP Simulation': () => `
         <h3 class="section-title">Simulate the Teleconference — Live UCP Analysis</h3>
+        <div id="challPredPanel" style="background:rgba(26,39,68,0.7);border:1px solid rgba(201,168,76,0.35);border-radius:8px;padding:14px 18px;margin-bottom:18px;">
+          <div style="font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#c9a84c;margin-bottom:6px;">Your Prediction (from Orientation Journal)</div>
+          <div id="challPredText" style="font-size:.88rem;color:rgba(255,255,255,.75);font-style:italic;line-height:1.6;border-left:3px solid #c9a84c;padding-left:12px;"></div>
+        </div>
+
+        <div style="background:rgba(10,22,40,0.6);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:16px 18px;margin-bottom:18px;">
+          <div style="font-size:.72rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#9ca3af;margin-bottom:10px;">The Watershed — Thiokol January 27, 1986</div>
+          <canvas id="challWatershed" width="600" height="130" style="width:100%;border-radius:6px;display:block;background:rgba(5,10,20,0.8);"></canvas>
+          <div style="font-size:.72rem;color:#6b7280;margin-top:6px;text-align:center;">λ Raw (engineer knowledge) vs OS2 Bridge (what reached the launch decision). Run the simulation to update.</div>
+        </div>
+
         <p class="prose">
           The suppression gap Boisjoly experienced — high coordination capacity he could not surface to decision-makers —
           is exactly what the UCP simulation models. Run the simulation below to see what
@@ -2319,6 +2330,14 @@ async function runUCPSim(withBioBond) {
 
     resEl.innerHTML = buildSimResultsHTML(_simDataA, _simDataB);
     resEl.classList.add('visible');
+    // Update watershed with real simulation metrics
+    if (_simDataA) {
+      const m = _simDataA.metrics || _simDataA;
+      const lr = m.lambda_raw || 0.76;
+      const lp = m.lambda_perceived || 0.12;
+      const os2 = m.os2_synergy_bridge || Math.max(0, lp - 0.05);
+      drawChallWatershed(lr, os2, lr - lp);
+    }
 
   } catch(e) {
     errEl.textContent = `Simulation error: ${e.message}`;
@@ -2496,6 +2515,118 @@ function loadSaved(key) {
   catch(e) { return ''; }
 }
 
+
+// ── Orientation prediction retrieval ─────────────────────────
+function loadChallPrediction() {
+  const el = document.getElementById('challPredText');
+  if (!el) return;
+  let pred = '', source = '';
+  try {
+    const op = localStorage.getItem('orient_cq5') || '';
+    const cp = localStorage.getItem('ch1_q5') || '';
+    if (op.trim())      { pred = op; source = 'Orientation Journal'; }
+    else if (cp.trim()) { pred = cp; source = 'Chapter 1 Journal Q5'; }
+  } catch(e) {}
+  const panel = document.getElementById('challPredPanel');
+  if (pred.trim()) {
+    if (panel) panel.style.borderColor = 'rgba(201,168,76,0.50)';
+    el.innerHTML = '<span style="font-size:.68rem;opacity:.55;display:block;margin-bottom:4px">from ' + source + '</span>'
+      + pred.split('\n').join('<br>');
+  } else {
+    el.style.fontStyle = 'normal';
+    el.style.color = 'rgba(255,255,255,.35)';
+    el.innerHTML = 'No prediction found. Complete the Course Orientation Journal (Question 4) before this class session.';
+  }
+}
+
+// ── Watershed mini-visualization ─────────────────────────────
+function drawChallWatershed(lamRaw, os2Bridge, suppGap) {
+  const cv = document.getElementById('challWatershed');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const GY = H - 22, MAX_H = H - 44, THRESH = 0.42;
+  const LAND_W = Math.round(W * 0.56);
+  const DAM_X = Math.round(W * 0.60);
+  const DAM_W = Math.round(W * 0.055);
+  const RES_X = DAM_X + DAM_W + 4;
+  const RES_W = W - RES_X - 8;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = 'rgba(5,10,22,0.0)';
+  ctx.fillRect(0, 0, W, H);
+
+  // ground line
+  ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(0, GY); ctx.lineTo(W, GY); ctx.stroke();
+
+  // agent peaks for Thiokol scenario (7 agents)
+  const agents = [0.82, 0.78, 0.88, 0.74, 0.56, 0.80, 0.72];
+  const sp = LAND_W / (agents.length + 1);
+  const pw = sp * 0.70;
+  agents.forEach((h, i) => {
+    const cx = sp * (i + 1), bh = h * MAX_H, py = GY - bh;
+    const c = h >= THRESH + 0.2 ? '#14b8a6' : h >= THRESH ? '#f59e0b' : '#ef4444';
+    ctx.beginPath(); ctx.moveTo(cx - pw/2, GY); ctx.lineTo(cx, py); ctx.lineTo(cx + pw/2, GY);
+    ctx.closePath(); ctx.fillStyle = c; ctx.globalAlpha = 0.70; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.fillStyle = c; ctx.textAlign = 'center'; ctx.font = '8px system-ui';
+    ctx.fillText(h.toFixed(2), cx, py - 3);
+  });
+
+  // lambda Raw water level
+  const lr = lamRaw !== undefined ? lamRaw : 0.76;
+  const wy = GY - lr * MAX_H;
+  ctx.fillStyle = 'rgba(20,184,166,0.12)'; ctx.fillRect(0, wy, LAND_W, GY - wy);
+  ctx.setLineDash([5, 3]); ctx.strokeStyle = 'rgba(20,184,166,0.65)'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(0, wy); ctx.lineTo(LAND_W, wy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#14b8a6'; ctx.font = 'bold 8px system-ui'; ctx.textAlign = 'right';
+  ctx.fillText('λ Raw: ' + Math.round(lr * 100) + '%', LAND_W - 3, wy - 3);
+
+  // Sapolsky threshold
+  const thy = GY - THRESH * MAX_H;
+  ctx.setLineDash([4, 3]); ctx.strokeStyle = 'rgba(245,158,11,0.55)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(4, thy); ctx.lineTo(LAND_W - 4, thy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#92400e'; ctx.font = '8px system-ui'; ctx.textAlign = 'left';
+  ctx.fillText('threshold', 5, thy - 2);
+
+  // flow indicator
+  const damF = suppGap !== undefined ? Math.min(0.97, lr - (os2Bridge !== undefined ? os2Bridge * (1 - lr) : 0.05)) : 0.78;
+  if (lr > damF + 0.02) {
+    const fmy = GY - (wy + GY - damF * MAX_H) / 2 - (GY - wy) / 4;
+    ctx.strokeStyle = 'rgba(20,184,166,0.35)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(LAND_W + 2, GY - (wy + GY) / 2 + 10); ctx.lineTo(DAM_X - 2, GY - (wy + GY) / 2 + 10); ctx.stroke();
+  }
+
+  // dam — high (Thiokol scenario)
+  const dh = damF * MAX_H, dty = GY - dh;
+  ctx.fillStyle = '#b91c1c'; ctx.globalAlpha = 0.88;
+  ctx.fillRect(DAM_X, dty, DAM_W, GY - dty); ctx.globalAlpha = 1;
+  ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
+  for (let dy = 0; dy < GY - dty; dy += 7) {
+    ctx.beginPath(); ctx.moveTo(DAM_X, dty + dy); ctx.lineTo(DAM_X + DAM_W, dty + dy + 5); ctx.stroke();
+  }
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 7px system-ui'; ctx.textAlign = 'center';
+  const dcx = DAM_X + DAM_W / 2;
+  ctx.fillText('Gap', dcx, dty - 7);
+  ctx.fillText(Math.round(damF * 100) + '%', dcx, dty - 1);
+
+  // reservoir — small (OS2 Bridge)
+  const os2 = os2Bridge !== undefined ? os2Bridge : 0.08;
+  const rfh = os2 * MAX_H, rfy = GY - rfh;
+  const rty = GY - MAX_H;
+  ctx.strokeStyle = 'rgba(56,189,248,0.25)'; ctx.lineWidth = 0.8;
+  ctx.strokeRect(RES_X, rty, RES_W, MAX_H);
+  ctx.fillStyle = 'rgba(20,184,166,0.28)';
+  ctx.fillRect(RES_X, rfy, RES_W, rfh);
+  const rcx = RES_X + RES_W / 2;
+  ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 7px system-ui'; ctx.textAlign = 'center';
+  ctx.fillText('OS2', rcx, rty - 4);
+  ctx.fillStyle = rfh > 12 ? '#059669' : '#ef4444'; ctx.font = 'bold 9px system-ui';
+  ctx.fillText(Math.round(os2 * 100) + '%', rcx, rfh > 16 ? rfy + rfh / 2 + 4 : rfy - 4);
+}
+
 function restoreInputs() {
   // Map input IDs to storage keys
   const map = {
@@ -2511,6 +2642,8 @@ function restoreInputs() {
     const el = document.getElementById(id);
     if (el) el.value = loadSaved(key);
   });
+  loadChallPrediction();
+  drawChallWatershed();
 }
 
 

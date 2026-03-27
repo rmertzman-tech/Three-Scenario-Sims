@@ -433,7 +433,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
     <p>You wrote a Challenger simulation prediction at the end of Chapter 1 (Q5). It is displayed below. Read it carefully — you are about to test it.</p>
 
     <div class="prediction-display" role="region" aria-label="Your Chapter 1 prediction">
-      <div class="pred-eyebrow">Your Chapter 1 Q5 Prediction (retrieved from your saved journal)</div>
+      <div class="pred-eyebrow">Your Prediction (Orientation Journal or Chapter 1 Q5)</div>
       <div id="predDisplay">
         <p class="pred-empty">No prediction found. If you completed Chapter 1's Q5 journal entry, it should appear here. Make sure you are using the same browser where you completed Chapter 1.</p>
       </div>
@@ -574,7 +574,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
     <p>This is the moment Chapter 1 was building toward. You formed a specific prediction about the Challenger simulation before seeing any results. You have now run the simulation. The gap between your prediction and the result is not an error to be corrected — it is evidence about your generative model's precision-weighting structure.</p>
 
     <div class="prediction-display" role="region" aria-label="Your prediction for gap analysis">
-      <div class="pred-eyebrow">Your Chapter 1 Q5 Prediction</div>
+      <div class="pred-eyebrow">Your Pre-Simulation Prediction</div>
       <div id="predDisplay2">
         <p class="pred-empty">No prediction found from Chapter 1.</p>
       </div>
@@ -771,18 +771,23 @@ function renderPRFGapReading(){
   el.innerHTML=`<h4>${info.icon} Your ${info.name} Framework — Gap Reading</h4><p style="font-size:.88rem;line-height:1.65;margin-bottom:0">${info.gapReading}</p>`;
 }
 
-// ── Load Ch1 Q5 prediction ────────────────────────────────
+// ── Load prediction (orient_cq5 first, ch1_q5 fallback) ──
 function loadCh1Prediction(){
-  let pred='';
-  try{pred=localStorage.getItem('ch1_q5')||'';}catch(e){}
+  let pred='', source='';
+  try{
+    const op=localStorage.getItem('orient_cq5')||'';
+    const cp=localStorage.getItem('ch1_q5')||'';
+    if(op.trim()){pred=op;source='Course Orientation Journal';}
+    else if(cp.trim()){pred=cp;source='Chapter 1 Journal Q5';}
+  }catch(e){}
   const displays=['predDisplay','predDisplay2'];
   displays.forEach(id=>{
     const el=document.getElementById(id);
     if(!el)return;
     if(pred.trim()){
-      el.innerHTML=`<div class="pred-text">${pred.replace(/\n/g,'<br>')}</div>`;
+      el.innerHTML=`<div style="font-size:.75rem;opacity:.6;margin-bottom:.4rem;font-family:'Courier New',monospace">Retrieved from: ${source}</div><div class="pred-text">${pred.replace(/\n/g,'<br>')}</div>`;
     } else {
-      el.innerHTML=`<p class="pred-empty">No prediction found from Chapter 1. Complete Q5 in the Chapter 1 app's Journal section, then return here.</p>`;
+      el.innerHTML=`<p class="pred-empty">No prediction found. Complete the Course Orientation Journal (Question 4) or Chapter 1 Q5, then return here.</p>`;
     }
   });
 }

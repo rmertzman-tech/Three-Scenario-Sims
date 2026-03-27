@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethics Beyond Boundaries — Course Map</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --green:   #0d5e57;
+  --teal:    #14b8a6;
+  --teal-lt: #5eead4;
+  --teal-dk: #0f766e;
+  --amber:   #f59e0b;
+  --amber-lt:#fcd34d;
+  --red:     #ef4444;
+  --blue:    #3b82f6;
+  --bg:      #0a1628;
+  --bg2:     #0f1f38;
+  --bg3:     #162542;
+  --bg4:     #1e3154;
+  --border:  rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --text:    #e2e8f0;
+  --text2:   #94a3b8;
+  --text3:   #64748b;
+  --serif:   'DM Serif Display', serif;
+  --sans:    'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,22,40,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 24px; height: 52px; gap: 4px;
+}
+.nav-brand {
+  font-family: var(--serif);
+  font-size: 15px; color: var(--teal);
+  margin-right: 16px; white-space: nowrap;
+}
+.nav-tabs { display: flex; gap: 2px; flex-wrap: wrap; }
+.nav-tab {
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  color: var(--text2); cursor: pointer;
+  border: none; background: transparent;
+  transition: all 0.2s;
+}
+.nav-tab:hover { background: var(--bg3); color: var(--text); }
+.nav-tab.active { background: var(--teal); color: #fff; }
+
+/* ── SECTIONS ── */
+.section { display: none; padding: 0; }
+.section.active { display: block; }
+
+/* ── HERO ── */
+.hero {
+  padding: 48px 32px 32px;
+  max-width: 900px; margin: 0 auto;
+}
+.hero-tag {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--teal);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.15; color: #fff;
+  margin-bottom: 16px;
+}
+.hero h1 em { font-style: italic; color: var(--teal-lt); }
+.hero p {
+  font-size: 17px; color: var(--text2);
+  max-width: 640px; line-height: 1.7;
+}
+
+/* ── WATERSHED CANVAS SECTION ── */
+.watershed-wrap {
+  max-width: 900px; margin: 0 auto;
+  padding: 0 32px 24px;
+}
+.watershed-instruction {
+  font-size: 13px; color: var(--text3);
+  text-align: center; margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+#wsh-canvas {
+  width: 100%; display: block;
+  border-radius: 12px 12px 0 0;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  background: var(--bg2);
+}
+.arch-panel {
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+  background: var(--bg2);
+  transition: all 0.3s;
+}
+.arch-hidden { display: none; }
+.arch-title {
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 600;
+}
+.arch-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.arch-strata { display: grid; grid-template-columns: repeat(3,1fr); }
+@media(max-width:600px){ .arch-strata { grid-template-columns: 1fr; } }
+.stratum {
+  padding: 14px 18px;
+  border-right: 1px solid var(--border);
+}
+.stratum:last-child { border-right: none; }
+.stratum-lbl {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.s-research .stratum-lbl { color: var(--teal); }
+.s-finding  .stratum-lbl { color: var(--blue); }
+.s-observe  .stratum-lbl { color: var(--amber); }
+.stratum p { font-size: 12px; color: var(--text2); line-height: 1.6; }
+.stratum strong { color: var(--text); font-weight: 500; }
+.arch-hint {
+  text-align: center; padding: 12px;
+  font-size: 12px; color: var(--text3);
+  border-top: 1px solid var(--border);
+}
+
+/* ── METRICS ROW ── */
+.metrics-row {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 10px; max-width: 900px;
+  margin: 14px auto 0; padding: 0 32px;
+}
+@media(max-width:600px){ .metrics-row { grid-template-columns: repeat(2,1fr); } }
+.metric-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px;
+  transition: border-color 0.3s;
+}
+.metric-card.highlight { border-color: var(--teal); }
+.metric-lbl { font-size: 10px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+.metric-val { font-size: 22px; font-weight: 600; }
+
+/* ── CONTENT SECTIONS ── */
+.content-wrap {
+  max-width: 900px; margin: 0 auto;
+  padding: 32px 32px;
+}
+.content-wrap h2 {
+  font-family: var(--serif);
+  font-size: 26px; color: #fff;
+  margin-bottom: 8px;
+}
+.content-wrap .lead {
+  font-size: 15px; color: var(--text2);
+  max-width: 680px; margin-bottom: 28px;
+  line-height: 1.7;
+}
+
+/* ── CONCEPT CARDS ── */
+.concept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px; margin-bottom: 32px;
+}
+.concept-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+.concept-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.cc-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; margin-bottom: 12px; font-weight: 700;
+}
+.cc-label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+.cc-title { font-family: var(--serif); font-size: 18px; color: #fff; margin-bottom: 8px; }
+.cc-body { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+/* ── PRF PEAKS VIZ ── */
+.prf-viz-wrap {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+  margin-bottom: 20px;
+}
+.prf-viz-wrap h3 {
+  font-family: var(--serif); font-size: 18px; color: #fff;
+  margin-bottom: 6px;
+}
+.prf-viz-wrap p { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.6; }
+.prf-sliders { display: grid; gap: 10px; }
+.prf-row { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.prf-row label { min-width: 170px; color: var(--text2); }
+.prf-row input[type=range] { flex: 1; accent-color: var(--teal); }
+.prf-row .pv { min-width: 36px; text-align: right; font-weight: 600; color: var(--teal); font-size: 13px; }
+#prf-result {
+  margin-top: 16px; padding: 14px 16px;
+  background: var(--bg3); border-radius: 8px;
+  font-size: 13px; color: var(--text2); line-height: 1.7;
+}
+#prf-result strong { color: var(--text); font-weight: 500; }
+
+/* ── TIMELINE / PREVIEW ── */
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before {
+  content:''; position:absolute; left:8px; top:0; bottom:0;
+  width:1px; background:var(--border2);
+}
+.tl-item { position:relative; margin-bottom:28px; }
+.tl-dot {
+  position:absolute; left:-24px; top:4px;
+  width:12px; height:12px; border-radius:50%;
+  border:2px solid var(--teal);
+  background: var(--bg);
+}
+.tl-dot.done { background: var(--teal); border-color: var(--teal); }
+.tl-dot.next { background: var(--amber); border-color: var(--amber); }
+.tl-label { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--text3); margin-bottom:3px; }
+.tl-title { font-family:var(--serif); font-size:18px; color:#fff; margin-bottom:4px; }
+.tl-body { font-size:13px; color:var(--text2); line-height:1.65; }
+.tl-item.next-up .tl-label { color: var(--amber); }
+.tl-item.next-up .tl-body { color: var(--text); }
+
+/* ── CALLOUT ── */
+.callout {
+  background: rgba(20,184,166,0.08);
+  border: 1px solid rgba(20,184,166,0.25);
+  border-radius: 10px; padding: 16px 20px;
+  margin: 20px 0;
+}
+.callout-lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+.callout p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.callout p strong { color: var(--text); font-weight: 500; }
+
+.warn-callout {
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 10px; padding: 16px 20px;
+  margin: 20px 0;
+}
+.warn-callout .callout-lbl { color: var(--amber); }
+
+/* ── JOURNAL ── */
+.journal-wrap { max-width: 700px; }
+.journal-wrap h2 { font-family:var(--serif); font-size:26px; color:#fff; margin-bottom:6px; }
+.journal-wrap .lead { font-size:15px; color:var(--text2); margin-bottom:24px; line-height:1.7; }
+.q-block {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:10px; padding:20px; margin-bottom:16px;
+}
+.q-label { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--teal); margin-bottom:6px; }
+.q-text { font-size:14px; color:var(--text); margin-bottom:12px; line-height:1.6; }
+textarea {
+  width:100%; min-height:90px; background:var(--bg3);
+  border:1px solid var(--border); border-radius:8px;
+  color:var(--text); font-family:var(--sans); font-size:13px;
+  padding:10px 12px; resize:vertical; line-height:1.6;
+  transition: border-color 0.2s;
+}
+textarea:focus { outline:none; border-color:var(--teal); }
+.q5-block {
+  background:rgba(245,158,11,0.06);
+  border:1px solid rgba(245,158,11,0.25);
+  border-radius:10px; padding:20px; margin-bottom:16px;
+}
+.q5-block .q-label { color:var(--amber); }
+.save-btn {
+  background:var(--teal); color:#fff;
+  border:none; border-radius:8px;
+  padding:10px 24px; font-family:var(--sans);
+  font-size:14px; font-weight:600; cursor:pointer;
+  transition: background 0.2s, transform 0.1s;
+  margin-top:4px;
+}
+.save-btn:hover { background:var(--teal-dk); }
+.save-btn:active { transform:scale(0.98); }
+.save-confirm {
+  font-size:13px; color:var(--teal);
+  margin-left:12px; opacity:0;
+  transition:opacity 0.3s;
+}
+.ch1-retrieval {
+  background:var(--bg2); border:1px solid rgba(20,184,166,0.2);
+  border-radius:8px; padding:14px 16px; margin-bottom:16px;
+}
+.ch1-retrieval .q-label { color:var(--teal); }
+.ch1-retrieval .retrieved-text {
+  font-size:13px; color:var(--text);
+  font-style:italic; line-height:1.6;
+}
+.ch1-retrieval .empty-text { font-size:13px; color:var(--text3); }
+
+/* ── LEGEND ── */
+.legend-row {
+  display:flex; gap:16px; flex-wrap:wrap;
+  margin-bottom:10px;
+}
+.legend-item {
+  display:flex; align-items:center; gap:6px;
+  font-size:11px; color:var(--text3);
+}
+.leg-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+
+/* ── DIVIDER ── */
+.divider {
+  border:none; border-top:1px solid var(--border);
+  margin:28px 0;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--bg4); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">Ethics Beyond Boundaries</span>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('map')">The Map</button>
+    <button class="nav-tab" onclick="showSection('peaks')">The Peaks</button>
+    <button class="nav-tab" onclick="showSection('threshold')">The Threshold</button>
+    <button class="nav-tab" onclick="showSection('dam')">The Dam</button>
+    <button class="nav-tab" onclick="showSection('arc')">Course Arc</button>
+    <button class="nav-tab" onclick="showSection('journal')">Journal</button>
+  </div>
+</nav>
+
+<!-- ══════════════ SECTION: MAP ══════════════ -->
+<div class="section active" id="sec-map">
+  <div class="hero">
+    <div class="hero-tag">Course Orientation · Ethics Beyond Boundaries</div>
+    <h1>One landscape.<br><em>Every concept lives here.</em></h1>
+    <p>All semester you will run simulations, study cases, and build ethical reasoning skills.
+       Every concept you encounter has a home in this watershed.
+       Click any element below to see what research built it.</p>
+  </div>
+
+  <div class="watershed-wrap">
+    <div class="legend-row">
+      <div class="legend-item"><div class="leg-dot" style="background:#14b8a6"></div>Above threshold</div>
+      <div class="legend-item"><div class="leg-dot" style="background:#f59e0b"></div>Marginal</div>
+      <div class="legend-item"><div class="leg-dot" style="background:#ef4444"></div>Below threshold</div>
+    </div>
+    <div class="watershed-instruction">↓ Click any element to reveal its empirical foundations</div>
+    <canvas id="wsh-canvas" height="240"></canvas>
+    <div class="arch-panel arch-hidden" id="arch-panel">
+      <div class="arch-title">
+        <div class="arch-dot" id="arch-dot"></div>
+        <span id="arch-title-text"></span>
+      </div>
+      <div class="arch-strata">
+        <div class="stratum s-research">
+          <div class="stratum-lbl">Research foundation</div>
+          <p id="arch-research"></p>
+        </div>
+        <div class="stratum s-finding">
+          <div class="stratum-lbl">Key empirical finding</div>
+          <p id="arch-finding"></p>
+        </div>
+        <div class="stratum s-observe">
+          <div class="stratum-lbl">Student observable</div>
+          <p id="arch-observe"></p>
+        </div>
+      </div>
+    </div>
+    <div class="arch-hint" id="arch-hint">Click the peaks, waterline, threshold, dam, or reservoir — each has a different story</div>
+  </div>
+
+  <div class="metrics-row">
+    <div class="metric-card" id="mc-lam">
+      <div class="metric-lbl">λ Raw (population avg)</div>
+      <div class="metric-val" id="mv-lam" style="color:var(--teal)">—</div>
+    </div>
+    <div class="metric-card" id="mc-below">
+      <div class="metric-lbl">Agents below threshold</div>
+      <div class="metric-val" id="mv-below">—</div>
+    </div>
+    <div class="metric-card" id="mc-gap">
+      <div class="metric-lbl">Suppression gap</div>
+      <div class="metric-val" id="mv-gap" style="color:var(--red)">—</div>
+    </div>
+    <div class="metric-card" id="mc-os2">
+      <div class="metric-lbl">OS2 Bridge (realized)</div>
+      <div class="metric-val" id="mv-os2" style="color:var(--teal)">—</div>
+    </div>
+  </div>
+
+  <div class="content-wrap" style="padding-top:24px;">
+    <div class="callout">
+      <div class="callout-lbl">The central question this course answers</div>
+      <p><strong>What determines how much of the capability in a population actually reaches coordinated action?</strong>
+      Three things: how much capability is present at the agent level (λ Raw), how much stress pushes agents below the deliberative threshold, and how high the institutional suppression gap is. Every simulation you run this semester is a test of one or more of these three variables.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION: PEAKS ══════════════ -->
+<div class="section" id="sec-peaks">
+  <div class="content-wrap">
+    <h2>The Peaks — Your PRF and λ Raw</h2>
+    <p class="lead">Each peak in the watershed is an agent — a person operating inside an institution.
+      The height of the peak represents their <strong style="color:var(--teal)">λ Raw</strong>:
+      their genuine constructive capability available for ethical coordination.
+      You built your own PRF in Chapter 1. This is what it looks like in the landscape.</p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(20,184,166,0.15);color:var(--teal)">λ</div>
+        <div class="cc-label" style="color:var(--teal)">Lambda Raw</div>
+        <div class="cc-title">Constructive potential</div>
+        <div class="cc-body">The genuine capability present in an agent — their potential to contribute to ethical coordination. Not intelligence. Not virtue. Structural readiness to engage deliberatively and route observations toward outcomes.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(99,102,241,0.15);color:#818cf8">◉</div>
+        <div class="cc-label" style="color:#818cf8">PRF</div>
+        <div class="cc-title">The shape of the peak</div>
+        <div class="cc-body">Your Phenomenological Reference Framework is the interpretive lens through which you perceive situations. It determines what information you amplify, what you filter, and what coordination behaviors your perception makes likely. PRF diversity across the population is the mountain range — different shapes, different heights.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(245,158,11,0.15);color:var(--amber)">≋</div>
+        <div class="cc-label" style="color:var(--amber)">BioBond</div>
+        <div class="cc-title">The tributary</div>
+        <div class="cc-body">BioBond structures — the relational infrastructure that sustains cognition — are tributaries that feed λ Raw. Without them, the water table drops. Cacioppo's loneliness research showed measurable cognitive and immune degradation from relational isolation. Your extended mind (Clark & Chalmers) lives partly in your relationships.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(52,211,153,0.15);color:#34d399">⬡</div>
+        <div class="cc-label" style="color:#34d399">ATCF</div>
+        <div class="cc-title">Depth of the reservoir walls</div>
+        <div class="cc-body">Adaptive Temporal Coherence Function measures Identity Kernel stability — how much structural shock a person can absorb before ethical functioning degrades. Not intelligence or toughness. Structural resilience. The deeper the walls, the more pressure the reservoir can hold.</div>
+      </div>
+    </div>
+
+    <div class="prf-viz-wrap">
+      <h3>Map your own peak</h3>
+      <p>These four dimensions combine to determine where your peak sits in the landscape right now.
+         Move the sliders to reflect your current situation — not your ideal state.</p>
+      <div class="prf-sliders">
+        <div class="prf-row">
+          <label>Stress level (right now)</label>
+          <input type="range" min="0" max="100" value="35" id="sl-stress" oninput="updatePRF()">
+          <span class="pv" id="pv-stress">35</span>
+        </div>
+        <div class="prf-row">
+          <label>Relational support (BioBond)</label>
+          <input type="range" min="0" max="100" value="60" id="sl-bio" oninput="updatePRF()">
+          <span class="pv" id="pv-bio">60</span>
+        </div>
+        <div class="prf-row">
+          <label>PRF stability (identity clarity)</label>
+          <input type="range" min="0" max="100" value="65" id="sl-prf" oninput="updatePRF()">
+          <span class="pv" id="pv-prf">65</span>
+        </div>
+        <div class="prf-row">
+          <label>Sleep / recovery (last 72 hrs)</label>
+          <input type="range" min="0" max="100" value="55" id="sl-sleep" oninput="updatePRF()">
+          <span class="pv" id="pv-sleep">55</span>
+        </div>
+      </div>
+      <div id="prf-result"></div>
+    </div>
+
+    <div class="callout">
+      <div class="callout-lbl">What this means for the course</div>
+      <p>Your λ Raw fluctuates. It is not a fixed property of who you are.
+        It is the current state of your structural conditions.
+        A week of bad sleep, an abusive workplace environment, or depleted BioBond structures
+        pulls your peak below threshold — not because you changed, but because the conditions changed.
+        <strong>The simulation models this exactly.</strong> When you run a high-entropy, high-stress scenario,
+        you are watching peaks fall below threshold in real time.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION: THRESHOLD ══════════════ -->
+<div class="section" id="sec-threshold">
+  <div class="content-wrap">
+    <h2>The Threshold — Where Deliberation Lives</h2>
+    <p class="lead">The dashed line in the watershed is not a metaphor. It is the cortisol-PFC inflection point
+      identified by Robert Sapolsky's research across three decades. Above it: you can reason deliberately,
+      consider alternatives, generate new observations. Below it: you default to fast, reactive,
+      emotionally-driven responses. OS1 takes over from OS2.</p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(245,158,11,0.15);color:var(--amber)">∿</div>
+        <div class="cc-label" style="color:var(--amber)">Sapolsky's finding</div>
+        <div class="cc-title">The biology of the line</div>
+        <div class="cc-body">At approximately 3× baseline cortisol sustained for more than 72 hours, fMRI studies show measurable reduction in dorsolateral prefrontal cortex activation. The PFC is where deliberative reasoning runs. When cortisol suppresses it, agents default to heuristic, emotionally-driven responses — not because they chose to, but because the biological substrate of deliberation is offline.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(239,68,68,0.15);color:var(--red)">!</div>
+        <div class="cc-label" style="color:var(--red)">OS1 vs OS2</div>
+        <div class="cc-title">Two operating modes</div>
+        <div class="cc-body"><strong style="color:var(--text)">OS1</strong> (Belief/Reason/Observation/Agreement): fast, intuitive, emotionally anchored, effective within familiar PRF range. <strong style="color:var(--text)">OS2</strong> (capability-based coordination): deliberate, cross-PRF, requires intact PFC. Below threshold, OS1 dominates not by choice but by biology. You become better at defending your position and worse at revising it.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(20,184,166,0.15);color:var(--teal)">⌁</div>
+        <div class="cc-label" style="color:var(--teal)">What crosses the line</div>
+        <div class="cc-title">Institutional entropy</div>
+        <div class="cc-body">Chronic unpredictability, sustained role conflict, persistent resource scarcity, and relentless task overload are the institutional conditions that push agents below threshold — not a single bad day but a structural state. Institutions can be designed to keep their people above or below the line. This is an ethical design choice, not a management style preference.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(139,92,246,0.15);color:#a78bfa">◎</div>
+        <div class="cc-label" style="color:#a78bfa">Observable signal</div>
+        <div class="cc-title">How to see it</div>
+        <div class="cc-body">Watch who stops asking questions in meetings after week three of a crisis. Watch whose documentation becomes shorter and more defensive. Watch who stops generating new observations and starts managing their own reactions. These are not signs of disengagement. They are signs that the threshold has been crossed — the biology is downstream of the institution.</div>
+      </div>
+    </div>
+
+    <div class="warn-callout">
+      <div class="callout-lbl">The Challenger Connection — Chapter 2 Preview</div>
+      <p>On January 27, 1986, Roger Boisjoly and his engineering colleagues at Morton Thiokol
+        were in a teleconference with NASA managers. They had correct technical knowledge.
+        Their λ Raw was intact. But the institutional architecture ensured their observations
+        would not reach the launch decision. <strong>This is not a story about bad people.
+        It is a story about a suppression gap at maximum height.</strong>
+        In Chapter 2 you will run this case in the simulation. You will see exactly
+        how high the dam was, and what the reservoir looked like on the other side.</p>
+    </div>
+
+    <hr class="divider">
+    <h3 style="font-family:var(--serif);font-size:20px;color:#fff;margin-bottom:12px;">The Stress-Threshold Research Trail</h3>
+    <div style="display:grid;gap:10px;">
+      <div class="q-block">
+        <div class="q-label">Sapolsky (Stanford, 1994–2020)</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+          Measured glucocorticoid levels in baboon troops across hierarchy positions over 30 years.
+          Found that chronic subordination stress produced measurably different cortisol profiles
+          — and that those profiles correlated with measurably different health and cognitive outcomes.
+          Replicated in human populations. <em style="color:var(--text3)">Why Zebras Don't Get Ulcers</em>
+          is the accessible version. <em style="color:var(--text3)">Behave</em> is the full account.
+        </p>
+      </div>
+      <div class="q-block">
+        <div class="q-label">McEwen & Seeman (Rockefeller, 1993–2010)</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+          Developed the concept of allostatic load — the cumulative wear of chronic stress on biological systems.
+          The threshold is not a single event. It is the point at which allostatic load
+          exceeds the system's compensatory capacity. This is why chronic institutional entropy
+          is more damaging than acute crisis: the load accumulates without recovery windows.
+        </p>
+      </div>
+      <div class="q-block">
+        <div class="q-label">Arnsten (Yale, 2000–present)</div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+          Identified the specific molecular pathway through which acute stress impairs PFC function:
+          norepinephrine and dopamine release at high levels actively inhibits PFC network firing.
+          This is not metaphorical. The stress response literally switches the brain's command center
+          from prefrontal (deliberative) to subcortical (reactive) circuits.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION: DAM ══════════════ -->
+<div class="section" id="sec-dam">
+  <div class="content-wrap">
+    <h2>The Dam — The Suppression Gap</h2>
+    <p class="lead">The dam is not built by villains. It is built by institutional architectures
+      that were designed for efficiency, not for routing accurate information upward.
+      Every organization has one. The ethical question is how high it is —
+      and whether the people who built it know it exists.</p>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(239,68,68,0.15);color:var(--red)">▲</div>
+        <div class="cc-label" style="color:var(--red)">The suppression gap</div>
+        <div class="cc-title">What the dam measures</div>
+        <div class="cc-body">The suppression gap is the structural gap between what agents actually know (λ Raw) and what reaches institutional decisions (λ Perceived). It is not dishonesty. It is architecture. Information that would change decisions if it arrived does not arrive — not because anyone chose to hide it, but because the channels route it elsewhere.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(245,158,11,0.15);color:var(--amber)">⊘</div>
+        <div class="cc-label" style="color:var(--amber)">Morphic suppression</div>
+        <div class="cc-title">When effort disappears</div>
+        <div class="cc-body">Morphic suppression is what happens to an agent's contribution when the institutional architecture routes around it. The observation is made. The analysis is correct. The recommendation is well-grounded. And it disappears — not rejected, not challenged, just not routed. This is the most demoralizing form of institutional dysfunction because it is invisible.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(59,130,246,0.15);color:var(--blue)">⇅</div>
+        <div class="cc-label" style="color:var(--blue)">Edmondson's measure</div>
+        <div class="cc-title">The research behind the dam</div>
+        <div class="cc-body">Amy Edmondson found that in low psychological-safety environments, workers accurately predict that surfacing critical observations will cost them more than silence — and route accordingly. The gradient is measurable: each hierarchical level crossed reduces transmission probability by 30–40%. The dam has a known height function.</div>
+      </div>
+      <div class="concept-card">
+        <div class="cc-icon" style="background:rgba(20,184,166,0.15);color:var(--teal)">→</div>
+        <div class="cc-label" style="color:var(--teal)">OS2 Bridge</div>
+        <div class="cc-title">What gets through the spillway</div>
+        <div class="cc-body">OS2 Bridge is the fraction of λ Raw that actually reaches coordinated action — what spills over the dam into the reservoir. It is a measure of institutional coordination capacity across genuine PRF difference. High λ Raw with a high suppression gap produces a nearly empty reservoir. Reducing the gap — not increasing individual capability — is usually the higher-leverage intervention.</div>
+      </div>
+    </div>
+
+    <div class="warn-callout">
+      <div class="callout-lbl">The Boisjoly Record — documented in real time</div>
+      <p>Roger Boisjoly wrote memos in July and October 1985 warning that O-ring erosion at cold temperatures
+        posed catastrophic risk. He repeated his warning in the teleconference the night before launch.
+        His λ Raw was intact. His technical reasoning was correct. The architecture ensured
+        his signal reached decision-makers as <strong>silence</strong>.
+        Not disagreement. Not a counter-argument. Silence.
+        The Challenger explosion the next morning was not the result of ignorance.
+        It was the result of a suppression gap at maximum height — documented, recoverable,
+        and preventable. <strong>In Chapter 2 you will run this scenario in the simulation.</strong></p>
+    </div>
+
+    <hr class="divider">
+
+    <h3 style="font-family:var(--serif);font-size:20px;color:#fff;margin-bottom:16px;">The Suppression Gap — Observable Indicators</h3>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;line-height:1.7;">
+      You do not need instruments to detect a high suppression gap. You need to know what to look for.
+      These are the institutional signatures:
+    </p>
+    <div style="display:grid;gap:8px;">
+      <div class="q-block" style="padding:12px 16px;">
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+          <strong style="color:var(--text)">Information flows down, not up.</strong>
+          Decisions arrive as announcements. Questions flow downward as directives.
+          Observations from the front line reach management as summaries that have lost
+          the specific detail that made them significant.
+        </p>
+      </div>
+      <div class="q-block" style="padding:12px 16px;">
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+          <strong style="color:var(--text)">People speak once and don't follow up.</strong>
+          In a high-gap environment, agents accurately model that following up on an
+          unacknowledged observation is more costly than silence. Count who speaks
+          once and drops it when challenged. That's your suppression gradient.
+        </p>
+      </div>
+      <div class="q-block" style="padding:12px 16px;">
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+          <strong style="color:var(--text)">Surprises are structural, not random.</strong>
+          When an organization is consistently surprised by things that frontline workers
+          knew were coming, the dam is high. The information existed.
+          The architecture didn't route it to the decision.
+        </p>
+      </div>
+      <div class="q-block" style="padding:12px 16px;">
+        <p style="font-size:13px;color:var(--text2);line-height:1.6;">
+          <strong style="color:var(--text)">The most accurate observers disengage first.</strong>
+          The agents with the clearest perception of institutional dysfunction
+          are also the first to stop surfacing it — because their accurate modeling
+          of the suppression gap tells them it won't reach decisions anyway.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION: ARC ══════════════ -->
+<div class="section" id="sec-arc">
+  <div class="content-wrap">
+    <h2>The Course Arc</h2>
+    <p class="lead">Every chapter in this course is a case study in one or more watershed variables.
+      As you move through the arc, the watershed becomes more familiar —
+      until by the end you can read an institutional situation the way a geologist reads a landscape:
+      seeing not just the surface but the forces that shaped it.</p>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot done"></div>
+        <div class="tl-label">Chapter 1 — Completed</div>
+        <div class="tl-title">The PRF — Your Interpretive Lens</div>
+        <div class="tl-body">You built your PRF and began to understand how interpretive frameworks shape what we perceive, amplify, and filter. In the watershed: this is the shape of your peak. The course now begins to show you what those peaks look like at population scale — and what determines whether their capability reaches coordinated action.</div>
+      </div>
+      <div class="tl-item next-up">
+        <div class="tl-dot next"></div>
+        <div class="tl-label">Chapter 2 — This Week</div>
+        <div class="tl-title">The Challenger — The Suppression Gap Introduced</div>
+        <div class="tl-body">The dam arrives. You will run the Challenger simulation and see exactly what a suppression gap at near-maximum height produces. Boisjoly's λ Raw was intact. The architecture ensured it didn't reach the launch decision. Your prediction from this journal question will be tested against what the simulation shows.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-label">Chapter 3</div>
+        <div class="tl-title">Father Hanna — BioBond and the Thermodynamic Universe</div>
+        <div class="tl-body">The tributaries arrive. How do agents maintain λ Raw under conditions of maximum institutional entropy — when the environment is designed to deplete it? Hanna's case shows a single tributary sustaining a deep reservoir for decades. BioBond and ATCF become visible as structural variables, not personal qualities.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-label">Chapter 4</div>
+        <div class="tl-title">Wangari Maathai — The Dam Reconfigured</div>
+        <div class="tl-body">The dam can be lowered. Maathai's Green Belt Movement demonstrates functional equivalence: agents with incompatible values coordinating through shared constructive contribution rather than value agreement. The reservoir fills — not because the peaks changed, but because the architecture changed. OS2 Bridge arrives as a measurable outcome.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-label">Chapter 5</div>
+        <div class="tl-title">Nelson Mandela — Both Things at Once</div>
+        <div class="tl-body">The synthesis of the Human Trilogy. Maintaining λ Raw under conditions designed to deplete it, while simultaneously building the architecture for a different kind of reservoir. Mandela is the meta-constructor case: not just an agent operating within architecture but a person redesigning the architecture itself.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-label">Chapter 6</div>
+        <div class="tl-title">Tim Palmer — Ensemble Forecasting and the Ethics of Uncertainty</div>
+        <div class="tl-body">Uncertainty itself becomes visible. One simulation run is one model. The ethical question is: what happens when you present one run as the answer? The suppression gap in the forecast — collapsing a distribution into false certainty — is structurally identical to the suppression gap in the institution. Palmer's ensemble method is ethics made operational.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-label">Chapter 7</div>
+        <div class="tl-title">Doyne Farmer — The Invisible People</div>
+        <div class="tl-body">The representative agent problem arrives. What happens when institutional architecture models all agents as identical — designing for the average person who does not exist? Farmer's COVID prediction showed that accurate prediction requires knowing actual agent states. The same is true of ethical governance. The peaks matter individually, not just on average.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-label">Chapter 8</div>
+        <div class="tl-title">The Simulated History of Ethics</div>
+        <div class="tl-body">Every major ethical theory you have encountered — from Aristotle to Rawls — is a discovery about one or more watershed variables. Aristotle discovered that character is infrastructure (the shape of the peaks). Kant discovered that rational agency requires peaks above threshold (a structural precondition, not a given). Rawls asked: what dam height maximizes the minimum reservoir level? The simulation was always testing philosophical questions. Now you will see them named.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SECTION: JOURNAL ══════════════ -->
+<div class="section" id="sec-journal">
+  <div class="content-wrap">
+    <div class="journal-wrap">
+      <h2>Orientation Journal</h2>
+      <p class="lead">These questions connect your Chapter 1 work to the watershed
+        and set up your first simulation in Chapter 2.
+        Your answers are saved in your browser and will be retrieved by the Chapter 2 app.</p>
+
+      <div class="ch1-retrieval">
+        <div class="q-label">Your Chapter 1 Reflection (retrieved)</div>
+        <div id="ch1-display"></div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 1 — The Landscape</div>
+        <div class="q-text">Looking at the watershed diagram, which element surprised you most?
+          What did you expect it to look like, and what does it actually represent?</div>
+        <textarea id="j-q1" placeholder="Write your response here..."></textarea>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 2 — Your Peak</div>
+        <div class="q-text">Using the Peak Map on the Peaks tab, where does your λ Raw sit right now?
+          What is the primary factor pulling it toward or away from the threshold?
+          Be specific — name the actual conditions, not the categories.</div>
+        <textarea id="j-q2" placeholder="Write your response here..."></textarea>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Question 3 — The Dam You Know</div>
+        <div class="q-text">Describe a specific situation you have witnessed —
+          at work, in school, in a community organization —
+          where accurate information did not reach a decision that needed it.
+          What was the observable signature of the suppression gap?</div>
+        <textarea id="j-q3" placeholder="Write your response here..."></textarea>
+      </div>
+
+      <div class="q5-block">
+        <div class="q-label">Question 4 — Prediction for Chapter 2 (stored for retrieval)</div>
+        <div class="q-text">On January 27, 1986, Roger Boisjoly had correct technical knowledge
+          that the Challenger should not launch. The launch decision went ahead anyway.
+          Before you run the Chapter 2 simulation:
+          <strong style="color:var(--text)">what do you predict the simulation will show
+          about the suppression gap in that teleconference?</strong>
+          Which agents do you think had the highest λ Raw,
+          and what do you predict the OS2 Bridge score was before and after the key decision point?</div>
+        <textarea id="j-q5" placeholder="Your prediction: what will the simulation reveal?"></textarea>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px;">
+        <button class="save-btn" onclick="saveJournal()">Save All Responses</button>
+        <span class="save-confirm" id="save-confirm">Saved ✓</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── WATERSHED DATA ──────────────────────────────────────────────────────────
+const ELEMENTS = {
+  agents: {
+    dot: '#a78bfa', title: 'The Peaks — Agent λ Raw and PRF diversity',
+    research: '<strong>Schwartz Basic Human Values (PVQ-40)</strong> — cross-cultural mapping of 10 value dimensions across 60+ countries. <strong>Haidt & Graham Moral Foundations Theory</strong> — empirical identification of 6 moral modules. <strong>PRF-22 instrument</strong> — derived from both, measures where an agent\'s interpretive lens sits.',
+    finding: 'Schwartz found that value priorities cluster into a near-universal circular structure across cultures. Haidt found that moral intuitions activate specific neural pathways measurably distinct from deliberative reasoning. Peak height reflects the combined result: stress load, BioBond quality, PRF stability, and Identity Kernel depth.',
+    observe: 'Ask someone to describe a conflict they witnessed. The dimensions they notice — fairness violation? loyalty breach? authority challenge? harm to a person? — map directly onto their active moral foundations. That\'s their PRF audible. That\'s the shape of their peak.'
+  },
+  lambda: {
+    dot: '#14b8a6', title: 'λ Raw — The Population Water Table',
+    research: '<strong>Woolley et al. (Carnegie Mellon, 2010)</strong> — collective intelligence research showing groups have a measurable "collective IQ." <strong>Putnam (Harvard)</strong> — social capital measurement across communities. <strong>Clark & Chalmers</strong> — extended mind: cognitive capacity extends into tools, relationships, and environments.',
+    finding: 'λ Raw is the aggregate constructive potential present in the agent population — above the deliberative threshold. It is fed by three tributaries: PRF clarity (stable interpretive lens), deliberative access (stress below Sapolsky threshold), and constructive potential (actual skills and network position). All three must be above threshold simultaneously.',
+    observe: 'Watch a team in week one of a project vs. week six of a crisis. The capability is the same. The water table is different. What changed is the accumulation of allostatic load, the depletion of BioBond structures, and the erosion of PRF stability under sustained threat.'
+  },
+  threshold: {
+    dot: '#f59e0b', title: 'The Deliberative Threshold — Sapolsky\'s Line',
+    research: '<strong>Robert Sapolsky (Stanford, 1994–2020)</strong> — measured glucocorticoid levels in baboon troops and human populations. <strong>Arnsten (Yale)</strong> — identified the molecular pathway through which stress impairs PFC function. <strong>McEwen & Seeman</strong> — developed allostatic load concept.',
+    finding: 'At ~3× baseline cortisol sustained for >72 hours, fMRI shows measurable reduction in dorsolateral PFC activation. Norepinephrine and dopamine at high levels actively inhibit PFC network firing — switching command from prefrontal (deliberative) to subcortical (reactive) circuits. This is not metaphorical: it is a measured biological switch.',
+    observe: 'Watch who stops disagreeing in meetings after week three of a crisis. Watch whose documentation becomes shorter and more defensive. Watch who stops generating new observations and starts managing their own reactions. The threshold has been crossed — the institution produced this, not the individual.'
+  },
+  dam: {
+    dot: '#ef4444', title: 'The Suppression Gap — The Dam',
+    research: '<strong>Amy Edmondson (Harvard, 1999–2019)</strong> — psychological safety research across hospitals, manufacturing, and tech. <strong>Roger Boisjoly (Morton Thiokol, 1985–86)</strong> — written memos documenting information routing failure in real time, pre-Challenger.',
+    finding: 'Edmondson found that in low-safety environments, workers accurately predict that surfacing critical observations costs more than silence — and route accordingly. Each hierarchical level crossed reduces transmission probability by ~30–40%. The Challenger record documents this gradient: correct technical judgment at engineer level reaching the launch decision as silence.',
+    observe: 'Count how many people in a meeting speak once and don\'t follow up when challenged. Count how many questions flow upward vs. downward. The ratio is a rough suppression gap measure. High gap: information flows down, not up. Low gap: challenge flows in all directions, including toward authority.'
+  },
+  reservoir: {
+    dot: '#38bdf8', title: 'OS2 Bridge — The Reservoir of Realized Coordination',
+    research: '<strong>Woolley et al. (Carnegie Mellon, 2010)</strong> — collective intelligence: groups have a measurable collective IQ that predicts task performance better than individual IQ averages. <strong>Maathai / UNEP documentation (2004–2011)</strong> — empirical record of the Green Belt Movement\'s coordination architecture.',
+    finding: 'Collective IQ was not predicted by average individual IQ, nor highest individual IQ. It was predicted by: social sensitivity of members, conversational turn-taking equality, and proportion of women (proxy for social sensitivity). OS2 Bridge measures exactly these conditions — not individual capability, but architecture\'s ability to route diverse capabilities toward shared construction.',
+    observe: 'Compare two team meetings. In one: three people talk 80% of the time, others confirm. In the other: seven people each contribute observations that build on each other. The second meeting\'s output outperforms the first — not smarter individuals, but more λ Raw reaching the reservoir. The dam is lower. Same peaks, different architecture.'
+  }
+};
+
+// ── WATERSHED CANVAS ────────────────────────────────────────────────────────
+const cv = document.getElementById('wsh-canvas');
+const CW = 660, CH = 240;
+cv.width = CW; cv.height = CH;
+const ctx = cv.getContext('2d');
+
+const GY = CH - 36, MAX_H = CH - 68, THRESH = 0.42;
+const LAND_W = 390, DAM_X = 402, DAM_W = 36;
+const RES_X = 448, RES_W = CW - RES_X - 12;
+const agentH = [0.88, 0.60, 0.91, 0.73, 0.47, 0.83, 0.70];
+const lam = agentH.filter(h => h >= THRESH).reduce((a,b,_,ar) => a + b/ar.length, 0) * 0.97;
+const DAM_F = 0.42;
+const os2 = Math.max(0, Math.min(1, (lam - DAM_F) / (1 - DAM_F) * 0.88));
+const belowN = agentH.filter(h => h < THRESH).length;
+
+const HITBOXES = {
+  agents:    { x:0,       y:GY-MAX_H,        w:LAND_W,  h:MAX_H },
+  lambda:    { x:0,       y:GY-lam*MAX_H-16, w:LAND_W,  h:26 },
+  threshold: { x:0,       y:GY-THRESH*MAX_H-14, w:LAND_W, h:24 },
+  dam:       { x:DAM_X-4, y:GY-DAM_F*MAX_H-6, w:DAM_W+8, h:DAM_F*MAX_H+8 },
+  reservoir: { x:RES_X,   y:GY-os2*MAX_H-10, w:RES_W,  h:os2*MAX_H+20 }
+};
+
+let activeKey = null, hovKey = null;
+
+function peakColor(h) {
+  return h > THRESH + 0.22 ? '#14b8a6' : h >= THRESH ? '#f59e0b' : '#ef4444';
+}
+
+function drawWatershed(hov) {
+  ctx.clearRect(0, 0, CW, CH);
+
+  // ground
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  ctx.fillRect(0, GY, CW, CH - GY);
+  ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.moveTo(0, GY); ctx.lineTo(CW, GY); ctx.stroke();
+
+  // peaks
+  const sp = LAND_W / (agentH.length + 1), pw = sp * 0.72;
+  agentH.forEach((h, i) => {
+    const cx = sp * (i + 1), bh = h * MAX_H, py = GY - bh;
+    const c = peakColor(h);
+    const isH = hov === 'agents' || activeKey === 'agents';
+    // shadow
+    ctx.beginPath(); ctx.moveTo(cx - pw/2 + 2, GY + 2); ctx.lineTo(cx + 2, py + 2); ctx.lineTo(cx + pw/2 + 2, GY + 2); ctx.closePath();
+    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.fill();
+    // peak
+    ctx.beginPath(); ctx.moveTo(cx - pw/2, GY); ctx.lineTo(cx, py); ctx.lineTo(cx + pw/2, GY); ctx.closePath();
+    ctx.fillStyle = c; ctx.globalAlpha = isH ? 0.95 : 0.75; ctx.fill(); ctx.globalAlpha = 1;
+    if (isH) { ctx.strokeStyle = c; ctx.lineWidth = 1.5; ctx.stroke(); }
+    // height label
+    ctx.fillStyle = c; ctx.textAlign = 'center'; ctx.font = '9px DM Sans,sans-serif';
+    ctx.fillText(h.toFixed(2), cx, py - 4);
+    // agent label
+    ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.font = '9px DM Sans,sans-serif';
+    ctx.fillText('A' + (i + 1), cx, GY + 14);
+  });
+
+  // lambda water
+  const wy = GY - lam * MAX_H;
+  const lH = hov === 'lambda' || activeKey === 'lambda';
+  ctx.fillStyle = lH ? 'rgba(20,184,166,0.22)' : 'rgba(20,184,166,0.12)';
+  ctx.fillRect(0, wy, LAND_W, GY - wy);
+  ctx.setLineDash([6, 3]);
+  ctx.strokeStyle = lH ? 'rgba(20,184,166,0.95)' : 'rgba(20,184,166,0.6)';
+  ctx.lineWidth = lH ? 2 : 1.5;
+  ctx.beginPath(); ctx.moveTo(0, wy); ctx.lineTo(LAND_W, wy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#14b8a6'; ctx.font = 'bold 9px DM Sans,sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('λ Raw: ' + Math.round(lam * 100) + '%', LAND_W - 4, wy - 4);
+
+  // threshold line
+  const thy = GY - THRESH * MAX_H;
+  const tH = hov === 'threshold' || activeKey === 'threshold';
+  ctx.setLineDash([5, 4]);
+  ctx.strokeStyle = tH ? '#f59e0b' : '#d97706';
+  ctx.lineWidth = tH ? 2.2 : 1.2;
+  ctx.beginPath(); ctx.moveTo(5, thy); ctx.lineTo(LAND_W - 4, thy); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = tH ? '#f59e0b' : '#92400e';
+  ctx.font = tH ? 'bold 9px DM Sans,sans-serif' : '9px DM Sans,sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('deliberative threshold (Sapolsky)', 8, thy - 4);
+
+  // flow
+  if (lam > DAM_F + 0.01) {
+    const dTopY = GY - DAM_F * MAX_H;
+    const fmy = (wy + dTopY) / 2;
+    ctx.fillStyle = 'rgba(20,184,166,0.07)';
+    ctx.fillRect(LAND_W, wy, DAM_X - LAND_W, GY - wy);
+    ctx.strokeStyle = 'rgba(20,184,166,0.45)'; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(LAND_W + 4, fmy); ctx.lineTo(DAM_X - 4, fmy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(DAM_X - 8, fmy - 4); ctx.lineTo(DAM_X - 2, fmy); ctx.lineTo(DAM_X - 8, fmy + 4); ctx.stroke();
+  }
+
+  // dam
+  const dh = DAM_F * MAX_H, dty = GY - dh;
+  const dH = hov === 'dam' || activeKey === 'dam';
+  ctx.fillStyle = dH ? '#b91c1c' : '#dc2626';
+  ctx.globalAlpha = dH ? 1 : 0.85;
+  ctx.fillRect(DAM_X, dty, DAM_W, GY - dty); ctx.globalAlpha = 1;
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 1;
+  for (let dy = 0; dy < GY - dty; dy += 8) {
+    ctx.beginPath(); ctx.moveTo(DAM_X, dty + dy); ctx.lineTo(DAM_X + DAM_W, dty + dy + 6); ctx.stroke();
+  }
+  const dcx = DAM_X + DAM_W / 2;
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 8px DM Sans,sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('Gap', dcx, dty - 9);
+  ctx.fillText('42%', dcx, dty - 1);
+
+  // reservoir
+  const rty = GY - MAX_H, rfh = os2 * MAX_H, rfy = GY - rfh;
+  const rH = hov === 'reservoir' || activeKey === 'reservoir';
+  ctx.strokeStyle = rH ? 'rgba(56,189,248,0.45)' : 'rgba(56,189,248,0.2)';
+  ctx.lineWidth = rH ? 1.2 : 0.8;
+  ctx.strokeRect(RES_X, rty, RES_W, MAX_H);
+  ctx.fillStyle = rH ? 'rgba(14,165,233,0.38)' : 'rgba(20,184,166,0.28)';
+  ctx.fillRect(RES_X, rfy, RES_W, rfh);
+  if (rfh > 6) {
+    ctx.strokeStyle = 'rgba(20,184,166,0.5)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(RES_X, rfy);
+    for (let wx = 0; wx <= RES_W; wx += 8) ctx.lineTo(RES_X + wx, rfy + (wx % 16 < 8 ? -2 : 2));
+    ctx.stroke();
+  }
+  const rcx = RES_X + RES_W / 2;
+  ctx.fillStyle = '#38bdf8'; ctx.font = 'bold 9px DM Sans,sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('OS2 Bridge', rcx, rty - 5);
+  ctx.fillStyle = '#059669'; ctx.font = 'bold 12px DM Sans,sans-serif';
+  ctx.fillText(Math.round(os2 * 100) + '%', rcx, rfh > 22 ? rfy + rfh / 2 + 5 : rfy - 6);
+
+  // hover dash box
+  if (hov && hov !== activeKey) {
+    const hb = HITBOXES[hov];
+    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1.5;
+    ctx.strokeRect(hb.x + 1, hb.y + 1, hb.w - 2, hb.h - 2);
+    ctx.setLineDash([]);
+  }
+
+  // update metrics
+  const lc = lam > 0.65 ? '#14b8a6' : lam >= THRESH ? '#f59e0b' : '#ef4444';
+  const bc = os2 > 0.5 ? '#14b8a6' : os2 > 0.2 ? '#f59e0b' : '#ef4444';
+  const nc = belowN > 2 ? '#ef4444' : belowN > 0 ? '#f59e0b' : '#14b8a6';
+  setM('mv-lam', Math.round(lam * 100) + '%', lc);
+  setM('mv-below', belowN + ' / 7', nc);
+  setM('mv-gap', '42%', '#ef4444');
+  setM('mv-os2', Math.round(os2 * 100) + '%', bc);
+}
+
+function setM(id, val, color) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = val; el.style.color = color; }
+}
+
+function getHit(mx, my) {
+  for (const [k, b] of Object.entries(HITBOXES)) {
+    if (mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) return k;
+  }
+  return null;
+}
+
+cv.addEventListener('mousemove', e => {
+  const r = cv.getBoundingClientRect();
+  const sx = CW / r.width, sy = CH / r.height;
+  const h = getHit((e.clientX - r.left) * sx, (e.clientY - r.top) * sy);
+  if (h !== hovKey) { hovKey = h; cv.style.cursor = h ? 'pointer' : 'default'; drawWatershed(h); }
+});
+cv.addEventListener('mouseleave', () => { hovKey = null; drawWatershed(null); });
+cv.addEventListener('click', e => {
+  const r = cv.getBoundingClientRect();
+  const sx = CW / r.width, sy = CH / r.height;
+  const h = getHit((e.clientX - r.left) * sx, (e.clientY - r.top) * sy);
+  if (h) {
+    activeKey = activeKey === h ? null : h;
+    showArchPanel(activeKey);
+    drawWatershed(hovKey);
+  }
+});
+
+function showArchPanel(key) {
+  const panel = document.getElementById('arch-panel');
+  const hint = document.getElementById('arch-hint');
+  if (!key) {
+    panel.classList.add('arch-hidden');
+    hint.style.display = 'block';
+    return;
+  }
+  const el = ELEMENTS[key];
+  panel.classList.remove('arch-hidden');
+  hint.style.display = 'none';
+  document.getElementById('arch-dot').style.background = el.dot;
+  document.getElementById('arch-title-text').textContent = el.title;
+  document.getElementById('arch-research').innerHTML = el.research;
+  document.getElementById('arch-finding').innerHTML = el.finding;
+  document.getElementById('arch-observe').innerHTML = el.observe;
+}
+
+drawWatershed(null);
+
+// ── PRF PEAK CALCULATOR ─────────────────────────────────────────────────────
+function updatePRF() {
+  ['stress','bio','prf','sleep'].forEach(id => {
+    const v = document.getElementById('sl-' + id).value;
+    document.getElementById('pv-' + id).textContent = v;
+  });
+  const stress = +document.getElementById('sl-stress').value;
+  const bio    = +document.getElementById('sl-bio').value;
+  const prf    = +document.getElementById('sl-prf').value;
+  const sleep  = +document.getElementById('sl-sleep').value;
+  const lraw = Math.max(0.05, Math.min(0.99,
+    (bio/100 * 0.28) + (prf/100 * 0.26) + (sleep/100 * 0.22) - (stress/100 * 0.60) + 0.32
+  ));
+  const aboveThresh = lraw >= THRESH;
+  const pct = Math.round(lraw * 100);
+  let msg, color;
+  if (pct >= 80) {
+    color = '#14b8a6';
+    msg = `<strong>Your current λ Raw: ${pct}%</strong> — comfortably above the deliberative threshold. You have full access to OS2 reasoning. Your PRF is stable, your relational infrastructure is present, and your stress load is not impairing PFC function. This is the structural precondition for ethical coordination across difference.`;
+  } else if (pct >= 55) {
+    color = '#f59e0b';
+    msg = `<strong>Your current λ Raw: ${pct}%</strong> — above threshold but under pressure. You can access deliberative reasoning, but the margin is smaller than optimal. One additional stressor could push you below threshold. This is the zone where institutional design matters most: a high-suppression-gap environment at this level will produce significantly different outcomes than a low-gap one.`;
+  } else if (pct >= 42) {
+    color = '#f59e0b';
+    msg = `<strong>Your current λ Raw: ${pct}%</strong> — marginally above the deliberative threshold. OS2 reasoning is available but costly. You are more likely to default to OS1 responses under pressure. This is structurally normal for anyone operating in a high-entropy environment for extended periods. The simulation models this zone extensively.`;
+  } else {
+    color = '#ef4444';
+    msg = `<strong>Your current λ Raw: ${pct}%</strong> — below the deliberative threshold. This is not a moral failure — it is a structural condition. The biology of chronic stress has pushed your PFC activation below the level required for sustained OS2 reasoning. The ethical question is not "why aren't you reasoning better?" but "what institutional conditions produced and maintain this state?"`;
+  }
+  const res = document.getElementById('prf-result');
+  res.innerHTML = `<div style="border-left:3px solid ${color};padding-left:12px;">${msg}</div>`;
+}
+updatePRF();
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'map') drawWatershed(null);
+}
+
+// ── JOURNAL ──────────────────────────────────────────────────────────────────
+function loadJournal() {
+  ['j-q1','j-q2','j-q3','j-q5'].forEach(id => {
+    const saved = localStorage.getItem('ebb_orient_' + id);
+    if (saved) document.getElementById(id).value = saved;
+  });
+  // retrieve ch1
+  const ch1 = localStorage.getItem('ch1_q5') || localStorage.getItem('ebb_ch1_journal_q5');
+  const disp = document.getElementById('ch1-display');
+  if (ch1 && ch1.trim()) {
+    disp.innerHTML = `<div class="retrieved-text">"${ch1}"</div>`;
+  } else {
+    disp.innerHTML = `<div class="empty-text">No Chapter 1 journal entry found in this browser. If you completed it on a different device, copy your response into the orientation questions above.</div>`;
+  }
+}
+
+function saveJournal() {
+  ['j-q1','j-q2','j-q3','j-q5'].forEach(id => {
+    localStorage.setItem('ebb_orient_' + id, document.getElementById(id).value);
+  });
+  // store prediction for ch2 retrieval
+  const pred = document.getElementById('j-q5').value;
+  if (pred.trim()) localStorage.setItem('orient_cq5', pred);
+
+  const conf = document.getElementById('save-confirm');
+  conf.style.opacity = '1';
+  setTimeout(() => conf.style.opacity = '0', 2500);
+}
+
+loadJournal();
+</script>
+</body>
+</html>
