@@ -2263,6 +2263,48 @@ function buildSimResultsHTML(dataA, dataB) {
   return html;
 }
 
+// ── Fetch with retry (handles Render cold-start 404/503) ────
+async function fetchWithRetry(url, options, maxAttempts=3) {
+  const WARMUP_DELAYS = [0, 8000, 15000]; // ms between attempts
+  let lastErr;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) {
+      const errEl = document.getElementById('ucpError');
+      const waitSec = WARMUP_DELAYS[attempt] / 1000;
+      if (errEl) {
+        errEl.style.display = 'block';
+        errEl.style.background = 'rgba(201,168,76,0.15)';
+        errEl.style.borderColor = 'rgba(201,168,76,0.4)';
+        errEl.style.color = '#c9a84c';
+        errEl.innerHTML = `<strong>Simulation server is waking up</strong> (attempt ${attempt+1} of ${maxAttempts}) &mdash; retrying in ${waitSec}s&hellip; <br><small style="opacity:.7">Render free-tier services sleep after inactivity. This is normal. Please wait.</small>`;
+      }
+      await new Promise(res => setTimeout(res, WARMUP_DELAYS[attempt]));
+    }
+    try {
+      const resp = await fetch(url, { ...options, signal: AbortSignal.timeout(30000) });
+      if (resp.status === 404 || resp.status === 503 || resp.status === 502) {
+        lastErr = new Error(`Server waking up (HTTP ${resp.status})`);
+        continue; // retry
+      }
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error(`HTTP ${resp.status}: ${txt.slice(0,200)}`);
+      }
+      // Success — reset error style
+      const errEl = document.getElementById('ucpError');
+      if (errEl) { errEl.style.display='none'; errEl.style.background=''; errEl.style.borderColor=''; errEl.style.color=''; }
+      return resp;
+    } catch(e) {
+      if (e.name === 'TimeoutError' || e.name === 'AbortError') {
+        lastErr = new Error('Request timed out — server may still be waking up');
+        continue;
+      }
+      throw e; // non-retryable error
+    }
+  }
+  throw lastErr || new Error('Simulation server unavailable after retries. Please try again in 30 seconds.');
+}
+
 async function runUCPSim(withBioBond) {
   const btnA = document.getElementById('btnRunA');
   const btnB = document.getElementById('btnRunB');
@@ -2307,17 +2349,11 @@ async function runUCPSim(withBioBond) {
   };
 
   try {
-    const resp = await fetch(`${BACKEND}/api/simulate/custom`, {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(25000),
     });
-
-    if (!resp.ok) {
-      const txt = await resp.text();
-      throw new Error(`HTTP ${resp.status}: ${txt.slice(0,200)}`);
-    }
 
     const data = await resp.json();
 
@@ -2340,8 +2376,11 @@ async function runUCPSim(withBioBond) {
     }
 
   } catch(e) {
-    errEl.textContent = `Simulation error: ${e.message}`;
     errEl.style.display = 'block';
+    errEl.style.background = '';
+    errEl.style.borderColor = '';
+    errEl.style.color = '';
+    errEl.textContent = `Simulation error: ${e.message}. If this persists, the server may need another minute to start — please try again.`;
   } finally {
     btnA.disabled = false; btnB.disabled = false;
     spinA.style.display='none'; spinB.style.display='none';

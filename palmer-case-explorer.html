@@ -567,6 +567,58 @@ blockquote cite{display:block;margin-top:.35rem;font-style:normal;font-size:.78r
 'use strict';
 const JP = 'palmer_journal_';
 const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ── Fetch with retry (handles Render cold-start 404/503) ────
+async function fetchWithRetry(url, options, maxAttempts=3) {
+  const WARMUP_DELAYS = [0, 8000, 15000];
+  let lastErr;
+  const errSelectors = ['#ucpError','#sim-error','#simError','.sim-error','#error-msg','#errMsg'];
+  function getErrEl() {
+    for (const s of errSelectors) { const el = document.querySelector(s); if (el) return el; }
+    return null;
+  }
+  function showWarmup(attempt) {
+    const errEl = getErrEl();
+    const waitSec = WARMUP_DELAYS[attempt] / 1000;
+    if (errEl) {
+      errEl.style.display = 'block';
+      errEl.style.background = 'rgba(201,168,76,0.12)';
+      errEl.style.color = '#c9a84c';
+      errEl.innerHTML = '<strong>Simulation server is waking up</strong> (attempt '+(attempt+1)+' of '+maxAttempts+') &mdash; retrying in '+waitSec+'s&hellip;<br><small style="opacity:.7">Render free-tier services sleep after inactivity. This is normal &mdash; please wait.</small>';
+    }
+  }
+  function clearWarmup() {
+    const errEl = getErrEl();
+    if (errEl) { errEl.style.display='none'; errEl.style.background=''; errEl.style.color=''; }
+  }
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) {
+      showWarmup(attempt);
+      await new Promise(res => setTimeout(res, WARMUP_DELAYS[attempt]));
+    }
+    try {
+      const resp = await fetch(url, { ...options });
+      if (resp.status === 404 || resp.status === 503 || resp.status === 502) {
+        lastErr = new Error('Server waking up (HTTP '+resp.status+')');
+        continue;
+      }
+      if (!resp.ok) {
+        const txt = await resp.text();
+        throw new Error('HTTP '+resp.status+': '+txt.slice(0,200));
+      }
+      clearWarmup();
+      return resp;
+    } catch(e) {
+      if (e.name === 'TimeoutError' || e.name === 'AbortError') {
+        lastErr = new Error('Request timed out — server may still be waking up');
+        continue;
+      }
+      throw e;
+    }
+  }
+  throw lastErr || new Error('Simulation server unavailable after retries. Please try again in 30 seconds.');
+}
+
 let _run = 'run1';
 let _results = {};
 
@@ -936,7 +988,7 @@ async function runSimulation(){
     evidence_distribution: cfg.evidence_distribution
   };
   try{
-    const resp = await fetch(`${BACKEND}/api/simulate/custom`,{
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify(payload)
     });
@@ -974,7 +1026,7 @@ function renderResult(data){
   ].map(([l,v,cls])=>`<div class="ucp-metric"><div class="m-label">${l}</div><div class="m-val ${cls}">${v}</div></div>`).join('');
 
   const barsEl = document.getElementById('ucpBars');
-  const bars=[['λ Raw',raw,TEAL_MID],['λ Perceived',perc,'#0ea5e9'],['OS2 Bridge',bridge,'#10b981'],['Friction',friction,'#f59e0b'],['Morphic Supp.',supp,'#dc2626']];
+  const bars=[['λ Raw',raw,'#14b8a6'],['λ Perceived',perc,'#0ea5e9'],['OS2 Bridge',bridge,'#10b981'],['Friction',friction,'#f59e0b'],['Morphic Supp.',supp,'#dc2626']];
   barsEl.innerHTML=bars.map(([l,v,c])=>`<div class="ucp-bar-row"><div class="ucp-bar-label">${l}</div><div class="ucp-bar-track"><div class="ucp-bar-fill" style="width:${Math.min(100,v*100)}%;background:${c}"></div></div></div>`).join('');
 
   const narr = document.getElementById('ucpNarrative');
