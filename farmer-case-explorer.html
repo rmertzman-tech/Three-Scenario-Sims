@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Doyne Farmer Case Explorer — The Invisible Population</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+  --red:#dc2626;--red-light:#fee2e2;
+  --orange:#9a3412;--orange-light:#ffedd5;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:960px;margin:0 auto;padding:1rem}
+.app-header{text-align:center;padding:2rem 1rem 1.25rem;color:white}
+.ch-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.7);margin-bottom:.4rem}
+.app-header h1{font-size:2rem;font-weight:700;color:white;margin-bottom:.35rem;line-height:1.2}
+.app-header .sub{font-size:.95rem;color:rgba(255,255,255,.5);font-style:italic}
+.tab-nav{display:flex;gap:.25rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:.4rem .75rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.4rem;cursor:pointer;transition:.18s;white-space:nowrap}
+.tab-btn:hover{color:white;background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 28px rgba(0,0,0,.2)}
+.tab-pane.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h2{font-size:1.55rem;font-weight:700;color:var(--teal-dark);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.15rem;font-weight:700;color:var(--navy);margin:1.2rem 0 .45rem}
+h4{font-size:.97rem;font-weight:700;color:var(--amber-dark);margin:.85rem 0 .3rem}
+p{line-height:1.75;margin-bottom:.85rem;font-size:.96rem;color:var(--ink)}
+strong{color:var(--navy)}
+ul{margin:.3rem 0 .7rem 1.3rem;line-height:1.8}
+ul li{font-size:.92rem;color:var(--ink);margin-bottom:.2rem}
+.card{border-radius:.7rem;padding:1.2rem;margin-bottom:1rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-navy{background:var(--navy);color:white;padding:1.35rem}
+.card-navy p,.card-navy li{color:rgba(255,255,255,.8)}
+.card-navy h3,.card-navy h4{color:var(--teal-mid)}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky-mid)}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-orange{background:var(--orange-light);border-left:4px solid var(--orange)}
+.card-red{background:var(--red-light);border-left:4px solid var(--red)}
+.cmp-table{width:100%;border-collapse:collapse;font-size:.84rem;margin:1rem 0}
+.cmp-table th{padding:.55rem .65rem;text-align:left;color:white;font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase}
+.cmp-table td{padding:.5rem .65rem;border:1px solid var(--border);vertical-align:top;line-height:1.5}
+.cmp-table .row-label{font-weight:700;color:var(--navy);background:var(--paper);font-size:.8rem}
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:.9rem 1.1rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.92rem}
+blockquote cite{display:block;margin-top:.35rem;font-style:normal;font-size:.78rem;font-weight:600;color:var(--muted)}
+
+/* ── Agent distribution viz ── */
+.agent-dist{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin:1rem 0}
+.agent-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.agent-label{font-size:.78rem;font-family:'JetBrains Mono',monospace;color:var(--navy);min-width:155px}
+.agent-track{flex:1;height:20px;background:var(--border);border-radius:3px;overflow:hidden}
+.agent-fill{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:5px}
+.agent-fill span{font-size:.68rem;font-weight:700;color:white;font-family:'JetBrains Mono',monospace}
+.agent-note{font-size:.76rem;color:var(--muted);line-height:1.5;margin-top:.5rem;font-style:italic;border-top:1px solid var(--border);padding-top:.4rem}
+
+/* ── Simulation ── */
+.run-tabs{display:flex;gap:.3rem;margin-bottom:1rem}
+.run-tab-btn{padding:.4rem .9rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.85rem;cursor:pointer;transition:.15s}
+.run-tab-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
+.run-tab-btn.active-run{background:var(--teal-dark);color:white;border-color:var(--teal-dark);font-weight:600}
+.ucp-panel{background:var(--paper);border:1px solid var(--border);border-radius:.7rem;padding:1.25rem;margin-top:1rem}
+.ucp-run-btn{background:var(--teal-dark);color:white;border:none;padding:.65rem 1.5rem;border-radius:.45rem;font-size:.95rem;font-weight:600;cursor:pointer;transition:.15s;font-family:'Cormorant Garamond',serif}
+.ucp-run-btn:hover{background:var(--teal)}
+.ucp-run-btn:disabled{background:var(--muted);cursor:not-allowed}
+.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5rem;margin:.75rem 0}
+.ucp-metric{background:white;border:1px solid var(--border);border-radius:.45rem;padding:.5rem .65rem;text-align:center}
+.ucp-metric .m-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.15rem}
+.ucp-metric .m-val{font-size:1.2rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal-dark)}
+.ucp-metric .m-val.gap{color:var(--amber-dark)}
+.ucp-metric .m-val.supp{color:var(--red)}
+.ucp-bars{margin:.6rem 0}
+.ucp-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem}
+.ucp-bar-label{font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:140px}
+.ucp-bar-track{flex:1;height:14px;background:var(--border);border-radius:3px;overflow:hidden}
+.ucp-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.ucp-narrative{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.82rem;color:var(--ink);line-height:1.6;margin-top:.6rem}
+.ucp-error{background:var(--red-light);border:1px solid var(--red);border-radius:.45rem;padding:.65rem;font-size:.82rem;color:var(--red);margin-top:.5rem;display:none}
+.next-run-prompt{background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:.5rem;padding:.85rem;margin-top:.75rem;font-size:.85rem;display:none}
+.sxs-panel{display:none;margin-top:1rem;overflow-x:auto}
+.sxs-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.sxs-table th{background:var(--navy);color:white;padding:.5rem .65rem;font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase}
+.sxs-table td{padding:.45rem .65rem;border:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace}
+.sxs-table tr:nth-child(odd) td{background:var(--paper)}
+.pred-panel{background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.2);border-radius:.7rem;padding:1.1rem;margin-bottom:1rem}
+.pred-stage{padding:.85rem;background:white;border-radius:.5rem;border:1px solid var(--border);margin-bottom:.6rem}
+.pred-stage-locked{opacity:.45;pointer-events:none}
+.pred-stage-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.pred-stage-num{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.s1{background:var(--teal-dark);color:white}
+.s2{background:var(--amber-dark);color:white}
+.s3{background:var(--sky);color:white}
+.pred-stage-title{font-size:.85rem;font-weight:700;color:var(--navy)}
+.pred-prompt{font-size:.82rem;color:var(--muted);line-height:1.55;margin-bottom:.5rem;font-style:italic}
+.pred-ta{width:100%;min-height:80px;border:1px solid var(--border);border-radius:.35rem;padding:.5rem .65rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;resize:vertical;line-height:1.55;color:var(--ink)}
+.pred-ta:focus{outline:none;border-color:var(--teal-mid)}
+.pred-save{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;margin-top:.2rem;opacity:0;transition:.3s;height:.9rem}
+.pred-save.show{opacity:1}
+.m-scfg{background:rgba(0,0,0,.32);border:1px solid rgba(20,184,166,.22);border-radius:.5rem;padding:.85rem 1rem;margin-bottom:.85rem}
+.m-scfg-label{font-size:.67rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.6);margin-bottom:.25rem}
+.m-scfg-title{font-size:.84rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:.5rem}
+.m-scfg-table{width:100%;border-collapse:collapse;margin-bottom:.5rem}
+.m-scfg-table tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.06)}
+.m-scfg-table td{padding:.28rem .38rem;font-size:.77rem;vertical-align:top}
+.m-scfg-key{font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);width:36%;white-space:nowrap}
+.m-scfg-val{color:rgba(255,255,255,.73);line-height:1.5}
+.m-scfg-reading{padding:.5rem .7rem;background:rgba(201,168,76,.07);border-left:3px solid rgba(201,168,76,.45);border-radius:0 .3rem .3rem 0;font-size:.77rem;color:rgba(255,255,255,.62);line-height:1.6;font-style:italic}
+.m-pred-scaffold{background:rgba(15,118,110,.1);border:1px solid rgba(20,184,166,.18);border-radius:.4rem;padding:.6rem .85rem;margin-bottom:.7rem}
+.m-pred-scaffold-label{font-size:.64rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.07em;color:rgba(20,184,166,.65);margin-bottom:.35rem}
+.m-pred-scaffold-item{font-size:.77rem;color:rgba(255,255,255,.62);line-height:1.6;padding-left:.7rem;border-left:2px solid rgba(20,184,166,.28);margin-bottom:.28rem}
+.m-pred-scaffold-item strong{color:rgba(20,184,166,.85);font-weight:600}
+.ch6-pred{background:rgba(15,118,110,.1);border:1px solid rgba(20,184,166,.28);border-radius:.5rem;padding:.85rem 1rem;margin-bottom:.85rem;display:none}
+.ch6-pred-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.38);margin-bottom:.3rem}
+.ch6-pred-text{font-size:.84rem;color:rgba(255,255,255,.72);line-height:1.6;font-style:italic;border-left:3px solid var(--amber);padding-left:.7rem}
+.farmer-ssq-wrap{margin:1rem 0}
+.farmer-ssq-inner{background:rgba(0,0,0,.3);border:1px solid rgba(20,184,166,.25);border-radius:.7rem;overflow:hidden}
+.farmer-ssq-head{background:rgba(0,0,0,.3);padding:.8rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.07)}
+.farmer-ssq-head-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:.15rem}
+.farmer-ssq-head-title{font-size:.9rem;font-weight:700;color:rgba(255,255,255,.82)}
+.farmer-ssq-body{padding:.9rem 1rem}
+.farmer-ssq-q{margin-bottom:1rem}
+.farmer-ssq-q-text{font-size:.84rem;font-weight:700;color:rgba(255,255,255,.78);margin-bottom:.55rem;line-height:1.5}
+.farmer-ssq-opts{display:flex;flex-direction:column;gap:.35rem}
+.farmer-ssq-opt{display:flex;align-items:flex-start;gap:.45rem;padding:.5rem .8rem;border:1px solid rgba(255,255,255,.13);border-radius:.38rem;cursor:pointer;background:rgba(255,255,255,.04);font-family:'Georgia',serif;font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.5;transition:.14s;text-align:left;width:100%}
+.farmer-ssq-opt:hover:not(:disabled){border-color:rgba(20,184,166,.5)}
+.farmer-ssq-opt .opt-letter{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;min-width:1.2rem;color:rgba(255,255,255,.35)}
+.farmer-ssq-fb{display:none;border-radius:.32rem;padding:.6rem .8rem;margin-top:.45rem;font-size:.8rem;line-height:1.6}
+.farmer-ssq-prog{font-size:.7rem;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.28);text-align:center;padding:.45rem;border-top:1px solid rgba(255,255,255,.06)}
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.38rem}
+.journal-q p{font-size:.87rem;margin-bottom:.45rem}
+textarea.jta{width:100%;min-height:95px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;height:1.1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+
+.ucp-metric{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.ucp-metric:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12);border-color:var(--teal-mid)}
+.ucp-metric .m-hint{font-size:.58rem;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:.15rem;opacity:.7}
+
+/* ── Metric explanation modal ── */
+.metric-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.metric-modal{background:white;border-radius:1rem;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.metric-modal-header{padding:1.25rem 1.5rem .85rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.metric-modal-name{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.2rem}
+.metric-modal-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--navy)}
+.metric-modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1;padding:.1rem .3rem}
+.metric-modal-close:hover{color:var(--ink)}
+.metric-modal-body{padding:1.25rem 1.5rem}
+.metric-modal-value{display:flex;align-items:center;gap:1rem;background:var(--paper);border-radius:.5rem;padding:.9rem 1rem;margin-bottom:1rem}
+.metric-modal-big{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;min-width:70px;text-align:center}
+.metric-modal-verdict{font-size:.88rem;font-weight:600;line-height:1.4}
+.metric-modal-verdict-sub{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.metric-range-bar{background:var(--border);border-radius:4px;height:10px;margin:.5rem 0 .25rem;position:relative;overflow:visible}
+.metric-range-fill{height:100%;border-radius:4px;position:absolute;left:0;top:0}
+.metric-range-pin{position:absolute;top:-5px;width:2px;height:20px;background:var(--navy);border-radius:1px}
+.metric-range-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem}
+.metric-modal-section{margin-bottom:.9rem}
+.metric-modal-section h4{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:.3rem}
+.metric-modal-section p{font-size:.84rem;line-height:1.65;color:var(--ink);margin-bottom:.35rem}
+.metric-modal-challenger{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 .45rem .45rem 0;padding:.75rem .9rem;font-size:.82rem;line-height:1.65;color:var(--amber-dark)}
+.metric-modal-formula{background:var(--paper);border:1px solid var(--border);border-radius:.4rem;padding:.6rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--navy);margin:.5rem 0}
+
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries · Chapter 7 · Movement 2</div>
+  <h1>The Invisible Population</h1>
+  <div class="sub">Doyne Farmer · Agent-Based Modeling · The Representative Agent Problem</div>
+</div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-overview" onclick="showTab('overview',this)">Overview</button>
+  <button class="tab-btn" id="tb-repagent" onclick="showTab('repagent',this)">The Rep. Agent</button>
+  <button class="tab-btn" id="tb-covid" onclick="showTab('covid',this)">Farmer & COVID</button>
+  <button class="tab-btn" id="tb-simulation" onclick="showTab('simulation',this)">UCP Simulation</button>
+  <button class="tab-btn" id="tb-transfer" onclick="showTab('transfer',this)">Synthesis & Transfer</button>
+  <button class="tab-btn" id="tb-journal" onclick="showTab('journal',this)">Ethics Journal</button>
+</div>
+
+<!-- ══ OVERVIEW ══ -->
+<div class="tab-pane active" id="tab-overview">
+  <h2>Overview — The Palmer-Farmer Parallel</h2>
+
+  <p><strong>Chapter 6 established that single-model forecasting creates a suppression gap</strong> by compressing a genuine probability distribution to false certainty. Palmer's ensemble approach closed that gap by reporting the distribution as the primary output.</p>
+
+  <p><strong>Chapter 7 makes the same argument about economics.</strong> Standard macroeconomic models use a representative agent — one idealized rational actor standing in for the entire economy. A lockdown's economic impact modeled this way looks like one person's decision. It does not look like a restaurant worker, a hospital nurse, a remote software engineer, and a manufacturing supply chain manager — all experiencing the same lockdown in categorically different ways.</p>
+
+  <p><strong>The structural parallel is precise:</strong></p>
+  <ul>
+    <li>Palmer's single-model forecast compresses a genuine <em>probability distribution</em> to one track → forecasting suppression gap</li>
+    <li>Standard economics compresses a genuine <em>population distribution</em> to one representative agent → economic suppression gap</li>
+    <li>In both cases, the populations most harmed by the events being modeled are precisely the populations most invisible to the model</li>
+  </ul>
+
+  <div class="card card-teal">
+    <h4>Your Chapter 6 Q5 Prediction</h4>
+    <p>In Chapter 6's journal Q5, you predicted the structural parallel between Palmer's single-model forecast and the representative agent assumption. Retrieve that prediction — this chapter tests whether your structural diagnosis was correct.</p>
+    <div class="ch6-pred" id="ch6PredOverview">
+      <div class="ch6-pred-label">Your Chapter 6 Q5 Prediction (retrieved)</div>
+      <div class="ch6-pred-text" id="ch6PredTextOverview"></div>
+    </div>
+  </div>
+
+  <h3>Doyne Farmer</h3>
+  <p>Doyne Farmer is Professor at the Institute for New Economic Thinking at Oxford University and co-founder of the Santa Fe Institute's Economics research program. His 2024 book <em>Making Sense of Chaos</em> is the accessible account of his central argument: economic models that compress genuine heterogeneity to a representative agent systematically fail to predict the distributional impacts that matter most in crises — and produce policies calibrated to an average that nobody actually experiences.</p>
+</div>
+
+<!-- ══ REP AGENT ══ -->
+<div class="tab-pane" id="tab-repagent">
+  <h2>The Representative Agent — What It Is and What It Hides</h2>
+
+  <h3>What Standard Models Assume</h3>
+  <p>Standard macroeconomic models are built around a <strong>representative agent</strong>: a single, idealized, rational household that owns all the firms in the economy, has perfect foresight about future prices and interest rates, and makes optimal decisions in every period. This is not a description of any real household. It is a simplification that made complex mathematics tractable before heterogeneous agent computation became feasible.</p>
+
+  <h3>The Agent Distribution Comparison</h3>
+
+  <div class="agent-dist">
+    <h4 style="margin-top:0">Representative Agent Economy (Standard Model)</h4>
+    <div class="agent-row">
+      <div class="agent-label">Representative agent</div>
+      <div class="agent-track"><div class="agent-fill" style="width:100%;background:#dc2626"><span>100%</span></div></div>
+    </div>
+    <div class="agent-note">One type. One response to the lockdown. One policy response designed for that one type. The restaurant worker's experience, the hospital nurse's experience, the remote worker's productivity gain — all averaged to zero.</div>
+  </div>
+
+  <div class="agent-dist">
+    <h4 style="margin-top:0">Farmer's Agent-Based Economy (Heterogeneous Agents)</h4>
+    <div class="agent-row">
+      <div class="agent-label">Remote knowledge workers</div>
+      <div class="agent-track"><div class="agent-fill" style="width:28%;background:#0f766e"><span>28%</span></div></div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-label">Essential workers (on-site)</div>
+      <div class="agent-track"><div class="agent-fill" style="width:22%;background:#14b8a6"><span>22%</span></div></div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-label">Non-essential service workers</div>
+      <div class="agent-track"><div class="agent-fill" style="width:25%;background:#f59e0b"><span>25%</span></div></div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-label">Small business owners</div>
+      <div class="agent-track"><div class="agent-fill" style="width:15%;background:#3b82f6"><span>15%</span></div></div>
+    </div>
+    <div class="agent-row">
+      <div class="agent-label">Informal/gig economy</div>
+      <div class="agent-track"><div class="agent-fill" style="width:10%;background:#6b7280"><span>10%</span></div></div>
+    </div>
+    <div class="agent-note">Each type experiences the same lockdown differently. Remote knowledge workers: productivity stable or up, savings intact. Non-essential service workers: immediate income = zero, no work-from-home option. Informal workers: immediate income = zero, no savings buffer, no unemployment eligibility. The policy must address each type's actual situation — not the average of all five.</div>
+  </div>
+
+  <div class="card card-navy">
+    <h4>The Three Things Representative Agent Models Cannot See</h4>
+    <ul>
+      <li><strong>Supply chain topology:</strong> which firms depend on which other firms, in what order closures cascade, which communities lose multiple income sources simultaneously.</li>
+      <li><strong>Distributional impacts:</strong> the same shock hits different households with different severity. The average impact can be modest even when the worst impacts are catastrophic.</li>
+      <li><strong>Behavioral heterogeneity:</strong> people with different resources respond differently to the same policy. The representative agent responds optimally. Agents without savings, without credit access, and without work flexibility cannot respond optimally — and policy designed for the optimal responder fails them.</li>
+    </ul>
+  </div>
+
+  <blockquote>
+    "When COVID hit, the standard models said roughly: 'large shock, GDP falls sharply, recovery gradual.' What they could not say was: which supply chains collapse first, which workers face unemployment immediately, where the cascading effects hit hardest, and which communities need support this week versus next quarter. The representative agent experiences the average of all of this. Nobody in the actual economy experiences the average."
+    <cite>Doyne Farmer, Institute for New Economic Thinking, 2020</cite>
+  </blockquote>
+</div>
+
+<!-- ══ COVID ══ -->
+<div class="tab-pane" id="tab-covid">
+  <h2>Farmer and COVID — When Heterogeneity Saved Lives</h2>
+
+  <h3>The Modeling Problem in March 2020</h3>
+  <p>When COVID-19 struck, governments needed to make rapid decisions about sector closures, support payments, and fiscal commitments. Standard macroeconomic models produced aggregate GDP projections. They could not produce what decision-makers actually needed: which sectors would face cash-flow collapse in week 2, which supply chains would cascade, and which households would be in crisis before the first support payment arrived.</p>
+
+  <h3>What Farmer's Model Did Differently</h3>
+  <div class="card card-sky">
+    <ul>
+      <li><strong>Supply-chain mapping:</strong> each firm in the model had specific input dependencies and output buyers. When restaurants closed, the food distributors and produce suppliers who depended on restaurant revenue faced immediate cash-flow problems — visible in the model, invisible to aggregate GDP forecasting.</li>
+      <li><strong>Household vulnerability gradients:</strong> households were modeled with their actual income sources, savings buffers, and sector employment. A household dependent on hospitality income with zero savings was in crisis in week 1. A household with accumulated savings and remote-compatible employment faced a temporary inconvenience. Same lockdown, categorically different impact.</li>
+      <li><strong>Policy sequencing:</strong> the model showed that the timing of support mattered as much as the total amount. Early cash transfer to zero-income households prevented cascading defaults. Delayed support after cascades had already occurred cost significantly more to address.</li>
+    </ul>
+  </div>
+
+  <h3>Representative vs. Agent-Based: Structural Comparison</h3>
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th style="background:var(--navy);width:20%">Dimension</th>
+        <th style="background:var(--red);width:40%">Representative Agent Model</th>
+        <th style="background:var(--teal-dark);width:40%">Farmer's Agent-Based Model</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="row-label">Population</td><td style="background:var(--red-light)">One idealized rational household owning all firms. No heterogeneity.</td><td style="background:var(--teal-light)">Millions of households and firms with different incomes, sectors, savings, supply chain positions, and work flexibility.</td></tr>
+      <tr><td class="row-label">Lockdown looks like</td><td style="background:var(--red-light)">One agent choosing between work and home. Welfare = average impact.</td><td style="background:var(--teal-light)">Restaurant worker (income → 0), hospital nurse (elevated risk), software engineer (productivity +), small business owner (revenue → 0, fixed costs continue).</td></tr>
+      <tr><td class="row-label">Policy output</td><td style="background:var(--red-light)">"Stimulus of X% GDP" — one size, one timing, one mechanism.</td><td style="background:var(--teal-light)">Tiered response: immediate cash to zero-income households in week 1; deferred loan support for firms with reserves in weeks 3–6; supply chain bridge financing for cascade-vulnerable suppliers.</td></tr>
+      <tr><td class="row-label">Prediction accuracy</td><td style="background:var(--red-light)">Right about aggregate scale. Wrong about which sectors, which households, which timing.</td><td style="background:var(--teal-light)">Right about sector-specific employment effects and cascade sequence. More accurate precisely because it retained what standard models compressed.</td></tr>
+      <tr><td class="row-label">Suppression gap</td><td style="background:var(--red-light)">HIGH — heterogeneity distribution compressed before reaching policy.</td><td style="background:var(--teal-light)">LOW — distribution IS the model output. Policy calibrated to actual spread.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="card card-amber">
+    <h4>The Connection to the Simulation</h4>
+    <p>Every simulation in this course uses a worldview distribution — five agent types with different epistemic frameworks and different responses to the same institutional environment. That distribution IS the heterogeneous agent architecture. Runs that shift the worldview distribution (Run 1 to Run 2 in Palmer, Phase 1 to Phase 2 in Maathai) are demonstrating the Farmer insight: retaining genuine heterogeneity produces better outputs and makes all populations visible.</p>
+  </div>
+</div>
+
+<!-- ══ SIMULATION ══ -->
+<div class="tab-pane" id="tab-simulation">
+  <h2>UCP Simulation — The Representative Agent Problem Made Structural</h2>
+
+  <p>Three runs model the same institutional economy with different agent architectures — from near-homogeneous (representative agent equivalent) through heterogeneous (Farmer equivalent) to the explicit analysis of the most vulnerable population.</p>
+
+  <div id="ch6PredSim" class="ch6-pred" style="margin-bottom:.85rem">
+    <div class="ch6-pred-label">Your Chapter 6 Q5 Prediction (retrieved)</div>
+    <div class="ch6-pred-text" id="ch6PredTextSim"></div>
+  </div>
+
+  <div class="run-tabs">
+    <button class="run-tab-btn active-run" id="btn-run1" onclick="selectRun('run1')">Run 1 — Rep. Agent</button>
+    <button class="run-tab-btn" id="btn-run2" onclick="selectRun('run2')">Run 2 — Heterogeneous</button>
+    <button class="run-tab-btn" id="btn-run3" onclick="selectRun('run3')">Run 3 — Invisible Pop.</button>
+  </div>
+  <div style="font-size:.78rem;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-bottom:.5rem" id="run-label">Run 1: Representative Agent Economy</div>
+
+  <div id="farmer-config-panel" class="m-scfg" style="display:none"></div>
+  <div id="farmer-scaffold-panel" class="m-pred-scaffold" style="display:none">
+    <div class="m-pred-scaffold-label">💡 Reasoning Scaffold</div>
+    <div id="farmer-scaffold-items"></div>
+  </div>
+
+  <div class="pred-panel" id="predPanel">
+    <div style="font-size:.7rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.6);margin-bottom:.75rem">🔬 Prediction — Active Inference Practice</div>
+    <div class="pred-stage" id="pred-stage-pred">
+      <div class="pred-stage-header"><div class="pred-stage-num s1">1</div><div class="pred-stage-title s1">Before Running — Write Your Prediction</div></div>
+      <div class="pred-prompt" id="pred-prompt-pred">Loading…</div>
+      <textarea class="pred-ta" id="pred-ta-pred" placeholder="I predict the suppression gap will… OS2 Bridge will… because…" oninput="predSave('farmer','pred',this.value)"></textarea>
+      <div class="pred-save" id="pred-sv-pred">✓ Saved</div>
+    </div>
+    <div class="pred-stage pred-stage-locked" id="pred-stage-gap">
+      <div class="pred-stage-header"><div class="pred-stage-num s2">2</div><div class="pred-stage-title s2">After Results — Gap Analysis</div></div>
+      <div class="pred-prompt" id="pred-prompt-gap">Complete Stage 1 and run the simulation first.</div>
+      <textarea class="pred-ta" id="pred-ta-gap" placeholder="The largest gap between my prediction and the result was…" oninput="predSave('farmer','gap',this.value)"></textarea>
+      <div class="pred-save" id="pred-sv-gap">✓ Saved</div>
+    </div>
+    <div class="pred-stage pred-stage-locked" id="pred-stage-inhabit">
+      <div class="pred-stage-header"><div class="pred-stage-num s3">3</div><div class="pred-stage-title s3">Inhabitation Bridge — Your Economy</div></div>
+      <div class="pred-prompt">Which population in your own economic context is the Run 3 equivalent — receiving average-calibrated policy while experiencing below-average structural capacity?</div>
+      <textarea class="pred-ta" id="pred-ta-inhabit" placeholder="In my economic context, the equivalent of the invisible population is…" oninput="predSave('farmer','inhabit',this.value)"></textarea>
+      <div class="pred-save" id="pred-sv-inhabit">✓ Saved</div>
+    </div>
+  </div>
+
+  <div class="ucp-panel">
+    <h3>Farmer Simulation — <span id="phase-label">Run 1: Representative Agent Economy</span></h3>
+    <button class="ucp-run-btn" id="ucpRunBtn" onclick="runSimulation()">▶ Run Simulation</button>
+    <div id="ucpError" class="ucp-error"></div>
+    <div id="ucpResult" style="display:none">
+      <div class="ucp-metrics" id="ucpMetrics"></div>
+      <div class="ucp-bars" id="ucpBars"></div>
+      <div class="ucp-narrative" id="ucpNarrative"></div>
+      <div class="next-run-prompt" id="nextRunPrompt">
+        <p id="nextRunText"></p>
+        <button id="nextRunBtn" class="ucp-run-btn" style="margin-top:.5rem;font-size:.82rem"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="farmerSSQPanel" style="display:none;margin:1rem 0"></div>
+
+  <div class="sxs-panel" id="sxsPanel">
+    <h3>Three-Run Comparison</h3>
+    <div style="overflow-x:auto">
+      <table class="sxs-table">
+        <thead><tr><th>Metric</th><th>Run 1 — Rep. Agent</th><th>Run 2 — Heterogeneous</th><th>Run 3 — Invisible Pop.</th></tr></thead>
+        <tbody id="sxsBody"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:.75rem;font-size:.82rem;color:var(--muted);font-style:italic">Run 1→2: the suppression gap difference measures the Farmer contribution — retaining heterogeneity makes the invisible populations visible. Run 2→3: the capability gap that even good models identify but cannot fix without structural intervention.</div>
+  </div>
+</div>
+
+<!-- ══ TRANSFER ══ -->
+<div class="tab-pane" id="tab-transfer">
+  <h2>Synthesis & Transfer — The Invisible Population in Your World</h2>
+
+  <h3>The Farmer Principle Beyond Economics</h3>
+  <p>The representative agent problem is not specific to economics. Every institution that models populations for policy purposes faces the same choice: represent the population as a homogeneous agent — averaged characteristics, assumed rationality, standard behavior — or retain the heterogeneity that makes distributional analysis possible.</p>
+
+  <div class="card card-sky" style="margin-bottom:.6rem">
+    <h4>Healthcare — The Representative Patient</h4>
+    <p>Clinical trials have historically used populations with specific demographic profiles (white, male, middle-aged, no comorbidities) as the representative patient. Treatment recommendations calibrated to this average are systematically less accurate for populations not represented. The drug that works for the representative patient may require different dosing, have different adverse effects, or be contraindicated for patients outside the trial's demographic band. Policy designed for the representative patient fails patients at the distribution's edges.</p>
+  </div>
+  <div class="card card-sky" style="margin-bottom:.6rem">
+    <h4>Education — The Representative Student</h4>
+    <p>Standardized testing policy is calibrated to the average student whose performance is stable across test conditions, who has access to preparation resources, and whose background knowledge matches the test's assumed knowledge base. The distributional question — what happens to the 15% of students whose performance is most sensitive to test-specific factors — rarely reaches policy decisions calibrated to average pass rates and average score gaps.</p>
+  </div>
+  <div class="card card-sky">
+    <h4>Public Health — The Representative Household</h4>
+    <p>Epidemiological models use population-average transmission rates, immunity profiles, and behavioral responses. These systematically underestimate the severity of outbreaks in high-density, low-income communities where household size, public transit dependence, and inability to work from home produce transmission rates far above the population average. The policy designed for the representative agent — 'stay home if symptomatic, work from home if possible' — requires resources that a substantial fraction of the actual population cannot access.</p>
+  </div>
+
+  <div class="card card-navy">
+    <h4>The Farmer Principle — Stated Generally</h4>
+    <p>In any institution that manages complex populations through aggregate models: the populations most harmed by the events being modeled are systematically the populations most invisible to the model. The ethical obligation runs in both directions: use heterogeneous models that make all populations visible AND design policies calibrated to the distribution rather than the mean — specifically calibrated to close the gap for the agents at the bottom of the distribution.</p>
+    <p style="margin-top:.5rem">This is Rawls' difference principle applied to modeling methodology: the choice of model architecture is itself an ethical choice with distributive consequences.</p>
+  </div>
+
+  <div class="card card-teal">
+    <h4>Preview: Chapter 8 — The Ethical Theories</h4>
+    <p>Chapters 6 and 7 gave you the methodology: ensemble thinking (Palmer) and heterogeneous agent analysis (Farmer). You have been practicing both all semester in the simulations. Chapter 8 will show you the names of the ethical theories you have been operationalizing — from Aristotle's virtue formation to Rawls' difference principle. You will recognize the structural concepts in the canonical theory. The simulation has been teaching you ethics all along. Chapter 8 makes it explicit.</p>
+  </div>
+</div>
+
+<!-- ══ JOURNAL ══ -->
+<div class="tab-pane" id="tab-journal">
+  <h2>Ethics Journal — Chapter 7</h2>
+  <p>Complete before opening Chapter 8. Responses saved automatically.</p>
+
+  <div class="journal-q">
+    <div class="q-label">Q1 — The Palmer-Farmer Parallel</div>
+    <p>Explain the structural parallel between Palmer's single-model forecast and the representative agent assumption. What is being compressed in each case? What is the specific category of information that is suppressed? Who becomes invisible in each case, and what is the cost of that invisibility?</p>
+    <textarea class="jta" id="jt-q1" placeholder="Palmer suppresses… the specific information category is… the invisible population is…&#10;Farmer suppresses… the specific information category is… the invisible population is…&#10;The precise structural parallel: …" oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q2 — The Three-Run Analysis</div>
+    <p>After completing all three simulation runs: explain in structural terms why the Run 1→2 change produces the suppression gap reduction you observed. Which specific parameter changes carry the most weight? Then: what does the Run 2→3 comparison add that Run 2 alone cannot show? What is the Rawlsian argument that Run 3 makes structural?</p>
+    <textarea class="jta" id="jt-q2" placeholder="The Run 1→2 suppression gap reduction was primarily produced by…&#10;The most important parameter change was…&#10;Run 3 adds… by showing…&#10;The Rawlsian argument: …" oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q3 — Your Prediction Assessment</div>
+    <p>Compare your Chapter 6 Q5 prediction to what this chapter actually argued. What was structurally accurate? What did the actual argument add that your prediction missed? Which structural concept from earlier in the course would have produced a more accurate prediction?</p>
+    <textarea class="jta" id="jt-q3" placeholder="My prediction was accurate about…&#10;The chapter added…&#10;The structural concept I was missing: …" oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">✓ Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q4 — The Invisible Population in Your Context</div>
+    <p>Identify a specific institution in your own life — healthcare, education, criminal justice, workplace — where the representative agent problem is present. Who is made invisible by the aggregate model? What would a Farmer-style heterogeneous model of that institution need to include to make the invisible population visible? What policy change would it suggest?</p>
+    <textarea class="jta" id="jt-q4" placeholder="Institution: …&#10;The representative agent assumption used: …&#10;Who is invisible: …&#10;What the heterogeneous model would include: …&#10;The policy change suggested: …" oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">✓ Saved</div>
+  </div>
+
+  <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.04)">
+    <div class="q-label" style="color:var(--amber-dark)">Q5 — Prediction for Chapter 8 (Ethical Theories)</div>
+    <p>Chapter 8 introduces the formal history of ethical theory — eight traditions from Socrates through Rawls. You have been practicing structural analysis all semester. Before reading, predict:</p>
+    <ul style="font-size:.87rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
+      <li><strong>Recognition:</strong> which canonical theory do you think most directly maps onto the suppression gap concept? Which maps onto the capability gap? Which maps onto the representative agent problem (the erasure of specific populations from moral consideration)?</li>
+      <li><strong>The blind spot:</strong> if each theory was developed in response to a specific historical crisis, predict what historical situation produced the theory you identified above and what structural crisis it was designed to address.</li>
+      <li><strong>The synthesis question:</strong> do the ethical theories you know (from prior coursework or general knowledge) contradict each other, or could they all be measuring different aspects of the same underlying structural reality? Make a specific prediction.</li>
+      <li><strong>What you already know:</strong> having run simulations for seven chapters — describe one structural concept from the simulations that you now believe the ethical traditions were trying to express in philosophical language.</li>
+    </ul>
+    <textarea class="jta q5" id="jt-q5" placeholder="Suppression gap maps to the theory of…&#10;Capability gap maps to…&#10;Representative agent erasure maps to…&#10;Historical crisis that produced these theories: …&#10;Do the theories contradict or cohere: …&#10;Simulation concept that the theories were expressing: …" oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-q5">✓ Saved for Chapter 8</div>
+  </div>
+
+  <div class="card" style="background:#052e16;color:white;margin-top:1.25rem;border-radius:.75rem;padding:1.35rem">
+    <h3 style="color:var(--amber);font-size:1rem;margin-top:0">Looking Ahead: Chapter 8 — The Simulated History of Ethics</h3>
+    <p style="color:rgba(255,255,255,.75)">Chapters 6 and 7 completed the methodology argument: you have been practicing ensemble thinking and heterogeneous agent analysis all semester. Those methods have names in the philosophical tradition. Aristotle was doing something structurally equivalent when he described virtue as a stable disposition formed by habituation — he was modeling the agent's capacity as a function of their institutional environment, which is what λ Raw measures.</p>
+    <p style="color:rgba(255,255,255,.75);margin-top:.5rem">Kant was doing something structurally equivalent when he argued that every rational agent must be treated as an end in themselves — he was arguing that the suppression gap is a Kantian violation, that an architecture that systematically routes around agents' rational contributions is treating them as means rather than ends. Rawls' difference principle is a formal statement of the Run 3 question: design the institution to maximize the minimum λ Raw, not the average. Chapter 8 will make these connections explicit.</p>
+  </div>
+</div>
+
+</div>
+<script>
+'use strict';
+const JP='farmer_journal_';
+const BACKEND='https://ucp-backend-4dig.onrender.com';
+let _run='run1';
+let _results={};
+
+const RUN_CONFIGS={
+  run1:{
+    label:'Run 1: Representative Agent Economy',
+    next:'run2',nextLabel:'▶ Run 2 — Heterogeneous Agent Architecture',
+    nextPrompt:'Run 1 complete — now see what happens when genuine population heterogeneity is retained in the model.',
+    scenario_name:'whistleblower',num_agents:16,steps:10,seed:42,
+    scenario_physics:{base_entropy:0.45,base_stress:0.42,
+      block_fields:{care:-0.25,fairness:-0.40,community:-0.35,boundary:0.45}},
+    worldview_distribution:{role_order:0.80,liberal_individualist:0.08,ubuntu_relational:0.06,sacred_boundary:0.04,indigenous_custodial:0.02},
+    evidence_distribution:{authority_weighted:0.72,aggregate_weighted:0.20,empirical_calibrated:0.06,alternative_facts:0.02}
+  },
+  run2:{
+    label:'Run 2: Heterogeneous Agent Architecture',
+    next:'run3',nextLabel:'▶ Run 3 — The Invisible Population',
+    nextPrompt:'Run 2 captures the full heterogeneity. Now examine what the model reveals about the most structurally constrained agents.',
+    scenario_name:'resource_scarcity',num_agents:16,steps:10,seed:42,
+    scenario_physics:{base_entropy:0.45,base_stress:0.42,
+      block_fields:{care:0.38,fairness:0.42,community:0.45,boundary:0.22}},
+    worldview_distribution:{liberal_individualist:0.28,role_order:0.22,ubuntu_relational:0.25,sacred_boundary:0.15,indigenous_custodial:0.10},
+    evidence_distribution:{empirical_calibrated:0.55,authority_weighted:0.20,tradition_weighted:0.15,alternative_facts:0.10}
+  },
+  run3:{
+    label:'Run 3: The Invisible Population',
+    next:null,nextLabel:null,nextPrompt:null,
+    scenario_name:'resource_scarcity',num_agents:16,steps:10,seed:77,
+    scenario_physics:{base_entropy:0.76,base_stress:0.68,
+      block_fields:{care:0.35,fairness:0.38,community:0.42,boundary:0.18}},
+    worldview_distribution:{ubuntu_relational:0.38,indigenous_custodial:0.30,liberal_individualist:0.18,role_order:0.10,sacred_boundary:0.04},
+    evidence_distribution:{empirical_calibrated:0.50,authority_weighted:0.25,tradition_weighted:0.18,alternative_facts:0.07}
+  }
+};
+
+const FARMER_CONFIG={
+  run1:{
+    title:'Run 1 — Representative Agent Economy',
+    rows:[
+      ['Base entropy','0.45 — Healthy institutional environment.'],
+      ['Base stress','0.42 — Manageable.'],
+      ['Worldview dist.','role_order 0.80 — near-homogeneous. All other frameworks suppressed (0.02–0.08 each). This IS the representative agent assumption: one dominant type treated as if it represents all.'],
+      ['Evidence dist.','authority_weighted 0.72 — the dominant framework\'s outputs are what reach decisions. Aggregate_weighted 0.20.'],
+      ['Block fields','boundary +0.45 (strong), fairness −0.40, community −0.35, care −0.25. The architecture rewards dominant-type contributions; others are filtered.'],
+      ['Key mechanism','The 20% of agents not in role_order have their contributions filtered before reaching outcomes. In the economic equivalent: the restaurant worker, the informal sector household, and the gig worker are present in the economy but invisible to the model\'s outputs.'],
+    ],
+    reading:'Key prediction: the institution is healthy (entropy 0.45) and has real capability. The suppression gap will come specifically from the homogeneous architecture. Predict: what does a 0.80/role_order worldview distribution plus authority_weighted 0.72 evidence produce in terms of suppression gap and OS2 Bridge?'
+  },
+  run2:{
+    title:'Run 2 — Heterogeneous Agent Architecture',
+    rows:[
+      ['Base entropy','0.45 — IDENTICAL to Run 1.'],
+      ['Base stress','0.42 — IDENTICAL to Run 1.'],
+      ['Worldview dist.','Genuinely diverse: liberal_individualist 0.28 · role_order 0.22 · ubuntu_relational 0.25 · sacred_boundary 0.15 · indigenous_custodial 0.10. All five types present and weighted.'],
+      ['Evidence dist.','empirical_calibrated 0.55 — the distribution of evidence types, not one type\'s output, reaches decisions.'],
+      ['Block fields','ALL POSITIVE: care +0.38, fairness +0.42, community +0.45, boundary +0.22.'],
+      ['Key contrast','Identical structural health to Run 1. The only changes are worldview diversity (heterogeneous agents) and evidence architecture. This is the Farmer contribution — retaining heterogeneity in the model.'],
+    ],
+    reading:'The Run 1→2 comparison isolates the agent architecture as the causal variable. Before running: predict the suppression gap change and OS2 Bridge change. Which change — worldview diversity or evidence architecture — carries more weight in producing the result?'
+  },
+  run3:{
+    title:'Run 3 — The Invisible Population',
+    rows:[
+      ['Base entropy','0.76 — HIGH. These are the most structurally constrained agents: informal sector, zero-savings households, high-precarity workers.'],
+      ['Base stress','0.68 — HIGH. Accumulated constraint — no recovery windows.'],
+      ['Evidence dist.','IDENTICAL to Run 2 — the heterogeneous model is working correctly.'],
+      ['Worldview dist.','ubuntu_relational 0.38 · indigenous_custodial 0.30 — the historically marginalized, structurally constrained populations. These are the agents who experience the widest gap between what accurate models show and what they can actually do.'],
+      ['Key question','The model architecture (Run 2) makes this population visible. But making them visible does not raise their λ Raw. What is the capability gap between Run 2 and Run 3, and what structural intervention would close it?'],
+    ],
+    reading:'Run 3 is the Rawlsian question: does the heterogeneous model benefit the most structurally constrained agents proportionally? Predict: will the positive block fields from the Run 2 architecture partially offset their high entropy, or will entropy dominate? What is the gap between what the model reveals and what the agents can do?'
+  }
+};
+
+const FARMER_SCAFFOLD={
+  run1:[
+    {label:'Suppression gap',hint:'role_order 0.80 means 80% of agents share one worldview — their outputs dominate. The other 20% have their contributions filtered. <strong>Predict: moderate / large suppression gap?</strong>'},
+    {label:'OS2 Bridge',hint:'Near-homogeneous worldview distribution means coordination happens within one framework, not across frameworks. <strong>Predict: low / moderate cross-worldview Bridge?</strong>'},
+    {label:'The economy analogy',hint:'80% role_order is the economic equivalent of assuming all households have stable employment, savings buffers, and work-from-home flexibility. <strong>What does the model miss about the 20%?</strong>'},
+    {label:'Morphic suppression',hint:'Fairness −0.40 and community −0.35 mean cross-type contributions are penalized. <strong>Does this compound the worldview homogeneity effect on suppression?</strong>'},
+  ],
+  run2:[
+    {label:'Suppression gap change',hint:'Run 1 gave baseline with near-homogeneous agents. Run 2 has 5-framework diversity + empirical_calibrated 0.55. <strong>How large a gap reduction do you predict?</strong>'},
+    {label:'OS2 Bridge',hint:'Genuine 5-framework diversity AND positive block fields AND empirical_calibrated evidence. Compare to Maathai Phase 2 (functional equivalence). <strong>Similar structural conditions — similar Bridge?</strong>'},
+    {label:'The key question',hint:'Entropy and stress are identical to Run 1. The only changes are agent heterogeneity and evidence architecture. <strong>What does this prove about the source of Run 1\'s suppression gap?</strong>'},
+    {label:'Friction',hint:'5 genuine frameworks all active and contributing means more productive tension. <strong>Do you expect higher friction in Run 2 than Run 1? Why is that not a problem?</strong>'},
+  ],
+  run3:[
+    {label:'λ Raw floor',hint:'Base entropy 0.76 and stress 0.68. Same positive block fields as Run 2. <strong>Does the good model architecture (Run 2) offset the structural constraint for these agents?</strong>'},
+    {label:'Capability gap',hint:'Compare Run 3 λ Raw to Run 2. <strong>This gap is the Farmer policy argument: what the model reveals but cannot fix by itself.</strong>'},
+    {label:'Policy implication',hint:'If you were designing the economic support policy based on Run 3, what would it include that a policy designed from Run 1 would miss? <strong>What structural intervention would close the floor gap?</strong>'},
+  ]
+};
+
+const FARMER_SSQ={
+  run1:{
+    title:'What This Simulation Shows — Run 1: Representative Agent Problem',
+    questions:[
+      {text:'Run 1 shows moderate λ Raw but a significant suppression gap. The institution is structurally healthy (entropy 0.45). What specifically produces the suppression gap — and what is the economic policy equivalent of this mechanism?',
+       options:['The suppression gap reflects inadequate information in the system — the institution needs more data to produce better outcomes.',
+         'The suppression gap is produced by the near-homogeneous worldview distribution (role_order 0.80) combined with authority-weighted evidence (0.72): contributions from the 20% of agents outside the dominant framework are systematically filtered before reaching outcomes. The economic policy equivalent: a stimulus designed from representative-agent assumptions is calibrated to the dominant type\'s situation and fails the 20% who face categorically different structural conditions.',
+         'The suppression gap is a mathematical artifact of high role_order concentration — the metric mechanically rises with worldview homogeneity.',
+         'The suppression gap reflects high boundary block (+0.45) which prevents information from reaching across institutional boundaries.'],
+       correct:1,
+       feedback:{correct:'Yes — and this is the Farmer insight made structural. The institution is not incompetent (entropy 0.45 is healthy). The suppression gap comes specifically from the architecture of who is represented in what reaches outcomes. authority_weighted 0.72 means the dominant worldview type\'s outputs reach decisions; the minority types\' contributions are filtered. In economic terms: a representative-agent model produces outputs calibrated to the modal household\'s situation, and those outputs reach policy decisions. The restaurant workers, informal sector households, and gig workers are in the economy but not in the model\'s policy-relevant outputs.',
+        wrong:[null,null,'The metric measures a genuine structural gap — the distance between λ Raw and λ Perceived. It is not a mathematical artifact of the worldview distribution. A simulation with diverse worldviews and authority-weighted evidence could produce the same gap for different structural reasons. The mechanism here is specifically the combination of near-homogeneous agents with authority-weighted evidence routing.','The boundary block contributes to the architecture, but the primary mechanism producing the suppression gap is the worldview distribution and evidence weighting, not the boundary parameter alone. Run 2 will have lower boundary block (+0.22) and lower suppression gap — but the primary driver is the shift from role_order 0.80 to genuine diversity.']
+       }
+      },
+      {text:'The simulation shows low OS2 Bridge in Run 1. What structural argument does this make about the representative-agent economy — and what is the cost of low Bridge in the economic context?',
+       options:['Low OS2 Bridge is expected when one worldview dominates — it reflects efficient internal coordination within the dominant group.',
+         'Low OS2 Bridge in a near-homogeneous simulation means the institution achieves coordination within the dominant worldview type but fails to achieve cross-type convergence on shared outcomes. In the economic context: policy designed for the representative agent produces internal coherence within the modal household\'s experience while failing to coordinate solutions for households outside that profile. The cost is systematic misallocation: resources go where the model says they are needed (representative agent\'s situation) rather than where actual need is concentrated (distribution\'s tail).',
+         'Low OS2 Bridge indicates that the institutional architecture is fundamentally broken and needs complete redesign.',
+         'Low OS2 Bridge is acceptable in Run 1 because high Bridge requires diverse worldviews — you cannot have high Bridge without genuine heterogeneity.'],
+       correct:1,
+       feedback:{correct:'Yes — and this is the distributional policy consequence. An institution that achieves high internal coordination within the dominant type while failing to coordinate solutions for the minority types is not failing at coordination broadly — it is succeeding at coordination for the majority while systematically misallocating resources for the minority. The Run 1 economy looks like it is functioning correctly from the representative agent\'s perspective. It is functioning poorly for the 20% outside that perspective. This is why average GDP can be stable even when specific communities are in crisis.',
+        wrong:['This is the representative-agent perspective: from inside the dominant group, everything looks coherent because the institution is designed for that group. The problem is visible only from the perspective of the groups for whom the architecture fails. Low Bridge here means: cross-type convergence on shared outcomes is not happening. The policy and the resource allocation are calibrated to one type\'s needs.',null,'Option D is partially correct — you cannot have high Bridge without diverse agents who are contributing. But the point is not that low Bridge is "acceptable" in Run 1. The point is that the low Bridge is a symptom of the representative-agent architecture\'s failure to coordinate across genuine population heterogeneity. The cost is real even if the mechanism requires diverse agents to demonstrate it.']
+       }
+      }
+    ]
+  },
+  run2:{
+    title:'What This Simulation Shows — Run 2: Heterogeneous Architecture',
+    questions:[
+      {text:'Run 2 has identical entropy and stress to Run 1 but a dramatically different suppression gap. What structural argument does this comparison make about the Farmer contribution — and what specifically in the parameter change produces the result?',
+       options:['The suppression gap improvement proves that positive block fields always produce lower suppression gaps than negative ones.',
+         'The comparison isolates agent heterogeneity and evidence architecture as the causal variables: with entropy and stress held constant, the combination of (1) worldview diversity from role_order 0.80 to 5-framework balance and (2) evidence architecture from authority_weighted 0.72 to empirical_calibrated 0.55 produces the suppression gap change. Farmer\'s contribution was not better economics theory or more data — it was retaining the genuine heterogeneity of the population in the model\'s architecture.',
+         'The improvement proves that empirical_calibrated evidence is always superior to authority_weighted evidence regardless of context.',
+         'The Run 1→2 comparison proves that institutional health (entropy and stress) is not the primary driver of suppression gaps — it is the agent architecture.'],
+       correct:1,
+       feedback:{correct:'Yes — this is the Farmer proof of concept made structural. Same institution, same environment (identical entropy and stress = same structural health). Two changes: who is in the model (agent heterogeneity) and what evidence architecture routes their contributions to outcomes. The suppression gap change is specifically attributable to those two architectural choices. Farmer\'s COVID model did not have better economic data or more sophisticated theory than the standard models. It retained what the standard models compressed — and that retention is what produced more accurate predictions.',
+        wrong:['Positive block fields contribute to lower suppression gap by rewarding rather than filtering cross-type contributions. But the primary mechanism here is the evidence architecture shift (authority_weighted → empirical_calibrated) combined with worldview diversity. You could construct a scenario with positive block fields and authority-weighted evidence that still had a significant suppression gap.',null,'Option C would imply that changing only the evidence distribution while keeping homogeneous worldviews (role_order 0.80) would produce the same result. It would not — the evidence architecture shift works because there is now genuine heterogeneity to route. Without the worldview diversity change, empirical_calibrated evidence would route outputs from a near-homogeneous agent set. Both changes matter.',null]
+       }
+      },
+      {text:'Run 2 shows the invisible population is now visible in the model. What does this mean structurally — and what is the difference between making a population visible in the model and closing their capability gap?',
+       options:['Making the population visible in the model and closing their capability gap are the same thing — if you can measure the gap, you have addressed it.',
+         'Making the population visible in the model means their contributions reach the model\'s outputs and policy can be calibrated to their actual situation (lower suppression gap, higher OS2 Bridge). Closing their capability gap requires structural interventions that change their base conditions — their entropy, stress, and BioBond. Visibility is the diagnostic prerequisite for correct policy. It does not itself change the structural conditions that produce the gap. Run 3 will demonstrate this distinction directly.',
+         'Visibility in the model is more important than closing the capability gap — correct measurement is the primary ethical obligation.',
+         'The distinction between model visibility and capability gap closure is a technical detail, not an ethical one.'],
+       correct:1,
+       feedback:{correct:'Yes — and this distinction is the bridge to Run 3. Run 2 achieves what Farmer\'s COVID model achieved: it makes the invisible population visible. Policy can now be designed to address the restaurant workers\' situation specifically, not averaged into the representative agent\'s experience. But the restaurant workers\' structural conditions — no savings, no remote work option, immediate income loss — are not changed by better modeling. The correct diagnosis is the precondition for the correct treatment. The treatment requires structural intervention that changes the conditions. Chapter 8\'s synthesis claim is partly about this: ethical theory provides the moral framework for what interventions are obligated; the simulation provides the structural measurement of what those interventions need to address.',
+        wrong:['This confuses measurement with intervention. The gap between measurement accuracy and closing the gap is precisely what Run 3 demonstrates. A perfect model of a structural problem does not change the structural conditions that produce the problem. The SNAP program correctly identified food insecurity in low-income households (measurement/visibility). Identifying it did not close the food insecurity gap — structural intervention (the program itself) was required.',null,'This inverts the ethical argument. Visibility is instrumentally valuable because it is the precondition for correct policy. The ethical obligation is to the agents\' wellbeing (closing the capability gap), not to correct measurement. Correct measurement serves that obligation; it does not fulfill it.']
+       }
+      }
+    ]
+  },
+  run3:{
+    title:'What This Simulation Shows — Run 3: The Invisible Population',
+    questions:[
+      {text:'Run 3 uses the same heterogeneous evidence architecture as Run 2 but shows substantially lower λ Raw. What is the structural argument this comparison makes — and what specifically produces the capability gap?',
+       options:['The lower λ Raw in Run 3 shows that the heterogeneous agent architecture is less effective for ubuntu_relational and indigenous_custodial worldview types.',
+         'The capability gap emerges from the population\'s structural position — base_entropy 0.76 and stress 0.68 — not from the model architecture. The heterogeneous architecture is functioning correctly (positive block fields, empirical_calibrated evidence). The lower λ Raw shows that agents facing chronic resource constraint, precarious employment, and accumulated depletion have structurally lower capacity to act on accurate information and accurate policy even when that policy is designed with their situation in view.',
+         'Run 3 shows the simulation\'s limitation — the model cannot accurately represent high-entropy agent types.',
+         'The capability gap is an unavoidable natural feature of population heterogeneity that cannot be addressed by institutional design.'],
+       correct:1,
+       feedback:{correct:'This is the chapter\'s most important structural argument. The architecture is not failing — the positive block fields and empirical_calibrated evidence from Run 2 are present. The capability gap comes from the agents\' base structural conditions. In economic terms: Farmer\'s model correctly identifies that restaurant workers face immediate income loss (making the invisible visible). But the policy insight that follows — they need immediate cash transfer, not a deferred tax credit — still requires structural intervention that changes their material conditions. The model tells you what to do; doing it changes the entropy and stress for those agents. That change is what closes the capability gap, not the modeling.',
+        wrong:['This inverts the argument. The worldview type associated with structurally constrained populations is not producing lower λ Raw because of the worldview type itself. It is producing lower λ Raw because agents with that worldview distribution happen to have higher base_entropy and stress in this run. A run with ubuntu_relational and indigenous_custodial agents at entropy 0.45 would produce higher λ Raw. The worldview type is a correlate, not the cause.',null,'The simulation is accurately representing what high-entropy agents experience — that is the point of Run 3. The capability gap is real, not a measurement artifact. Option D is the view this course has been building against since Chapter 2: that structural problems are natural and unaddressable. The entire argument from Hanna through Farmer has been that structural conditions are designed, and differently designed institutions produce different structural outcomes.']
+       }
+      },
+      {text:'Run 3 identifies the invisible population and measures their capability gap. What is the complete moral obligation that follows — and what makes it a specifically Rawlsian argument?',
+       options:['The moral obligation is fulfilled by making the population visible in the model — accurate measurement is the complete ethical obligation.',
+         'The complete moral obligation has three parts: (1) use heterogeneous models that make all populations visible; (2) design policies calibrated to the distribution, not the mean; and (3) specifically close the floor gap for the most structurally constrained agents. This is Rawlsian because it applies the difference principle to institutional design: the evaluation criterion for a policy, model, or institution is not its average output but what it produces for the least-advantaged agents. The Run 3 λ Raw floor is the Rawlsian criterion — the institution is evaluated by whether it raises that floor.',
+         'The moral obligation is to minimize the suppression gap — once the suppression gap is near zero, the ethical obligation is fulfilled.',
+         'The Rawlsian argument only applies to government policy, not to modeling methodology or institutional design.'],
+       correct:1,
+       feedback:{correct:'Yes — and this is the course\'s synthesis argument about methodology and ethics. Rawls\' difference principle says: institutional arrangements are just only if they benefit the least advantaged. Applied to modeling methodology: an aggregate model that produces average-calibrated policy while leaving the least-advantaged agents with the same capability gap is unjust — not because it intends harm but because it uses an architectural choice that structurally disadvantages specific populations. The three-part obligation connects directly to the simulation\'s three run structure: Run 1 shows the status quo, Run 2 shows what visibility produces, Run 3 shows what remains after visibility and sets the target for structural intervention.',
+        wrong:['Measurement is a precondition, not the fulfillment, of the moral obligation. Run 2 achieves visibility. Run 3 shows that visibility is not enough — the structural gap remains and requires further action.',null,'Minimizing the suppression gap is necessary but insufficient. Run 2 achieves near-zero suppression gap (heterogeneous architecture working). Run 3 shows a remaining capability gap that suppression gap reduction alone did not close. The ethical obligation extends to that remaining gap.','The difference principle is a principle of institutional design — Rawls explicitly applied it to the basic structure of society, which includes economic institutions, educational systems, and other institutions. Farmer applied it to modeling methodology by arguing that economic models are ethical choices with distributive consequences, not neutral technical tools.']
+       }
+      }
+    ]
+  }
+};
+
+const PRED_PROMPTS={
+  run1:'Run 1 models a near-homogeneous economy — role_order 0.80, authority_weighted evidence 0.72. This is the representative agent equivalent: one framework\'s outputs dominate, the other 20% of agents are structurally filtered. Before running: what suppression gap does a 0.80 worldview concentration produce? What OS2 Bridge does near-homogeneous coordination produce?',
+  run2:'Run 2 has identical entropy and stress to Run 1. The changes: worldview diversity (5 balanced frameworks) and evidence architecture (empirical_calibrated 0.55). Based on Run 1\'s results: predict the suppression gap reduction. Which change — worldview diversity or evidence architecture — carries more weight? Compare to Maathai Phase 2\'s transition.',
+  run3:'Run 3 uses the same heterogeneous architecture as Run 2 but with base_entropy 0.76 and stress 0.68 — modeling the most structurally constrained agents. The evidence architecture (Run 2) makes them visible. Does visibility change their λ Raw? What is the capability gap between Run 2 and Run 3 — and what would close it?'
+};
+
+function showTab(name,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>{p.style.display='none';});
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const pane=document.getElementById('tab-'+name);
+  if(pane)pane.style.display='block';
+  if(btn)btn.classList.add('active');
+  if(name==='journal')loadJournalFields();
+}
+
+function selectRun(r){
+  _run=r;
+  renderFarmerConfig(r);
+  document.querySelectorAll('.run-tab-btn').forEach(b=>b.classList.remove('active-run'));
+  document.getElementById('btn-'+r).classList.add('active-run');
+  document.getElementById('run-label').textContent=RUN_CONFIGS[r].label;
+  document.getElementById('ucpError').style.display='none';
+  if(_results[r]){renderResult(_results[r]);document.getElementById('ucpRunBtn').innerHTML='↺ Re-run';}
+  else{document.getElementById('ucpResult').style.display='none';document.getElementById('nextRunPrompt').style.display='none';document.getElementById('ucpRunBtn').innerHTML='▶ Run Simulation';}
+  predUpdatePrompts(r);
+}
+
+function renderFarmerConfig(runKey){
+  const data=FARMER_CONFIG[runKey];if(!data)return;
+  const panel=document.getElementById('farmer-config-panel');
+  const scaffold=document.getElementById('farmer-scaffold-panel');
+  const items=document.getElementById('farmer-scaffold-items');
+  if(!panel)return;
+  const rows=data.rows.map(([k,v])=>`<tr><td class="m-scfg-key">${k}</td><td class="m-scfg-val">${v}</td></tr>`).join('');
+  panel.innerHTML=`<div class="m-scfg-label">🔬 Before You Predict</div><div class="m-scfg-title">${data.title}</div><table class="m-scfg-table">${rows}</table><div class="m-scfg-reading">${data.reading}</div>`;
+  panel.style.display='block';
+  const scaffoldList=FARMER_SCAFFOLD[runKey]||[];
+  if(items)items.innerHTML=scaffoldList.map(s=>`<div class="m-pred-scaffold-item"><strong>${s.label}:</strong> ${s.hint}</div>`).join('');
+  if(scaffold)scaffold.style.display='block';
+}
+
+function predUpdatePrompts(r){
+  const el=document.getElementById('pred-prompt-pred');
+  if(el)el.textContent=PRED_PROMPTS[r]||'';
+  ['pred','gap','inhabit'].forEach(k=>{const ta=document.getElementById('pred-ta-'+k);try{if(ta)ta.value=localStorage.getItem('farmer_'+r+'_pred-'+k)||'';}catch(e){}});
+  predCheckLocks(r);
+}
+function predCheckLocks(r){
+  const s1val=(document.getElementById('pred-ta-pred')?.value||'').trim();
+  const s2val=(document.getElementById('pred-ta-gap')?.value||'').trim();
+  const s2=document.getElementById('pred-stage-gap');
+  const s3=document.getElementById('pred-stage-inhabit');
+  if(s2)s2.classList.toggle('pred-stage-locked',s1val.length<20);
+  if(s3)s3.classList.toggle('pred-stage-locked',s2val.length<20);
+}
+function predSave(appId,stageId,val){
+  try{localStorage.setItem(appId+'_'+_run+'_pred-'+stageId,val);}catch(e){}
+  const sv=document.getElementById('pred-sv-'+stageId);
+  if(sv){sv.classList.add('show');setTimeout(()=>sv.classList.remove('show'),2000);}
+  predCheckLocks(_run);
+}
+
+async function runSimulation(){
+  const btn=document.getElementById('ucpRunBtn');
+  btn.disabled=true;btn.innerHTML='⏳ Running…';
+  const errEl=document.getElementById('ucpError');errEl.style.display='none';
+  const cfg=RUN_CONFIGS[_run];
+  try{
+    const resp=await fetch(`${BACKEND}/api/simulate/custom`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({scenario_name:cfg.scenario_name,num_agents:cfg.num_agents,steps:cfg.steps,seed:cfg.seed,scenario_physics:cfg.scenario_physics,worldview_distribution:cfg.worldview_distribution,evidence_distribution:cfg.evidence_distribution})});
+    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+    const data=await resp.json();
+    _results[_run]=data;
+    renderResult(data);
+    btn.innerHTML='↺ Re-run';
+    renderFarmerSSQ(_run);
+    unlockStage2();
+    updateSxS();
+  }catch(err){errEl.textContent='Simulation error: '+err.message;errEl.style.display='block';btn.innerHTML='▶ Run Simulation';}
+  btn.disabled=false;
+}
+
+function renderResult(data){
+  const m=data.metrics||{};
+  const raw=+(m.lambda_raw||0).toFixed(3),perc=+(m.lambda_perceived||0).toFixed(3);
+  const gap=+(m.suppression_gap||raw-perc||0).toFixed(3),supp=+(m.morphic_suppression||0).toFixed(3);
+  const bridge=+(m.os2_synergy_bridge||0).toFixed(3),friction=+(m.friction||0).toFixed(3);
+  const fidelity=raw>0?+(raw/(raw+supp)).toFixed(3):0;
+  document.getElementById('ucpMetrics').innerHTML=[['λ Raw',raw,''],['λ Perceived',perc,''],['Supp. Gap',gap,'gap'],['Morphic Supp.',supp,'supp'],['OS2 Bridge',bridge,''],['Friction',friction,''],['Fidelity',fidelity,'']].map(([l,v,c])=>`<div class="ucp-metric"><div class="m-label">${l}</div><div class="m-val ${c}">${v}</div></div>`).join('');
+  const bars=[['λ Raw',raw,'#0f766e'],['λ Perceived',perc,'#0ea5e9'],['OS2 Bridge',bridge,'#10b981'],['Friction',friction,'#f59e0b'],['Morphic Supp.',supp,'#dc2626']];
+  document.getElementById('ucpBars').innerHTML=bars.map(([l,v,c])=>`<div class="ucp-bar-row"><div class="ucp-bar-label">${l}</div><div class="ucp-bar-track"><div class="ucp-bar-fill" style="width:${Math.min(100,v*100)}%;background:${c}"></div></div></div>`).join('');
+  document.getElementById('ucpNarrative').textContent=data.narrative||generateNarrative(data,_run);
+  document.getElementById('ucpResult').style.display='block';
+  const cfg=RUN_CONFIGS[_run];
+  if(cfg.next){
+    document.getElementById('nextRunText').textContent=cfg.nextPrompt||'';
+    document.getElementById('nextRunBtn').textContent=cfg.nextLabel||'';
+    document.getElementById('nextRunBtn').onclick=()=>selectRun(cfg.next);
+    document.getElementById('nextRunPrompt').style.display='block';
+  }
+}
+function generateNarrative(data,r){
+  const m=data.metrics||{};
+  const raw=+(m.lambda_raw||0).toFixed(3),gap=+(m.suppression_gap||0).toFixed(3),bridge=+(m.os2_synergy_bridge||0).toFixed(3);
+  if(r==='run1')return `Run 1 — Representative Agent Economy: λ Raw ${raw} shows healthy institutional capability, but suppression gap ${gap} measures the information filtered from the 20% of agents outside the dominant framework. OS2 Bridge ${bridge} reflects coordination within the dominant type rather than across all types. This is the economic model that told governments "average GDP falls" while missing which supply chains, which workers, which communities.`;
+  if(r==='run2')return `Run 2 — Heterogeneous Architecture: Same entropy and stress as Run 1. Suppression gap ${gap} — compare to Run 1: this is the structural measure of what retaining genuine agent heterogeneity produces. OS2 Bridge ${bridge} — genuine cross-framework convergence on shared outcomes. All five agent types now contribute to model outputs. The invisible population is now visible.`;
+  return `Run 3 — The Invisible Population: λ Raw ${raw} — compare to Run 2's λ Raw. The heterogeneous architecture is working correctly (same positive block fields, same evidence distribution). The capability gap comes from base_entropy 0.76 and stress 0.68 — the structural position of the most constrained agents. OS2 Bridge ${bridge}. The gap between Run 2 and Run 3 λ Raw is the Rawlsian floor gap: what correct modeling reveals but cannot by itself close.`;
+}
+
+function updateSxS(){
+  const runs=['run1','run2','run3'];
+  if(runs.filter(r=>_results[r]).length<2)return;
+  document.getElementById('sxsPanel').style.display='block';
+  const metrics=['lambda_raw','lambda_perceived','suppression_gap','morphic_suppression','os2_synergy_bridge','friction'];
+  const labels={lambda_raw:'λ Raw',lambda_perceived:'λ Perceived',suppression_gap:'Supp. Gap',morphic_suppression:'Morphic Supp.',os2_synergy_bridge:'OS2 Bridge',friction:'Friction'};
+  document.getElementById('sxsBody').innerHTML=metrics.map(k=>`<tr><td style="font-weight:700;color:var(--navy);background:var(--paper)">${labels[k]||k}</td>${runs.map(r=>_results[r]?`<td>${((_results[r].metrics||{})[k]||0).toFixed(3)}</td>`:'<td>—</td>').join('')}</tr>`).join('');
+}
+
+function renderFarmerSSQ(runKey){
+  const data=FARMER_SSQ[runKey];if(!data)return;
+  const panel=document.getElementById('farmerSSQPanel');if(!panel)return;
+  const LETTERS=['A','B','C','D'];
+  let html=`<div class="farmer-ssq-inner"><div class="farmer-ssq-head"><div class="farmer-ssq-head-label">Structural Understanding</div><div class="farmer-ssq-head-title">${data.title}</div></div><div class="farmer-ssq-body">`;
+  data.questions.forEach((q,qi)=>{
+    html+=`<div class="farmer-ssq-q" id="farmer-ssq-${runKey}-q${qi}"><div class="farmer-ssq-q-text">${qi+1}. ${q.text}</div><div class="farmer-ssq-opts">`;
+    q.options.forEach((opt,oi)=>{html+=`<button id="farmer-ssq-${runKey}-q${qi}-o${oi}" onclick="handleSSQ('${runKey}',${qi},${oi})" class="farmer-ssq-opt"><span class="opt-letter">${LETTERS[oi]}.</span><span>${opt}</span></button>`;});
+    html+=`</div><div id="farmer-ssq-${runKey}-q${qi}-fb" class="farmer-ssq-fb"></div></div>`;
+  });
+  html+=`</div><div class="farmer-ssq-prog" id="farmer-ssq-${runKey}-prog">Answer both questions to continue</div></div>`;
+  const wrap=document.createElement('div');wrap.className='farmer-ssq-wrap';wrap.innerHTML=html;
+  panel.innerHTML='';panel.appendChild(wrap);panel.style.display='block';
+  try{const saved=JSON.parse(localStorage.getItem('farmer_ssq_'+runKey)||'{}');Object.entries(saved).forEach(([qi,oi])=>applySSQ(runKey,parseInt(qi),parseInt(oi),true));updateSSQProg(runKey);}catch(e){}
+}
+
+function handleSSQ(runKey,qi,oi){
+  applySSQ(runKey,qi,oi,false);
+  try{const saved=JSON.parse(localStorage.getItem('farmer_ssq_'+runKey)||'{}');saved[qi]=oi;localStorage.setItem('farmer_ssq_'+runKey,JSON.stringify(saved));}catch(e){}
+  updateSSQProg(runKey);
+}
+function applySSQ(runKey,qi,oi,isRestore){
+  const data=FARMER_SSQ[runKey];if(!data)return;
+  const q=data.questions[qi];const isCorrect=oi===q.correct;
+  q.options.forEach((_,idx)=>{const btn=document.getElementById(`farmer-ssq-${runKey}-q${qi}-o${idx}`);if(btn)btn.disabled=true;});
+  const chosen=document.getElementById(`farmer-ssq-${runKey}-q${qi}-o${oi}`);
+  if(chosen){chosen.style.borderColor=isCorrect?'#4ade80':'#f87171';chosen.style.background=isCorrect?'rgba(74,222,128,.12)':'rgba(248,113,113,.1)';chosen.style.color=isCorrect?'#bbf7d0':'#fecaca';}
+  if(!isCorrect){const cb=document.getElementById(`farmer-ssq-${runKey}-q${qi}-o${q.correct}`);if(cb){cb.style.borderColor='#4ade80';cb.style.background='rgba(74,222,128,.07)';cb.style.color='#86efac';cb.style.opacity='.8';}}
+  const fb=document.getElementById(`farmer-ssq-${runKey}-q${qi}-fb`);
+  if(fb){const fbText=isCorrect?q.feedback.correct:(q.feedback.wrong[oi]||'Not quite. Read the highlighted answer\'s explanation for the structural reasoning.');
+    fb.style.background=isCorrect?'rgba(74,222,128,.12)':'rgba(251,191,36,.1)';fb.style.borderLeft=isCorrect?'3px solid #4ade80':'3px solid #C9A84C';fb.style.color=isCorrect?'#bbf7d0':'rgba(255,255,255,.75)';
+    fb.innerHTML=`<div style="font-size:.66rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;font-weight:700;margin-bottom:.22rem;color:${isCorrect?'#4ade80':'#C9A84C'}">${isCorrect?'✓ Correct':'✗ Not quite'}</div>${fbText}`;fb.style.display='block';}
+}
+function updateSSQProg(runKey){
+  try{const saved=JSON.parse(localStorage.getItem('farmer_ssq_'+runKey)||'{}');const done=Object.keys(saved).length;const prog=document.getElementById(`farmer-ssq-${runKey}-prog`);if(prog)prog.textContent=done>=2?'✓ Both questions answered':`${done} of 2 answered`;}catch(e){}
+}
+function unlockStage2(){
+  const el=document.getElementById('pred-prompt-gap');if(el)el.textContent='Compare your prediction to the simulation results. Which metric showed the largest gap between what you predicted and what the agent architecture produced? What does that gap reveal about what you expected the architecture to do?';
+  const s2=document.getElementById('pred-stage-gap');if(s2)s2.classList.remove('pred-stage-locked');
+  const saved=(()=>{try{return localStorage.getItem('farmer_'+_run+'_pred-gap')||'';}catch(e){return '';}})();
+  const ta=document.getElementById('pred-ta-gap');if(ta&&!ta.value)ta.value=saved;
+  predCheckLocks(_run);
+}
+function jSave(k,v){
+  const key=k==='cq5'?'ch7_cq5':JP+k;
+  try{localStorage.setItem(key,v);const sn=k==='cq5'?document.getElementById('sn-q5'):document.getElementById('sn-'+k);if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}}catch(e){}
+}
+function loadJournalFields(){
+  ['q1','q2','q3','q4'].forEach(k=>{const el=document.getElementById('jt-'+k);if(el)el.value=(()=>{try{return localStorage.getItem(JP+k)||'';}catch(e){return '';}})();});
+  const q5=document.getElementById('jt-q5');if(q5)q5.value=(()=>{try{return localStorage.getItem('ch7_cq5')||'';}catch(e){return '';}})();
+}
+// Ch6 prediction retrieval
+(function loadCh6Pred(){
+  try{const pred=localStorage.getItem('ch6_cq5')||'';
+    ['ch6PredOverview','ch6PredSim'].forEach(id=>{const wrapper=document.getElementById(id);const textId=id==='ch6PredOverview'?'ch6PredTextOverview':'ch6PredTextSim';const textEl=document.getElementById(textId);if(wrapper&&textEl&&pred.trim()){textEl.textContent=pred;wrapper.style.display='block';}});
+  }catch(e){}
+})();
+renderFarmerConfig('run1');
+predUpdatePrompts('run1');
+
+const METRIC_EXPLAIN = {
+  'λ Raw': {
+    title: 'Lambda Raw — Genuine Constructive Capability',
+    what: `λ Raw measures the actual coordination potential present in the agent population — the total capacity to perceive situations accurately, reason deliberately about them, and contribute meaningfully to shared outcomes. Think of it as the water level in the mountains of the watershed: how much capability is actually present, regardless of whether the institutional architecture can receive it.`,
+    range: `Ranges from 0% (total capacity collapse — agents cannot function above the Sapolsky stress threshold) to 100% (full deliberative capacity across all agents). In practice, healthy institutions operate between 55–80%. Below 40% indicates agents are in reactive, stress-driven mode.`,
+    verdict: (v) => v > 0.65 ? { text: 'Strong capability present', color: '#166534', intensity: 'HIGH — Agents have intact deliberative capacity.' }
+                  : v > 0.42 ? { text: 'Moderate capability', color: '#92400e', intensity: 'MODERATE — Capability is present but under pressure.' }
+                             : { text: 'Capability below threshold', color: '#dc2626', intensity: 'LOW — Agents are below the Sapolsky deliberative threshold.' },
+    challenger: `In the Challenger teleconference, engineer λ Raw was high — Boisjoly and his colleagues had clear technical knowledge, intact reasoning, and accurate data. The watershed had abundant water in the mountains. The disaster occurred not because λ Raw was low but because the dam (suppression gap) was high.`,
+    formula: 'λ Raw = f(stress, BioBond, PRF stability, Identity Kernel depth)',
+    learnMore: `This is why the Challenger case is so instructive: the engineers were not incompetent or confused. Their λ Raw was intact. The architecture failed them, not their capability.`
+  },
+  'λ Perceived': {
+    title: 'Lambda Perceived — Coordination Capacity Felt in the Room',
+    what: `λ Perceived measures what coordination capacity the institutional architecture actually allows to reach decisions — what feels available for shared reasoning. It is λ Raw minus what the suppression gap filters out. In the watershed: this is the water level on the decision side of the dam. It is always ≤ λ Raw.`,
+    range: `0% means no coordination capacity reaches decisions (pure authority-driven or suppressed institution). 100% means all genuine capability is fully expressed in coordinated action. Healthy institutions: 45–70%. The Challenger teleconference architecture: very low.`,
+    verdict: (v) => v > 0.55 ? { text: 'Coordination feeling strong', color: '#166534', intensity: 'HIGH — Much of λ Raw is reaching decisions.' }
+                  : v > 0.35 ? { text: 'Coordination constrained', color: '#92400e', intensity: 'MODERATE — Significant capability is being filtered out.' }
+                             : { text: 'Coordination severely limited', color: '#dc2626', intensity: 'LOW — Only a fraction of actual capability reaches decisions.' },
+    challenger: `On January 27, 1986, what was perceived in the Thiokol decision room was not the engineering data — it was the organizational pressure to launch. λ Perceived collapsed because the authority-weighted evidence architecture routed the engineering signal around rather than toward the launch decision.`,
+    formula: 'λ Perceived = λ Raw − Suppression Gap',
+    learnMore: `The difference between λ Raw and λ Perceived is the most important measurement in organizational ethics. An organization can have highly capable, fully informed people whose capability never reaches decisions.`
+  },
+  'Supp. Gap': {
+    title: 'Suppression Gap — The Distance Between Knowing and Deciding',
+    what: `The Suppression Gap is the difference between what agents actually know (λ Raw) and what reaches institutional decisions (λ Perceived). It is the structural distance between truth and power. In the watershed: this is the height of the dam. A high suppression gap means accurate information is being filtered out before it reaches the people who need it — not through dishonesty but through architecture.`,
+    range: `0% means no suppression — everything known reaches decisions. Above 15% indicates significant filtering. Above 30% indicates the institution is systematically unable to hear its own most accurate information. The Challenger teleconference: very high.`,
+    verdict: (v) => v < 0.10 ? { text: 'Minimal suppression', color: '#166534', intensity: 'LOW — Information is flowing freely toward decisions.' }
+                  : v < 0.25 ? { text: 'Moderate suppression', color: '#92400e', intensity: 'MODERATE — Significant information is being filtered.' }
+                             : { text: 'Critical suppression', color: '#dc2626', intensity: 'HIGH — The institution cannot hear its own most accurate signal.' },
+    challenger: `Roger Boisjoly had a 15% failure probability estimate, direct physical evidence, and 18 months of documented warnings. What reached the launch decision was silence. The gap between what he knew and what reached the decision measured in lives: seven.`,
+    formula: 'Suppression Gap = λ Raw − λ Perceived',
+    learnMore: `Amy Edmondson found that in low-psychological-safety environments, each hierarchical level crossed reduces transmission probability by 30–40%. The Thiokol teleconference crossed multiple levels — each one reducing the signal.`
+  },
+  'OS2 Bridge': {
+    title: 'OS2 Bridge — Realized Coordination Across Difference',
+    what: `OS2 Bridge measures how much of the available coordination capacity is actually being realized as coordinated action across genuine PRF differences. In the watershed: this is how full the reservoir is — how much water has made it past the dam and is available for use.`,
+    range: `0% means no coordination across difference. 100% means full realization of coordination potential. Healthy organizations with genuine diversity: 40–70%. The Challenger teleconference: very low.`,
+    verdict: (v) => v > 0.55 ? { text: 'Strong coordination realized', color: '#166534', intensity: 'HIGH — Diverse capability is reaching shared outcomes.' }
+                  : v > 0.30 ? { text: 'Partial coordination', color: '#92400e', intensity: 'MODERATE — Some coordination capacity is being realized.' }
+                             : { text: 'Coordination largely unrealized', color: '#dc2626', intensity: 'LOW — The available capability is not producing coordinated action.' },
+    challenger: `In the Challenger teleconference, OS2 Bridge was near zero. Engineers and managers were in the same room with the same data and reached opposite conclusions. The diverse perspectives did not produce better collective perception — they were suppressed into a false consensus that overrode the accurate engineering signal.`,
+    formula: 'OS2 Bridge = f(evidence architecture, worldview diversity, block field, suppression gap)',
+    learnMore: `Woolley et al. (Carnegie Mellon, 2010) found that collective intelligence is predicted by conversational turn-taking equality and social sensitivity, not by individual IQ. OS2 Bridge is the simulation measure of exactly this collective capacity.`
+  },
+  'Morphic Supp.': {
+    title: 'Morphic Suppression — When Effort Disappears',
+    what: `Morphic Suppression measures the degree to which agents contributions are being structurally routed around rather than toward decisions. An agent can make an observation, complete an analysis, submit a recommendation — and it simply disappears. Not rejected. Not challenged. Just not routed anywhere actionable.`,
+    range: `0% means contributions reach their intended destinations. Above 20% indicates significant structural routing failure. Above 50% means half of what agents contribute is being absorbed without effect. This drains motivation faster than rejection does.`,
+    verdict: (v) => v < 0.15 ? { text: 'Contributions reaching targets', color: '#166534', intensity: 'LOW — The architecture is routing effort toward outcomes.' }
+                  : v < 0.40 ? { text: 'Significant routing failure', color: '#92400e', intensity: 'MODERATE — Meaningful effort is disappearing into the structure.' }
+                             : { text: 'Severe contribution loss', color: '#dc2626', intensity: 'HIGH — Most effort is being absorbed without effect.' },
+    challenger: `Boisjoly July 1985 memo had high morphic suppression. It was received, filed, and a task force was formed — but none of this produced the architectural change he was requesting. His contribution was technically acknowledged and practically absorbed. This pattern repeated through every channel he used until the teleconference, where it became total.`,
+    formula: 'Morphic Suppression = f(authority gradient, evidence architecture, worldview filtering)',
+    learnMore: `Morphic suppression is distinct from the suppression gap: the gap measures what does not reach decisions; morphic suppression measures the specific mechanism by which contributions are routed around decision-makers once they arrive.`
+  },
+  'Friction': {
+    title: 'Friction — The Energy Cost of Coordination',
+    what: `Friction measures how much energy the coordination process itself consumes before any of it reaches actual problem-solving. High friction does not mean communication is not happening — it means every interaction requires more effort than it should. People with different PRFs may all be speaking honestly but spending enormous energy translating between frameworks.`,
+    range: `0% means coordination is effortless — shared frameworks allow direct communication. Above 30% indicates significant translation cost between PRFs. Above 60% means coordination is consuming so much energy that even when it succeeds, everyone is depleted.`,
+    verdict: (v) => v < 0.25 ? { text: 'Smooth coordination', color: '#166534', intensity: 'LOW — People are communicating efficiently.' }
+                  : v < 0.50 ? { text: 'Moderate friction', color: '#92400e', intensity: 'MODERATE — Coordination is effortful but functioning.' }
+                             : { text: 'High coordination drag', color: '#dc2626', intensity: 'HIGH — Enormous energy is consumed before any problem-solving begins.' },
+    challenger: `The Challenger teleconference had extreme friction: engineers were speaking engineering (material properties, probability, risk thresholds) and management was speaking organizational reality (contracts, schedules, NASA relationships). The translation cost was so high that every engineering point had to be re-explained — and was re-interpreted through the management lens as it arrived.`,
+    formula: 'Friction = f(PRF distance between agents, worldview distribution breadth, shared language availability)',
+    learnMore: `Friction and suppression require different interventions. Suppression is fixed by changing power dynamics. Friction is fixed by building shared language — protocols that let different frameworks communicate without requiring either to abandon its commitments.`
+  },
+};
+
+function showMetricExplain(metricName, value, run) {
+  const def = METRIC_EXPLAIN[metricName];
+  if (!def) return;
+
+  const pct = (value * 100).toFixed(1);
+  const verdict = def.verdict(value);
+  const hb = !['Supp. Gap','Morphic Supp.','Friction'].includes(metricName);
+  const barPct = Math.min(100, value * 100);
+  // Color the range bar: green zone, amber zone, red zone
+  const zones = hb
+    ? [{w:40,c:'#fee2e2'},{w:25,c:'#fef3c7'},{w:35,c:'#dcfce7'}]
+    : [{w:35,c:'#dcfce7'},{w:30,c:'#fef3c7'},{w:35,c:'#fee2e2'}];
+
+  const modal = document.createElement('div');
+  modal.className = 'metric-modal-backdrop';
+  modal.innerHTML = `
+    <div class="metric-modal" role="dialog" aria-modal="true" aria-label="${def.title}">
+      <div class="metric-modal-header">
+        <div>
+          <div class="metric-modal-name">Simulation Metric — ${run === 'B' ? 'Configuration B' : 'Configuration A'}</div>
+          <div class="metric-modal-title">${def.title}</div>
+        </div>
+        <button class="metric-modal-close" onclick="this.closest('.metric-modal-backdrop').remove()" aria-label="Close">×</button>
+      </div>
+      <div class="metric-modal-body">
+
+        <div class="metric-modal-value">
+          <div class="metric-modal-big" style="color:${verdict.color}">${pct}%</div>
+          <div>
+            <div class="metric-modal-verdict" style="color:${verdict.color}">${verdict.text}</div>
+            <div class="metric-modal-verdict-sub">${verdict.intensity}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1rem">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">Range indicator</div>
+          <div class="metric-range-bar">
+            ${zones.map((z,i) => `<div class="metric-range-fill" style="width:${z.w}%;left:${zones.slice(0,i).reduce((a,b)=>a+b.w,0)}%;background:${z.c}"></div>`).join('')}
+            <div class="metric-range-pin" style="left:${barPct.toFixed(1)}%"></div>
+          </div>
+          <div class="metric-range-labels">
+            <span>${hb ? '0% — no capacity' : '0% — no friction'}</span>
+            <span style="font-weight:600;color:${verdict.color}">${pct}% ← you are here</span>
+            <span>${hb ? '100% — full capacity' : '100% — maximum drag'}</span>
+          </div>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>What this measures</h4>
+          <p>${def.what}</p>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>Interpreting the range</h4>
+          <p>${def.range}</p>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>In the Challenger case</h4>
+          <div class="metric-modal-challenger">${def.challenger}</div>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>How it is calculated</h4>
+          <div class="metric-modal-formula">${def.formula}</div>
+          <p style="font-size:.8rem;color:var(--muted)">${def.learnMore}</p>
+        </div>
+
+      </div>
+    </div>`;
+
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  modal.addEventListener('keydown', e => { if (e.key === 'Escape') modal.remove(); });
+  document.body.appendChild(modal);
+  setTimeout(() => modal.querySelector('.metric-modal-close').focus(), 50);
+}
+
+// ── Delegated metric click handler ──────────────────────────
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.ucp-metric');
+  if (!card) return;
+  const label = card.querySelector('.ucp-metric-label,.m-label');
+  const val   = card.querySelector('.ucp-metric-value,.m-val');
+  if (!label || !val) return;
+  const name = label.textContent.trim();
+  let v = parseFloat(val.textContent);
+  if (v > 1) v = v / 100;
+  if (!isNaN(v)) showMetricExplain(name, v, typeof _run !== 'undefined' ? _run : 'run');
+});
+
+</script>
+</body>
+</html>
