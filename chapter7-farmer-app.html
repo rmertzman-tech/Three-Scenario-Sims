@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 7 Companion — Doyne Farmer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;--white:#ffffff;
+  --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+  --red:#dc2626;--red-light:#fee2e2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Cormorant Garamond","Georgia",serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:900px;margin:0 auto;padding:1rem 1rem 3rem}
+.app-header{text-align:center;padding:2rem 1rem 1.25rem;color:white}
+.ch-label{font-family:"JetBrains Mono",monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.7);margin-bottom:.4rem}
+.app-header h1{font-size:1.9rem;font-weight:700;color:white;margin-bottom:.3rem;line-height:1.2}
+.subtitle{font-size:.92rem;color:rgba(255,255,255,.5);font-style:italic}
+.progress-bar{height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:.8rem}
+.progress-fill{height:100%;background:var(--teal-mid);border-radius:2px;transition:width .4s ease}
+.tab-nav{display:flex;gap:.25rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:.45rem .8rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:"Cormorant Garamond",serif;font-size:.85rem;border-radius:.45rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab-btn:hover{color:rgba(255,255,255,.8);background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+.tab-btn.done::after{content:"\2713";margin-left:.3rem;font-size:.7rem;color:var(--teal-mid)}
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 28px rgba(0,0,0,.2);animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h2{font-size:1.5rem;font-weight:700;color:var(--teal-dark);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.1rem;font-weight:700;color:var(--navy);margin:1.1rem 0 .4rem}
+h4{font-size:.95rem;font-weight:700;color:var(--amber-dark);margin:.8rem 0 .3rem}
+p{line-height:1.75;margin-bottom:.8rem;font-size:.94rem;color:var(--ink)}
+strong{color:var(--navy)}
+ul,ol{margin:.3rem 0 .7rem 1.3rem;line-height:1.8}
+li{font-size:.9rem;color:var(--ink);margin-bottom:.2rem}
+.card{border-radius:.7rem;padding:1.1rem;margin-bottom:.9rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky-mid)}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-red{background:var(--red-light);border-left:4px solid var(--red)}
+.card-navy{background:var(--navy);color:white;padding:1.2rem}
+.card-navy p,.card-navy li{color:rgba(255,255,255,.82)}
+.card-navy h3,.card-navy h4{color:var(--teal-mid)}
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:.85rem 1rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.9rem}
+blockquote cite{display:block;margin-top:.35rem;font-style:normal;font-size:.76rem;font-weight:600;color:var(--muted)}
+.pred-retrieve{background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.2);border-radius:.6rem;padding:.9rem 1rem;margin-top:.6rem}
+.pr-label{font-family:"JetBrains Mono",monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.3rem}
+.pr-text{font-size:.87rem;font-style:italic;color:var(--ink);line-height:1.6;border-left:3px solid var(--amber);padding-left:.7rem}
+.pr-empty{font-size:.84rem;color:var(--muted);font-style:normal}
+.block-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem 0}
+@media(max-width:580px){.block-grid{grid-template-columns:1fr}}
+.block-col{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem}
+.block-col h4{margin-top:0;font-size:.88rem}
+.block-col textarea{width:100%;min-height:120px;border:1px solid var(--border);border-radius:.35rem;padding:.5rem .65rem;font-family:"Cormorant Garamond",serif;font-size:.88rem;resize:vertical;line-height:1.55;color:var(--ink)}
+.block-col textarea:focus{outline:none;border-color:var(--teal-mid)}
+.block-col-plus{border-top:3px solid var(--green-mid)}
+.block-col-minus{border-top:3px solid var(--red)}
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.q-label{font-family:"JetBrains Mono",monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.35rem}
+.journal-q p{font-size:.87rem;margin-bottom:.4rem}
+textarea.jta{width:100%;min-height:90px;border:1px solid var(--border);border-radius:.38rem;padding:.55rem;font-family:"Cormorant Garamond",serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.7rem;color:var(--green-mid);font-family:"JetBrains Mono",monospace;height:1.1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.nav-btn{padding:.5rem 1.1rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--muted);font-family:"Cormorant Garamond",serif;font-size:.9rem;cursor:pointer;transition:.15s}
+.nav-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
+.nav-btn.primary{background:var(--teal-dark);color:white;border-color:var(--teal-dark)}
+.nav-btn.primary:hover{background:var(--teal)}
+.cmp-table{width:100%;border-collapse:collapse;font-size:.83rem;margin:1rem 0}
+.cmp-table th{padding:.5rem .65rem;text-align:left;font-family:"JetBrains Mono",monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:white}
+.cmp-table td{padding:.45rem .65rem;border:1px solid var(--border);vertical-align:top;line-height:1.5}
+.cmp-table .row-label{font-weight:700;color:var(--navy);background:var(--paper)}
+.col-rep{background:var(--red-light)}
+.col-het{background:var(--green-light)}
+.stat-row{display:flex;gap:1rem;margin:1rem 0;flex-wrap:wrap}
+.stat-box{flex:1;min-width:120px;background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:.85rem;text-align:center}
+.stat-val{font-family:"JetBrains Mono",monospace;font-size:1.6rem;font-weight:700;color:var(--teal-dark);margin-bottom:.2rem}
+.stat-label{font-size:.76rem;color:var(--muted);line-height:1.4}
+.card-dark{background:var(--navy);color:white;border-radius:.7rem;padding:1.25rem;margin-top:1rem}
+.card-dark h3,.card-dark h4{color:var(--teal-mid);margin-top:.75rem}
+.card-dark p{color:rgba(255,255,255,.8);font-size:.88rem;margin-bottom:.4rem}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries &middot; Chapter 7 Companion</div>
+  <h1>The Invisible People</h1>
+  <div class="subtitle">Doyne Farmer &middot; Agent-Based Modeling &middot; Who Disappears When You Model the Average</div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:14%"></div></div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-hinge"   onclick="showTab('hinge',this)"   role="tab">&sect;1 From Palmer to Farmer</button>
+  <button class="tab-btn"        id="tb-repagent" onclick="showTab('repagent',this)" role="tab">&sect;2 The Rep. Agent Problem</button>
+  <button class="tab-btn"        id="tb-covid"    onclick="showTab('covid',this)"    role="tab">&sect;3 Farmer &amp; COVID</button>
+  <button class="tab-btn"        id="tb-blocks"   onclick="showTab('blocks',this)"   role="tab">&sect;4 The Social Block Field</button>
+  <button class="tab-btn"        id="tb-fieldmap" onclick="showTab('fieldmap',this)" role="tab">&sect;5 Your Field Map</button>
+  <button class="tab-btn"        id="tb-rawls"    onclick="showTab('rawls',this)"    role="tab">&sect;6 The Rawlsian Test</button>
+  <button class="tab-btn"        id="tb-journal"  onclick="showTab('journal',this)"  role="tab">&sect;7 Journal</button>
+</div>
+
+<!-- == S1 FROM PALMER TO FARMER == -->
+<div class="tab-pane" id="pane-hinge" style="display:block">
+  <h2>&sect;1 &mdash; From Palmer to Farmer: The Same Error at a Different Scale</h2>
+
+  <div class="pred-retrieve">
+    <div class="pr-label">Your Chapter 6 Q5 Prediction (retrieved)</div>
+    <div id="ch6PredDisplay" class="pr-empty">Loading&hellip;</div>
+  </div>
+
+  <p><strong>Chapter 6 established that presenting one forecast as the answer is a moral choice</strong> &mdash;
+  it suppresses the genuine uncertainty distribution that decision-makers need. Tim Palmer&rsquo;s ensemble method
+  corrected this by routing the full distribution toward decisions rather than collapsing it before it arrived.</p>
+
+  <p>Chapter 7 takes the logic one step further. Palmer asked: <em>what if the model is uncertain?</em>
+  Farmer asks: <em>what if the model is looking at the wrong thing entirely?</em> Specifically &mdash;
+  what if the model is looking at an average person who does not exist, instead of the actual
+  heterogeneous people who do?</p>
+
+  <div class="card card-amber">
+    <h4>The Structural Parallel</h4>
+    <p>Palmer&rsquo;s single-model forecast collapses a distribution of outcomes into one track and calls it the forecast.
+    Farmer&rsquo;s representative agent collapses a distribution of agents into one average and calls it the economy.
+    Both errors have the same shape: replacing a genuine distribution with a false singleton.
+    Both have the same consequence: the people in the tails of the distribution become invisible
+    to decisions that affect them.</p>
+  </div>
+
+  <h3>Three Chapters, One Argument</h3>
+  <ul>
+    <li><strong>Chapter 2 (Boisjoly):</strong> High capability can exist in an institution and still not reach decisions if the suppression gap is near-total. The capability was present. The architecture failed it.</li>
+    <li><strong>Chapter 6 (Palmer):</strong> Presenting one forecast as the answer suppresses the uncertainty distribution. The honest representation requires showing the distribution, not collapsing it to a point.</li>
+    <li><strong>Chapter 7 (Farmer):</strong> Modeling the average agent suppresses the heterogeneity distribution. The honest representation requires seeing each agent&rsquo;s actual state, not averaging them away.</li>
+  </ul>
+
+  <p>All three are the same error at different scales. All three have the same ethical consequence.</p>
+
+  <div class="nav-row">
+    <span></span>
+    <button class="nav-btn primary" onclick="showTab('repagent',document.getElementById('tb-repagent'))">Next: The Rep. Agent Problem &rarr;</button>
+  </div>
+</div>
+
+<!-- == S2 THE REP AGENT PROBLEM == -->
+<div class="tab-pane" id="pane-repagent">
+  <h2>&sect;2 &mdash; The Representative Agent: The Average Person Who Does Not Exist</h2>
+
+  <p>For most of the twentieth century, mainstream economics built its models on a single assumption so embedded
+  it was rarely stated: <strong>rational homogeneity.</strong> Economic agents &mdash; firms, households,
+  individuals &mdash; are interchangeable. They have the same information, the same decision-making processes,
+  the same capacity to optimize. When you run the model, you run it on one representative firm and one
+  representative household.</p>
+
+  <p>This assumption made the mathematics tractable. It also made the most important information structurally
+  invisible: how specific agents at specific structural positions with specific constraint profiles
+  actually behave under stress.</p>
+
+  <div class="card card-red">
+    <h4>What the Representative Agent Cannot See</h4>
+    <p>Imagine you are designing a public health policy. You model the Average Resident &mdash; average income,
+    average savings, average health, average family situation, average access to institutional support.
+    Your policy is designed for this person.</p>
+    <p style="margin-top:.4rem">The problem: the Average Resident does not exist. Not a single actual person
+    has exactly average values simultaneously across all dimensions. The policy designed for the average
+    will work for people near average and systematically fail people who are furthest from it &mdash;
+    who are typically the most vulnerable.</p>
+  </div>
+
+  <h3>This Is Not a Technical Limitation</h3>
+  <p>The representative agent assumption was not adopted because economists believed it was accurate.
+  It was adopted because it made the equations solvable. The choice to model the average was a choice about
+  what kind of information the model would be capable of receiving. A model built around the average
+  <em>cannot</em> receive the signal that non-average agents generate. Their specific constraints,
+  their network positions, their resilience margins &mdash; all of it is averaged away before
+  the model runs.</p>
+
+  <blockquote>
+    &ldquo;The workhorse models of macroeconomics can&rsquo;t easily absorb the well-known insights
+    of behavioural economics. But numerical approximation allows us to model economic actors more
+    realistically than a single rational Homo economicus representative agent.
+    Systems of heterogeneous competing agents are intrinsically chaotic.&rdquo;
+    <cite>&mdash; J. Doyne Farmer, Making Sense of Chaos (2024)</cite>
+  </blockquote>
+
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th style="background:var(--navy);width:30%">Dimension</th>
+        <th style="background:var(--red);width:35%">Representative Agent</th>
+        <th style="background:var(--green);width:35%">Heterogeneous Agents</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row-label">What the model sees</td>
+        <td class="col-rep">One idealized average actor behaving rationally</td>
+        <td class="col-het">Each actual agent with specific constraints, history, network position</td>
+      </tr>
+      <tr>
+        <td class="row-label">What it predicts well</td>
+        <td class="col-rep">Outcomes for people near the average, in stable conditions</td>
+        <td class="col-het">Outcomes across the full distribution, especially under stress</td>
+      </tr>
+      <tr>
+        <td class="row-label">Who becomes invisible</td>
+        <td class="col-rep">Everyone far from the average &mdash; especially the most vulnerable</td>
+        <td class="col-het">No one is systematically invisible to the model</td>
+      </tr>
+      <tr>
+        <td class="row-label">Prediction under crisis</td>
+        <td class="col-rep">Systematically wrong: misses cascade failures, underestimates distributional harm</td>
+        <td class="col-het">Captures cascade failures because it can see the thin-buffer agents at critical nodes</td>
+      </tr>
+      <tr>
+        <td class="row-label">Ethical status</td>
+        <td class="col-rep">A structural commitment to the invisibility of everyone who falls outside the average</td>
+        <td class="col-het">A structural commitment to seeing actual people in actual situations</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('hinge',document.getElementById('tb-hinge'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('covid',document.getElementById('tb-covid'))">Next: Farmer &amp; COVID &rarr;</button>
+  </div>
+</div>
+
+<!-- == S3 FARMER AND COVID == -->
+<div class="tab-pane" id="pane-covid">
+  <h2>&sect;3 &mdash; Farmer and COVID: When Heterogeneity Saved Lives</h2>
+
+  <div class="stat-row">
+    <div class="stat-box">
+      <div class="stat-val">21.5%</div>
+      <div class="stat-label">Farmer&rsquo;s predicted UK GDP contraction, Q2 2020</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" style="color:var(--green-mid)">22.1%</div>
+      <div class="stat-label">Actual UK GDP contraction, Q2 2020</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val" style="color:var(--red)">?</div>
+      <div class="stat-label">Standard representative agent model prediction: could not answer</div>
+    </div>
+  </div>
+
+  <p>In March 2020, with COVID-19 spreading rapidly and governments scrambling to understand what lockdowns
+  would do to their economies, Farmer&rsquo;s Oxford team built a model that differed from the representative
+  agent framework in one crucial way: instead of one average firm, they modeled a representative firm in
+  every sector of the economy &mdash; each with its actual constraints.</p>
+
+  <div class="card card-sky">
+    <h4>The Three-Factor Rule</h4>
+    <p>A firm that does not have the <strong>workers</strong> it needs cannot produce.
+    A firm that does not have the <strong>inputs</strong> it needs cannot produce.
+    A firm that does not have <strong>demand</strong> for its product cannot produce.
+    Output falls in proportion to whichever factor is limiting.</p>
+    <p style="margin-top:.4rem">This rule sounds simple. It was actually a radical departure from
+    equilibrium economics. Standard models assumed firms would rationally substitute and adjust
+    to find an optimum. Farmer&rsquo;s model assumed firms face real structural limiting factors
+    that cannot be wished away by rational optimization. A restaurant that cannot seat customers
+    cannot substitute remote revenue. The constraint is real.</p>
+  </div>
+
+  <h3>The Data That Made It Possible</h3>
+  <p>To build the prediction, Farmer&rsquo;s team needed something standard models did not use:
+  <strong>actual heterogeneous data about actual agents.</strong> They used Bureau of Labor Statistics
+  occupational tables showing how physically close together workers in each occupation typically work.
+  If a job required workers closer than two meters, the model assumed lockdown made it impossible.
+  Not a guess about human behavior &mdash; a structural observation about specific jobs in specific sectors.</p>
+
+  <p>They then tracked how each sector&rsquo;s output failure cascaded into input failures for every sector
+  that depended on it. The cascade proceeded through the actual network of economic dependencies,
+  not through the theoretical adjustments of a rational representative agent.</p>
+
+  <div class="card card-teal">
+    <h4>The Macrocosm Vision</h4>
+    <p>Farmer&rsquo;s current project, Macrocosm, aims to do for economic planning what Google Maps did
+    for traffic planning &mdash; providing anyone with an economic question an intelligent, data-grounded answer.
+    The key insight: Google Maps works because it tracks actual vehicles at actual locations.
+    A traffic model using the Average Vehicle at the Average Location would be systematically wrong
+    the moment actual traffic diverged from the average &mdash; which is always.</p>
+  </div>
+
+  <h3>From Firms to People</h3>
+  <p>What Farmer discovered about firms applies with equal force to people inside institutions.
+  Every firm in his model needed labor access, input access, and demand to maintain constructive capacity.
+  Remove any one and output fell to zero for that agent at that moment &mdash; not to a new equilibrium,
+  but to zero.</p>
+
+  <p>Every person inside an institution has analogous constructor requirements. They need
+  <strong>cognitive access</strong> (stress below the Sapolsky threshold),
+  <strong>information access</strong> (accurate evidence reaching them),
+  and <strong>contribution routing</strong> (their observations reaching decisions).
+  Remove any one and their ethical functioning degrades &mdash; not because they changed,
+  but because the architecture changed. This is the simulation you have been running since Chapter 2.</p>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('repagent',document.getElementById('tb-repagent'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('blocks',document.getElementById('tb-blocks'))">Next: The Social Block Field &rarr;</button>
+  </div>
+</div>
+
+<!-- == S4 THE SOCIAL BLOCK FIELD == -->
+<div class="tab-pane" id="pane-blocks">
+  <h2>&sect;4 &mdash; The Social Block Field: What Farmer Would Need to Know About You</h2>
+
+  <p>When you run the simulation, you set parameters called block fields. You specify whether the community block
+  is positive or negative, whether the fairness block is above threshold, what the BioBond value is.
+  In this section, we make those parameters visible as features of actual social environments &mdash;
+  not simulation abstractions.</p>
+
+  <p><strong>A social block is any stable feature of a person&rsquo;s relational and institutional environment
+  that consistently routes their experience in a particular direction.</strong> A positive block supports
+  constructor capacity: it routes accurate information toward the person, routes their contributions toward
+  decisions, and provides the relational conditions that maintain their functioning under stress.
+  A negative block drains constructor capacity.</p>
+
+  <div class="card card-amber">
+    <h4>Blocks Are Not Events</h4>
+    <p>A single bad day is an event. A manager who consistently dismisses your observations, an institution
+    that systematically routes decisions around the people closest to the problem, a work environment where
+    chronic understaffing means everyone operates above the Sapolsky threshold continuously
+    &mdash; these are blocks. They shape every interaction within them, not just the dramatic ones.</p>
+  </div>
+
+  <h3>The Five Block Dimensions</h3>
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th style="background:var(--navy);width:22%">Block</th>
+        <th style="background:var(--navy);width:30%">What it measures</th>
+        <th style="background:var(--green);width:24%">Positive state</th>
+        <th style="background:var(--red);width:24%">Negative state</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="row-label">Community Block</td>
+        <td>Does the agent have access to relationships that maintain their functioning?</td>
+        <td class="col-het" style="font-size:.79rem">BioBond structures present; relational support available</td>
+        <td class="col-rep" style="font-size:.79rem">Relational isolation; BioBond structures absent or unstable</td>
+      </tr>
+      <tr>
+        <td class="row-label">Fairness Block</td>
+        <td>Are decisions made through processes the agent can observe and trust?</td>
+        <td class="col-het" style="font-size:.79rem">Evidence reaches decisions; contributions acknowledged</td>
+        <td class="col-rep" style="font-size:.79rem">Decisions through opaque channels; evidence filtered</td>
+      </tr>
+      <tr>
+        <td class="row-label">Authority Block</td>
+        <td>Does authority route toward or away from competence?</td>
+        <td class="col-het" style="font-size:.79rem">Authority calibrated to demonstrated capability</td>
+        <td class="col-rep" style="font-size:.79rem">Authority by position; competent observations discounted</td>
+      </tr>
+      <tr>
+        <td class="row-label">Worldview Diversity</td>
+        <td>Does the agent&rsquo;s PRF encounter genuine difference?</td>
+        <td class="col-het" style="font-size:.79rem">Multiple frameworks present; PRF calibrated by difference</td>
+        <td class="col-rep" style="font-size:.79rem">Echo chamber dynamics; PRF never tested against reality</td>
+      </tr>
+      <tr>
+        <td class="row-label">Stress / Entropy</td>
+        <td>Does the environment keep agents below the Sapolsky threshold?</td>
+        <td class="col-het" style="font-size:.79rem">Predictability sufficient; MANUAL mode accessible</td>
+        <td class="col-rep" style="font-size:.79rem">Chronic uncertainty; deliberative capacity structurally degraded</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>The Granular Data Requirement</h3>
+  <p>This is what Farmer meant when he argued that complexity economics requires
+  <em>highly granular data that accurately captures heterogeneity.</em>
+  The granular data the simulation requires is not demographic. It is structural.
+  It is the actual configuration of the block field in which each agent is embedded.</p>
+
+  <p>Farmer&rsquo;s COVID model needed to know each sector&rsquo;s specific constraints.
+  The simulation needs to know each agent&rsquo;s specific block field configuration.
+  The ethical obligation that follows: an institution that wants to make good decisions about its people
+  needs to know their actual block field states &mdash; not the average.</p>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('covid',document.getElementById('tb-covid'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('fieldmap',document.getElementById('tb-fieldmap'))">Next: Your Field Map &rarr;</button>
+  </div>
+</div>
+
+<!-- == S5 YOUR FIELD MAP == -->
+<div class="tab-pane" id="pane-fieldmap">
+  <h2>&sect;5 &mdash; Your Field Map: The Data Farmer Would Need About You</h2>
+
+  <p>This is not a feelings exercise. It is the data collection exercise that Farmer would run on you
+  to model your trajectory accurately. If Farmer&rsquo;s team were building a model that predicted
+  your institutional outcomes over the next year, this is what they would need to measure.</p>
+
+  <div class="card card-teal">
+    <h4>The Exercise</h4>
+    <p>List three to five specific relational or institutional structures that consistently
+    <strong>support</strong> your constructor capacity &mdash; that route accurate information toward you,
+    route your contributions toward outcomes, or maintain your functioning under stress.</p>
+    <p style="margin-top:.4rem">Then list three to five that consistently <strong>drain</strong> it.
+    Be specific: not &ldquo;my job is stressful&rdquo; but &ldquo;my supervisor&rsquo;s communication style
+    consistently creates ambiguity that requires me to redo completed work.&rdquo;
+    Not &ldquo;I have good friends&rdquo; but &ldquo;I have one person who consistently tells me true things
+    I do not want to hear and I trust them.&rdquo;</p>
+  </div>
+
+  <div class="block-grid">
+    <div class="block-col block-col-plus">
+      <h4 style="color:var(--green-mid)">+ Supporting structures</h4>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">What routes capability toward outcomes?</p>
+      <textarea id="field-plus" placeholder="1. ...&#10;2. ...&#10;3. ..." oninput="saveLocal('field_plus',this.value)"></textarea>
+    </div>
+    <div class="block-col block-col-minus">
+      <h4 style="color:var(--red)">- Draining structures</h4>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.4rem">What routes capability away?</p>
+      <textarea id="field-minus" placeholder="1. ...&#10;2. ...&#10;3. ..." oninput="saveLocal('field_minus',this.value)"></textarea>
+    </div>
+  </div>
+  <div class="save-note" id="sn-fieldmap" style="margin-bottom:.75rem">&#10003; Saved</div>
+
+  <div class="card card-sky">
+    <h4>Now Ask: Which Run Does Your Block Field Most Resemble?</h4>
+    <ul>
+      <li><strong>Run 1 (Representative Agent):</strong> Authority-weighted evidence, homogeneous worldview, negative community and fairness blocks. Your contributions reach a hierarchy that averages them against a dominant framework before routing them anywhere.</li>
+      <li><strong>Run 2 (Heterogeneous):</strong> Empirical-calibrated evidence, diverse worldviews, positive block fields. Your actual observations reach decisions directly. Different perspectives triangulate.</li>
+      <li><strong>Run 3 (Rawlsian Test):</strong> Good architecture (like Run 2) but high entropy and stress &mdash; the same design produces different outcomes for agents with depleted resilience margins.</li>
+    </ul>
+  </div>
+
+  <div class="journal-q" style="margin-top:.75rem">
+    <div class="q-label">Reflection &mdash; Your Field Map and the Simulation</div>
+    <p>Which run most closely approximates your current institutional conditions?
+    What specific parameter in your actual environment maps to the largest suppression gap you experience?
+    What would need to change specifically to move toward Run 2?</p>
+    <textarea class="jta" id="jt-fieldmap-reflect" placeholder="My block field most closely resembles Run ___ because:...&#10;The specific structural feature producing my largest suppression gap:...&#10;What would need to change specifically:..." oninput="jSave('fieldmap_reflect',this.value)"></textarea>
+    <div class="save-note" id="sn-fieldmap_reflect">&#10003; Saved</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('blocks',document.getElementById('tb-blocks'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('rawls',document.getElementById('tb-rawls'))">Next: The Rawlsian Test &rarr;</button>
+  </div>
+</div>
+
+<!-- == S6 THE RAWLSIAN TEST == -->
+<div class="tab-pane" id="pane-rawls">
+  <h2>&sect;6 &mdash; The Rawlsian Test: Does Good Architecture Help Everyone?</h2>
+
+  <p>Run 3 of the Farmer simulation applied what John Rawls called the <em>difference principle</em>
+  directly: institutional arrangements are just only if they benefit the least advantaged members.
+  The simulation asks this question computationally &mdash;
+  <strong>does the well-designed heterogeneous architecture from Run 2 produce good outcomes for
+  the most structurally constrained agents?</strong></p>
+
+  <h3>What the Simulation Shows</h3>
+  <div class="card card-amber">
+    <h4>The Capability Gap</h4>
+    <p>Run 3 uses the same good architecture as Run 2 &mdash; same diverse worldviews, same positive block fields,
+    same empirical-calibrated evidence routing. The difference: base_entropy 0.72 and stress 0.64,
+    modeling agents whose resilience margin has already been depleted.</p>
+    <p style="margin-top:.4rem">The simulation&rsquo;s finding: the heterogeneous architecture does better
+    for these agents than the representative architecture would. But it does not close the gap.
+    A positive community block field does less for an agent already in cascade failure than for one
+    with resources to engage with that support. Good architecture moves the floor.
+    It does not eliminate the capability gap without structural investment in the agents themselves.</p>
+  </div>
+
+  <h3>Farmer&rsquo;s COVID Parallel</h3>
+  <p>In Farmer&rsquo;s COVID model, thin-buffer firms at critical network nodes failed even when the
+  broader economy recovered &mdash; because their cash reserves were already depleted when the shock arrived.
+  The cascade failure was structural: one additional disruption beyond what the resilience margin could absorb
+  triggered full collapse, not a new equilibrium.</p>
+
+  <p>The human equivalent: a person who has been operating in a high-entropy environment for months,
+  whose BioBond structures are thin, who has been above the Sapolsky threshold continuously &mdash;
+  is not a less capable person. They are a person whose resilience margin has been depleted
+  by the institutional environment they have been operating in.
+  One additional shock cascades what might have been recoverable into full system failure.</p>
+
+  <div class="card card-navy">
+    <h4>The Complete Ethical Obligation</h4>
+    <p><strong>What Rawls adds to Farmer:</strong> it is not enough to build a heterogeneous architecture
+    that can see all agents accurately. Justice requires that the architecture produce the best possible outcomes
+    for the agents who are furthest from the average &mdash; the ones with the thinnest resilience margins,
+    the most depleted BioBond structures, the highest chronic stress. This means not just removing negative blocks
+    but actively investing in the structural conditions that would allow the most constrained agents
+    to access what the architecture makes available.</p>
+    <p style="margin-top:.4rem"><strong>What Farmer adds to Rawls:</strong> you cannot target this investment
+    if you cannot see the distribution. The representative agent model makes the least advantaged invisible
+    by averaging them away. A Rawlsian institution must first build the Farmer architecture &mdash;
+    the capacity to see actual heterogeneous agents &mdash; before it can design interventions
+    that maximize the minimum.</p>
+  </div>
+
+  <h3>The Cooperative Information Requirement</h3>
+  <p>Farmer&rsquo;s Macrocosm project needs actual firm data to work. The same is true inside institutions:
+  the block field data that would reveal an organization&rsquo;s suppression gap &mdash; which agents
+  are below threshold, which network nodes are in cascade risk &mdash; currently exists in fragments,
+  distributed across the people who experience it. It is not shared because institutions that need it most
+  have often built architectures that make sharing dangerous.</p>
+
+  <p><strong>This is the deepest structural obligation:</strong> not merely to communicate honestly,
+  but to build architectures that make honesty safe and actionable &mdash; that route honest information
+  about actual agent states toward decisions, rather than filtering it through authority-weighted channels
+  that transform signal into noise.</p>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('fieldmap',document.getElementById('tb-fieldmap'))">← Back</button>
+    <button class="nav-btn primary" onclick="showTab('journal',document.getElementById('tb-journal'))">Next: Journal &rarr;</button>
+  </div>
+</div>
+
+<!-- == S7 JOURNAL == -->
+<div class="tab-pane" id="pane-journal">
+  <h2>&sect;7 &mdash; Chapter Reflection Questions</h2>
+  <p>Complete these questions before opening Chapter 8. Responses are saved automatically in your browser.</p>
+
+  <div class="journal-q">
+    <div class="q-label">Q1 &mdash; Your Chapter 6 Prediction Assessment</div>
+    <p>Compare your Chapter 6 Q5 prediction (shown at the top of &sect;1) to what this chapter actually argued.
+    What was accurate? Where was the gap? Which structural concept most clearly captures what
+    the representative agent error actually suppresses?</p>
+    <textarea class="jta" id="jt-q1" placeholder="My prediction was accurate about:...&#10;The gap between my prediction and the actual argument:...&#10;The structural concept I was missing:..." oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q2 &mdash; Palmer and Farmer Together</div>
+    <p>Both Palmer and Farmer correct the same structural error: collapsing a distribution into a single value
+    and calling it the truth. Explain the structural parallel precisely:
+    what is being collapsed in each case, what is suppressed by the collapse,
+    and what the &ldquo;ensemble version&rdquo; of each model actually requires.</p>
+    <textarea class="jta" id="jt-q2" placeholder="Palmer collapses: ...&#10;Farmer collapses: ...&#10;What is suppressed in each case: ...&#10;What the ensemble version requires: ..." oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q3 &mdash; The Representative Agent in an Institution You Know</div>
+    <p>Identify a real institution you inhabit. Where is the representative agent assumption embedded
+    in its design &mdash; who is the &ldquo;average person&rdquo; it was built for?
+    Who becomes structurally invisible when the institution models this average?
+    What would a Farmer-style agent-based view of that institution actually need to know
+    about each person to make accurate predictions about outcomes?</p>
+    <textarea class="jta" id="jt-q3" placeholder="Institution:...&#10;The average person it was designed for:...&#10;Who becomes invisible:...&#10;What Farmer would need to know:..." oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Q4 &mdash; The Rawlsian Test in Practice</div>
+    <p>Run 3 showed that good architecture (heterogeneous, diverse, positive blocks) narrows the capability gap
+    for the most constrained agents but does not close it. Identify a specific population in your community
+    who would experience this pattern &mdash; who would benefit from better architecture
+    but cannot fully access what it provides because their resilience margin is already depleted.
+    What is the structural investment that would address this, and what is the smallest concrete first step?</p>
+    <textarea class="jta" id="jt-q4" placeholder="The population:...&#10;What better architecture provides:...&#10;Why they cannot fully access it:...&#10;The structural investment needed:...&#10;The smallest concrete first step:..." oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.04)">
+    <div class="q-label" style="color:var(--amber-dark)">Q5 &mdash; Prediction for Chapter 8 (stored for retrieval)</div>
+    <p>Chapter 8 will present the Simulated History of Ethics &mdash; showing how the major ethical theories
+    each made a specific discovery about one or more variables in the simulation you have been running.
+    Before you encounter that chapter, predict:</p>
+    <ul style="font-size:.87rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
+      <li><strong>The theory that maps to Run 1 (representative agent):</strong> which ethical tradition most clearly captures what is wrong with the representative agent architecture?</li>
+      <li><strong>The theory that maps to Run 2 (heterogeneous):</strong> which tradition most clearly captures what the heterogeneous architecture achieves?</li>
+      <li><strong>The theory that maps to Run 3 (Rawlsian test):</strong> which tradition identifies the limit of architectural design alone?</li>
+      <li><strong>The theory whose blind spot the Farmer simulation most directly exposes:</strong> which major tradition fails to see the representative agent problem?</li>
+    </ul>
+    <textarea class="jta q5" id="jt-q5" placeholder="The theory that maps to Run 1:...&#10;Why:...&#10;&#10;The theory that maps to Run 2:...&#10;Why:...&#10;&#10;The theory that maps to Run 3 / Rawlsian test:...&#10;Why:...&#10;&#10;The theory whose blind spot Farmer exposes:...&#10;How:..." oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-q5">&#10003; Saved for Chapter 8</div>
+  </div>
+
+  <div class="card-dark">
+    <h3>Looking Ahead: Chapter 8 &mdash; The Simulated History of Ethics</h3>
+    <p>You have now run eight simulations across six cases. Every run was a test of something a philosopher
+    discovered centuries ago &mdash; and often also a test of what they failed to see.</p>
+    <p>Aristotle discovered that character is infrastructure: virtuous practice requires institutional conditions
+    that support it. The simulation measures exactly what he was measuring, with a name for the mechanism
+    he lacked: block fields and BioBond are the computational version of Aristotle&rsquo;s habituation conditions.</p>
+    <p>Kant discovered that rational agency presupposes intact deliberative capacity.
+    The Sapolsky threshold is the simulation&rsquo;s measurement of exactly what Kant assumed was always present.</p>
+    <p>Rawls discovered that justice requires maximizing the minimum &mdash; Run 3 is the Rawlsian test
+    made computational. Chapter 8 will show you all eight stations of this history,
+    and where the simulation connects to each.</p>
+  </div>
+
+  <div class="nav-row">
+    <button class="nav-btn" onclick="showTab('rawls',document.getElementById('tb-rawls'))">← Back</button>
+    <a href="https://rmertzman-tech.github.io/Three-Scenario-Sims/farmer-case-explorer.html"
+       target="_blank" style="text-decoration:none">
+      <button class="nav-btn primary">Open Farmer Case Explorer &rarr;</button>
+    </a>
+  </div>
+</div>
+
+</div><!-- /app-wrap -->
+<script>
+'use strict';
+const JP='ch7_';
+const TABS=['hinge','repagent','covid','blocks','fieldmap','rawls','journal'];
+const completedTabs=new Set();
+
+function showTab(name,btn){
+  TABS.forEach(t=>{const p=document.getElementById('pane-'+t);if(p)p.style.display='none';});
+  document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-selected','false');});
+  const pane=document.getElementById('pane-'+name);
+  if(pane){pane.style.display='block';pane.scrollIntoView({behavior:'smooth',block:'start'});}
+  if(btn){btn.classList.add('active');btn.setAttribute('aria-selected','true');}
+  completedTabs.add(name);
+  updateProgress();
+  if(name==='journal') loadJournal();
+}
+
+function updateProgress(){
+  const pct=Math.round((completedTabs.size/TABS.length)*100);
+  const fill=document.getElementById('progressFill');
+  if(fill)fill.style.width=pct+'%';
+  TABS.forEach(t=>{if(completedTabs.has(t)){const b=document.getElementById('tb-'+t);if(b&&!b.classList.contains('done'))b.classList.add('done');}});
+}
+
+function jSave(k,v){
+  const key=k==='cq5'?'ch7_cq5':JP+k;
+  try{localStorage.setItem(key,v);
+    const snId=k==='cq5'?'sn-q5':'sn-'+k;
+    const sn=document.getElementById(snId);
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+  }catch(e){}
+}
+
+function saveLocal(k,v){
+  try{localStorage.setItem(JP+k,v);
+    const sn=document.getElementById('sn-'+k.replace('_','_'));
+    if(sn){sn.classList.add('show');setTimeout(()=>sn.classList.remove('show'),2000);}
+    // save fieldmap saves to both
+    if(k==='field_plus'||k==='field_minus'){
+      const sn2=document.getElementById('sn-fieldmap');
+      if(sn2){sn2.classList.add('show');setTimeout(()=>sn2.classList.remove('show'),2000);}
+    }
+  }catch(e){}
+}
+
+function loadJournal(){
+  ['q1','q2','q3','q4'].forEach(k=>{
+    const el=document.getElementById('jt-'+k);
+    if(el)el.value=(()=>{try{return localStorage.getItem(JP+k)||'';}catch(e){return'';}})();
+  });
+  const q5=document.getElementById('jt-q5');
+  if(q5)q5.value=(()=>{try{return localStorage.getItem('ch7_cq5')||'';}catch(e){return'';}})();
+  const fr=document.getElementById('jt-fieldmap-reflect');
+  if(fr)fr.value=(()=>{try{return localStorage.getItem(JP+'fieldmap_reflect')||'';}catch(e){return'';}})();
+}
+
+// Load Ch6 Q5 prediction
+(function loadCh6Pred(){
+  try{
+    const pred=localStorage.getItem('ch6_cq5')||localStorage.getItem('ch6_ch6_cq5')||localStorage.getItem('orient_cq5')||'';
+    const el=document.getElementById('ch6PredDisplay');
+    if(!el)return;
+    if(pred.trim()){
+      el.className='pr-text';
+      el.textContent=pred;
+    } else {
+      el.textContent='No Chapter 6 Q5 prediction found. Complete Chapter 6\u2019s journal Q5 first.';
+    }
+  }catch(e){}
+})();
+
+// Restore field map
+(function restoreFieldMap(){
+  const fp=document.getElementById('field-plus');
+  const fm=document.getElementById('field-minus');
+  try{if(fp)fp.value=localStorage.getItem(JP+'field_plus')||'';}catch(e){}
+  try{if(fm)fm.value=localStorage.getItem(JP+'field_minus')||'';}catch(e){}
+})();
+
+completedTabs.add('hinge');
+updateProgress();
+</script>
+</body>
+</html>
