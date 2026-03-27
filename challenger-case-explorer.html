@@ -2343,6 +2343,15 @@ async function runUCPSim(withBioBond) {
     num_agents:               16,
     steps:                    8,
     seed,
+    scenario_physics: withBioBond ? {
+      base_entropy:  0.52,
+      base_stress:   0.58,
+      block_fields: { care: 0.35, fairness: 0.30, community: 0.25, boundary: 0.20 }
+    } : {
+      base_entropy:  0.52,
+      base_stress:   0.58,
+      block_fields: { care: -0.40, fairness: -0.55, community: -0.45, boundary: 0.30 }
+    },
     worldview_distribution:   wvDist,
     evidence_distribution:    evDist,
     activate_biobond_at:      withBioBond ? 4 : null,
