@@ -979,6 +979,13 @@ const PRF = {
   getFrameworkName() { return this._framework ? this.FW_META[this._framework]?.name || '' : ''; },
   getFrameworkIcon() { return this._framework ? this.FW_META[this._framework]?.icon || '' : ''; },
   getFrameworkColor(){ return this._framework ? this.FW_META[this._framework]?.color || '#888' : '#888'; },
+  fw()     { return this._framework || 'individual_rights'; },
+  fwName() { return this.getFrameworkName(); },
+  fwIcon() { return this.getFrameworkIcon(); },
+  fwColor(){ return this.getFrameworkColor(); },
+  tier()   { return this._atcfTier || 'medium'; },
+  getCPFC(){ return this._cpfc; },
+  getATCFTier(){ return this._atcfTier || 'medium'; },
   getATCFTier() { return this._atcfTier; },
   getCPFC()     { return this._cpfc; },
 
