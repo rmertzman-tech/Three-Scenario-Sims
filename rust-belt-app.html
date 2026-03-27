@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rust Belt — Nine Ethical Lenses</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;
+  --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+  --red:#dc2626;--red-light:#fee2e2;
+  --rust:#9a3412;--rust-light:#ffedd5;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:960px;margin:0 auto;padding:1rem}
+.app-header{text-align:center;padding:2rem 1rem 1.25rem;color:white}
+.ch-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.7);margin-bottom:.4rem}
+.app-header h1{font-size:2rem;font-weight:700;color:white;margin-bottom:.35rem;line-height:1.2}
+.app-header .sub{font-size:.95rem;color:rgba(255,255,255,.5);font-style:italic}
+.tab-nav{display:flex;gap:.25rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:.4rem .75rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.4rem;cursor:pointer;transition:.18s;white-space:nowrap}
+.tab-btn:hover{color:white;background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 28px rgba(0,0,0,.2)}
+.tab-pane.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h2{font-size:1.55rem;font-weight:700;color:var(--teal-dark);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.15rem;font-weight:700;color:var(--navy);margin:1.2rem 0 .45rem}
+h4{font-size:.97rem;font-weight:700;color:var(--amber-dark);margin:.85rem 0 .3rem}
+p{line-height:1.75;margin-bottom:.85rem;font-size:.96rem;color:var(--ink)}
+strong{color:var(--navy)}
+ul{margin:.3rem 0 .7rem 1.3rem;line-height:1.8}
+ul li{font-size:.92rem;color:var(--ink);margin-bottom:.2rem}
+.card{border-radius:.7rem;padding:1.2rem;margin-bottom:1rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-navy{background:var(--navy);color:white;padding:1.35rem}
+.card-navy p,.card-navy li{color:rgba(255,255,255,.8)}
+.card-navy h3,.card-navy h4{color:var(--teal-mid)}
+.card-sky{background:var(--sky-light);border-left:4px solid var(--sky-mid)}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-red{background:var(--red-light);border-left:4px solid var(--red)}
+.card-rust{background:var(--rust-light);border-left:4px solid var(--rust)}
+blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:.9rem 1.1rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.92rem}
+blockquote cite{display:block;margin-top:.35rem;font-style:normal;font-size:.78rem;font-weight:600;color:var(--muted)}
+.lens-nav{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:2px solid var(--border)}
+.lens-btn{padding:.38rem .72rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.82rem;cursor:pointer;transition:.15s}
+.lens-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
+.lens-btn.active-lens{background:var(--teal-dark);color:white;border-color:var(--teal-dark);font-weight:600}
+.lens-content{animation:fadeIn .18s ease}
+.discovery-box{background:var(--teal-light);border-left:4px solid var(--teal-mid);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem}
+.discovery-box h4{color:var(--teal-dark);margin-top:0}
+.blindspot-box{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem}
+.blindspot-box h4{color:var(--amber-dark);margin-top:0}
+.metric-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.68rem;background:var(--navy);color:var(--teal-mid);padding:.2rem .55rem;border-radius:.25rem;margin:.15rem .15rem 0 0}
+.snapshot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.85rem 0}
+@media(max-width:600px){.snapshot-grid{grid-template-columns:1fr}}
+.snap-col{border-radius:.5rem;overflow:hidden;border:1px solid var(--border)}
+.snap-head{padding:.45rem .75rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.snap-head.pre{background:var(--green-light);color:var(--green)}
+.snap-head.col{background:var(--red-light);color:var(--red)}
+.snap-head.cur{background:var(--sky-light);color:var(--sky)}
+.snap-body{padding:.6rem .75rem;background:white}
+.snap-row{display:flex;justify-content:space-between;padding:.15rem 0;border-bottom:1px solid var(--border);font-size:.78rem}
+.snap-row:last-child{border-bottom:none}
+.sr-k{font-family:'JetBrains Mono',monospace;color:var(--muted);font-size:.68rem}
+.sr-v{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.8rem}
+.sr-v.good{color:var(--green)}
+.sr-v.bad{color:var(--red)}
+.sr-v.mid{color:var(--amber-dark)}
+.sim-run-btns{display:flex;gap:.6rem;flex-wrap:wrap;margin:.85rem 0}
+.sim-run-btn{color:white;border:none;padding:.6rem 1.1rem;border-radius:.45rem;font-size:.88rem;font-weight:600;cursor:pointer;transition:.15s;font-family:'Cormorant Garamond',serif;display:inline-flex;align-items:center;gap:.4rem}
+.sim-run-btn:disabled{opacity:.55;cursor:not-allowed}
+.sim-run-btn.pre-btn{background:var(--green)}
+.sim-run-btn.col-btn{background:var(--red)}
+.sim-run-btn.cur-btn{background:var(--sky)}
+.ucp-spinner{display:none;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sim-result-panel{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:.75rem;display:none}
+.srp-head{font-family:'JetBrains Mono',monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.55rem}
+.srp-head.pre{color:var(--green)}
+.srp-head.col{color:var(--red)}
+.srp-head.cur{color:var(--sky)}
+.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.4rem;margin:.6rem 0}
+.ucp-metric{background:white;border:1px solid var(--border);border-radius:.4rem;padding:.45rem .6rem;text-align:center}
+.ucp-metric .m-label{font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.1rem}
+.ucp-metric .m-val{font-size:1.1rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.ucp-bars{margin:.5rem 0}
+.ucp-bar-row{display:flex;align-items:center;gap:.4rem;margin-bottom:.28rem}
+.ucp-bar-label{font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:125px}
+.ucp-bar-track{flex:1;height:11px;background:var(--border);border-radius:3px;overflow:hidden}
+.ucp-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.ucp-bar-pct{font-size:.67rem;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:3rem;text-align:right}
+.ucp-narrative{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.6rem .85rem;border-radius:0 .4rem .4rem 0;font-size:.81rem;color:var(--ink);line-height:1.65;margin-top:.5rem}
+.ucp-error{background:var(--red-light);border:1px solid var(--red);border-radius:.4rem;padding:.55rem;font-size:.8rem;color:var(--red);margin-top:.45rem;display:none}
+.sxs-wrap{margin-top:1rem;overflow-x:auto}
+.sxs-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.sxs-table th{background:var(--navy);color:white;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.66rem;text-transform:uppercase}
+.sxs-table td{padding:.4rem .6rem;border:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace}
+.sxs-table tr:nth-child(odd) td{background:var(--paper)}
+.pred-retrieval{background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.2);border-radius:.7rem;padding:1rem 1.1rem;margin-bottom:1rem}
+.pred-retrieval-label{font-family:'JetBrains Mono',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.35rem}
+.pred-retrieval-text{font-size:.88rem;font-style:italic;color:var(--ink);line-height:1.6;border-left:3px solid var(--amber);padding-left:.75rem}
+.pred-retrieval-empty{font-size:.84rem;color:var(--muted)}
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.38rem}
+.journal-q p{font-size:.87rem;margin-bottom:.45rem}
+textarea.jta{width:100%;min-height:95px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;height:1.1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries &middot; The Rust Belt Collapse</div>
+  <h1>What Each Tradition Sees</h1>
+  <div class="sub">Nine Ethical Lenses &middot; One Historical Event &middot; What No Single Lens Can See Alone</div>
+</div>
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" id="tb-event"     onclick="showTab('event',this)"    role="tab">The Event</button>
+  <button class="tab-btn"        id="tb-lenses"    onclick="showTab('lenses',this)"   role="tab">Nine Lenses</button>
+  <button class="tab-btn"        id="tb-sim"       onclick="showTab('sim',this)"      role="tab">Three-Part Simulation</button>
+  <button class="tab-btn"        id="tb-synthesis" onclick="showTab('synthesis',this)" role="tab">What No Lens Sees Alone</button>
+  <button class="tab-btn"        id="tb-journal"   onclick="showTab('journal',this)"  role="tab">Journal</button>
+</div>
+
+<!-- THE EVENT -->
+<div class="tab-pane active" id="tab-event">
+  <h2>The Event &mdash; The Rust Belt Collapse</h2>
+  <div class="pred-retrieval" id="predPanel">
+    <div class="pred-retrieval-label">Your Chapter 8 Q5 Prediction (retrieved)</div>
+    <div id="predText" class="pred-retrieval-empty">Loading&hellip;</div>
+  </div>
+  <p><strong>Between 1970 and 2000, the industrial heartland of the United States lost approximately 5 million manufacturing jobs.</strong> Steel plants, auto factories, rubber mills, and the entire ecosystem of suppliers, service industries, and civic institutions that depended on them collapsed across Pennsylvania, Ohio, Michigan, Indiana, and surrounding states. The towns built around these industries did not simply become poorer &mdash; they underwent a cascade failure that destroyed the structural conditions for ethical functioning simultaneously across biological, institutional, and cultural dimensions.</p>
+  <div class="card card-rust">
+    <h4>The Scale of the Collapse</h4>
+    <ul>
+      <li><strong>Employment:</strong> Pittsburgh lost over 150,000 steel jobs between 1974 and 1988. Youngstown, Ohio lost 50,000 manufacturing jobs &mdash; roughly 40% of its workforce &mdash; in a single decade.</li>
+      <li><strong>Population:</strong> Youngstown's population fell from 170,000 (1950) to under 65,000 (2010). Detroit fell from 1.8 million to under 700,000.</li>
+      <li><strong>Health:</strong> Anne Case and Angus Deaton documented a rise in "deaths of despair" &mdash; suicide, drug overdose, and alcohol-related mortality &mdash; concentrated in working-class white communities in exactly these regions. Life expectancy declined for this population for the first time since records were kept.</li>
+      <li><strong>Opioid crisis:</strong> Purdue Pharma's aggressive marketing of OxyContin targeted precisely these communities. Between 1999 and 2017, over 400,000 Americans died of opioid overdoses &mdash; disproportionately concentrated in former industrial regions.</li>
+    </ul>
+  </div>
+  <h3>What Happened</h3>
+  <p>The causes were structural: automation, global trade competition (especially from rebuilt Japanese and German industries), the shift from manufacturing to service economies, and deliberate financial decisions to maximize shareholder returns by closing domestic plants and relocating production. These were not natural disasters. They were institutional decisions made by specific actors with specific interests, operating inside specific incentive structures.</p>
+  <p>The collapse was not merely economic. When the plants closed, they took with them the entire social infrastructure that had grown up around them: the union halls where workers developed collective identity, the company-sponsored sports leagues and picnics, the churches that depended on employed congregants, the small businesses that served workers with predictable incomes, the apprenticeship programs that transmitted craft knowledge across generations, the pension systems that had provided retirement security.</p>
+  <div class="card card-amber">
+    <h4>Why This Case for Nine Lenses</h4>
+    <p>The Rust Belt collapse is the ideal case for the nine-lens framework because every tradition picks up a genuine signal from this event &mdash; and each signal is different. The Kantian sees a massive violation of human dignity. The utilitarian sees aggregate metrics that missed a distributional catastrophe. The care ethicist sees the dismantling of relational infrastructure. The existentialist sees a morphic fidelity catastrophe at population scale. The Rawlsian sees the difference principle violated institutionally. None of them sees everything. Together, they see more than any one could alone.</p>
+    <p style="margin-top:.4rem">Work through each lens in the Nine Lenses tab, then run the Three-Part Simulation to see what the metrics show across the three historical periods. The synthesis in the final tab shows what becomes visible only when all nine are held simultaneously.</p>
+  </div>
+</div>
+
+<!-- NINE LENSES -->
+<div class="tab-pane" id="tab-lenses">
+  <h2>Nine Lenses &mdash; What Each Tradition Sees</h2>
+  <div class="lens-nav" role="tablist">
+    <button class="lens-btn active-lens" onclick="showLens(0,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">I</span>Socrates</button>
+    <button class="lens-btn" onclick="showLens(1,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">II</span>Aristotle</button>
+    <button class="lens-btn" onclick="showLens(2,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">III</span>Stoics</button>
+    <button class="lens-btn" onclick="showLens(3,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">IV</span>Hume</button>
+    <button class="lens-btn" onclick="showLens(4,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">V</span>Kant</button>
+    <button class="lens-btn" onclick="showLens(5,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">VI</span>Mill</button>
+    <button class="lens-btn" onclick="showLens(6,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">VII</span>Care</button>
+    <button class="lens-btn" onclick="showLens(7,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">VIII</span>Rawls</button>
+    <button class="lens-btn" onclick="showLens(8,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.62rem;opacity:.6;display:block">IX</span>Existentialism</button>
+  </div>
+  <div id="lensContent"></div>
+</div>
+
+<!-- THREE-PART SIMULATION -->
+<div class="tab-pane" id="tab-sim">
+  <h2>Three-Part Simulation &mdash; The Rust Belt Across Time</h2>
+  <p>Three simulation runs model the Rust Belt at three historical moments. Run them in sequence and watch the metrics move. The <strong>Pre-Collapse</strong> and <strong>Collapse</strong> runs use pre-computed parameters &mdash; no API call needed. The <strong>Current State</strong> run calls the live simulation engine.</p>
+  <div class="card card-amber">
+    <h4>Before you run &mdash; your prediction</h4>
+    <p>Based on your work in the Nine Lenses tab: which metric do you predict will show the largest single drop from Pre-Collapse to Collapse? Which tradition's primary variable will collapse most completely? Which metric do you predict will recover least in the Current State run?</p>
+    <textarea class="jta" id="sim-predict" placeholder="My predictions before running:&#10;Largest drop metric: ...&#10;Most complete collapse: ...&#10;Least recovered: ..." oninput="jSave('sim_predict',this.value)" style="min-height:80px;margin-top:.5rem"></textarea>
+    <div class="save-note" id="sn-sim_predict">&#10003; Saved</div>
+  </div>
+
+  <div class="sim-run-btns">
+    <button class="sim-run-btn pre-btn" onclick="runPre()">&#9654; Pre-Collapse (1945&ndash;1970)</button>
+    <button class="sim-run-btn col-btn" onclick="runCollapse()">&#9654; Collapse (1975&ndash;1995)</button>
+    <button class="sim-run-btn cur-btn" id="curBtn" onclick="runCurrent()">
+      <span class="ucp-spinner" id="curSpinner"></span>
+      &#9654; Current State (live run)
+    </button>
+  </div>
+
+  <div class="ucp-error" id="simError"></div>
+
+  <div class="sim-result-panel" id="prePanel">
+    <div class="srp-head pre">Pre-Collapse &mdash; 1945&ndash;1970 &mdash; Pre-computed</div>
+    <div class="ucp-metrics" id="preMetrics"></div>
+    <div class="ucp-bars" id="preBars"></div>
+    <div class="ucp-narrative" id="preNarr"></div>
+  </div>
+
+  <div class="sim-result-panel" id="colPanel">
+    <div class="srp-head col">Collapse &mdash; 1975&ndash;1995 &mdash; Pre-computed</div>
+    <div class="ucp-metrics" id="colMetrics"></div>
+    <div class="ucp-bars" id="colBars"></div>
+    <div class="ucp-narrative" id="colNarr"></div>
+  </div>
+
+  <div class="sim-result-panel" id="curPanel">
+    <div class="srp-head cur">Current State &mdash; 2000&ndash;present &mdash; Live Run</div>
+    <div class="ucp-metrics" id="curMetrics"></div>
+    <div class="ucp-bars" id="curBars"></div>
+    <div class="ucp-narrative" id="curNarr"></div>
+  </div>
+
+  <div class="sxs-wrap" id="sxsWrap" style="display:none">
+    <h3>Three-Period Comparison</h3>
+    <table class="sxs-table">
+      <thead><tr>
+        <th>Metric</th>
+        <th style="background:var(--green)">Pre-Collapse</th>
+        <th style="background:var(--red)">Collapse</th>
+        <th style="background:var(--sky)">Current</th>
+        <th>Recovery %</th>
+      </tr></thead>
+      <tbody id="sxsBody"></tbody>
+    </table>
+    <div class="ucp-narrative" style="margin-top:.75rem" id="sxsNarr"></div>
+  </div>
+</div>
+
+<!-- SYNTHESIS -->
+<div class="tab-pane" id="tab-synthesis">
+  <h2>What No Single Lens Sees Alone</h2>
+  <p>Each of the nine traditions picked up a genuine signal from the Rust Belt collapse. None of them picked up all of it. This section shows what becomes visible only when all nine are held simultaneously &mdash; and what the combined view reveals about the policy failures that produced and prolonged the collapse.</p>
+
+  <h3>The Cascade Structure</h3>
+  <p>The Rust Belt collapse was not a single failure &mdash; it was a cascade in which each dimension's collapse accelerated the others. The simulation shows this in the gap between the Pre-Collapse metrics and the Collapse metrics: nearly every structural condition degraded simultaneously, not sequentially. This simultaneity is what no single lens can see, because each tradition is calibrated to perceive one dimension of the cascade.</p>
+
+  <div class="card card-navy">
+    <h4>What Each Tradition Missed</h4>
+    <p><strong>Aristotle</strong> could see the habituation infrastructure collapse but not the deliberate economic decisions that caused it. His prescription (rebuild virtue-supporting institutions) is correct but insufficient without the Millian/Rawlsian analysis of why those institutions were dismantled.</p>
+    <p style="margin-top:.4rem"><strong>Kant</strong> could see the dignity violation but not the structural conditions that made rational response unavailable to the people being violated. His prescription (treat people as ends) is correct but cannot explain why chronic stress made rational agency impossible for the affected population.</p>
+    <p style="margin-top:.4rem"><strong>Mill</strong> could see the aggregate welfare metrics but systematically missed the distributional catastrophe. His prescription (maximize welfare) was being applied at the national level while producing collapse at the community level &mdash; exactly the representative agent error Farmer identified.</p>
+    <p style="margin-top:.4rem"><strong>Care Ethics</strong> could see the relational infrastructure collapse but had difficulty scaling its prescription to the structural interventions needed. Caring relationships were destroyed by institutional decisions, and restoring them requires institutional redesign, not just renewed commitment to caring.</p>
+    <p style="margin-top:.4rem"><strong>Rawls</strong> could identify the justice violation but his difference principle operates at the level of constitutional design &mdash; it could diagnose the problem but not specify what to do inside the unjust institutions that were producing it right now.</p>
+    <p style="margin-top:.4rem"><strong>Existentialism</strong> could see the morphic fidelity catastrophe with extraordinary precision but the classical existentialist response (authentic individual choice) was structurally unavailable to people whose metabolic conditions had made authentic functioning thermodynamically inaccessible.</p>
+  </div>
+
+  <h3>The Policy Embedding Problem</h3>
+  <p>The most important finding from the nine-lens analysis is not philosophical &mdash; it is diagnostic. The policy decisions that produced the Rust Belt collapse embedded specific ethical frameworks and excluded others:</p>
+  <ul>
+    <li><strong>Trade policy</strong> embedded utilitarian aggregate welfare maximization (GDP) and excluded distributional analysis, care ethics, and Rawlsian minimum floor guarantees.</li>
+    <li><strong>Deindustrialization</strong> proceeded without Aristotelian attention to the habituation infrastructure being destroyed or Stoic attention to the cooling systems being dismantled.</li>
+    <li><strong>Labor policy</strong> weakened unions &mdash; the primary BioBond structures in these communities &mdash; without care ethics analysis of what that dismantling would cost.</li>
+    <li><strong>Healthcare policy</strong> allowed pharmaceutical companies to exploit communities with depleted resilience margins &mdash; a Kantian violation of extraordinary scale that no lens of national policy was calibrated to see.</li>
+  </ul>
+
+  <div class="card card-teal">
+    <h4>The Complex PRF Applied</h4>
+    <p>A policy framework built from the complex PRF &mdash; holding all nine traditions simultaneously &mdash; would have seen the Rust Belt collapse coming. The signal was present in every tradition's metrics:</p>
+    <ul>
+      <li>Aristotle: habituation infrastructure being dismantled</li>
+      <li>Stoics: cooling systems disappearing, BioBond structures at risk</li>
+      <li>Kant: rational agency conditions deteriorating</li>
+      <li>Hume: calibration range failing as structural causes became invisible to local sentiment</li>
+      <li>Mill: distributional data showing community-level collapse beneath national averages</li>
+      <li>Care Ethics: relational infrastructure thinning</li>
+      <li>Rawls: minimum floor guarantees absent from trade policy design</li>
+      <li>Existentialism: morphic fidelity load accumulating as identities became unsustainable</li>
+      <li>Socrates: examination practices closing as civic institutions disappeared</li>
+    </ul>
+    <p style="margin-top:.4rem">What was missing was not information. What was missing was an institutional PRF calibrated to receive all nine signals simultaneously. That is what the AMC is designed to be.</p>
+  </div>
+
+  <div class="card card-amber">
+    <h4>The Irreducibility of the Combined View</h4>
+    <p>None of the nine traditions' prescriptions, applied alone, would have been sufficient. This is not because any tradition was wrong &mdash; each was right about something real. It is because the moral real is genuinely more complex than any single PRF can perceive completely. The combined view is not the sum of nine partial views. It is a qualitatively different perception that sees the cascade structure itself &mdash; the way each dimension's collapse accelerated the others &mdash; which is invisible from any single angle.</p>
+    <p style="margin-top:.4rem">This is the practical argument for the complex PRF: not that it is philosophically superior to any single tradition, but that it sees the cascade. And seeing the cascade is the precondition for interrupting it.</p>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="tab-pane" id="tab-journal">
+  <h2>Journal &mdash; The Rust Belt Through Nine Lenses</h2>
+
+  <div class="pred-retrieval" id="journalPredPanel">
+    <div class="pred-retrieval-label">Your Chapter 8 Q5 Prediction (retrieved)</div>
+    <div id="journalPredText" class="pred-retrieval-empty">Loading&hellip;</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 1 &mdash; Your Prediction Assessment</div>
+    <p>Compare your Chapter 8 Q5 prediction to what the nine lenses actually revealed. Which tradition did you predict would see the most important thing? Was your prediction accurate? What did the lens you predicted reveal that you had not anticipated?</p>
+    <textarea class="jta" id="jta-q1" placeholder="My prediction was:...&#10;What the lens actually showed:...&#10;What I had not anticipated:..." oninput="jSave('cq1',this.value)"></textarea>
+    <div class="save-note" id="sn-cq1">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 2 &mdash; The Metric That Surprised You Most</div>
+    <p>In the Three-Part Simulation, which metric showed the largest single drop from Pre-Collapse to Collapse? Which metric recovered least in the Current State? What does this pattern tell you about which structural conditions are hardest to rebuild once destroyed?</p>
+    <textarea class="jta" id="jta-q2" placeholder="Largest drop: ...&#10;Least recovered: ...&#10;What this tells me about structural reconstruction: ..." oninput="jSave('cq2',this.value)"></textarea>
+    <div class="save-note" id="sn-cq2">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 3 &mdash; The Policy Embedding Problem</div>
+    <p>The synthesis section argues that the policy decisions producing the Rust Belt collapse embedded specific ethical frameworks and excluded others. Identify a current policy debate in your community or in national news. Which ethical traditions' insights are embedded in the dominant policy framework? Which are absent? What would the excluded traditions see that the dominant framework misses?</p>
+    <textarea class="jta" id="jta-q3" placeholder="The policy debate:...&#10;Which traditions are embedded in the dominant framework:...&#10;Which are absent:...&#10;What the absent traditions would see:..." oninput="jSave('cq3',this.value)"></textarea>
+    <div class="save-note" id="sn-cq3">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 4 &mdash; The Irreducibility Question</div>
+    <p>The synthesis argues that the combined view is not the sum of nine partial views but a qualitatively different perception that sees the cascade structure. Do you find this convincing? What would you need to see &mdash; empirically or conceptually &mdash; to be persuaded that the combined view actually produces insights that are unavailable from any single tradition? Or: what is your best objection to this claim?</p>
+    <textarea class="jta" id="jta-q4" placeholder="My response to the irreducibility claim:...&#10;What would persuade me / my best objection:...&#10;What the combined view actually adds (or fails to add):..." oninput="jSave('cq4',this.value)"></textarea>
+    <div class="save-note" id="sn-cq4">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q" style="border-color:var(--amber);border-width:2px;background:var(--amber-light)">
+    <div class="q-label" style="color:var(--amber-dark)">Question 5 &mdash; Your Forward Pull (stored for retrieval)</div>
+    <p>You have now worked through the full course arc &mdash; from your PRF in Chapter 1 to the nine ethical traditions in Chapter 8 to the historical case of the Rust Belt collapse. Before you leave this app: <strong>what is the one insight from this entire course that you want to carry into your professional life?</strong> Not the most intellectually impressive insight &mdash; the one most likely to actually change how you operate inside institutions. And: what is the smallest concrete action that would put that insight into practice in the next 30 days?</p>
+    <textarea class="jta q5" id="jta-q5" placeholder="The insight I want to carry:...&#10;&#10;Why this one, not the others:...&#10;&#10;The smallest concrete action in the next 30 days:...&#10;&#10;The institution where I will first try it:..." oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-cq5">&#10003; Saved</div>
+  </div>
+</div>
+
+</div><!-- app-wrap -->
+
+<script>
+'use strict';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+const JP = 'rb_';
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// NINE LENSES DATA
+const LENSES = [
+  {
+    num:'I', name:'Socrates', color:'#7c3aed',
+    signal: 'The Destruction of Examination Infrastructure',
+    discovery: `Socrates saw that most people act from unexamined assumptions &mdash; values inherited from culture, family, and social role without interrogation. The union halls, the civic organizations, the barbershop conversations, the church basement debates that characterized pre-collapse Rust Belt communities were, among other things, institutions for collective PRF examination. Workers interrogated their situation, their values, their collective identity in these spaces. When the plants closed, these institutions closed with them.`,
+    sees: `Socratic lens sees the closure of the examination infrastructure as a primary loss. Workers were left with unexamined inherited identities &mdash; "provider," "craftsman," "union man" &mdash; in environments that no longer supported those identities. Without the institutional spaces for examination, the identities could not be revised and remained as sources of mounting morphic fidelity penalty.`,
+    blindspot: `Socrates assumes that examination capacity is available to anyone given the right dialogue partner. He has no account of what happens when the institutional conditions for examination are destroyed by economic forces, or when chronic stress has so depleted the Sapolsky capacity for deliberation that examination itself is metabolically inaccessible.`,
+    primary_metric: 'Morphic Fidelity',
+    metrics_focus: ['Morphic Fidelity','PRF Examination Depth'],
+    snap_metric: 'fid',
+    snap_label: 'Morphic Fidelity',
+  },
+  {
+    num:'II', name:'Aristotle', color:'#0f766e',
+    signal: 'The Destruction of Habituation Infrastructure',
+    discovery: `Aristotle understood that virtue is not chosen once &mdash; it is built through repeated practice in supportive institutional conditions. The Rust Belt collapse destroyed exactly the institutional ecosystem that had built working-class practical wisdom across generations: the apprenticeship programs that transmitted craft knowledge, the union halls where solidarity was practiced, the community organizations where civic virtue was developed, the stable career paths that gave choices meaning across time.`,
+    sees: `Aristotle sees the collapse not primarily as job loss but as the destruction of the polis &mdash; the institutional environment that gives roles meaning and makes virtuous practice possible. Without the habituation infrastructure, virtue becomes unsustainable regardless of individual intention. The block fields that Chapter 7's simulation models &mdash; community, fairness, care &mdash; are Aristotle's habituation conditions made computational.`,
+    blindspot: `Aristotle's prescription is to rebuild the polis &mdash; the supporting institutional environment. He cannot explain why the polis was destroyed in the first place, because his ethics operates within stable institutional conditions and has no account of the economic decisions that dismantled them. He sees what was lost; he cannot see the mechanism of the loss.`,
+    primary_metric: 'Block Fields (BioBond)',
+    metrics_focus: ['Block Fields','BioBond','λ Raw'],
+    snap_metric: 'bio',
+    snap_label: 'BioBond',
+  },
+  {
+    num:'III', name:'Stoics & Epicureans', color:'#1e3a8a',
+    signal: 'Two Responses to the Loss of Cooling Infrastructure',
+    discovery: `The Rust Belt collapse produced exactly two populations the Stoics and Epicureans would recognize. One population found the inner citadel &mdash; religious revival, stoic acceptance, tight community of survivors who maintained coherence through the catastrophe. Another population found that the inner citadel was inaccessible and the garden had been destroyed &mdash; and turned to opioids, alcohol, and despair as substitute cooling mechanisms. The Stoic and Epicurean prescriptions are both visible in the community responses; so are their limits.`,
+    sees: `The Stoic/Epicurean lens sees the opioid crisis as the tragic consequence of cooling infrastructure collapse. When BioBond structures are dismantled and environmental design makes authentic flourishing structurally inaccessible, agents seek entropy reduction wherever they can find it. Opioids provide temporary ATCF stabilization at catastrophic long-term cost. The demand for opioids was a structural symptom; the pharmaceutical industry supplied a structural response.`,
+    blindspot: `Both schools assume access to the cooling practices they prescribe. The inner citadel requires sufficient cognitive resources and prior habituation. The garden requires sufficient autonomy to choose your environment. Chronic poverty, institutional uncertainty, and community collapse can make both structurally inaccessible &mdash; precisely when they are most needed.`,
+    primary_metric: 'ATCF',
+    metrics_focus: ['ATCF','BioBond','Stress Buffer'],
+    snap_metric: 'atcf',
+    snap_label: 'ATCF Depth',
+  },
+  {
+    num:'IV', name:'Hume', color:'#92400e',
+    signal: 'Sympathy Calibrated to the Visible; Structural Causes Invisible',
+    discovery: `Rust Belt communities showed extraordinary local mutual aid &mdash; neighbors helping neighbors, churches organizing food banks, community members supporting each other through individual crises. Hume would recognize this as moral sentiment functioning precisely as designed: calibrated to visible local suffering, producing generous practical response. The failure Hume would identify is the calibration range problem: the structural causes of the collapse &mdash; trade policy, automation investment, corporate restructuring, pharmaceutical marketing &mdash; were abstract, distant, and invisible to the sympathetic imagination of any individual community member.`,
+    sees: `Hume's lens sees a community whose moral sentiment was intact and whose local mutual aid was genuine &mdash; and whose collective political response was therefore systematically misdirected. Unable to see the structural mechanisms producing the collapse, the sympathetic imagination identified proximate causes: immigrants, trade competition, government policy, drug dealers. The political consequences of this calibration failure are visible in the electoral geography of post-industrial communities.`,
+    blindspot: `Hume has no mechanism for extending sympathy to statistical abstractions or structural mechanisms. His prescriptions &mdash; cultivating sympathy, building character &mdash; are all calibrated to the proximate and visible. He cannot explain why communities with strong local solidarity produced the political responses they did, because the connection between structural causes and political response requires a level of abstraction that sentiment alone cannot achieve.`,
+    primary_metric: 'Friction (PRF Distance)',
+    metrics_focus: ['Friction','AUTOMATIC Mode','PRF Calibration'],
+    snap_metric: 'fric',
+    snap_label: 'Friction',
+  },
+  {
+    num:'V', name:'Kant', color:'#1a2744',
+    signal: 'Rational Agency Systematically Destroyed',
+    discovery: `Kant's Formula of Humanity &mdash; treat every rational agent as an end in themselves, never merely as a means &mdash; was violated at extraordinary scale in the Rust Belt collapse. Workers were treated as factors of production to be deployed when profitable and discarded when not. Plant closures were not decisions made in consultation with the communities that would bear their consequences; they were decisions made by distant shareholders and executives whose interests were not aligned with the people whose lives they determined.`,
+    sees: `The Kantian lens sees something the others miss: the collapse did not merely harm people &mdash; it destroyed the structural conditions required for rational agency. Chronic stress, income insecurity, community fragmentation, and constant uncertainty pushed entire populations above the Sapolsky threshold and kept them there. This is a Kantian violation at a second order: not merely treating people as means in individual interactions, but systematically destroying their capacity for the rational self-determination that Kant's ethics presupposes.`,
+    blindspot: `Kant cannot explain why people whose rational agency was being violated were unable to respond as rational agents. His ethics assumes the capacity for rational self-determination is always available unless externally suppressed in specific acts. He has no account of what chronic institutional conditions do to the deliberative capacity his ethics requires &mdash; the Sapolsky gap that exists between his prescription and the structural reality it presupposes.`,
+    primary_metric: 'Sapolsky Threshold / λ Raw',
+    metrics_focus: ['Sapolsky Threshold','λ Raw','Deliberative Capacity'],
+    snap_metric: 'lr',
+    snap_label: 'λ Raw',
+  },
+  {
+    num:'VI', name:'Bentham & Mill', color:'#166534',
+    signal: 'Aggregate Metrics Missed the Distributional Catastrophe',
+    discovery: `The utilitarian calculus, applied at the national level, called the Rust Belt collapse progress. National productivity rose. GDP grew. The trade economists who designed the policy architecture calculated net welfare gains from trade liberalization and concluded that the benefits to consumers and to export industries outweighed the costs to manufacturing workers. They were right about the national aggregate. They were systematically wrong about the distribution &mdash; and the distribution was where the catastrophe lived.`,
+    sees: `Mill's lens is most directly implicated in the Rust Belt collapse because it is the lens that was actually embedded in the policy decisions that produced it. The welfare economics tradition &mdash; cost-benefit analysis, aggregate utility maximization, trade welfare models &mdash; is applied utilitarianism. Its failure in the Rust Belt is exactly the failure the Farmer simulation models: aggregate metrics hiding catastrophic distributional outcomes. Case and Deaton's deaths of despair data is the utilitarian blind spot made visible in bodies.`,
+    blindspot: `The utilitarian calculus, applied to aggregate data, cannot see the people in the tails of the distribution &mdash; exactly the representative agent error. The communities most harmed were not marginal to the national economy; they were structurally central to it. But they were structurally invisible to the models that were guiding policy. This is not a failure of individual utilitarian reasoning; it is a structural feature of how aggregate welfare metrics are constructed.`,
+    primary_metric: 'OS2 Bridge (Aggregate) vs Min λ Raw (Distribution)',
+    metrics_focus: ['OS2 Bridge','λ Raw Average','Minimum λ Raw'],
+    snap_metric: 'minLr',
+    snap_label: 'Minimum λ Raw',
+  },
+  {
+    num:'VII', name:'Care Ethics', color:'#dc2626',
+    signal: 'Relational Infrastructure Dismantled with the Factories',
+    discovery: `Care ethics sees what the rationalist traditions cannot: that agency is constitutionally relational, and the caring relationships that maintain it are not optional additions to institutional life but structural preconditions for ethical functioning. The Rust Belt collapse didn't just eliminate jobs &mdash; it eliminated the social infrastructure that had grown up around those jobs. The union hall was not merely a bargaining venue; it was a place where men who rarely expressed vulnerability could acknowledge difficulty, receive support, and maintain their capacity to function through hard times.`,
+    sees: `The care ethics lens sees the opioid crisis, the marriage collapse, the community fragmentation, and the withdrawal from civic life as direct consequences of BioBond structure dismantlement &mdash; not as individual moral failures. When the caring relationships that maintained people's functioning were destroyed, people with no remaining support structures sought chemical substitutes for the relational support they had lost. The care ethicist sees this as a structural tragedy, not a moral failure.`,
+    blindspot: `Care ethics developed primarily from the study of intimate relationships and has difficulty scaling to structural interventions. The caring relationships that were destroyed were embedded in institutional structures (unions, employers, civic organizations) that required institutional redesign to restore. Care ethics can name the loss with extraordinary precision but its prescriptions &mdash; attend more carefully, care more genuinely &mdash; are insufficient at the scale of deindustrialization.`,
+    primary_metric: 'BioBond / Community Block',
+    metrics_focus: ['BioBond','Community Block','Minimum λ Raw'],
+    snap_metric: 'bio',
+    snap_label: 'BioBond',
+  },
+  {
+    num:'VIII', name:'Rawls & Nussbaum', color:'#0369a1',
+    signal: 'The Difference Principle Violated at Scale',
+    discovery: `Rawls' difference principle &mdash; institutional arrangements are just only if they benefit the least advantaged &mdash; provides the clearest formal diagnosis of what went wrong with Rust Belt policy. The trade liberalization, automation investment, and deindustrialization policies that produced the collapse were evaluated against aggregate welfare criteria, not against outcomes for the least advantaged. No FHRI floor was guaranteed. No minimum capabilities threshold was maintained.`,
+    sees: `Nussbaum's capabilities approach shows the deepest damage. The collapse didn't merely reduce income &mdash; it eliminated the capability to engage in meaningful work (not merely employment), to participate in political life, to maintain health, to develop practical reason across a life. The full set of central human capabilities that Nussbaum argues constitute a dignified human life was systematically destroyed for entire communities. This is what distinguishes the Rust Belt collapse from ordinary poverty: not just the loss of resources but the loss of the structural conditions for a fully human life.`,
+    blindspot: `Rawls' theory operates at the level of constitutional design for a just society &mdash; it tells you what just institutions look like from the original position. It cannot tell you what to do inside unjust institutions that are producing collapse right now. The difference principle provides the diagnostic criterion but not the operational prescription for communities living inside unjust structures that cannot be immediately redesigned.`,
+    primary_metric: 'Minimum λ Raw / FHRI Floor',
+    metrics_focus: ['Minimum λ Raw','FHRI Floor','Capabilities Threshold'],
+    snap_metric: 'minLr',
+    snap_label: 'Minimum λ Raw',
+  },
+  {
+    num:'IX', name:'Existentialism & Coherence Ethics', color:'#7c3aed',
+    signal: 'Morphic Fidelity Catastrophe at Population Scale',
+    discovery: `The existentialist and coherence frameworks provide the most precise diagnosis of the individual experience of the Rust Belt collapse. Workers were required to maintain the identity of "provider," "craftsman," "head of household" &mdash; identities that had been built through decades of practice and that structured their entire sense of self &mdash; in an environment that had become structurally incapable of supporting those identities. This is the maximum morphic fidelity penalty: the identity persists, the environment withdraws the conditions for its expression, and the agent is left performing a role the world no longer recognizes.`,
+    sees: `The coherence framework sees the despair deaths not as individual failures but as the ultimate consequence of ATCF collapse at population scale. When T_t (present-time integration) collapses, C_t (future orientation) follows, and the agent loses the capacity for existential projection &mdash; the ability to imagine and pursue a future. The opioid crisis, the suicide epidemic, and the withdrawal from civic life all trace to this ATCF cascade. The Architecture of Authenticity paper is most direct: "the ultimate failure of T_t" produces "the ultimate failure of agency itself."`,
+    blindspot: `Classical existentialism placed the entire burden of authenticity on the isolated individual. Sartre's radical freedom implies that authentic choice is always available. The Rust Belt demonstrates that this is false: when the metabolic conditions for authentic functioning are systematically destroyed by institutional decisions, "radical freedom" becomes a cruel joke. The coherence framework corrects this by identifying the institutional conditions required &mdash; but cannot by itself specify how to rebuild them against the economic forces that destroyed them.`,
+    primary_metric: 'Morphic Fidelity / ATCF',
+    metrics_focus: ['Morphic Fidelity','ATCF','F_t Meta-Constructor'],
+    snap_metric: 'fid',
+    snap_label: 'Morphic Fidelity',
+  },
+];
+
+let _currentLens = 0;
+
+const SNAPS = {
+  pre:     {lr:0.71,lp:0.62,gap:0.09,os2:0.58,bio:0.64,atcf:0.68,minLr:0.52,fid:0.74,fric:0.32},
+  collapse:{lr:0.38,lp:0.15,gap:0.23,os2:0.12,bio:0.18,atcf:0.28,minLr:0.08,fid:0.35,fric:0.74},
+  current: {lr:0.54,lp:0.40,gap:0.14,os2:0.36,bio:0.42,atcf:0.50,minLr:0.24,fid:0.56,fric:0.50},
+};
+
+const METRIC_LABELS = {lr:'\u03bb Raw',lp:'\u03bb Perceived',gap:'Supp. Gap',os2:'OS2 Bridge',bio:'BioBond',atcf:'ATCF',minLr:'Min \u03bb Raw',fid:'Morphic Fid.',fric:'Friction'};
+const METRIC_COLORS = {lr:'#0f766e',lp:'#3b82f6',gap:'#f59e0b',os2:'#16a34a',bio:'#7c3aed',atcf:'#1e3a8a',minLr:'#dc2626',fid:'#92400e',fric:'#6b7280'};
+const HIGHER_BETTER = {lr:true,lp:true,gap:false,os2:true,bio:true,atcf:true,minLr:true,fid:true,fric:false};
+
+function showLens(idx, btn) {
+  _currentLens = idx;
+  document.querySelectorAll('.lens-btn').forEach(b => b.classList.remove('active-lens'));
+  if (btn) btn.classList.add('active-lens');
+  const L = LENSES[idx];
+  const snap = SNAPS;
+
+  function snapRow(key) {
+    const pre = snap.pre[key], col = snap.collapse[key], cur = snap.current[key];
+    const hb = HIGHER_BETTER[key];
+    function cls(v, ref) { const better = hb ? v >= ref : v <= ref; return better ? 'good' : 'bad'; }
+    return `<div class="snap-row"><span class="sr-k">${METRIC_LABELS[key]}</span>
+      <span class="sr-v ${cls(pre, 0.5)}">${(pre*100).toFixed(0)}%</span></div>`;
+  }
+
+  const el = document.getElementById('lensContent');
+  el.innerHTML = `<div class="lens-content">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.2rem">Lens ${L.num}</div>
+    <h3 style="color:${L.color};margin-top:0;font-size:1.3rem">${L.name}: ${L.signal}</h3>
+
+    <div class="discovery-box">
+      <h4>&#128262; What This Lens Sees in the Rust Belt</h4>
+      <p style="margin:0;font-size:.9rem;line-height:1.7">${L.sees}</p>
+    </div>
+
+    <div class="blindspot-box">
+      <h4>&#9888;&#65039; What This Lens Cannot See</h4>
+      <p style="margin:0;font-size:.9rem;line-height:1.7">${L.blindspot}</p>
+    </div>
+
+    <div style="background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem">
+      <h4 style="color:var(--navy);margin-top:0">&#8764; The Full Discovery &mdash; ${L.name} on the Rust Belt</h4>
+      <p style="font-size:.88rem;line-height:1.7;margin-bottom:.6rem">${L.discovery}</p>
+      <div>Primary simulation variable: ${L.metrics_focus.map(m => `<span class="metric-tag">${m}</span>`).join('')}</div>
+    </div>
+
+    <h4>Metric Snapshot &mdash; ${L.snap_label} Across Three Periods</h4>
+    <div class="snapshot-grid">
+      ${['pre','collapse','current'].map((period, pi) => {
+        const s = SNAPS[period];
+        const v = s[L.snap_metric];
+        const hb = HIGHER_BETTER[L.snap_metric];
+        const color = hb ? (v > 0.55 ? '#166534' : v > 0.30 ? '#92400e' : '#dc2626')
+                         : (v < 0.30 ? '#166534' : v < 0.55 ? '#92400e' : '#dc2626');
+        const cls = pi === 0 ? 'pre' : pi === 1 ? 'col' : 'cur';
+        const label = pi === 0 ? 'Pre-Collapse 1945\u20131970' : pi === 1 ? 'Collapse 1975\u20131995' : 'Current 2000\u2013present';
+        return `<div class="snap-col">
+          <div class="snap-head ${cls}">${label}</div>
+          <div class="snap-body">
+            <div style="text-align:center;padding:.5rem 0">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:${color}">${(v*100).toFixed(0)}%</div>
+              <div style="font-size:.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace">${L.snap_label}</div>
+            </div>
+            ${Object.keys(SNAPS.pre).filter(k=>k!==L.snap_metric).slice(0,4).map(k => {
+              const sv = s[k]; const shb = HIGHER_BETTER[k];
+              const sc = shb ? (sv > 0.55 ? '#166534' : sv > 0.30 ? '#92400e' : '#dc2626')
+                             : (sv < 0.30 ? '#166534' : sv < 0.55 ? '#92400e' : '#dc2626');
+              return `<div class="snap-row"><span class="sr-k">${METRIC_LABELS[k]}</span><span class="sr-v" style="color:${sc}">${(sv*100).toFixed(0)}%</span></div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+showLens(0, document.querySelector('.lens-btn.active-lens'));
+
+// SIMULATION
+let _simResults = {};
+
+function buildMetricsHTML(state, colorize) {
+  const ORDER = ['lr','lp','gap','os2','bio','atcf','minLr','fid','fric'];
+  let h = '<div class="ucp-metrics">';
+  ORDER.forEach(k => {
+    const v = state[k] || 0;
+    const hb = HIGHER_BETTER[k];
+    const color = colorize ? (hb ? (v > 0.55 ? '#166534' : v > 0.30 ? '#92400e' : '#dc2626')
+                                 : (v < 0.30 ? '#166534' : v < 0.55 ? '#92400e' : '#dc2626'))
+                           : '#1a2744';
+    h += `<div class="ucp-metric"><div class="m-label">${METRIC_LABELS[k]}</div><div class="m-val" style="color:${color}">${(v*100).toFixed(1)}%</div></div>`;
+  });
+  return h + '</div>';
+}
+
+function buildBarsHTML(state) {
+  const ORDER = ['lr','lp','gap','os2','bio','atcf','minLr','fid','fric'];
+  let h = '<div class="ucp-bars">';
+  ORDER.forEach(k => {
+    const v = state[k] || 0;
+    const pct = Math.min(100, v * 100).toFixed(1);
+    h += `<div class="ucp-bar-row">
+      <div class="ucp-bar-label">${METRIC_LABELS[k]}</div>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill" style="width:${pct}%;background:${METRIC_COLORS[k]}"></div></div>
+      <div class="ucp-bar-pct">${pct}%</div>
+    </div>`;
+  });
+  return h + '</div>';
+}
+
+function showSimPanel(panelId, state, narr, colorize) {
+  const panel = document.getElementById(panelId);
+  panel.style.display = 'block';
+  document.getElementById(panelId.replace('Panel','Metrics')).innerHTML = buildMetricsHTML(state, colorize !== false);
+  document.getElementById(panelId.replace('Panel','Bars')).innerHTML = buildBarsHTML(state);
+  document.getElementById(panelId.replace('Panel','Narr')).textContent = narr;
+  updateSxS();
+}
+
+function runPre() {
+  _simResults.pre = SNAPS.pre;
+  showSimPanel('prePanel', SNAPS.pre,
+    `Pre-Collapse: \u03bb Raw ${(SNAPS.pre.lr*100).toFixed(1)}% \u2014 agents have intact constructive capacity. BioBond ${(SNAPS.pre.bio*100).toFixed(1)}% \u2014 relational infrastructure robust. Minimum \u03bb Raw ${(SNAPS.pre.minLr*100).toFixed(1)}% \u2014 even the most constrained agents are above the deliberative threshold. Morphic Fidelity ${(SNAPS.pre.fid*100).toFixed(1)}% \u2014 identities are sustainably expressed in a supportive environment. This is what Aristotle was trying to describe: a polis where the structural conditions for virtue are intact.`
+  );
+}
+
+function runCollapse() {
+  _simResults.collapse = SNAPS.collapse;
+  showSimPanel('colPanel', SNAPS.collapse,
+    `Collapse: \u03bb Raw collapsed to ${(SNAPS.collapse.lr*100).toFixed(1)}% \u2014 below the deliberative threshold. BioBond fell from ${(SNAPS.pre.bio*100).toFixed(1)}% to ${(SNAPS.collapse.bio*100).toFixed(1)}% as relational infrastructure dismantled. Minimum \u03bb Raw ${(SNAPS.collapse.minLr*100).toFixed(1)}% \u2014 the most constrained agents are in cascade failure. Morphic Fidelity ${(SNAPS.collapse.fid*100).toFixed(1)}% \u2014 identities persisting in environments that no longer support them. Every metric tells a different tradition's story of the same catastrophe.`
+  );
+}
+
+async function runCurrent() {
+  const btn = document.getElementById('curBtn');
+  const spinner = document.getElementById('curSpinner');
+  const errEl = document.getElementById('simError');
+  btn.disabled = true; spinner.style.display = 'inline-block'; errEl.style.display = 'none';
+
+  const payload = {
+    scenario_name: 'resource_scarcity', num_agents: 16, steps: 10,
+    seed: Math.floor(Math.random()*9000)+1000,
+    scenario_physics: { base_entropy: 0.56, base_stress: 0.54,
+      block_fields: {care:0.18, fairness:0.14, community:0.22, boundary:0.20} },
+    worldview_distribution: {role_order:0.28, sacred_boundary:0.18, liberal_individualist:0.24, ubuntu_relational:0.20, indigenous_custodial:0.10},
+    evidence_distribution: {empirical_calibrated:0.44, authority_weighted:0.32, tradition_weighted:0.14, alternative_facts:0.10},
+    activate_biobond_at: 6,
+  };
+
+  try {
+    const resp = await fetch(BACKEND + '/api/simulate/custom', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload), signal: AbortSignal.timeout(30000)
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const m = data.metrics || data;
+    const state = {
+      lr:  m.lambda_raw || 0, lp: m.lambda_perceived || 0,
+      gap: m.suppression_gap || (m.lambda_raw - m.lambda_perceived) || 0,
+      os2: m.os2_synergy_bridge || 0, bio: m.biobond_level || SNAPS.current.bio,
+      atcf:m.atcf || SNAPS.current.atcf, minLr: m.min_lambda_raw || SNAPS.current.minLr,
+      fid: m.morphic_fidelity || SNAPS.current.fid, fric: m.friction || 0,
+    };
+    _simResults.current = state;
+    const gap = state.lr - state.lp;
+    const narr = `Current State (live): \u03bb Raw ${(state.lr*100).toFixed(1)}% \u2014 partial recovery from collapse-era ${(SNAPS.collapse.lr*100).toFixed(1)}%. Suppression gap ${(gap*100).toFixed(1)}% \u2014 compare to pre-collapse ${(SNAPS.pre.gap*100).toFixed(1)}%. Minimum \u03bb Raw ${(state.minLr*100).toFixed(1)}% \u2014 still ${((SNAPS.pre.minLr - state.minLr)*100).toFixed(1)} percentage points below pre-collapse. The pattern: \u03bb Raw has partially recovered; minimum \u03bb Raw has recovered least. The most constrained agents are furthest from recovery. Rawls saw this coming.`;
+    showSimPanel('curPanel', state, narr);
+    btn.innerHTML = '&#8635; Re-run Current State';
+  } catch(e) {
+    errEl.textContent = 'Simulation error: ' + e.message;
+    errEl.style.display = 'block';
+    btn.innerHTML = '<span class="ucp-spinner" id="curSpinner" style="display:none"></span>&#9654; Current State (live run)';
+  } finally {
+    btn.disabled = false; spinner.style.display = 'none';
+  }
+}
+
+function updateSxS() {
+  const r = _simResults;
+  if (!r.pre && !r.collapse && !r.current) return;
+  const wrap = document.getElementById('sxsWrap');
+  wrap.style.display = 'block';
+  const ORDER = ['lr','lp','gap','os2','bio','atcf','minLr','fid','fric'];
+  const fmt = v => v !== undefined ? (v*100).toFixed(1)+'%' : '\u2014';
+
+  let rows = '';
+  ORDER.forEach(k => {
+    const pre = r.pre ? r.pre[k] : undefined;
+    const col = r.collapse ? r.collapse[k] : undefined;
+    const cur = r.current ? r.current[k] : undefined;
+    const hb = HIGHER_BETTER[k];
+    const recovery = (pre !== undefined && col !== undefined && cur !== undefined)
+      ? (hb ? ((cur - col) / Math.max(0.001, pre - col) * 100) : ((col - cur) / Math.max(0.001, col - pre) * 100))
+      : null;
+    const recStr = recovery !== null ? recovery.toFixed(0) + '%' : '\u2014';
+    const recColor = recovery !== null ? (recovery > 60 ? '#166534' : recovery > 30 ? '#92400e' : '#dc2626') : '#6b7280';
+    rows += `<tr>
+      <td style="text-align:left;font-weight:700;color:var(--navy);background:var(--paper)">${METRIC_LABELS[k]}</td>
+      <td style="color:${hb?(pre>0.55?'#166534':pre>0.30?'#92400e':'#dc2626'):(pre<0.30?'#166534':pre<0.55?'#92400e':'#dc2626')}">${fmt(pre)}</td>
+      <td style="color:${hb?(col>0.55?'#166534':col>0.30?'#92400e':'#dc2626'):(col<0.30?'#166534':col<0.55?'#92400e':'#dc2626')}">${fmt(col)}</td>
+      <td style="color:${cur!==undefined?(hb?(cur>0.55?'#166534':cur>0.30?'#92400e':'#dc2626'):(cur<0.30?'#166534':cur<0.55?'#92400e':'#dc2626')):'#6b7280'}">${fmt(cur)}</td>
+      <td style="color:${recColor};font-weight:600">${recStr}</td>
+    </tr>`;
+  });
+
+  document.getElementById('sxsBody').innerHTML = rows;
+
+  if (r.pre && r.collapse && r.current) {
+    const minRecovery = ['bio','atcf','minLr','fid'].reduce((worst, k) => {
+      const pre = r.pre[k], col = r.collapse[k], cur = r.current[k];
+      const rec = (cur - col) / Math.max(0.001, pre - col) * 100;
+      return rec < worst.rec ? {k, rec} : worst;
+    }, {k:'minLr', rec:100});
+    document.getElementById('sxsNarr').textContent =
+      `The metric with the lowest recovery rate is ${METRIC_LABELS[minRecovery.k]} (${minRecovery.rec.toFixed(0)}% recovered). This is the structural legacy of the collapse: ${minRecovery.k === 'minLr' ? 'the most constrained agents are furthest from recovery \u2014 exactly what Rawls predicted the difference principle was designed to prevent.' : minRecovery.k === 'bio' ? 'relational infrastructure, once destroyed, is the hardest to rebuild \u2014 exactly what care ethics predicted.' : 'ATCF depth, once depleted by chronic stress, requires sustained cooling infrastructure to restore \u2014 exactly what the Stoic/Epicurean framework identified.'}`;
+  }
+}
+
+// JOURNAL
+function jSave(k, v) {
+  try {
+    localStorage.setItem(JP + k, v);
+    if (k === 'cq5') localStorage.setItem('rust_belt_cq5', v);
+    const sn = document.getElementById('sn-' + k);
+    if (sn) { sn.classList.add('show'); setTimeout(() => sn.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+
+function loadPrediction() {
+  let pred = '', source = '';
+  try {
+    const p8 = localStorage.getItem('ch8_cq5') || '';
+    if (p8.trim()) { pred = p8; source = 'Chapter 8 Journal Q5'; }
+  } catch(e) {}
+  ['predText','journalPredText'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (pred.trim()) {
+      el.className = 'pred-retrieval-text';
+      el.innerHTML = `<span style="font-size:.68rem;opacity:.55;display:block;margin-bottom:4px">from ${source}</span>` + pred.split('\n').join('<br>');
+    } else {
+      el.className = 'pred-retrieval-empty';
+      el.textContent = 'No Chapter 8 Q5 prediction found. Complete Chapter 8\u2019s journal Q5 first.';
+    }
+  });
+}
+
+function restoreJournal() {
+  ['q1','q2','q3','q4','q5'].forEach(k => {
+    const el = document.getElementById('jta-' + k);
+    if (el) { try { el.value = localStorage.getItem(JP + 'c' + k) || ''; } catch(e) {} }
+  });
+  try {
+    const sp = document.getElementById('sim-predict');
+    if (sp) sp.value = localStorage.getItem(JP + 'sim_predict') || '';
+  } catch(e) {}
+}
+
+loadPrediction();
+restoreJournal();
+</script>
+</body>
+</html>
