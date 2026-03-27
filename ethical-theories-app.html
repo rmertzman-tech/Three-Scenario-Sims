@@ -205,6 +205,7 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
     <button class="station-btn" onclick="showStation(5,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">VI</span>Mill</button>
     <button class="station-btn" onclick="showStation(6,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">VII</span>Care Ethics</button>
     <button class="station-btn" onclick="showStation(7,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">VIII</span>Rawls</button>
+    <button class="station-btn" onclick="showStation(8,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">IX</span>Existentialism</button>
   </div>
 
   <div id="stationContent"></div>
@@ -220,15 +221,16 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
     <button class="reset-btn" onclick="resetCascade()">&#8635; Reset to baseline</button>
   </div>
 
-  <div class="cascade-controls" id="cascadeControls">
-    <button class="tradition-toggle" onclick="toggleTradition(0,this)" id="ctoggle-0"><span class="t-num">I</span>Aristotle</button>
-    <button class="tradition-toggle" onclick="toggleTradition(1,this)" id="ctoggle-1"><span class="t-num">II</span>Stoics</button>
-    <button class="tradition-toggle" onclick="toggleTradition(2,this)" id="ctoggle-2"><span class="t-num">III</span>Kant</button>
-    <button class="tradition-toggle" onclick="toggleTradition(3,this)" id="ctoggle-3"><span class="t-num">IV</span>Hume</button>
-    <button class="tradition-toggle" onclick="toggleTradition(4,this)" id="ctoggle-4"><span class="t-num">V</span>Mill</button>
-    <button class="tradition-toggle" onclick="toggleTradition(5,this)" id="ctoggle-5"><span class="t-num">VI</span>Care Ethics</button>
-    <button class="tradition-toggle" onclick="toggleTradition(6,this)" id="ctoggle-6"><span class="t-num">VII</span>Rawls</button>
-    <button class="tradition-toggle" onclick="toggleTradition(7,this)" id="ctoggle-7"><span class="t-num">VIII</span>Existentialism</button>
+  <div class="cascade-controls" id="cascadeControls" style="grid-template-columns:repeat(3,1fr)">
+    <button class="tradition-toggle" onclick="toggleTradition(0,this)" id="ctoggle-0"><span class="t-num">I</span>Socrates</button>
+    <button class="tradition-toggle" onclick="toggleTradition(1,this)" id="ctoggle-1"><span class="t-num">II</span>Aristotle</button>
+    <button class="tradition-toggle" onclick="toggleTradition(2,this)" id="ctoggle-2"><span class="t-num">III</span>Stoics</button>
+    <button class="tradition-toggle" onclick="toggleTradition(3,this)" id="ctoggle-3"><span class="t-num">IV</span>Kant</button>
+    <button class="tradition-toggle" onclick="toggleTradition(4,this)" id="ctoggle-4"><span class="t-num">V</span>Hume</button>
+    <button class="tradition-toggle" onclick="toggleTradition(5,this)" id="ctoggle-5"><span class="t-num">VI</span>Mill</button>
+    <button class="tradition-toggle" onclick="toggleTradition(6,this)" id="ctoggle-6"><span class="t-num">VII</span>Care Ethics</button>
+    <button class="tradition-toggle" onclick="toggleTradition(7,this)" id="ctoggle-7"><span class="t-num">VIII</span>Rawls</button>
+    <button class="tradition-toggle" onclick="toggleTradition(8,this)" id="ctoggle-8"><span class="t-num">IX</span>Existentialism</button>
   </div>
 
   <div class="cascade-insight" id="cascadeInsight">Activate a tradition to see what its structural conditions add to the moral real.</div>
@@ -478,6 +480,16 @@ const STATIONS = [
     morphism: `Rawls was measuring minimum λ Raw — the simulation's operationalization of the difference principle. The Rawlsian test (Chapter 7, Run 3) showed exactly what Rawls predicted: aggregate metrics can look healthy while the most constrained agents fall below the threshold for ethical functioning. Nussbaum's capabilities approach maps onto the full FHRI (Future Horizons and Resilience Index) — not just whether agents survive but whether they have the full set of functionings that constitute a dignified human life.`,
     metrics: ['Minimum λ Raw', 'FHRI Floor', 'Capabilities Threshold'],
     color: '#0369a1'
+  },
+  {
+    num: 'IX', name: 'Existentialism & Coherence Ethics', dates: '1840–present',
+    discovery: `The existentialists (Kierkegaard, Sartre, Heidegger, Camus) discovered that authenticity is not a psychological preference but a structural achievement — one that requires specific conditions to be possible. Sartre's existence precedes essence is the informational assembly claim: the Identity Kernel is built, not given. Heidegger's thrownness is facticity as thermodynamic constraint. The absurd is the phenomenological experience of being a high-depth structure in a universe trending toward equilibrium. Bad faith is not weakness — it is a rational adaptive response to high-entropy environments where the metabolic cost of authentic choice exceeds what the agent can bear.`,
+    discovery_title: 'Authenticity Is a Structural Achievement: Morphic Fidelity Under Entropy',
+    blindspot: `Existentialism in its classical form placed the entire burden of authenticity on the isolated individual. Sartre's radical freedom implies that authentic choice is always available — that bad faith is always chosen rather than structurally produced. This misses what the Sapolsky threshold makes unmistakable: under sufficient chronic stress, the metabolic cost of authentic choice is genuinely too high. The individual is not failing to be brave. The architecture has made authentic functioning thermodynamically inaccessible. Classical existentialism has no account of institutions as constructors of the conditions for authenticity.`,
+    blindspot_title: 'Burden on the Isolated Individual: No Account of Institutional Constructor Obligations',
+    morphism: `Existentialism maps onto the simulation more directly than any other tradition — not because it is the synthesis but because it named the target variable explicitly. Authenticity IS high morphic fidelity. Bad faith IS the morphic fidelity penalty accumulated when acting against the Identity Kernel. The ATCF formalizes Heideggerian temporality: Aₜ (facticity), Cₜ (project/future), Fₜ (meta-constructive capacity — free will as the ability to modify the Identity Kernel itself). BioBond is the thermodynamic cooling infrastructure that makes Fₜ accessible. The Adaptive Moral Commonwealth is Constructor Ethics operationalized: institutions designed to make authenticity structurally possible for all agents, not just those with sufficient metabolic resources to achieve it alone.`,
+    metrics: ['Morphic Fidelity', 'ATCF', 'Fₜ Meta-Constructor', 'BioBond'],
+    color: '#7c3aed'
   }
 ];
 
@@ -518,6 +530,10 @@ showStation(0, document.querySelector('.station-btn.active-station'));
 // CASCADE
 const CASCADE_BASELINE = {lr:0.38,lp:0.14,gap:0.24,os2:0.11,bio:0.12,atcf:0.28,minLr:0.08,fid:0.31,fric:0.72};
 const CASCADE_STATES = [
+  // 0: Socrates
+  {lr:0.42,lp:0.18,gap:0.24,os2:0.14,bio:0.14,atcf:0.30,minLr:0.10,fid:0.48,fric:0.68,
+   insight:'PRF examination underway — unexamined assumptions surfaced and interrogated. Morphic Fidelity rises as agents begin authorizing their own values rather than performing inherited scripts. But λ Raw barely moves: the elenchus requires conditions Socrates did not theorize.'},
+  // 1: Aristotle (was 0)
   {lr:0.54,lp:0.22,gap:0.32,os2:0.19,bio:0.28,atcf:0.35,minLr:0.16,fid:0.42,fric:0.65,
    insight:'Block fields improve — habituation conditions present. \u03bb Raw rises as agents gain stable identity infrastructure. But the suppression gap is barely narrower — Aristotle cannot see the evidence architecture.'},
   {lr:0.58,lp:0.26,gap:0.32,os2:0.23,bio:0.35,atcf:0.52,minLr:0.20,fid:0.48,fric:0.60,
