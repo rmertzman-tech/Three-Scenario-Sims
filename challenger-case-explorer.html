@@ -2291,8 +2291,8 @@ async function fetchWithRetry(url, options, maxAttempts=3) {
         throw new Error(`HTTP ${resp.status}: ${txt.slice(0,200)}`);
       }
       // Success — reset error style
-      const errEl = document.getElementById('ucpError');
-      if (errEl) { errEl.style.display='none'; errEl.style.background=''; errEl.style.borderColor=''; errEl.style.color=''; }
+      const successErrEl = document.getElementById('ucpError');
+      if (successErrEl) { successErrEl.style.display='none'; successErrEl.style.background=''; successErrEl.style.borderColor=''; successErrEl.style.color=''; }
       return resp;
     } catch(e) {
       if (e.name === 'TimeoutError' || e.name === 'AbortError') {
