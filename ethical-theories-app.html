@@ -14,7 +14,7 @@
   --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
   --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
   --red:#dc2626;--red-light:#fee2e2;
-  --purple:#6d28d9;--purple-light:#ede9fe;
+  --purple:#7c3aed;--purple-light:#ede9fe;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
@@ -35,58 +35,55 @@ h3{font-size:1.15rem;font-weight:700;color:var(--navy);margin:1.2rem 0 .45rem}
 h4{font-size:.97rem;font-weight:700;color:var(--amber-dark);margin:.85rem 0 .3rem}
 p{line-height:1.75;margin-bottom:.85rem;font-size:.96rem;color:var(--ink)}
 strong{color:var(--navy)}
-ul,ol{margin:.3rem 0 .7rem 1.3rem;line-height:1.8}
-li{font-size:.92rem;color:var(--ink);margin-bottom:.2rem}
+ul{margin:.3rem 0 .7rem 1.3rem;line-height:1.8}
+ul li{font-size:.92rem;color:var(--ink);margin-bottom:.2rem}
 .card{border-radius:.7rem;padding:1.2rem;margin-bottom:1rem}
 .card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
 .card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
 .card-sky{background:var(--sky-light);border-left:4px solid var(--sky-mid)}
-.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
-.card-red{background:var(--red-light);border-left:4px solid var(--red)}
-.card-purple{background:var(--purple-light);border-left:4px solid var(--purple)}
 .card-navy{background:var(--navy);color:white;padding:1.35rem}
 .card-navy p,.card-navy li{color:rgba(255,255,255,.8)}
 .card-navy h3,.card-navy h4{color:var(--teal-mid)}
+.card-green{background:var(--green-light);border-left:4px solid var(--green-mid)}
+.card-purple{background:var(--purple-light);border-left:4px solid var(--purple)}
 blockquote{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:0 .5rem .5rem 0;padding:.9rem 1.1rem;margin:1rem 0;font-style:italic;color:var(--amber-dark);font-size:.92rem}
 blockquote cite{display:block;margin-top:.35rem;font-style:normal;font-size:.78rem;font-weight:600;color:var(--muted)}
 
-/* Station nav */
-.station-nav{display:flex;gap:.25rem;flex-wrap:wrap;margin-bottom:1rem;border-bottom:2px solid var(--border);padding-bottom:.6rem}
-.station-btn{padding:.32rem .7rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.82rem;cursor:pointer;transition:.15s;white-space:nowrap}
+/* STATION NAV */
+.station-nav{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:1.25rem;padding-bottom:.85rem;border-bottom:2px solid var(--border)}
+.station-btn{padding:.38rem .75rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.83rem;cursor:pointer;transition:.15s}
 .station-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
-.station-btn.active{background:var(--teal-dark);color:white;border-color:var(--teal-dark);font-weight:600}
-.station-pane{display:none}
-.station-pane.active{display:block;animation:fadeIn .18s ease}
-.station-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1rem}
-.station-num{width:40px;height:40px;border-radius:50%;background:var(--teal-dark);color:white;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.9rem;flex-shrink:0;margin-top:.2rem}
-.station-title-block h3{margin:0 0 .2rem;font-size:1.2rem}
-.station-era{font-family:'JetBrains Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.station-btn.active-station{background:var(--teal-dark);color:white;border-color:var(--teal-dark);font-weight:600}
+.station-content{animation:fadeIn .18s ease}
+.discovery-box{background:var(--teal-light);border-left:4px solid var(--teal-mid);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem}
+.discovery-box h4{color:var(--teal-dark);margin-top:0}
+.blindspot-box{background:var(--amber-light);border-left:4px solid var(--amber);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem}
+.blindspot-box h4{color:var(--amber-dark);margin-top:0}
+.morphism-box{background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem}
+.morphism-box h4{color:var(--navy);margin-top:0}
+.metric-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:.68rem;background:var(--navy);color:var(--teal-mid);padding:.2rem .55rem;border-radius:.25rem;margin:.15rem .15rem 0 0}
 
-.discovery-box{background:var(--teal-light);border:1px solid rgba(15,118,110,.25);border-radius:.6rem;padding:1rem;margin:.75rem 0}
-.discovery-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.3rem}
-.blind-box{background:var(--amber-light);border:1px solid rgba(245,158,11,.3);border-radius:.6rem;padding:1rem;margin:.75rem 0}
-.blind-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber-dark);margin-bottom:.3rem}
-.morphism-box{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin:.75rem 0}
-.morphism-label{font-family:'JetBrains Mono',monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);margin-bottom:.3rem}
-.morphism-metrics{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.4rem}
-.morph-tag{background:var(--navy);color:white;border-radius:.3rem;padding:.18rem .55rem;font-family:'JetBrains Mono',monospace;font-size:.68rem}
+/* CASCADE */
+.cascade-controls{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+@media(max-width:600px){.cascade-controls{grid-template-columns:repeat(2,1fr)}}
+.tradition-toggle{padding:.45rem .6rem;border:2px solid var(--border);border-radius:.5rem;background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.82rem;cursor:pointer;transition:.2s;text-align:center;line-height:1.3}
+.tradition-toggle:hover{border-color:var(--teal-mid)}
+.tradition-toggle.active-toggle{background:var(--teal-dark);color:white;border-color:var(--teal-dark)}
+.tradition-toggle.active-toggle .t-num{background:rgba(255,255,255,.2)}
+.t-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;display:block;margin-bottom:.15rem;opacity:.6}
+.cascade-watershed{background:rgba(26,39,68,.04);border:1px solid var(--border);border-radius:.6rem;padding:.75rem;margin-bottom:1rem}
+.cascade-insight{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.65rem .9rem;border-radius:0 .4rem .4rem 0;font-size:.83rem;color:var(--ink);line-height:1.6;margin-bottom:1rem;min-height:2.8rem;transition:all .3s}
+.cascade-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.5rem}
+@media(max-width:580px){.cascade-metrics{grid-template-columns:1fr 1fr}}
+.cm-row{background:white;border:1px solid var(--border);border-radius:.4rem;padding:.5rem .65rem}
+.cm-label{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem}
+.cm-bar-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:.2rem}
+.cm-bar-fill{height:100%;border-radius:4px;transition:width .7s ease}
+.cm-val{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700}
+.reset-btn{padding:.35rem .9rem;border:1px solid var(--border);border-radius:.35rem;background:var(--paper);color:var(--muted);font-size:.8rem;cursor:pointer;font-family:'Cormorant Garamond',serif;transition:.15s}
+.reset-btn:hover{border-color:var(--red);color:var(--red)}
 
-/* Conditions Cascade */
-.cascade-wrap{background:var(--paper);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:1rem}
-.cascade-label{font-family:'JetBrains Mono',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.75rem}
-.tradition-toggles{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
-.trad-toggle{padding:.35rem .75rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.82rem;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:.35rem}
-.trad-toggle:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
-.trad-toggle.active{background:var(--teal-dark);color:white;border-color:var(--teal-dark)}
-.trad-toggle .tnum{font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.7}
-#cascade-canvas{width:100%;display:block;border-radius:6px;background:rgba(26,39,68,.04);margin-bottom:.85rem}
-.cascade-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.4rem;margin-bottom:.6rem}
-.casc-metric{background:white;border:1px solid var(--border);border-radius:.4rem;padding:.45rem .55rem;text-align:center}
-.casc-metric .cm-label{font-family:'JetBrains Mono',monospace;font-size:.56rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:.1rem}
-.casc-metric .cm-val{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700}
-.cascade-insight{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.6rem .85rem;border-radius:0 .4rem .4rem 0;font-size:.82rem;color:var(--ink);line-height:1.65;min-height:2.5rem;transition:all .3s}
-
-/* Simulation */
+/* SIMULATION */
 .ucp-panel{background:var(--paper);border:1px solid var(--border);border-radius:.7rem;padding:1.25rem;margin-top:1rem}
 .ucp-run-btn{background:var(--teal-dark);color:white;border:none;padding:.65rem 1.5rem;border-radius:.45rem;font-size:.95rem;font-weight:600;cursor:pointer;transition:.15s;font-family:'Cormorant Garamond',serif;display:inline-flex;align-items:center;gap:.5rem}
 .ucp-run-btn:hover{background:var(--teal)}
@@ -95,582 +92,658 @@ blockquote cite{display:block;margin-top:.35rem;font-style:normal;font-size:.78r
 @keyframes spin{to{transform:rotate(360deg)}}
 .ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.5rem;margin:.75rem 0}
 .ucp-metric{background:white;border:1px solid var(--border);border-radius:.45rem;padding:.5rem .65rem;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.ucp-metric:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.1);border-color:var(--teal-mid)}
+.ucp-metric:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12);border-color:var(--teal-mid)}
 .ucp-metric .m-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.15rem}
 .ucp-metric .m-val{font-size:1.2rem;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--teal-dark)}
-.ucp-metric .m-hint{font-size:.56rem;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:.1rem;opacity:.7}
+.ucp-metric .m-hint{font-size:.58rem;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:.15rem;opacity:.7}
 .ucp-bars{margin:.6rem 0}
 .ucp-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem;cursor:pointer}
 .ucp-bar-label{font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:140px}
 .ucp-bar-track{flex:1;height:14px;background:var(--border);border-radius:3px;overflow:hidden}
 .ucp-bar-fill{height:100%;border-radius:3px;transition:width .6s}
-.ucp-bar-pct{font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:3.2rem;text-align:right}
+.ucp-bar-pct{font-size:.7rem;font-family:'JetBrains Mono',monospace;color:var(--muted);min-width:3.5rem;text-align:right}
 .ucp-narrative{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.83rem;color:var(--ink);line-height:1.65;margin-top:.6rem}
 .ucp-error{background:var(--red-light);border:1px solid var(--red);border-radius:.45rem;padding:.65rem;font-size:.82rem;color:var(--red);margin-top:.5rem;display:none}
 
-/* Modal */
+/* METRIC MODAL */
 .metric-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
-.metric-modal{background:white;border-radius:1rem;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.metric-modal-header{padding:1.1rem 1.4rem .8rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
-.metric-modal-name{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.15rem}
-.metric-modal-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--navy)}
-.metric-modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);padding:.1rem .3rem}
-.metric-modal-body{padding:1.1rem 1.4rem}
-.modal-traditions{display:flex;flex-direction:column;gap:.5rem}
-.modal-trad-row{display:flex;gap:.75rem;align-items:flex-start;padding:.6rem;border-radius:.4rem;background:var(--paper);border:1px solid var(--border)}
-.modal-trad-name{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:var(--navy);min-width:90px;margin-top:.1rem}
-.modal-trad-text{font-size:.82rem;color:var(--ink);line-height:1.55}
+.metric-modal{background:white;border-radius:1rem;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.metric-modal-header{padding:1.25rem 1.5rem .85rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.metric-modal-name{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.2rem}
+.metric-modal-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--navy)}
+.metric-modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1;padding:.1rem .3rem}
+.metric-modal-body{padding:1.25rem 1.5rem}
+.metric-modal-value{display:flex;align-items:center;gap:1rem;background:var(--paper);border-radius:.5rem;padding:.9rem 1rem;margin-bottom:1rem}
+.metric-modal-big{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;min-width:70px;text-align:center}
+.metric-modal-verdict{font-size:.88rem;font-weight:600;line-height:1.4}
+.metric-modal-verdict-sub{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.metric-range-bar{background:var(--border);border-radius:4px;height:10px;margin:.5rem 0 .25rem;position:relative;overflow:visible}
+.metric-range-fill{height:100%;border-radius:4px;position:absolute;left:0;top:0}
+.metric-range-pin{position:absolute;top:-5px;width:2px;height:20px;background:var(--navy);border-radius:1px}
+.metric-range-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem}
+.metric-modal-section{margin-bottom:.9rem}
+.metric-modal-section h4{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:.3rem}
+.metric-modal-section p{font-size:.84rem;line-height:1.65;color:var(--ink);margin-bottom:.35rem}
+.metric-modal-traditions{background:var(--purple-light);border-left:3px solid var(--purple);border-radius:0 .45rem .45rem 0;padding:.75rem .9rem;font-size:.82rem;line-height:1.65;color:var(--purple)}
+.metric-modal-formula{background:var(--paper);border:1px solid var(--border);border-radius:.4rem;padding:.6rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--navy);margin:.5rem 0}
 
-/* Journal */
+/* JOURNAL */
 .journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
-.q-label{font-family:'JetBrains Mono',monospace;font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.38rem}
+.journal-q .q-label{font-family:'JetBrains Mono',monospace;font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.38rem}
 .journal-q p{font-size:.87rem;margin-bottom:.45rem}
-textarea.jta{width:100%;min-height:90px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta{width:100%;min-height:95px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
 textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
 textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
 .save-note{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;height:1.1rem;opacity:0;transition:.3s}
 .save-note.show{opacity:1}
+
+/* PRED RETRIEVAL */
+.pred-retrieval{background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.2);border-radius:.7rem;padding:1rem 1.1rem;margin-bottom:1rem}
+.pred-retrieval-label{font-family:'JetBrains Mono',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.35rem}
+.pred-retrieval-text{font-size:.88rem;font-style:italic;color:var(--ink);line-height:1.6;border-left:3px solid var(--amber);padding-left:.75rem}
+.pred-retrieval-empty{font-size:.84rem;color:var(--muted)}
 </style>
 </head>
 <body>
 <div class="app-wrap">
 
 <div class="app-header">
-  <div class="ch-label">Ethics Beyond Boundaries · Chapter 8 · The Synthesis</div>
-  <h1>The Simulated History of Ethics</h1>
-  <div class="sub">What the Traditions Were Measuring Before There Was a Simulation to Run</div>
+  <div class="ch-label">Ethics Beyond Boundaries &middot; Chapter 8 &middot; The Simulated History of Ethics</div>
+  <h1>What Were They Measuring?</h1>
+  <div class="sub">Eight Traditions &middot; One Moral Real &middot; The Architecture of a More Complete View</div>
 </div>
 
 <div class="tab-nav" role="tablist">
-  <button class="tab-btn active" id="tb-frame"    onclick="showTab('frame',this)"    role="tab">Overview</button>
-  <button class="tab-btn"        id="tb-stations" onclick="showTab('stations',this)" role="tab">Eight Stations</button>
-  <button class="tab-btn"        id="tb-cascade"  onclick="showTab('cascade',this)"  role="tab">Conditions Cascade</button>
-  <button class="tab-btn"        id="tb-composite"onclick="showTab('composite',this)"role="tab">Composite Run</button>
-  <button class="tab-btn"        id="tb-complex"  onclick="showTab('complex',this)"  role="tab">The Complex PRF</button>
-  <button class="tab-btn"        id="tb-journal"  onclick="showTab('journal',this)"  role="tab">Ethics Journal</button>
+  <button class="tab-btn active" id="tb-overview"   onclick="showTab('overview',this)"   role="tab">Overview</button>
+  <button class="tab-btn"        id="tb-stations"   onclick="showTab('stations',this)"   role="tab">Eight Stations</button>
+  <button class="tab-btn"        id="tb-cascade"    onclick="showTab('cascade',this)"    role="tab">Conditions Cascade</button>
+  <button class="tab-btn"        id="tb-composite"  onclick="showTab('composite',this)"  role="tab">Composite Run</button>
+  <button class="tab-btn"        id="tb-complex"    onclick="showTab('complex',this)"    role="tab">The Complex PRF</button>
+  <button class="tab-btn"        id="tb-journal"    onclick="showTab('journal',this)"    role="tab">Ethics Journal</button>
 </div>
 
-<!-- ══ OVERVIEW ══ -->
-<div class="tab-pane active" id="tab-frame">
-  <h2>Overview — What the Philosophers Were Measuring</h2>
+<!-- OVERVIEW -->
+<div class="tab-pane active" id="tab-overview">
+  <h2>Overview &mdash; What the Traditions Were Actually Measuring</h2>
 
-  <p>You have been running simulations since Chapter 2. Every run measured the same things: how much genuine capability is present in a population (λ Raw), how much of it reaches decisions (λ Perceived), how much coordination across difference the architecture produces (OS2 Bridge), how much effort is absorbed before it reaches outcomes (Morphic Suppression), what stress does to deliberative capacity (the Sapolsky threshold).</p>
+  <div class="pred-retrieval" id="predPanel">
+    <div class="pred-retrieval-label">Your Chapter 7 Q5 Prediction (retrieved)</div>
+    <div id="predText" class="pred-retrieval-empty">Loading&hellip;</div>
+  </div>
 
-  <p><strong>The philosophers whose work you are about to encounter were measuring the same things.</strong> They did not have a simulation. They had phenomenological observation, logical argument, historical analysis, and moral intuition. From these instruments they made discoveries about the structural conditions required for ethical functioning. Chapter 8 shows you what they found — and what the simulation lets you see about what each tradition was tracking and what it could not see from its particular angle.</p>
+  <p><strong>You have now run the simulation eleven times across seven cases.</strong> In each run, you set parameters: entropy, stress, evidence architecture, worldview distribution, block fields. You watched the metrics respond. You compared runs and explained the differences.</p>
+
+  <p>Chapter 8 asks a different question: <em>where did those parameters come from?</em> Who noticed that block fields matter? Who first argued that evidence architecture is a moral question? Who identified the suppression gap before there was a simulation to measure it?</p>
+
+  <p>The answer is the philosophical traditions you are about to encounter. They did not have the simulation. They had argument, observation, and careful attention to what makes human ethical functioning possible or impossible. <strong>Each tradition discovered something real about the structural conditions the simulation measures.</strong> Each also had a characteristic blind spot &mdash; a dimension of the moral real its PRF could not see.</p>
 
   <div class="card card-amber">
-    <h4>A Necessary Clarification</h4>
-    <p>This chapter does not argue that one tradition got it right. It does not argue that they are all equally right. It argues something more specific: the moral real is genuinely complex — more complex than any single cognitive architecture can perceive completely. Each tradition perceived something real about the structural conditions for ethical functioning. Each also had characteristic blind spots — not because the thinkers were careless, but because bounded perception from any specific angle will always miss dimensions that other angles illuminate.</p>
-    <p style="margin-top:.4rem">The formalism — the simulation you have been running — is a coordination mechanism. It does not adjudicate between traditions. It gives you a common measurement space in which different traditions' partial perceptions can be held simultaneously. What you see in that combined space is more of the moral real than any single tradition sees alone.</p>
+    <h4>This Chapter Does Not Declare a Winner</h4>
+    <p>The simulation does not adjudicate between traditions. It is a perceptual instrument &mdash; it makes visible structural features that different traditions have been tracking from different angles. The moral real is genuinely more complex than any single PRF can perceive completely. This is not relativism. It is a claim about cognitive boundedness: every tradition sees something real, and what each misses is the predictable consequence of bounded perception from a specific vantage point.</p>
+    <p style="margin-top:.4rem">The question this chapter asks is not which tradition got closest to the truth &mdash; it is what becomes visible when you hold all eight together, and what institutional architecture would be required to maintain all eight sets of structural conditions simultaneously.</p>
   </div>
 
-  <h3>The Central Claim</h3>
-  <p>Each of the eight traditions we will examine made a genuine discovery about one or more variables in the simulation. The partial morphisms between each tradition and the simulation are not coincidental — they reflect the fact that the philosophers were observing structural features of human ethical life that the simulation was later built to measure.</p>
-
-  <p>But the mapping works in both directions. A committed Kantian can look at the simulation and say: these are complicated ways of describing what I already knew — rational agency requires intact deliberative capacity, and institutions that violate this are unjust. A utilitarian can say: OS2 Bridge is just aggregate welfare with a new name. A care ethicist can say: BioBond is just caring relationships formalized. <strong>All of these readings are coherent from within their own PRFs.</strong> The partial morphisms are real. The claim that one tradition's reading is more fundamental than another's is itself PRF-dependent.</p>
-
-  <div class="card card-teal">
-    <h4>How to Use This Chapter</h4>
-    <p>Work through the Eight Stations tab to understand what each tradition discovered and what it could not see. Then use the Conditions Cascade to watch what each tradition's conditions contribute to a depleted institutional environment. Run the Composite Simulation to see what the combined measurement produces. The Complex PRF tab states the synthesis argument and what it costs and gains. Your journal Q5 stores your prediction for the Rust Belt app — which will apply all eight lenses to a single historical event.</p>
-  </div>
+  <h3>How to Use This Chapter</h3>
+  <ul>
+    <li><strong>Eight Stations</strong> &mdash; each tradition's discovery, its blind spot, and the simulation variable it was tracking</li>
+    <li><strong>Conditions Cascade</strong> &mdash; an interactive visualization showing what each tradition adds to the metric picture</li>
+    <li><strong>Composite Run</strong> &mdash; one live simulation with all eight traditions' conditions activated simultaneously</li>
+    <li><strong>The Complex PRF</strong> &mdash; what becomes visible from the more comprehensive view, and what it requires</li>
+  </ul>
 </div>
 
-<!-- ══ EIGHT STATIONS ══ -->
+<!-- EIGHT STATIONS -->
 <div class="tab-pane" id="tab-stations">
-  <h2>Eight Stations — The History of Ethical Discovery</h2>
+  <h2>Eight Stations &mdash; What Each Tradition Discovered</h2>
 
-  <div class="station-nav" role="tablist" id="stationNav"></div>
+  <div class="station-nav" role="tablist">
+    <button class="station-btn active-station" onclick="showStation(0,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">I</span>Socrates</button>
+    <button class="station-btn" onclick="showStation(1,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">II</span>Aristotle</button>
+    <button class="station-btn" onclick="showStation(2,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">III</span>Stoics</button>
+    <button class="station-btn" onclick="showStation(3,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">IV</span>Hume</button>
+    <button class="station-btn" onclick="showStation(4,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">V</span>Kant</button>
+    <button class="station-btn" onclick="showStation(5,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">VI</span>Mill</button>
+    <button class="station-btn" onclick="showStation(6,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">VII</span>Care Ethics</button>
+    <button class="station-btn" onclick="showStation(7,this)"><span style="font-family:'JetBrains Mono',monospace;font-size:.65rem;opacity:.6;display:block">VIII</span>Rawls</button>
+  </div>
+
   <div id="stationContent"></div>
 </div>
 
-<!-- ══ CONDITIONS CASCADE ══ -->
+<!-- CONDITIONS CASCADE -->
 <div class="tab-pane" id="tab-cascade">
-  <h2>Conditions Cascade — What Each Tradition Adds</h2>
+  <h2>Conditions Cascade &mdash; What Each Tradition Adds</h2>
 
-  <p>The watershed below begins depleted — high entropy, high suppression gap, near-empty reservoir. Activate each tradition's conditions to watch what it contributes. The sequence tells the story of what the history of ethics was collectively building toward.</p>
+  <p>Start from a high-entropy baseline where none of the structural conditions are present. Activate each tradition's conditions in sequence and watch what changes &mdash; and what each tradition cannot change on its own.</p>
 
-  <div class="cascade-wrap">
-    <div class="cascade-label">Activate traditions to see their structural contribution</div>
-    <div class="tradition-toggles" id="traditionToggles"></div>
-    <canvas id="cascade-canvas" height="160"></canvas>
-    <div class="cascade-metrics" id="cascadeMetrics"></div>
-    <div class="cascade-insight" id="cascadeInsight">Activate a tradition to see what it contributes to the moral architecture.</div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:.5rem">
+    <button class="reset-btn" onclick="resetCascade()">&#8635; Reset to baseline</button>
   </div>
+
+  <div class="cascade-controls" id="cascadeControls">
+    <button class="tradition-toggle" onclick="toggleTradition(0,this)" id="ctoggle-0"><span class="t-num">I</span>Aristotle</button>
+    <button class="tradition-toggle" onclick="toggleTradition(1,this)" id="ctoggle-1"><span class="t-num">II</span>Stoics</button>
+    <button class="tradition-toggle" onclick="toggleTradition(2,this)" id="ctoggle-2"><span class="t-num">III</span>Kant</button>
+    <button class="tradition-toggle" onclick="toggleTradition(3,this)" id="ctoggle-3"><span class="t-num">IV</span>Hume</button>
+    <button class="tradition-toggle" onclick="toggleTradition(4,this)" id="ctoggle-4"><span class="t-num">V</span>Mill</button>
+    <button class="tradition-toggle" onclick="toggleTradition(5,this)" id="ctoggle-5"><span class="t-num">VI</span>Care Ethics</button>
+    <button class="tradition-toggle" onclick="toggleTradition(6,this)" id="ctoggle-6"><span class="t-num">VII</span>Rawls</button>
+    <button class="tradition-toggle" onclick="toggleTradition(7,this)" id="ctoggle-7"><span class="t-num">VIII</span>Existentialism</button>
+  </div>
+
+  <div class="cascade-insight" id="cascadeInsight">Activate a tradition to see what its structural conditions add to the moral real.</div>
+
+  <div class="cascade-watershed">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.5rem">Watershed &mdash; Active Conditions</div>
+    <canvas id="cascadeCanvas" width="820" height="130" style="width:100%;display:block;border-radius:6px"></canvas>
+  </div>
+
+  <div class="cascade-metrics" id="cascadeMetrics"></div>
+
+  <div class="card card-teal" style="margin-top:.75rem">
+    <h4>Notice the Pattern</h4>
+    <p>Each tradition improves the metrics &mdash; but no tradition improves all of them equally. Kant improves deliberative capacity but barely moves the suppression gap. Mill improves the suppression gap dramatically but leaves minimum &lambda; Raw almost unchanged. Care Ethics makes the biggest single jump in minimum &lambda; Raw. The Conditions Cascade is the simulation's answer to the question: what were they arguing about? They were arguing about which structural conditions matter most &mdash; and each was right about a different set.</p>
+  </div>
+</div>
+
+<!-- COMPOSITE RUN -->
+<div class="tab-pane" id="tab-composite">
+  <h2>Composite Run &mdash; All Eight Conditions Simultaneously</h2>
+
+  <p>The Conditions Cascade showed you what each tradition adds. This tab runs a single live simulation with all eight traditions' conditions activated simultaneously &mdash; the closest approximation of what the moral real looks like when you can measure more of it at once.</p>
+
+  <div class="card card-amber">
+    <h4>What to Watch For</h4>
+    <p>This is not a utopia run. The composite configuration still has genuine worldview diversity, genuine friction, genuine coordination challenges. What changes is that all the structural conditions that enable ethical functioning are present simultaneously. Watch what OS2 Bridge does when no single tradition's conditions are absent. Watch whether the suppression gap closes entirely &mdash; and why it does not.</p>
+  </div>
+
+  <div class="ucp-panel" style="background:rgba(26,39,68,.94);border-color:rgba(20,184,166,.2)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.09em;color:rgba(201,168,76,.6);margin-bottom:.3rem">Composite Configuration &mdash; All Eight Traditions</div>
+    <div style="font-size:.88rem;font-weight:700;color:rgba(255,255,255,.82);margin-bottom:.6rem;font-family:'Georgia',serif">Maximum structural conditions &mdash; 16 agents &mdash; genuine worldview diversity</div>
+    <table style="width:100%;border-collapse:collapse;font-size:.77rem;margin-bottom:.5rem">
+      <tr><td style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);padding:.22rem .35rem;width:40%">Base entropy</td><td style="color:rgba(255,255,255,.72)">0.42 &mdash; lower than any prior run</td></tr>
+      <tr><td style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);padding:.22rem .35rem">Base stress</td><td style="color:rgba(255,255,255,.72)">0.38 &mdash; all agents below Sapolsky threshold</td></tr>
+      <tr><td style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);padding:.22rem .35rem">Evidence architecture</td><td style="color:rgba(255,255,255,.72)">empirical_calibrated 0.62 &mdash; Mill/Aristotle condition</td></tr>
+      <tr><td style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);padding:.22rem .35rem">Worldview distribution</td><td style="color:rgba(255,255,255,.72)">All five frameworks active &mdash; genuine diversity</td></tr>
+      <tr><td style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);padding:.22rem .35rem">Block fields</td><td style="color:rgba(255,255,255,.72)">care +0.42, fairness +0.40, community +0.45 &mdash; Care/Rawls condition</td></tr>
+      <tr><td style="font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.38);padding:.22rem .35rem">BioBond</td><td style="color:rgba(255,255,255,.72)">Activated at step 4 &mdash; Existentialist cooling condition</td></tr>
+    </table>
+    <div style="padding:.5rem .7rem;background:rgba(201,168,76,.07);border-left:3px solid rgba(201,168,76,.45);border-radius:0 .3rem .3rem 0;font-size:.77rem;color:rgba(255,255,255,.62);line-height:1.6;font-style:italic">Before running: based on the Conditions Cascade, predict which metric will be highest. Which blind spot do you expect to persist even with all conditions active?</div>
+  </div>
+
+  <button class="ucp-run-btn" id="compositeRunBtn" onclick="runComposite()" style="margin-top:1rem">
+    <span class="ucp-spinner" id="compositeSpinner"></span>
+    &#9654; Run Composite Simulation
+  </button>
+
+  <div class="ucp-error" id="compositeError"></div>
+  <div id="compositeResults" style="display:none"></div>
+</div>
+
+<!-- THE COMPLEX PRF -->
+<div class="tab-pane" id="tab-complex">
+  <h2>The Complex PRF &mdash; A More Comprehensive View</h2>
+
+  <p>The eight stations showed you eight genuine discoveries about the structural conditions for ethical functioning. The Conditions Cascade showed you what each tradition adds and what each cannot see on its own. The Composite Run showed you what happens when all the conditions are present simultaneously.</p>
+
+  <p>This section makes the synthesis argument &mdash; carefully, without overclaiming.</p>
+
+  <h3>What the Partial Morphisms Actually Show</h3>
+  <p>Each tradition maps onto a specific variable or cluster of variables in the simulation. These mappings are real, not manufactured. Aristotle was measuring block fields. Kant was measuring the Sapolsky threshold. Mill was measuring the suppression gap in aggregate welfare data. Care ethics was measuring BioBond. Rawls was measuring minimum &lambda; Raw.</p>
+
+  <p><strong>This does not mean the formalism validates any particular tradition.</strong> It means the moral real has structural features that all these traditions were perceiving from different angles. The formalism is a coordinate system that allows the different perceptions to be represented simultaneously &mdash; not a judge that picks the most accurate perceiver.</p>
+
+  <div class="card card-amber">
+    <h4>The Bounded Perception Claim</h4>
+    <p>Every PRF is bounded. The Kantian PRF perceives the conditions for rational agency with great clarity &mdash; and has difficulty perceiving the structural conditions that maintain those conditions. The utilitarian PRF perceives aggregate welfare with great clarity &mdash; and systematically misses what happens to the agents farthest from the average. The care ethics PRF perceives relational conditions with great clarity &mdash; and has difficulty extending that perception across genuine PRF difference.</p>
+    <p style="margin-top:.4rem">These are not failures of reasoning. They are the predictable consequence of bounded cognitive architectures encountering a genuinely complex moral world. The partial morphisms exist because each tradition built its PRF by attending carefully to a real dimension of the moral real. What each missed is what its particular angle of perception structurally could not see.</p>
+  </div>
+
+  <h3>What the Complex PRF Requires</h3>
+  <p>A PRF that can perceive more of the moral real simultaneously &mdash; holding all eight traditions' insights without collapsing them into each other &mdash; requires two things that argument alone cannot provide:</p>
 
   <div class="card card-teal">
-    <h4>What You Are Watching</h4>
-    <p>Each tradition is activating a different set of structural conditions. The watershed's water level (λ Raw), dam height (suppression gap), and reservoir fill (OS2 Bridge) respond to the combined configuration of all active traditions. Notice that no single tradition, activated alone, produces a healthy system. Each one adds something the others cannot. The question the Composite Run answers is: what does the combined measurement look like when all conditions are present simultaneously?</p>
-  </div>
-</div>
-
-<!-- ══ COMPOSITE RUN ══ -->
-<div class="tab-pane" id="tab-composite">
-  <h2>Composite Simulation — All Conditions Active</h2>
-
-  <p>This simulation runs the combined parameter set — all eight traditions' structural conditions activated simultaneously. The parameters reflect what an institution would look like if it took every tradition's core insight seriously at once: deliberative capacity protected (Kant), habituation conditions present (Aristotle), BioBond structures robust (care ethics), evidence architecture empirically calibrated (Mill), minimum λ Raw maximized (Rawls), stress below threshold (Stoics), morphic fidelity high (existentialism).</p>
-
-  <div class="card card-amber">
-    <h4>This Is Not a Utopia Run</h4>
-    <p>The composite run still has genuine worldview diversity, genuine friction, genuine coordination challenges. What it does not have is any of the characteristic failure modes that occur when one tradition's conditions are absent. The result is not perfect ethical functioning — it is ethical functioning that has removed the known structural obstacles. What remains is the irreducible difficulty of coordinating across genuine difference, which no institutional design fully eliminates.</p>
+    <h4>The Formalism as Coordination Mechanism</h4>
+    <p>The simulation gives you a coordinate system in which all eight dimensions can be represented simultaneously. This is what the formalism contributes: not a synthesis that replaces the traditions, but a structure that allows their different perceptions to be held together without requiring any tradition to abandon its commitments. You can be a committed Kantian and still use the simulation to see what the utilitarian is measuring &mdash; because the simulation is not claiming that utilitarian metrics are more fundamental than Kantian ones. It is claiming that both are measuring something real.</p>
   </div>
 
-  <div class="ucp-panel">
-    <h3 style="font-size:.95rem;margin-bottom:.75rem;color:var(--teal-dark)">Composite Parameter Set — All Eight Traditions
-      <span style="font-size:.72rem;font-weight:400;color:var(--muted)">(click any metric to see which traditions it connects to)</span>
-    </h3>
-    <div style="background:rgba(26,39,68,.05);border:1px solid rgba(26,39,68,.12);border-radius:.5rem;padding:.85rem 1rem;margin-bottom:1rem;font-size:.79rem">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber-dark);margin-bottom:.4rem">Parameter Configuration</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.2rem .75rem">
-        <span style="color:var(--muted)">base_entropy</span><span>0.48 — Stoic/Epicurean cooling</span>
-        <span style="color:var(--muted)">base_stress</span><span>0.42 — below Sapolsky threshold (Kant)</span>
-        <span style="color:var(--muted)">community block</span><span>+0.45 — BioBond present (Care)</span>
-        <span style="color:var(--muted)">fairness block</span><span>+0.42 — epistemic justice (Kant/Rawls)</span>
-        <span style="color:var(--muted)">empirical_calibrated</span><span>0.62 — evidence architecture (Mill)</span>
-        <span style="color:var(--muted)">worldview distribution</span><span>diverse — five frameworks (Aristotle)</span>
-        <span style="color:var(--muted)">BioBond</span><span>high — caring infrastructure (Care)</span>
-        <span style="color:var(--muted)">min λ Raw target</span><span>maximized (Rawls difference principle)</span>
-      </div>
-    </div>
-    <button class="ucp-run-btn" id="compRunBtn" onclick="runComposite()">
-      <span class="ucp-spinner" id="compSpinner"></span>
-      ▶ Run Composite Simulation
-    </button>
-    <div class="ucp-error" id="compError"></div>
-    <div id="compResult" style="display:none">
-      <div class="ucp-metrics" id="compMetrics"></div>
-      <div class="ucp-bars" id="compBars"></div>
-      <div class="ucp-narrative" id="compNarrative"></div>
-    </div>
+  <div class="card card-sky">
+    <h4>Empathy as Motivational Precondition</h4>
+    <p>The formalism creates the possibility of the complex PRF. It does not create the willingness to use it. That willingness &mdash; the genuine openness to allowing another tradition's perception to inform your own, not just to acknowledge it &mdash; is what empathy provides in this context. It is not a feeling. It is a cognitive practice: the deliberate act of attending to what another PRF sees as if it might reveal something your own PRF cannot.</p>
+    <p style="margin-top:.4rem">Without empathy as the motivational precondition, the complex PRF is a philosophical position you can describe but not inhabit.</p>
   </div>
-</div>
 
-<!-- ══ COMPLEX PRF ══ -->
-<div class="tab-pane" id="tab-complex">
-  <h2>The Complex PRF — A More Comprehensive View</h2>
-
-  <h3>What Becomes Available</h3>
-  <p>A person who holds all eight traditions' discoveries simultaneously — using the formalism as a coordination mechanism to understand what each was tracking — can perceive more of the moral real than any single tradition sees alone. This is not synthesis in the sense of one tradition absorbing the others. It is a more complex PRF that treats each tradition as a partial perceiver of a genuinely multi-dimensional moral reality.</p>
-
-  <p>From this complex PRF, specific things become visible that no single tradition can see:</p>
+  <h3>The Institutional Implication: The Adaptive Moral Commonwealth</h3>
+  <p>The complex PRF generates one concrete institutional implication: the <strong>Adaptive Moral Commonwealth</strong> (AMC). Not as a political theory &mdash; as an engineering specification. An institution that takes all eight traditions seriously simultaneously would need to maintain:</p>
 
   <ul>
-    <li><strong>Why apparently just institutions produce unjust outcomes:</strong> an institution can satisfy Kantian conditions (rational agency respected) while violating Aristotelian ones (no habituation infrastructure), producing agents who are formally free but structurally unable to exercise that freedom.</li>
-    <li><strong>Why utilitarian calculations systematically underestimate harm to vulnerable populations:</strong> aggregate metrics miss the capability gap that Run 3 always shows — the gap between what the architecture provides and what agents with depleted resilience margins can access.</li>
-    <li><strong>Why individual virtue is insufficient under institutional entropy:</strong> the Challenger engineers had high morphic fidelity and clear ethical commitments. The architecture destroyed their effectiveness anyway. Individual virtue is necessary but not sufficient — the Aristotelian point about habituation infrastructure is structurally correct.</li>
-    <li><strong>Why care ethics and rights ethics keep arguing past each other:</strong> they are tracking different dimensions of the same structural reality. BioBond is the relational infrastructure that makes rights exercisable. Rights are the formal protection that prevents BioBond structures from being dismantled by institutional power. Each is incomplete without the other.</li>
+    <li><strong>Aristotelian conditions:</strong> habituation infrastructure, block fields that support character development</li>
+    <li><strong>Stoic/Epicurean conditions:</strong> ATCF depth support, BioBond environmental design, stress buffers</li>
+    <li><strong>Kantian conditions:</strong> no agent treated as means only, Sapolsky threshold maintained for all</li>
+    <li><strong>Humean conditions:</strong> moral sentiment calibration extended beyond the proximate through institutional design</li>
+    <li><strong>Millian conditions:</strong> empirical evidence architecture, aggregate welfare measured with distributional awareness</li>
+    <li><strong>Care ethics conditions:</strong> BioBond structures robust, relational infrastructure maintained, minimum &lambda; Raw floor</li>
+    <li><strong>Rawlsian conditions:</strong> difference principle applied to institutional design, FHRI floor guaranteed</li>
+    <li><strong>Existentialist conditions:</strong> morphic fidelity penalty minimized, meta-constructive capacity (F&sub;t;) accessible</li>
   </ul>
 
-  <h3>What It Costs</h3>
-  <p>The complex PRF is not free. It requires genuine willingness to take seriously what traditions whose core commitments feel alien are perceiving — not as an intellectual exercise but as an actual expansion of moral vision. This is the empathy requirement: you cannot use the formalism to build a more complete picture unless you are genuinely willing to let another PRF's perception inform yours.</p>
-
-  <p>It also requires epistemic humility about the formalism itself. The simulation has its own PRF — built from specific assumptions about what matters, what is measurable, what counts as a structural condition. Someone who finds the partial morphisms interesting but not persuasive is not making an error. They are recognizing that the formalism's apparently neutral measurement space is itself the product of particular interpretive choices.</p>
-
-  <h3>What It Does Not Claim</h3>
-  <div class="card card-amber">
-    <h4>The Epistemic Status of This View</h4>
-    <p>The complex PRF is offered as <strong>coherent</strong> — internally consistent, explaining more of the moral phenomena than any single tradition, generating concrete institutional implications. It is not offered as uniquely valid. A committed Kantian who finds the partial morphisms interesting but chooses to remain within the Kantian framework has not made an error in reasoning. They have made a different choice about which structural features of the moral real to prioritize.</p>
-    <p style="margin-top:.5rem">What we can say is this: the cost of the complex PRF — in terms of what you have to give up — is low. You do not have to abandon any tradition's core insight. You have to be willing to hold it alongside others and let the formalism show you what each is tracking. The gain — in terms of what you can now see — is substantial. That is the case for it. It is not a proof.</p>
-  </div>
-
-  <h3>The Institutional Implication</h3>
-  <p>The complex PRF generates one concrete institutional conclusion: the Adaptive Moral Commonwealth. Not as a philosophical ideal but as an engineering specification — the parameter configuration that maintains all eight traditions' structural conditions simultaneously. The composite simulation you ran is a prototype of what this looks like computationally.</p>
-
-  <p>Every time an institution satisfies only some of these conditions, the simulation predicts a specific failure mode. High Kantian conditions but low Aristotelian: deliberative capacity present but no habituation infrastructure to sustain virtue under pressure. High utilitarian conditions but low Rawlsian: aggregate welfare maximized while minimum λ Raw collapses for the most constrained agents. High care ethics conditions but low diversity: robust coordination within but failure across genuine PRF difference.</p>
-
   <div class="card card-navy">
-    <h4>The Mandate to Build</h4>
-    <p>The existentialist tradition — particularly in its coherence engineering form — captures what the complex PRF ultimately demands: authenticity is not an individual achievement. It requires institutional architecture that maintains the structural conditions for authentic agency. The state's ethical obligation is not to define the individual's essence but to act as a meta-constructor of the conditions that allow the individual to define their own essence.</p>
-    <p style="margin-top:.5rem">This is the culminating institutional claim of the course: <strong>ethical behavior is a fragile thermodynamic and informational achievement that requires institutional support to be sustainably possible.</strong> Individual virtue, without the institutional conditions that sustain it, is what Boisjoly had — and what the Challenger architecture destroyed. The mandate is not just to be ethical. It is to build the worlds in which ethical functioning is structurally possible.</p>
+    <h4>The Epistemic Humility Closing</h4>
+    <p>This complex PRF is offered as coherent and more comprehensive than any single tradition's account. It is not required. A committed Kantian who finds the partial morphisms interesting but not persuasive has not made an error. They have simply not been given a reason &mdash; from within their own PRF &mdash; to make the move to the more complex view.</p>
+    <p style="margin-top:.4rem">That reason cannot be compelled by argument alone. The simulation shows you what you cannot see from a single tradition. Whether that is a reason to expand your PRF depends on whether you are willing to take seriously what the other traditions were seeing &mdash; and that is precisely what empathy as a cognitive practice makes possible.</p>
+    <p style="margin-top:.4rem">Here is what you can see from the complex PRF that you cannot see from any single tradition: the full parameter space of what makes human ethical functioning possible. The Composite Run gave you a measurement. The Conditions Cascade showed you what each tradition contributes to it. The gap between the composite metrics and the theoretical maximum is the gap that structural investment in the most constrained agents must close &mdash; and no single tradition's account is sufficient to explain why that gap persists or what to do about it.</p>
   </div>
 </div>
 
-<!-- ══ JOURNAL ══ -->
+<!-- JOURNAL -->
 <div class="tab-pane" id="tab-journal">
-  <h2>Ethics Journal — Chapter 8</h2>
+  <h2>Ethics Journal &mdash; Chapter 8</h2>
 
-  <div class="journal-q">
-    <div class="q-label">Question 1 — Your Station</div>
-    <p>Which of the eight stations did you find most immediately compelling — where the tradition's insight felt most directly connected to something you have observed or experienced? What does that response tell you about your own PRF — which structural features of the moral real are you most calibrated to perceive?</p>
-    <textarea class="jta" id="jta-q1" placeholder="The station I found most compelling: ...&#10;Why it resonated with my experience: ...&#10;What this reveals about my PRF: ...&#10;The station I found least compelling — and what that might mean: ..." oninput="jSave('q1',this.value)"></textarea>
-    <div class="save-note" id="sn-q1">✓ Saved</div>
+  <div class="pred-retrieval" id="journalPredPanel">
+    <div class="pred-retrieval-label">Your Chapter 7 Q5 Prediction (retrieved)</div>
+    <div id="journalPredText" class="pred-retrieval-empty">Loading&hellip;</div>
   </div>
 
   <div class="journal-q">
-    <div class="q-label">Question 2 — The Blind Spot You Could Not See</div>
-    <p>Every tradition has a characteristic blind spot — what its PRF makes invisible. Which of the eight blind spots surprised you most? What did it reveal about a failure mode you had not previously been able to name?</p>
-    <textarea class="jta" id="jta-q2" placeholder="The blind spot that surprised me most: ...&#10;The failure mode it names that I had not previously been able to articulate: ...&#10;An example from an institution I know where this blind spot appears: ..." oninput="jSave('q2',this.value)"></textarea>
-    <div class="save-note" id="sn-q2">✓ Saved</div>
+    <div class="q-label">Question 1 &mdash; Your Prediction Assessment</div>
+    <p>Compare your Chapter 7 Q5 prediction to what the eight stations actually showed. Which tradition did you predict would map most directly onto the Farmer simulation? Was your prediction accurate? What did the station you predicted reveal that you had not anticipated?</p>
+    <textarea class="jta" id="jta-q1" placeholder="My prediction was:...&#10;What the station actually showed:...&#10;What I had not anticipated:..." oninput="jSave('cq1',this.value)"></textarea>
+    <div class="save-note" id="sn-cq1">&#10003; Saved</div>
   </div>
 
   <div class="journal-q">
-    <div class="q-label">Question 3 — The Composite Run</div>
-    <p>In the composite simulation, which metric showed the largest improvement over the individual tradition runs you have seen across the course? Which metric remained most constrained even with all conditions active? What does that tell you about the limits of institutional design?</p>
-    <textarea class="jta" id="jta-q3" placeholder="The metric that improved most: ...&#10;The metric that remained most constrained: ...&#10;What this tells us about the limits of institutional design: ...&#10;What would be required to address the remaining constraint: ..." oninput="jSave('q3',this.value)"></textarea>
-    <div class="save-note" id="sn-q3">✓ Saved</div>
+    <div class="q-label">Question 2 &mdash; Your PRF and the Stations</div>
+    <p>Which station did you find most immediately compelling &mdash; where the tradition's discovery felt most obviously true? Which did you find least compelling &mdash; where the argument felt weakest or most foreign? What does this pattern tell you about your own PRF? Which structural conditions are you most and least attuned to perceive?</p>
+    <textarea class="jta" id="jta-q2" placeholder="Most compelling station:...&#10;Why it felt immediately true:...&#10;Least compelling station:...&#10;What this tells me about my PRF:...&#10;The structural conditions I am least attuned to:..." oninput="jSave('cq2',this.value)"></textarea>
+    <div class="save-note" id="sn-cq2">&#10003; Saved</div>
   </div>
 
   <div class="journal-q">
-    <div class="q-label">Question 4 — The Cost of the Complex PRF</div>
-    <p>The chapter argues that the complex PRF is available but not required — that a committed member of any tradition who finds the partial morphisms interesting but not persuasive has not made an error. Do you find this claim convincing? What would it take to move you toward the complex PRF — or, if you are already there, what keeps you from finding it fully satisfying?</p>
-    <textarea class="jta" id="jta-q4" placeholder="Whether I find the complex PRF convincing and why: ...&#10;What it would take to move me toward it (or what keeps me from fully accepting it): ...&#10;The tradition whose partial morphism I find most and least persuasive: ..." oninput="jSave('q4',this.value)"></textarea>
-    <div class="save-note" id="sn-q4">✓ Saved</div>
+    <div class="q-label">Question 3 &mdash; The Conditions Cascade</div>
+    <p>In the Conditions Cascade, which tradition produced the largest single improvement in the metric you found most important? Which tradition's addition surprised you most &mdash; where the metric change was larger or smaller than you expected? What does this suggest about the relationship between the tradition's argument and the structural condition it was tracking?</p>
+    <textarea class="jta" id="jta-q3" placeholder="The tradition with the largest improvement in the metric I care most about:...&#10;The tradition whose addition surprised me:...&#10;What this suggests about the relationship between argument and structural condition:..." oninput="jSave('cq3',this.value)"></textarea>
+    <div class="save-note" id="sn-cq3">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 4 &mdash; The Composite Run</div>
+    <p>In the Composite Run, which metric reached its highest value across all simulations you have run? Which persisted as a limitation even with all conditions active? What does the gap between the composite metrics and the theoretical maximum tell you about the limits of institutional design as an ethical tool?</p>
+    <textarea class="jta" id="jta-q4" placeholder="The metric that reached its highest value:...&#10;The metric that persisted as a limitation:...&#10;What the remaining gap tells me about the limits of institutional design:..." oninput="jSave('cq4',this.value)"></textarea>
+    <div class="save-note" id="sn-cq4">&#10003; Saved</div>
   </div>
 
   <div class="journal-q" style="border-color:var(--amber);border-width:2px;background:var(--amber-light)">
-    <div class="q-label" style="color:var(--amber-dark)">Question 5 — Prediction for the Rust Belt App (stored for retrieval)</div>
-    <p>The Rust Belt case explorer will apply all eight ethical lenses to the industrial collapse of American manufacturing communities from the 1970s to the present. Before you encounter that app: which two or three traditions do you predict will have the most revealing and complementary readings of the Rust Belt? What specific structural feature of the collapse do you predict each will illuminate that the others will miss? Which tradition do you predict will have the largest blind spot — the most significant aspect of the collapse it will fail to perceive?</p>
-    <textarea class="jta q5" id="jta-q5" placeholder="The traditions I predict will be most illuminating:&#10;1. ... because it will see: ...&#10;2. ... because it will see: ...&#10;3. ... because it will see: ...&#10;&#10;The tradition I predict will have the largest blind spot: ...&#10;The specific feature of the Rust Belt collapse it will miss: ...&#10;&#10;The combined picture I expect all eight traditions to produce together: ..." oninput="jSave('cq5',this.value)"></textarea>
-    <div class="save-note" id="sn-q5">✓ Saved for Rust Belt app</div>
+    <div class="q-label" style="color:var(--amber-dark)">Question 5 &mdash; Prediction for the Rust Belt App (stored for retrieval)</div>
+    <p>The next application will examine the Rust Belt collapse through all eight ethical lenses simultaneously. Before you encounter it: <strong>which of the eight traditions do you predict will see the most important thing about what happened?</strong> Which will have the largest blind spot? And &mdash; hardest question &mdash; which tradition's blind spot do you think caused the most harm by being invisible to the people who designed the policies that produced the collapse?</p>
+    <textarea class="jta q5" id="jta-q5" placeholder="The tradition that will see the most important thing:...&#10;Why:...&#10;&#10;The tradition with the largest blind spot for this event:...&#10;What it cannot see:...&#10;&#10;The tradition whose blind spot caused the most policy harm:...&#10;How that blind spot was embedded in actual decisions:..." oninput="jSave('cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-cq5">&#10003; Saved</div>
   </div>
 </div>
 
-</div><!-- end app-wrap -->
+</div><!-- app-wrap -->
+
 <script>
 'use strict';
 const BACKEND = 'https://ucp-backend-4dig.onrender.com';
 const JP = 'ch8_';
 
-// ── NAVIGATION ────────────────────────────────────────────────
-function showTab(name, btn) {
+// NAV
+function showTab(id, btn) {
   document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
   if (btn) btn.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (name === 'cascade') initCascade();
+  if (id === 'cascade') initCascade();
 }
 
-// ── EIGHT STATIONS DATA ───────────────────────────────────────
+// EIGHT STATIONS DATA
 const STATIONS = [
   {
-    id: 'socrates', num: '1', era: 'Athens, 5th century BCE',
-    name: 'Socrates', subtitle: 'The Examined Life and the Unauthorized PRF',
-    discovery: 'Moral knowledge cannot be inherited from tradition or authority — it must be generated through examination. The unexamined life produces agents whose values are passively received from "the They" (das Man) rather than consciously authorized. A PRF that has never been examined cannot generate authentic CIBs — the low-entropy, deliberate value-commitments that ground ethical action.',
-    blind: 'Socratic examination presupposes a shared epistemic commons — a polis where rational dialogue is possible and valuable. It has no account of what happens when the institutional architecture systematically prevents examination: when the people closest to problems cannot surface their observations, when the cost of honest speech is career destruction, when the dialogue is not available.',
-    morphism: 'PRF examination → CIB authorization. Institutions that suppress examination (high suppression gap, authority-weighted evidence) prevent agents from generating authorized CIBs. The Challenger engineers examined the problem correctly. The architecture prevented that examination from reaching decisions.',
-    metrics: ['PRF clarity', 'Suppression Gap', 'Morphic Suppression'],
-    sim: 'A Challenger-style scenario: engineers with examined, accurate PRFs. High suppression gap ensures their examination never reaches the launch decision. The simulation shows that PRF quality (λ Raw) and outcome quality (OS2 Bridge) can be completely decoupled by architecture.'
+    num: 'I', name: 'Socrates', dates: '470–399 BCE',
+    discovery: `Socrates discovered that most people act from unexamined assumptions — receiving values from culture, family, and social role without ever interrogating whether those values are their own. His method, the elenchus (cross-examination), was designed to surface these unexamined assumptions and force the agent to either authorize them through reasoning or recognize them as inherited scripts.`,
+    discovery_title: 'The Unexamined PRF Cannot Generate Authorized Values',
+    blindspot: `Socrates assumed that the conditions for examination were universally available — that any person, given sufficient dialogue, could access the reasoning capacity required to interrogate their values. He had no account of what happens to that capacity under chronic stress, institutional suppression, or cognitive overload. The slave in the Meno can demonstrate geometric knowledge through questioning — but only in a safe, well-resourced context that Socrates did not theorize.`,
+    blindspot_title: 'No Account of the Structural Conditions for Examination',
+    morphism: `Socrates was measuring CIB authorization — the process by which a value becomes genuinely the agent's own rather than an inherited script. In the simulation, unauthorized CIBs appear as low Morphic Fidelity: the agent is acting from values that have not been examined and authorized, producing a gap between their actual identity kernel and their expressed behavior. The elenchus is a specific intervention to raise Morphic Fidelity by surfacing unexamined assumptions.`,
+    metrics: ['Morphic Fidelity', 'PRF Examination Depth'],
+    color: '#7c3aed'
   },
   {
-    id: 'aristotle', num: '2', era: 'Athens, 4th century BCE',
-    name: 'Aristotle', subtitle: 'Character as Infrastructure',
-    discovery: 'Virtue is not an innate quality but a stable disposition produced by habituation in the right institutional environment. You become courageous by practicing courage in conditions that reward it; you become just by participating in just practices. The PRF\'s six dimensions are Aristotelian virtues formalized computationally — stable dispositions that shape perception and response across contexts.',
-    blind: 'Aristotle\'s ethics assumes favorable structural conditions. His account of flourishing was written for citizens of a polis that provides the scaffolding for virtuous practice. He has no account of morphic suppression — what happens to virtue when the institutional environment systematically punishes its exercise. His exclusion of slaves, women, and foreigners is not incidental: it reflects the theory\'s hidden assumption that the agent is above a threshold of civic and biological privilege.',
-    morphism: 'Habituation conditions → block field configuration. A positive community block field is the simulation\'s measure of Aristotelian habituation conditions: the institutional environment that makes virtuous practice possible. Negative block fields are environments that punish virtue — the Challenger architecture, the Rust Belt collapse, any institution that makes the cost of authentic action too high.',
-    metrics: ['Community Block', 'BioBond', 'λ Raw stability'],
-    sim: 'Compare Run 1 (negative block fields) vs Run 2 (positive): same agents, same entropy. The block field change is the Aristotelian variable. What it shows: character is not sufficient — institutional architecture determines whether character can be expressed.'
+    num: 'II', name: 'Aristotle', dates: '384–322 BCE',
+    discovery: `Aristotle discovered that virtue is not a state you can choose all at once — it is a practice-built infrastructure. Character (ethos) is formed through habituation: repeated actions under appropriate institutional conditions shape the dispositions that make virtuous action feel natural rather than effortful. Without the right institutional environment, virtue is not impossible but it is thermodynamically expensive — requiring constant deliberate effort to overcome environmental friction.`,
+    discovery_title: 'Character Is Infrastructure: Block Fields Enable Virtue',
+    blindspot: `Aristotle's account assumes the polis — a stable institutional environment with shared telos, sufficient resources, and recognized social roles. He has little to say about what happens when the polis collapses, when the roles are eliminated by economic disruption, or when the habituation infrastructure is dismantled. His virtue ethics is an account of how character is built in conditions that support it — not an account of what maintains character when those conditions are destroyed.`,
+    blindspot_title: 'No Account of Block Field Collapse Under Structural Disruption',
+    morphism: `Aristotle was measuring block fields — the stable relational and institutional structures that either support or undermine the development of practical wisdom. In the simulation, positive block fields (community +, fairness +) correspond to Aristotle's habituation conditions: environments where virtuous action is reinforced, recognized, and made easier over time. Negative block fields correspond to what happens when those conditions are absent.`,
+    metrics: ['Block Fields', 'BioBond', 'λ Raw'],
+    color: '#0f766e'
   },
   {
-    id: 'stoics', num: '3', era: 'Hellenistic period, 3rd century BCE onward',
-    name: 'Stoics & Epicureans', subtitle: 'Structural Resilience and the Designed Environment',
-    discovery: 'When the polis collapsed into empire, Aristotle\'s institutional scaffolding disappeared. Two complementary responses: the Stoics relocated moral stability inside the agent (the Inner Citadel — ATCF depth, Identity Kernel stability), the Epicureans relocated it into deliberately designed environments (the Garden — BioBond community, extended mind architecture). Both recognized that ethical functioning requires either internal resilience infrastructure or external environmental design — and ideally both.',
-    blind: 'Both solutions are structurally expensive. Maintaining the inner citadel requires Identity Kernel depth that is not equally available to all agents — it requires the biological and psychological resources to sustain coherence under pressure. Building the garden requires the institutional and economic freedom to exit the chaos — a privilege Hanna did not fully have, that Mandela did not have in prison, that most people facing high-entropy environments do not have. The Stoic-Epicurean answer is correct for those who can afford it.',
-    morphism: 'Inner Citadel → ATCF score / Identity Kernel depth. Garden → BioBond + environmental block field design. The simulation\'s Run 3 (high entropy, vulnerable population) shows the Stoic-Epicurean limit: even agents with high ATCF scores cannot sustain full OS2 Bridge when entropy is continuously above threshold. Cooling infrastructure is necessary but insufficient when the entropy source is institutional rather than incidental.',
-    metrics: ['ATCF', 'BioBond', 'Identity Kernel depth', 'Entropy baseline'],
-    sim: 'The Hanna simulation: single tributary (limited BioBond) sustaining a deep reservoir (high ATCF) under maximum entropy. The Stoic reading. What the simulation shows that Stoicism cannot: identity coherence is maintained but OS2 Bridge — coordination across difference — requires more than inner stability.'
+    num: 'III', name: 'Stoics & Epicureans', dates: '300 BCE – 200 CE',
+    discovery: `The Stoics and Epicureans made different but complementary discoveries about managing the relationship between inner coherence and outer chaos. The Stoics identified what we would call ATCF depth — the capacity to maintain a stable identity and value structure across changing and often hostile external conditions. The Epicureans identified what we would call environmental design: the deliberate construction of a social and physical environment (the garden, the small community of friends) that reduces entropic pressure on the agent's functioning.`,
+    discovery_title: 'Inner Citadel (ATCF Depth) and Environmental Design (BioBond)',
+    blindspot: `Both schools had limited access to the social and economic conditions that made their prescriptions available. The Stoic inner citadel is accessible to agents with sufficient cognitive resources and training — it is less accessible to agents under chronic biological stress from poverty, violence, or deprivation. The Epicurean garden requires sufficient autonomy to choose your environment — not available to slaves, indentured workers, or people trapped in institutional structures they did not choose.`,
+    blindspot_title: 'Structural Cost of Access to Cooling Systems',
+    morphism: `The Stoics were measuring ATCF depth — the T_t component specifically: the capacity to maintain present-time integration under entropy pressure. The Epicureans were measuring BioBond environmental design — the deliberate construction of relational structures that function as thermodynamic cooling infrastructure. Both discoveries appear in the simulation: ATCF stability reduces the impact of entropy spikes; BioBond positive values maintain agent functioning when external conditions are adverse.`,
+    metrics: ['ATCF', 'BioBond', 'Stress Buffer'],
+    color: '#1e3a8a'
   },
   {
-    id: 'hume', num: '4', era: 'Scotland, 18th century',
-    name: 'Hume', subtitle: 'Moral Motivation and the Calibration Problem',
-    discovery: 'Moral judgment is fundamentally affective — you perceive suffering and feel aversion before you deliberate about it. Reason is the slave of the passions. This is the phenomenological account of AUTOMATIC mode: the generative model processes the situation and produces a felt moral response before MANUAL deliberation begins. Moral sentiments are real, motivationally powerful, and prior to rational justification.',
-    blind: 'Hume\'s moral sentiments are calibrated to the local and the visible. The person suffering in front of you produces stronger moral response than the distant stranger whose suffering is statistically equivalent — not because you care less but because your generative model was calibrated in small-group environments. He has no coordination mechanism for the cases where sympathy cannot reach: structural injustice at scale, long-term consequences, harms to people whose suffering is invisible to the affected agent\'s calibrated emotional range.',
-    morphism: 'Moral sentiment → AUTOMATIC mode / PRF emotional calibration. The simulation\'s worldview distribution parameter captures whose suffering is "visible" to dominant PRFs. High authority_weighted evidence is the AUTOMATIC mode failure: decisions made from emotionally calibrated responses to authority signals rather than from the actual evidence about outcomes.',
-    metrics: ['PRF calibration range', 'Evidence architecture', 'AUTOMATIC vs MANUAL mode'],
-    sim: 'A scenario where Hume\'s AUTOMATIC mode is accurate for local agents but fails for distant or structurally invisible populations. The suppression gap in this run is not from authority — it\'s from calibration failure: the decision-makers genuinely cannot feel the harm they are causing because their moral sentiments are not calibrated to reach it.'
+    num: 'IV', name: 'Hume', dates: '1711–1776',
+    discovery: `Hume discovered that moral judgment is primarily affective rather than rational — that we respond to ethical situations through sentiment (sympathy, benevolence, resentment) before we reason about them. This maps onto what the simulation calls AUTOMATIC mode: the fast, pre-deliberative processing that produces moral intuitions. Hume's crucial insight was that these sentiments are real data about the moral real — not mere preferences to be overridden by reason, but the foundation on which moral reasoning operates.`,
+    discovery_title: 'Moral Sentiment as AUTOMATIC Mode: Real Data, Not Mere Preference',
+    blindspot: `Hume's account of sympathy is calibrated to the proximate and the visible — we respond most strongly to those we can see and whose situations we can imaginatively enter. His account has difficulty extending to abstract or statistical victims, to people whose circumstances are structurally different from our own, and to future generations. The further the moral patient from the agent's direct experiential range, the weaker the sentiment signal — and Hume has no mechanism for extending it.`,
+    blindspot_title: 'Calibration Range Failure: Sympathy Attenuates With Distance',
+    morphism: `Hume was measuring the AUTOMATIC mode component of moral functioning — the pre-deliberative sentiment responses that provide the raw data for moral reasoning. In the simulation, this appears in the friction metric: when agents share sufficiently similar PRFs that their moral sentiments are mutually intelligible, friction is low and coordination is effortless. The failure Hume did not theorize is what happens when the moral sentiment signal is absent or distorted across PRF distance.`,
+    metrics: ['Friction', 'AUTOMATIC Mode', 'PRF Calibration'],
+    color: '#92400e'
   },
   {
-    id: 'kant', num: '5', era: 'Prussia, 18th century',
-    name: 'Kant', subtitle: 'Universal Rational Agency and Its Hidden Precondition',
-    discovery: 'Every rational agent is an end in themselves, never merely a means. The categorical imperative — act only according to maxims you could will to be universal law — grounds morality in rational agency itself, independent of sentiment or consequence. The Formula of Humanity makes every rational agent\'s deliberative contribution morally equivalent regardless of role or status. The suppression gap is a Kantian violation: an architecture that systematically treats rational contributions as structurally irrelevant is treating rational agents as means regardless of anyone\'s intentions.',
-    blind: 'Kant presupposes agents with intact deliberative capacity. The categorical imperative requires the ability to step back from one\'s particular situation and reason universally — which requires C_PFC above the Sapolsky threshold. He has no institutional ethics: no account of what structural conditions maintain the deliberative capacity his ethics presupposes, or what happens when those conditions are absent. "Take off your engineering hat" — the Challenger instruction — is a Kantian violation that Kant\'s framework cannot prevent because it operates at the level of the individual will, not the institutional architecture that maintains or destroys that will.',
-    morphism: 'Formula of Humanity → suppression gap as Kantian violation. Every percentage point of suppression gap is a measure of the degree to which rational agents are being treated as means. The Sapolsky threshold is the biological precondition Kant\'s ethics assumes. When entropy and stress push agents below threshold, the deliberative capacity required for Kantian ethics collapses — not because agents chose badly but because the institutional architecture destroyed the substrate of rational choice.',
-    metrics: ['Suppression Gap', 'λ Raw (Sapolsky)', 'Morphic Suppression'],
-    sim: 'The Challenger simulation with Kantian framing: every percentage point of suppression gap measures the degree to which Boisjoly was treated as a means. The simulation shows Kant was right about the violation — but his framework cannot explain why the Thiokol architecture produced it or how to prevent recurrence.'
+    num: 'V', name: 'Kant', dates: '1724–1804',
+    discovery: `Kant discovered that rational agency has a specific structure that generates moral obligations: to treat every rational agent as an end in themselves, never merely as a means. This is not a preference or a sentiment — it is a requirement of rational consistency. Any agent who claims the status of a rational end in themselves must, on pain of contradiction, grant the same status to every other rational agent. This generates a universal moral principle derivable from reason alone.`,
+    discovery_title: 'Rational Agency as End: The Morphic Fidelity Penalty Imposed on Others',
+    blindspot: `Kant assumed that rational agency is the default condition of adult humans — that the capacity for practical reason is always available unless deliberately suppressed. He had no account of what chronic stress, deprivation, or institutional architecture does to the deliberative capacity that his entire ethics presupposes. The Formula of Humanity tells you what you owe to rational agents. It cannot generate the conditions that maintain rational agency, because it does not theorize those conditions.`,
+    blindspot_title: 'Cannot Generate the Conditions It Presupposes: The Sapolsky Gap',
+    morphism: `Kant was measuring the Sapolsky threshold as a precondition — the point below which the deliberative capacity his ethics requires is unavailable. When institutions impose conditions that push agents above the Sapolsky threshold chronically, they are violating Kant's Formula of Humanity not by treating people badly in visible ways but by destroying the capacity for rational self-determination that gives the formula its force. In the simulation, base_stress above 0.58 is the Kantian violation made measurable.`,
+    metrics: ['Sapolsky Threshold', 'λ Raw', 'Deliberative Capacity'],
+    color: '#1a2744'
   },
   {
-    id: 'mill', num: '6', era: 'Britain, 19th century',
-    name: 'Bentham & Mill', subtitle: 'Aggregate Welfare and the Representative Agent Error',
-    discovery: 'The right action is the one that produces the greatest happiness for the greatest number. Aggregate welfare provides a decision procedure that individual virtue ethics and deontology cannot: when values conflict, you measure outcomes. OS2 Bridge is the simulation\'s utilitarian metric — the measure of how much welfare-producing coordination the architecture generates across genuine difference. Farmer\'s agent-based model is utilitarian methodology made rigorous: model actual heterogeneous agents, measure actual outcomes, calibrate policy to produce the greatest good.',
-    blind: 'The representative agent problem is a utilitarian failure mode: aggregate welfare metrics systematically miss distributional disasters. National GDP rose during the Rust Belt collapse. Aggregate metrics called it progress. The suppression gap is the utilitarian nightmare — an architecture that prevents utility-maximizing information from reaching decisions means the aggregate calculation is performed on filtered data. Mill assumes rational agents with accurate information will converge on utility-maximizing choices. The simulation shows what happens when the architecture ensures accurate information never arrives.',
-    morphism: 'OS2 Bridge → aggregate welfare metric. Average λ Raw → representative agent error. Minimum λ Raw → the Rawlsian correction utilitarianism needs. The gap between Run 2 (average good outcomes) and Run 3 (capability gap for constrained agents) is the utilitarian blind spot made computational: optimizing the average while the minimum collapses.',
-    metrics: ['OS2 Bridge', 'Average λ Raw', 'Minimum λ Raw', 'Evidence architecture'],
-    sim: 'Compare Run 2 and Run 3 in any case explorer: same architecture, same average metrics, dramatically different outcomes for the most constrained agents. This is Mill\'s blind spot. The simulation makes it visible with exact numbers — the gap between average λ Raw (stable) and minimum λ Raw (collapsed) that utilitarian aggregate calculation misses.'
+    num: 'VI', name: 'Bentham & Mill', dates: '1748–1873',
+    discovery: `Bentham and Mill discovered that moral questions are ultimately questions about welfare — about the actual experienced conditions of actual people — and that this welfare is in principle measurable, aggregable, and comparable across individuals. This generated the first systematic framework for making ethical tradeoffs explicit. Mill's refinement added the crucial insight that quality of experience matters as well as quantity — that higher pleasures (deliberative, creative, relational) are categorically different from lower ones.`,
+    discovery_title: 'Welfare Is Measurable: The OS2 Bridge as Aggregate Ethical Metric',
+    blindspot: `The utilitarian calculus, applied to aggregate data, systematically misses distributional disasters that leave average metrics unchanged. National productivity can rise while specific communities collapse. Average λ Raw can remain stable while minimum λ Raw collapses for the most constrained agents. The representative agent error in economics is the utilitarian error made computational: averaging across the population conceals exactly the information most relevant to those most harmed.`,
+    blindspot_title: 'The Representative Agent Error: Average Welfare Masks Minimum',
+    morphism: `Mill was measuring OS2 Bridge — the aggregate welfare produced by coordination across the agent population. The simulation's OS2 Bridge is the utilitarian metric made operational: it captures the total coordinated welfare output of the system, not the experience of any individual agent. The blind spot is visible in the comparison between average λ Raw and minimum λ Raw — exactly the gap the Farmer simulation (Chapter 7) showed that standard models missed.`,
+    metrics: ['OS2 Bridge', 'λ Raw Average vs Min', 'Evidence Architecture'],
+    color: '#166534'
   },
   {
-    id: 'care', num: '7', era: '20th century feminist ethics',
-    name: 'Care Ethics', subtitle: 'Relational Conditions and the BioBond Discovery',
-    discovery: 'Moral agency is constituted by relationships — the capacity to care, to reason well, to respond to others is produced and maintained by caring relationships, not assumed in advance. Gilligan, Noddings, and Held discovered that the standard ethical subject — the autonomous rational individual — is a fiction: actual humans develop their capacity for ethical reasoning through relationships, and that capacity is sustained or destroyed by the quality of those relationships. BioBond is the simulation\'s care ethics variable: the relational infrastructure that makes cognition and ethical functioning possible.',
-    blind: 'Care ethics has a rich account of dyadic and small-group caring relationships but a thinner account of how to coordinate care across genuine difference — across PRFs that do not already share relational warmth and mutual recognition. The Green Belt Movement worked because Maathai built caring relationships that crossed ethnic and class lines. But care ethics\' framework for how to do this across radical difference is less developed than its account of what care produces within existing relationships. Functional equivalence — coordination without value agreement — is harder to derive from care ethics than from the coordination framework.',
-    morphism: 'Caring relationship → BioBond / community block field. The simulation\'s community block parameter is care ethics formalized: the relational infrastructure that either supports or drains constructor capacity. Cacioppo\'s loneliness research showed measurable cognitive degradation from relational isolation — care ethics discovered this phenomenologically before it was measurable.',
-    metrics: ['BioBond', 'Community Block', 'Minimum λ Raw floor'],
-    sim: 'The Maathai simulation: negative community block (Phase 1) → positive community block (Phase 2). The same agents, the same worldview diversity, the same structural challenges. What the block field change produces is the care ethics finding: relational infrastructure is not peripheral to ethical functioning — it is constitutive of it.'
+    num: 'VII', name: 'Care Ethics', dates: '1982–present',
+    discovery: `Care ethics (Gilligan, Noddings, Held) discovered that moral relationships are constitutively relational — that the capacity for ethical functioning is maintained through specific caring relationships, not just through individual reasoning or institutional design. BioBond is the simulation's formalization of this insight: the relational structures that function as thermodynamic cooling infrastructure, maintaining agent functioning under stress. Care ethics saw what the rationalist traditions could not: that agency is not self-sustaining but relationally maintained.`,
+    discovery_title: 'BioBond: Relational Infrastructure as the Foundation of Agency',
+    blindspot: `Care ethics, developed primarily from the study of intimate relationships (mother-child, carer-patient), has difficulty scaling to coordination across genuine PRF difference. The caring relationship works through particularistic attunement — knowing this specific person's needs, history, and situation. Across large PRF distances, this attunement is either unavailable or produces a false confidence that one understands the other when one is actually projecting one's own framework. Care without genuine difference-recognition can become a sophisticated form of the representative agent error.`,
+    blindspot_title: 'Coordination Across Difference vs. Within Caring Relationships',
+    morphism: `Care ethics was measuring BioBond and the community block field — the specific relational structures that maintain agent functioning under entropy pressure. In the simulation, these are the parameters that most directly affect minimum λ Raw: not through institutional design at the policy level, but through the micro-level relational structures that determine whether the most constrained agents have sufficient support to access what the architecture makes available.`,
+    metrics: ['BioBond', 'Community Block', 'Minimum λ Raw'],
+    color: '#dc2626'
   },
   {
-    id: 'rawls', num: '8', era: '20th-21st century political philosophy',
-    name: 'Rawls, Nozick & Nussbaum', subtitle: 'Structural Justice and the Capabilities Floor',
-    discovery: 'Rawls\' difference principle: social and economic arrangements are just only when they benefit the least advantaged members. The veil of ignorance: institutional design should be evaluated from the position of the worst-off, not the average. Nussbaum\'s capabilities approach: justice requires not just formal rights but the actual structural conditions that make capabilities exercisable. These are the Run 3 findings stated as political philosophy: good architecture narrows the capability gap for vulnerable agents but does not close it without structural investment in the agents themselves.',
-    blind: 'All three operate at the level of political theory and constitutional design — they can tell you what a just society would look like but have thinner accounts of what to do inside an unjust institution right now. Rawls does not tell Boisjoly what to do on January 27, 1986. Nussbaum\'s capabilities threshold tells you that Rust Belt workers\' capabilities were violated — it does not specify the institutional mechanism by which the violation occurred or the targeted intervention that would address it. The formalism fills this gap: the simulation shows the specific parameter changes that would have prevented the violation.',
-    morphism: 'Difference principle → maximize minimum λ Raw. Capabilities threshold → λ Raw floor below which ethical functioning is structurally impossible. FHRI (Future Horizons and Resilience Index) → C_t component of ATCF. The composite simulation\'s parameter set is a Rawlsian design criterion: configure the institutional architecture to maximize minimum λ Raw across the full agent distribution.',
-    metrics: ['Minimum λ Raw', 'ATCF (C_t)', 'Fidelity floor', 'Run 3 capability gap'],
-    sim: 'Run 3 across any case explorer is the Rawlsian test made computational: does a well-designed architecture (Run 2) produce good outcomes for the most constrained agents? The gap between Run 2 and Run 3 OS2 Bridge is the Rawlsian finding: good architecture is necessary but not sufficient. The difference principle requires more than architectural design — it requires direct investment in restoring the resilience margins of the most constrained agents.'
+    num: 'VIII', name: 'Rawls, Nozick & Nussbaum', dates: '1921–present',
+    discovery: `Rawls discovered that institutional justice must be evaluated by what it produces for the least advantaged members — not by average outcomes or aggregate welfare. The difference principle requires that institutional arrangements benefit the least well-off as much as possible. Nussbaum's capabilities approach extended this: the relevant metric is not just welfare but the set of functionings an agent can actually achieve — their capability set. The simulation's minimum λ Raw and FHRI floor are these insights made computational.`,
+    discovery_title: 'Maximize the Minimum: The FHRI Floor and the Difference Principle',
+    blindspot: `Rawls' theory operates at the level of the basic structure of society — it tells you what a just society looks like but not what to do inside an unjust one right now. Nozick's libertarian response reveals a real tension: the difference principle requires ongoing institutional intervention in distributions that might otherwise be produced by free exchange. Neither Rawls nor Nozick has a full account of what to do when the institutional structure is unjust and cannot be immediately changed — when the question is not how to design just institutions but how to act ethically inside unjust ones.`,
+    blindspot_title: 'Political Theory Level vs. What to Do Inside Unjust Institutions Now',
+    morphism: `Rawls was measuring minimum λ Raw — the simulation's operationalization of the difference principle. The Rawlsian test (Chapter 7, Run 3) showed exactly what Rawls predicted: aggregate metrics can look healthy while the most constrained agents fall below the threshold for ethical functioning. Nussbaum's capabilities approach maps onto the full FHRI (Future Horizons and Resilience Index) — not just whether agents survive but whether they have the full set of functionings that constitute a dignified human life.`,
+    metrics: ['Minimum λ Raw', 'FHRI Floor', 'Capabilities Threshold'],
+    color: '#0369a1'
   }
 ];
 
-// ── BUILD STATION UI ──────────────────────────────────────────
-function buildStations() {
-  const nav = document.getElementById('stationNav');
-  const content = document.getElementById('stationContent');
-  nav.innerHTML = STATIONS.map((s,i) =>
-    `<button class="station-btn ${i===0?'active':''}" id="stn-btn-${s.id}"
-      onclick="selectStation('${s.id}')" role="tab">${s.num}. ${s.name}</button>`
-  ).join('');
-  content.innerHTML = STATIONS.map((s,i) => `
-    <div class="station-pane ${i===0?'active':''}" id="stn-${s.id}">
-      <div class="station-header">
-        <div class="station-num">${s.num}</div>
-        <div class="station-title-block">
-          <h3>${s.name} — ${s.subtitle}</h3>
-          <div class="station-era">${s.era}</div>
-        </div>
-      </div>
+let _currentStation = 0;
+
+function showStation(idx, btn) {
+  _currentStation = idx;
+  document.querySelectorAll('.station-btn').forEach(b => b.classList.remove('active-station'));
+  if (btn) btn.classList.add('active-station');
+  const s = STATIONS[idx];
+  const el = document.getElementById('stationContent');
+  el.innerHTML = `
+    <div class="station-content">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.2rem">Station ${s.num} &mdash; ${s.dates}</div>
+      <h3 style="color:${s.color};margin-top:0;font-size:1.3rem">${s.name}</h3>
+
       <div class="discovery-box">
-        <div class="discovery-label">What this tradition discovered</div>
-        <p style="margin:0;font-size:.88rem;line-height:1.7">${s.discovery}</p>
+        <h4>&#128262; Discovery: ${s.discovery_title}</h4>
+        <p style="margin:0;font-size:.9rem;line-height:1.7">${s.discovery}</p>
       </div>
-      <div class="blind-box">
-        <div class="blind-label">Characteristic blind spot — bounded perception, not failure</div>
-        <p style="margin:0;font-size:.88rem;line-height:1.7">${s.blind}</p>
+
+      <div class="blindspot-box">
+        <h4>&#9888;&#65039; Blind Spot: ${s.blindspot_title}</h4>
+        <p style="margin:0;font-size:.9rem;line-height:1.7">${s.blindspot}</p>
       </div>
+
       <div class="morphism-box">
-        <div class="morphism-label">Partial morphism to the simulation</div>
-        <p style="font-size:.84rem;line-height:1.65;margin-bottom:.5rem">${s.morphism}</p>
-        <div class="morphism-metrics">${s.metrics.map(m=>`<span class="morph-tag">${m}</span>`).join('')}</div>
-        <p style="font-size:.8rem;color:var(--muted);margin:.5rem 0 0;font-style:italic">${s.sim}</p>
+        <h4>&#8764; Partial Morphism: What ${s.name} Was Measuring in the Simulation</h4>
+        <p style="font-size:.88rem;line-height:1.7;margin-bottom:.6rem">${s.morphism}</p>
+        <div>${s.metrics.map(m => `<span class="metric-tag">${m}</span>`).join('')}</div>
       </div>
-    </div>`
-  ).join('');
+    </div>`;
 }
 
-function selectStation(id) {
-  document.querySelectorAll('.station-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.station-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('stn-' + id).classList.add('active');
-  document.getElementById('stn-btn-' + id).classList.add('active');
-}
+// Initialize first station
+showStation(0, document.querySelector('.station-btn.active-station'));
 
-// ── CONDITIONS CASCADE ────────────────────────────────────────
-const TRADITIONS_CASCADE = [
-  { id:'aristotle', num:'2', name:'Aristotle',      color:'#0f766e',
-    insight:'Aristotle activates: habituation conditions present. Block fields turn positive. Agent peaks stabilize — character now has institutional support. λ Raw rises because the architecture stops punishing virtuous action.',
-    state:{ lam:0.48, gap:0.58, os2:0.06, bio:0.28, stress:0.65, minlam:0.22 } },
-  { id:'stoics',   num:'3', name:'Stoics/Epicureans',color:'#1e3a8a',
-    insight:'Stoics/Epicureans activate: ATCF depth increases, BioBond present. Stress buffer added. Agents can now maintain coherence under pressure. The inner citadel and the garden — internal resilience and environmental design — work together.',
-    state:{ lam:0.55, gap:0.52, os2:0.10, bio:0.42, stress:0.55, minlam:0.30 } },
-  { id:'kant',     num:'5', name:'Kant',            color:'#6d28d9',
-    insight:'Kant activates: Sapolsky threshold maintained, deliberative capacity protected. λ Raw rises further — agents can now act as rational agents. But OS2 Bridge remains constrained: deliberative capacity is present but the evidence architecture still filters it out.',
-    state:{ lam:0.62, gap:0.44, os2:0.18, bio:0.42, stress:0.45, minlam:0.38 } },
-  { id:'hume',     num:'4', name:'Hume',            color:'#92400e',
-    insight:'Hume activates: moral sentiment calibration improves for visible agents. A small OS2 Bridge improvement for local coordination. But the calibration range limitation remains — distant or structurally invisible populations still not fully reached.',
-    state:{ lam:0.64, gap:0.42, os2:0.24, bio:0.42, stress:0.45, minlam:0.38 } },
-  { id:'mill',     num:'6', name:'Mill',            color:'#166534',
-    insight:'Mill activates: evidence architecture shifts to empirical-calibrated. OS2 Bridge rises significantly — actual agent observations now reach decisions rather than being filtered through authority hierarchy. This is the Palmer-Farmer move: route the signal accurately.',
-    state:{ lam:0.66, gap:0.28, os2:0.42, bio:0.42, stress:0.44, minlam:0.40 } },
-  { id:'care',     num:'7', name:'Care Ethics',     color:'#dc2626',
-    insight:'Care Ethics activates: BioBond rises, community block strongly positive. Minimum λ Raw floor rises — the most constrained agents now have relational infrastructure. The reservoir deepens because caring relationships sustain the capability that architecture alone could not.',
-    state:{ lam:0.70, gap:0.22, os2:0.55, bio:0.68, stress:0.42, minlam:0.52 } },
-  { id:'rawls',    num:'8', name:'Rawls',           color:'#1e3a8a',
-    insight:'Rawls activates: difference principle applied — minimum λ Raw maximized. The most constrained agents receive targeted structural support. The gap between average OS2 Bridge and the floor narrows. This does not close it — Run 3 always shows a residual capability gap. But it is now the smallest structurally achievable.',
-    state:{ lam:0.72, gap:0.18, os2:0.62, bio:0.70, stress:0.41, minlam:0.62 } },
-  { id:'exist',    num:'7', name:'Existentialism',  color:'#0f766e',
-    insight:'Existentialism/Coherence activates: morphic fidelity high, Identity Kernel stable, meta-constructive capacity restored. Agents can now authorize their own CIBs — authentic action becomes structurally possible. The full watershed: water in the mountains, low dam, full reservoir.',
-    state:{ lam:0.76, gap:0.14, os2:0.68, bio:0.72, stress:0.40, minlam:0.65 } },
+// CASCADE
+const CASCADE_BASELINE = {lr:0.38,lp:0.14,gap:0.24,os2:0.11,bio:0.12,atcf:0.28,minLr:0.08,fid:0.31,fric:0.72};
+const CASCADE_STATES = [
+  {lr:0.54,lp:0.22,gap:0.32,os2:0.19,bio:0.28,atcf:0.35,minLr:0.16,fid:0.42,fric:0.65,
+   insight:'Block fields improve — habituation conditions present. \u03bb Raw rises as agents gain stable identity infrastructure. But the suppression gap is barely narrower — Aristotle cannot see the evidence architecture.'},
+  {lr:0.58,lp:0.26,gap:0.32,os2:0.23,bio:0.35,atcf:0.52,minLr:0.20,fid:0.48,fric:0.60,
+   insight:'ATCF depth increases — stress buffers present. Agents can maintain coherence under entropy pressure. The inner citadel is available. But only to those who can access it.'},
+  {lr:0.64,lp:0.31,gap:0.33,os2:0.27,bio:0.37,atcf:0.58,minLr:0.23,fid:0.55,fric:0.55,
+   insight:'Sapolsky threshold maintained — deliberative capacity protected. No agent is treated as means only. But notice: the suppression gap barely moves. Kant prescribes the conditions but cannot generate the evidence architecture that would close it.'},
+  {lr:0.66,lp:0.35,gap:0.31,os2:0.31,bio:0.40,atcf:0.60,minLr:0.26,fid:0.57,fric:0.50,
+   insight:'Moral sentiment calibrated — shared feeling creates baseline trust and friction drops. But the calibration range is still limited to agents whose situations are mutually legible. Hume sees the proximate; the distant remains invisible.'},
+  {lr:0.68,lp:0.48,gap:0.20,os2:0.44,bio:0.42,atcf:0.62,minLr:0.28,fid:0.60,fric:0.44,
+   insight:'Evidence architecture improves — the suppression gap narrows dramatically. OS2 Bridge rises. This is Mill\u2019s contribution: honest evidence routing toward decisions. But minimum \u03bb Raw barely moves. The aggregate looks healthy while the constrained agents remain invisible.'},
+  {lr:0.70,lp:0.52,gap:0.18,os2:0.50,bio:0.62,atcf:0.65,minLr:0.40,fid:0.63,fric:0.38,
+   insight:'BioBond structures robust — the minimum \u03bb Raw jumps. This is the largest single jump in the minimum metric across all eight traditions. Care ethics saw what the rationalist traditions could not: that the most constrained agents need relational support, not just better institutions.'},
+  {lr:0.72,lp:0.56,gap:0.16,os2:0.55,bio:0.65,atcf:0.67,minLr:0.54,fid:0.66,fric:0.34,
+   insight:'Difference principle applied — institutional design now evaluated by outcomes for the least advantaged. Minimum \u03bb Raw reaches its highest point yet. The floor is guaranteed. But the gap between the minimum and the maximum persists — Rawls tells you the design criterion, not how to close the remaining gap.'},
+  {lr:0.74,lp:0.62,gap:0.12,os2:0.62,bio:0.68,atcf:0.72,minLr:0.58,fid:0.76,fric:0.28,
+   insight:'Morphic fidelity high — Identity Kernel stable, meta-constructive capacity (F\u209c) restored. Agents can author their own values rather than perform imposed roles. The full ATCF is functional. The suppression gap reaches its minimum. This is the complete picture \u2014 but it required all seven prior traditions\u2019 conditions to be present first.'},
 ];
 
-const BASE_STATE = { lam:0.28, gap:0.72, os2:0.04, bio:0.12, stress:0.72, minlam:0.12 };
-let activeTrads = new Set();
-let currentState = {...BASE_STATE};
+const CM_METRICS = [
+  {key:'lr',  label:'\u03bb Raw',       color:'#0f766e', higherBetter:true},
+  {key:'lp',  label:'\u03bb Perceived', color:'#3b82f6', higherBetter:true},
+  {key:'gap', label:'Supp. Gap',        color:'#f59e0b', higherBetter:false},
+  {key:'os2', label:'OS2 Bridge',       color:'#16a34a', higherBetter:true},
+  {key:'bio', label:'BioBond',          color:'#7c3aed', higherBetter:true},
+  {key:'atcf',label:'ATCF',             color:'#1e3a8a', higherBetter:true},
+  {key:'minLr',label:'Min \u03bb Raw',  color:'#dc2626', higherBetter:true},
+  {key:'fid', label:'Morphic Fid.',     color:'#92400e', higherBetter:true},
+  {key:'fric',label:'Friction',         color:'#6b7280', higherBetter:false},
+];
 
-function buildCascadeUI() {
-  const tog = document.getElementById('traditionToggles');
-  if (!tog || tog.children.length > 0) return;
-  tog.innerHTML = TRADITIONS_CASCADE.map(t =>
-    `<button class="trad-toggle" id="tog-${t.id}" onclick="toggleTrad('${t.id}')">
-      <span class="tnum">${t.num}</span>${t.name}
-    </button>`
-  ).join('');
-  buildCascadeMetrics();
-  drawCascadeCanvas();
+let _activeTraditions = [];
+let _cascadeState = {...CASCADE_BASELINE};
+let _cascadeInited = false;
+
+function initCascade() {
+  if (_cascadeInited) return;
+  _cascadeInited = true;
+  renderCascadeMetrics(_cascadeState);
+  drawCascadeWatershed(_cascadeState);
 }
 
-function buildCascadeMetrics() {
+function toggleTradition(idx, btn) {
+  const alreadyActive = _activeTraditions.includes(idx);
+  if (alreadyActive) {
+    _activeTraditions = _activeTraditions.filter(i => i !== idx);
+    btn.classList.remove('active-toggle');
+  } else {
+    _activeTraditions.push(idx);
+    btn.classList.add('active-toggle');
+  }
+  // Apply highest active state
+  const maxActive = _activeTraditions.length > 0 ? Math.max(..._activeTraditions) : -1;
+  _cascadeState = maxActive >= 0 ? {...CASCADE_STATES[maxActive]} : {...CASCADE_BASELINE};
+  const insightEl = document.getElementById('cascadeInsight');
+  if (maxActive >= 0) {
+    insightEl.textContent = CASCADE_STATES[maxActive].insight;
+  } else {
+    insightEl.textContent = 'Activate a tradition to see what its structural conditions add to the moral real.';
+  }
+  renderCascadeMetrics(_cascadeState);
+  drawCascadeWatershed(_cascadeState);
+}
+
+function resetCascade() {
+  _activeTraditions = [];
+  document.querySelectorAll('.tradition-toggle').forEach(b => b.classList.remove('active-toggle'));
+  _cascadeState = {...CASCADE_BASELINE};
+  document.getElementById('cascadeInsight').textContent = 'Activate a tradition to see what its structural conditions add to the moral real.';
+  renderCascadeMetrics(_cascadeState);
+  drawCascadeWatershed(_cascadeState);
+}
+
+function renderCascadeMetrics(state) {
   const el = document.getElementById('cascadeMetrics');
-  const metrics = [
-    ['λ Raw', 'lam', '#14b8a6'],
-    ['Supp. Gap', 'gap', '#f59e0b'],
-    ['OS2 Bridge', 'os2', '#16a34a'],
-    ['BioBond', 'bio', '#3b82f6'],
-    ['Min λ Raw', 'minlam', '#6d28d9'],
-    ['Stress', 'stress', '#dc2626'],
-  ];
-  el.innerHTML = metrics.map(([l,k,c]) =>
-    `<div class="casc-metric">
-      <div class="cm-label">${l}</div>
-      <div class="cm-val" id="cm-${k}" style="color:${c}">${Math.round(BASE_STATE[k]*100)}%</div>
-    </div>`
-  ).join('');
+  if (!el) return;
+  el.innerHTML = CM_METRICS.map(m => {
+    const v = state[m.key] || 0;
+    const pct = Math.min(100, v * 100);
+    const color = m.higherBetter
+      ? (v > 0.55 ? '#166534' : v > 0.35 ? '#92400e' : '#dc2626')
+      : (v < 0.25 ? '#166534' : v < 0.45 ? '#92400e' : '#dc2626');
+    return `<div class="cm-row">
+      <div class="cm-label">${m.label}</div>
+      <div class="cm-bar-track"><div class="cm-bar-fill" style="width:${pct.toFixed(1)}%;background:${m.color}"></div></div>
+      <div class="cm-val" style="color:${color}">${pct.toFixed(1)}%</div>
+    </div>`;
+  }).join('');
 }
 
-function toggleTrad(id) {
-  const btn = document.getElementById('tog-' + id);
-  if (activeTrads.has(id)) {
-    activeTrads.delete(id);
-    btn.classList.remove('active');
-  } else {
-    activeTrads.add(id);
-    btn.classList.add('active');
-  }
-  recomputeState();
-}
-
-function recomputeState() {
-  // Progressive accumulation: each active tradition moves toward its target state
-  let s = {...BASE_STATE};
-  const active = TRADITIONS_CASCADE.filter(t => activeTrads.has(t.id));
-  if (active.length > 0) {
-    // Blend states progressively
-    active.forEach((t, idx) => {
-      const weight = 1 / (active.length);
-      const prog = (idx + 1) / active.length;
-      const last = active[active.length - 1];
-      s = last.state; // Use last activated tradition's cumulative state
-    });
-    // Actually use the cumulative state of all active ones
-    const lastActive = TRADITIONS_CASCADE.filter(t => activeTrads.has(t.id));
-    if (lastActive.length > 0) {
-      // Find max progression
-      let maxIdx = -1;
-      lastActive.forEach(t => {
-        const idx = TRADITIONS_CASCADE.findIndex(tr => tr.id === t.id);
-        if (idx > maxIdx) maxIdx = idx;
-      });
-      s = TRADITIONS_CASCADE[maxIdx].state;
-    }
-    const lastTrad = TRADITIONS_CASCADE.filter(t => activeTrads.has(t.id)).pop();
-    document.getElementById('cascadeInsight').textContent = lastTrad ? lastTrad.insight : 'Activate a tradition to see what it contributes.';
-  } else {
-    s = {...BASE_STATE};
-    document.getElementById('cascadeInsight').textContent = 'All conditions inactive. This is the baseline depleted state — high entropy, high suppression, near-empty reservoir. Activate traditions to watch each one\'s structural contribution.';
-  }
-  currentState = s;
-  updateCascadeMetrics();
-  drawCascadeCanvas();
-}
-
-function updateCascadeMetrics() {
-  const keys = ['lam','gap','os2','bio','minlam','stress'];
-  keys.forEach(k => {
-    const el = document.getElementById('cm-' + k);
-    if (el) el.textContent = Math.round(currentState[k] * 100) + '%';
-  });
-}
-
-function drawCascadeCanvas() {
-  const cv = document.getElementById('cascade-canvas');
-  if (!cv || typeof cv.getContext !== 'function') return;
-  const W = cv.width = cv.offsetWidth * (window.devicePixelRatio || 1);
-  const H = cv.height = 160 * (window.devicePixelRatio || 1);
-  cv.style.height = '160px';
+function drawCascadeWatershed(state) {
+  const cv = document.getElementById('cascadeCanvas');
+  if (!cv) return;
   const ctx = cv.getContext('2d');
-  const scale = window.devicePixelRatio || 1;
-  ctx.scale(scale, scale);
-  const w = cv.offsetWidth, h = 160;
-
-  const GY = h - 24, MAX_H = h - 48, THRESH = 0.42;
-  const LAND_W = Math.round(w * 0.55);
-  const DAM_X = Math.round(w * 0.585);
-  const DAM_W = Math.round(w * 0.048);
+  const W = cv.width, H = cv.height;
+  const GY = H - 18, MAX_H = H - 36;
+  const LAND_W = Math.round(W * 0.52);
+  const DAM_X = Math.round(W * 0.565);
+  const DAM_W = Math.round(W * 0.048);
   const RES_X = DAM_X + DAM_W + 3;
-  const RES_W = w - RES_X - 8;
+  const RES_W = W - RES_X - 8;
+  const THRESH = 0.42;
 
-  const lr = currentState.lam;
-  const gap = currentState.gap;
-  const os2 = currentState.os2;
-  const stress = currentState.stress;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, 0, W, H);
 
-  ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = 'rgba(26,39,68,.05)'; ctx.fillRect(0, GY, w, h - GY);
+  // Ground line
+  ctx.fillStyle = 'rgba(26,39,68,.05)'; ctx.fillRect(0, GY, W, H - GY);
   ctx.strokeStyle = 'rgba(26,39,68,.12)'; ctx.lineWidth = 0.5;
-  ctx.beginPath(); ctx.moveTo(0, GY); ctx.lineTo(w, GY); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, GY); ctx.lineTo(W, GY); ctx.stroke();
 
-  // Agent peaks — color by stress
-  const agents = [0.82, 0.68, 0.88, 0.74, 0.56, 0.80, 0.72];
-  const sp = LAND_W / (agents.length + 1), pw = sp * 0.68;
-  agents.forEach((ah, i) => {
-    const stressedH = ah * (1 - stress * 0.5);
-    const cx = sp * (i + 1), bh = stressedH * MAX_H, py = GY - bh;
-    const c = stressedH >= THRESH + 0.2 ? '#0f766e' : stressedH >= THRESH ? '#f59e0b' : '#dc2626';
+  const lr = state.lr || 0.38;
+  const os = state.os2 || 0.11;
+  const bio = state.bio || 0.12;
+  const gap = state.gap || (lr - (state.lp || 0));
+
+  // Agent peaks
+  const agents = [0.82, 0.68, 0.76, 0.58, 0.88, 0.72, 0.64];
+  const sp = LAND_W / (agents.length + 1), pw = sp * 0.6;
+  agents.forEach((h, i) => {
+    const cx = sp * (i + 1), bh = h * MAX_H * (lr / 0.74), py = GY - bh;
+    const c = h > THRESH + 0.15 ? '#0f766e' : h > THRESH ? '#f59e0b' : '#dc2626';
     ctx.beginPath(); ctx.moveTo(cx - pw/2, GY); ctx.lineTo(cx, py); ctx.lineTo(cx + pw/2, GY);
-    ctx.closePath(); ctx.fillStyle = c; ctx.globalAlpha = 0.70; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.closePath(); ctx.fillStyle = c; ctx.globalAlpha = 0.65; ctx.fill(); ctx.globalAlpha = 1;
   });
 
   // Lambda water
   const wy = GY - lr * MAX_H;
-  ctx.fillStyle = 'rgba(15,118,110,.12)'; ctx.fillRect(0, wy, LAND_W, GY - wy);
-  ctx.setLineDash([5,3]); ctx.strokeStyle = 'rgba(15,118,110,.7)'; ctx.lineWidth = 1.5;
+  ctx.fillStyle = 'rgba(15,118,110,.08)'; ctx.fillRect(0, wy, LAND_W, GY - wy);
+  ctx.setLineDash([4,3]); ctx.strokeStyle = 'rgba(15,118,110,.65)'; ctx.lineWidth = 1.5;
   ctx.beginPath(); ctx.moveTo(0, wy); ctx.lineTo(LAND_W, wy); ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = '#0f766e'; ctx.font = `bold ${8 * (w/660)}px sans-serif`; ctx.textAlign = 'right';
-  ctx.fillText('λ Raw: ' + Math.round(lr*100) + '%', LAND_W - 3, wy - 3);
+  ctx.fillStyle = '#0f766e'; ctx.font = 'bold 8px sans-serif'; ctx.textAlign = 'right';
+  ctx.fillText('\u03bb ' + (lr*100).toFixed(0)+'%', LAND_W - 2, wy - 2);
 
   // Threshold
   const thy = GY - THRESH * MAX_H;
-  ctx.setLineDash([4,3]); ctx.strokeStyle = 'rgba(245,158,11,.55)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(4, thy); ctx.lineTo(LAND_W - 3, thy); ctx.stroke();
+  ctx.setLineDash([3,3]); ctx.strokeStyle = 'rgba(245,158,11,.5)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(4, thy); ctx.lineTo(LAND_W - 4, thy); ctx.stroke();
   ctx.setLineDash([]);
 
   // Dam
-  const dh = gap * MAX_H, dty = GY - dh;
-  const damColor = gap > 0.5 ? '#dc2626' : gap > 0.25 ? '#f59e0b' : '#16a34a';
-  ctx.fillStyle = damColor; ctx.globalAlpha = 0.82;
+  const damH = Math.max(0.04, gap) * MAX_H;
+  const dty = GY - damH;
+  ctx.fillStyle = '#dc2626'; ctx.globalAlpha = 0.75;
   ctx.fillRect(DAM_X, dty, DAM_W, GY - dty); ctx.globalAlpha = 1;
-  ctx.strokeStyle = 'rgba(255,255,255,.1)'; ctx.lineWidth = 1;
-  for (let dy = 0; dy < GY - dty; dy += 7) {
-    ctx.beginPath(); ctx.moveTo(DAM_X, dty + dy); ctx.lineTo(DAM_X + DAM_W, dty + dy + 5); ctx.stroke();
-  }
+  ctx.fillStyle = 'white'; ctx.font = 'bold 7px sans-serif'; ctx.textAlign = 'center';
   const dcx = DAM_X + DAM_W / 2;
-  ctx.fillStyle = 'white'; ctx.font = `bold ${7 * (w/660)}px sans-serif`; ctx.textAlign = 'center';
-  ctx.fillText('Gap', dcx, dty - 7); ctx.fillText(Math.round(gap*100)+'%', dcx, dty);
+  ctx.fillText('Gap', dcx, dty - 6); ctx.fillText((gap*100).toFixed(0)+'%', dcx, dty);
 
-  // Reservoir
-  const rfh = os2 * MAX_H, rfy = GY - rfh;
-  ctx.strokeStyle = 'rgba(22,101,52,.25)'; ctx.lineWidth = 0.8;
+  // Reservoir — OS2
+  const rfh = os * MAX_H, rfy = GY - rfh;
+  ctx.strokeStyle = 'rgba(30,58,138,.25)'; ctx.lineWidth = 0.8;
   ctx.strokeRect(RES_X, GY - MAX_H, RES_W, MAX_H);
-  ctx.fillStyle = `rgba(15,118,110,${0.15 + os2 * 0.3})`; ctx.fillRect(RES_X, rfy, RES_W, rfh);
+  ctx.fillStyle = 'rgba(15,118,110,.22)'; ctx.fillRect(RES_X, rfy, RES_W, rfh);
+
+  // BioBond overlay on reservoir
+  if (bio > 0.15) {
+    const bfh = bio * MAX_H * 0.4;
+    ctx.fillStyle = 'rgba(124,58,237,.15)';
+    ctx.fillRect(RES_X, GY - bfh, RES_W, bfh);
+  }
+
   const rcx = RES_X + RES_W / 2;
-  ctx.fillStyle = '#166534'; ctx.font = `bold ${8 * (w/660)}px sans-serif`; ctx.textAlign = 'center';
-  ctx.fillText('OS2', rcx, GY - MAX_H - 4);
-  if (rfh > 12) { ctx.font = `bold ${10 * (w/660)}px sans-serif`; ctx.fillText(Math.round(os2*100)+'%', rcx, rfy + rfh/2 + 4); }
+  ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 7px sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('OS2', rcx, GY - MAX_H - 3);
+  ctx.fillStyle = '#166534'; ctx.font = 'bold 9px sans-serif';
+  ctx.fillText((os*100).toFixed(0)+'%', rcx, rfh > 14 ? rfy + rfh/2 + 4 : rfy - 4);
 }
 
-function initCascade() {
-  buildCascadeUI();
-  setTimeout(() => { drawCascadeCanvas(); }, 50);
-}
+// COMPOSITE RUN
+const METRIC_EXPLAIN_CH8 = {
+  '\u03bb Raw': {
+    title: 'Lambda Raw \u2014 Genuine Constructive Capability',
+    verdict: v => v > 0.65 ? {text:'Strong capability',color:'#166534',intensity:'HIGH'} : v > 0.42 ? {text:'Moderate',color:'#92400e',intensity:'MODERATE'} : {text:'Below threshold',color:'#dc2626',intensity:'LOW'},
+    traditions: 'Aristotle measured this through habituation conditions. Kant presupposed it. Care Ethics showed it is relationally maintained. Rawls required it be maximized for the least advantaged. The composite run shows what happens when all these conditions are simultaneously present.',
+    what: 'The total coordination potential present in the agent population \u2014 their capacity for deliberate, authentic ethical functioning.',
+    hb: true
+  },
+  '\u03bb Perceived': {
+    title: 'Lambda Perceived \u2014 What the Architecture Can Receive',
+    verdict: v => v > 0.55 ? {text:'Architecture seeing its agents',color:'#166534',intensity:'HIGH'} : v > 0.35 ? {text:'Partial visibility',color:'#92400e',intensity:'MODERATE'} : {text:'Architecture largely blind',color:'#dc2626',intensity:'LOW'},
+    traditions: 'Mill\u2019s evidence architecture is what determines this metric most directly. The suppression gap between \u03bb Raw and \u03bb Perceived is the gap between what the Kantian and Aristotelian conditions enable and what the Millian conditions route toward decisions.',
+    what: 'What coordination capacity the institutional architecture actually routes toward decisions.',
+    hb: true
+  },
+  'Supp. Gap': {
+    title: 'Suppression Gap \u2014 The Distance Between Knowing and Deciding',
+    verdict: v => v < 0.10 ? {text:'Minimal suppression',color:'#166534',intensity:'LOW'} : v < 0.25 ? {text:'Moderate',color:'#92400e',intensity:'MODERATE'} : {text:'Critical suppression',color:'#dc2626',intensity:'HIGH'},
+    traditions: 'The suppression gap is the Socratic problem (unexamined assumptions blocking authentic contribution) plus the Millian problem (authority-weighted evidence routing) plus the Kantian problem (agents below Sapolsky threshold cannot surface their genuine perceptions) simultaneously.',
+    what: 'The difference between what agents know and what reaches institutional decisions.',
+    hb: false
+  },
+  'OS2 Bridge': {
+    title: 'OS2 Bridge \u2014 Coordination Realized Across Difference',
+    verdict: v => v > 0.55 ? {text:'Strong coordination',color:'#166534',intensity:'HIGH'} : v > 0.30 ? {text:'Partial',color:'#92400e',intensity:'MODERATE'} : {text:'Unrealized',color:'#dc2626',intensity:'LOW'},
+    traditions: 'Mill measured aggregate welfare; Rawls measured its distribution; Care Ethics showed it requires relational infrastructure. OS2 Bridge is what all three were measuring from different angles \u2014 the realized collective ethical functioning of the agent population.',
+    what: 'How much of the available coordination capacity is actually being realized as coordinated action across genuine PRF differences.',
+    hb: true
+  },
+  'Morphic Supp.': {
+    title: 'Morphic Suppression \u2014 When Contributions Disappear',
+    verdict: v => v < 0.15 ? {text:'Contributions reaching targets',color:'#166534',intensity:'LOW'} : v < 0.40 ? {text:'Significant routing failure',color:'#92400e',intensity:'MODERATE'} : {text:'Severe contribution loss',color:'#dc2626',intensity:'HIGH'},
+    traditions: 'Socrates identified this when authentic philosophical inquiry was routed around by convention. Hume identified it when genuine moral sentiment was suppressed by social roles. The existentialists named it most precisely: bad faith is the internal version; morphic suppression is the institutional version.',
+    what: 'The degree to which agent contributions are routed around rather than toward decisions.',
+    hb: false
+  },
+  'Friction': {
+    title: 'Friction \u2014 The Energy Cost of Coordination Across Difference',
+    verdict: v => v < 0.25 ? {text:'Smooth coordination',color:'#166534',intensity:'LOW'} : v < 0.50 ? {text:'Moderate',color:'#92400e',intensity:'MODERATE'} : {text:'High drag',color:'#dc2626',intensity:'HIGH'},
+    traditions: 'Hume identified friction as PRF distance \u2014 the attentuation of sympathy across difference. Care Ethics showed it can be reduced through relational attunement. The composite run shows the residual friction even when all eight conditions are active: genuine worldview diversity produces irreducible translation cost.',
+    what: 'How much energy the coordination process itself consumes before reaching actual problem-solving.',
+    hb: false
+  },
+};
 
-window.addEventListener('resize', () => { if (activeTrads !== undefined) drawCascadeCanvas(); });
-
-// ── COMPOSITE SIMULATION ──────────────────────────────────────
 async function fetchWithRetry(url, opts, max=3) {
   const delays = [0,8000,15000]; let lastErr;
-  for (let i=0;i<max;i++) {
+  for (let i=0; i<max; i++) {
     if (i>0) await new Promise(r=>setTimeout(r,delays[i]));
     try {
       const resp = await fetch(url,{...opts,signal:AbortSignal.timeout(30000)});
       if ([404,503,502].includes(resp.status)){lastErr=new Error('HTTP '+resp.status);continue;}
       if (!resp.ok){const t=await resp.text();throw new Error('HTTP '+resp.status+': '+t.slice(0,200));}
       return resp;
-    } catch(e) {
-      if (e.name==='TimeoutError'||e.name==='AbortError'){lastErr=new Error('Timed out');continue;}
+    } catch(e){
+      if(e.name==='TimeoutError'||e.name==='AbortError'){lastErr=new Error('Timed out');continue;}
       throw e;
     }
   }
@@ -678,190 +751,153 @@ async function fetchWithRetry(url, opts, max=3) {
 }
 
 async function runComposite() {
-  const btn = document.getElementById('compRunBtn');
-  const spin = document.getElementById('compSpinner');
-  const err = document.getElementById('compError');
-  btn.disabled = true; spin.style.display = 'inline-block'; err.style.display = 'none';
+  const btn = document.getElementById('compositeRunBtn');
+  const spinner = document.getElementById('compositeSpinner');
+  const errEl = document.getElementById('compositeError');
+  btn.disabled = true; spinner.style.display = 'inline-block'; errEl.style.display = 'none';
 
   const payload = {
-    scenario_name: 'resource_scarcity',
-    num_agents: 16, steps: 10,
+    scenario_name: 'resource_scarcity', num_agents: 16, steps: 10,
     seed: Math.floor(Math.random()*9000)+1000,
     scenario_physics: {
-      base_entropy: 0.48, base_stress: 0.42,
-      block_fields: { care: 0.42, fairness: 0.40, community: 0.45, boundary: 0.22 }
+      base_entropy: 0.42, base_stress: 0.38,
+      block_fields: {care:0.42, fairness:0.40, community:0.45, boundary:0.22}
     },
-    worldview_distribution: {
-      role_order: 0.18, sacred_boundary: 0.16,
-      liberal_individualist: 0.24, ubuntu_relational: 0.24, indigenous_custodial: 0.18
-    },
-    evidence_distribution: {
-      empirical_calibrated: 0.62, authority_weighted: 0.16,
-      tradition_weighted: 0.12, alternative_facts: 0.10
-    }
+    worldview_distribution: {role_order:0.18, sacred_boundary:0.16, liberal_individualist:0.24, ubuntu_relational:0.24, indigenous_custodial:0.18},
+    evidence_distribution: {empirical_calibrated:0.62, authority_weighted:0.16, tradition_weighted:0.13, alternative_facts:0.09},
+    activate_biobond_at: 4,
   };
 
   try {
-    const resp = await fetchWithRetry(BACKEND+'/api/simulate/custom',{
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
+    const resp = await fetchWithRetry(BACKEND+'/api/simulate/custom',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const data = await resp.json();
-    renderComposite(data);
+    const m = data.metrics || data;
+    const raw = m.lambda_raw||0, perc = m.lambda_perceived||0;
+    const gap = m.suppression_gap||(raw-perc)||0;
+    const os2 = m.os2_synergy_bridge||0, supp = m.morphic_suppression||0, fric = m.friction||0;
+
+    const COLORS = {'\u03bb Raw':'#14b8a6','\u03bb Perceived':'#3b82f6','Supp. Gap':'#f59e0b','OS2 Bridge':'#16a34a','Morphic Supp.':'#dc2626','Friction':'#f97316'};
+    const metrics = [['\u03bb Raw',raw,true],['\u03bb Perceived',perc,true],['Supp. Gap',gap,false],['OS2 Bridge',os2,true],['Morphic Supp.',supp,false],['Friction',fric,false]];
+
+    let html = '<div class="ucp-panel"><h3 style="font-size:.95rem;color:var(--teal-dark);margin-bottom:.75rem">Composite Run Results <span style="font-size:.72rem;font-weight:400;color:var(--muted)">(click any metric)</span></h3>';
+    html += '<div class="ucp-metrics">' + metrics.map(([l,v]) =>
+      `<div class="ucp-metric" onclick="showCh8MetricExplain('${l}',${v})" title="Click to learn what this means">
+        <div class="m-label">${l}</div>
+        <div class="m-val">${(v*100).toFixed(1)}%</div>
+        <div class="m-hint">tap &#8599;</div>
+      </div>`).join('') + '</div>';
+    html += '<div class="ucp-bars">' + metrics.map(([l,v]) =>
+      `<div class="ucp-bar-row" onclick="showCh8MetricExplain('${l}',${v})">
+        <div class="ucp-bar-label">${l}</div>
+        <div class="ucp-bar-track"><div class="ucp-bar-fill" style="width:${Math.min(100,v*100).toFixed(1)}%;background:${COLORS[l]||'#888'}"></div></div>
+        <div class="ucp-bar-pct">${(v*100).toFixed(1)}%</div>
+      </div>`).join('') + '</div>';
+
+    const gapPct = (gap*100).toFixed(1);
+    const os2Pct = (os2*100).toFixed(1);
+    html += `<div class="ucp-narrative">All eight traditions' conditions are active simultaneously. OS2 Bridge reaches ${os2Pct}% \u2014 the highest in the course. The suppression gap is ${gapPct}% \u2014 the lowest. And yet it is not zero. The residual gap is the simulation's answer to the question: is the complex PRF a solution or a direction? It is a direction. The moral real is always more complex than any current measurement can fully capture. The AMC is not a destination. It is a compass bearing.</div>`;
+    html += '</div>';
+    document.getElementById('compositeResults').innerHTML = html;
+    document.getElementById('compositeResults').style.display = 'block';
+    btn.innerHTML = '&#8635; Re-run Composite Simulation';
   } catch(e) {
-    err.textContent = 'Simulation error: '+e.message+'. Please try again.';
-    err.style.display = 'block';
-    btn.innerHTML = '▶ Run Composite Simulation';
+    errEl.textContent = 'Simulation error: ' + e.message;
+    errEl.style.display = 'block';
+    btn.innerHTML = '&#9654; Run Composite Simulation';
   } finally {
-    btn.disabled = false; spin.style.display = 'none';
+    btn.disabled = false; spinner.style.display = 'none';
   }
 }
 
-const COMP_BAR_COLORS = {'λ Raw':'#14b8a6','λ Perceived':'#3b82f6','Supp. Gap':'#f59e0b','OS2 Bridge':'#16a34a','Morphic Supp.':'#dc2626','Friction':'#f97316','Fidelity':'#6d28d9'};
-
-function renderComposite(data) {
-  const m = data.metrics||{};
-  const raw    = +(m.lambda_raw||0).toFixed(3);
-  const perc   = +(m.lambda_perceived||0).toFixed(3);
-  const gap    = +(m.suppression_gap||raw-perc||0).toFixed(3);
-  const supp   = +(m.morphic_suppression||0).toFixed(3);
-  const bridge = +(m.os2_synergy_bridge||0).toFixed(3);
-  const fric   = +(m.friction||0).toFixed(3);
-  const fid    = raw>0?+(raw/(raw+supp)).toFixed(3):0;
-
-  const metrics = [['λ Raw',raw],['λ Perceived',perc],['Supp. Gap',gap],
-    ['OS2 Bridge',bridge],['Morphic Supp.',supp],['Friction',fric],['Fidelity',fid]];
-
-  document.getElementById('compMetrics').innerHTML = metrics.map(([l,v])=>
-    `<div class="ucp-metric" onclick="showCompMetricModal('${l}',${v})" title="Click to see which traditions this connects to">
-      <div class="m-label">${l}</div>
-      <div class="m-val" style="color:${COMP_BAR_COLORS[l]||'#1a2744'}">${(v*100).toFixed(1)}%</div>
-      <div class="m-hint">traditions ↗</div>
-    </div>`
-  ).join('');
-
-  document.getElementById('compBars').innerHTML = metrics.slice(0,6).map(([l,v])=>
-    `<div class="ucp-bar-row" onclick="showCompMetricModal('${l}',${v})">
-      <div class="ucp-bar-label">${l}</div>
-      <div class="ucp-bar-track"><div class="ucp-bar-fill" style="width:${Math.min(100,v*100).toFixed(1)}%;background:${COMP_BAR_COLORS[l]||'#888'}"></div></div>
-      <div class="ucp-bar-pct">${(v*100).toFixed(1)}%</div>
-    </div>`
-  ).join('');
-
-  const narr = bridge > 0.55
-    ? `Composite run: OS2 Bridge ${(bridge*100).toFixed(1)}% — the highest in any run across the course. This is what the combined conditions produce: genuine coordination across diversity, with suppression gap ${(gap*100).toFixed(1)}% and morphic suppression ${(supp*100).toFixed(1)}%. This is not a utopia. Friction remains — genuine worldview difference requires translation work. But the known structural obstacles have been removed.`
-    : bridge > 0.40
-    ? `Composite run: OS2 Bridge ${(bridge*100).toFixed(1)}%. The combined conditions produce strong coordination — substantially better than any single tradition's conditions alone. Suppression gap ${(gap*100).toFixed(1)}%. The residual gap reflects the irreducible difficulty of coordinating across genuine PRF difference even under optimal conditions.`
-    : `Composite run: OS2 Bridge ${(bridge*100).toFixed(1)}%. Even with all traditions' conditions active, genuine coordination across difference requires more than structural design — it requires agents willing to take each other's perceptions seriously. The Run 3 finding holds: architecture can move the floor but cannot close every gap.`;
-
-  document.getElementById('compNarrative').textContent = narr;
-  document.getElementById('compResult').style.display = 'block';
-}
-
-// Composite metric modal — connects each metric to all 8 traditions
-const COMP_MODAL_DATA = {
-  'λ Raw': { title:'Lambda Raw — What Aristotle and Kant Were Measuring', traditions:[
-    {name:'Aristotle',text:'Block fields and habituation conditions maintain λ Raw by providing the institutional support virtuous practice requires.'},
-    {name:'Stoics',text:'ATCF depth and stress reduction maintain λ Raw by ensuring agents can absorb shocks without deliberative collapse.'},
-    {name:'Kant',text:'The Sapolsky threshold is λ Raw\'s biological precondition — Kant\'s ethics assumes this is always met. The simulation shows it isn\'t.'},
-    {name:'Care Ethics',text:'BioBond structures maintain λ Raw by sustaining the relational infrastructure that makes cognition possible.'},
-  ]},
-  'Supp. Gap': { title:'Suppression Gap — What Kant and Socrates Were Measuring', traditions:[
-    {name:'Socrates',text:'Examination is suppressed when the architecture prevents honest speech from reaching decisions.'},
-    {name:'Kant',text:'Every point of suppression gap measures the degree to which rational agents are treated as means rather than ends.'},
-    {name:'Mill',text:'The suppression gap is the utilitarian nightmare: it ensures utility-maximizing information never reaches the calculation.'},
-    {name:'Rawls',text:'A high suppression gap disproportionately silences the least advantaged — whose accurate observations most threaten the status quo.'},
-  ]},
-  'OS2 Bridge': { title:'OS2 Bridge — What Mill, Rawls, and Care Ethics Were Measuring', traditions:[
-    {name:'Mill',text:'OS2 Bridge is aggregate welfare coordination: the degree to which diverse capabilities produce collective good.'},
-    {name:'Care Ethics',text:'OS2 Bridge rises when caring relationships enable genuine listening across difference.'},
-    {name:'Rawls',text:'The difference principle applied to OS2 Bridge: maximize the minimum — ensure even the most constrained agents contribute to and benefit from coordination.'},
-    {name:'Aristotle',text:'OS2 Bridge measures whether virtuous dispositions can be expressed in coordinated action — the institutional test of individual character.'},
-  ]},
-  'Morphic Supp.': { title:'Morphic Suppression — What the Existentialists Were Measuring', traditions:[
-    {name:'Existentialism',text:'Morphic suppression is the architectural mechanism of bad faith: the agent\'s authentic contributions are routed around decisions, creating the morphic fidelity penalty.'},
-    {name:'Kant',text:'Morphic suppression treats rational agents as means — their deliberate contributions are structurally irrelevant to outcomes.'},
-    {name:'Care Ethics',text:'High morphic suppression severs the relational connection between caring action and caring outcome — care without effect.'},
-    {name:'Rawls',text:'The least advantaged experience the highest morphic suppression — their accurate observations about systemic failure are the most costly to route through the hierarchy.'},
-  ]},
-  'Friction': { title:'Friction — What Hume and Aristotle Were Measuring', traditions:[
-    {name:'Hume',text:'Friction is the translation cost between different moral sentiment calibrations — the effort required for people calibrated to different communities to reach shared moral judgment.'},
-    {name:'Aristotle',text:'Low friction is what well-designed habituation produces: shared language, shared practices, shared ways of naming what matters.'},
-    {name:'Stoics',text:'Friction is the entropy tax on coordination — the energy consumed before any problem-solving begins.'},
-    {name:'Care Ethics',text:'Caring relationships reduce friction by building the mutual recognition that makes translation effort worthwhile.'},
-  ]},
-  'λ Perceived': { title:'Lambda Perceived — What All Eight Were Measuring', traditions:[
-    {name:'Socrates',text:'λ Perceived is how much examined, authorized PRF content actually reaches collective decisions.'},
-    {name:'Mill',text:'λ Perceived is the utilitarian metric: the proportion of welfare-producing capability the architecture can use.'},
-    {name:'Rawls',text:'The gap between λ Raw and λ Perceived is the Rawlsian injustice measure: capability present in the system that institutional design prevents from reaching outcomes.'},
-    {name:'Existentialism',text:'λ Perceived reflects morphic fidelity at the institutional level: how much authentic capability the architecture can receive.'},
-  ]},
-  'Fidelity': { title:'Fidelity — The Existentialist Metric', traditions:[
-    {name:'Existentialism',text:'Fidelity is morphic fidelity formalized: the proportion of genuine capability that survives suppression and reaches outcomes. High fidelity = the institution can receive what its agents authentically know.'},
-    {name:'Kant',text:'High fidelity means rational agents\' deliberate contributions are treated as ends — the Formula of Humanity institutionally implemented.'},
-    {name:'Aristotle',text:'Fidelity is the institutional test of virtuous practice: does the architecture allow character to express itself in outcome?'},
-    {name:'Rawls',text:'The fidelity floor for the least advantaged is the Rawlsian criterion: justice requires that even the most constrained agents\' authentic contributions reach decisions.'},
-  ]},
-};
-
-function showCompMetricModal(name, value) {
-  const def = COMP_MODAL_DATA[name];
+function showCh8MetricExplain(name, value) {
+  const def = METRIC_EXPLAIN_CH8[name];
   if (!def) return;
   const pct = (value*100).toFixed(1);
+  const verdict = def.verdict(value);
+  const hb = def.hb;
+  const barPct = Math.min(100, value*100);
+  const zones = hb ? [{w:40,c:'#fee2e2'},{w:25,c:'#fef3c7'},{w:35,c:'#dcfce7'}]
+                   : [{w:35,c:'#dcfce7'},{w:30,c:'#fef3c7'},{w:35,c:'#fee2e2'}];
+
   const modal = document.createElement('div');
   modal.className = 'metric-modal-backdrop';
   modal.innerHTML = `
-    <div class="metric-modal" role="dialog">
+    <div class="metric-modal" role="dialog" aria-modal="true">
       <div class="metric-modal-header">
         <div>
-          <div class="metric-modal-name">Composite Simulation Metric</div>
+          <div class="metric-modal-name">Composite Run \u2014 Chapter 8</div>
           <div class="metric-modal-title">${def.title}</div>
         </div>
-        <button class="metric-modal-close" onclick="this.closest('.metric-modal-backdrop').remove()">×</button>
+        <button class="metric-modal-close" onclick="this.closest('.metric-modal-backdrop').remove()">&#215;</button>
       </div>
       <div class="metric-modal-body">
-        <div style="background:var(--paper);border-radius:.5rem;padding:.85rem 1rem;margin-bottom:1rem;text-align:center">
-          <div style="font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;color:${COMP_BAR_COLORS[name]||'#1a2744'}">${pct}%</div>
-          <div style="font-size:.78rem;color:var(--muted)">Composite run value — all eight traditions active</div>
+        <div class="metric-modal-value">
+          <div class="metric-modal-big" style="color:${verdict.color}">${pct}%</div>
+          <div>
+            <div class="metric-modal-verdict" style="color:${verdict.color}">${verdict.text}</div>
+            <div class="metric-modal-verdict-sub">${verdict.intensity}</div>
+          </div>
         </div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:.64rem;text-transform:uppercase;letter-spacing:.07em;color:var(--navy);margin-bottom:.6rem">What the traditions were measuring</div>
-        <div class="modal-traditions">
-          ${def.traditions.map(t=>`
-            <div class="modal-trad-row">
-              <div class="modal-trad-name">${t.name}</div>
-              <div class="modal-trad-text">${t.text}</div>
-            </div>`).join('')}
+        <div style="margin-bottom:1rem">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">Range indicator</div>
+          <div class="metric-range-bar">
+            ${zones.map((z,i)=>`<div class="metric-range-fill" style="width:${z.w}%;left:${zones.slice(0,i).reduce((a,b)=>a+b.w,0)}%;background:${z.c}"></div>`).join('')}
+            <div class="metric-range-pin" style="left:${barPct.toFixed(1)}%"></div>
+          </div>
+          <div class="metric-range-labels"><span>0%</span><span style="font-weight:600;color:${verdict.color}">${pct}% \u2190 you are here</span><span>100%</span></div>
+        </div>
+        <div class="metric-modal-section"><h4>What this measures</h4><p>${def.what}</p></div>
+        <div class="metric-modal-section">
+          <h4>Across all eight traditions</h4>
+          <div class="metric-modal-traditions">${def.traditions}</div>
         </div>
       </div>
     </div>`;
-  modal.addEventListener('click', e => { if (e.target===modal) modal.remove(); });
-  modal.addEventListener('keydown', e => { if (e.key==='Escape') modal.remove(); });
+  modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+  modal.addEventListener('keydown', e => { if(e.key==='Escape') modal.remove(); });
   document.body.appendChild(modal);
-  setTimeout(()=>modal.querySelector('.metric-modal-close').focus(), 50);
+  setTimeout(() => modal.querySelector('.metric-modal-close').focus(), 50);
 }
 
-// ── JOURNAL ───────────────────────────────────────────────────
-function jSave(key, val) {
-  const storageKey = key === 'cq5' ? 'ch8_cq5' : JP + key;
+// JOURNAL
+function jSave(k, v) {
   try {
-    localStorage.setItem(storageKey, val);
-    const sn = document.getElementById('sn-' + (key === 'cq5' ? 'q5' : key));
-    if (sn) { sn.classList.add('show'); setTimeout(()=>sn.classList.remove('show'), 2000); }
+    localStorage.setItem(JP+k, v);
+    if (k==='cq5') localStorage.setItem('ch8_cq5', v);
+    const sn = document.getElementById('sn-'+k);
+    if (sn) { sn.classList.add('show'); setTimeout(()=>sn.classList.remove('show'),2000); }
   } catch(e) {}
 }
 
-function loadJournal() {
-  ['q1','q2','q3','q4'].forEach(k=>{
-    const el = document.getElementById('jta-'+k);
-    if (el) { try { el.value = localStorage.getItem(JP+k)||''; } catch(e){} }
+function loadPrediction() {
+  let pred='', source='';
+  try {
+    const p7 = localStorage.getItem('ch7_cq5')||'';
+    if (p7.trim()) { pred=p7; source='Chapter 7 Journal Q5'; }
+  } catch(e) {}
+  ['predText','journalPredText'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (pred.trim()) {
+      el.className = 'pred-retrieval-text';
+      el.innerHTML = `<span style="font-size:.68rem;opacity:.55;display:block;margin-bottom:4px">from ${source}</span>` + pred.split('\n').join('<br>');
+    } else {
+      el.className = 'pred-retrieval-empty';
+      el.textContent = 'No Chapter 7 Q5 prediction found. Complete Chapter 7\u2019s journal Q5 first.';
+    }
   });
-  const q5 = document.getElementById('jta-q5');
-  if (q5) { try { q5.value = localStorage.getItem('ch8_cq5')||''; } catch(e){} }
 }
 
-// ── INIT ──────────────────────────────────────────────────────
-buildStations();
-loadJournal();
+function restoreJournal() {
+  ['q1','q2','q3','q4','q5'].forEach(k => {
+    const el = document.getElementById('jta-'+k);
+    if (el) { try { el.value = localStorage.getItem(JP+'c'+k)||''; } catch(e) {} }
+  });
+}
+
+// INIT
+loadPrediction();
+restoreJournal();
 </script>
 </body>
 </html>
