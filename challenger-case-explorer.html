@@ -834,7 +834,14 @@ footer {
   .abcd-grid-ch { grid-template-columns:1fr; }
 }
 
-  </style>
+  
+/* ── Top navigation bar ── */
+.top-nav{display:flex;gap:.3rem;flex-wrap:wrap;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.35rem;margin-bottom:0}
+.top-nav-btn{padding:.45rem .9rem;border:none;background:transparent;color:rgba(255,255,255,.55);font-family:Georgia,serif;font-size:.87rem;border-radius:.45rem;cursor:pointer;transition:all .2s;white-space:nowrap}
+.top-nav-btn:hover{color:#fff;background:rgba(255,255,255,.1)}
+.top-nav-btn.active{background:var(--accent-dark);color:#fff;font-weight:600}
+.top-nav-btn.crit{border-left:3px solid var(--danger)}
+</style>
 </head>
 <body>
 
@@ -865,6 +872,18 @@ footer {
      MAIN
      ══════════════════════════════════════════════════ -->
 <main>
+
+  <!-- Top navigation -->
+  <div class="card glass fade-in" style="padding:.7rem 1.1rem;margin-bottom:0">
+    <div class="top-nav" role="tablist">
+      <button class="top-nav-btn active" id="nav-discovery"      onclick="navTo('discovery')"      >📍 Discovery</button>
+      <button class="top-nav-btn"        id="nav-memo"           onclick="navTo('memo')"           >📄 The Memo</button>
+      <button class="top-nav-btn crit"   id="nav-teleconference" onclick="navTo('teleconference')" >📞 Teleconference</button>
+      <button class="top-nav-btn crit"   id="nav-disaster"       onclick="navTo('disaster')"       >💥 The Disaster</button>
+      <button class="top-nav-btn"        id="nav-rebuilding"     onclick="navTo('rebuilding')"     >🌱 Rebuilding</button>
+      <button class="top-nav-btn"        id="nav-transfer"       onclick="navTo('transfer')"       >✦ Your Transfer</button>
+    </div>
+  </div>
 
   <!-- Intro card -->
   <div class="card glass fade-in" role="region" aria-label="Case introduction">
@@ -2892,6 +2911,37 @@ function showMetricsExplainer() {
 // INIT
 // ─────────────────────────────────────────────────
 renderTimeline();
+
+// ── Top nav helper ────────────────────────────────
+function navTo(eventId) {
+  document.querySelectorAll('.top-nav-btn').forEach(b => b.classList.remove('active'));
+  var btn = document.getElementById('nav-' + eventId);
+  if (btn) btn.classList.add('active');
+  var ev = TIMELINE.find(function(e){ return e.id === eventId; });
+  if (!ev) return;
+  currentTab = Object.keys(ev.tabs)[0];
+  currentEventId = eventId;
+  renderDetail(ev);
+  var ds = document.getElementById('detailSection');
+  if (ds) {
+    ds.style.display = 'block';
+    setTimeout(function(){ ds.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  }
+  renderTimeline();
+  setTimeout(restoreInputs, 150);
+}
+
+// Patch selectEvent to sync nav buttons
+var _origSelectEvent = selectEvent;
+selectEvent = function(id) {
+  _origSelectEvent(id);
+  document.querySelectorAll('.top-nav-btn').forEach(b => b.classList.remove('active'));
+  var btn = document.getElementById('nav-' + id);
+  if (btn) btn.classList.add('active');
+};
+
+// Auto-open first section on load
+navTo('discovery');
 
 // Keyboard handler for choice items
 document.addEventListener('keydown', e => {
