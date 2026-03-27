@@ -246,6 +246,35 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .hanna-ssq-fb.wrong .hanna-ssq-fb-label{color:#C9A84C}
 .hanna-ssq-prog{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-align:center;padding:.5rem;border-top:1px solid rgba(255,255,255,.07)}
 
+
+/* ── Clickable metric cards ── */
+.ucp-metric{cursor:pointer;transition:transform .15s,box-shadow .15s}
+.ucp-metric:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12);border-color:var(--teal-mid)}
+.ucp-metric .m-hint{font-size:.58rem;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:.15rem;opacity:.7}
+
+/* ── Metric explanation modal ── */
+.metric-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.metric-modal{background:white;border-radius:1rem;max-width:540px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.metric-modal-header{padding:1.25rem 1.5rem .85rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.metric-modal-name{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.2rem}
+.metric-modal-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:var(--navy)}
+.metric-modal-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--muted);line-height:1;padding:.1rem .3rem}
+.metric-modal-close:hover{color:var(--ink)}
+.metric-modal-body{padding:1.25rem 1.5rem}
+.metric-modal-value{display:flex;align-items:center;gap:1rem;background:var(--paper);border-radius:.5rem;padding:.9rem 1rem;margin-bottom:1rem}
+.metric-modal-big{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;min-width:70px;text-align:center}
+.metric-modal-verdict{font-size:.88rem;font-weight:600;line-height:1.4}
+.metric-modal-verdict-sub{font-size:.78rem;color:var(--muted);margin-top:.15rem}
+.metric-range-bar{background:var(--border);border-radius:4px;height:10px;margin:.5rem 0 .25rem;position:relative;overflow:visible}
+.metric-range-fill{height:100%;border-radius:4px;position:absolute;left:0;top:0}
+.metric-range-pin{position:absolute;top:-5px;width:2px;height:20px;background:var(--navy);border-radius:1px}
+.metric-range-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem}
+.metric-modal-section{margin-bottom:.9rem}
+.metric-modal-section h4{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:.3rem}
+.metric-modal-section p{font-size:.84rem;line-height:1.65;color:var(--ink);margin-bottom:.35rem}
+.metric-modal-challenger{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 .45rem .45rem 0;padding:.75rem .9rem;font-size:.82rem;line-height:1.65;color:var(--amber-dark)}
+.metric-modal-formula{background:var(--paper);border:1px solid var(--border);border-radius:.4rem;padding:.6rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--navy);margin:.5rem 0}
+
 </style>
 </head>
 <body>
@@ -1878,6 +1907,174 @@ function updateHannaSSQProgress(runKey){
     }
   }catch(e){}
 }
+
+const METRIC_EXPLAIN = {
+  'λ Raw': {
+    title: 'Lambda Raw — Genuine Constructive Capability',
+    what: `λ Raw measures the actual coordination potential present in the agent population — the total capacity to perceive situations accurately, reason deliberately about them, and contribute meaningfully to shared outcomes. Think of it as the water level in the mountains of the watershed: how much capability is actually present, regardless of whether the institutional architecture can receive it.`,
+    range: `Ranges from 0% (total capacity collapse — agents cannot function above the Sapolsky stress threshold) to 100% (full deliberative capacity across all agents). In practice, healthy institutions operate between 55–80%. Below 40% indicates agents are in reactive, stress-driven mode.`,
+    verdict: (v) => v > 0.65 ? { text: 'Strong capability present', color: '#166534', intensity: 'HIGH — Agents have intact deliberative capacity.' }
+                  : v > 0.42 ? { text: 'Moderate capability', color: '#92400e', intensity: 'MODERATE — Capability is present but under pressure.' }
+                             : { text: 'Capability below threshold', color: '#dc2626', intensity: 'LOW — Agents are below the Sapolsky deliberative threshold.' },
+    challenger: `In the Challenger teleconference, engineer λ Raw was high — Boisjoly and his colleagues had clear technical knowledge, intact reasoning, and accurate data. The watershed had abundant water in the mountains. The disaster occurred not because λ Raw was low but because the dam (suppression gap) was high.`,
+    formula: 'λ Raw = f(stress, BioBond, PRF stability, Identity Kernel depth)',
+    learnMore: `This is why the Challenger case is so instructive: the engineers were not incompetent or confused. Their λ Raw was intact. The architecture failed them, not their capability.`
+  },
+  'λ Perceived': {
+    title: 'Lambda Perceived — Coordination Capacity Felt in the Room',
+    what: `λ Perceived measures what coordination capacity the institutional architecture actually allows to reach decisions — what feels available for shared reasoning. It is λ Raw minus what the suppression gap filters out. In the watershed: this is the water level on the decision side of the dam. It is always ≤ λ Raw.`,
+    range: `0% means no coordination capacity reaches decisions (pure authority-driven or suppressed institution). 100% means all genuine capability is fully expressed in coordinated action. Healthy institutions: 45–70%. The Challenger teleconference architecture: very low.`,
+    verdict: (v) => v > 0.55 ? { text: 'Coordination feeling strong', color: '#166534', intensity: 'HIGH — Much of λ Raw is reaching decisions.' }
+                  : v > 0.35 ? { text: 'Coordination constrained', color: '#92400e', intensity: 'MODERATE — Significant capability is being filtered out.' }
+                             : { text: 'Coordination severely limited', color: '#dc2626', intensity: 'LOW — Only a fraction of actual capability reaches decisions.' },
+    challenger: `On January 27, 1986, what was perceived in the Thiokol decision room was not the engineering data — it was the organizational pressure to launch. λ Perceived collapsed because the authority-weighted evidence architecture routed the engineering signal around rather than toward the launch decision.`,
+    formula: 'λ Perceived = λ Raw − Suppression Gap',
+    learnMore: `The difference between λ Raw and λ Perceived is the most important measurement in organizational ethics. An organization can have highly capable, fully informed people whose capability never reaches decisions.`
+  },
+  'Supp. Gap': {
+    title: 'Suppression Gap — The Distance Between Knowing and Deciding',
+    what: `The Suppression Gap is the difference between what agents actually know (λ Raw) and what reaches institutional decisions (λ Perceived). It is the structural distance between truth and power. In the watershed: this is the height of the dam. A high suppression gap means accurate information is being filtered out before it reaches the people who need it — not through dishonesty but through architecture.`,
+    range: `0% means no suppression — everything known reaches decisions. Above 15% indicates significant filtering. Above 30% indicates the institution is systematically unable to hear its own most accurate information. The Challenger teleconference: very high.`,
+    verdict: (v) => v < 0.10 ? { text: 'Minimal suppression', color: '#166534', intensity: 'LOW — Information is flowing freely toward decisions.' }
+                  : v < 0.25 ? { text: 'Moderate suppression', color: '#92400e', intensity: 'MODERATE — Significant information is being filtered.' }
+                             : { text: 'Critical suppression', color: '#dc2626', intensity: 'HIGH — The institution cannot hear its own most accurate signal.' },
+    challenger: `Roger Boisjoly had a 15% failure probability estimate, direct physical evidence, and 18 months of documented warnings. What reached the launch decision was silence. The gap between what he knew and what reached the decision measured in lives: seven.`,
+    formula: 'Suppression Gap = λ Raw − λ Perceived',
+    learnMore: `Amy Edmondson found that in low-psychological-safety environments, each hierarchical level crossed reduces transmission probability by 30–40%. The Thiokol teleconference crossed multiple levels — each one reducing the signal.`
+  },
+  'OS2 Bridge': {
+    title: 'OS2 Bridge — Realized Coordination Across Difference',
+    what: `OS2 Bridge measures how much of the available coordination capacity is actually being realized as coordinated action across genuine PRF differences. In the watershed: this is how full the reservoir is — how much water has made it past the dam and is available for use.`,
+    range: `0% means no coordination across difference. 100% means full realization of coordination potential. Healthy organizations with genuine diversity: 40–70%. The Challenger teleconference: very low.`,
+    verdict: (v) => v > 0.55 ? { text: 'Strong coordination realized', color: '#166534', intensity: 'HIGH — Diverse capability is reaching shared outcomes.' }
+                  : v > 0.30 ? { text: 'Partial coordination', color: '#92400e', intensity: 'MODERATE — Some coordination capacity is being realized.' }
+                             : { text: 'Coordination largely unrealized', color: '#dc2626', intensity: 'LOW — The available capability is not producing coordinated action.' },
+    challenger: `In the Challenger teleconference, OS2 Bridge was near zero. Engineers and managers were in the same room with the same data and reached opposite conclusions. The diverse perspectives did not produce better collective perception — they were suppressed into a false consensus that overrode the accurate engineering signal.`,
+    formula: 'OS2 Bridge = f(evidence architecture, worldview diversity, block field, suppression gap)',
+    learnMore: `Woolley et al. (Carnegie Mellon, 2010) found that collective intelligence is predicted by conversational turn-taking equality and social sensitivity, not by individual IQ. OS2 Bridge is the simulation measure of exactly this collective capacity.`
+  },
+  'Morphic Supp.': {
+    title: 'Morphic Suppression — When Effort Disappears',
+    what: `Morphic Suppression measures the degree to which agents contributions are being structurally routed around rather than toward decisions. An agent can make an observation, complete an analysis, submit a recommendation — and it simply disappears. Not rejected. Not challenged. Just not routed anywhere actionable.`,
+    range: `0% means contributions reach their intended destinations. Above 20% indicates significant structural routing failure. Above 50% means half of what agents contribute is being absorbed without effect. This drains motivation faster than rejection does.`,
+    verdict: (v) => v < 0.15 ? { text: 'Contributions reaching targets', color: '#166534', intensity: 'LOW — The architecture is routing effort toward outcomes.' }
+                  : v < 0.40 ? { text: 'Significant routing failure', color: '#92400e', intensity: 'MODERATE — Meaningful effort is disappearing into the structure.' }
+                             : { text: 'Severe contribution loss', color: '#dc2626', intensity: 'HIGH — Most effort is being absorbed without effect.' },
+    challenger: `Boisjoly July 1985 memo had high morphic suppression. It was received, filed, and a task force was formed — but none of this produced the architectural change he was requesting. His contribution was technically acknowledged and practically absorbed. This pattern repeated through every channel he used until the teleconference, where it became total.`,
+    formula: 'Morphic Suppression = f(authority gradient, evidence architecture, worldview filtering)',
+    learnMore: `Morphic suppression is distinct from the suppression gap: the gap measures what does not reach decisions; morphic suppression measures the specific mechanism by which contributions are routed around decision-makers once they arrive.`
+  },
+  'Friction': {
+    title: 'Friction — The Energy Cost of Coordination',
+    what: `Friction measures how much energy the coordination process itself consumes before any of it reaches actual problem-solving. High friction does not mean communication is not happening — it means every interaction requires more effort than it should. People with different PRFs may all be speaking honestly but spending enormous energy translating between frameworks.`,
+    range: `0% means coordination is effortless — shared frameworks allow direct communication. Above 30% indicates significant translation cost between PRFs. Above 60% means coordination is consuming so much energy that even when it succeeds, everyone is depleted.`,
+    verdict: (v) => v < 0.25 ? { text: 'Smooth coordination', color: '#166534', intensity: 'LOW — People are communicating efficiently.' }
+                  : v < 0.50 ? { text: 'Moderate friction', color: '#92400e', intensity: 'MODERATE — Coordination is effortful but functioning.' }
+                             : { text: 'High coordination drag', color: '#dc2626', intensity: 'HIGH — Enormous energy is consumed before any problem-solving begins.' },
+    challenger: `The Challenger teleconference had extreme friction: engineers were speaking engineering (material properties, probability, risk thresholds) and management was speaking organizational reality (contracts, schedules, NASA relationships). The translation cost was so high that every engineering point had to be re-explained — and was re-interpreted through the management lens as it arrived.`,
+    formula: 'Friction = f(PRF distance between agents, worldview distribution breadth, shared language availability)',
+    learnMore: `Friction and suppression require different interventions. Suppression is fixed by changing power dynamics. Friction is fixed by building shared language — protocols that let different frameworks communicate without requiring either to abandon its commitments.`
+  },
+};
+
+function showMetricExplain(metricName, value, run) {
+  const def = METRIC_EXPLAIN[metricName];
+  if (!def) return;
+
+  const pct = (value * 100).toFixed(1);
+  const verdict = def.verdict(value);
+  const hb = !['Supp. Gap','Morphic Supp.','Friction'].includes(metricName);
+  const barPct = Math.min(100, value * 100);
+  // Color the range bar: green zone, amber zone, red zone
+  const zones = hb
+    ? [{w:40,c:'#fee2e2'},{w:25,c:'#fef3c7'},{w:35,c:'#dcfce7'}]
+    : [{w:35,c:'#dcfce7'},{w:30,c:'#fef3c7'},{w:35,c:'#fee2e2'}];
+
+  const modal = document.createElement('div');
+  modal.className = 'metric-modal-backdrop';
+  modal.innerHTML = `
+    <div class="metric-modal" role="dialog" aria-modal="true" aria-label="${def.title}">
+      <div class="metric-modal-header">
+        <div>
+          <div class="metric-modal-name">Simulation Metric — ${run === 'B' ? 'Configuration B' : 'Configuration A'}</div>
+          <div class="metric-modal-title">${def.title}</div>
+        </div>
+        <button class="metric-modal-close" onclick="this.closest('.metric-modal-backdrop').remove()" aria-label="Close">×</button>
+      </div>
+      <div class="metric-modal-body">
+
+        <div class="metric-modal-value">
+          <div class="metric-modal-big" style="color:${verdict.color}">${pct}%</div>
+          <div>
+            <div class="metric-modal-verdict" style="color:${verdict.color}">${verdict.text}</div>
+            <div class="metric-modal-verdict-sub">${verdict.intensity}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1rem">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">Range indicator</div>
+          <div class="metric-range-bar">
+            ${zones.map((z,i) => `<div class="metric-range-fill" style="width:${z.w}%;left:${zones.slice(0,i).reduce((a,b)=>a+b.w,0)}%;background:${z.c}"></div>`).join('')}
+            <div class="metric-range-pin" style="left:${barPct.toFixed(1)}%"></div>
+          </div>
+          <div class="metric-range-labels">
+            <span>${hb ? '0% — no capacity' : '0% — no friction'}</span>
+            <span style="font-weight:600;color:${verdict.color}">${pct}% ← you are here</span>
+            <span>${hb ? '100% — full capacity' : '100% — maximum drag'}</span>
+          </div>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>What this measures</h4>
+          <p>${def.what}</p>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>Interpreting the range</h4>
+          <p>${def.range}</p>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>In the Challenger case</h4>
+          <div class="metric-modal-challenger">${def.challenger}</div>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>How it is calculated</h4>
+          <div class="metric-modal-formula">${def.formula}</div>
+          <p style="font-size:.8rem;color:var(--muted)">${def.learnMore}</p>
+        </div>
+
+      </div>
+    </div>`;
+
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  modal.addEventListener('keydown', e => { if (e.key === 'Escape') modal.remove(); });
+  document.body.appendChild(modal);
+  setTimeout(() => modal.querySelector('.metric-modal-close').focus(), 50);
+}
+
+
+// ── Delegated metric click handler ──────────────────────────
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.ucp-metric');
+  if (!card) return;
+  const label = card.querySelector('.ucp-metric-label,.m-label');
+  const val   = card.querySelector('.ucp-metric-value,.m-val');
+  if (!label || !val) return;
+  const name = label.textContent.trim();
+  // Parse value - could be 0.xxx or xx.x%
+  let v = parseFloat(val.textContent);
+  if (v > 1) v = v / 100; // convert % to decimal
+  if (!isNaN(v)) showMetricExplain(name, v, 'run');
+});
+
+// Make metric cards show pointer cursor via JS as fallback
+document.querySelectorAll && document.querySelectorAll('.ucp-metric').forEach(el => {
+  el.style.cursor = 'pointer';
+  el.title = 'Click to learn what this means';
+});
+
 </script>
 </body>
 </html>
