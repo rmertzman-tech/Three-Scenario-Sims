@@ -2597,7 +2597,7 @@ function loadChallPrediction() {
 // ── Watershed mini-visualization ─────────────────────────────
 function drawChallWatershed(lamRaw, os2Bridge, suppGap) {
   const cv = document.getElementById('challWatershed');
-  if (!cv) return;
+  if (!cv || typeof cv.getContext !== 'function') return;
   const ctx = cv.getContext('2d');
   const W = cv.width, H = cv.height;
   const GY = H - 22, MAX_H = H - 44, THRESH = 0.42;
@@ -2698,7 +2698,9 @@ function restoreInputs() {
     if (el) el.value = loadSaved(key);
   });
   loadChallPrediction();
-  drawChallWatershed();
+  // Only draw watershed if canvas is present in current tab
+  const wshCv = document.getElementById('challWatershed');
+  if (wshCv && typeof wshCv.getContext === 'function') drawChallWatershed();
 }
 
 
