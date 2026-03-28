@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 9 — The World Values Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;
+  --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+  --red:#dc2626;--red-light:#fee2e2;
+  --purple:#7c3aed;--purple-light:#ede9fe;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:980px;margin:0 auto;padding:1rem}
+.app-header{text-align:center;padding:2rem 1rem 1.25rem;color:white}
+.ch-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.7);margin-bottom:.4rem}
+.app-header h1{font-size:2rem;font-weight:700;color:white;margin-bottom:.35rem;line-height:1.2}
+.app-header .sub{font-size:.95rem;color:rgba(255,255,255,.5);font-style:italic}
+.tab-nav{display:flex;gap:.25rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:.4rem .75rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.85rem;border-radius:.4rem;cursor:pointer;transition:.18s;white-space:nowrap}
+.tab-btn:hover{color:white;background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+.tab-pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 28px rgba(0,0,0,.2)}
+.tab-pane.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h2{font-size:1.55rem;font-weight:700;color:var(--teal-dark);margin-bottom:.7rem;padding-bottom:.35rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.15rem;font-weight:700;color:var(--navy);margin:1.2rem 0 .45rem}
+h4{font-size:.97rem;font-weight:700;color:var(--amber-dark);margin:.85rem 0 .3rem}
+p{line-height:1.75;margin-bottom:.85rem;font-size:.96rem;color:var(--ink)}
+strong{color:var(--navy)}
+.card{border-radius:.7rem;padding:1.2rem;margin-bottom:1rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border-left:4px solid var(--amber)}
+.card-navy{background:var(--navy);padding:1.35rem}
+.card-navy p{color:rgba(255,255,255,.82)}
+.card-navy h3,.card-navy h4{color:var(--teal-mid)}
+
+/* THE MAP */
+.map-container{position:relative;width:100%;margin:1.25rem 0}
+.map-canvas-wrap{position:relative;width:100%;padding-bottom:90%;background:#f8fafc;border:2px solid var(--border);border-radius:.75rem;overflow:hidden}
+#wvmCanvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.map-axis-label{position:absolute;font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);font-weight:600;background:rgba(255,255,255,.9);padding:.2rem .45rem;border-radius:.25rem;pointer-events:none}
+.map-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.5rem;margin-top:.75rem}
+.legend-item{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--ink)}
+.legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.map-tooltip{position:absolute;background:white;border:1px solid var(--border);border-radius:.5rem;padding:.65rem .8rem;font-size:.78rem;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.12);max-width:220px;display:none;z-index:10}
+.map-tooltip strong{color:var(--teal-dark);display:block;margin-bottom:.2rem;font-size:.82rem}
+
+/* AXES TABLE */
+.axes-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:1rem 0}
+@media(max-width:640px){.axes-grid{grid-template-columns:1fr}}
+.axis-card{border-radius:.6rem;overflow:hidden;border:2px solid var(--border)}
+.axis-head{background:var(--teal-dark);color:white;padding:.6rem .9rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.axis-body{padding:.85rem}
+.axis-pole{display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.65rem}
+.pole-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;padding:.15rem .45rem;border-radius:.25rem;flex-shrink:0;margin-top:.15rem}
+.pole-trad{background:var(--amber-light);color:var(--amber-dark)}
+.pole-sec{background:var(--teal-light);color:var(--teal-dark)}
+.pole-surv{background:var(--red-light);color:var(--red)}
+.pole-self{background:var(--green-light);color:var(--green)}
+.axis-sim{background:var(--paper);border-radius:.4rem;padding:.5rem .65rem;margin-top:.5rem;font-size:.78rem;color:var(--muted)}
+.axis-sim strong{color:var(--amber-dark)}
+
+/* WV TABLE */
+.wv-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.82rem}
+.wv-table th{background:var(--teal-dark);color:white;padding:.5rem .75rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em}
+.wv-table td{padding:.5rem .75rem;border:1px solid var(--border);vertical-align:top;line-height:1.55}
+.wv-table tr:nth-child(odd) td{background:var(--teal-light)}
+.wv-table .param{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;color:var(--teal-dark)}
+.wv-table .position{font-size:.78rem;color:var(--navy)}
+
+/* SIMULATION */
+.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+@media(max-width:600px){.sim-grid{grid-template-columns:1fr}}
+.config-panel{background:var(--paper);border:1px solid var(--border);border-radius:.65rem;padding:1rem}
+.config-head{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.65rem;font-weight:600}
+.config-A .config-head{color:var(--teal-dark)}
+.config-B .config-head{color:var(--red)}
+.slider-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem}
+.slider-lbl{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);min-width:120px}
+.slider-val{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--teal-dark);min-width:32px;text-align:right}
+input[type=range]{flex:1;height:5px;-webkit-appearance:none;appearance:none;border-radius:3px;background:var(--border);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--teal-mid);cursor:pointer}
+.run-btn{width:100%;background:var(--teal-dark);color:white;border:none;padding:.65rem;border-radius:.45rem;font-size:.9rem;font-weight:600;cursor:pointer;font-family:'Cormorant Garamond',serif;transition:.15s;display:flex;align-items:center;justify-content:center;gap:.4rem;margin-top:.75rem}
+.run-btn:hover{background:var(--teal)}
+.run-btn:disabled{opacity:.55;cursor:not-allowed}
+.spinner{display:none;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.results-area{margin-top:1rem}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.45rem;margin:.75rem 0}
+.metric-box{background:white;border:1px solid var(--border);border-radius:.4rem;padding:.5rem .65rem;text-align:center}
+.metric-box .ml{font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;color:var(--muted)}
+.metric-box .mv{font-size:1.1rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+.mv-good{color:var(--green)}
+.mv-mid{color:var(--amber-dark)}
+.mv-bad{color:var(--red)}
+.gap-bar-wrap{margin:.5rem 0}
+.gap-bar-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.2rem}
+.gap-bar-track{height:14px;background:var(--border);border-radius:3px;overflow:hidden}
+.gap-bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.narrative-box{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.65rem .85rem;border-radius:0 .4rem .4rem 0;font-size:.82rem;line-height:1.65;margin-top:.65rem}
+.sxs-table{width:100%;border-collapse:collapse;font-size:.78rem;margin-top:1rem}
+.sxs-table th{background:var(--navy);color:white;padding:.45rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.65rem}
+.sxs-table td{padding:.4rem .6rem;border:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace}
+.sxs-table tr:nth-child(odd) td{background:var(--paper)}
+.sim-error{background:var(--red-light);border:1px solid var(--red);border-radius:.4rem;padding:.55rem;font-size:.8rem;color:var(--red);margin-top:.5rem;display:none}
+
+/* JOURNAL */
+.pred-box{background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.2);border-radius:.7rem;padding:1rem 1.1rem;margin-bottom:1rem}
+.pred-label{font-family:'JetBrains Mono',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.35rem}
+.journal-q{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.q-label{font-family:'JetBrains Mono',monospace;font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.38rem}
+textarea.jta{width:100%;min-height:95px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
+.save-note{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;height:1.1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries &middot; Chapter 9</div>
+  <h1>Where Are You Standing?</h1>
+  <div class="sub">The World Values Map &middot; The Cultural PRF &middot; Two Civilizations Trying to Coordinate</div>
+</div>
+
+<div class="tab-nav" role="tablist">
+  <button class="tab-btn active" onclick="showTab('map',this)">The Map</button>
+  <button class="tab-btn" onclick="showTab('axes',this)">The Two Axes</button>
+  <button class="tab-btn" onclick="showTab('wv',this)">Simulation Connection</button>
+  <button class="tab-btn" onclick="showTab('thermo',this)">Thermodynamic Logic</button>
+  <button class="tab-btn" onclick="showTab('sim',this)">Cross-Cultural Simulation</button>
+  <button class="tab-btn" onclick="showTab('journal',this)">Journal</button>
+</div>
+
+<!-- THE MAP -->
+<div class="tab-pane active" id="tab-map">
+  <h2>The World Values Map</h2>
+  <p>Ronald Inglehart and Christian Welzel analyzed values data from over 90 countries and 400,000+ respondents across four decades. Their World Values Survey identified two dimensions that account for most of the variation in human values across societies. The map below shows approximate cultural cluster positions. <strong>Hover over any cluster to see how it maps onto the simulation's worldview parameters.</strong></p>
+  <div class="map-container">
+    <div class="map-canvas-wrap">
+      <canvas id="wvmCanvas"></canvas>
+      <div class="map-tooltip" id="mapTooltip"></div>
+    </div>
+    <div class="map-legend" id="mapLegend"></div>
+  </div>
+  <div class="card card-teal">
+    <h4>Reading the Map in Simulation Terms</h4>
+    <p>The horizontal axis (Survival &rarr; Self-Expression) maps directly to the <strong>base_stress</strong> and <strong>base_entropy</strong> parameters in the simulation. Moving left on this axis is equivalent to raising base_stress above 0.55. The vertical axis (Traditional &rarr; Secular-Rational) maps to the <strong>evidence_distribution</strong> parameter — Traditional authority correlates with authority_weighted processing; Secular-Rational correlates with empirical_calibrated. Every simulation run you have done was placing agents somewhere on this map.</p>
+  </div>
+</div>
+
+<!-- THE TWO AXES -->
+<div class="tab-pane" id="tab-axes">
+  <h2>The Two Axes</h2>
+  <p>The map is built from two independent dimensions. Knowing a culture's position on one tells you nothing reliable about the other. Together they describe the two most fundamental variables in how human values actually distribute across societies.</p>
+
+  <div class="axes-grid">
+    <div class="axis-card">
+      <div class="axis-head">&#8597; Vertical Axis &mdash; Source of Authority</div>
+      <div class="axis-body">
+        <div class="axis-pole">
+          <span class="pole-label pole-trad">Traditional</span>
+          <div>
+            <p style="margin:0;font-size:.88rem">Authority derives from inherited sources: religious texts, ancestral practice, hierarchical roles, sacred identity. What is right was established before the current generation and is not subject to revision by individual reasoning.</p>
+          </div>
+        </div>
+        <div class="axis-pole">
+          <span class="pole-label pole-sec">Secular&ndash;Rational</span>
+          <div>
+            <p style="margin:0;font-size:.88rem">Authority derives from process: empirical evidence, logical argument, bureaucratic legitimacy, democratic deliberation. What is right can in principle be revised if evidence or argument warrants it.</p>
+          </div>
+        </div>
+        <div class="axis-sim">
+          <strong>Simulation link:</strong> evidence_distribution parameter. Traditional &rarr; authority_weighted &amp; tradition_weighted. Secular-Rational &rarr; empirical_calibrated. This axis is the dominant predictor of <strong>suppression gap</strong>.
+        </div>
+      </div>
+    </div>
+
+    <div class="axis-card">
+      <div class="axis-head">&#8596; Horizontal Axis &mdash; Thermodynamic State</div>
+      <div class="axis-body">
+        <div class="axis-pole">
+          <span class="pole-label pole-surv">Survival</span>
+          <div>
+            <p style="margin:0;font-size:.88rem">Generated by material insecurity: poverty, physical threat, institutional instability. Tribalism is thermodynamically efficient — trust the known, exclude the unknown. Short time horizons forced by immediate threats.</p>
+          </div>
+        </div>
+        <div class="axis-pole">
+          <span class="pole-label pole-self">Self&ndash;Expression</span>
+          <div>
+            <p style="margin:0;font-size:.88rem">Generated by material surplus and security. Tolerance is affordable when failure is survivable. Diversity becomes an asset. Long time horizons become available because the present isn't consuming all available energy.</p>
+          </div>
+        </div>
+        <div class="axis-sim">
+          <strong>Simulation link:</strong> base_stress &amp; base_entropy. Survival &rarr; high base_stress (0.55&ndash;0.75), negative block fields. Self-Expression &rarr; low base_stress (0.20&ndash;0.40), positive blocks. This axis is the dominant predictor of <strong>&lambda; Raw</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-amber">
+    <h4>The Critical Insight</h4>
+    <p>These are <strong>not fixed identities</strong> — they are thermodynamic positions. The same population can move on this map over decades as material conditions change. The Inglehart-Welzel data shows this directly: as economic security arrives, populations move toward Self-Expression values on their own, not because they were instructed to. And under genuine survival pressure, populations move back toward Survival values, not from moral failure but from rational thermodynamic response.</p>
+  </div>
+</div>
+
+<!-- SIMULATION CONNECTION -->
+<div class="tab-pane" id="tab-wv">
+  <h2>The Simulation Connection</h2>
+  <p>The five worldview categories in the simulation were not arbitrary labels. Each corresponds to a specific region of the Inglehart-Welzel map — a real cultural position held by real populations in real institutional environments. The table below makes that mapping explicit.</p>
+
+  <table class="wv-table">
+    <thead><tr>
+      <th>Simulation Parameter</th>
+      <th>Map Position</th>
+      <th>What It Means</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="param">role_order</td>
+        <td class="position">Traditional + Survival</td>
+        <td>Authority and hierarchy as the primary survival mechanism. When the environment is genuinely threatening, clear chains of command minimize coordination cost. The most common worldview under material scarcity.</td>
+      </tr>
+      <tr>
+        <td class="param">sacred_boundary</td>
+        <td class="position">Traditional axis (any entropy level)</td>
+        <td>Certain values are treated as non-negotiable regardless of outcomes — lines that must not be crossed. The sacred boundary is the identity kernel's immune system. Found across the full vertical range.</td>
+      </tr>
+      <tr>
+        <td class="param">liberal_individualist</td>
+        <td class="position">Secular-Rational + Self-Expression</td>
+        <td>Rights-based reasoning, empirical evidence processing, individual autonomy as primary. Requires surplus thermodynamic conditions to be sustainable as a coordination strategy.</td>
+      </tr>
+      <tr>
+        <td class="param">ubuntu_relational</td>
+        <td class="position">Self-Expression axis</td>
+        <td>Relational flourishing — the community as precondition for the individual. BioBond as structural foundation. Requires sufficient security to invest in the other. Found across Traditional–Secular range but requires Self-Expression conditions.</td>
+      </tr>
+      <tr>
+        <td class="param">indigenous_custodial</td>
+        <td class="position">Traditional + long time horizon</td>
+        <td>Stewardship across generations, inherited obligations, custodial responsibility. Traditional in authority but with multi-generational future orientation that Survival mode forecloses. Contracts differently under stress than role_order.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>The Retroactive Payoff</h3>
+  <p>Every simulation run from Chapter 2 through Chapter 8 was, without your knowing it, modeling a specific position or trajectory on the Inglehart-Welzel map. The Challenger case was a role_order / authority_weighted configuration — Traditional/Survival institutional architecture in a high-stress decision environment. The TRC was a deliberate attempt to build Secular-Rational / Self-Expression architecture in a population that had been forced by decades of apartheid into Survival/Traditional positions. The map was always there. Now you can read it directly.</p>
+
+  <div class="card card-teal">
+    <h4>indigenous_custodial under stress — why it's different from role_order</h4>
+    <p>Both are Traditional in authority, but they respond to stress differently. Role_order agents under stress intensify hierarchy — authority escalates, deviants are suppressed. Indigenous_custodial agents under stress contract toward community protection — the group closes ranks, but the orientation remains custodial rather than hierarchical. In block_fields: role_order generates negative community blocks when stressed; indigenous_custodial maintains positive community blocks longer before they turn. This difference is visible in the simulation and corresponds to real cross-cultural variation in how communities respond to economic collapse.</p>
+  </div>
+</div>
+
+<!-- THERMODYNAMIC LOGIC -->
+<div class="tab-pane" id="tab-thermo">
+  <h2>The Thermodynamic Logic of Values</h2>
+  <p>The single most important insight the map provides — and the one most consistently misread in political and ethical debate — is this: <strong>position on the Survival/Self-Expression axis is not primarily a moral or intellectual achievement. It is a thermodynamic response to material conditions.</strong></p>
+
+  <h3>Why Self-Expression Values Are Expensive</h3>
+  <p>Extending genuine trust to strangers requires metabolic resources that can only be allocated when survival needs are already met. Tolerating difference requires enough surplus to absorb the coordination cost of diversity without it becoming a threat. Caring about the environment, about future generations, about people outside your immediate community — these require a future horizon, which requires a present that is not consuming all available energy defending against immediate threats.</p>
+
+  <div class="card card-navy">
+    <h4>The Sapolsky Threshold at Cultural Scale</h4>
+    <p>In Chapter 1, you learned that chronic stress pushes the Prefrontal Cortex offline and forces the agent into reactive, binary processing. The Inglehart-Welzel X-axis is that same mechanism operating at the level of entire populations across generations.</p>
+    <p>A society that has lived with sustained poverty, physical insecurity, or institutional instability has had its base_stress parameter set high for decades or centuries. The value distributions that result — tribalism, rigid conformity, short time horizons, low tolerance — are not moral failures. They are the culturally encoded survival strategies of populations whose Sapolsky threshold has been chronically exceeded.</p>
+    <p>The map does not tell you what people should value. It tells you what conditions produce which values. Changing the values without changing the conditions is the thermodynamic equivalent of asking someone to run when their legs are broken.</p>
+  </div>
+
+  <h3>The Stress Test — Try It in the Simulation</h3>
+  <p>In the Cross-Cultural Simulation tab, try this: configure both Config A and Config B with identical worldview distributions (ubuntu_relational 0.40, liberal_individualist 0.35). Then set Config A base_stress to 0.28 and Config B base_stress to 0.68. Same people. Same values. Different thermodynamic conditions. Watch what the metrics do — especially minimum &lambda; Raw and the community block field. The agents haven't changed their values. Their environment has made different strategies metabolically available.</p>
+
+  <div class="card card-amber">
+    <h4>The Implication for Policy</h4>
+    <p>You cannot export Self-Expression institutional architecture to Survival environments by argument alone. Every colonial and development intervention that failed — and most of them did — failed in part because it tried to install Self-Expression software on Survival hardware. The simulation models this precisely: you cannot maintain positive block_fields at high base_stress. The architecture collapses not from bad values but from insufficient thermodynamic conditions to sustain those values institutionally.</p>
+    <p style="margin-top:.5rem">The reverse trajectory is where the map's most important empirical finding lies: when material conditions stabilize, populations move toward Self-Expression values on their own — not because they were instructed to, but because the metabolic budget became available to sustain the institutional architecture that Self-Expression values require.</p>
+  </div>
+</div>
+
+<!-- SIMULATION -->
+<div class="tab-pane" id="tab-sim">
+  <h2>Cross-Cultural Coordination Simulation</h2>
+  <p>Configure two populations at different positions on the Inglehart-Welzel map and watch what the coordination metrics do. This models what happens when representatives from different cultural positions must coordinate on a shared problem — climate negotiations, development agreements, international institutions.</p>
+
+  <div class="card card-amber">
+    <h4>Before you run — your prediction</h4>
+    <p>Based on the map and the thermodynamic logic: which metric do you predict will show the largest difference between Config A and Config B? What do you predict happens to the suppression gap when you mix both configurations in a single run?</p>
+    <textarea class="jta" id="sim-predict" placeholder="My predictions before running:&#10;Largest difference metric: ...&#10;Suppression gap when mixed: ...&#10;What the OS2 Bridge will do: ..." oninput="jSave('wvm_sim_predict',this.value)" style="min-height:75px;margin-top:.5rem"></textarea>
+  </div>
+
+  <div class="sim-grid">
+    <div class="config-panel config-A">
+      <div class="config-head">Config A &mdash; Secular-Rational / Self-Expression</div>
+      <div class="slider-row"><span class="slider-lbl">liberal_individualist</span><input type="range" min="0" max="1" step="0.05" value="0.50" id="a-li" oninput="sv('a-li-v',this.value)"><span class="slider-val" id="a-li-v">0.50</span></div>
+      <div class="slider-row"><span class="slider-lbl">ubuntu_relational</span><input type="range" min="0" max="1" step="0.05" value="0.25" id="a-ur" oninput="sv('a-ur-v',this.value)"><span class="slider-val" id="a-ur-v">0.25</span></div>
+      <div class="slider-row"><span class="slider-lbl">role_order</span><input type="range" min="0" max="1" step="0.05" value="0.10" id="a-ro" oninput="sv('a-ro-v',this.value)"><span class="slider-val" id="a-ro-v">0.10</span></div>
+      <div class="slider-row"><span class="slider-lbl">base_stress</span><input type="range" min="0.1" max="0.9" step="0.05" value="0.28" id="a-bs" oninput="sv('a-bs-v',this.value)"><span class="slider-val" id="a-bs-v">0.28</span></div>
+      <div class="slider-row"><span class="slider-lbl">evidence quality</span><input type="range" min="0" max="1" step="0.05" value="0.68" id="a-ev" oninput="sv('a-ev-v',this.value)"><span class="slider-val" id="a-ev-v">0.68</span></div>
+    </div>
+    <div class="config-panel config-B">
+      <div class="config-head" style="color:var(--red)">Config B &mdash; Traditional / Survival</div>
+      <div class="slider-row"><span class="slider-lbl">role_order</span><input type="range" min="0" max="1" step="0.05" value="0.50" id="b-ro" oninput="sv('b-ro-v',this.value)"><span class="slider-val" id="b-ro-v">0.50</span></div>
+      <div class="slider-row"><span class="slider-lbl">sacred_boundary</span><input type="range" min="0" max="1" step="0.05" value="0.25" id="b-sb" oninput="sv('b-sb-v',this.value)"><span class="slider-val" id="b-sb-v">0.25</span></div>
+      <div class="slider-row"><span class="slider-lbl">indigenous_custodial</span><input type="range" min="0" max="1" step="0.05" value="0.15" id="b-ic" oninput="sv('b-ic-v',this.value)"><span class="slider-val" id="b-ic-v">0.15</span></div>
+      <div class="slider-row"><span class="slider-lbl">base_stress</span><input type="range" min="0.1" max="0.9" step="0.05" value="0.64" id="b-bs" oninput="sv('b-bs-v',this.value)"><span class="slider-val" id="b-bs-v">0.64</span></div>
+      <div class="slider-row"><span class="slider-lbl">evidence quality</span><input type="range" min="0" max="1" step="0.05" value="0.28" id="b-ev" oninput="sv('b-ev-v',this.value)"><span class="slider-val" id="b-ev-v">0.28</span></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.25rem">
+    <button class="run-btn" id="runBtnA" onclick="runConfig('A')" style="flex:1;background:var(--teal-dark)">
+      <span class="spinner" id="spinA"></span>&#9654; Run Config A
+    </button>
+    <button class="run-btn" id="runBtnB" onclick="runConfig('B')" style="flex:1;background:var(--red)">
+      <span class="spinner" id="spinB"></span>&#9654; Run Config B
+    </button>
+    <button class="run-btn" id="runBtnMix" onclick="runMixed()" style="flex:1;background:var(--purple)">
+      <span class="spinner" id="spinMix"></span>&#9654; Run Mixed (OS2 Bridge)
+    </button>
+  </div>
+
+  <div class="sim-error" id="simError"></div>
+  <div class="results-area" id="resultsArea"></div>
+</div>
+
+<!-- JOURNAL -->
+<div class="tab-pane" id="tab-journal">
+  <h2>Journal &mdash; Where Are You Standing?</h2>
+
+  <div class="pred-box" id="predPanel">
+    <div class="pred-label">Your Chapter 8 Q5 Prediction (retrieved)</div>
+    <div id="predText" style="font-size:.88rem;color:var(--muted)">Loading&hellip;</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 1 &mdash; Map Your Own Formation</div>
+    <p>Based on what you know about the conditions in which your values were formed — your family's economic position, the community you grew up in, the institutional environments that shaped you — where on the Inglehart-Welzel map would you place your starting position? Where do you think you are now? If there is distance between those two positions, what produced the movement?</p>
+    <textarea class="jta" id="jta-q1" placeholder="My starting position on the map:...&#10;Where I am now:...&#10;What produced the movement (if any):..." oninput="jSave('wvm_q1',this.value)"></textarea>
+    <div class="save-note" id="sn-wvm_q1">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 2 &mdash; The Thermodynamic Argument</div>
+    <p>The chapter argues that Self-Expression values are thermodynamically expensive and that populations under genuine survival pressure adopt Survival values from rational thermodynamic response, not moral failure. Do you find this argument compelling? What is your strongest objection? What empirical evidence would you want to see to test it?</p>
+    <textarea class="jta" id="jta-q2" placeholder="My response to the thermodynamic argument:...&#10;My strongest objection:...&#10;What evidence would test it:..." oninput="jSave('wvm_q2',this.value)"></textarea>
+    <div class="save-note" id="sn-wvm_q2">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 3 &mdash; The Policy Mismatch</div>
+    <p>The chapter argues that Rust Belt policy failed partly because it was designed from a Secular-Rational/Self-Expression position for populations being forced toward Traditional/Survival. Identify another policy failure — historical or current, domestic or international — that you think follows the same map-mismatch pattern. What was the position of the policy designers? What was the position of the population affected?</p>
+    <textarea class="jta" id="jta-q3" placeholder="The policy failure I identified:...&#10;Position of designers:...&#10;Position of affected population:...&#10;What a Cartographer would have seen:..." oninput="jSave('wvm_q3',this.value)"></textarea>
+    <div class="save-note" id="sn-wvm_q3">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q">
+    <div class="q-label">Question 4 &mdash; Tourist vs. Cartographer</div>
+    <p>Think of a cross-cultural encounter you have had — or observed — where a Tourist reading produced a judgment of "backward" or "wrong" or "irrational." Apply the Cartographer's framework: what conditions produced the position you were observing? What would understanding those conditions have changed about the encounter?</p>
+    <textarea class="jta" id="jta-q4" placeholder="The encounter or observation:...&#10;The Tourist reading that was applied:...&#10;The Cartographer's reading:...&#10;What would have changed:..." oninput="jSave('wvm_q4',this.value)"></textarea>
+    <div class="save-note" id="sn-wvm_q4">&#10003; Saved</div>
+  </div>
+
+  <div class="journal-q" style="border-color:var(--amber);border-width:2px;background:var(--amber-light)">
+    <div class="q-label" style="color:var(--amber-dark)">Question 5 &mdash; Your Cross-Cultural Coordination Prediction (stored for retrieval)</div>
+    <p>Identify a real cross-cultural coordination challenge you know about — in international politics, your workplace, your community, your family. <strong>Where on the Inglehart-Welzel map would you place the parties involved?</strong> Based on the simulation's worldview parameters and what you've learned about suppression gaps, what does the model predict about the coordination dynamics? And what would the institutional architecture need to provide to bridge the distance? Be specific about the worldview_distribution parameters you would use if you were to model this in the simulation.</p>
+    <textarea class="jta q5" id="jta-q5" placeholder="The cross-cultural coordination challenge:...&#10;&#10;Where I'd place Party A on the map:...&#10;Where I'd place Party B on the map:...&#10;&#10;What the simulation predicts about suppression gap:...&#10;&#10;What the institutional architecture would need to provide:...&#10;&#10;Worldview parameters I'd use to model this:..." oninput="jSave('wvm_q5',this.value)"></textarea>
+    <div class="save-note" id="sn-wvm_q5">&#10003; Saved</div>
+  </div>
+</div>
+
+</div><!-- app-wrap -->
+
+<script>
+'use strict';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+const JP = 'wvm_';
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'map') setTimeout(drawMap, 50);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function sv(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = parseFloat(val).toFixed(2);
+}
+
+// ── WORLD VALUES MAP CANVAS ───────────────────────────────────
+const CLUSTERS = [
+  // [name, x_survival_to_self(0-1), y_trad_to_secular(0-1), color, wv_params, desc]
+  { name: 'Protestant-Heritage\nHigh-Trust', x: 0.88, y: 0.90, color: '#0f766e',
+    wv: 'liberal_individualist: 0.45\nubuntu_relational: 0.30\nindigenous_custodial: 0.15',
+    desc: 'High Secular-Rational + High Self-Expression. Empirical evidence dominant. Strong trust radius, tolerance as default. Low base_stress (0.22–0.32).',
+    sim: 'empirical_calibrated: 0.65, role_order: 0.05' },
+  { name: 'English-Speaking\nMarket Societies', x: 0.78, y: 0.68, color: '#1e3a8a',
+    wv: 'liberal_individualist: 0.50\nubuntu_relational: 0.20\nsacred_boundary: 0.15',
+    desc: 'Moderate Secular-Rational + High Self-Expression. Rights-based dominant, some traditional residue. base_stress 0.28–0.38.',
+    sim: 'liberal_individualist heavy, empirical_calibrated: 0.55' },
+  { name: 'Confucian-Heritage\nSocieties', x: 0.48, y: 0.82, color: '#7c3aed',
+    wv: 'role_order: 0.35\nubuntu_relational: 0.30\nindigenous_custodial: 0.20',
+    desc: 'High Secular-Rational + Moderate Survival. Bureaucratic process dominant. Group before individual. base_stress 0.40–0.55.',
+    sim: 'authority_weighted: 0.30, role_order: 0.35, empirical_calibrated: 0.40' },
+  { name: 'Latin-Catholic\nSocieties', x: 0.62, y: 0.42, color: '#dc2626',
+    wv: 'ubuntu_relational: 0.35\nsacred_boundary: 0.25\nrole_order: 0.20',
+    desc: 'Low-Moderate Secular-Rational + Moderate Self-Expression. Family and community primary. Mixed evidence processing. base_stress 0.38–0.52.',
+    sim: 'tradition_weighted: 0.25, ubuntu_relational: 0.35, empirical: 0.40' },
+  { name: 'Orthodox-Heritage\nSocieties', x: 0.35, y: 0.62, color: '#92400e',
+    wv: 'role_order: 0.40\nsacred_boundary: 0.25\nindigenous_custodial: 0.20',
+    desc: 'Moderate Secular-Rational + Moderate Survival. State authority dominant. base_stress 0.50–0.65.',
+    sim: 'authority_weighted: 0.40, role_order: 0.40' },
+  { name: 'South Asian\nSocieties', x: 0.30, y: 0.28, color: '#f59e0b',
+    wv: 'role_order: 0.38\nsacred_boundary: 0.28\nindigenous_custodial: 0.22',
+    desc: 'Traditional + Moderate Survival. Religious and family authority dominant. base_stress 0.52–0.68.',
+    sim: 'tradition_weighted: 0.35, authority_weighted: 0.30, role_order: 0.38' },
+  { name: 'African &\nIslamic-Heritage', x: 0.22, y: 0.18, color: '#166534',
+    wv: 'role_order: 0.35\nsacred_boundary: 0.35\nindigenous_custodial: 0.18',
+    desc: 'High Traditional + High Survival. Strongest community bonds. Sacred values non-negotiable. base_stress 0.62–0.78.',
+    sim: 'authority_weighted: 0.40, sacred_boundary: 0.35, role_order: 0.35' },
+];
+
+function drawMap() {
+  const canvas = document.getElementById('wvmCanvas');
+  if (!canvas) return;
+  const wrap = canvas.parentElement;
+  canvas.width = wrap.offsetWidth;
+  canvas.height = wrap.offsetHeight;
+  const W = canvas.width, H = canvas.height;
+  const ctx = canvas.getContext('2d');
+  const pad = { l: 52, r: 16, t: 16, b: 52 };
+  const cW = W - pad.l - pad.r, cH = H - pad.t - pad.b;
+
+  // Background gradient quadrants
+  const quad = [
+    ['#fff8f0', '#f0faf4', '#fafafa', '#f0f6ff'],
+  ];
+  ctx.fillStyle = '#fafafa'; ctx.fillRect(0, 0, W, H);
+
+  // Quadrant colors
+  const quads = [
+    { x: pad.l, y: pad.t + cH/2, w: cW/2, h: cH/2, color: 'rgba(220,38,38,0.04)', label: 'Traditional\nSurvival' },
+    { x: pad.l + cW/2, y: pad.t + cH/2, w: cW/2, h: cH/2, color: 'rgba(245,158,11,0.06)', label: 'Traditional\nSelf-Expression' },
+    { x: pad.l, y: pad.t, w: cW/2, h: cH/2, color: 'rgba(92,40,237,0.04)', label: 'Secular-Rational\nSurvival' },
+    { x: pad.l + cW/2, y: pad.t, w: cW/2, h: cH/2, color: 'rgba(15,118,110,0.06)', label: 'Secular-Rational\nSelf-Expression' },
+  ];
+  quads.forEach(q => {
+    ctx.fillStyle = q.color;
+    ctx.fillRect(q.x, q.y, q.w, q.h);
+    ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    ctx.font = `italic ${Math.max(9, W*0.012)}px Georgia`;
+    const lines = q.label.split('\n');
+    const cx = q.x + q.w/2, cy = q.y + q.h/2;
+    lines.forEach((ln, i) => {
+      ctx.fillText(ln, cx - ctx.measureText(ln).width/2, cy + (i - (lines.length-1)/2) * 16);
+    });
+  });
+
+  // Axes
+  ctx.strokeStyle = '#d0d8e8'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad.l, pad.t + cH/2); ctx.lineTo(pad.l + cW, pad.t + cH/2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(pad.l + cW/2, pad.t); ctx.lineTo(pad.l + cW/2, pad.t + cH); ctx.stroke();
+
+  // Border
+  ctx.strokeStyle = '#e5e7eb'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(pad.l, pad.t, cW, cH);
+
+  // Axis labels
+  const fs = Math.max(10, W * 0.013);
+  ctx.font = `600 ${fs}px 'JetBrains Mono', monospace`;
+  ctx.fillStyle = '#0d5e57';
+  ctx.textAlign = 'center';
+  ctx.fillText('SURVIVAL', pad.l + cW*0.12, pad.t + cH + 36);
+  ctx.fillText('SELF-EXPRESSION', pad.l + cW*0.88, pad.t + cH + 36);
+  ctx.fillText('\u2190  Horizontal Axis (X)  \u2192', pad.l + cW/2, pad.t + cH + 22);
+
+  // Y axis label (rotated)
+  ctx.save();
+  ctx.translate(16, pad.t + cH/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('TRADITIONAL', 0, 0);
+  ctx.restore();
+  ctx.save();
+  ctx.translate(16, pad.t + cH * 0.15);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText('SECULAR-RATIONAL', 0, 0);
+  ctx.restore();
+
+  // Plot clusters
+  ctx.textAlign = 'center';
+  CLUSTERS.forEach((cl, idx) => {
+    const cx = pad.l + cl.x * cW;
+    const cy = pad.t + (1 - cl.y) * cH;
+    const r = Math.max(14, W * 0.022);
+
+    // Glow
+    const grad = ctx.createRadialGradient(cx, cy, r*0.3, cx, cy, r*1.4);
+    grad.addColorStop(0, cl.color + '40');
+    grad.addColorStop(1, cl.color + '00');
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.arc(cx, cy, r*1.4, 0, Math.PI*2); ctx.fill();
+
+    // Circle
+    ctx.fillStyle = cl.color;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Number
+    ctx.fillStyle = 'white';
+    ctx.font = `bold ${Math.max(11, W*0.015)}px 'JetBrains Mono', monospace`;
+    ctx.fillText(idx + 1, cx, cy + 4);
+
+    // Label
+    const lines = cl.name.split('\n');
+    ctx.fillStyle = cl.color;
+    ctx.font = `600 ${Math.max(9, W*0.011)}px Arial`;
+    lines.forEach((ln, i) => {
+      const lx = cx, ly = cy + r + 14 + i * 13;
+      ctx.fillStyle = 'white';
+      const tw = ctx.measureText(ln).width;
+      ctx.fillRect(lx - tw/2 - 2, ly - 11, tw + 4, 13);
+      ctx.fillStyle = cl.color;
+      ctx.fillText(ln, lx, ly);
+    });
+  });
+
+  // Legend
+  const legend = document.getElementById('mapLegend');
+  if (legend) {
+    legend.innerHTML = CLUSTERS.map((cl, i) => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${cl.color}"></div>
+        <span><strong>${i+1}.</strong> ${cl.name.replace('\n',' ')}</span>
+      </div>
+    `).join('');
+  }
+
+  // Hover
+  canvas._clusters = CLUSTERS.map(cl => ({
+    ...cl,
+    cx: pad.l + cl.x * cW,
+    cy: pad.t + (1 - cl.y) * cH,
+    r: Math.max(14, W * 0.022)
+  }));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const canvas = document.getElementById('wvmCanvas');
+  const tooltip = document.getElementById('mapTooltip');
+  if (!canvas) return;
+
+  canvas.addEventListener('mousemove', e => {
+    if (!canvas._clusters) return;
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+    const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+    const hit = canvas._clusters.find(cl => Math.hypot(mx - cl.cx, my - cl.cy) < cl.r + 10);
+    if (hit) {
+      tooltip.style.display = 'block';
+      tooltip.style.left = (e.offsetX + 15) + 'px';
+      tooltip.style.top = (e.offsetY - 10) + 'px';
+      tooltip.innerHTML = `<strong>${hit.name.replace('\n', ' ')}</strong>
+        <div style="color:var(--muted);margin-bottom:.3rem">${hit.desc}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--teal-dark);white-space:pre">${hit.wv}</div>`;
+    } else {
+      tooltip.style.display = 'none';
+    }
+  });
+  canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+  drawMap();
+  window.addEventListener('resize', drawMap);
+});
+
+// ── SIMULATION ────────────────────────────────────────────────
+const _results = {};
+
+function buildWorldview(liVal, urVal, roVal, sbVal, icVal) {
+  const raw = { liberal_individualist: parseFloat(liVal||0), ubuntu_relational: parseFloat(urVal||0),
+    role_order: parseFloat(roVal||0), sacred_boundary: parseFloat(sbVal||0), indigenous_custodial: parseFloat(icVal||0) };
+  const total = Object.values(raw).reduce((s,v) => s+v, 0) || 1;
+  const out = {};
+  // fill missing with small baseline
+  const keys = ['role_order','sacred_boundary','liberal_individualist','ubuntu_relational','indigenous_custodial'];
+  const specified = Object.fromEntries(Object.entries(raw).filter(([,v]) => v > 0));
+  const specTotal = Object.values(specified).reduce((s,v)=>s+v,0);
+  const unspecKeys = keys.filter(k => !specified[k]);
+  const baseline = unspecKeys.length ? Math.max(0, (1 - specTotal/total * total) * 0.05) : 0;
+  keys.forEach(k => { out[k] = specified[k] ? specified[k]/total : 0.01; });
+  const t2 = Object.values(out).reduce((s,v)=>s+v,0);
+  keys.forEach(k => out[k] = parseFloat((out[k]/t2).toFixed(3)));
+  return out;
+}
+
+function buildEvidence(qualVal) {
+  const q = parseFloat(qualVal);
+  function lerp(a,b,t){return a+(b-a)*t;}
+  const raw = {
+    alternative_facts: lerp(0.45, 0.03, q),
+    authority_weighted: lerp(0.35, 0.08, q),
+    tradition_weighted: lerp(0.14, 0.14, q),
+    empirical_calibrated: lerp(0.06, 0.75, q),
+  };
+  const t = Object.values(raw).reduce((s,v)=>s+v,0);
+  const out = {};
+  Object.entries(raw).forEach(([k,v]) => out[k] = parseFloat((v/t).toFixed(3)));
+  return out;
+}
+
+function colorForVal(v, higherGood) {
+  if (higherGood) return v > 0.6 ? 'mv-good' : v > 0.35 ? 'mv-mid' : 'mv-bad';
+  return v < 0.3 ? 'mv-good' : v < 0.55 ? 'mv-mid' : 'mv-bad';
+}
+
+function renderResult(key, data, label, color) {
+  const m = data.metrics || data;
+  const lr = m.lambda_raw || 0, lp = m.lambda_perceived || 0;
+  const gap = lr - lp, fric = m.friction || 0;
+  const os2 = m.os2_synergy_bridge || m.os2_synergy || 0;
+  _results[key] = { lr, lp, gap, fric, os2 };
+
+  let html = `<div style="margin-bottom:1rem">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:${color};margin-bottom:.5rem">${label}</div>
+    <div class="results-grid">
+      <div class="metric-box"><div class="ml">&lambda; Raw</div><div class="mv ${colorForVal(lr,true)}">${(lr*100).toFixed(1)}%</div></div>
+      <div class="metric-box"><div class="ml">&lambda; Perceived</div><div class="mv ${colorForVal(lp,true)}">${(lp*100).toFixed(1)}%</div></div>
+      <div class="metric-box"><div class="ml">Supp. Gap</div><div class="mv ${colorForVal(gap,false)}">${(gap*100).toFixed(1)}%</div></div>
+      <div class="metric-box"><div class="ml">Friction</div><div class="mv ${colorForVal(fric,false)}">${(fric*100).toFixed(1)}%</div></div>
+      <div class="metric-box"><div class="ml">OS2 Bridge</div><div class="mv ${colorForVal(os2,true)}">${(os2*100).toFixed(1)}%</div></div>
+    </div>
+    <div class="gap-bar-wrap">
+      <div class="gap-bar-label">Suppression gap — what agents know vs. what can safely surface</div>
+      <div class="gap-bar-track"><div class="gap-bar-fill" style="width:${Math.min(100,gap*200)}%;background:${gap>0.20?'var(--red)':gap>0.10?'var(--amber)':'var(--green-mid)'}"></div></div>
+    </div>`;
+
+  const gapLabel = gap > 0.25 ? 'Critical — decisions being made without the room\'s full intelligence.' :
+    gap > 0.15 ? 'Significant — this population knows more than it can safely say.' :
+    gap > 0.08 ? 'Mild — some self-censorship present.' : 'Minimal — agents using their full voice.';
+  html += `<div class="narrative-box">${gapLabel} ${fric > 0.55 ? 'High friction compounds the suppression gap: coordination energy is being consumed by the process before it can reach the problem.' : fric < 0.28 ? 'Low friction means coordination energy is reaching the problem directly.' : 'Moderate friction is present but manageable.'}</div></div>`;
+  return html;
+}
+
+async function runConfig(which) {
+  const btn = document.getElementById('runBtn' + which);
+  const spin = document.getElementById('spin' + which);
+  const errEl = document.getElementById('simError');
+  btn.disabled = true; spin.style.display = 'inline-block'; errEl.style.display = 'none';
+
+  const isA = which === 'A';
+  const stress = parseFloat(isA ? document.getElementById('a-bs').value : document.getElementById('b-bs').value);
+  const ev = parseFloat(isA ? document.getElementById('a-ev').value : document.getElementById('b-ev').value);
+
+  const wv = isA
+    ? buildWorldview(document.getElementById('a-li').value, document.getElementById('a-ur').value, document.getElementById('a-ro').value, 0, 0)
+    : buildWorldview(0, 0, document.getElementById('b-ro').value, document.getElementById('b-sb').value, document.getElementById('b-ic').value);
+
+  const payload = {
+    scenario_name: 'resource_scarcity', num_agents: 14, steps: 10,
+    seed: Math.floor(Math.random()*9000)+1000,
+    scenario_physics: { base_entropy: stress * 0.85, base_stress: stress,
+      block_fields: { care: isA ? 0.32 : -0.18, fairness: isA ? 0.28 : -0.12, community: isA ? 0.35 : -0.22 } },
+    worldview_distribution: wv,
+    evidence_distribution: buildEvidence(ev),
+    activate_biobond_at: null,
+  };
+
+  try {
+    const resp = await fetch(BACKEND + '/api/simulate/custom', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload), signal: AbortSignal.timeout(30000)
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+
+    const area = document.getElementById('resultsArea');
+    const color = isA ? 'var(--teal-dark)' : 'var(--red)';
+    const label = isA ? 'Config A \u2014 Secular-Rational / Self-Expression' : 'Config B \u2014 Traditional / Survival';
+    const existing = area.innerHTML;
+    if (which === 'A') area.innerHTML = renderResult('A', data, label, color) + (existing.includes('Config B') ? existing.substring(existing.indexOf('<div style') + existing.split('<div style')[1].indexOf('Config B') - 20) : '');
+    else area.innerHTML = (existing.includes('Config A') ? existing.substring(0, existing.indexOf('Config B') - 60) : '') + renderResult('B', data, label, color);
+
+    if (_results.A && _results.B) appendComparison();
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; spin.style.display = 'none';
+  }
+}
+
+async function runMixed() {
+  const btn = document.getElementById('runBtnMix');
+  const spin = document.getElementById('spinMix');
+  const errEl = document.getElementById('simError');
+  btn.disabled = true; spin.style.display = 'inline-block'; errEl.style.display = 'none';
+
+  // Mixed distribution: blend A and B worldviews with OS2 Bridge
+  const wv = {
+    liberal_individualist: parseFloat(document.getElementById('a-li').value) * 0.5,
+    ubuntu_relational: parseFloat(document.getElementById('a-ur').value) * 0.5,
+    role_order: parseFloat(document.getElementById('b-ro').value) * 0.5,
+    sacred_boundary: parseFloat(document.getElementById('b-sb').value) * 0.5,
+    indigenous_custodial: parseFloat(document.getElementById('b-ic').value) * 0.5,
+  };
+  const t = Object.values(wv).reduce((s,v)=>s+v,0) || 1;
+  Object.keys(wv).forEach(k => wv[k] = parseFloat((wv[k]/t).toFixed(3)));
+
+  const stressA = parseFloat(document.getElementById('a-bs').value);
+  const stressB = parseFloat(document.getElementById('b-bs').value);
+  const mixStress = (stressA + stressB) / 2;
+
+  const payload = {
+    scenario_name: 'resource_scarcity', num_agents: 16, steps: 12,
+    seed: Math.floor(Math.random()*9000)+1000,
+    scenario_physics: { base_entropy: mixStress * 0.85, base_stress: mixStress,
+      block_fields: { care: 0.28, fairness: 0.24, community: 0.30 } },
+    worldview_distribution: wv,
+    evidence_distribution: buildEvidence(0.50),
+    activate_biobond_at: 4,
+  };
+
+  try {
+    const resp = await fetch(BACKEND + '/api/simulate/custom', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload), signal: AbortSignal.timeout(30000)
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const area = document.getElementById('resultsArea');
+    area.innerHTML += renderResult('Mix', data, 'Mixed Configuration \u2014 OS2 Bridge Active (BioBond @ step 4)', 'var(--purple)');
+    if (_results.A && _results.B && _results.Mix) appendComparison();
+  } catch(e) {
+    errEl.textContent = 'Error: ' + e.message; errEl.style.display = 'block';
+  } finally {
+    btn.disabled = false; spin.style.display = 'none';
+  }
+}
+
+function appendComparison() {
+  const r = _results;
+  const area = document.getElementById('resultsArea');
+  if (area.querySelector('.sxs-table')) return;
+  const metrics = [
+    ['&lambda; Raw', 'lr', true], ['&lambda; Perceived', 'lp', true],
+    ['Suppression Gap', 'gap', false], ['Friction', 'fric', false], ['OS2 Bridge', 'os2', true]
+  ];
+  let rows = metrics.map(([label, key, hb]) => {
+    const a = r.A ? r.A[key] : null, b = r.B ? r.B[key] : null, mx = r.Mix ? r.Mix[key] : null;
+    const better = (v, ref) => v !== null && ref !== null ? (hb ? v > ref : v < ref) : false;
+    const fmt = v => v !== null ? (v*100).toFixed(1)+'%' : '—';
+    return `<tr>
+      <td style="text-align:left;font-weight:700;color:var(--navy)">${label}</td>
+      <td style="color:${a!==null?(hb?a>0.55?'var(--green)':a>0.30?'var(--amber-dark)':'var(--red)':a<0.30?'var(--green)':a<0.55?'var(--amber-dark)':'var(--red)'):'var(--muted)'}">${fmt(a)}</td>
+      <td style="color:${b!==null?(hb?b>0.55?'var(--green)':b>0.30?'var(--amber-dark)':'var(--red)':b<0.30?'var(--green)':b<0.55?'var(--amber-dark)':'var(--red)'):'var(--muted)'}">${fmt(b)}</td>
+      <td style="color:${mx!==null?(hb?mx>0.55?'var(--green)':mx>0.30?'var(--amber-dark)':'var(--red)':mx<0.30?'var(--green)':mx<0.55?'var(--amber-dark)':'var(--red)'):'var(--muted)'}">${fmt(mx)}</td>
+    </tr>`;
+  }).join('');
+
+  area.innerHTML += `
+    <h3 style="margin-top:1.2rem;margin-bottom:.5rem">Three-Way Comparison</h3>
+    <table class="sxs-table">
+      <thead><tr>
+        <th style="text-align:left">Metric</th>
+        <th style="background:var(--teal-dark)">Config A<br><small>Secular/Self-Expression</small></th>
+        <th style="background:var(--red)">Config B<br><small>Traditional/Survival</small></th>
+        <th style="background:var(--purple)">Mixed + OS2 Bridge</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="narrative-box" style="margin-top:.75rem">
+      ${r.A && r.B ? `Suppression gap difference: Config B gap (${(r.B.gap*100).toFixed(1)}%) is ${(r.B.gap/Math.max(r.A.gap,0.01)).toFixed(1)}x the Config A gap (${(r.A.gap*100).toFixed(1)}%). ${r.Mix ? `The OS2 Bridge run produced a gap of ${(r.Mix.gap*100).toFixed(1)}% — ${r.Mix.gap < r.B.gap ? 'lower than Config B alone, suggesting the bridge architecture is working.' : 'higher than Config A, reflecting the coordination cost of mixing worldview distributions.'}` : ''}` : ''}
+    </div>`;
+}
+
+// ── JOURNAL ───────────────────────────────────────────────────
+function jSave(k, v) {
+  try {
+    localStorage.setItem(JP + k, v);
+    if (k === 'wvm_q5') localStorage.setItem('ch9_cq5', v);
+    const sn = document.getElementById('sn-' + k);
+    if (sn) { sn.classList.add('show'); setTimeout(() => sn.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+
+function loadPrediction() {
+  let pred = '', source = '';
+  try {
+    const p8 = localStorage.getItem('ch8_cq5') || '';
+    if (p8.trim()) { pred = p8; source = 'Chapter 8 Journal Q5'; }
+  } catch(e) {}
+  const el = document.getElementById('predText');
+  if (!el) return;
+  if (pred.trim()) {
+    el.style.cssText = 'font-size:.88rem;font-style:italic;color:var(--ink);line-height:1.6;border-left:3px solid var(--amber);padding-left:.75rem';
+    el.innerHTML = `<span style="font-size:.68rem;opacity:.55;display:block;margin-bottom:4px">from ${source}</span>` + pred.split('\n').join('<br>');
+  } else {
+    el.style.cssText = 'font-size:.84rem;color:var(--muted)';
+    el.textContent = 'No Chapter 8 Q5 prediction found. Complete Chapter 8\'s journal Q5 first.';
+  }
+}
+
+function restoreJournal() {
+  ['q1','q2','q3','q4','q5'].forEach(k => {
+    const el = document.getElementById('jta-' + k);
+    if (el) { try { el.value = localStorage.getItem(JP + k) || ''; } catch(e) {} }
+  });
+  try {
+    const sp = document.getElementById('sim-predict');
+    if (sp) sp.value = localStorage.getItem('wvm_sim_predict') || '';
+  } catch(e) {}
+}
+
+loadPrediction();
+restoreJournal();
+drawMap();
+</script>
+</body>
+</html>
