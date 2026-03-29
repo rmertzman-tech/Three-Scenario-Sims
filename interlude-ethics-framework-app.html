@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Interlude — Ethics of the Framework</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;
+  --sky:#1e3a8a;--sky-light:#dbeafe;--sky-mid:#3b82f6;
+  --green:#166534;--green-light:#dcfce7;--green-mid:#16a34a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.app-wrap{max-width:820px;margin:0 auto;padding:1rem}
+.app-header{text-align:center;padding:2.5rem 1rem 1.5rem;color:white}
+.ch-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:rgba(20,184,166,.7);margin-bottom:.5rem}
+.app-header h1{font-size:2.2rem;font-weight:700;color:white;margin-bottom:.3rem;line-height:1.2}
+.app-header .sub{font-size:1rem;color:rgba(255,255,255,.5);font-style:italic;margin-bottom:.3rem}
+.app-header .bridge{font-size:.82rem;color:rgba(20,184,166,.6);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
+.tab-nav{display:flex;gap:.25rem;background:rgba(255,255,255,.06);border-radius:.75rem;padding:.3rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{padding:.4rem .75rem;border:none;background:transparent;color:rgba(255,255,255,.5);font-family:'Cormorant Garamond',serif;font-size:.87rem;border-radius:.4rem;cursor:pointer;transition:.18s;white-space:nowrap}
+.tab-btn:hover{color:white;background:rgba(255,255,255,.08)}
+.tab-btn.active{background:var(--teal-dark);color:white;font-weight:600}
+.pane{display:none;background:white;border-radius:1rem;padding:2rem;box-shadow:0 4px 28px rgba(0,0,0,.22)}
+.pane.active{display:block;animation:fadeIn .22s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h2{font-size:1.55rem;font-weight:700;color:var(--teal-dark);margin-bottom:.75rem;padding-bottom:.35rem;border-bottom:3px solid var(--teal-mid)}
+h3{font-size:1.2rem;font-weight:700;color:var(--navy);margin:1.4rem 0 .5rem}
+p{line-height:1.82;margin-bottom:.9rem;font-size:1rem;color:var(--ink)}
+strong{color:var(--navy)}
+ol{margin:.4rem 0 .9rem 1.4rem;line-height:1.82}
+ol li{font-size:.96rem;color:var(--ink);margin-bottom:.5rem}
+.note-box{background:rgba(15,118,110,.07);border:1px solid rgba(15,118,110,.2);border-radius:.75rem;padding:1.1rem 1.3rem;margin-bottom:1.5rem;text-align:center}
+.note-box p{font-style:italic;color:var(--muted);margin:0;font-size:.92rem}
+.acp-box{background:var(--teal-dark);border-radius:.85rem;padding:1.6rem 1.8rem;margin:1.5rem 0;color:white}
+.acp-box .acp-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-mid);margin-bottom:.6rem}
+.acp-box .acp-text{font-size:1.05rem;line-height:1.85;color:rgba(255,255,255,.92)}
+.acp-box .acp-coda{margin-top:.85rem;font-size:.88rem;color:rgba(255,255,255,.6);font-style:italic;line-height:1.7}
+.concept-card{border-radius:.7rem;overflow:hidden;border:2px solid var(--teal-mid);margin:1rem 0}
+.concept-head{background:var(--teal-dark);color:white;padding:.65rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600}
+.concept-body{padding:1rem 1.1rem}
+.concept-body p{margin-bottom:.5rem;font-size:.93rem}
+.cpg-list{list-style:none;margin:.5rem 0;padding:0}
+.cpg-list li{display:flex;gap:.65rem;margin-bottom:.55rem;font-size:.92rem;line-height:1.65}
+.cpg-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--teal-dark);background:var(--teal-light);border-radius:.3rem;padding:.15rem .45rem;min-width:28px;text-align:center;height:fit-content;margin-top:.18rem;flex-shrink:0}
+.six-q-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem 0}
+@media(max-width:540px){.six-q-grid{grid-template-columns:1fr}}
+.six-q-card{background:var(--paper);border:1px solid var(--border);border-radius:.55rem;padding:.85rem}
+.six-q-num{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:700;color:var(--teal-dark);margin-bottom:.3rem}
+.six-q-text{font-size:.84rem;line-height:1.6;color:var(--ink)}
+.trad-row{display:flex;gap:.65rem;align-items:flex-start;margin-bottom:.65rem;font-size:.92rem}
+.trad-name{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:700;color:white;background:var(--teal-dark);border-radius:.3rem;padding:.15rem .5rem;min-width:100px;text-align:center;flex-shrink:0;margin-top:.15rem}
+.trad-text{color:var(--ink);line-height:1.65}
+.pred-box{background:rgba(15,118,110,.06);border:1px solid rgba(15,118,110,.2);border-radius:.7rem;padding:1rem 1.1rem;margin-bottom:1rem}
+.pred-label{font-family:'JetBrains Mono',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.35rem}
+.jq{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.ql{font-family:'JetBrains Mono',monospace;font-size:.69rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.4rem}
+textarea.jta{width:100%;min-height:90px;border:1px solid var(--border);border-radius:.38rem;padding:.6rem;font-family:'Cormorant Garamond',serif;font-size:.93rem;line-height:1.65;resize:vertical;color:var(--ink)}
+textarea.jta:focus{outline:none;border-color:var(--teal-mid)}
+textarea.jta.q5{min-height:130px;border-color:var(--amber);border-width:2px}
+.jq.q5-wrap{border-color:var(--amber);border-width:2px;background:var(--amber-light)}
+.sn{font-size:.7rem;color:var(--green-mid);font-family:'JetBrains Mono',monospace;height:1.1rem;opacity:0;transition:.3s}
+.sn.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="app-wrap">
+
+<div class="app-header">
+  <div class="ch-label">Ethics Beyond Boundaries &middot; Interlude</div>
+  <h1>Ethics of the Framework</h1>
+  <div class="sub">The Agency Conditions Principle</div>
+  <div class="bridge">A bridge reading &middot; Between the foundational arc and the applied sequence</div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="show('arc',this)">The Arc</button>
+  <button class="tab-btn" onclick="show('acp',this)">The Principle</button>
+  <button class="tab-btn" onclick="show('three',this)">Three Concepts</button>
+  <button class="tab-btn" onclick="show('traditions',this)">Nine Traditions</button>
+  <button class="tab-btn" onclick="show('ahead',this)">Applied Sequence</button>
+  <button class="tab-btn" onclick="show('journal',this)">Journal</button>
+</div>
+
+<!-- THE ARC -->
+<div class="pane active" id="pane-arc">
+  <div class="note-box"><p>This chapter has no simulation. It is a standalone philosophical reading &mdash; the normative core of everything the course has been building. Read it before the applied sequence begins. Return to it whenever you need to remember what the analysis is for.</p></div>
+  <h2>What the Foundational Arc Has Built</h2>
+  <p>Ten chapters. Each one added something the previous ones could not do alone.</p>
+  <p><strong>Chapter 1</strong> showed that your lens shapes what you can perceive morally &mdash; that the PRF is not a neutral window but an active filter, formed by biological, biographical, and cultural conditions that make certain moral signals visible and others structurally hard to see.</p>
+  <p><strong>Chapters 2&ndash;5</strong> showed how institutional architectures suppress or release ethical perception: the Challenger disaster, identity under maximum entropy, ecological design, coordination across radical difference. In each case, the question was not whether individuals had good values but whether the institutional architecture allowed what they knew to reach where it was needed.</p>
+  <p><strong>Chapters 6&ndash;7</strong> showed why single-model certainty fails complex systems and why populations are never the homogeneous agents that simplified models assume. Palmer showed us the ethics of honest uncertainty. Farmer showed us what the representative agent error costs in real lives.</p>
+  <p><strong>Chapter 8</strong> showed that the nine major ethical traditions are not competing answers to the same question. They are nine partial perceptions of the same moral real, each calibrated to see a different dimension of what coherent agency requires.</p>
+  <p><strong>Chapter 9</strong> showed where the populations you are analyzing actually stand &mdash; and why their position on the World Values Map is a thermodynamic fact about their material conditions, not a moral verdict.</p>
+  <p><strong>The Rust Belt</strong> showed what happens when the combined view is absent: cascade failure, invisible from any single angle, visible only when all nine traditions are held simultaneously.</p>
+  <p><strong>Chapter 10</strong> showed what makes institutions morally entitled to govern at all &mdash; and what each of the three classical architectures cannot see from its own position.</p>
+  <p>The arc has been building toward a normative claim it had not yet stated as a whole. This interlude states it.</p>
+</div>
+
+<!-- THE PRINCIPLE -->
+<div class="pane" id="pane-acp">
+  <h2>The Agency Conditions Principle &mdash; Stated Fully</h2>
+  <p>The Agency Conditions Principle is not an axiom handed down from above. It is an inference from what the course has shown.</p>
+  <p>If moral life requires coherent agency &mdash; the capacity to perceive, deliberate, commit, repair, and act across time &mdash; and if coherent agency requires specific structural conditions to be maintained, and if those conditions can be systematically destroyed by institutional decisions, then institutions and actions can be evaluated by whether they preserve or destroy those conditions. This is the minimum normative consequence of taking biology, history, and institutional structure seriously as the terrain on which ethical life actually occurs.</p>
+
+  <div class="acp-box">
+    <div class="acp-label">The Agency Conditions Principle</div>
+    <div class="acp-text">There are strong moral reasons &mdash; reasons that hold across contexts and can be outweighed in specific circumstances but are never morally irrelevant &mdash; to preserve, repair, and extend the conditions that make coherent agency possible.</div>
+    <div class="acp-coda">These conditions matter morally because every other good ethics cares about depends on them first. Responsibility requires an agent who can sustain commitments across time. Justice requires agents who can plan and participate. Care requires agents whose relational infrastructure has not been dismantled. Dignity requires agents whose Identity Kernels have not been systematically fragmented by institutional contradiction. When agency conditions collapse, the ethical goods that depend on them become structurally inaccessible regardless of individual intention or effort.<br><br>This is the normative core of the framework. It is not the whole of ethics. It is the precondition without which the rest of ethics cannot be inhabited.</div>
+  </div>
+
+  <h3>Pro Tanto: Strong but Not Absolute</h3>
+  <p>The principle is <em>pro tanto</em> &mdash; strong but not absolute. A strong moral reason is one that must always be taken into account, that cannot simply be ignored, and that carries genuine weight in any situation where it applies. But it can be outweighed in specific circumstances.</p>
+  <p>There are situations where disrupting a form of coherence is morally required: to resist an unjust order, to refuse a degrading role, to tell the truth against an institution that enforces comfortable falsity. The ACP clarifies what is at stake in such moments &mdash; the fate of coherent life &mdash; without pretending that coherence-preservation resolves every moral conflict. <strong>Coherence that survives only through domination is not the kind of coherence this framework seeks to protect.</strong></p>
+
+  <h3>The Boisjoly Connection</h3>
+  <p>Roger Boisjoly held the Agency Conditions Principle without being able to name it. He saw that the institutional architecture of the Challenger decision was destroying the conditions under which safety-critical knowledge could reach the people who needed it. The O-rings were the technical problem. The suppression gap was the ethical problem.</p>
+  <p>The ACP explains both why he was right and why he faced an impossible situation: he was right that the conditions for safe launch had not been met; and he was trapped inside an institutional architecture that had no mechanism for receiving what he knew. The ACP does not resolve the impossible situation. It makes visible what was genuinely at stake.</p>
+
+  <h3>Structural, Not Individualistic</h3>
+  <p>The principle is structural, not individualistic. It evaluates systems, architectures, and forms of institutional life &mdash; not only individual acts. The question is not only &ldquo;did this act harm someone?&rdquo; but &ldquo;does this institution maintain the conditions under which the people it governs can remain capable of reasoning, caring, committing, and rebuilding?&rdquo;</p>
+</div>
+
+<!-- THREE CONCEPTS -->
+<div class="pane" id="pane-three">
+  <h2>Three Concepts the ACP Requires</h2>
+  <p>The Agency Conditions Principle names a moral orientation. Three additional concepts give it analytical traction as a diagnostic tool for the applied sequence ahead.</p>
+
+  <div class="concept-card">
+    <div class="concept-head">1. Entropy-Exporting Institutions</div>
+    <div class="concept-body">
+      <p>An entropy-exporting institution maintains its own internal coherence &mdash; stable authority, predictable hierarchy, functioning processes &mdash; by systematically displacing contradiction, overload, and uncertainty onto the populations it governs or affects.</p>
+      <p>The institution appears orderly from within while degrading the agency conditions of those who must absorb its exported costs. This is not inefficiency. It is structural. The costs are real, but they flow to those who cannot refuse to bear them.</p>
+      <p>The suppression gap in the simulation makes this visible: the system appears to be functioning while the intelligence of its agents cannot reach the decision. The Rust Belt documented this at scale. Identifying entropy-exporting architectures is the primary ACP diagnostic in the applied sequence.</p>
+      <p><strong>The diagnostic question:</strong> For every system you analyze &mdash; not only &ldquo;does it work?&rdquo; but &ldquo;for whom does the cost of its working fall, and can the people who bear that cost refuse to bear it?&rdquo;</p>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <div class="concept-head">2. Coherence-Preserving Governance (CPG)</div>
+    <div class="concept-body">
+      <p>CPG is the positive ideal that follows from the ACP applied to institutional design. A CPG institution is evaluated not only by efficiency, legality, or output, but by five specific criteria:</p>
+      <ul class="cpg-list">
+        <li><span class="cpg-num">1</span><span>It maintains a <strong>biological and social floor</strong> beneath which it becomes unreasonable to expect coherent agency from citizens or participants.</span></li>
+        <li><span class="cpg-num">2</span><span>Its procedures are sufficiently <strong>predictable and intelligible</strong> to support planning, accountability, and participation.</span></li>
+        <li><span class="cpg-num">3</span><span>It creates <strong>repair pathways</strong> rather than treating institutional failure as a private burden.</span></li>
+        <li><span class="cpg-num">4</span><span>It maintains an <strong>information environment</strong> compatible with reality-testing and meaningful disagreement.</span></li>
+        <li><span class="cpg-num">5</span><span>It <strong>widens rather than narrows future horizons</strong> &mdash; sustaining long-range orientation rather than forcing permanent defensive survival.</span></li>
+      </ul>
+      <p>CPG is not a blueprint for a single constitutional form. It is a normative orientation: a set of questions you ask of every institution in the applied sequence, and a standard against which to measure each architecture&rsquo;s characteristic failure mode.</p>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <div class="concept-head">3. The Temporal Commons</div>
+    <div class="concept-body">
+      <p>The Agency Conditions Principle is not only about the present. Every action has temporal reach. Some acts stabilize environments for others; some poison them. Some build institutional trust; others deplete it for generations.</p>
+      <p>The temporal commons is the shared future-bearing capacity of a society &mdash; the collective conditions that make it possible for future agents to inhabit coherent lives. It is a commons in the same sense as clean air or stable currency: no individual owns it, every individual depends on it, and it can be degraded by accumulated present decisions.</p>
+      <p><strong>Legacy, on this account, is not reputation.</strong> It is the coherence-supporting or coherence-damaging inheritance one generation installs into the systems the next must inhabit. The ACP therefore has an intergenerational dimension: we owe future persons not the frozen reproduction of the present, but a world more capable of sustaining coherent life than the one we received.</p>
+      <p>Every applied domain in the sequence ahead involves a temporal commons claim. The question is always: what is being handed forward, and to whom, and what will they inherit of agency?</p>
+    </div>
+  </div>
+</div>
+
+<!-- NINE TRADITIONS -->
+<div class="pane" id="pane-traditions">
+  <h2>How the ACP Relates to the Nine Traditions</h2>
+  <p>The Agency Conditions Principle is not a tenth tradition to be placed alongside the nine from Chapter 8. It is what all nine traditions presuppose.</p>
+  <p>The nine traditions disagree about what ethics requires of already-functional agents. The ACP specifies what ethics requires <em>before</em> that question can even be asked. This is why it is the depth grammar of the nine traditions rather than their replacement.</p>
+
+  <div style="margin:1.25rem 0">
+    <div class="trad-row"><span class="trad-name">Socrates</span><span class="trad-text">Examination requires institutions where examination is possible. The ACP explains why destroying those institutions is a moral wrong, not merely an inconvenience.</span></div>
+    <div class="trad-row"><span class="trad-name">Aristotle</span><span class="trad-text">Virtue requires habituation infrastructure &mdash; a polis that makes virtuous practice possible across time. The ACP specifies the floor without which Aristotelian development cannot occur.</span></div>
+    <div class="trad-row"><span class="trad-name">Stoics</span><span class="trad-text">The inner citadel requires a biological substrate capable of maintaining it. The ACP names what happens when base_stress chronically exceeds the threshold: the citadel becomes inaccessible regardless of intention.</span></div>
+    <div class="trad-row"><span class="trad-name">Hume</span><span class="trad-text">Moral sentiment requires a calibration range that can reach structural causes. The ACP explains why extending that range &mdash; beyond the proximate, visible, local &mdash; is a structural obligation, not merely a personal aspiration.</span></div>
+    <div class="trad-row"><span class="trad-name">Kant</span><span class="trad-text">Autonomy requires agents capable of rational self-governance. The ACP is the floor below which that capacity becomes structurally inaccessible regardless of formal rights.</span></div>
+    <div class="trad-row"><span class="trad-name">Mill</span><span class="trad-text">Welfare depends on agents capable of experiencing, projecting, and comparing outcomes over time. The ACP names the conditions without which that capacity collapses &mdash; and without which the aggregate metric hides the distributional catastrophe.</span></div>
+    <div class="trad-row"><span class="trad-name">Care Ethics</span><span class="trad-text">Relational infrastructure is the medium through which care is possible at all. The ACP makes this claim structural rather than sentimental: dismantling BioBond structures is a form of harm with measurable consequences.</span></div>
+    <div class="trad-row"><span class="trad-name">Rawls</span><span class="trad-text">Justice requires agents capable of forming plans of life. The ACP is why the difference principle matters: without it, justice itself cannot be inhabited by those at the bottom of the distribution.</span></div>
+    <div class="trad-row"><span class="trad-name">Existentialism</span><span class="trad-text">Authenticity requires metabolic conditions for authentic choice. The ACP names what happens when morphic fidelity collapse makes authentic functioning thermodynamically inaccessible &mdash; and why radical freedom can become a cruel fiction under those conditions.</span></div>
+  </div>
+
+  <p>You cannot have virtue without agency conditions. You cannot have autonomy, welfare, care, or justice without agency conditions. The ACP names the precondition. The nine traditions specify what we owe each other once that precondition is met.</p>
+</div>
+
+<!-- APPLIED SEQUENCE -->
+<div class="pane" id="pane-ahead">
+  <h2>The Applied Sequence Ahead</h2>
+  <p>Each domain in the applied sequence presents the same analytical structure. The tools are already in your hands. The ACP is the normative thread that holds them together.</p>
+  <p>For every system you analyze, six questions apply:</p>
+
+  <div class="six-q-grid">
+    <div class="six-q-card">
+      <div class="six-q-num">Q1 &mdash; Architecture</div>
+      <div class="six-q-text">Which social contract architecture is this system running &mdash; Hobbesian, Lockean, Rousseauian, or some hybrid &mdash; and where has it been applied beyond its design envelope?</div>
+    </div>
+    <div class="six-q-card">
+      <div class="six-q-num">Q2 &mdash; Traditions</div>
+      <div class="six-q-text">Which of the nine ethical traditions does the system&rsquo;s design embed, and which has it structurally excluded? What signal is the excluded tradition producing that the system cannot hear?</div>
+    </div>
+    <div class="six-q-card">
+      <div class="six-q-num">Q3 &mdash; Map Position</div>
+      <div class="six-q-text">Where on the World Values Map are the populations this system governs? Is the institutional architecture calibrated for their actual thermodynamic position?</div>
+    </div>
+    <div class="six-q-card">
+      <div class="six-q-num">Q4 &mdash; Entropy Export</div>
+      <div class="six-q-text">Is the system entropy-exporting? Where does the cost of its functioning fall, and can the people who bear that cost refuse to bear it? Who holds the suppression gap?</div>
+    </div>
+    <div class="six-q-card">
+      <div class="six-q-num">Q5 &mdash; CPG Criteria</div>
+      <div class="six-q-text">Does the system satisfy the five Coherence-Preserving Governance criteria? Which ones fail &mdash; and for whom do they fail most severely?</div>
+    </div>
+    <div class="six-q-card">
+      <div class="six-q-num">Q6 &mdash; Temporal Commons</div>
+      <div class="six-q-text">What is this system handing forward? What temporal commons is it preserving, depleting, or destroying? Who inherits its legacy, and what will their agency conditions look like?</div>
+    </div>
+  </div>
+
+  <p>These are not six separate questions. They are one question from six angles: <strong>is this system preserving or destroying the conditions under which the people it governs can remain capable of reasoning, caring, committing, and building something worth handing forward?</strong></p>
+  <p>The Agency Conditions Principle is the normative thread that makes this a single question rather than a list. You now have the framework. The applied sequence is where it meets the real world.</p>
+
+  <div style="background:var(--teal-dark);border-radius:.75rem;padding:1.3rem 1.5rem;margin-top:1.5rem;text-align:center">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-mid);margin-bottom:.5rem">Coming Next</div>
+    <p style="color:rgba(255,255,255,.88);margin:0;font-size:.96rem">Economic Systems &mdash; the institutional architecture that does more than any other to determine the material conditions within which agency conditions are either preserved or destroyed. Every tradition from Chapter 8 has something to say. The World Values Map predicts how different populations will experience the same economic architecture differently. The ACP asks: what are the agency conditions that economic systems preserve or export? For whom? And what are they handing forward?</p>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <h2>Journal &mdash; Ethics of the Framework</h2>
+
+  <div class="pred-box" id="predPanel">
+    <div class="pred-label">Your Chapter 10 Q5 Prediction (retrieved)</div>
+    <div id="predText" style="font-size:.88rem;color:var(--muted)">Loading&hellip;</div>
+  </div>
+
+  <div class="jq">
+    <div class="ql">Q1 &mdash; Reconstructing the Inference</div>
+    <p>The chapter argues that the Agency Conditions Principle is an inference from what the course has shown, not an axiom. Reconstruct the inference in your own words: what did each major chapter contribute to the argument that ends with the ACP? Is there a step in the inference you find weak or contestable?</p>
+    <textarea class="jta" id="jta-q1" placeholder="The inference reconstructed:&#10;Ch1 contributed:...&#10;Ch2-5 contributed:...&#10;Ch8 contributed:...&#10;The step I find most contestable:..." oninput="jSave('il_q1',this.value)"></textarea>
+    <div class="sn" id="sn-il_q1">&#10003; Saved</div>
+  </div>
+
+  <div class="jq">
+    <div class="ql">Q2 &mdash; The Six Questions Applied</div>
+    <p>Identify a specific institution you know well. Apply the six questions from the Applied Sequence tab. Which question produces the most surprising or uncomfortable finding? What does that discomfort tell you about which dimension of the ACP your own PRF was not previously calibrated to see?</p>
+    <textarea class="jta" id="jta-q2" placeholder="The institution:...&#10;Q1 Architecture:...&#10;Q4 Entropy export:...&#10;Most surprising finding:...&#10;What the discomfort reveals:..." oninput="jSave('il_q2',this.value)"></textarea>
+    <div class="sn" id="sn-il_q2">&#10003; Saved</div>
+  </div>
+
+  <div class="jq">
+    <div class="ql">Q3 &mdash; Pro Tanto in Practice</div>
+    <p>Think of a case where you believe disrupting an existing form of institutional coherence is morally required &mdash; even though it would cause harm and instability in the short term. What makes that disruption morally justified despite the ACP&rsquo;s weight? What does this tell you about the relationship between coherence-preservation and other moral values?</p>
+    <textarea class="jta" id="jta-q3" placeholder="The case:...&#10;Why disruption is justified despite the ACP:...&#10;What this reveals about coherence vs. other moral values:..." oninput="jSave('il_q3',this.value)"></textarea>
+    <div class="sn" id="sn-il_q3">&#10003; Saved</div>
+  </div>
+
+  <div class="jq">
+    <div class="ql">Q4 &mdash; The Temporal Commons</div>
+    <p>Think about a domain you care about &mdash; climate, technology, education, economic structure, civic culture. What are the agency conditions that future people in that domain will inherit from decisions being made now? Are those conditions being preserved, depleted, or actively destroyed?</p>
+    <textarea class="jta" id="jta-q4" placeholder="The domain:...&#10;Agency conditions being handed forward:...&#10;What a CPG-compliant approach would require that current approaches don't provide:..." oninput="jSave('il_q4',this.value)"></textarea>
+    <div class="sn" id="sn-il_q4">&#10003; Saved</div>
+  </div>
+
+  <div class="jq q5-wrap">
+    <div class="ql" style="color:var(--amber-dark)">Q5 &mdash; ACP Diagnostic on Your Ch10 Institution (stored for retrieval)</div>
+    <p>Return to your Chapter 10 Q5 prediction &mdash; the institutional system you analyzed using the three social contract architectures. Now apply the full ACP diagnostic: is that system entropy-exporting? Does it satisfy the five CPG criteria? What is its temporal commons impact? Has the ACP analysis changed your assessment, or confirmed it? <strong>Where did the ACP reveal something the social contract analysis alone missed?</strong></p>
+    <textarea class="jta q5" id="jta-q5" placeholder="The institution (from Ch10 Q5):...&#10;&#10;Entropy-exporting? To whom?:...&#10;&#10;CPG criteria assessment (which fail, for whom):...&#10;&#10;Temporal commons impact:...&#10;&#10;What the ACP revealed that Ch10 alone missed:..." oninput="jSave('il_q5',this.value)"></textarea>
+    <div class="sn" id="sn-il_q5">&#10003; Saved</div>
+  </div>
+</div>
+
+</div>
+
+<script>
+'use strict';
+const JP = 'il_';
+
+function show(id, btn) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function jSave(k, v) {
+  try {
+    localStorage.setItem(k, v);
+    if (k === 'il_q5') localStorage.setItem('interlude_cq5', v);
+    const sn = document.getElementById('sn-' + k);
+    if (sn) { sn.classList.add('show'); setTimeout(() => sn.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+
+function loadPrediction() {
+  let pred = '', source = '';
+  try {
+    const p10 = localStorage.getItem('ch10_cq5') || '';
+    const rb  = localStorage.getItem('rust_belt_cq5') || '';
+    const p9  = localStorage.getItem('ch9_cq5') || '';
+    if (p10.trim()) { pred = p10; source = 'Chapter 10 Journal Q5'; }
+    else if (rb.trim()) { pred = rb; source = 'Rust Belt Journal Q5'; }
+    else if (p9.trim()) { pred = p9; source = 'Chapter 9 Journal Q5'; }
+  } catch(e) {}
+  const el = document.getElementById('predText');
+  if (!el) return;
+  if (pred.trim()) {
+    el.style.cssText = 'font-size:.88rem;font-style:italic;color:var(--ink);line-height:1.65;border-left:3px solid var(--amber);padding-left:.75rem';
+    el.innerHTML = `<span style="font-size:.68rem;opacity:.55;display:block;margin-bottom:4px">from ${source}</span>` + pred.split('\n').join('<br>');
+  } else {
+    el.style.cssText = 'font-size:.84rem;color:var(--muted)';
+    el.textContent = 'No Chapter 10 Q5 prediction found. Complete Chapter 10\u2019s journal first.';
+  }
+}
+
+function restore() {
+  ['q1','q2','q3','q4','q5'].forEach(k => {
+    const el = document.getElementById('jta-' + k);
+    if (el) { try { el.value = localStorage.getItem(JP + k) || ''; } catch(e) {} }
+  });
+}
+
+loadPrediction();
+restore();
+</script>
+</body>
+</html>
