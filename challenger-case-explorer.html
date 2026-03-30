@@ -829,7 +829,7 @@ function drawWatershed(canvasId, lamRaw, os2, damF) {
 // ── SIMULATION ────────────────────────────────────────────────
 let _simDataA = null, _simDataB = null;
 
-async function fetchWithRetry(url, options, maxAttempts = 3) {
+async async function fetchWithRetry(url, options, maxAttempts = 3) {
   const delays = [0, 8000, 15000];
   let lastErr;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {

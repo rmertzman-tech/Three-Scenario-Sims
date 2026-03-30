@@ -150,6 +150,7 @@ p{margin-bottom:.75rem}ul,ol{margin-left:1.5rem;margin-bottom:.75rem}li{margin-b
 
 footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center;color:rgba(255,255,255,.35);font-size:.78rem;font-style:italic}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@keyframes spin{to{transform:rotate(360deg)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:640px){
   .header-titles h1{font-size:1.1rem}
@@ -426,6 +427,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
   </div>
 
   <!-- ═══ §4 THE SIMULATION ═══ -->
+    <!-- ═══ §4 THE SIMULATION ═══ -->
   <div id="pane-simulation" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel">
     <h2>§4 — Walking Through the Simulation</h2>
 
@@ -452,20 +454,29 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
       <p style="margin-bottom:0;font-size:.88rem;font-style:italic">Notice: empirical_calibrated is at 0.10 — the lowest weighting. Boisjoly's entire argument was empirical. The architecture was designed, not through malice but through institutional culture, to weight exactly his kind of evidence least.</p>
     </div>
 
-    <div class="sim-bridge" role="region" aria-label="Link to Challenger Case Explorer simulation">
-      <h3>Run the Simulation Now</h3>
-      <p>Open the Challenger Case Explorer in a new tab. Run both simulations — "Run Thiokol Structure" and "Run With Whistleblower Protection." Record the key metric values from both runs, then return here for your gap analysis.</p>
-      <a href="./challenger-case-explorer.html" target="_blank" rel="noopener" class="sim-link-btn" aria-label="Open Challenger Case Explorer in new tab">
-        Open Challenger Case Explorer →
-      </a>
+    <div class="sim-bridge" role="region" aria-label="Embedded simulation">
+      <h3>Run the Simulation</h3>
+      <p>Run both configurations. Results appear here and auto-fill the metric fields below for your gap analysis.</p>
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem">
+        <button id="btnRunA" class="sim-link-btn" onclick="runChallengerSim(false)" aria-label="Run Thiokol configuration">
+          <span id="spinA" style="display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem"></span>
+          ▶ Run Thiokol Structure
+        </button>
+        <button id="btnRunB" class="sim-link-btn" onclick="runChallengerSim(true)" style="background:#166534;display:none" aria-label="Run with whistleblower protection">
+          <span id="spinB" style="display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem"></span>
+          ▶ Run With Whistleblower Protection
+        </button>
+      </div>
+      <div id="ucpError" style="display:none;background:rgba(220,38,38,.15);border:1px solid #dc2626;border-radius:.4rem;padding:.65rem;font-size:.82rem;color:#fca5a5;margin-bottom:.75rem"></div>
+      <div id="ucpResults" style="display:none;text-align:left"></div>
       <div class="sim-params">
-        <div class="sim-param-label">Key metrics to record:</div>
-        λ Raw · λ Perceived · Suppression Gap (λ Raw − λ Perceived) · Morphic Suppression · OS2 Bridge · Friction
+        <div class="sim-param-label">Key metrics — auto-filled after each run:</div>
+        λ Raw · λ Perceived · Suppression Gap · Morphic Suppression · OS2 Bridge · Friction
       </div>
     </div>
 
-    <h3>Record Your Results</h3>
-    <p style="font-size:.88rem;color:var(--muted);margin-bottom:.875rem">Enter the values from both simulation runs. Your gap analysis in §6 will use these numbers.</p>
+    <h3>Your Recorded Results</h3>
+    <p style="font-size:.88rem;color:var(--muted);margin-bottom:.875rem">These fields auto-fill when you run the simulation above. You can also edit them manually.</p>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem" role="group" aria-label="Simulation result entry">
       <div style="background:var(--red-light);border-radius:.5rem;padding:1.1rem;border:2px solid var(--red-mid)">
@@ -517,8 +528,7 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
     </div>
   </div>
 
-  <!-- ═══ §5 WHAT SIMULATION IS ═══ -->
-  <div id="pane-what" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel">
+<div id="pane-what" class="tab-pane glass fade-in" style="border-radius:.875rem;padding:2rem;display:none" role="tabpanel">
     <h2>§5 — What Simulation Actually Is</h2>
 
     <p>You have run a simulation and observed its output. Before we close the prediction-gap loop, we need to address a question this course has left implicit: what kind of claim does the suppression gap make when it is computationally measured rather than rhetorically asserted?</p>
@@ -1011,6 +1021,124 @@ window.addEventListener('load',()=>{
   }catch(e){}
   updateProgress();
 });
+
+// ── EMBEDDED SIMULATION ────────────────────────────────────────
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+async function runChallengerSim(withProtection) {
+  const btnA = document.getElementById('btnRunA');
+  const btnB = document.getElementById('btnRunB');
+  const spinA = document.getElementById('spinA');
+  const spinB = document.getElementById('spinB');
+  const errEl = document.getElementById('ucpError');
+  const resEl = document.getElementById('ucpResults');
+
+  btnA.disabled = true; btnB.disabled = true;
+  (withProtection ? spinB : spinA).style.display = 'inline-block';
+  errEl.style.display = 'none';
+
+  const payload = {
+    scenario_name: 'whistleblower',
+    num_agents: 16,
+    steps: 8,
+    seed: Math.floor(Math.random() * 9000) + 1000,
+    scenario_physics: withProtection ? {
+      base_entropy: 0.52, base_stress: 0.48,
+      block_fields: { care: 0.30, fairness: 0.25, community: 0.25, boundary: 0.20 }
+    } : {
+      base_entropy: 0.52, base_stress: 0.58,
+      block_fields: { care: -0.40, fairness: -0.55, community: -0.45, boundary: 0.30 }
+    },
+    worldview_distribution: {
+      role_order: 0.55, sacred_boundary: 0.20,
+      liberal_individualist: 0.12, ubuntu_relational: 0.08, indigenous_custodial: 0.05
+    },
+    evidence_distribution: withProtection ? {
+      empirical_calibrated: 0.55, authority_weighted: 0.20,
+      tradition_weighted: 0.15, alternative_facts: 0.10
+    } : {
+      authority_weighted: 0.45, alternative_facts: 0.25,
+      tradition_weighted: 0.20, empirical_calibrated: 0.10
+    },
+    activate_biobond_at: withProtection ? 4 : null
+  };
+
+  try {
+    const resp = await fetch(BACKEND + '/api/simulate/custom', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(35000)
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    const m = data.metrics || data;
+
+    const lr   = +(m.lambda_raw         || 0).toFixed(3);
+    const lp   = +(m.lambda_perceived   || 0).toFixed(3);
+    const fid  = +(m.morphic_fidelity   || m.morphic_suppression || m.friction || 0).toFixed(3);
+    const fric = +(m.friction           || 0).toFixed(3);
+    const os2  = +(m.os2_synergy_bridge || m.os2_synergy || 0).toFixed(3);
+    const gap  = +Math.max(0, lr - lp).toFixed(3);
+
+    const setF = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+
+    if (!withProtection) {
+      setF('r1-raw', lr); setF('r1-perc', lp); setF('r1-morph', fid);
+      saveResult('r1_raw', lr); saveResult('r1_perc', lp); saveResult('r1_morph', fid);
+      document.getElementById('btnRunB').style.display = 'flex';
+    } else {
+      setF('r2-raw', lr); setF('r2-perc', lp); setF('r2-morph', fid);
+      saveResult('r2_raw', lr); saveResult('r2_perc', lp); saveResult('r2_morph', fid);
+    }
+
+    const pill = (label, val, hi) => {
+      const good = hi ? val > 0.55 : val < 0.30;
+      const mid  = hi ? val > 0.30 : val < 0.55;
+      const c = good ? '#86efac' : mid ? '#fcd34d' : '#fca5a5';
+      return `<div style="background:rgba(0,0,0,.25);border-radius:.35rem;padding:.4rem .5rem;text-align:center">
+        <div style="font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5);text-transform:uppercase">${label}</div>
+        <div style="font-size:1rem;font-weight:700;font-family:'Courier New',monospace;color:${c}">${(val*100).toFixed(1)}%</div>
+      </div>`;
+    };
+
+    const label = withProtection ? 'Run 2 — With Whistleblower Protection' : 'Run 1 — Thiokol Structure';
+    const color = withProtection ? '#16a34a' : '#991b1b';
+    const note  = withProtection
+      ? `Suppression gap with protection: ${(gap*100).toFixed(1)}%. Compare to Run 1 — the delta shows how much agent intelligence the structural change restores.`
+      : gap > 0.25
+        ? `Critical suppression gap: ${(gap*100).toFixed(1)}%. Boisjoly's knowledge lived in this gap. Authority-weighted evidence at 0.45 filtered empirical input even when correct and stakes were catastrophic.`
+        : `Suppression gap: ${(gap*100).toFixed(1)}%. Examine which evidence types the architecture is down-weighting.`;
+
+    const runId = withProtection ? 'run2' : 'run1';
+    const old = document.getElementById(runId + '-result');
+    if (old) old.remove();
+
+    const div = document.createElement('div');
+    div.id = runId + '-result';
+    div.style.cssText = `background:rgba(255,255,255,.08);border-radius:.5rem;padding:1rem;margin-bottom:.75rem;border-left:3px solid ${color}`;
+    div.innerHTML = `
+      <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:${color};margin-bottom:.6rem;font-weight:700">${label}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:.4rem">
+        ${pill('λ Raw', lr, true)}${pill('λ Perceived', lp, true)}
+        ${pill('Supp. Gap', gap, false)}${pill('Friction', fric, false)}
+        ${pill('OS2 Bridge', os2, true)}${pill('Morphic', fid, false)}
+      </div>
+      <div style="margin-top:.65rem;font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.6">${note}</div>`;
+    resEl.appendChild(div);
+    resEl.style.display = 'block';
+
+    buildGapRows();
+    markCompleted('simulation');
+  } catch(e) {
+    errEl.textContent = 'Simulation error: ' + (e.message || 'Unknown') + '. Check your connection and try again.';
+    errEl.style.display = 'block';
+  } finally {
+    btnA.disabled = false; btnB.disabled = false;
+    spinA.style.display = 'none'; spinB.style.display = 'none';
+  }
+}
+
 </script>
 </body>
 </html>
