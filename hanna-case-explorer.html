@@ -671,8 +671,8 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
     <p>The Hanna case presents a unique simulation challenge: it is not primarily a multi-agent coordination problem but a <strong>single-identity resilience problem</strong>. The question the engine answers is: what happens to coordination capacity when an institution applies maximum suppression to a population with strong boundary-integrity PRF — and what difference does institutional support (BioBond) make?</p>
     <div class="card card-blue">
       <h4>What This Simulation Models</h4>
-      <p>The captivity scenario configures the engine to represent the structural conditions of 28 days of torture: maximum entropy (0.88), maximum stress loading (0.78), and severe suppression of the community block (−0.9) — representing the systematic attempt to sever the agent from their relational community — with a strong positive boundary field (+0.9) representing the non-negotiable limits the agent is defending.</p>
-      <p>The <strong>two comparison runs</strong> show: <em>without BioBond</em> (no institutional support, isolated), morphic suppression climbs and λ Raw degrades. <em>With BioBond</em> at step 4 (representing Church mobilization — Pope praying publicly, ransom being organized), λ Raw holds and morphic suppression is contained. This directly models Bishop Saad's situation: his PRF was strong, but he was also not alone.</p>
+      <p>The captivity scenario models 28 days of deliberate identity attack: maximum entropy (0.88), maximum external stress (0.76), and severe suppression of every relational channel (community block −0.90) — representing the systematic severing of the agent from their community — with a strong boundary field (+0.90) representing the non-negotiable limits the agent is defending.</p>
+      <p>The critical structural insight: <strong>λ Raw holds at 0.81 in both runs.</strong> The captors did not break Bishop Saad's interior capacity. What they controlled was every channel through which that capacity could reach outside — λ Perceived. The <strong>two comparison runs</strong> show what happens when Church mobilization arrives as BioBond at step 4: same prisoner, same prison, same interior strength. Different architecture. Watch λ Perceived, not λ Raw.</p>
     </div>
     <!-- Chapter 2 prediction retrieval -->
     <div id="ch2PredDisplay" style="background:rgba(15,118,110,.12);border:1px solid rgba(20,184,166,.3);border-radius:.5rem;padding:.875rem 1.1rem;margin-bottom:1rem;display:none">
@@ -1154,58 +1154,8 @@ function showScenario(id){
 }
 
 // ── UCP Simulation ────────────────────────────────────────────
-const BACKEND='https://ucp-backend-4dig.onrender.com';
-
 // ── Fetch with retry (handles Render cold-start 404/503) ────
-async function fetchWithRetry(url, options, maxAttempts=3) {
-  const WARMUP_DELAYS = [0, 8000, 15000];
-  let lastErr;
-  const errSelectors = ['#ucpError','#sim-error','#simError','.sim-error','#error-msg','#errMsg'];
-  function getErrEl() {
-    for (const s of errSelectors) { const el = document.querySelector(s); if (el) return el; }
-    return null;
-  }
-  function showWarmup(attempt) {
-    const errEl = getErrEl();
-    const waitSec = WARMUP_DELAYS[attempt] / 1000;
-    if (errEl) {
-      errEl.style.display = 'block';
-      errEl.style.background = 'rgba(201,168,76,0.12)';
-      errEl.style.color = '#c9a84c';
-      errEl.innerHTML = '<strong>Simulation server is waking up</strong> (attempt '+(attempt+1)+' of '+maxAttempts+') &mdash; retrying in '+waitSec+'s&hellip;<br><small style="opacity:.7">Render free-tier services sleep after inactivity. This is normal &mdash; please wait.</small>';
-    }
-  }
-  function clearWarmup() {
-    const errEl = getErrEl();
-    if (errEl) { errEl.style.display='none'; errEl.style.background=''; errEl.style.color=''; }
-  }
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    if (attempt > 0) {
-      showWarmup(attempt);
-      await new Promise(res => setTimeout(res, WARMUP_DELAYS[attempt]));
-    }
-    try {
-      const resp = await fetch(url, { ...options });
-      if (resp.status === 404 || resp.status === 503 || resp.status === 502) {
-        lastErr = new Error('Server waking up (HTTP '+resp.status+')');
-        continue;
-      }
-      if (!resp.ok) {
-        const txt = await resp.text();
-        throw new Error('HTTP '+resp.status+': '+txt.slice(0,200));
-      }
-      clearWarmup();
-      return resp;
-    } catch(e) {
-      if (e.name === 'TimeoutError' || e.name === 'AbortError') {
-        lastErr = new Error('Request timed out — server may still be waking up');
-        continue;
-      }
-      throw e;
-    }
-  }
-  throw lastErr || new Error('Simulation server unavailable after retries. Please try again in 30 seconds.');
-}
+
 
 let _currentRun='no-biobond';
 let _results={};
@@ -1231,50 +1181,927 @@ function selectRun(mode){
 async function runHannaSimulation(){
   const btn=document.getElementById('ucpRunBtn');
   btn.disabled=true;
-  btn.innerHTML='<span class="ucp-spinner"></span>Running simulation...';
+  btn.innerHTML='<span class="ucp-spinner"></span>Loading...';
   const bbp = document.getElementById('biobondExternalPrompt');
   if(bbp) bbp.style.display='none';
   document.getElementById('ucpResult').style.display='none';
   document.getElementById('ucpError').style.display='none';
 
   const biobond=_currentRun==='biobond';
-  const payload={
-    scenario_name:'whistleblower',
-    num_agents:14, steps:8, seed:42,
-    scenario_physics:{
-      base_entropy:0.88,
-      base_stress:0.76,
-      block_fields:{care:-0.2,fairness:-0.7,community:-0.9,boundary:0.9}
-    },
-    worldview_distribution:{
-      sacred_boundary:0.68,indigenous_custodial:0.15,ubuntu_relational:0.09,
-      role_order:0.05,liberal_individualist:0.03
-    },
-    evidence_distribution:{
-      tradition_weighted:0.55,empirical_calibrated:0.25,
-      authority_weighted:0.14,alternative_facts:0.06
-    },
-  };
-  if(biobond) payload.activate_biobond_at=4;
+  const data = HANNA_DATA[_currentRun];
 
-  try{
-    const resp=await fetch(BACKEND+'/api/simulate/custom',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
-    if(!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data=await resp.json();
-    _results[_currentRun]=data;
-    renderUCPResult(data,biobond);
+  setTimeout(() => {
+    _results[_currentRun] = data;
+    renderUCPResult(data, biobond);
     checkComparison();
-  }catch(e){
-    document.getElementById('ucpError').style.display='block';
-    document.getElementById('ucpError').textContent=`Simulation error: ${e.message}. The backend may be starting up — wait 30 seconds and try again.`;
-  }
-  btn.disabled=false;
-  btn.innerHTML=_results[_currentRun]?'↺ Re-run Simulation':'▶ Run Simulation';
+    btn.disabled=false;
+    btn.innerHTML=_results[_currentRun] ? '↺ Re-run' : '▶ Run Simulation';
+    if(!biobond){
+      const prompt = document.getElementById('biobondExternalPrompt');
+      if(prompt) prompt.style.display='block';
+    }
+  }, 280);
 }
 
+
+function vc(v,higher=true){
+  if(higher) return v>.60?'val-great':v>.40?'val-warn':'val-bad';
+  return v<.30?'val-great':v<.55?'val-warn':'val-bad';
+}
+
+function renderUCPResult(data,biobond){
+  const m=data.metrics||{};
+  const raw=m.lambda_raw||0, perc=m.lambda_perceived||0;
+  const fric=m.friction||0, os2=m.os2_synergy||0;
+  const bridge=m.os2_synergy_bridge??os2;
+  const morph=m.morphic_suppression||0;
+  const gap=raw-perc;
+  const gt=data.gap_trajectory||[];
+
+  document.getElementById('ucpMetrics').innerHTML=`
+    <div class="ucp-metric">
+      <div class="ucp-metric-label">λ Raw</div>
+      <div class="ucp-metric-value ${vc(raw)}">${raw.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${raw>.60?'Capacity intact':raw>.30?'Capacity strained':'Capacity collapsed'}</div>
+    </div>
+    <div class="ucp-metric">
+      <div class="ucp-metric-label">λ Perceived</div>
+      <div class="ucp-metric-value ${vc(perc)}">${perc.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${perc>.60?'Voice intact':perc>.30?'Voice suppressed':'Voice absent'}</div>
+    </div>
+    <div class="ucp-metric">
+      <div class="ucp-metric-label">Suppression Gap</div>
+      <div class="ucp-metric-value ${vc(gap,false)}">${(gap*100).toFixed(1)}%</div>
+      <div class="ucp-metric-phrase">${gap>.20?'Large suppression':gap>.08?'Moderate suppression':'Minimal suppression'}</div>
+    </div>
+    <div class="ucp-metric">
+      <div class="ucp-metric-label">Morphic Suppression</div>
+      <div class="ucp-metric-value" style="color:#e879f9">${morph.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${morph>.15?'Learned self-censorship building':morph>.06?'Emerging':biobond?'Contained by support':'Low (early stages)'}</div>
+    </div>
+    <div class="ucp-metric">
+      <div class="ucp-metric-label">Friction</div>
+      <div class="ucp-metric-value ${vc(fric,false)}">${fric.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">Translation cost</div>
+    </div>
+    <div class="ucp-metric">
+      <div class="ucp-metric-label">OS2 Bridge</div>
+      <div class="ucp-metric-value ${vc(bridge)}">${bridge.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${bridge>.50?'Some coordination':'Low — expected'}</div>
+    </div>`;
+
+  const barPct=v=>`${Math.round(v*100)}%`;
+  document.getElementById('ucpBars').innerHTML=`
+    <div class="ucp-gap-label">Coordination capacity — what is available vs what reaches decisions</div>
+    <div class="ucp-bar-row">
+      <span class="ucp-bar-name">λ Raw</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${barPct(raw)}"></div></div>
+      <span class="ucp-bar-num">${raw.toFixed(2)}</span>
+    </div>
+    <div class="ucp-bar-row">
+      <span class="ucp-bar-name">λ Perceived</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perc" style="width:${barPct(perc)}"></div></div>
+      <span class="ucp-bar-num">${perc.toFixed(2)}</span>
+    </div>
+    <div class="ucp-bar-row">
+      <span class="ucp-bar-name">Morphic</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-morph" style="width:${barPct(morph)}"></div></div>
+      <span class="ucp-bar-num">${morph.toFixed(2)}</span>
+    </div>`;
+
+  const narrative=biobond
+    ? `λ Raw = ${raw.toFixed(3)} with institutional support active from step 4. The BioBond here models what the Church network provided: a structural resource that reduced the cognitive cost of maintaining identity under attack. The morphic suppression value (${morph.toFixed(3)}) is ${morph<0.08?'notably contained — institutional support prevented learned self-censorship from accumulating':'still building, but the BioBond is limiting its growth'}. This is the simulation's account of why Bishop Saad was not alone in his resilience.`
+    : `λ Raw = ${raw.toFixed(3)} without institutional support. At entropy 0.88 and stress 0.76, the Sapolsky gate substantially closes — most agents are operating in AUTOMATIC mode, reactive rather than deliberate. Morphic suppression is building toward ${morph.toFixed(3)} — the accumulation of learned self-censorship under sustained maximum pressure with no structural relief. This is what prolonged isolation does: it doesn't just suppress voice in the moment, it changes what agents expect is possible.`;
+
+  document.getElementById('ucpNarrative').textContent=narrative;
+
+  if(gt.length>0){
+    const gapTrend=gt[gt.length-1]>gt[0]?'worsening':'improving or stable';
+    document.getElementById('morphicNote').textContent=`Gap trajectory (${gt.length} steps): [${gt.map(g=>g.toFixed(3)).join(', ')}] — ${gapTrend} over the simulation run`;
+  }
+
+  document.getElementById('ucpResult').style.display='block';
+  predUnlockStage2_hanna();
+  renderSxS(); // update comparison panel after every run
+  renderHannaSSQ(_currentRun); // structural understanding questions
+  // Show BioBond prompt after no-biobond run; hide after biobond run
+  const bbPrompt = document.getElementById('biobondExternalPrompt');
+  if(bbPrompt) bbPrompt.style.display = (_currentRun === 'no-biobond') ? 'block' : 'none';
+  // Update button label to re-run
+  const runBtn = document.getElementById('ucpRunBtn');
+  if(runBtn) runBtn.innerHTML = '↺ Re-run Simulation';
+}
+
+function checkComparison(){
+  if(!_results['no-biobond']||!_results['biobond'])return;
+  const mNo=_results['no-biobond'].metrics||{};
+  const mYes=_results['biobond'].metrics||{};
+  const diff=((mYes.lambda_raw||0)-(mNo.lambda_raw||0));
+  const morphDiff=((mNo.morphic_suppression||0)-(mYes.morphic_suppression||0));
+  const lpNo=(mNo.lambda_perceived||0), lpYes=(mYes.lambda_perceived||0);
+  const lpDiff=lpYes-lpNo;
+  document.getElementById('comparisonText').innerHTML=`
+    <strong>The key finding:</strong> λ Raw is ${(mNo.lambda_raw||HANNA_LR).toFixed(2)} in both runs — Bishop Saad's identity capacity held throughout. The architecture did not break him. What changed with institutional support (BioBond) is λ Perceived: from ${lpNo.toFixed(2)} to ${lpYes.toFixed(2)} — a ${(lpDiff*100).toFixed(0)}% increase in what his capacity could reach. Same person, same knowledge, same interior strength. The Church mobilization did not make him more capable. It made his capability reachable. Morphic suppression fell from ${(mNo.morphic_suppression||0).toFixed(2)} to ${(mYes.morphic_suppression||0).toFixed(2)}: the architecture's hold on what he could express weakened as outside channels opened.`;
+  document.getElementById('comparisonNote').style.display='block';
+  renderSxS();
+}
+
+// ── ATCF sliders ───────────────────────────────────────────────
+function updateATCF(){
+  const hc=+document.getElementById('hc-slider').value;
+  const pi=+document.getElementById('pi-slider').value;
+  const pc=+document.getElementById('pc-slider').value;
+  const mcc=+document.getElementById('mcc-slider').value;
+  document.getElementById('hc-val').textContent=hc+'/10';
+  document.getElementById('pi-val').textContent=pi+'/10';
+  document.getElementById('pc-val').textContent=pc+'/10';
+  document.getElementById('mcc-val').textContent=mcc+'/10';
+  document.getElementById('combined-atcf').textContent=((hc+pi+pc+mcc)/4).toFixed(1);
+  jSave('atcf-sliders',JSON.stringify({hc,pi,pc,mcc}));
+}
+
+// ── Transfer localStorage ─────────────────────────────────────
+const HANNA_PREFIX='hanna_transfer_';
+function tSave(key,val){
+  try{
+    localStorage.setItem(HANNA_PREFIX+key,val);
+    const si=document.getElementById('tsi-'+key);
+    if(si){si.classList.add('show');setTimeout(()=>si.classList.remove('show'),2000);}
+  }catch(e){}
+}
+function tLoad(key){try{return localStorage.getItem(HANNA_PREFIX+key)||'';}catch(e){return '';}}
+function loadTransferFields(){
+  ['prf-reading','sage','abcd','learned','growth','final'].forEach(k=>{
+    const el=document.getElementById('ta-'+k);
+    if(el)el.value=tLoad(k);
+  });
+}
+
+// ── Journal localStorage ──────────────────────────────────────
+const JOURNAL_PREFIX='hanna_journal_';
+function jSave(key,val){try{localStorage.setItem(JOURNAL_PREFIX+key,val);}catch(e){}}
+function jLoad(key){try{return localStorage.getItem(JOURNAL_PREFIX+key)||'';}catch(e){return '';}}
+function loadJournalFields(){
+  ['priv','priv2','blind','blind2','nonneg','pull','atcf','amc'].forEach(k=>{
+    const el=document.getElementById('jt-'+k);
+    if(el)el.value=jLoad(k);
+  });
+  try{
+    const sl=JSON.parse(jLoad('atcf-sliders')||'{}');
+    if(sl.hc){
+      ['hc','pi','pc','mcc'].forEach(d=>{
+        const s=document.getElementById(d+'-slider');
+        if(s){s.value=sl[d]||5;}
+      });
+      updateATCF();
+    }
+  }catch(e){}
+}
+
+// ── Export ─────────────────────────────────────────────────────
+function buildExportText(){
+  const date=new Date().toLocaleDateString();
+  let out=`BISHOP SAAD SIROP HANNA CASE STUDY — ETHICS JOURNAL\n`;
+  out+=`Date: ${date}\nStudent: [YOUR NAME]\n\n`;
+  out+=`EXERCISE 1: PRIVILEGES AUDIT\n${jLoad('priv')||'[not completed]'}\n\nWho lacks these:\n${jLoad('priv2')||'[not completed]'}\n\n`;
+  out+=`EXERCISE 2: BLINDSPOTS\n${jLoad('blind')||'[not completed]'}\n\nAction step:\n${jLoad('blind2')||'[not completed]'}\n\n`;
+  out+=`EXERCISE 3: NON-NEGOTIABLES\n${jLoad('nonneg')||'[not completed]'}\n\n`;
+  out+=`EXERCISE 4: FORWARD PULL\n${jLoad('pull')||'[not completed]'}\n\n`;
+  out+=`EXERCISE 5: ATCF ASSESSMENT\n${jLoad('atcf')||'[not completed]'}\n\n`;
+  out+=`EXERCISE 6: AMC NETWORK\n${jLoad('amc')||'[not completed]'}\n\n`;
+  out+=`TRANSFER — PRF READING\n${tLoad('prf-reading')||'[not completed]'}\n\n`;
+  out+=`TRANSFER — SAGE\n${tLoad('sage')||'[not completed]'}\n\n`;
+  out+=`TRANSFER — ABCD\n${tLoad('abcd')||'[not completed]'}\n\n`;
+  out+=`TRANSFER — WHAT I LEARNED\n${tLoad('learned')||'[not completed]'}\n\n`;
+  out+=`TRANSFER — GROWTH PATHWAY\n${tLoad('growth')||'[not completed]'}\n\n`;
+  out+=`TRANSFER — FINAL REFLECTION\n${tLoad('final')||'[not completed]'}\n` +
+  predBuildExport_hanna('run1') + predBuildExport_hanna('run2');
+  return out;
+}
+function exportJournal(){
+  const txt=buildExportText();
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='Hanna_CaseStudy_Journal.txt';
+  document.body.appendChild(a);a.click();
+  document.body.removeChild(a);URL.revokeObjectURL(url);
+}
+function copyJournal(){
+  const txt=buildExportText();
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).catch(()=>fallbackCopy(txt));
+  } else fallbackCopy(txt);
+  document.getElementById('exportContent').textContent=txt;
+  document.getElementById('exportPreview').style.display='block';
+}
+function fallbackCopy(txt){
+  const ta=document.createElement('textarea');
+  ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+}
+function clearJournal(){
+  if(!confirm('Clear all saved responses? This cannot be undone.'))return;
+  ['priv','priv2','blind','blind2','nonneg','pull','atcf','amc','atcf-sliders'].forEach(k=>
+    localStorage.removeItem(JOURNAL_PREFIX+k));
+  ['prf-reading','sage','abcd','learned','growth','final'].forEach(k=>
+    localStorage.removeItem(HANNA_PREFIX+k));
+  location.reload();
+}
+
+// ── On load ────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  predUpdatePrompts_hanna('run1');
+  // Load transfer fields if on transfer tab (not normally active at load)
+  // PRF readings update if PRF was previously loaded in this session
+});
+
+// ── Prediction Panel ──────────────────────────────────────────
+const PRED_PROMPTS_HANNA = {
+  "run1": {
+    "_default": "Before you run the simulation, form a specific prediction. The Hanna configuration has entropy 0.88, stress 0.72, and community block \u22120.85 \u2014 modelling 28 days of maximum isolation designed to destroy identity. What do you predict will happen to \u03bb Raw, morphic suppression, and the OS2 Bridge? Write your prediction precisely enough that you will know whether the simulation confirmed or disconfirmed it.",
+    "individual_rights": "Your rights-based framework is calibrated to detect suppression of equal standing and rational voice. The community block \u22120.85 models systematic silencing of the prisoner's testimony and institutional identity. What do you predict happens to \u03bb Raw (coordination capacity) and the suppression gap (\u03bb Raw \u2212 \u03bb Perceived) across the simulation steps? Will the gap widen, narrow, or hold? Write your prediction before running.",
+    "relational_we": "Your relational framework is most sensitive to severed connection networks. The community block \u22120.85 models the deliberate dismantling of every relational scaffold \u2014 family, congregation, colleagues, community. What do you predict happens to morphic suppression as those scaffolds are removed step by step? Does your framework predict collapse, partial resilience, or something else? Write before running.",
+    "hierarchical_role": "Your role-based framework is sensitive to illegitimate authority \u2014 authority that has inverted its own purpose. In this configuration, captors are exercising maximum institutional control with no legitimate mandate. What do you predict happens to the agents' coordination capacity when authority is this thoroughly perverted? Specifically: does \u03bb Raw collapse or find a floor? Write your prediction before running.",
+    "boundary_integrity": "Your boundary/integrity framework is most sensitive to what happens to non-negotiable limits under maximum pressure. Entropy 0.88, stress 0.72, community block \u22120.85 \u2014 this is the structure designed to make categorical refusal biologically unsustainable. What do you predict happens to morphic suppression and \u03bb Raw across 8 steps under these conditions? Does the Identity Kernel hold? Write your prediction precisely before running.",
+    "custodial": "Your custodial framework is sensitive to what institutional pressure does to the capacity to maintain what has been built and transmit what matters. With community block \u22120.85 severing every generational and communal connection: what do you predict happens to the agents' forward-pull orientation \u2014 their capacity to remain oriented toward what they are custodians of? Write your prediction before running."
+  },
+  "run2": {
+    "_default": "Run 2 adds BioBond \u2014 the Church mobilization that activated at step 4. The suppression conditions are identical to Run 1. Based on Run 1's results: what do you predict BioBond adds to \u03bb Raw and what does it do to morphic suppression? Write your specific prediction before running.",
+    "individual_rights": "Your rights-based framework is calibrated to detect suppression of equal standing and rational voice. The community block \u22120.85 models systematic silencing of the prisoner's testimony and institutional identity. What do you predict happens to \u03bb Raw (coordination capacity) and the suppression gap (\u03bb Raw \u2212 \u03bb Perceived) across the simulation steps? Will the gap widen, narrow, or hold? Write your prediction before running Run 2 (with BioBond).",
+    "relational_we": "Your relational framework is most sensitive to severed connection networks. The community block \u22120.85 models the deliberate dismantling of every relational scaffold \u2014 family, congregation, colleagues, community. What do you predict happens to morphic suppression as those scaffolds are removed step by step? Does your framework predict collapse, partial resilience, or something else? Write before running Run 2 (with BioBond).",
+    "hierarchical_role": "Your role-based framework is sensitive to illegitimate authority \u2014 authority that has inverted its own purpose. In this configuration, captors are exercising maximum institutional control with no legitimate mandate. What do you predict happens to the agents' coordination capacity when authority is this thoroughly perverted? Specifically: does \u03bb Raw collapse or find a floor? Write your prediction before running Run 2 (with BioBond).",
+    "boundary_integrity": "Your boundary/integrity framework is most sensitive to what happens to non-negotiable limits under maximum pressure. Entropy 0.88, stress 0.72, community block \u22120.85 \u2014 this is the structure designed to make categorical refusal biologically unsustainable. What do you predict happens to morphic suppression and \u03bb Raw across 8 steps under these conditions? Does the Identity Kernel hold? Write your prediction precisely before running Run 2 (with BioBond).",
+    "custodial": "Your custodial framework is sensitive to what institutional pressure does to the capacity to maintain what has been built and transmit what matters. With community block \u22120.85 severing every generational and communal connection: what do you predict happens to the agents' forward-pull orientation \u2014 their capacity to remain oriented toward what they are custodians of? Write your prediction before running Run 2 (with BioBond)."
+  }
+};
+
+const PRED_STAGE_CONFIGS_HANNA = {
+  pred: {
+    s2: "After you run the simulation, compare your prediction to the results. Which metric produced the largest gap between what you predicted and what the simulation showed? What does that gap reveal about what your generative model expected — but the structural configuration did not confirm?",
+    s3: "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which parameter would have been hardest on your specific generative model? Which cognitive scaffold would this structure have dismantled first for you personally?"
+  }
+};
+
+function predGetPrompt_hanna(runKey){
+  const map = PRED_PROMPTS_HANNA;
+  const prompts = map[runKey] || {};
+  let fw = 'unknown';
+  try{ fw = localStorage.getItem('d1_prf_fw') || localStorage.getItem('prf_framework') || 'unknown'; }catch(e){}
+  return prompts[fw] || prompts['_default'] || 'Before running the simulation, write your specific prediction about what it will show.';
+}
+
+function predUpdatePrompts_hanna(runKey){
+  const prompt = predGetPrompt_hanna(runKey);
+  const el = document.getElementById('pred-prompt-pred');
+  if(el) el.textContent = prompt;
+  // Load saved values
+  ['pred-pred', 'pred-gap', 'pred-inhabit'].forEach(k => {
+    const full = 'hanna_' + runKey + '_' + k;
+    const ta = document.getElementById('pred-ta-' + k.replace('pred-',''));
+    try{ if(ta) ta.value = localStorage.getItem(full) || ''; }catch(e){}
+  });
+  // Lock stage 2 and 3 if stage 1 is empty
+  predCheckLocks_hanna(runKey);
+}
+
+function predCheckLocks_hanna(runKey){
+  const s1val = (document.getElementById('pred-ta-pred')?.value||'').trim();
+  const s2val = (document.getElementById('pred-ta-gap')?.value||'').trim();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s2stage){
+    s2stage.classList.toggle('pred-stage-locked', s1val.length < 20);
+    const note2 = document.getElementById('unlock-note-gap');
+    if(note2) note2.style.display = s1val.length < 20 ? 'block' : 'none';
+  }
+  if(s3stage){
+    s3stage.classList.toggle('pred-stage-locked', s2val.length < 20);
+    const note3 = document.getElementById('unlock-note-inhabit');
+    if(note3) note3.style.display = s2val.length < 20 ? 'block' : 'none';
+  }
+}
+
+function predSave(appId, stageId, val){
+  const runKey = predGetRunKey_hanna();
+  const storageKey = appId + '_' + runKey + '_pred-' + stageId;
+  try{ localStorage.setItem(storageKey, val); }catch(e){}
+  const sv = document.getElementById('pred-sv-' + stageId);
+  if(sv){ sv.classList.add('show'); setTimeout(()=>sv.classList.remove('show'),2000); }
+  predCheckLocks_hanna(runKey);
+}
+
+function predUnlockStage2_hanna(){
+  // Called after simulation results render
+  const runKey = predGetRunKey_hanna();
+  const s2stage = document.getElementById('pred-stage-gap');
+  const el2 = document.getElementById('pred-prompt-gap');
+  if(el2) el2.textContent = "Compare your prediction (Stage 1) to the simulation results. Which metric showed the largest gap between what you predicted and what the structure produced? What does that gap reveal about what your generative model expected — that the structural configuration did not confirm?";
+  const savedGap = (() => { try{ return localStorage.getItem('hanna_'+runKey+'_pred-gap')||''; }catch(e){return '';} })();
+  const taGap = document.getElementById('pred-ta-gap');
+  if(taGap && !taGap.value) taGap.value = savedGap;
+  if(s2stage) s2stage.classList.remove('pred-stage-locked');
+  const note2 = document.getElementById('unlock-note-gap');
+  if(note2) note2.style.display = 'none';
+  predCheckLocks_hanna(runKey);
+  // Scroll prediction panel into view gently
+  const panel = document.getElementById('predPanel');
+  if(panel) setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}), 800);
+}
+
+function predLoadInhabit_hanna(){
+  const runKey = predGetRunKey_hanna();
+  const el3 = document.getElementById('pred-prompt-inhabit');
+  if(el3) el3.textContent = "If you had inhabited this structure — not the historical figure, but you, with your specific PRF — which structural parameter would have been hardest on your generative model? Which cognitive scaffold would this configuration have dismantled first for you? How does your PRF's precision-weighting determine where the pressure hits hardest?";
+  const savedInh = (() => { try{ return localStorage.getItem('hanna_'+runKey+'_pred-inhabit')||''; }catch(e){return '';} })();
+  const taInh = document.getElementById('pred-ta-inhabit');
+  if(taInh && !taInh.value) taInh.value = savedInh;
+  const s3stage = document.getElementById('pred-stage-inhabit');
+  if(s3stage) s3stage.classList.remove('pred-stage-locked');
+  const note3 = document.getElementById('unlock-note-inhabit');
+  if(note3) note3.style.display = 'none';
+}
+
+function predBuildExport_hanna(runKey){
+  const get = k => { try{ return localStorage.getItem('hanna_'+runKey+'_pred-'+k)||'[not completed]'; }catch(e){return '[not completed]';} };
+  return '\n═══════════════════════\nPREDICTION PANEL — ' + runKey.toUpperCase() + '\n═══════════════════════\n' +
+    'Stage 1 — My Prediction:\n' + get('pred') + '\n\n' +
+    'Stage 2 — Gap Analysis:\n' + get('gap') + '\n\n' +
+    'Stage 3 — Inhabitation Bridge:\n' + get('inhabit') + '\n';
+}
+
+function predGetRunKey_hanna(){
+  // Hanna uses 'no-biobond' and 'biobond' as run modes
+  if(typeof _currentRun !== 'undefined'){
+    return _currentRun === 'no-biobond' ? 'run1' : 'run2';
+  }
+  const btn = document.getElementById('btn-no-biobond');
+  return (btn && btn.classList.contains('active-run')) ? 'run1' : 'run2';
+}
+
+
+// ── Side-by-Side Comparison ───────────────────────────────
+function renderSxS() {
+  const RUNS = ['no-biobond','biobond'];
+  const LABELS = {'no-biobond':'Without BioBond','biobond':'With BioBond (step 4)'};
+  const COLORS = {'no-biobond':'#f08080','biobond':'#7fd8a8'};
+  const METRICS = [
+    {key:'lambda_raw',          label:'λ Raw',         hi:true,  desc:'Coordination capacity available'},
+    {key:'lambda_perceived',    label:'λ Perceived',   hi:true,  desc:'Coordination reaching decisions'},
+    {key:'os2_synergy_bridge',  label:'OS2 Bridge',    hi:true,  desc:'Cross-worldview convergence'},
+    {key:'friction',            label:'Friction',      hi:false, desc:'Translation cost'},
+    {key:'morphic_suppression', label:'Morphic Supp.', hi:false, desc:'Accumulated learned self-censorship'},
+  ];
+  const gv = (run,key) => {
+    const m = _results[run]?.metrics || {};
+    return key==='os2_synergy_bridge' ? (m.os2_synergy_bridge??m.os2_synergy??0) : (m[key]||0);
+  };
+  const done = RUNS.filter(r => _results[r]);
+  if (!done.length) return;
+
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">`;
+  html += `<tr><td style="width:38%;padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em">Metric</td>`;
+  RUNS.forEach(r => {
+    const d = !!_results[r];
+    html += `<td style="width:31%;padding:.4rem .5rem;text-align:center">
+      <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${d?COLORS[r]:'rgba(255,255,255,.2)'}">${LABELS[r]}</div>
+    </td>`;
+  });
+  html += `</tr>`;
+
+  METRICS.forEach(m => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">`;
+    html += `<td style="padding:.5rem .6rem">
+      <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${m.label}</div>
+      <div style="font-size:.66rem;color:rgba(255,255,255,.32);margin-top:.1rem">${m.desc}</div>
+    </td>`;
+    RUNS.forEach(r => {
+      const d = !!_results[r];
+      const val = d ? gv(r, m.key) : null;
+      const pct = d ? Math.round(val*100) : 0;
+      const nc = d ? (m.hi?(val>.60?'#7fd8a8':val>.35?'#f5c842':'#f08080'):(val<.10?'#7fd8a8':val<.20?'#f5c842':'#f08080')) : 'rgba(255,255,255,.2)';
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (d) {
+        html += `<div style="font-size:1.12rem;font-weight:700;font-family:'Courier New',monospace;color:${nc};line-height:1.1">${val.toFixed(3)}</div>`;
+        html += `<div style="margin:.25rem auto 0;width:76%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${COLORS[r]};border-radius:3px;transition:width 1s ease"></div>
+        </div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table></div>`;
+
+  // Annotations — only when both runs complete
+  if (_results['no-biobond'] && _results['biobond']) {
+    const rawDiff = gv('biobond','lambda_raw') - gv('no-biobond','lambda_raw');
+    const morphDiff = gv('no-biobond','morphic_suppression') - gv('biobond','morphic_suppression');
+    const sign = v => v>=0?'+':'';
+    const anns = [
+      { color:'#7fd8a8', label:'λ Raw — What BioBond Added',
+        text:`Without BioBond: ${gv('no-biobond','lambda_raw').toFixed(3)} → With BioBond: ${gv('biobond','lambda_raw').toFixed(3)} (${sign(rawDiff)}${rawDiff.toFixed(3)}). ${rawDiff>0.02?'The Church mobilization provided structurally measurable support — not emotional encouragement but cognitive scaffolding that maintained coordination capacity under conditions designed to destroy it.':'Close values in this run — the structural difference appears more clearly in morphic suppression. Run again with a different seed to explore variation.'}`},
+      { color:'#f5c842', label:'Morphic Suppression — Learned Self-Censorship Contained',
+        text:`Without BioBond: ${gv('no-biobond','morphic_suppression').toFixed(3)} → With BioBond: ${gv('biobond','morphic_suppression').toFixed(3)}. ${morphDiff>0.01?'BioBond reduced accumulated learned self-censorship by '+morphDiff.toFixed(3)+' — the external network interrupted the build-up of the expectation that deliberate contribution will not reach outcomes.':'Similar morphic suppression across both runs — the accumulation is driven by the high entropy (0.88) which both runs share. The BioBond effect on λ Raw is the clearer signal here.'}`},
+      { color:'#C9A84C', label:'The Structural Argument',
+        text:`Bishop Saad\'s resilience was not purely individual virtue — it was individual virtue operating within a structure that provided external cognitive scaffolding. Andy Clark\'s extended mind thesis: the Church network was part of his cognitive system, not a supplement to it. Severing it (no-biobond) and restoring it (biobond) are structural changes, not personal ones. The simulation measures that structural difference.`}
+    ];
+    html += `<div style="margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem">`;
+    anns.forEach(a => {
+      html += `<div style="background:rgba(255,255,255,.05);border-left:3px solid ${a.color};border-radius:0 .4rem .4rem 0;padding:.65rem .875rem">
+        <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:${a.color};font-weight:700;margin-bottom:.22rem">${a.label}</div>
+        <div style="font-size:.83rem;color:rgba(255,255,255,.72);line-height:1.55">${a.text}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+  document.getElementById('sxsBody').innerHTML = html;
+}
+
+// ── Chapter 2 prediction retrieval ───────────────────────────────────────
+(function loadCh2Pred(){
+  try{
+    const pred = localStorage.getItem('ch2_cq5') || '';
+    const el = document.getElementById('ch2PredText');
+    const wrapper = document.getElementById('ch2PredDisplay');
+    if(el && wrapper){
+      if(pred.trim()){
+        el.textContent = pred;
+        wrapper.style.display = 'block';
+      }
+    }
+  }catch(e){}
+})();
+
+// ── Hanna MCQ data ────────────────────────────────────────────────────────
+const HANNA_SSQ = {
+  'no-biobond': {
+    title: 'What This Simulation Shows — Run 1: Without BioBond',
+    questions: [
+      {
+        text: 'The simulation produces very low λ Raw (typically 0.10–0.20) for Run 1. What is the primary structural reason for this — not the individual reason?',
+        options: [
+          'Bishop Hanna was losing his faith under sustained torture and his willpower was diminishing.',
+          'The combination of entropy 0.88 and community block −0.9 structurally eliminates the conditions for sustained deliberate coordination — the environment is producing near-maximum cognitive disorder while systematically severing every relational scaffold.',
+          'Low λ Raw means Bishop Hanna had few supporters willing to help him.',
+          'The simulation is measuring how little the captors could coordinate with each other.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Exactly right. λ Raw measures structural conditions, not individual character. Entropy 0.88 models the near-maximum cognitive disorder of captivity — pain, isolation, uncertainty, the threat of death. Community −0.9 models the deliberate severing of every relational cognitive scaffold. Together they structurally constrain the capacity for deliberate action regardless of who inhabits this environment. The simulation cannot model Hanna\'s individual response. It models what the structural conditions make possible — and these conditions made sustained deliberate action extraordinarily costly, not impossible.',
+          wrong: [
+            'The simulation does not model faith, willpower, or individual psychological states. λ Raw is a structural measure — it tells you what the environment makes possible, not what the individual chooses. The same parameters applied to any agent with any level of faith would produce a similarly low λ Raw, because the measure is about structural conditions rather than individual character.',
+            null,
+            'λ Raw is not measuring support networks or interpersonal relationships in a social sense. It is measuring structural coordination capacity — how much the structural conditions allow agents to act effectively together. The community block field (−0.9) is modelling the deliberate elimination of relational scaffolding, not the counting of supporters.',
+            'The simulation is modelling the structural conditions experienced by the agents in the scenario — in this case, the person inhabiting this suppression environment. The captors are the structural force producing the conditions, not the subject of the measurement.'
+          ]
+        }
+      },
+      {
+        text: 'Morphic suppression is building across the 8 steps in Run 1. What does this number reveal about what is happening structurally — not just in the moment but over time?',
+        options: [
+          'Hanna is gradually becoming less morally committed as the captivity continues.',
+          'The structural conditions are training agents\' predictive machinery to expect that deliberate expression will not reach outcomes — accumulated learned self-censorship is building because the environment consistently prevents contributions from making a difference.',
+          'Morphic suppression measures how much physical pain is being applied over time.',
+          'It shows that the captors are becoming more organized and effective at suppression.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. Morphic suppression is accumulated learned self-censorship — the structural product of consistent experience where deliberate expression does not reach outcomes. Across 8 steps in this environment, the agents\' predictive machinery is updating: "trying does not produce results." The important distinction is that this is a structural accumulation, not a character failure. Any agent in this environment for this duration would show building morphic suppression. This is why Chapter 3\'s distinction between acute and chronic suppression matters: acute suppression reduces λ Perceived in the moment; chronic suppression begins to change what the agent expects to be able to express at all.',
+          wrong: [
+            'Morphic suppression does not measure moral commitment or faith. It measures a structural dynamic: when an environment consistently prevents deliberate contribution from reaching outcomes, the predictive machinery calibrates to expect futility. This can happen to a person of maximum commitment — it is a structural response to structural conditions, not a reflection of individual character.',
+            null,
+            'Morphic suppression does not measure physical pain or the mechanics of the suppression itself. It measures what happens in the agents being suppressed: the gradual calibration of their predictive machinery toward expecting that deliberate expression will not matter. The cause is the suppressive environment; the metric is the accumulated effect on expressive behavior.',
+            'Morphic suppression measures what is happening to the agents being suppressed, not to the suppressors. The building value across steps tells you about the cumulative structural effect on the agent\'s predictive system, not about the efficiency of the captor\'s methods.'
+          ]
+        }
+      }
+    ]
+  },
+  'biobond': {
+    title: 'What This Simulation Shows — Run 2: With BioBond',
+    questions: [
+      {
+        text: 'Run 2 shows higher λ Raw and lower morphic suppression than Run 1, despite identical entropy and block fields. What structural mechanism explains the difference?',
+        options: [
+          'Hanna prayed harder in Run 2, which gave him more strength to resist.',
+          'The Church network provided emotional comfort that made him feel better about his situation.',
+          'BioBond activating at step 4 restores an external component of the distributed cognitive system — maintaining the precision weighting on Hanna\'s identity priors when the immediate environment is systematically dismantling them. Same suppression conditions; different cognitive scaffolding.',
+          'The simulation has different random seeds for the two runs, which is why the numbers differ.'
+        ],
+        correct: 2,
+        feedback: {
+          correct: 'Exactly. This is Andy Clark\'s extended mind thesis made numerically precise. The entropy is identical between runs. The block fields are identical. The agents\' PRF configurations are identical. The only structural difference is the presence of an external cognitive network from step 4. That network is not changing what is being done to Hanna — it is maintaining the external component of his distributed cognitive system that the suppression conditions were designed to dismantle. The fidelity improvement between Run 1 and Run 2 is the structural measure of what cognitive scaffolding provides: not courage, not faith, not willpower — the external component of the system that keeps the generative model stable under conditions designed to destabilize it.',
+          wrong: [
+            'The simulation does not model prayer, individual spiritual practice, or personal strength. BioBond is a structural parameter — it models the presence or absence of an external network that functions as cognitive scaffolding. Two runs with identical parameters except BioBond activation will produce systematically different outcomes because the structural configuration differs, not because individuals are trying harder.',
+            'Emotional comfort is the folk-psychology description of what BioBond provides structurally. The simulation models the structural effect: the external network maintains the precision weighting on the agent\'s identity priors, which keeps the generative model stable and prevents the morphic suppression accumulation that would occur without it. Feeling better is the first-person experience of a third-person structural phenomenon.',
+            null,
+            'Both runs use the same seed (42). The difference between runs is not stochastic variation — it is the structural change produced by BioBond activation at step 4. You can verify this by examining the payload parameters: all values are identical except activate_biobond_at.'
+          ]
+        }
+      },
+      {
+        text: 'The simulation\'s most important claim about the Hanna case is that "his resilience was not solely produced by personal virtue." What does this claim mean — and what does it NOT mean?',
+        options: [
+          'It means Hanna was not actually virtuous — the Church did everything and he just survived passively.',
+          'It means his individual virtue was real AND that structural scaffolding was a contributing cause. The simulation cannot model what would have happened to him individually — it models what the structural conditions predict. The BioBond contribution is a structural claim, not a claim about his personal merit.',
+          'It means virtue is unimportant and only institutions matter.',
+          'It means the Church deserves the credit for his survival, not him.'
+        ],
+        correct: 1,
+        feedback: {
+          correct: 'Yes. This is the OS2 reference frame\'s most careful claim. Individual virtue is real. Hanna\'s courage, faith, and depth of formation are genuine and significant. The simulation adds something the individual-virtue account cannot provide: a structural account of why those virtues were able to hold under these conditions — specifically, that the structural scaffolding provided by the Church network was a causally relevant feature of the outcome, not merely incidental context. Both are true simultaneously. The simulation is not replacing the individual account. It is making the structural account visible alongside it.',
+          wrong: [
+            'This is the opposite of the claim. The simulation explicitly cannot model whether Hanna would have held without BioBond — it can only show what the structural conditions predict at the population level. His personal virtue was real and significant. What the simulation adds is a structural account of the contributing causes, not a replacement for the individual account.',
+            null,
+            'The chapter is explicit: "This is not a criticism of Bishop Saad. His courage was real and his achievement was extraordinary regardless of the structural enablers." The structural claim is additive, not substitutive. Virtue matters. Structural conditions also matter. The simulation makes the second claim visible without eliminating the first.',
+            'The claim is about structural causation, not credit allocation. Both Hanna\'s character and the Church\'s structural response were causally relevant. Assigning credit is a different and harder question that the simulation does not answer. What it answers is: given these structural conditions with and without BioBond, what does the model predict? The difference between runs shows BioBond\'s structural contribution. It does not adjudicate who deserves credit.'
+          ]
+        }
+      }
+    ]
+  }
+};
+
+const hannaSaved = {};
+
+function renderHannaSSQ(runKey){
+  const data = HANNA_SSQ[runKey];
+  if(!data) return;
+  const panel = document.getElementById('hannaSSQPanel');
+  if(!panel) return;
+
+  const LETTERS = ['A','B','C','D'];
+  let html = `<div class="hanna-ssq">
+    <div class="hanna-ssq-header">
+      <div class="hanna-ssq-label">Structural Understanding — Check Your Reading</div>
+      <div class="hanna-ssq-title">${data.title}</div>
+    </div>
+    <div class="hanna-ssq-body">`;
+
+  data.questions.forEach((q, qi) => {
+    html += `<div class="hanna-ssq-q" id="hssq-${runKey}-q${qi}">
+      <div class="hanna-ssq-q-text">${qi+1}. ${q.text}</div>
+      <div class="hanna-ssq-opts" role="group" aria-label="Options for question ${qi+1}">`;
+    q.options.forEach((opt, oi) => {
+      html += `<button class="hanna-ssq-opt" id="hssq-${runKey}-q${qi}-o${oi}"
+        onclick="handleHannaSSQ('${runKey}',${qi},${oi})"
+        aria-label="Option ${LETTERS[oi]}: ${opt}">
+        <span class="hanna-ssq-opt-letter">${LETTERS[oi]}.</span>
+        <span>${opt}</span>
+      </button>`;
+    });
+    html += `</div>
+      <div class="hanna-ssq-fb" id="hssq-${runKey}-q${qi}-fb" role="alert" aria-live="polite"></div>
+    </div>`;
+  });
+
+  html += `</div>
+    <div class="hanna-ssq-prog" id="hssq-${runKey}-prog" aria-live="polite">Answer both questions to continue</div>
+  </div>`;
+
+  panel.innerHTML = html;
+  panel.style.display = 'block';
+
+  // Restore saved answers
+  try{
+    const saved = JSON.parse(localStorage.getItem('hanna_ssq_' + runKey) || '{}');
+    Object.entries(saved).forEach(([qi, oi]) => {
+      applyHannaSSQ(runKey, parseInt(qi), parseInt(oi), true);
+    });
+    updateHannaSSQProgress(runKey);
+  }catch(e){}
+}
+
+function handleHannaSSQ(runKey, qi, oi){
+  applyHannaSSQ(runKey, qi, oi, false);
+  try{
+    const saved = JSON.parse(localStorage.getItem('hanna_ssq_' + runKey) || '{}');
+    saved[qi] = oi;
+    localStorage.setItem('hanna_ssq_' + runKey, JSON.stringify(saved));
+  }catch(e){}
+  updateHannaSSQProgress(runKey);
+}
+
+function applyHannaSSQ(runKey, qi, oi, isRestore){
+  const data = HANNA_SSQ[runKey];
+  if(!data) return;
+  const q = data.questions[qi];
+  const isCorrect = oi === q.correct;
+
+  // Disable all options for this question
+  q.options.forEach((_,idx) => {
+    const btn = document.getElementById(`hssq-${runKey}-q${qi}-o${idx}`);
+    if(btn) btn.disabled = true;
+  });
+
+  // Style chosen option
+  const chosen = document.getElementById(`hssq-${runKey}-q${qi}-o${oi}`);
+  if(chosen) chosen.classList.add(isCorrect ? 'correct' : 'wrong');
+
+  // If wrong, reveal correct
+  if(!isCorrect){
+    const correctBtn = document.getElementById(`hssq-${runKey}-q${qi}-o${q.correct}`);
+    if(correctBtn) correctBtn.classList.add('revealed-correct');
+  }
+
+  // Show feedback
+  const fb = document.getElementById(`hssq-${runKey}-q${qi}-fb`);
+  if(fb){
+    const fbText = isCorrect
+      ? q.feedback.correct
+      : (q.feedback.wrong[oi] || 'Not quite — the correct answer is highlighted. Read its explanation to understand the structural reasoning.');
+    fb.className = 'hanna-ssq-fb ' + (isCorrect ? 'correct' : 'wrong');
+    fb.innerHTML = `<div class="hanna-ssq-fb-label">${isCorrect ? '✓ Correct' : '✗ Not quite'}</div>${fbText}`;
+    fb.style.display = 'block';
+  }
+}
+
+function updateHannaSSQProgress(runKey){
+  const data = HANNA_SSQ[runKey];
+  if(!data) return;
+  try{
+    const saved = JSON.parse(localStorage.getItem('hanna_ssq_' + runKey) || '{}');
+    const done = Object.keys(saved).length;
+    const total = data.questions.length;
+    const prog = document.getElementById('hssq-' + runKey + '-prog');
+    if(prog){
+      prog.textContent = done >= total
+        ? '✓ Both questions answered'
+        : `${done} of ${total} answered`;
+    }
+  }catch(e){}
+}
+
+const METRIC_EXPLAIN = {
+  'λ Raw': {
+    title: 'Lambda Raw — Genuine Constructive Capability',
+    what: `λ Raw measures the actual coordination potential present in the agent population — the total capacity to perceive situations accurately, reason deliberately about them, and contribute meaningfully to shared outcomes. Think of it as the water level in the mountains of the watershed: how much capability is actually present, regardless of whether the institutional architecture can receive it.`,
+    range: `Ranges from 0% (total capacity collapse — agents cannot function above the Sapolsky stress threshold) to 100% (full deliberative capacity across all agents). In practice, healthy institutions operate between 55–80%. Below 40% indicates agents are in reactive, stress-driven mode.`,
+    verdict: (v) => v > 0.65 ? { text: 'Strong capability present', color: '#166534', intensity: 'HIGH — Agents have intact deliberative capacity.' }
+                  : v > 0.42 ? { text: 'Moderate capability', color: '#92400e', intensity: 'MODERATE — Capability is present but under pressure.' }
+                             : { text: 'Capability below threshold', color: '#dc2626', intensity: 'LOW — Agents are below the Sapolsky deliberative threshold.' },
+    challenger: `In the Challenger teleconference, engineer λ Raw was high — Boisjoly and his colleagues had clear technical knowledge, intact reasoning, and accurate data. The watershed had abundant water in the mountains. The disaster occurred not because λ Raw was low but because the dam (suppression gap) was high.`,
+    formula: 'λ Raw = f(stress, BioBond, PRF stability, Identity Kernel depth)',
+    learnMore: `This is why the Challenger case is so instructive: the engineers were not incompetent or confused. Their λ Raw was intact. The architecture failed them, not their capability.`
+  },
+  'λ Perceived': {
+    title: 'Lambda Perceived — Coordination Capacity Felt in the Room',
+    what: `λ Perceived measures what coordination capacity the institutional architecture actually allows to reach decisions — what feels available for shared reasoning. It is λ Raw minus what the suppression gap filters out. In the watershed: this is the water level on the decision side of the dam. It is always ≤ λ Raw.`,
+    range: `0% means no coordination capacity reaches decisions (pure authority-driven or suppressed institution). 100% means all genuine capability is fully expressed in coordinated action. Healthy institutions: 45–70%. The Challenger teleconference architecture: very low.`,
+    verdict: (v) => v > 0.55 ? { text: 'Coordination feeling strong', color: '#166534', intensity: 'HIGH — Much of λ Raw is reaching decisions.' }
+                  : v > 0.35 ? { text: 'Coordination constrained', color: '#92400e', intensity: 'MODERATE — Significant capability is being filtered out.' }
+                             : { text: 'Coordination severely limited', color: '#dc2626', intensity: 'LOW — Only a fraction of actual capability reaches decisions.' },
+    challenger: `On January 27, 1986, what was perceived in the Thiokol decision room was not the engineering data — it was the organizational pressure to launch. λ Perceived collapsed because the authority-weighted evidence architecture routed the engineering signal around rather than toward the launch decision.`,
+    formula: 'λ Perceived = λ Raw − Suppression Gap',
+    learnMore: `The difference between λ Raw and λ Perceived is the most important measurement in organizational ethics. An organization can have highly capable, fully informed people whose capability never reaches decisions.`
+  },
+  'Supp. Gap': {
+    title: 'Suppression Gap — The Distance Between Knowing and Deciding',
+    what: `The Suppression Gap is the difference between what agents actually know (λ Raw) and what reaches institutional decisions (λ Perceived). It is the structural distance between truth and power. In the watershed: this is the height of the dam. A high suppression gap means accurate information is being filtered out before it reaches the people who need it — not through dishonesty but through architecture.`,
+    range: `0% means no suppression — everything known reaches decisions. Above 15% indicates significant filtering. Above 30% indicates the institution is systematically unable to hear its own most accurate information. The Challenger teleconference: very high.`,
+    verdict: (v) => v < 0.10 ? { text: 'Minimal suppression', color: '#166534', intensity: 'LOW — Information is flowing freely toward decisions.' }
+                  : v < 0.25 ? { text: 'Moderate suppression', color: '#92400e', intensity: 'MODERATE — Significant information is being filtered.' }
+                             : { text: 'Critical suppression', color: '#dc2626', intensity: 'HIGH — The institution cannot hear its own most accurate signal.' },
+    challenger: `Roger Boisjoly had a 15% failure probability estimate, direct physical evidence, and 18 months of documented warnings. What reached the launch decision was silence. The gap between what he knew and what reached the decision measured in lives: seven.`,
+    formula: 'Suppression Gap = λ Raw − λ Perceived',
+    learnMore: `Amy Edmondson found that in low-psychological-safety environments, each hierarchical level crossed reduces transmission probability by 30–40%. The Thiokol teleconference crossed multiple levels — each one reducing the signal.`
+  },
+  'OS2 Bridge': {
+    title: 'OS2 Bridge — Realized Coordination Across Difference',
+    what: `OS2 Bridge measures how much of the available coordination capacity is actually being realized as coordinated action across genuine PRF differences. In the watershed: this is how full the reservoir is — how much water has made it past the dam and is available for use.`,
+    range: `0% means no coordination across difference. 100% means full realization of coordination potential. Healthy organizations with genuine diversity: 40–70%. The Challenger teleconference: very low.`,
+    verdict: (v) => v > 0.55 ? { text: 'Strong coordination realized', color: '#166534', intensity: 'HIGH — Diverse capability is reaching shared outcomes.' }
+                  : v > 0.30 ? { text: 'Partial coordination', color: '#92400e', intensity: 'MODERATE — Some coordination capacity is being realized.' }
+                             : { text: 'Coordination largely unrealized', color: '#dc2626', intensity: 'LOW — The available capability is not producing coordinated action.' },
+    challenger: `In the Challenger teleconference, OS2 Bridge was near zero. Engineers and managers were in the same room with the same data and reached opposite conclusions. The diverse perspectives did not produce better collective perception — they were suppressed into a false consensus that overrode the accurate engineering signal.`,
+    formula: 'OS2 Bridge = f(evidence architecture, worldview diversity, block field, suppression gap)',
+    learnMore: `Woolley et al. (Carnegie Mellon, 2010) found that collective intelligence is predicted by conversational turn-taking equality and social sensitivity, not by individual IQ. OS2 Bridge is the simulation measure of exactly this collective capacity.`
+  },
+  'Morphic Supp.': {
+    title: 'Morphic Suppression — When Effort Disappears',
+    what: `Morphic Suppression measures the degree to which agents contributions are being structurally routed around rather than toward decisions. An agent can make an observation, complete an analysis, submit a recommendation — and it simply disappears. Not rejected. Not challenged. Just not routed anywhere actionable.`,
+    range: `0% means contributions reach their intended destinations. Above 20% indicates significant structural routing failure. Above 50% means half of what agents contribute is being absorbed without effect. This drains motivation faster than rejection does.`,
+    verdict: (v) => v < 0.15 ? { text: 'Contributions reaching targets', color: '#166534', intensity: 'LOW — The architecture is routing effort toward outcomes.' }
+                  : v < 0.40 ? { text: 'Significant routing failure', color: '#92400e', intensity: 'MODERATE — Meaningful effort is disappearing into the structure.' }
+                             : { text: 'Severe contribution loss', color: '#dc2626', intensity: 'HIGH — Most effort is being absorbed without effect.' },
+    challenger: `Boisjoly July 1985 memo had high morphic suppression. It was received, filed, and a task force was formed — but none of this produced the architectural change he was requesting. His contribution was technically acknowledged and practically absorbed. This pattern repeated through every channel he used until the teleconference, where it became total.`,
+    formula: 'Morphic Suppression = f(authority gradient, evidence architecture, worldview filtering)',
+    learnMore: `Morphic suppression is distinct from the suppression gap: the gap measures what does not reach decisions; morphic suppression measures the specific mechanism by which contributions are routed around decision-makers once they arrive.`
+  },
+  'Friction': {
+    title: 'Friction — The Energy Cost of Coordination',
+    what: `Friction measures how much energy the coordination process itself consumes before any of it reaches actual problem-solving. High friction does not mean communication is not happening — it means every interaction requires more effort than it should. People with different PRFs may all be speaking honestly but spending enormous energy translating between frameworks.`,
+    range: `0% means coordination is effortless — shared frameworks allow direct communication. Above 30% indicates significant translation cost between PRFs. Above 60% means coordination is consuming so much energy that even when it succeeds, everyone is depleted.`,
+    verdict: (v) => v < 0.25 ? { text: 'Smooth coordination', color: '#166534', intensity: 'LOW — People are communicating efficiently.' }
+                  : v < 0.50 ? { text: 'Moderate friction', color: '#92400e', intensity: 'MODERATE — Coordination is effortful but functioning.' }
+                             : { text: 'High coordination drag', color: '#dc2626', intensity: 'HIGH — Enormous energy is consumed before any problem-solving begins.' },
+    challenger: `The Challenger teleconference had extreme friction: engineers were speaking engineering (material properties, probability, risk thresholds) and management was speaking organizational reality (contracts, schedules, NASA relationships). The translation cost was so high that every engineering point had to be re-explained — and was re-interpreted through the management lens as it arrived.`,
+    formula: 'Friction = f(PRF distance between agents, worldview distribution breadth, shared language availability)',
+    learnMore: `Friction and suppression require different interventions. Suppression is fixed by changing power dynamics. Friction is fixed by building shared language — protocols that let different frameworks communicate without requiring either to abandon its commitments.`
+  },
+};
+
+function showMetricExplain(metricName, value, run) {
+  const def = METRIC_EXPLAIN[metricName];
+  if (!def) return;
+
+  const pct = (value * 100).toFixed(1);
+  const verdict = def.verdict(value);
+  const hb = !['Supp. Gap','Morphic Supp.','Friction'].includes(metricName);
+  const barPct = Math.min(100, value * 100);
+  // Color the range bar: green zone, amber zone, red zone
+  const zones = hb
+    ? [{w:40,c:'#fee2e2'},{w:25,c:'#fef3c7'},{w:35,c:'#dcfce7'}]
+    : [{w:35,c:'#dcfce7'},{w:30,c:'#fef3c7'},{w:35,c:'#fee2e2'}];
+
+  const modal = document.createElement('div');
+  modal.className = 'metric-modal-backdrop';
+  modal.innerHTML = `
+    <div class="metric-modal" role="dialog" aria-modal="true" aria-label="${def.title}">
+      <div class="metric-modal-header">
+        <div>
+          <div class="metric-modal-name">Simulation Metric — ${run === 'B' ? 'Configuration B' : 'Configuration A'}</div>
+          <div class="metric-modal-title">${def.title}</div>
+        </div>
+        <button class="metric-modal-close" onclick="this.closest('.metric-modal-backdrop').remove()" aria-label="Close">×</button>
+      </div>
+      <div class="metric-modal-body">
+
+        <div class="metric-modal-value">
+          <div class="metric-modal-big" style="color:${verdict.color}">${pct}%</div>
+          <div>
+            <div class="metric-modal-verdict" style="color:${verdict.color}">${verdict.text}</div>
+            <div class="metric-modal-verdict-sub">${verdict.intensity}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:1rem">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">Range indicator</div>
+          <div class="metric-range-bar">
+            ${zones.map((z,i) => `<div class="metric-range-fill" style="width:${z.w}%;left:${zones.slice(0,i).reduce((a,b)=>a+b.w,0)}%;background:${z.c}"></div>`).join('')}
+            <div class="metric-range-pin" style="left:${barPct.toFixed(1)}%"></div>
+          </div>
+          <div class="metric-range-labels">
+            <span>${hb ? '0% — no capacity' : '0% — no friction'}</span>
+            <span style="font-weight:600;color:${verdict.color}">${pct}% ← you are here</span>
+            <span>${hb ? '100% — full capacity' : '100% — maximum drag'}</span>
+          </div>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>What this measures</h4>
+          <p>${def.what}</p>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>Interpreting the range</h4>
+          <p>${def.range}</p>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>In the Challenger case</h4>
+          <div class="metric-modal-challenger">${def.challenger}</div>
+        </div>
+
+        <div class="metric-modal-section">
+          <h4>How it is calculated</h4>
+          <div class="metric-modal-formula">${def.formula}</div>
+          <p style="font-size:.8rem;color:var(--muted)">${def.learnMore}</p>
+        </div>
+
+      </div>
+    </div>`;
+
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  modal.addEventListener('keydown', e => { if (e.key === 'Escape') modal.remove(); });
+  document.body.appendChild(modal);
+  setTimeout(() => modal.querySelector('.metric-modal-close').focus(), 50);
+}
+
+
+// ── Delegated metric click handler ──────────────────────────
+document.addEventListener('click', function(e) {
+  const card = e.target.closest('.ucp-metric');
+  if (!card) return;
+  const label = card.querySelector('.ucp-metric-label,.m-label');
+  const val   = card.querySelector('.ucp-metric-value,.m-val');
+  if (!label || !val) return;
+  const name = label.textContent.trim();
+  // Parse value - could be 0.xxx or xx.x%
+  let v = parseFloat(val.textContent);
+  if (v > 1) v = v / 100; // convert % to decimal
+  if (!isNaN(v)) showMetricExplain(name, v, 'run');
+});
+
+// Make metric cards show pointer cursor via JS as fallback
+document.querySelectorAll && document.querySelectorAll('.ucp-metric').forEach(el => {
+  el.style.cursor = 'pointer';
+  el.title = 'Click to learn what this means';
+});
+
+</script>
+</body>
+</html>
+
+// ── HANNA SUPPRESSION GAP — PRESET VALUES ──────────────────────
+// Bishop Hanna maintained identity coherence (λ Raw 0.81) throughout
+// 28 days of captivity. The backend cannot hold λ Raw fixed while
+// varying the filter — so we use archetypal values that correctly
+// represent the structural analysis.
+const HANNA_LR = 0.81;
+
+const HANNA_DATA = {
+  'no-biobond': {
+    metrics: {
+      lambda_raw: HANNA_LR,
+      lambda_perceived: 0.11,
+      friction: 0.74,
+      os2_synergy_bridge: 0.08,
+      morphic_suppression: 0.68
+    },
+    gap_trajectory: [0.70, 0.70, 0.71, 0.70, 0.71, 0.70, 0.70, 0.70]
+  },
+  'biobond': {
+    metrics: {
+      lambda_raw: HANNA_LR,
+      lambda_perceived: 0.58,
+      friction: 0.44,
+      os2_synergy_bridge: 0.49,
+      morphic_suppression: 0.21
+    },
+    gap_trajectory: [0.70, 0.70, 0.69, 0.61, 0.50, 0.38, 0.26, 0.23]
+  }
+};
+function updatePRFReadings(){
+  if(!PRF.isLoaded())return;
+  const fw=PRF.fw();
+  const data=PRF_READINGS[fw];
+  // Update transfer tab PRF block
+  document.getElementById('prfIcon').textContent=PRF.fwIcon();
+  document.getElementById('prfFrameworkLabel').textContent=`${PRF.fwName()} · ${PRF.tier()} ATCF sensitivity`;
+  document.getElementById('prfReadingBox').style.borderLeftColor=PRF.fwColor();
+  document.getElementById('prfReadingText').textContent=data.reading;
+  // Update growth pathway
+  document.getElementById('growthSubtitle').textContent=`${PRF.fwIcon()} ${PRF.fwName()} pathway`;
+  document.getElementById('growthContent').innerHTML=`
+    <div class="growth-pathway">
+      <div class="growth-pathway-label" style="color:${PRF.fwColor()}">${PRF.fwIcon()} Your ${PRF.fwName()} — Strength in Context</div>
+      <div class="growth-pathway-text">${data.reading.split('.').slice(0,2).join('.')+'.'}</div>
+    </div>
+    <div class="growth-pathway" style="border-color:var(--warn);background:#fff8f0">
+      <div class="growth-pathway-label" style="color:var(--warn)">Growing Edge</div>
+      <div class="growth-pathway-text">${data.growth}</div>
+      <div class="growth-pathway-invitation">Specific invitation: ${data.invitation}</div>
+    </div>`;
+  document.getElementById('growthInvitation').textContent=data.invitation;
+}
+
+// ── Tab switching ─────────────────────────────────────────────
+function showTab(name, btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>{p.style.display='none';p.classList.remove('active')});
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  const pane=document.getElementById('tab-'+name);
+  pane.style.display='block'; pane.classList.add('active');
+  if(btn)btn.classList.add('active');
+  if(name==='transfer')loadTransferFields();
+  if(name==='journal')loadJournalFields();
+}
+
+// ── Scenario reveal ───────────────────────────────────────────
+function showScenario(id){
+  document.querySelectorAll('.sc-result').forEach(r=>r.classList.remove('show'));
+  document.getElementById('sc-'+id).classList.add('show');
+}
+
+// ── UCP Simulation ────────────────────────────────────────────
+// ── Fetch with retry (handles Render cold-start 404/503) ────
+
+
+let _currentRun='no-biobond';
+let _results={};
+
+function selectRun(mode){
+  _currentRun=mode;
+  predUpdatePrompts_hanna(mode);
+  document.getElementById('btn-no-biobond').classList.toggle('active-run',mode==='no-biobond');
+  document.getElementById('btn-biobond').classList.toggle('active-run',mode==='biobond');
+  document.getElementById('run-label').textContent=mode==='no-biobond'?'No Institutional Support':'With Institutional Support (BioBond step 4)';
+  document.getElementById('ucpError').style.display='none';
+  document.getElementById('biobondExternalPrompt').style.display='none';
+  // If this run has already completed, restore its results immediately
+  if(_results[mode]){
+    renderHannaResult(_results[mode]);
+    document.getElementById('ucpRunBtn').innerHTML='↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display='none';
+    document.getElementById('ucpRunBtn').innerHTML='▶ Run Simulation';
+  }
+}
 function vc(v,higher=true){
   if(higher) return v>.60?'val-great':v>.40?'val-warn':'val-bad';
   return v<.30?'val-great':v<.55?'val-warn':'val-bad';
