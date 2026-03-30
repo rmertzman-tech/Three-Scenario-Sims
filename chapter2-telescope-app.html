@@ -454,24 +454,109 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
       <p style="margin-bottom:0;font-size:.88rem;font-style:italic">Notice: empirical_calibrated is at 0.10 — the lowest weighting. Boisjoly's entire argument was empirical. The architecture was designed, not through malice but through institutional culture, to weight exactly his kind of evidence least.</p>
     </div>
 
-    <div class="sim-bridge" role="region" aria-label="Embedded simulation">
-      <h3>Run the Simulation</h3>
-      <p>Run both configurations. Results appear here and auto-fill the metric fields below for your gap analysis.</p>
-      <div style="display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem">
-        <button id="btnRunA" class="sim-link-btn" onclick="runChallengerSim(false)" aria-label="Run Thiokol configuration">
-          <span id="spinA" style="display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem"></span>
-          ▶ Run Thiokol Structure
+    <div class="sim-bridge" role="region" aria-label="Suppression gap visualizer">
+      <h3>The Suppression Gap — Before You Run §6</h3>
+      <p>Switch between the two configurations. Results auto-fill your metric fields below for the gap analysis in §6. The key question: <strong>what changes between A and B, and what stays the same?</strong></p>
+
+      <div style="display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap">
+        <button id="ch2BtnA" onclick="ch2SgSet('challenger',this)" style="padding:.45rem 1.1rem;border-radius:.4rem;background:var(--red-mid);color:white;border:none;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer">
+          ▶ Configuration A — Thiokol Structure
         </button>
-        <button id="btnRunB" class="sim-link-btn" onclick="runChallengerSim(true)" style="background:#166534;display:none" aria-label="Run with whistleblower protection">
-          <span id="spinB" style="display:none;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem"></span>
-          ▶ Run With Whistleblower Protection
+        <button id="ch2BtnB" onclick="ch2SgSet('protected',this)" style="padding:.45rem 1.1rem;border-radius:.4rem;background:var(--paper);color:var(--muted);border:1px solid var(--border);font-family:'Georgia',serif;font-size:.88rem;cursor:pointer">
+          ▶ Configuration B — With Protection
         </button>
       </div>
-      <div id="ucpError" style="display:none;background:rgba(220,38,38,.15);border:1px solid #dc2626;border-radius:.4rem;padding:.65rem;font-size:.82rem;color:#fca5a5;margin-bottom:.75rem"></div>
-      <div id="ucpResults" style="display:none;text-align:left"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:.65rem">
+
+        <!-- Left: Agent bars (fixed) -->
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:.85rem">
+          <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.55rem">agents — λ Raw (intact knowledge)</div>
+          <div style="display:grid;grid-template-columns:85px 1fr 40px;align-items:center;gap:.25rem .4rem">
+            <span style="font-size:.68rem;font-family:'Courier New',monospace;color:var(--muted)">E1 (Boisjoly)</span>
+            <div style="position:relative;height:12px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:82%;height:100%;background:var(--success);border-radius:3px"></div><div style="position:absolute;top:0;bottom:0;left:42%;width:1.5px;background:rgba(245,158,11,.8)"></div></div>
+            <span style="font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">0.82</span>
+
+            <span style="font-size:.68rem;font-family:'Courier New',monospace;color:var(--muted)">E2</span>
+            <div style="position:relative;height:12px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:78%;height:100%;background:var(--success);border-radius:3px"></div><div style="position:absolute;top:0;bottom:0;left:42%;width:1.5px;background:rgba(245,158,11,.8)"></div></div>
+            <span style="font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">0.78</span>
+
+            <span style="font-size:.68rem;font-family:'Courier New',monospace;color:var(--muted)">E3</span>
+            <div style="position:relative;height:12px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:88%;height:100%;background:var(--success);border-radius:3px"></div><div style="position:absolute;top:0;bottom:0;left:42%;width:1.5px;background:rgba(245,158,11,.8)"></div></div>
+            <span style="font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">0.88</span>
+
+            <span style="font-size:.68rem;font-family:'Courier New',monospace;color:var(--muted)">E4</span>
+            <div style="position:relative;height:12px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:74%;height:100%;background:var(--success);border-radius:3px"></div><div style="position:absolute;top:0;bottom:0;left:42%;width:1.5px;background:rgba(245,158,11,.8)"></div></div>
+            <span style="font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">0.74</span>
+
+            <span style="font-size:.68rem;font-family:'Courier New',monospace;color:var(--muted)">E5</span>
+            <div style="position:relative;height:12px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:56%;height:100%;background:var(--amber);border-radius:3px"></div><div style="position:absolute;top:0;bottom:0;left:42%;width:1.5px;background:rgba(245,158,11,.8)"></div></div>
+            <span style="font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;color:var(--amber-dark)">0.56</span>
+
+            <span style="font-size:.68rem;font-family:'Courier New',monospace;color:var(--muted)">E6</span>
+            <div style="position:relative;height:12px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:80%;height:100%;background:var(--success);border-radius:3px"></div><div style="position:absolute;top:0;bottom:0;left:42%;width:1.5px;background:rgba(245,158,11,.8)"></div></div>
+            <span style="font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">0.80</span>
+
+            <span style="font-size:.68rem;font-family:'Courier New',monospace;color:var(--muted)">E7</span>
+            <div style="position:relative;height:12px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:72%;height:100%;background:var(--success);border-radius:3px"></div><div style="position:absolute;top:0;bottom:0;left:42%;width:1.5px;background:rgba(245,158,11,.8)"></div></div>
+            <span style="font-size:.7rem;font-family:'Courier New',monospace;font-weight:700;color:var(--success)">0.72</span>
+          </div>
+          <div style="margin-top:.55rem;font-family:'Courier New',monospace;font-size:.63rem;color:var(--muted)">
+            avg λ Raw: <strong style="color:var(--success)">0.76</strong> &nbsp;·&nbsp; threshold: <strong style="color:var(--amber-dark)">0.42</strong> (dashed line)
+          </div>
+        </div>
+
+        <!-- Right: Architecture + output -->
+        <div>
+          <div style="background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:.85rem;margin-bottom:.5rem">
+            <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.5rem">institutional architecture</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:.25rem">evidence distribution</div>
+            <div id="ch2EvBar" style="height:12px;border-radius:3px;display:flex;overflow:hidden;gap:1px;margin-bottom:.2rem"></div>
+            <div id="ch2EvLabel" style="font-size:.65rem;font-family:'Courier New',monospace;color:var(--muted);margin-bottom:.6rem"></div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:.25rem">block fields</div>
+            <div id="ch2BfDisplay" style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.6rem"></div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:.25rem">suppression applied</div>
+            <div style="height:10px;background:var(--border);border-radius:3px;overflow:hidden">
+              <div id="ch2SuppFill" style="height:100%;border-radius:3px;transition:width .5s,background .5s"></div>
+            </div>
+            <div id="ch2SuppLabel" style="font-family:'Courier New',monospace;font-size:.65rem;text-align:center;margin-top:.2rem"></div>
+          </div>
+          <div style="background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:.85rem">
+            <div style="font-family:'Courier New',monospace;font-size:.63rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.5rem">what reaches decisions — λ Perceived</div>
+            <div style="display:flex;align-items:center;gap:.65rem">
+              <div style="flex:1;height:70px;background:var(--border);border-radius:.35rem;overflow:hidden;position:relative;display:flex;align-items:flex-end">
+                <div id="ch2OutBar" style="width:100%;border-radius:.35rem;transition:height .5s,background .5s"></div>
+                <div style="position:absolute;bottom:33%;left:0;right:0;height:1.5px;background:rgba(245,158,11,.7)"></div>
+              </div>
+              <div>
+                <div id="ch2OutVal" style="font-family:'Courier New',monospace;font-size:1.4rem;font-weight:700;line-height:1"></div>
+                <div id="ch2OutSub" style="font-size:.72rem;color:var(--muted);margin-top:.15rem"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Three metric chips -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.65rem">
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:.4rem;padding:.5rem;text-align:center">
+          <div style="font-family:'Courier New',monospace;font-size:.58rem;text-transform:uppercase;color:var(--muted)">λ Raw (avg)</div>
+          <div style="font-family:'Courier New',monospace;font-size:1.05rem;font-weight:700;color:var(--success)">0.76</div>
+        </div>
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:.4rem;padding:.5rem;text-align:center">
+          <div style="font-family:'Courier New',monospace;font-size:.58rem;text-transform:uppercase;color:var(--muted)">λ Perceived</div>
+          <div id="ch2MetLP" style="font-family:'Courier New',monospace;font-size:1.05rem;font-weight:700">—</div>
+        </div>
+        <div style="background:var(--paper);border:1px solid var(--border);border-radius:.4rem;padding:.5rem;text-align:center">
+          <div style="font-family:'Courier New',monospace;font-size:.58rem;text-transform:uppercase;color:var(--muted)">Suppression Gap</div>
+          <div id="ch2MetGap" style="font-family:'Courier New',monospace;font-size:1.05rem;font-weight:700">—</div>
+        </div>
+      </div>
+
+      <div id="ch2Narrative" style="background:var(--sky-light);border-left:3px solid var(--sky);padding:.65rem .85rem;border-radius:0 .4rem .4rem 0;font-size:.84rem;color:var(--ink);line-height:1.65;margin-bottom:.5rem"></div>
       <div class="sim-params">
-        <div class="sim-param-label">Key metrics — auto-filled after each run:</div>
-        λ Raw · λ Perceived · Suppression Gap · Morphic Suppression · OS2 Bridge · Friction
+        <div class="sim-param-label">Metric fields below are auto-filled when you switch configurations:</div>
+        λ Raw · λ Perceived · Suppression Gap · Morphic Suppression
       </div>
     </div>
 
@@ -1009,6 +1094,7 @@ function fallback(txt){
 
 // ── On load ───────────────────────────────────────────────
 window.addEventListener('load',()=>{
+  ch2SgSet('challenger', document.getElementById('ch2BtnA'));
   loadAllJournal();
   loadCh1Prediction();
   loadSimResults();
@@ -1023,120 +1109,99 @@ window.addEventListener('load',()=>{
 });
 
 // ── EMBEDDED SIMULATION ────────────────────────────────────────
-const BACKEND = 'https://ucp-backend-4dig.onrender.com';
 
-async function runChallengerSim(withProtection) {
-  const btnA = document.getElementById('btnRunA');
-  const btnB = document.getElementById('btnRunB');
-  const spinA = document.getElementById('spinA');
-  const spinB = document.getElementById('spinB');
-  const errEl = document.getElementById('ucpError');
-  const resEl = document.getElementById('ucpResults');
 
-  btnA.disabled = true; btnB.disabled = true;
-  (withProtection ? spinB : spinA).style.display = 'inline-block';
-  errEl.style.display = 'none';
 
-  const payload = {
-    scenario_name: 'whistleblower',
-    num_agents: 16,
-    steps: 8,
-    seed: Math.floor(Math.random() * 9000) + 1000,
-    scenario_physics: withProtection ? {
-      base_entropy: 0.52, base_stress: 0.48,
-      block_fields: { care: 0.30, fairness: 0.25, community: 0.25, boundary: 0.20 }
-    } : {
-      base_entropy: 0.52, base_stress: 0.58,
-      block_fields: { care: -0.40, fairness: -0.55, community: -0.45, boundary: 0.30 }
-    },
-    worldview_distribution: {
-      role_order: 0.55, sacred_boundary: 0.20,
-      liberal_individualist: 0.12, ubuntu_relational: 0.08, indigenous_custodial: 0.05
-    },
-    evidence_distribution: withProtection ? {
-      empirical_calibrated: 0.55, authority_weighted: 0.20,
-      tradition_weighted: 0.15, alternative_facts: 0.10
-    } : {
-      authority_weighted: 0.45, alternative_facts: 0.25,
-      tradition_weighted: 0.20, empirical_calibrated: 0.10
-    },
-    activate_biobond_at: withProtection ? 4 : null
-  };
-
-  try {
-    const resp = await fetch(BACKEND + '/api/simulate/custom', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(35000)
-    });
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const data = await resp.json();
-    const m = data.metrics || data;
-
-    const lr   = +(m.lambda_raw         || 0).toFixed(3);
-    const lp   = +(m.lambda_perceived   || 0).toFixed(3);
-    const fid  = +(m.morphic_fidelity   || m.morphic_suppression || m.friction || 0).toFixed(3);
-    const fric = +(m.friction           || 0).toFixed(3);
-    const os2  = +(m.os2_synergy_bridge || m.os2_synergy || 0).toFixed(3);
-    const gap  = +Math.max(0, lr - lp).toFixed(3);
-
-    const setF = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
-
-    if (!withProtection) {
-      setF('r1-raw', lr); setF('r1-perc', lp); setF('r1-morph', fid);
-      saveResult('r1_raw', lr); saveResult('r1_perc', lp); saveResult('r1_morph', fid);
-      document.getElementById('btnRunB').style.display = 'flex';
-    } else {
-      setF('r2-raw', lr); setF('r2-perc', lp); setF('r2-morph', fid);
-      saveResult('r2_raw', lr); saveResult('r2_perc', lp); saveResult('r2_morph', fid);
-    }
-
-    const pill = (label, val, hi) => {
-      const good = hi ? val > 0.55 : val < 0.30;
-      const mid  = hi ? val > 0.30 : val < 0.55;
-      const c = good ? '#86efac' : mid ? '#fcd34d' : '#fca5a5';
-      return `<div style="background:rgba(0,0,0,.25);border-radius:.35rem;padding:.4rem .5rem;text-align:center">
-        <div style="font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5);text-transform:uppercase">${label}</div>
-        <div style="font-size:1rem;font-weight:700;font-family:'Courier New',monospace;color:${c}">${(val*100).toFixed(1)}%</div>
-      </div>`;
-    };
-
-    const label = withProtection ? 'Run 2 — With Whistleblower Protection' : 'Run 1 — Thiokol Structure';
-    const color = withProtection ? '#16a34a' : '#991b1b';
-    const note  = withProtection
-      ? `Suppression gap with protection: ${(gap*100).toFixed(1)}%. Compare to Run 1 — the delta shows how much agent intelligence the structural change restores.`
-      : gap > 0.25
-        ? `Critical suppression gap: ${(gap*100).toFixed(1)}%. Boisjoly's knowledge lived in this gap. Authority-weighted evidence at 0.45 filtered empirical input even when correct and stakes were catastrophic.`
-        : `Suppression gap: ${(gap*100).toFixed(1)}%. Examine which evidence types the architecture is down-weighting.`;
-
-    const runId = withProtection ? 'run2' : 'run1';
-    const old = document.getElementById(runId + '-result');
-    if (old) old.remove();
-
-    const div = document.createElement('div');
-    div.id = runId + '-result';
-    div.style.cssText = `background:rgba(255,255,255,.08);border-radius:.5rem;padding:1rem;margin-bottom:.75rem;border-left:3px solid ${color}`;
-    div.innerHTML = `
-      <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:${color};margin-bottom:.6rem;font-weight:700">${label}</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:.4rem">
-        ${pill('λ Raw', lr, true)}${pill('λ Perceived', lp, true)}
-        ${pill('Supp. Gap', gap, false)}${pill('Friction', fric, false)}
-        ${pill('OS2 Bridge', os2, true)}${pill('Morphic', fid, false)}
-      </div>
-      <div style="margin-top:.65rem;font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.6">${note}</div>`;
-    resEl.appendChild(div);
-    resEl.style.display = 'block';
-
-    buildGapRows();
-    markCompleted('simulation');
-  } catch(e) {
-    errEl.textContent = 'Simulation error: ' + (e.message || 'Unknown') + '. Check your connection and try again.';
-    errEl.style.display = 'block';
-  } finally {
-    btnA.disabled = false; btnB.disabled = false;
-    spinA.style.display = 'none'; spinB.style.display = 'none';
+// ── CH2 SUPPRESSION GAP VISUALIZER ───────────────────────────
+const CH2_SG = {
+  challenger: {
+    ev: { auth: 45, alt: 25, trad: 20, emp: 10 },
+    bf: { care: -0.45, fair: -0.55, comm: -0.45 },
+    lr: 0.76, lp: 0.14,
+    narrative: "Configuration A — Thiokol Structure: λ Raw is 0.76. Seven engineers with intact knowledge. λ Perceived is 0.14 — what the institutional architecture allowed to reach the launch decision. The suppression gap of 0.62 is the structural distance between what Boisjoly knew and what the decision-makers could hear. Your gap analysis in §6 will compare your prediction against these values."
+  },
+  protected: {
+    ev: { auth: 20, alt: 10, trad: 15, emp: 55 },
+    bf: { care: 0.30, fair: 0.25, comm: 0.25 },
+    lr: 0.76, lp: 0.61,
+    narrative: "Configuration B — Protected Channel: same seven engineers, same λ Raw of 0.76. Only the architecture changed. λ Perceived rises to 0.61. The suppression gap closes from 0.62 to 0.15. Same people. Same knowledge. Different architecture. That is the structural argument this chapter is making."
   }
+};
+
+function ch2SgSet(name, btn) {
+  const p = CH2_SG[name];
+  const isA = name === 'challenger';
+
+  // Button styles
+  document.getElementById('ch2BtnA').style.cssText = 'padding:.45rem 1.1rem;border-radius:.4rem;font-family:"Georgia",serif;font-size:.88rem;cursor:pointer;' +
+    (isA ? 'background:var(--red-mid);color:white;border:none;font-weight:700' : 'background:var(--paper);color:var(--muted);border:1px solid var(--border)');
+  document.getElementById('ch2BtnB').style.cssText = 'padding:.45rem 1.1rem;border-radius:.4rem;font-family:"Georgia",serif;font-size:.88rem;cursor:pointer;' +
+    (!isA ? 'background:var(--success);color:white;border:none;font-weight:700' : 'background:var(--paper);color:var(--muted);border:1px solid var(--border)');
+
+  // Evidence bar
+  const ev = p.ev;
+  const segs = [
+    { w: ev.auth, c: '#fca5a5' }, { w: ev.alt, c: '#fde68a' },
+    { w: ev.trad, c: '#d1d5db' }, { w: ev.emp, c: '#6ee7b7' }
+  ];
+  document.getElementById('ch2EvBar').innerHTML =
+    segs.map(s => `<div style="width:${s.w}%;height:100%;background:${s.c};flex:none"></div>`).join('');
+  document.getElementById('ch2EvLabel').textContent =
+    `authority ${ev.auth}% · alt ${ev.alt}% · tradition ${ev.trad}% · empirical ${ev.emp}%`;
+
+  // Block fields
+  const bf = p.bf;
+  document.getElementById('ch2BfDisplay').innerHTML =
+    Object.entries(bf).map(([k, v]) => {
+      const pos = v >= 0;
+      return `<span style="background:${pos?'#d1fae5':'#fee2e2'};color:${pos?'#065f46':'#7f1d1d'};font-family:'Courier New',monospace;font-size:.65rem;padding:.18rem .5rem;border-radius:.25rem">${pos?'+':''}${v.toFixed(2)} ${k}</span>`;
+    }).join('');
+
+  // Suppression gauge
+  const gap = p.lr - p.lp;
+  const suppPct = Math.round(gap / p.lr * 100);
+  const suppColor = suppPct > 55 ? '#dc2626' : suppPct > 25 ? '#f59e0b' : '#16a34a';
+  document.getElementById('ch2SuppFill').style.cssText = `width:${suppPct}%;height:100%;border-radius:3px;background:${suppColor}`;
+  document.getElementById('ch2SuppLabel').textContent = suppPct + '% suppressed';
+  document.getElementById('ch2SuppLabel').style.color = suppColor;
+
+  // Output bar
+  const outColor = p.lp > 0.42 ? '#16a34a' : p.lp > 0.2 ? '#f59e0b' : '#dc2626';
+  const outPct = Math.round(p.lp / p.lr * 100);
+  document.getElementById('ch2OutBar').style.cssText = `width:100%;height:${outPct}%;background:${outColor};border-radius:.35rem;transition:height .5s,background .5s`;
+  document.getElementById('ch2OutVal').textContent = p.lp.toFixed(2);
+  document.getElementById('ch2OutVal').style.color = outColor;
+  document.getElementById('ch2OutSub').textContent = p.lp > 0.42 ? 'above threshold' : 'below threshold';
+
+  // Metric chips
+  const metLP = document.getElementById('ch2MetLP');
+  metLP.textContent = p.lp.toFixed(2); metLP.style.color = outColor;
+  const metGap = document.getElementById('ch2MetGap');
+  metGap.textContent = gap.toFixed(2);
+  metGap.style.color = gap > 0.35 ? '#dc2626' : gap > 0.15 ? '#f59e0b' : '#16a34a';
+
+  // Narrative
+  document.getElementById('ch2Narrative').textContent = p.narrative;
+
+  // Auto-fill metric inputs for gap analysis (§6)
+  const setF = (id, v) => { const el = document.getElementById(id); if (el) el.value = v.toFixed(3); };
+  if (isA) {
+    setF('r1-raw', p.lr); setF('r1-perc', p.lp); setF('r1-morph', gap);
+    try {
+      localStorage.setItem(JP + 'sim_r1_raw', p.lr);
+      localStorage.setItem(JP + 'sim_r1_perc', p.lp);
+      localStorage.setItem(JP + 'sim_r1_morph', gap);
+    } catch(e) {}
+  } else {
+    setF('r2-raw', p.lr); setF('r2-perc', p.lp); setF('r2-morph', gap);
+    try {
+      localStorage.setItem(JP + 'sim_r2_raw', p.lr);
+      localStorage.setItem(JP + 'sim_r2_perc', p.lp);
+      localStorage.setItem(JP + 'sim_r2_morph', gap);
+    } catch(e) {}
+  }
+  buildGapRows();
+  markCompleted('simulation');
 }
 
 </script>
