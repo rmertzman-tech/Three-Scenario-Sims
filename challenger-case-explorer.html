@@ -410,66 +410,142 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
     <div id="simPredText" class="pred-retrieval-empty">Loading...</div>
   </div>
 
-  <p>The suppression gap Boisjoly experienced — high coordination capacity he could not surface to decision-makers — is exactly what the UCP simulation models. <strong>Configuration A</strong> approximates the Thiokol structure on January 27: authority-weighted evidence distribution, role-order worldview dominance, negative community and fairness blocks. <strong>Configuration B</strong> simulates the same scenario with a protected independent review channel — the structural change that could have saved seven lives.</p>
+  <p>The suppression gap Boisjoly experienced is precisely what this model shows. <strong>Configuration A</strong> sets the Thiokol teleconference parameters: authority-weighted evidence, role-order worldview dominance, negative block fields that structurally penalize safety concerns. <strong>Configuration B</strong> models the same people and the same entropy under a protected review channel — the structural change that could have saved seven lives.</p>
 
-  <div class="ucp-config" id="configA-display">
-    <div class="ucp-config-label">Configuration A — Thiokol Structure (No Protection)</div>
-    <div class="ucp-config-title">Authority-weighted evidence · Role-order dominant · Negative block fields</div>
-    <table class="ucp-config-table">
-      <tr><td class="cfg-key">Entropy</td><td class="cfg-val">0.52 — moderate institutional unpredictability</td></tr>
-      <tr><td class="cfg-key">Stress</td><td class="cfg-val">0.58 — elevated; approaching Sapolsky threshold</td></tr>
-      <tr><td class="cfg-key">Authority-weighted evidence</td><td class="cfg-val">0.45 — information filtered through hierarchy before decisions</td></tr>
-      <tr><td class="cfg-key">Community block</td><td class="cfg-val">−0.45 — relational isolation; engineers vs. management</td></tr>
-      <tr><td class="cfg-key">Fairness block</td><td class="cfg-val">−0.55 — epistemic injustice; engineering data discounted</td></tr>
-    </table>
-    <div class="scaffold">
-      <div class="scaffold-label">Before you run — predict the outcome</div>
-      <div class="scaffold-item"><strong>λ Raw:</strong> Engineers have accurate knowledge. Where will the capability water table sit?</div>
-      <div class="scaffold-item"><strong>Suppression Gap:</strong> How wide is the gap between what engineers know and what reaches the launch decision?</div>
-      <div class="scaffold-item"><strong>OS2 Bridge:</strong> Given the authority-weighted evidence architecture, how much of engineer knowledge actually coordinates the launch decision?</div>
-    </div>
+  <div class="card card-sky" style="margin-bottom:1rem">
+    <h4>How to Read This Model</h4>
+    <p style="margin-bottom:.3rem"><strong>λ Raw</strong> — what the agents can actually produce: their genuine coordination capacity. In the Challenger case this is high. Boisjoly knew. The engineers knew. Their knowledge was intact.</p>
+    <p style="margin-bottom:.3rem"><strong>λ Perceived</strong> — what the institutional architecture allows to reach decisions. In Configuration A this is very low. The gap between these two numbers is the suppression gap — the structural distance between what Boisjoly knew and what reached the launch decision.</p>
+    <p style="margin-bottom:0"><strong>The lesson:</strong> Same people. Same knowledge. Same entropy. Only the architecture changes. Watch what happens to the gap.</p>
   </div>
 
-  <div class="ucp-config" id="configB-display" style="display:none">
-    <div class="ucp-config-label">Configuration B — Protected Review Channel</div>
-    <div class="ucp-config-title">Empirical-calibrated evidence · Diverse worldviews · Positive block fields</div>
-    <table class="ucp-config-table">
-      <tr><td class="cfg-key">Entropy</td><td class="cfg-val">0.52 — identical to Configuration A</td></tr>
-      <tr><td class="cfg-key">Stress</td><td class="cfg-val">0.58 — identical to Configuration A</td></tr>
-      <tr><td class="cfg-key">Empirical-calibrated evidence</td><td class="cfg-val">0.55 — technical findings routed directly to decision</td></tr>
-      <tr><td class="cfg-key">Community block</td><td class="cfg-val">+0.30 — protected channel maintains relational trust</td></tr>
-      <tr><td class="cfg-key">Fairness block</td><td class="cfg-val">+0.25 — engineering evidence treated as equal input</td></tr>
-    </table>
-    <div class="scaffold">
-      <div class="scaffold-label">The structural question</div>
-      <div class="scaffold-item"><strong>Architecture change:</strong> Same people. Same stress. Same entropy. Only the evidence routing and block fields changed. What does this tell you about where the moral failure actually lived?</div>
-      <div class="scaffold-item"><strong>Boisjoly's agency:</strong> The simulation shows structural features. What it cannot show is whether Boisjoly would have spoken differently if the structure had been different. What do you think?</div>
+  <div style="margin:1.25rem 0">
+    <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap">
+      <button id="sgBtnA" onclick="sgSetPreset('challenger',this)" style="padding:.45rem 1rem;border-radius:.4rem;border:1px solid var(--teal-dark);background:var(--teal-dark);color:white;font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;cursor:pointer">
+        Configuration A — Thiokol Structure
+      </button>
+      <button id="sgBtnB" onclick="sgSetPreset('biobond',this)" style="padding:.45rem 1rem;border-radius:.4rem;border:1px solid var(--border);background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.88rem;cursor:pointer">
+        Configuration B — Protected Channel
+      </button>
     </div>
-  </div>
 
-  <div class="ucp-btn-row">
-    <button class="ucp-run-btn" id="btnRunA" onclick="runSim(false)">
-      <span class="ucp-spinner" id="spinA"></span>
-      ▶ Run Configuration A — Thiokol Structure
-    </button>
-    <button class="ucp-run-btn biobond" id="btnRunB" onclick="runSim(true)" style="display:none">
-      <span class="ucp-spinner" id="spinB"></span>
-      🛡 Run Configuration B — Protected Channel
-    </button>
-  </div>
-
-  <div class="ucp-error" id="ucpError"></div>
-  <div class="ucp-results" id="ucpResults" style="display:none"></div>
-
-  
-      </canvas>
+    <div id="sgConfigLabel" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.6rem">
+      Configuration A — Thiokol Structure (No Protection)
     </div>
+
+    <!-- Suppression Gap Visualizer -->
+    <style>
+    .sg-z{border-radius:.5rem;padding:.85rem;background:var(--paper);border:1px solid var(--border);margin-bottom:.5rem}
+    .sg-zl{font-family:'JetBrains Mono',monospace;font-size:.63rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.5rem}
+    .sg-seg{height:14px;border-radius:3px;display:flex;overflow:hidden;gap:1px}
+    .sg-seg-a{height:100%;border-radius:2px;transition:width .5s}
+    .sg-rows{display:grid;grid-template-columns:90px 1fr 45px;align-items:center;gap:.3rem .5rem}
+    .sg-rl{font-family:'JetBrains Mono',monospace;font-size:.67rem;color:var(--muted)}
+    .sg-rv{font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;text-align:right}
+    .sg-track{height:14px;background:var(--border);border-radius:3px;overflow:hidden;position:relative}
+    .sg-fill{height:100%;border-radius:3px;transition:width .5s,background .5s}
+    .sg-thresh{position:absolute;top:0;bottom:0;width:1.5px;background:rgba(245,158,11,.7)}
+    .sg-mc{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.75rem}
+    .sg-m{background:white;border:1px solid var(--border);border-radius:.4rem;padding:.5rem .65rem;text-align:center}
+    .sg-ml{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.15rem}
+    .sg-mv{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700}
+    .sg-narr{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;color:var(--ink);line-height:1.65;margin-top:.75rem}
+    </style>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+      <!-- Left: Agents -->
+      <div class="sg-z">
+        <div class="sg-zl">agents — λ Raw</div>
+        <div class="sg-rows">
+          <span class="sg-rl">E1 (Boisjoly)</span>
+          <div class="sg-track"><div class="sg-fill" style="width:82%;background:#0f766e"></div><div class="sg-thresh" style="left:42%"></div></div>
+          <span class="sg-rv" style="color:#0f766e">0.82</span>
+
+          <span class="sg-rl">E2</span>
+          <div class="sg-track"><div class="sg-fill" style="width:78%;background:#0f766e"></div><div class="sg-thresh" style="left:42%"></div></div>
+          <span class="sg-rv" style="color:#0f766e">0.78</span>
+
+          <span class="sg-rl">E3</span>
+          <div class="sg-track"><div class="sg-fill" style="width:88%;background:#0f766e"></div><div class="sg-thresh" style="left:42%"></div></div>
+          <span class="sg-rv" style="color:#0f766e">0.88</span>
+
+          <span class="sg-rl">E4</span>
+          <div class="sg-track"><div class="sg-fill" style="width:74%;background:#0f766e"></div><div class="sg-thresh" style="left:42%"></div></div>
+          <span class="sg-rv" style="color:#0f766e">0.74</span>
+
+          <span class="sg-rl">E5</span>
+          <div class="sg-track"><div class="sg-fill" style="width:56%;background:#f59e0b"></div><div class="sg-thresh" style="left:42%"></div></div>
+          <span class="sg-rv" style="color:#f59e0b">0.56</span>
+
+          <span class="sg-rl">E6</span>
+          <div class="sg-track"><div class="sg-fill" style="width:80%;background:#0f766e"></div><div class="sg-thresh" style="left:42%"></div></div>
+          <span class="sg-rv" style="color:#0f766e">0.80</span>
+
+          <span class="sg-rl">E7</span>
+          <div class="sg-track"><div class="sg-fill" style="width:72%;background:#0f766e"></div><div class="sg-thresh" style="left:42%"></div></div>
+          <span class="sg-rv" style="color:#0f766e">0.72</span>
+        </div>
+        <div style="margin-top:.6rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted)">
+          avg λ Raw: <strong style="color:var(--teal-dark)">0.76</strong> &nbsp;·&nbsp; deliberative threshold: <strong style="color:#92400e">0.42</strong>
+        </div>
+      </div>
+
+      <!-- Right: Architecture + Output -->
+      <div>
+        <div class="sg-z" style="margin-bottom:.5rem">
+          <div class="sg-zl">institutional architecture</div>
+          <div style="margin-bottom:.4rem;font-size:.78rem;color:var(--muted)">evidence distribution</div>
+          <div id="sgEvBar" class="sg-seg" style="margin-bottom:.3rem"></div>
+          <div id="sgEvLabel" style="font-size:.68rem;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:.65rem"></div>
+
+          <div style="margin-bottom:.4rem;font-size:.78rem;color:var(--muted)">block fields</div>
+          <div id="sgBfDisplay" style="display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.65rem"></div>
+
+          <div style="margin-bottom:.4rem;font-size:.78rem;color:var(--muted)">suppression applied</div>
+          <div class="sg-track" style="height:10px">
+            <div id="sgSuppFill" style="height:100%;border-radius:3px;transition:width .5s,background .5s"></div>
+          </div>
+          <div id="sgSuppLabel" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;margin-top:.2rem;text-align:center"></div>
+        </div>
+
+        <div class="sg-z">
+          <div class="sg-zl">what reaches decisions — λ Perceived</div>
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <div style="flex:1;height:80px;background:var(--border);border-radius:.35rem;overflow:hidden;position:relative;display:flex;align-items:flex-end">
+              <div id="sgOutBar" style="width:100%;border-radius:.35rem;transition:height .5s,background .5s"></div>
+              <div style="position:absolute;bottom:33%;left:0;right:0;height:1.5px;background:rgba(245,158,11,.7)"></div>
+            </div>
+            <div>
+              <div id="sgOutVal" style="font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;line-height:1"></div>
+              <div id="sgOutLabel" style="font-size:.75rem;color:var(--muted);margin-top:.2rem"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sg-mc">
+      <div class="sg-m">
+        <div class="sg-ml">λ Raw (avg)</div>
+        <div class="sg-mv" style="color:var(--teal-dark)">0.76</div>
+      </div>
+      <div class="sg-m">
+        <div class="sg-ml">λ Perceived</div>
+        <div class="sg-mv" id="sgMetLP">—</div>
+      </div>
+      <div class="sg-m">
+        <div class="sg-ml">Suppression Gap</div>
+        <div class="sg-mv" id="sgMetGap">—</div>
+      </div>
+    </div>
+
+    <div id="sgNarrative" class="sg-narr"></div>
   </div>
 
   <div class="journal-q" style="margin-top:1.25rem">
     <div class="q-label">Simulation Reflection</div>
-    <p>Compare the suppression gap in the two configurations. What does the gap number represent in Boisjoly's actual situation? What would a 20% reduction in suppression gap have meant in the teleconference room that night?</p>
-    <textarea class="jta" id="ta-simulation" placeholder="Compare the two runs. What changed? What stayed the same? What does that tell you about where the moral failure actually lived?" oninput="jSave('simulation',this.value)"></textarea>
+    <p>Compare the suppression gap in the two configurations. In Configuration A, λ Raw is strong — the engineers knew exactly what they knew. What does the gap between λ Raw and λ Perceived represent in the teleconference room? What would a closed gap have meant for the seven crew members?</p>
+    <textarea class="jta" id="ta-simulation" placeholder="What the gap represents in Boisjoly's situation...&#10;What changed from A to B...&#10;What stayed the same, and what that tells you about where the moral failure actually lived..." oninput="jSave('simulation',this.value)"></textarea>
     <div class="save-note" id="sn-simulation">✓ Saved</div>
   </div>
 </div>
@@ -1132,6 +1208,98 @@ function restoreJournal() {
 loadPrediction();
 restoreJournal();
 renderSAGE();
+
+// ── SUPPRESSION GAP VISUALIZER ─────────────────────────────────
+const SG_PRESETS = {
+  challenger: {
+    label: 'Configuration A — Thiokol Structure (No Protection)',
+    btnLabel: 'Configuration A — Thiokol Structure',
+    ev: { auth: 45, alt: 25, trad: 20, emp: 10 },
+    bf: { care: -0.45, fair: -0.55, comm: -0.45 },
+    lp: 0.14,
+    narrative: "Seven engineers with intact knowledge \u2014 \u03bb Raw at 0.76 \u2014 and what reached the launch decision: 0.14. Authority-weighted evidence at 45% means the architecture was calibrated to weight Boisjoly's empirical signal least. Negative block fields structurally penalized the relational and fairness channels his argument required. The suppression gap of 0.62 is not a metaphor. It is the structural distance between what he knew and what the institution could hear. Challenger is that distance, measured in lives."
+  },
+  biobond: {
+    label: 'Configuration B — Protected Review Channel',
+    btnLabel: 'Configuration B — Protected Channel',
+    ev: { auth: 20, alt: 10, trad: 15, emp: 55 },
+    bf: { care: 0.30, fair: 0.25, comm: 0.25 },
+    lp: 0.61,
+    narrative: "Same people. Same knowledge. Same seven engineers at the same \u03bb Raw. Only the architecture changed: empirical evidence now weighted at 55%, block fields flipped positive, protected channel activated. \u03bb Perceived rises from 0.14 to 0.61. The suppression gap closes from 0.62 to 0.15. The engineers' knowledge reaches the decision. That is the structural change that could have saved seven lives \u2014 not different people, not different engineers, not different courage. Different architecture."
+  }
+};
+
+let _sgCurrent = 'challenger';
+
+function sgSetPreset(name, btn) {
+  _sgCurrent = name;
+  const p = SG_PRESETS[name];
+
+  // Button states
+  document.getElementById('sgBtnA').style.cssText = 'padding:.45rem 1rem;border-radius:.4rem;font-family:"Cormorant Garamond",serif;font-size:.88rem;cursor:pointer;' +
+    (name === 'challenger' ? 'border:1px solid var(--teal-dark);background:var(--teal-dark);color:white;font-weight:600' : 'border:1px solid var(--border);background:var(--paper);color:var(--muted)');
+  document.getElementById('sgBtnB').style.cssText = 'padding:.45rem 1rem;border-radius:.4rem;font-family:"Cormorant Garamond",serif;font-size:.88rem;cursor:pointer;' +
+    (name === 'biobond' ? 'border:1px solid #1e3a8a;background:#1e3a8a;color:white;font-weight:600' : 'border:1px solid var(--border);background:var(--paper);color:var(--muted)');
+
+  document.getElementById('sgConfigLabel').textContent = p.label;
+
+  const ev = p.ev;
+  const totalW = 100;
+  const evBar = document.getElementById('sgEvBar');
+  evBar.innerHTML = [
+    { w: ev.auth, c: '#fca5a5', t: 'auth' },
+    { w: ev.alt,  c: '#fde68a', t: 'alt'  },
+    { w: ev.trad, c: '#d1d5db', t: 'trad' },
+    { w: ev.emp,  c: '#6ee7b7', t: 'emp'  },
+  ].map(s => `<div class="sg-seg-a" style="width:${s.w}%;background:${s.c};flex:none"></div>`).join('');
+
+  document.getElementById('sgEvLabel').textContent =
+    `authority_weighted ${ev.auth}% · alt ${ev.alt}% · tradition ${ev.trad}% · empirical_calibrated ${ev.emp}%`;
+
+  const bf = p.bf;
+  const bfEl = document.getElementById('sgBfDisplay');
+  bfEl.innerHTML = Object.entries(bf).map(([k, v]) => {
+    const pos = v >= 0;
+    const bg  = pos ? '#d1fae5' : '#fee2e2';
+    const col = pos ? '#065f46' : '#7f1d1d';
+    return `<span style="background:${bg};color:${col};font-family:'JetBrains Mono',monospace;font-size:.65rem;padding:.2rem .55rem;border-radius:.25rem">${(v >= 0 ? '+' : '')}${v.toFixed(2)} ${k}</span>`;
+  }).join('');
+
+  const lp = p.lp;
+  const lr = 0.76;
+  const gap = lr - lp;
+  const suppPct = Math.round(gap / lr * 100);
+  const suppColor = suppPct > 55 ? '#dc2626' : suppPct > 25 ? '#f59e0b' : '#0f766e';
+
+  const sFill = document.getElementById('sgSuppFill');
+  sFill.style.width = suppPct + '%';
+  sFill.style.background = suppColor;
+  document.getElementById('sgSuppLabel').textContent = suppPct + '% suppressed';
+  document.getElementById('sgSuppLabel').style.color = suppColor;
+
+  const outColor = lp > 0.42 ? '#0f766e' : lp > 0.2 ? '#f59e0b' : '#dc2626';
+  const outBar = document.getElementById('sgOutBar');
+  outBar.style.height = Math.round(lp / lr * 100) + '%';
+  outBar.style.background = outColor;
+  document.getElementById('sgOutVal').textContent = lp.toFixed(2);
+  document.getElementById('sgOutVal').style.color = outColor;
+  document.getElementById('sgOutLabel').textContent = lp > 0.42 ? 'above threshold' : 'below threshold';
+
+  const metLP = document.getElementById('sgMetLP');
+  metLP.textContent = lp.toFixed(2);
+  metLP.style.color = outColor;
+  const metGap = document.getElementById('sgMetGap');
+  metGap.textContent = gap.toFixed(2);
+  metGap.style.color = gap > 0.35 ? '#dc2626' : gap > 0.15 ? '#f59e0b' : '#0f766e';
+
+  document.getElementById('sgNarrative').textContent = p.narrative;
+}
+
+// Init on load
+window.addEventListener('load', () => {
+  sgSetPreset('challenger', document.getElementById('sgBtnA'));
+});
+
 </script>
 </body>
 </html>
