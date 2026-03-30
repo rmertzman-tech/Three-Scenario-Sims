@@ -247,10 +247,8 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
     <p>The Challenger disaster is not a story about bad people. Morton Thiokol management were not villains. They were people inside an institutional architecture that made suppressing inconvenient information the rational choice. Understanding why requires understanding the suppression gap — the structural distance between what agents actually know and what reaches decisions.</p>
   </div>
 
-  <h3>The Watershed — January 27, 1986</h3>
-  <p>The night before the launch, Morton Thiokol engineers held a teleconference with NASA. Here is what the watershed looked like in that room:</p>
-
-  
+  <h3>The Suppression Gap — January 27, 1986</h3>
+  <p>The night before the launch, Morton Thiokol engineers held a teleconference with NASA. Seven engineers — all operating well above the deliberative threshold, with intact technical knowledge and accurate data — were unable to get what they knew to reach the launch decision. That gap between what they could produce and what the institutional architecture allowed to reach power is what the simulation measures. Run the UCP Simulation tab to see it quantified.</p>
 
   <h3>Course Connection</h3>
   <p>This is the second chapter in a sequence that begins with the PRF. In Chapter 1 you mapped your own interpretive lens. In Chapter 2, you encounter what happens when an institutional architecture makes certain PRFs invisible to decision-makers. The suppression gap is not an abstract concept — it is the structural mechanism by which what Boisjoly knew failed to reach the people who needed it.</p>
@@ -773,10 +771,10 @@ async function runSim(withBioBond) {
     steps: 8,
     seed: Math.floor(Math.random() * 9000) + 1000,
     scenario_physics: withBioBond ? {
-      base_entropy: 0.52, base_stress: 0.58,
+      base_entropy: 0.52, base_stress: 0.48,
       block_fields: { care: 0.30, fairness: 0.25, community: 0.25, boundary: 0.20 }
     } : {
-      base_entropy: 0.52, base_stress: 0.58,
+      base_entropy: 0.52, base_stress: 0.28,
       block_fields: { care: -0.40, fairness: -0.55, community: -0.45, boundary: 0.30 }
     },
     worldview_distribution: {
@@ -811,13 +809,7 @@ async function runSim(withBioBond) {
     document.getElementById('btnRunB').style.display = 'flex';
     document.getElementById('configB-display').style.display = withBioBond ? 'block' : 'none';
 
-    // Update watershed
-    if (_simDataA) {
-      const m = _simDataA.metrics || _simDataA;
-      const lr = m.lambda_raw || 0.76;
-      const lp = m.lambda_perceived || 0.12;
-      const os = m.os2_synergy_bridge || Math.max(0, lp - 0.05);
-    }
+
 
     renderSAGE();
 
@@ -976,71 +968,73 @@ function buildResultsHTML(dA, dB) {
 const METRIC_EXPLAIN = {
   'λ Raw': {
     title: 'Lambda Raw — Genuine Constructive Capability',
-    what: `λ Raw measures the actual coordination potential present in the agent population — the total capacity to perceive situations accurately, reason deliberately about them, and contribute meaningfully to shared outcomes. Think of it as the water level in the mountains of the watershed: how much capability is actually present, regardless of whether the institutional architecture can receive it.`,
-    range: `Ranges from 0% (total capacity collapse — agents cannot function above the Sapolsky stress threshold) to 100% (full deliberative capacity across all agents). In practice, healthy institutions operate between 55–80%. Below 40% indicates agents are in reactive, stress-driven mode.`,
+    what: `λ Raw measures the actual coordination potential present in the agent population — the total deliberative capacity to perceive situations accurately, reason about them, and contribute meaningfully to shared outcomes. It is what the agents can actually produce, regardless of whether the institutional architecture can receive it.`,
+    range: `Ranges from 0% (total capacity collapse — agents cannot function above the Sapolsky stress threshold) to 100% (full deliberative capacity). Healthy institutions operate between 55–80%. Below 42% (the deliberative threshold) indicates agents are in reactive, stress-driven mode with prefrontal capacity compromised.`,
     verdict: (v) => v > 0.65 ? { text: 'Strong capability present', color: '#166534', intensity: 'HIGH — Agents have intact deliberative capacity.' }
                   : v > 0.42 ? { text: 'Moderate capability', color: '#92400e', intensity: 'MODERATE — Capability is present but under pressure.' }
                              : { text: 'Capability below threshold', color: '#dc2626', intensity: 'LOW — Agents are below the Sapolsky deliberative threshold.' },
-    challenger: `In the Challenger teleconference, engineer λ Raw was high — Boisjoly and his colleagues had clear technical knowledge, intact reasoning, and accurate data. The watershed had abundant water in the mountains. The disaster occurred not because λ Raw was low but because the dam (suppression gap) was high.`,
-    formula: 'λ Raw = f(stress, BioBond, PRF stability, Identity Kernel depth)',
-    learnMore: `This is why the Challenger case is so instructive: the engineers were not incompetent or confused. Their λ Raw was intact. The architecture failed them, not their capability.`
+    challenger: `In the Challenger teleconference, engineer λ Raw was high — Boisjoly and his colleagues had clear technical knowledge, intact reasoning, and accurate data. The simulation models this correctly: the engineers were not personally stressed out of deliberative capacity. What failed was the institutional architecture's ability to receive what they produced. This is why λ Raw is strong while λ Perceived is low in Configuration A — the suppression gap between them is where seven people died.`,
+    formula: 'λ Raw = f(base_stress, BioBond, PRF stability, Identity Kernel depth)',
+    learnMore: `The Challenger case is instructive precisely because λ Raw was not the failure point. The engineers were competent, clear, and correct. The architecture failed them, not their capability. This is why the simulation uses base_stress 0.28 for the Thiokol run — the engineers were not personally dysregulated; they were structurally suppressed.`
   },
   'λ Perceived': {
     title: 'Lambda Perceived — Coordination Capacity Felt in the Room',
-    what: `λ Perceived measures what coordination capacity the institutional architecture actually allows to reach decisions — what feels available for shared reasoning. It is λ Raw minus what the suppression gap filters out. In the watershed: this is the water level on the decision side of the dam. It is always ≤ λ Raw.`,
-    range: `0% means no coordination capacity reaches decisions (pure authority-driven or suppressed institution). 100% means all genuine capability is fully expressed in coordinated action. Healthy institutions: 45–70%. The Challenger teleconference architecture: very low.`,
+    what: `λ Perceived measures what coordination capacity the institutional architecture actually allows to reach decisions — what feels available for shared reasoning from the perspective of decision-makers. It is always ≤ λ Raw: the architecture can suppress capability but cannot amplify it beyond what agents have.`,
+    range: `0% means no coordination capacity reaches decisions. 100% means all genuine capability reaches shared reasoning. Healthy institutions: 45–70%. The Challenger teleconference: very low — not because engineers lacked knowledge but because the authority-weighted architecture routed their signal away from the decision.`,
     verdict: (v) => v > 0.55 ? { text: 'Coordination feeling strong', color: '#166534', intensity: 'HIGH — Much of λ Raw is reaching decisions.' }
                   : v > 0.35 ? { text: 'Coordination constrained', color: '#92400e', intensity: 'MODERATE — Significant capability is being filtered out.' }
                              : { text: 'Coordination severely limited', color: '#dc2626', intensity: 'LOW — Only a fraction of actual capability reaches decisions.' },
-    challenger: `On January 27, 1986, what was perceived in the Thiokol decision room was not the engineering data — it was the organizational pressure to launch. λ Perceived collapsed because the authority-weighted evidence architecture routed the engineering signal around rather than toward the launch decision.`,
+    challenger: `On January 27, 1986, what was perceived in the Thiokol decision room was not the engineering data — it was the organizational pressure to launch. λ Perceived collapsed because the authority-weighted evidence architecture (0.45) routed the engineering signal around rather than toward the decision. Boisjoly's knowledge was present and high. The architecture ensured almost none of it was received.`,
     formula: 'λ Perceived = λ Raw − Suppression Gap',
-    learnMore: `The difference between λ Raw and λ Perceived is the most important measurement in organizational ethics. An organization can have highly capable, fully informed people whose capability never reaches decisions.`
+    learnMore: `The difference between λ Raw and λ Perceived is the most important measurement in organizational ethics. An organization can have fully capable, accurately informed people whose knowledge never reaches decisions — not through dishonesty but through architecture.`
   },
   'Supp. Gap': {
     title: 'Suppression Gap — The Distance Between Knowing and Deciding',
-    what: `The Suppression Gap is the difference between what agents actually know (λ Raw) and what reaches institutional decisions (λ Perceived). It is the structural distance between truth and power. In the watershed: this is the height of the dam. A high suppression gap means accurate information is being filtered out before it reaches the people who need it — not through dishonesty but through architecture.`,
-    range: `0% means no suppression — everything known reaches decisions. Above 15% indicates significant filtering. Above 30% indicates the institution is systematically unable to hear its own most accurate information. The Challenger teleconference: very high.`,
+    what: `The Suppression Gap is the difference between what agents actually know and can produce (λ Raw) and what reaches institutional decisions (λ Perceived). It is the structural distance between truth and power. A high suppression gap means accurate information is being filtered out before it reaches people who need it — not through individual dishonesty but through institutional architecture.`,
+    range: `0% means no suppression — everything known reaches decisions. Above 15% indicates significant filtering. Above 30% indicates the institution is systematically unable to hear its own most accurate information. The Challenger teleconference: very high — produced by authority_weighted evidence at 0.45 and strongly negative Care and Fairness block fields.`,
     verdict: (v) => v < 0.10 ? { text: 'Minimal suppression', color: '#166534', intensity: 'LOW — Information is flowing freely toward decisions.' }
                   : v < 0.25 ? { text: 'Moderate suppression', color: '#92400e', intensity: 'MODERATE — Significant information is being filtered.' }
                              : { text: 'Critical suppression', color: '#dc2626', intensity: 'HIGH — The institution cannot hear its own most accurate signal.' },
-    challenger: `Roger Boisjoly had a 15% failure probability estimate, direct physical evidence, and 18 months of documented warnings. What reached the launch decision was silence. The gap between what he knew and what reached the decision measured in lives: seven.`,
+    challenger: `Roger Boisjoly had a 15% failure probability estimate, direct physical evidence, and 18 months of documented warnings. What reached the launch decision was silence. The suppression gap is not an abstraction — it is the structural mechanism that converted correct engineering knowledge into an outcome that could be overruled. The gap measured in lives: seven.`,
     formula: 'Suppression Gap = λ Raw − λ Perceived',
-    learnMore: `Amy Edmondson found that in low-psychological-safety environments, each hierarchical level crossed reduces transmission probability by 30–40%. The Thiokol teleconference crossed multiple levels — each one reducing the signal.`
+    learnMore: `Amy Edmondson found that in low-psychological-safety environments, each hierarchical level crossed reduces transmission probability by 30–40%. The Thiokol teleconference crossed multiple levels — each reducing the signal — before the management decision to override engineering judgment eliminated what remained.`
   },
   'OS2 Bridge': {
     title: 'OS2 Bridge — Realized Coordination Across Difference',
-    what: `OS2 Bridge measures how much of the available coordination capacity is actually being realized as coordinated action across genuine PRF differences. In the watershed: this is how full the reservoir is — how much water has made it past the dam and is available for use.`,
-    range: `0% means no coordination across difference. 100% means full realization of coordination potential. Healthy organizations with genuine diversity: 40–70%. The Challenger teleconference: very low.`,
+    what: `OS2 Bridge measures how much of the available coordination capacity is actually being realized as coordinated action across genuine differences in perspective and framework. High OS2 Bridge means diverse viewpoints are genuinely shaping shared outcomes. Low OS2 Bridge means the formal process of coordination is happening while the substance of diverse knowledge is being suppressed.`,
+    range: `0% means no coordination across difference — the institution operates as if only one perspective exists. 100% means full realization of coordination potential across diverse frameworks. Healthy organizations with genuine diversity: 40–70%. The Challenger teleconference: very low — engineers and managers were in the same room but only one framework reached the decision.`,
     verdict: (v) => v > 0.55 ? { text: 'Strong coordination realized', color: '#166534', intensity: 'HIGH — Diverse capability is reaching shared outcomes.' }
                   : v > 0.30 ? { text: 'Partial coordination', color: '#92400e', intensity: 'MODERATE — Some coordination capacity is being realized.' }
                              : { text: 'Coordination largely unrealized', color: '#dc2626', intensity: 'LOW — The available capability is not producing coordinated action.' },
-    challenger: `In the Challenger teleconference, OS2 Bridge was near zero. Engineers and managers were in the same room with the same data and reached opposite conclusions. The diverse perspectives did not produce better collective perception — they were suppressed into a false consensus that overrode the accurate engineering signal.`,
-    formula: 'OS2 Bridge = f(evidence architecture, worldview diversity, block field, suppression gap)',
-    learnMore: `Woolley et al. (Carnegie Mellon, 2010) found that collective intelligence is predicted by conversational turn-taking equality and social sensitivity, not by individual IQ. OS2 Bridge is the simulation measure of exactly this collective capacity.`
+    challenger: `In the Challenger teleconference, OS2 Bridge was near zero. Engineers and managers were in the same room with the same data and reached opposite conclusions — but only one set reached the launch decision. The instruction to "take off your engineering hat and put on your management hat" is the literal articulation of OS2 Bridge collapse: one PRF was elevated to institutional authority while the other was structurally excluded.`,
+    formula: 'OS2 Bridge = f(evidence architecture, worldview diversity, block fields, suppression gap)',
+    learnMore: `Woolley et al. (Carnegie Mellon, 2010) found that collective intelligence is predicted by conversational turn-taking equality and social sensitivity — not by individual capability. OS2 Bridge measures exactly this collective capacity. Thiokol management had high individual capability and near-zero OS2 Bridge. The architecture prevented collective intelligence from forming.`
   },
   'Morphic Supp.': {
     title: 'Morphic Suppression — When Effort Disappears',
-    what: `Morphic Suppression measures the degree to which agents contributions are being structurally routed around rather than toward decisions. An agent can make an observation, complete an analysis, submit a recommendation — and it simply disappears. Not rejected. Not challenged. Just not routed anywhere actionable.`,
-    range: `0% means contributions reach their intended destinations. Above 20% indicates significant structural routing failure. Above 50% means half of what agents contribute is being absorbed without effect. This drains motivation faster than rejection does.`,
+    what: `Morphic Suppression measures the degree to which agents' contributions are being structurally routed around rather than toward decisions. An agent can make an observation, complete an analysis, submit a recommendation — and it simply disappears. Not rejected, not challenged, not engaged with. Just not routed anywhere actionable. This is distinct from the suppression gap: morphic suppression names the routing mechanism, not just the outcome.`,
+    range: `0% means contributions reach their intended destinations. Above 20% indicates significant structural routing failure. Above 50% means half of what agents contribute is absorbed without effect — which depletes motivation faster than outright rejection because there is no feedback, no engagement, no sense that the contribution registered.`,
     verdict: (v) => v < 0.15 ? { text: 'Contributions reaching targets', color: '#166534', intensity: 'LOW — The architecture is routing effort toward outcomes.' }
                   : v < 0.40 ? { text: 'Significant routing failure', color: '#92400e', intensity: 'MODERATE — Meaningful effort is disappearing into the structure.' }
                              : { text: 'Severe contribution loss', color: '#dc2626', intensity: 'HIGH — Most effort is being absorbed without effect.' },
-    challenger: `Boisjoly July 1985 memo had high morphic suppression. It was received, filed, and a task force was formed — but none of this produced the architectural change he was requesting. His contribution was technically acknowledged and practically absorbed. This pattern repeated through every channel he used until the teleconference, where it became total.`,
+    challenger: `Boisjoly's July 1985 memo exemplifies morphic suppression. It was received, filed, and a task force was formed — but none of this produced the architectural change he requested. His contribution was technically acknowledged and practically absorbed. This pattern repeated through every channel until the teleconference, where morphic suppression became total: his objections were heard, noted, and then overruled by a management decision that treated engineering input as one option rather than as evidence.`,
     formula: 'Morphic Suppression = f(authority gradient, evidence architecture, worldview filtering)',
-    learnMore: `Morphic suppression is distinct from the suppression gap: the gap measures what does not reach decisions; morphic suppression measures the specific mechanism by which contributions are routed around decision-makers once they arrive.`
+    learnMore: `The distinction between morphic suppression and the suppression gap matters for diagnosis: the gap tells you how much knowledge is not reaching decisions; morphic suppression tells you the routing mechanism. Fixing the gap requires changing evidence weighting — whose knowledge counts. Fixing morphic suppression requires changing routing — how contributions travel through the structure.`
   },
   'Friction': {
     title: 'Friction — The Energy Cost of Coordination',
-    what: `Friction measures how much energy the coordination process itself consumes before any of it reaches actual problem-solving. High friction does not mean communication is not happening — it means every interaction requires more effort than it should. People with different PRFs may all be speaking honestly but spending enormous energy translating between frameworks.`,
-    range: `0% means coordination is effortless — shared frameworks allow direct communication. Above 30% indicates significant translation cost between PRFs. Above 60% means coordination is consuming so much energy that even when it succeeds, everyone is depleted.`,
+    what: `Friction measures how much energy the coordination process itself consumes before any of it reaches actual problem-solving. High friction does not mean communication is failing — it means every interaction requires more effort than it should. Agents with different Phenomenological Reference Frames may all be speaking honestly but consuming enormous energy translating between frameworks that share no common language.`,
+    range: `0% means coordination is effortless — shared frameworks allow direct communication. Above 30% indicates significant PRF translation cost. Above 60% means coordination is consuming so much energy that even when it succeeds, all agents are depleted — and the Sapolsky gate may start closing from the effort itself, further degrading λ Raw.`,
     verdict: (v) => v < 0.25 ? { text: 'Smooth coordination', color: '#166534', intensity: 'LOW — People are communicating efficiently.' }
                   : v < 0.50 ? { text: 'Moderate friction', color: '#92400e', intensity: 'MODERATE — Coordination is effortful but functioning.' }
                              : { text: 'High coordination drag', color: '#dc2626', intensity: 'HIGH — Enormous energy is consumed before any problem-solving begins.' },
-    challenger: `The Challenger teleconference had extreme friction: engineers were speaking engineering (material properties, probability, risk thresholds) and management was speaking organizational reality (contracts, schedules, NASA relationships). The translation cost was so high that every engineering point had to be re-explained — and was re-interpreted through the management lens as it arrived.`,
-    formula: 'Friction = f(PRF distance between agents, worldview distribution breadth, shared language availability)',
-    learnMore: `Friction and suppression require different interventions. Suppression is fixed by changing power dynamics. Friction is fixed by building shared language — protocols that let different frameworks communicate without requiring either to abandon its commitments.`
+    challenger: `The Challenger teleconference had extreme friction: engineers were speaking engineering — material properties, probability thresholds, risk quantification — and management was speaking organizational reality — contracts, schedules, NASA relationships. The PRF distance between these frameworks was so large that every engineering point had to be re-explained and was re-interpreted through the management lens as it arrived. Boisjoly was not unclear. He was speaking a language the institutional architecture could not route.`,
+    formula: 'Friction = f(PRF distance, worldview distribution breadth, shared protocol availability)',
+    learnMore: `Friction and suppression gap require different interventions. The suppression gap is fixed by changing power dynamics and evidence weighting — whose knowledge counts. Friction is fixed by building shared language — protocols that let different PRFs communicate without requiring either to abandon its core commitments. The Thiokol teleconference needed both fixes. Neither happened.`
   },
 };
+
+// ── METRIC EXPLANATION MODAL ─────────────────────────────────
 
 function showMetricExplain(metricName, value, run) {
   const def = METRIC_EXPLAIN[metricName];
