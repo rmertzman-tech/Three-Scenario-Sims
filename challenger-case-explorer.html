@@ -180,10 +180,6 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
 .tier-emerging{background:var(--amber-light);color:var(--amber-dark)}
 .tier-undertested{background:var(--paper);color:var(--muted);border:1px solid var(--border)}
 
-/* ── WATERSHED MINI VIZ ── */
-.watershed-wrap{background:var(--paper);border:1px solid var(--border);border-radius:.6rem;padding:1rem;margin:1rem 0}
-.watershed-label{font-family:'JetBrains Mono',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);margin-bottom:.5rem}
-
 /* ── Clickable metric cards ── */
 .ucp-metric{cursor:pointer;transition:transform .15s,box-shadow .15s}
 .ucp-metric:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.12);border-color:var(--teal-mid)}
@@ -254,11 +250,7 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
   <h3>The Watershed — January 27, 1986</h3>
   <p>The night before the launch, Morton Thiokol engineers held a teleconference with NASA. Here is what the watershed looked like in that room:</p>
 
-  <div class="watershed-wrap">
-    <div class="watershed-label">λ Raw vs. OS2 Bridge — Thiokol Teleconference</div>
-    <canvas id="overviewWatershed" width="820" height="140" style="width:100%;display:block;border-radius:6px;background:rgba(26,39,68,.04)"></canvas>
-    <p style="font-size:.75rem;color:var(--muted);margin:.4rem 0 0;text-align:center">Seven engineers (peaks) — all above the deliberative threshold — and what reached the launch decision (reservoir). Run the simulation in the UCP Simulation tab to populate this with real results.</p>
-  </div>
+  
 
   <h3>Course Connection</h3>
   <p>This is the second chapter in a sequence that begins with the PRF. In Chapter 1 you mapped your own interpretive lens. In Chapter 2, you encounter what happens when an institutional architecture makes certain PRFs invisible to decision-makers. The suppression gap is not an abstract concept — it is the structural mechanism by which what Boisjoly knew failed to reach the people who needed it.</p>
@@ -471,10 +463,8 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
   <div class="ucp-error" id="ucpError"></div>
   <div class="ucp-results" id="ucpResults" style="display:none"></div>
 
-  <div id="watershedUpdate" style="display:none">
-    <div class="watershed-wrap" style="margin-top:1rem">
-      <div class="watershed-label">Watershed — Updated with Simulation Results</div>
-      <canvas id="simWatershed" width="820" height="140" style="width:100%;display:block;border-radius:6px;background:rgba(26,39,68,.04)"></canvas>
+  
+      </canvas>
     </div>
   </div>
 
@@ -741,95 +731,11 @@ function renderSAGE() {
 }
 
 // ── WATERSHED CANVAS ──────────────────────────────────────────
-function drawWatershed(canvasId, lamRaw, os2, damF) {
-  const cv = document.getElementById(canvasId);
-  if (!cv || typeof cv.getContext !== 'function') return;
-  const ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
-  const GY = H - 24, MAX_H = H - 48, THRESH = 0.42;
-  const LAND_W = Math.round(W * 0.55);
-  const DAM_X  = Math.round(W * 0.585);
-  const DAM_W  = Math.round(W * 0.05);
-  const RES_X  = DAM_X + DAM_W + 4;
-  const RES_W  = W - RES_X - 10;
-
-  const lr  = lamRaw !== undefined ? lamRaw  : 0.76;
-  const os  = os2    !== undefined ? os2     : 0.08;
-  const df  = damF   !== undefined ? damF    : Math.min(0.95, lr - os * 0.5 + 0.05);
-
-  ctx.clearRect(0, 0, W, H);
-
-  // ground
-  ctx.fillStyle = 'rgba(26,39,68,.06)'; ctx.fillRect(0, GY, W, H - GY);
-  ctx.strokeStyle = 'rgba(26,39,68,.15)'; ctx.lineWidth = 0.5;
-  ctx.beginPath(); ctx.moveTo(0, GY); ctx.lineTo(W, GY); ctx.stroke();
-
-  // agent peaks
-  const agents = [0.82, 0.78, 0.88, 0.74, 0.56, 0.80, 0.72];
-  const sp = LAND_W / (agents.length + 1), pw = sp * 0.68;
-  agents.forEach((h, i) => {
-    const cx = sp * (i + 1), bh = h * MAX_H, py = GY - bh;
-    const c = h >= THRESH + 0.2 ? '#0f766e' : h >= THRESH ? '#f59e0b' : '#dc2626';
-    ctx.beginPath(); ctx.moveTo(cx - pw/2, GY); ctx.lineTo(cx, py); ctx.lineTo(cx + pw/2, GY);
-    ctx.closePath(); ctx.fillStyle = c; ctx.globalAlpha = 0.72; ctx.fill(); ctx.globalAlpha = 1;
-    ctx.fillStyle = c; ctx.textAlign = 'center';
-    ctx.font = '9px JetBrains Mono,monospace'; ctx.fillText(h.toFixed(2), cx, py - 3);
-    ctx.fillStyle = '#6b7280'; ctx.font = '9px sans-serif'; ctx.fillText('E' + (i+1), cx, GY + 14);
-  });
-
-  // lambda water
-  const wy = GY - lr * MAX_H;
-  ctx.fillStyle = 'rgba(15,118,110,.1)'; ctx.fillRect(0, wy, LAND_W, GY - wy);
-  ctx.setLineDash([5, 3]); ctx.strokeStyle = 'rgba(15,118,110,.7)'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(0, wy); ctx.lineTo(LAND_W, wy); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = '#0f766e'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'right';
-  ctx.fillText('λ Raw: ' + Math.round(lr * 100) + '%', LAND_W - 3, wy - 3);
-
-  // threshold
-  const thy = GY - THRESH * MAX_H;
-  ctx.setLineDash([4, 3]); ctx.strokeStyle = 'rgba(245,158,11,.6)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(4, thy); ctx.lineTo(LAND_W - 4, thy); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = '#92400e'; ctx.font = '8px sans-serif'; ctx.textAlign = 'left';
-  ctx.fillText('deliberative threshold', 5, thy - 2);
-
-  // flow
-  if (lr > df + 0.01) {
-    const fmy = GY - (lr + df) / 2 * MAX_H;
-    ctx.strokeStyle = 'rgba(15,118,110,.35)'; ctx.lineWidth = 1.2;
-    ctx.beginPath(); ctx.moveTo(LAND_W + 2, fmy); ctx.lineTo(DAM_X - 2, fmy); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(DAM_X - 8, fmy - 4); ctx.lineTo(DAM_X - 2, fmy); ctx.lineTo(DAM_X - 8, fmy + 4); ctx.stroke();
-  }
-
-  // dam
-  const dh = df * MAX_H, dty = GY - dh;
-  ctx.fillStyle = '#dc2626'; ctx.globalAlpha = 0.82;
-  ctx.fillRect(DAM_X, dty, DAM_W, GY - dty); ctx.globalAlpha = 1;
-  ctx.strokeStyle = 'rgba(255,255,255,.12)'; ctx.lineWidth = 1;
-  for (let dy = 0; dy < GY - dty; dy += 8) {
-    ctx.beginPath(); ctx.moveTo(DAM_X, dty + dy); ctx.lineTo(DAM_X + DAM_W, dty + dy + 5); ctx.stroke();
-  }
-  const dcx = DAM_X + DAM_W / 2;
-  ctx.fillStyle = 'white'; ctx.font = 'bold 7px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText('Gap', dcx, dty - 8); ctx.fillText(Math.round(df * 100) + '%', dcx, dty - 1);
-
-  // reservoir
-  const rfh = os * MAX_H, rfy = GY - rfh;
-  ctx.strokeStyle = 'rgba(30,58,138,.3)'; ctx.lineWidth = 0.8;
-  ctx.strokeRect(RES_X, GY - MAX_H, RES_W, MAX_H);
-  ctx.fillStyle = 'rgba(15,118,110,.25)'; ctx.fillRect(RES_X, rfy, RES_W, rfh);
-  const rcx = RES_X + RES_W / 2;
-  ctx.fillStyle = '#1e3a8a'; ctx.font = 'bold 8px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText('OS2', rcx, GY - MAX_H - 4);
-  ctx.fillStyle = rfh > 14 ? '#166534' : '#dc2626'; ctx.font = 'bold 10px sans-serif';
-  ctx.fillText(Math.round(os * 100) + '%', rcx, rfh > 18 ? rfy + rfh / 2 + 4 : rfy - 5);
-}
 
 // ── SIMULATION ────────────────────────────────────────────────
 let _simDataA = null, _simDataB = null;
 
-async async function fetchWithRetry(url, options, maxAttempts = 3) {
+async function fetchWithRetry(url, options, maxAttempts = 3) {
   const delays = [0, 8000, 15000];
   let lastErr;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
@@ -911,9 +817,6 @@ async function runSim(withBioBond) {
       const lr = m.lambda_raw || 0.76;
       const lp = m.lambda_perceived || 0.12;
       const os = m.os2_synergy_bridge || Math.max(0, lp - 0.05);
-      drawWatershed('overviewWatershed', lr, os, lr - lp);
-      drawWatershed('simWatershed', lr, os, lr - lp);
-      document.getElementById('watershedUpdate').style.display = 'block';
     }
 
     renderSAGE();
@@ -1235,7 +1138,6 @@ function restoreJournal() {
 loadPrediction();
 restoreJournal();
 renderSAGE();
-drawWatershed('overviewWatershed');
 </script>
 </body>
 </html>
