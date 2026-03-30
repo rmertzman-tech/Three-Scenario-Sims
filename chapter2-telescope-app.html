@@ -439,6 +439,10 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
       <div id="predDisplay">
         <p class="pred-empty">No prediction found. If you completed Chapter 1's Q5 journal entry, it should appear here. Make sure you are using the same browser where you completed Chapter 1.</p>
       </div>
+      <div id="predEntryWrap" style="display:none;margin-top:.6rem">
+        <div style="font-size:.73rem;color:var(--muted);font-family:'Courier New',monospace;margin-bottom:.3rem">Using a different device? Enter your prediction here — it will be saved and carry through the gap analysis:</div>
+        <textarea id="manualPredInput" style="width:100%;min-height:95px;border:2px solid var(--red-mid);border-radius:.38rem;padding:.55rem .7rem;font-family:'Georgia',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink);background:white" placeholder="What did you predict the simulation would show?&#10;Where did you expect λ Raw to sit? How large did you predict the suppression gap would be?&#10;What did you expect the Whistleblower Protection run to change?" aria-label="Manual prediction entry" oninput="savePredManual(this.value)"></textarea>
+      </div>
     </div>
 
     <h3>What the Simulation Models</h3>
@@ -536,6 +540,14 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
           </div>
         </div>
       </div>
+
+      <!-- Block fields explainer -->
+      <details style="margin:.4rem 0 .6rem;background:var(--paper);border:1px solid var(--border);border-radius:.45rem">
+        <summary style="cursor:pointer;font-family:'Courier New',monospace;font-size:.66rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal-dark);padding:.55rem .8rem;list-style:none;display:flex;justify-content:space-between">
+          <span>What these parameters mean in practice ↓</span>
+        </summary>
+        <div id="ch2BfExplain" style="padding:.7rem .85rem .8rem;border-top:1px solid var(--border)"></div>
+      </details>
 
       <!-- Three metric chips -->
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-bottom:.65rem">
@@ -882,9 +894,28 @@ function loadCh1Prediction(){
     if(pred.trim()){
       el.innerHTML=`<div style="font-size:.75rem;opacity:.6;margin-bottom:.4rem;font-family:'Courier New',monospace">Retrieved from: ${source}</div><div class="pred-text">${pred.replace(/\n/g,'<br>')}</div>`;
     } else {
-      el.innerHTML=`<p class="pred-empty">No prediction found. Complete the Course Orientation Journal (Question 4) or Chapter 1 Q5, then return here.</p>`;
+      el.innerHTML=`<p class="pred-empty">No prediction found automatically — using a different device? Enter it manually below.</p>`;
     }
   });
+  // Show manual entry if no prediction found
+  const wrap=document.getElementById('predEntryWrap');
+  if(wrap) wrap.style.display=pred.trim()?'none':'block';
+}
+
+function savePredManual(val){
+  try{
+    localStorage.setItem('orient_cq5',val);
+    localStorage.setItem('ch1_q5',val);
+  }catch(e){}
+  if(!val.trim()) return;
+  const displays=['predDisplay','predDisplay2'];
+  displays.forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    el.innerHTML=`<div style="font-size:.75rem;opacity:.6;margin-bottom:.4rem;font-family:'Courier New',monospace">entered manually — saved to this device</div><div class="pred-text">${val.replace(/\n/g,'<br>')}</div>`;
+  });
+  const wrap=document.getElementById('predEntryWrap');
+  if(wrap) wrap.style.display='none';
 }
 
 // ── Gap analysis ──────────────────────────────────────────
@@ -1128,6 +1159,9 @@ const CH2_SG = {
   }
 };
 
+const CH2_BF_A = "<div style=\"font-size:.8rem;line-height:1.72;color:var(--ink)\"><p style=\"font-size:.81rem;font-style:italic;color:var(--muted);margin-bottom:.7rem\">The Thiokol teleconference, January 27, 1986. Seven engineers with intact knowledge. Here is what the institutional architecture did with it.</p><div style=\"font-weight:700;font-size:.74rem;color:var(--ink);margin:.65rem 0 .3rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.04em\">Evidence distribution</div><p style=\"margin-bottom:.35rem\"><strong style=\"color:#b91c1c\">Authority-weighted 45%</strong> \u2014 credibility tracked rank, not evidence quality. When Boisjoly described O-ring failure at cold temperatures, the room heard: an engineer raising a concern. When NASA said launch, the room heard: the customer who holds our contract. Same physical facts, different institutional weight.</p><p style=\"margin-bottom:.35rem\"><strong style=\"color:#d97706\">Alternative facts 25%</strong> \u2014 schedule pressure, public commitments, the teacher-in-space program. Real institutional facts. Just irrelevant to whether O-rings seal at 29\u00b0F. At 25% weight they share the evidential floor with Boisjoly's material science data.</p><p style=\"margin-bottom:.35rem\"><strong style=\"color:#6b7280\">Tradition-weighted 20%</strong> \u2014 the shuttle had flown in marginal conditions before without catastrophe. Each prior success added institutional weight to \"we've done this before.\" Boisjoly was arguing against survivorship bias built into organizational memory.</p><p style=\"margin-bottom:.7rem\"><strong style=\"color:#059669\">Empirical-calibrated 10%</strong> \u2014 O-ring erosion data, temperature curves, resiliency measurements. Boisjoly's entire argument. Structurally weighted last.</p><div style=\"font-weight:700;font-size:.74rem;color:var(--ink);margin:.65rem 0 .3rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.04em\">Block fields \u2014 what you would have felt</div><p style=\"margin-bottom:.35rem\"><strong style=\"color:#b91c1c\">Care \u22120.45</strong> \u2014 expressing concern for crew survival created friction rather than advancing the conversation. Every time an engineer raised the possibility of death, the room moved past it toward the launch decision. Over time, this trains you to hedge: to say \"there may be a concern\" instead of \"people will die.\"</p><p style=\"margin-bottom:.35rem\"><strong style=\"color:#b91c1c\">Fairness \u22120.55</strong> \u2014 the largest block. Demanding that engineering evidence receive equal consideration was heard as disruption. Boisjoly asking \"why is our data outweighed by schedule pressure?\" was received as an engineer failing to understand his role. Your most basic claim \u2014 that evidence should be weighed on its merits \u2014 is treated as a complaint.</p><p style=\"margin-bottom:0\"><strong style=\"color:#b91c1c\">Community \u22120.45</strong> \u2014 the engineering group's shared professional identity was excluded from the final decision. The management caucus that overrode the engineers is the direct expression of this block. You are simultaneously the most informed people in the room and the people whose judgment has been ruled out.</p></div>";
+const CH2_BF_B = "<div style=\"font-size:.8rem;line-height:1.72;color:var(--ink)\"><p style=\"font-size:.81rem;font-style:italic;color:var(--muted);margin-bottom:.7rem\">Same people. Same knowledge. The architecture changes \u2014 here is what that means in practice.</p><div style=\"font-weight:700;font-size:.74rem;color:var(--ink);margin:.65rem 0 .3rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.04em\">Evidence distribution \u2014 what the protected channel does</div><p style=\"margin-bottom:.35rem\"><strong style=\"color:#059669\">Empirical-calibrated 55%</strong> \u2014 the protected channel routes empirical evidence directly to decision-makers at full strength. Boisjoly's O-ring data is no longer discounted before it is evaluated.</p><p style=\"margin-bottom:.7rem\"><strong style=\"color:#6b7280\">Authority-weighted drops to 20%</strong> \u2014 hierarchy still matters, but it no longer outweighs engineering data 4.5 to 1. NASA's launch pressure cannot override physical evidence in this architecture.</p><div style=\"font-weight:700;font-size:.74rem;color:var(--ink);margin:.65rem 0 .3rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.04em\">Block fields \u2014 what positive values feel like</div><p style=\"margin-bottom:.35rem\"><strong style=\"color:#059669\">Care +0.30</strong> \u2014 raising crew safety advances the conversation. When you say \"people may die,\" the room stops and requires resolution before moving forward. You feel this as: when you raise safety, the room leans toward you.</p><p style=\"margin-bottom:.35rem\"><strong style=\"color:#059669\">Fairness +0.25</strong> \u2014 engineering evidence is epistemically equal to organizational pressure. Management cannot bypass engineering sign-off. Boisjoly's demand that his data be weighed on its merits is heard as legitimate procedure, not insubordination.</p><p style=\"margin-bottom:0\"><strong style=\"color:#059669\">Community +0.25</strong> \u2014 the engineering community remains a participant in the final decision. \"Take off your engineering hat\" is not a command this architecture can issue.</p></div>";
+
 function ch2SgSet(name, btn) {
   const p = CH2_SG[name];
   const isA = name === 'challenger';
@@ -1182,6 +1216,9 @@ function ch2SgSet(name, btn) {
 
   // Narrative
   document.getElementById('ch2Narrative').textContent = p.narrative;
+
+  const ch2BfExp = document.getElementById('ch2BfExplain');
+  if (ch2BfExp) ch2BfExp.innerHTML = (name === 'challenger') ? CH2_BF_A : CH2_BF_B;
 
   // Auto-fill metric inputs for gap analysis (§6)
   const setF = (id, v) => { const el = document.getElementById(id); if (el) el.value = v.toFixed(3); };
