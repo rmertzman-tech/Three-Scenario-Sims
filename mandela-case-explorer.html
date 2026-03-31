@@ -606,6 +606,41 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <div id="compareText" style="margin-top:.5rem"></div>
     </div>
 
+    <!-- ═══ STRUCTURAL ROBUSTNESS PANEL ═══ -->
+    <div id="robustnessPanel" style="display:none;margin-top:1.25rem">
+      <div style="background:var(--ucp-navy);border:1px solid rgba(201,168,76,.3);border-radius:.875rem;padding:1.25rem">
+        <div style="font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.5rem">Structural Robustness — Try a Different Agent Population</div>
+        <p style="font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:.85rem">Each re-run populates the model with a different group of agents inhabiting the same structural conditions. Unlike the Hanna case, λ Raw here is <em>emergent</em> — it changes as the architecture degrades or supports agent capacity across 12 steps. <strong style="color:rgba(255,255,255,.9)">Watch whether the pattern holds: does Run 1 (isolation) consistently produce lower λ Raw than Run 2 (external network)? Does Run 3 (transition) consistently show higher OS2 Bridge than either Robben Island run?</strong> When the pattern survives changes in who the agents are, you are seeing structural causation — the 27-year imprisonment and the ANC network shaped outcomes that any person would have faced, not just Mandela specifically.</p>
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
+          <button id="rerunBtn" onclick="rerunMandelaWithNewSeed()"
+            style="padding:.55rem 1.25rem;border:none;border-radius:.4rem;background:#c9a84c;color:#fff;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s"
+            onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+            ↺ Try a Different Agent Population
+          </button>
+          <span id="rerunStatus" style="font-size:.78rem;color:rgba(255,255,255,.45);font-family:'Courier New',monospace"></span>
+        </div>
+        <div id="robustnessLog" style="display:none">
+          <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:.5rem">Run History — same architecture, different populations</div>
+          <div style="overflow-x:auto">
+            <table id="robustnessTable" style="width:100%;border-collapse:collapse;min-width:560px">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(255,255,255,.12)">
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Run</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Configuration</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Raw</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Perceived</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">OS2 Bridge</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Morphic</td>
+                </tr>
+              </thead>
+              <tbody id="robustnessRows"></tbody>
+            </table>
+          </div>
+          <div id="robustnessSummary" style="margin-top:.75rem;font-size:.8rem;color:rgba(255,255,255,.55);font-style:italic;font-family:'Cormorant Garamond',serif;line-height:1.5"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ SIDE-BY-SIDE COMPARISON PANEL ═══ -->
     <div id="sxsPanel" style="margin-top:1.5rem">
       <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.25);border-radius:.75rem;padding:1.25rem">
@@ -1065,6 +1100,125 @@ const RUN_CONFIGS={
   }
 };
 
+// ── Structural robustness tracking (Mandela) ─────────────────
+let _mandelaSeed  = 100;
+let _mandelaLog   = [];
+let _mandelaCount = 0;
+
+const RUN_LABELS = {
+  run1: 'Run 1 — Isolation',
+  run2: 'Run 2 — External Network',
+  run3: 'Run 3 — Transition',
+};
+const RUN_COLORS = {
+  run1: '#f08080',
+  run2: '#f5c842',
+  run3: '#7fd8a8',
+};
+
+async function rerunMandelaWithNewSeed() {
+  const btn    = document.getElementById('rerunBtn');
+  const status = document.getElementById('rerunStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '…running'; }
+  if (status) status.textContent = `seed ${_mandelaSeed}…`;
+
+  const base = { ...RUN_CONFIGS[_run] };
+  delete base.label; delete base.next; delete base.nextLabel; delete base.nextPrompt;
+  base.seed = _mandelaSeed;
+  base.scenario_physics = { ...RUN_CONFIGS[_run].scenario_physics,
+    block_fields: { ...RUN_CONFIGS[_run].scenario_physics.block_fields } };
+
+  try {
+    const resp = await fetch(BACKEND + '/api/simulate/custom', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(base),
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const m    = data.metrics || {};
+
+    _mandelaCount++;
+    _mandelaLog.push({
+      run:   _mandelaCount,
+      runId: _run,
+      seed:  _mandelaSeed,
+      lr:    m.lambda_raw          || 0,
+      lp:    m.lambda_perceived    || 0,
+      os2:   m.os2_synergy_bridge  || 0,
+      morph: m.morphic_suppression || 0,
+    });
+    _mandelaSeed += 13;
+
+    renderMandelaRobustness();
+    renderRun(data);
+  } catch(e) {
+    if (status) status.textContent = 'unavailable — try again';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Try a Different Agent Population'; }
+  }
+}
+
+function renderMandelaRobustness() {
+  const log = _mandelaLog;
+  if (!log.length) return;
+  const logDiv = document.getElementById('robustnessLog');
+  const tbody  = document.getElementById('robustnessRows');
+  const sumEl  = document.getElementById('robustnessSummary');
+  if (!logDiv || !tbody || !sumEl) return;
+  logDiv.style.display = 'block';
+
+  tbody.innerHTML = [...log].reverse().map((r, i) => {
+    const lrColor   = r.lr  > 0.45 ? '#7fd8a8' : r.lr  > 0.25 ? '#f5c842' : '#f08080';
+    const os2Color  = r.os2 > 0.45 ? '#7fd8a8' : r.os2 > 0.25 ? '#f5c842' : '#f08080';
+    const rowStyle  = i === 0 ? 'background:rgba(201,168,76,.07);' : '';
+    const runColor  = RUN_COLORS[r.runId] || 'rgba(255,255,255,.6)';
+    return `<tr style="border-top:1px solid rgba(255,255,255,.06);${rowStyle}">
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4)">#${r.run}</td>
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:${runColor}">${RUN_LABELS[r.runId]||r.runId}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${lrColor};font-weight:700">${r.lr.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.55)">${r.lp.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${os2Color};font-weight:700">${r.os2.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.45)">${r.morph.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  if (log.length >= 2) {
+    const byRun = { run1: [], run2: [], run3: [] };
+    log.forEach(r => { if (byRun[r.runId]) byRun[r.runId].push(r); });
+    let summary = '';
+
+    ['run1','run2','run3'].forEach(rid => {
+      const entries = byRun[rid];
+      if (entries.length >= 2) {
+        const lrs  = entries.map(r => r.lr);
+        const os2s = entries.map(r => r.os2);
+        const lrRange  = (Math.max(...lrs)  - Math.min(...lrs))  * 100;
+        const os2Range = (Math.max(...os2s) - Math.min(...os2s)) * 100;
+        const avgLr  = lrs.reduce((s,v)=>s+v,0)/lrs.length;
+        const avgOs2 = os2s.reduce((s,v)=>s+v,0)/os2s.length;
+        summary += `${RUN_LABELS[rid]}: avg λ Raw ${avgLr.toFixed(3)}, OS2 Bridge ${avgOs2.toFixed(3)} across ${entries.length} populations (λ Raw spread: ${lrRange.toFixed(1)}pp). `;
+      }
+    });
+
+    // Cross-run comparison when all three have data
+    if (byRun.run1.length && byRun.run2.length && byRun.run3.length) {
+      const avgLr1 = byRun.run1.reduce((s,r)=>s+r.lr,0)/byRun.run1.length;
+      const avgLr2 = byRun.run2.reduce((s,r)=>s+r.lr,0)/byRun.run2.length;
+      const avgOs3 = byRun.run3.reduce((s,r)=>s+r.os2,0)/byRun.run3.length;
+      if (avgLr2 > avgLr1) {
+        summary += `Pattern holds: Run 2 (external network) consistently produces higher λ Raw than Run 1 (isolation) — average difference ${((avgLr2-avgLr1)*100).toFixed(1)}pp. `;
+      }
+      summary += `Run 3 (transition) OS2 Bridge averages ${avgOs3.toFixed(3)} — `;
+      summary += avgOs3 > 0.40
+        ? `the shared-task architecture consistently generates cross-framework coordination that neither Robben Island configuration could produce.`
+        : `coordination in the transition remains constrained even with the shared task — the residual friction from 27 years of suppression is visible in the numbers.`;
+    }
+    sumEl.textContent = summary;
+  }
+}
+
+
 function selectRun(r){
   _run=r;
   predUpdatePrompts_mandela(r);
@@ -1101,6 +1255,18 @@ async function runMandela(){
     _results[_run]=data;
     renderRun(data);
     if(Object.keys(_results).length===3)renderComparison();
+    // Log to robustness tracker and show panel
+    const m0=data.metrics||{};
+    _mandelaCount++;
+    _mandelaLog.push({
+      run:_mandelaCount, runId:_run,
+      seed:RUN_CONFIGS[_run].seed,
+      lr:m0.lambda_raw||0, lp:m0.lambda_perceived||0,
+      os2:m0.os2_synergy_bridge||0, morph:m0.morphic_suppression||0,
+    });
+    const rp=document.getElementById('robustnessPanel');
+    if(rp) rp.style.display='block';
+    renderMandelaRobustness();
   }catch(e){
     document.getElementById('ucpError').style.display='block';
     document.getElementById('ucpError').textContent=`Error: ${e.message}. Backend may be starting — wait 30s and retry.`;

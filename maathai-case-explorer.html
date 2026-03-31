@@ -666,6 +666,41 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <div id="comparisonText" style="margin-top:.5rem"></div>
     </div>
 
+    <!-- ═══ STRUCTURAL ROBUSTNESS PANEL ═══ -->
+    <div id="robustnessPanel" style="display:none;margin-top:1.25rem">
+      <div style="background:var(--ucp-navy);border:1px solid rgba(127,216,168,.3);border-radius:.875rem;padding:1.25rem">
+        <div style="font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(127,216,168,.65);margin-bottom:.5rem">Structural Robustness — Try a Different Agent Population</div>
+        <p style="font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:.85rem">Each re-run populates the simulation with a different mix of agents — different individuals with different histories and threshold levels. What stays fixed is the architecture: the worldview distribution, the block fields, the evidence weights. <strong style="color:rgba(255,255,255,.9)">The chapter's core claim is that Phase 2 (shared concrete task) consistently produces higher OS2 Bridge than Phase 1 (value-agreement attempt) regardless of which specific agents are in the room.</strong> If the pattern holds across different populations, you are seeing a structural finding — the task architecture is the causal explanation, not the particular people present.</p>
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
+          <button id="rerunBtn" onclick="rerunMaathaiWithNewSeed()"
+            style="padding:.55rem 1.25rem;border:none;border-radius:.4rem;background:#7fd8a8;color:#1a2744;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s"
+            onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+            ↺ Try a Different Agent Population
+          </button>
+          <span id="rerunStatus" style="font-size:.78rem;color:rgba(255,255,255,.45);font-family:'Courier New',monospace"></span>
+        </div>
+        <div id="robustnessLog" style="display:none">
+          <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:.5rem">Run History — same architecture, different populations</div>
+          <div style="overflow-x:auto">
+            <table id="robustnessTable" style="width:100%;border-collapse:collapse;min-width:520px">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(255,255,255,.12)">
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Run</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Phase</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Raw</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">OS2 Bridge</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Friction</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Perceived</td>
+                </tr>
+              </thead>
+              <tbody id="robustnessRows"></tbody>
+            </table>
+          </div>
+          <div id="robustnessSummary" style="margin-top:.75rem;font-size:.8rem;color:rgba(255,255,255,.55);font-style:italic;font-family:'Cormorant Garamond',serif;line-height:1.5"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ SIDE-BY-SIDE COMPARISON PANEL ═══ -->
     <div id="sxsPanel" style="margin-top:1.5rem">
       <div style="background:var(--ucp-navy);border:1px solid rgba(127,216,168,.25);border-radius:.875rem;padding:1.25rem">
@@ -1151,6 +1186,106 @@ const PHASE_CONFIGS={
   }
 };
 
+// ── Structural robustness tracking (Maathai) ─────────────────
+let _maathaiSeed  = 100;
+let _maathaiLog   = [];
+let _maathaiCount = 0;
+
+async function rerunMaathaiWithNewSeed() {
+  const btn    = document.getElementById('rerunBtn');
+  const status = document.getElementById('rerunStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '…running'; }
+  if (status) status.textContent = `seed ${_maathaiSeed}…`;
+
+  const base    = PHASE_CONFIGS[_currentPhase];
+  const payload = { ...base, seed: _maathaiSeed };
+  payload.scenario_physics = { ...base.scenario_physics,
+    block_fields: { ...base.scenario_physics.block_fields } };
+
+  try {
+    const resp = await fetch(BACKEND + '/api/simulate/custom', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    const m    = data.metrics || {};
+
+    _maathaiCount++;
+    _maathaiLog.push({
+      run:    _maathaiCount,
+      phase:  _currentPhase === 'phase1' ? 'Phase 1 — Values' : 'Phase 2 — Shared Task',
+      seed:   _maathaiSeed,
+      lr:     m.lambda_raw          || 0,
+      lp:     m.lambda_perceived    || 0,
+      os2:    m.os2_synergy_bridge  || 0,
+      fric:   m.friction            || 0,
+    });
+    _maathaiSeed += 13;
+
+    renderMaathaiRobustness();
+    renderResult(data);
+  } catch(e) {
+    if (status) status.textContent = 'unavailable — try again';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Try a Different Agent Population'; }
+  }
+}
+
+function renderMaathaiRobustness() {
+  const log   = _maathaiLog;
+  if (!log.length) return;
+  const logDiv = document.getElementById('robustnessLog');
+  const tbody  = document.getElementById('robustnessRows');
+  const sumEl  = document.getElementById('robustnessSummary');
+  if (!logDiv || !tbody || !sumEl) return;
+  logDiv.style.display = 'block';
+
+  tbody.innerHTML = [...log].reverse().map((r, i) => {
+    const os2Color  = r.os2  > 0.45 ? '#7fd8a8' : r.os2  > 0.25 ? '#f5c842' : '#f08080';
+    const fricColor = r.fric < 0.35 ? '#7fd8a8' : r.fric < 0.55 ? '#f5c842' : '#f08080';
+    const phaseColor = r.phase.includes('Values') ? '#f08080' : '#7fd8a8';
+    const rowStyle  = i === 0 ? 'background:rgba(127,216,168,.07);' : '';
+    return `<tr style="border-top:1px solid rgba(255,255,255,.06);${rowStyle}">
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4)">#${r.run}</td>
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:${phaseColor}">${r.phase}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${r.lr.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${os2Color};font-weight:700">${r.os2.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${fricColor}">${r.fric.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.55)">${r.lp.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  if (log.length >= 2) {
+    const p1 = log.filter(r => r.phase.includes('Values'));
+    const p2 = log.filter(r => r.phase.includes('Shared'));
+    let summary = '';
+
+    if (p1.length >= 2) {
+      const os2s = p1.map(r => r.os2);
+      const [mn, mx] = [Math.min(...os2s), Math.max(...os2s)];
+      summary += `Phase 1 (value-agreement): across ${p1.length} populations, OS2 Bridge ranged from ${mn.toFixed(3)} to ${mx.toFixed(3)}. `;
+      if ((mx - mn) < 0.10) summary += `The narrow range confirms that low cross-framework coordination under value-agreement pressure is structural, not a feature of who was in the room. `;
+    }
+    if (p2.length >= 2) {
+      const os2s = p2.map(r => r.os2);
+      const [mn, mx] = [Math.min(...os2s), Math.max(...os2s)];
+      summary += `Phase 2 (shared task): OS2 Bridge ranged from ${mn.toFixed(3)} to ${mx.toFixed(3)}. `;
+      if ((mx - mn) < 0.10) summary += `The consistency confirms that shared concrete tasks improve coordination regardless of which specific agents are present. `;
+    }
+    if (p1.length >= 1 && p2.length >= 1) {
+      const avgP1 = p1.reduce((s,r)=>s+r.os2,0)/p1.length;
+      const avgP2 = p2.reduce((s,r)=>s+r.os2,0)/p2.length;
+      summary += `Average OS2 Bridge: Phase 1 = ${avgP1.toFixed(3)}, Phase 2 = ${avgP2.toFixed(3)}. `;
+      if (avgP2 > avgP1) summary += `Phase 2 consistently outperforms Phase 1 — the structural argument holds across agent populations.`;
+      else summary += `The gap between phases is smaller than expected — worth examining what is driving Phase 1 coordination in these runs.`;
+    }
+    sumEl.textContent = summary;
+  }
+}
+
+
 async function runSimulation(){
   const btn=document.getElementById('ucpRunBtn');
   btn.disabled=true;
@@ -1168,6 +1303,19 @@ async function runSimulation(){
     _results[_currentPhase]=data;
     renderResult(data);
     if(_results.phase1&&_results.phase2) showComparison();
+    // Log to robustness tracker and show panel
+    const m0=data.metrics||{};
+    _maathaiCount++;
+    _maathaiLog.push({
+      run:_maathaiCount,
+      phase:_currentPhase==='phase1'?'Phase 1 — Values':'Phase 2 — Shared Task',
+      seed:PHASE_CONFIGS[_currentPhase].seed,
+      lr:m0.lambda_raw||0, lp:m0.lambda_perceived||0,
+      os2:m0.os2_synergy_bridge||0, fric:m0.friction||0,
+    });
+    const rp=document.getElementById('robustnessPanel');
+    if(rp) rp.style.display='block';
+    renderMaathaiRobustness();
   }catch(e){
     document.getElementById('ucpError').style.display='block';
     document.getElementById('ucpError').textContent=`Simulation error: ${e.message}. The backend may be starting up — wait 30 seconds and try again.`;
