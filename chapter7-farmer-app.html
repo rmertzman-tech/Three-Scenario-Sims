@@ -569,19 +569,18 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
   </div>
 
   <div class="journal-q" style="border:2px solid var(--amber);background:rgba(245,158,11,.04)">
-    <div class="q-label" style="color:var(--amber-dark)">Q5 &mdash; Prediction for Chapter 8 (stored for retrieval)</div>
-    <p>Chapter 8 will present the Simulated History of Ethics &mdash; showing how the major ethical theories
-    each made a specific discovery about one or more variables in the simulation you have been running.
-    Before you encounter that chapter, predict:</p>
-    <ul style="font-size:.87rem;margin:.4rem 0 .6rem 1.2rem;line-height:1.7;color:var(--ink)">
-      <li><strong>The theory that maps to Run 1 (representative agent):</strong> which ethical tradition most clearly captures what is wrong with the representative agent architecture?</li>
-      <li><strong>The theory that maps to Run 2 (heterogeneous):</strong> which tradition most clearly captures what the heterogeneous architecture achieves?</li>
-      <li><strong>The theory that maps to Run 3 (Rawlsian test):</strong> which tradition identifies the limit of architectural design alone?</li>
-      <li><strong>The theory whose blind spot the Farmer simulation most directly exposes:</strong> which major tradition fails to see the representative agent problem?</li>
-    </ul>
-    <textarea class="jta q5" id="jt-q5" placeholder="The theory that maps to Run 1:...&#10;Why:...&#10;&#10;The theory that maps to Run 2:...&#10;Why:...&#10;&#10;The theory that maps to Run 3 / Rawlsian test:...&#10;Why:...&#10;&#10;The theory whose blind spot Farmer exposes:...&#10;How:..." oninput="jSave('cq5',this.value)"></textarea>
+    <div class="q-label" style="color:var(--amber-dark)">📝 Q5 &mdash; Prediction for Chapter 8 (stored for retrieval)</div>
+    <p style="font-size:.87rem;margin-bottom:.5rem">Chapter 8 presents the Simulated History of Ethics &mdash; showing how each major ethical tradition made a specific discovery about the simulation variables you have been working with. Before you encounter that chapter, map what you already know.</p>
+    <p style="font-size:.87rem;margin-bottom:.5rem"><strong>Theory-to-simulation vocabulary bridge:</strong> <em>Consequentialism</em> focuses on aggregate outcomes across all agents &mdash; this maps to OS2 Bridge (how much total coordination was produced) and λ Perceived (what actually reached decisions). <em>Deontology</em> focuses on whether the right rules and procedures were followed regardless of outcome &mdash; this maps to morphic fidelity (whether agents expressed what they actually believed) and evidence architecture (whether the rules for what counts as valid input were fair). <em>Virtue ethics</em> focuses on character and what kind of agent the structure is producing over time &mdash; this maps to the interaction between stress, BioBond, and the Identity Kernel across multiple simulation steps. <em>Care ethics</em> focuses on relationship and who is excluded from consideration &mdash; this maps to the community block field and who becomes invisible at the suppression gap.</p>
+    <p style="font-size:.87rem;margin-bottom:.6rem"><strong>Now predict the theory-to-run mapping for the Farmer simulation:</strong></p>
+    <div style="display:grid;gap:.4rem;margin-bottom:.75rem">
+      <div style="background:#f5f3ff;border-left:3px solid #7c3aed;padding:.55rem .8rem;border-radius:0 .35rem .35rem 0;font-size:.83rem"><strong>Run 1 (representative agent):</strong> Which theory sees most clearly what is <em>wrong</em> with the representative agent architecture? The one that asks "whose interests are being excluded from the model" or "what rule is being violated by treating one kind of person as if they were everyone"?</div>
+      <div style="background:#f0fdf4;border-left:3px solid #16a34a;padding:.55rem .8rem;border-radius:0 .35rem .35rem 0;font-size:.83rem"><strong>Run 2 (heterogeneous agents):</strong> Which theory sees most clearly what the heterogeneous architecture <em>achieves</em>? The one focused on producing better aggregate outcomes, or the one focused on making previously invisible people visible?</div>
+      <div style="background:var(--sky-light,#dbeafe);border-left:3px solid #3b82f6;padding:.55rem .8rem;border-radius:0 .35rem .35rem 0;font-size:.83rem"><strong>Run 3 / Rawlsian test:</strong> Which theory identifies the <em>limit</em> of architectural design alone &mdash; the thing the simulation cannot fix even when the architecture is improved? The one about character, relationships, or something else?</div>
+    </div>
+    <textarea class="jta q5" id="jt-q5" placeholder="The theory that maps to Run 1 (representative agent):...&#10;Why: this theory sees the problem because it is calibrated to notice...&#10;&#10;The theory that maps to Run 2 (heterogeneous):...&#10;Why: this theory sees the achievement because...&#10;&#10;The theory that maps to Run 3 / Rawlsian test:...&#10;Why: this identifies the limit because...&#10;&#10;The theory whose blind spot Farmer exposes:...&#10;Because it cannot see..." oninput="jSave('cq5',this.value)" style="min-height:160px"></textarea>
     <div class="save-note" id="sn-q5">&#10003; Saved for Chapter 8</div>
-  </div>
+  </div>  </div>
 
   <div class="card-dark">
     <h3>Looking Ahead: Chapter 8 &mdash; The Simulated History of Ethics</h3>
