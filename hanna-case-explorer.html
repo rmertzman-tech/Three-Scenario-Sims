@@ -1200,40 +1200,92 @@ const HANNA_DATA = {
   }
 };
 
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+async function fetchWithRetry(url, opts, retries=2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
+      if (r.ok) return r;
+      if (i === retries) throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(res => setTimeout(res, 1200 * (i + 1)));
+    }
+  }
+}
+
+// Payload configurations for each run
+const HANNA_PAYLOADS = {
+  'no-biobond': {
+    num_agents: 16,
+    scenario_name: 'whistleblower',
+    steps: 8,
+    seed: 42,
+    fixed_lambda_raw: 0.81,
+    activate_biobond_at: null,
+    scenario_physics: {
+      base_entropy: 0.88,
+      base_stress:  0.72,
+      block_fields: { care: -0.50, fairness: -0.45, community: -0.90, boundary: 0.90 },
+    },
+  },
+  'biobond': {
+    num_agents: 16,
+    scenario_name: 'whistleblower',
+    steps: 8,
+    seed: 42,
+    fixed_lambda_raw: 0.81,
+    activate_biobond_at: 4,
+    scenario_physics: {
+      base_entropy: 0.88,
+      base_stress:  0.72,
+      block_fields: { care: -0.50, fairness: -0.45, community: -0.90, boundary: 0.90 },
+    },
+  },
+};
+
 async function runHannaSimulation(){
   const btn=document.getElementById('ucpRunBtn');
   btn.disabled=true;
-  btn.innerHTML='<span class="ucp-spinner"></span>Loading...';
+  btn.innerHTML='<span class="ucp-spinner"></span>Running simulation…';
   const bbp = document.getElementById('biobondExternalPrompt');
   if(bbp) bbp.style.display='none';
   document.getElementById('ucpResult').style.display='none';
   document.getElementById('ucpError').style.display='none';
 
   const biobond=_currentRun==='biobond';
-  let data;
-  try { data = HANNA_DATA[_currentRun]; }
-  catch(e) {
-    btn.disabled=false;
-    btn.innerHTML='▶ Run Simulation';
-    const err=document.getElementById('ucpError');
-    if(err){err.textContent='Simulation data not found. Please refresh the page.';err.style.display='block';}
-    return;
-  }
+  const payload = HANNA_PAYLOADS[_currentRun];
 
-  setTimeout(() => {
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics in response');
+
     _results[_currentRun] = data;
     renderUCPResult(data, biobond);
     checkComparison();
     btn.disabled=false;
-    btn.innerHTML=_results[_currentRun] ? '↺ Re-run' : '▶ Run Simulation';
+    btn.innerHTML='↺ Re-run Simulation';
     if(!biobond){
       const prompt = document.getElementById('biobondExternalPrompt');
       if(prompt) prompt.style.display='block';
-      // Pulse the BioBond toggle button to draw attention
       const bbBtn = document.getElementById('btn-biobond');
       if(bbBtn){ bbBtn.classList.add('prompt-pulse'); }
     }
-  }, 280);
+  } catch(e) {
+    btn.disabled=false;
+    btn.innerHTML='▶ Run Simulation';
+    const errEl=document.getElementById('ucpError');
+    if(errEl){
+      errEl.textContent='Simulation unavailable — ' + e.message + '. Please try again in a moment.';
+      errEl.style.display='block';
+    }
+  }
 }
 
 

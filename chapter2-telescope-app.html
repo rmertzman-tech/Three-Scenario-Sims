@@ -463,10 +463,10 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.25rem 1rem;text-align:center
       <p>Switch between the two configurations. Results auto-fill your metric fields below for the gap analysis in §6. The key question: <strong>what changes between A and B, and what stays the same?</strong></p>
 
       <div style="display:flex;gap:.5rem;margin-bottom:.85rem;flex-wrap:wrap">
-        <button id="ch2BtnA" onclick="ch2SgSet('challenger',this)" style="padding:.45rem 1.1rem;border-radius:.4rem;background:var(--red-mid);color:white;border:none;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer">
+        <button id="ch2BtnA" onclick="fetchAndCh2Set('challenger')" style="padding:.45rem 1.1rem;border-radius:.4rem;background:var(--red-mid);color:white;border:none;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer">
           ▶ Configuration A — Thiokol Structure
         </button>
-        <button id="ch2BtnB" onclick="ch2SgSet('protected',this)" style="padding:.45rem 1.1rem;border-radius:.4rem;background:var(--paper);color:var(--muted);border:1px solid var(--border);font-family:'Georgia',serif;font-size:.88rem;cursor:pointer">
+        <button id="ch2BtnB" onclick="fetchAndCh2Set('protected')" style="padding:.45rem 1.1rem;border-radius:.4rem;background:var(--paper);color:var(--muted);border:1px solid var(--border);font-family:'Georgia',serif;font-size:.88rem;cursor:pointer">
           ▶ Configuration B — With Protection
         </button>
       </div>
@@ -1250,6 +1250,76 @@ function ch2SgSet(name, btn) {
   buildGapRows();
   markCompleted('simulation');
 }
+
+// ── Live backend — fixed_lambda_raw suppression model ───────────────
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+async function fetchWithRetry(url, opts, retries=2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(28000) });
+      if (r.ok) return r;
+      if (i === retries) throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(res => setTimeout(res, 1200 * (i + 1)));
+    }
+  }
+}
+
+async function fetchAndCh2Set(name) {
+  const p = CH2_SG[name];
+  const isA = name === 'challenger';
+
+  // Optimistic render while fetch is in flight
+  ch2SgSet(name, null);
+
+  const ev = p.ev;
+  const payload = {
+    num_agents: 16,
+    scenario_name: 'whistleblower',
+    steps: 8,
+    seed: 42,
+    fixed_lambda_raw: 0.76,
+    evidence_distribution: {
+      authority_weighted:   ev.auth / 100,
+      alternative_facts:    ev.alt  / 100,
+      tradition_weighted:   ev.trad / 100,
+      empirical_calibrated: ev.emp  / 100,
+    },
+    scenario_physics: {
+      base_entropy: 0.52,
+      base_stress:  0.28,
+      block_fields: {
+        care:      p.bf.care,
+        fairness:  p.bf.fair,
+        community: p.bf.comm,
+        boundary:  isA ? 0.30 : 0.20,
+      },
+    },
+  };
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    const m = data.metrics || {};
+    p.lp      = m.lambda_perceived    || p.lp;
+    p.lr      = 0.76;
+    p.morphic = m.morphic_suppression || 0;
+    p.os2     = m.os2_synergy_bridge  || 0;
+    p.gapTraj = data.gap_trajectory   || [];
+  } catch(e) {
+    console.warn('Backend unavailable — using preset values:', e.message);
+  }
+
+  ch2SgSet(name, null);
+}
+
+
 
 </script>
 </body>

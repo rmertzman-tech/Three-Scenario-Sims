@@ -425,10 +425,10 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
 
   <div style="margin:1.25rem 0">
     <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap">
-      <button id="sgBtnA" onclick="sgSetPreset('challenger',this)" style="padding:.45rem 1rem;border-radius:.4rem;border:1px solid var(--teal-dark);background:var(--teal-dark);color:white;font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;cursor:pointer">
+      <button id="sgBtnA" onclick="fetchAndSetPreset('challenger')" style="padding:.45rem 1rem;border-radius:.4rem;border:1px solid var(--teal-dark);background:var(--teal-dark);color:white;font-family:'Cormorant Garamond',serif;font-size:.88rem;font-weight:600;cursor:pointer">
         Configuration A — Thiokol Structure
       </button>
-      <button id="sgBtnB" onclick="sgSetPreset('biobond',this)" style="padding:.45rem 1rem;border-radius:.4rem;border:1px solid var(--border);background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.88rem;cursor:pointer">
+      <button id="sgBtnB" onclick="fetchAndSetPreset('biobond')" style="padding:.45rem 1rem;border-radius:.4rem;border:1px solid var(--border);background:var(--paper);color:var(--muted);font-family:'Cormorant Garamond',serif;font-size:.88rem;cursor:pointer">
         Configuration B — Protected Channel
       </button>
     </div>
@@ -1118,6 +1118,81 @@ function sgSetPreset(name, btn) {
   const bfExp = document.getElementById('bfExplainContent');
   if (bfExp) bfExp.innerHTML = (name === 'challenger') ? BF_EXPLAIN_A : BF_EXPLAIN_B;
 }
+
+// ── Live backend — fixed_lambda_raw suppression model ───────────────
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+async function fetchWithRetry(url, opts, retries=2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(28000) });
+      if (r.ok) return r;
+      if (i === retries) throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(res => setTimeout(res, 1200 * (i + 1)));
+    }
+  }
+}
+
+async function fetchAndSetPreset(name) {
+  const p = SG_PRESETS[name];
+  const isA = name === 'challenger';
+
+  // Optimistic render with existing values while fetch is in flight
+  sgSetPreset(name, null);
+
+  // Show live-loading state on the two key metric tiles
+  const metLP  = document.getElementById('sgMetLP');
+  const metGap = document.getElementById('sgMetGap');
+  if (metLP)  { metLP.textContent  = '…'; metLP.style.color  = '#94a3b8'; }
+  if (metGap) { metGap.textContent = '…'; metGap.style.color = '#94a3b8'; }
+
+  const ev = p.ev;
+  const payload = {
+    num_agents: 16,
+    scenario_name: 'whistleblower',
+    steps: 8,
+    seed: 42,
+    fixed_lambda_raw: 0.76,
+    evidence_distribution: {
+      authority_weighted:   ev.auth / 100,
+      alternative_facts:    ev.alt  / 100,
+      tradition_weighted:   ev.trad / 100,
+      empirical_calibrated: ev.emp  / 100,
+    },
+    scenario_physics: {
+      base_entropy: 0.52,
+      base_stress:  0.28,
+      block_fields: {
+        care:      p.bf.care,
+        fairness:  p.bf.fair,
+        community: p.bf.comm,
+        boundary:  isA ? 0.30 : 0.20,
+      },
+    },
+  };
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    const m = data.metrics || {};
+    // Update preset with live values then re-render
+    p.lp     = m.lambda_perceived   || p.lp;
+    p.morphic = m.morphic_suppression || 0;
+    p.os2    = m.os2_synergy_bridge   || 0;
+    p.gapTraj = data.gap_trajectory    || [];
+  } catch(e) {
+    console.warn('Backend unavailable — using preset values:', e.message);
+  }
+
+  sgSetPreset(name, null);
+}
+
 
 // Init on load
 window.addEventListener('load', () => {
