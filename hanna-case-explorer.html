@@ -275,6 +275,8 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
 .metric-modal-challenger{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 .45rem .45rem 0;padding:.75rem .9rem;font-size:.82rem;line-height:1.65;color:var(--amber-dark)}
 .metric-modal-formula{background:var(--paper);border:1px solid var(--border);border-radius:.4rem;padding:.6rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--navy);margin:.5rem 0}
 
+@keyframes promptPulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.6)}50%{box-shadow:0 0 0 6px rgba(201,168,76,0)}}
+.run-toggle-btn.prompt-pulse{animation:promptPulse 1.6s ease-in-out 3;border-color:#c9a84c !important;color:#c9a84c !important}
 </style>
 </head>
 <body>
@@ -689,9 +691,10 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
     <div id="hannaSSQPanel" style="display:none;margin:1rem 0" role="region" aria-label="Structural understanding check"></div>
 
     <!-- External BioBond prompt — appears after no-biobond run completes -->
-    <div id="biobondExternalPrompt" style="display:none;margin-top:.875rem;padding:.875rem 1.25rem;background:var(--gold-light);border:2px solid var(--gold);border-radius:.75rem;text-align:center">
-      <div style="font-size:.85rem;color:var(--gold-dark);margin-bottom:.55rem;font-weight:700;font-style:italic">Run 1 complete — now run With Institutional Support to see what the Church mobilization changed structurally.</div>
-      <button onclick="selectRun('biobond');runHannaSimulation();document.getElementById('biobondExternalPrompt').style.display='none'" style="padding:.6rem 1.5rem;border:none;border-radius:.4rem;background:var(--gold-dark);color:#fff;font-family:'Georgia',serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:.2s" onmouseover="this.style.background='#1a2744'" onmouseout="this.style.background='var(--gold-dark)'">▶ Run With Institutional Support (BioBond)</button>
+    <div id="biobondExternalPrompt" style="display:none;margin-top:.875rem;padding:1rem 1.25rem;background:#fef9ec;border:2px solid #c9a84c;border-radius:.75rem;text-align:center">
+      <div style="font-size:.88rem;color:#7c5a0a;margin-bottom:.65rem;font-weight:700">Run 1 complete.</div>
+      <div style="font-size:.83rem;color:#92400e;margin-bottom:.85rem;line-height:1.5">Now run <strong>With Institutional Support</strong> to see what the Church mobilization changed structurally — same prisoner, same prison, different architecture.</div>
+      <button onclick="selectRun('biobond');runHannaSimulation();document.getElementById('biobondExternalPrompt').style.display='none'" style="padding:.65rem 1.75rem;border:none;border-radius:.4rem;background:#c9a84c;color:#fff;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;letter-spacing:.02em">▶ Run With Institutional Support (BioBond)</button>
     </div>
 
     <!-- ═══ PREDICTION PANEL ═══ -->
@@ -1169,6 +1172,8 @@ function selectRun(mode){
   document.getElementById('run-label').textContent=mode==='no-biobond'?'No Institutional Support':'With Institutional Support (BioBond step 4)';
   document.getElementById('ucpError').style.display='none';
   document.getElementById('biobondExternalPrompt').style.display='none';
+  // Remove pulse from both buttons
+  document.querySelectorAll('.run-toggle-btn').forEach(b=>b.classList.remove('prompt-pulse'));
   // If this run has already completed, restore its results immediately
   if(_results[mode]){
     renderUCPResult(_results[mode], mode === 'biobond');
@@ -1224,6 +1229,9 @@ async function runHannaSimulation(){
     if(!biobond){
       const prompt = document.getElementById('biobondExternalPrompt');
       if(prompt) prompt.style.display='block';
+      // Pulse the BioBond toggle button to draw attention
+      const bbBtn = document.getElementById('btn-biobond');
+      if(bbBtn){ bbBtn.classList.add('prompt-pulse'); }
     }
   }, 280);
 }
