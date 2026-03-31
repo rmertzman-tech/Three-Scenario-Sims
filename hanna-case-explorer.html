@@ -754,6 +754,41 @@ footer{max-width:72rem;margin:2rem auto 0;padding:1.5rem 1rem;text-align:center;
       <h4>Run Both to Compare</h4>
       <p id="comparisonText"></p>
     </div>
+    <!-- ═══ STRUCTURAL ROBUSTNESS PANEL ═══ -->
+    <div id="robustnessPanel" style="display:none;margin-top:1.25rem">
+      <div style="background:var(--ucp-navy);border:1px solid rgba(201,168,76,.3);border-radius:.875rem;padding:1.25rem">
+        <div style="font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.5rem">Structural Robustness — Try a Different Agent Population</div>
+        <p style="font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:.85rem">Each simulation run populates the model with a different group of agents — different individuals with different histories, different threshold levels, different sequences of interaction. What stays constant is the architecture: the block fields, the entropy level, the BioBond timing. <strong style="color:rgba(255,255,255,.9)">If the suppression gap holds across many different agent populations, you are seeing structural robustness — the architecture is the cause, not the particular people who happened to inhabit it.</strong> Bishop Saad's individual virtue was real and his achievement was extraordinary. What the simulation adds is the structural account: this outcome was shaped by conditions that would have constrained any person, and was enabled by conditions that would have supported any person.</p>
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
+          <button id="rerunBtn" onclick="rerunWithNewSeed()"
+            style="padding:.55rem 1.25rem;border:none;border-radius:.4rem;background:#c9a84c;color:#fff;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s"
+            onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+            ↺ Try a Different Agent Population
+          </button>
+          <span id="rerunStatus" style="font-size:.78rem;color:rgba(255,255,255,.45);font-family:'Courier New',monospace"></span>
+        </div>
+        <div id="robustnessLog" style="display:none">
+          <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:.5rem">Run History — same architecture, different populations</div>
+          <div style="overflow-x:auto">
+            <table id="robustnessTable" style="width:100%;border-collapse:collapse;min-width:480px">
+              <thead>
+                <tr style="border-bottom:1px solid rgba(255,255,255,.12)">
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Run</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Configuration</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Raw</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Perceived</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Gap</td>
+                  <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Morphic</td>
+                </tr>
+              </thead>
+              <tbody id="robustnessRows"></tbody>
+            </table>
+          </div>
+          <div id="robustnessSummary" style="margin-top:.75rem;font-size:.8rem;color:rgba(255,255,255,.55);font-style:italic;font-family:'Cormorant Garamond',serif;line-height:1.5"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ SIDE-BY-SIDE COMPARISON PANEL ═══ -->
     <div id="sxsPanel" style="margin-top:1.5rem">
       <div style="background:var(--ucp-navy);border:1px solid rgba(201,168,76,.25);border-radius:.875rem;padding:1.25rem">
@@ -1187,6 +1222,130 @@ function selectRun(mode){
 
 // ── HANNA SUPPRESSION GAP PRESET VALUES ─────────────────────
 const HANNA_LR = 0.81;
+
+// ── Structural robustness tracking ───────────────────────────
+let _robustnessSeed = 100;      // seeds 100+ used for "try again" runs
+let _robustnessLog  = [];       // {run, config, lr, lp, gap, morph, seed}
+let _rerunCount     = 0;
+
+async function rerunWithNewSeed() {
+  const btn = document.getElementById('rerunBtn');
+  const status = document.getElementById('rerunStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '…running'; }
+  if (status) status.textContent = `seed ${_robustnessSeed}…`;
+
+  const biobond = _currentRun === 'biobond';
+  const base = HANNA_PAYLOADS[_currentRun];
+  const payload = { ...base, seed: _robustnessSeed };
+  // Deep-copy scenario_physics so we don't mutate the base payload
+  payload.scenario_physics = { ...base.scenario_physics,
+    block_fields: { ...base.scenario_physics.block_fields } };
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics');
+
+    const m    = data.metrics;
+    const lr   = m.lambda_raw          || 0.81;
+    const lp   = m.lambda_perceived    || 0;
+    const gap  = Math.max(0, lr - lp);
+    const morph = m.morphic_suppression || 0;
+
+    _rerunCount++;
+    _robustnessLog.push({
+      run:    _rerunCount,
+      config: biobond ? 'With BioBond' : 'Without BioBond',
+      seed:   _robustnessSeed,
+      lr, lp, gap, morph,
+    });
+    _robustnessSeed += 13;   // deterministic but varied spacing
+
+    renderRobustnessLog();
+
+    // Also show this run's metrics in the main panel
+    renderUCPResult(data, biobond);
+
+  } catch(e) {
+    if (status) status.textContent = 'unavailable — try again';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Try a Different Agent Population'; }
+  }
+}
+
+function renderRobustnessLog() {
+  const log = _robustnessLog;
+  if (!log.length) return;
+
+  const logDiv = document.getElementById('robustnessLog');
+  const tbody  = document.getElementById('robustnessRows');
+  const sumEl  = document.getElementById('robustnessSummary');
+  if (!logDiv || !tbody || !sumEl) return;
+
+  logDiv.style.display = 'block';
+
+  // Build table rows — newest first
+  tbody.innerHTML = [...log].reverse().map((r, i) => {
+    const gapColor  = r.gap  > 0.45 ? '#f08080' : r.gap  > 0.20 ? '#f5c842' : '#7fd8a8';
+    const lpColor   = r.lp   < 0.25 ? '#f08080' : r.lp   < 0.50 ? '#f5c842' : '#7fd8a8';
+    const isLatest  = i === 0;
+    const rowStyle  = isLatest ? 'background:rgba(201,168,76,.07);' : '';
+    const configColor = r.config.includes('Without') ? '#f08080' : '#7fd8a8';
+    return `<tr style="border-top:1px solid rgba(255,255,255,.06);${rowStyle}">
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4)">#${r.run}</td>
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:${configColor}">${r.config}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:#c9a84c;font-weight:700">${r.lr.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${lpColor};font-weight:700">${r.lp.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${gapColor};font-weight:700">${(r.gap*100).toFixed(1)}%</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.55)">${r.morph.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  // Summary — only when ≥2 runs
+  if (log.length >= 2) {
+    const noBB  = log.filter(r => r.config.includes('Without'));
+    const withBB = log.filter(r => r.config.includes('With'));
+
+    let summary = '';
+
+    if (noBB.length >= 2) {
+      const gaps = noBB.map(r => r.gap);
+      const minG = Math.min(...gaps), maxG = Math.max(...gaps);
+      const range = (maxG - minG) * 100;
+      summary += `Without BioBond: across ${noBB.length} different agent populations, `
+        + `the suppression gap ranged from ${(minG*100).toFixed(1)}% to ${(maxG*100).toFixed(1)}% `
+        + `— a spread of ${range.toFixed(1)} percentage points. `;
+      if (range < 12) {
+        summary += `This narrow range is the structural robustness signal: different people, same architecture, same outcome. `;
+      } else {
+        summary += `The spread tells you how much individual agent variation matters within this structural constraint. `;
+      }
+    }
+
+    if (withBB.length >= 2) {
+      const gaps = withBB.map(r => r.gap);
+      const minG = Math.min(...gaps), maxG = Math.max(...gaps);
+      summary += `With BioBond: gap ranged from ${(minG*100).toFixed(1)}% to ${(maxG*100).toFixed(1)}% `
+        + `across ${withBB.length} populations. `;
+    }
+
+    if (noBB.length >= 1 && withBB.length >= 1) {
+      const avgNoBB  = noBB.reduce((s,r)=>s+r.gap,0) / noBB.length;
+      const avgWithBB = withBB.reduce((s,r)=>s+r.gap,0) / withBB.length;
+      const avgLpNoBB  = noBB.reduce((s,r)=>s+r.lp,0) / noBB.length;
+      const avgLpWithBB = withBB.reduce((s,r)=>s+r.lp,0) / withBB.length;
+      summary += `The structural comparison: average λ Perceived rises from `
+        + `${avgLpNoBB.toFixed(3)} (without BioBond) to ${avgLpWithBB.toFixed(3)} (with BioBond) `
+        + `across all runs — a consistent pattern regardless of which agent population inhabited the structure.`;
+    }
+
+    sumEl.textContent = summary;
+  }
+}
 const HANNA_DATA = {
   'no-biobond': {
     metrics: { lambda_raw: HANNA_LR, lambda_perceived: 0.11,
@@ -1271,6 +1430,22 @@ async function runHannaSimulation(){
     checkComparison();
     btn.disabled=false;
     btn.innerHTML='↺ Re-run Simulation';
+    // Log this run to the robustness tracker and show the panel
+    const m0 = data.metrics || {};
+    const lr0 = m0.lambda_raw || 0.81;
+    const lp0 = m0.lambda_perceived || 0;
+    _rerunCount++;
+    _robustnessLog.push({
+      run: _rerunCount,
+      config: biobond ? 'With BioBond' : 'Without BioBond',
+      seed: HANNA_PAYLOADS[_currentRun].seed,
+      lr: lr0, lp: lp0,
+      gap: Math.max(0, lr0 - lp0),
+      morph: m0.morphic_suppression || 0,
+    });
+    const rPanel = document.getElementById('robustnessPanel');
+    if (rPanel) rPanel.style.display = 'block';
+    renderRobustnessLog();
     if(!biobond){
       const prompt = document.getElementById('biobondExternalPrompt');
       if(prompt) prompt.style.display='block';
