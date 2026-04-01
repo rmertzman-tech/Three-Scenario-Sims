@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chapter 11 — What the Economy Does to Coherent Agency</title>
+<style>
+:root{
+  --teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#c2850a;--amber-light:#fef9ec;--amber-mid:#f5c842;
+  --red:#dc2626;--red-light:#fee2e2;
+  --green:#16a34a;--green-light:#f0fdf4;
+  --sky:#3b82f6;--sky-light:#dbeafe;
+  --ink:#1f2937;--muted:#4b5563;--border:#e5e7eb;--paper:#f9fafb;
+  --ucp-navy:#1a2744;--ucp-sky:#4a7fb5;--ucp-gold:#c9a84c;
+  --ucp-success:#3a8a5c;--ucp-warn:#c87843;--ucp-danger:#b84444;
+  --success:#16a34a;--warn:#f59e0b;--danger:#dc2626;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:#f0fdfa;color:var(--ink);line-height:1.7}
+/* ── Header ── */
+.course-header{background:var(--teal-dark);color:#fff;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.course-header .chapter-label{font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;opacity:.65}
+.course-header h1{font-size:1.15rem;font-weight:700;line-height:1.3}
+.course-header .subtitle{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:.1rem}
+/* ── Nav tabs ── */
+nav.tab-nav{background:#fff;border-bottom:2px solid var(--teal-mid);padding:.5rem 1.5rem;display:flex;flex-wrap:wrap;gap:.4rem;position:sticky;top:60px;z-index:99}
+.tab-btn{padding:.35rem .85rem;border-radius:.4rem;border:1px solid var(--border);background:var(--paper);color:var(--muted);font-family:'Georgia',serif;font-size:.82rem;cursor:pointer;transition:.15s}
+.tab-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
+.tab-btn.active{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark);font-weight:700}
+/* ── Panes ── */
+.tab-pane{display:none;padding:2rem 1.5rem;max-width:900px;margin:0 auto}
+.tab-pane.active{display:block}
+/* ── Typography ── */
+h2{font-size:1.3rem;color:var(--teal-dark);border-bottom:2px solid var(--teal-mid);padding-bottom:.4rem;margin:2rem 0 .75rem}
+h3{font-size:1.05rem;color:var(--teal-dark);margin:1.5rem 0 .5rem}
+p{margin-bottom:.85rem;font-size:.92rem;line-height:1.75;text-align:justify}
+/* ── Cards ── */
+.card{border-radius:.625rem;padding:1.1rem 1.25rem;margin:.85rem 0}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border:2px solid var(--amber-mid);border-radius:.625rem;padding:1.1rem 1.25rem;margin:.85rem 0}
+.card-blue{background:var(--sky-light);border-left:4px solid var(--sky)}
+.card-dark{background:var(--ucp-navy);color:rgba(255,255,255,.82);border-radius:.625rem;padding:1.25rem 1.5rem;margin:.85rem 0}
+.card-dark h3,.card-dark h4{color:var(--teal-mid)}
+.card-dark p{color:rgba(255,255,255,.8);font-size:.88rem}
+/* ── Config stances ── */
+.stance-grid{display:grid;gap:.5rem;margin:.65rem 0 .85rem}
+.stance{border-radius:0 .4rem .4rem 0;padding:.6rem .85rem;font-size:.84rem;line-height:1.55}
+.stance-a{background:var(--red-light);border-left:3px solid var(--red)}
+.stance-b{background:#fef9c3;border-left:3px solid #ca8a04}
+.stance-c{background:var(--green-light);border-left:3px solid var(--green)}
+/* ── Run toggle ── */
+.run-toggle{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
+.run-btn{padding:.5rem 1rem;border-radius:.4rem;border:2px solid var(--border);background:var(--paper);color:var(--muted);font-family:'Georgia',serif;font-size:.85rem;cursor:pointer;transition:.15s;flex:1;min-width:160px;text-align:center}
+.run-btn.active-run{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark);font-weight:700}
+.run-btn.run-a.active-run{background:var(--red);border-color:var(--red)}
+.run-btn.run-b.active-run{background:var(--green);border-color:var(--green)}
+.run-btn.run-c.active-run{background:var(--ucp-gold);border-color:var(--ucp-gold)}
+/* ── UCP panel ── */
+.ucp-panel{background:var(--ucp-navy);color:#fff;border-radius:.875rem;padding:1.5rem;margin:1rem 0}
+.ucp-panel h3{color:#fff;border:none;margin:0 0 .75rem;font-size:1rem}
+.ucp-run-btn{width:100%;padding:.7rem;border:none;border-radius:.5rem;background:var(--teal-mid);color:#fff;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;margin:.5rem 0}
+.ucp-run-btn:hover{background:var(--teal-dark)}
+.ucp-run-btn:disabled{opacity:.5;cursor:wait}
+.ucp-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:.5rem;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;margin:.75rem 0}
+.ucp-metric{background:rgba(255,255,255,.07);border-radius:.5rem;padding:.65rem .75rem;cursor:pointer;transition:.15s}
+.ucp-metric:hover{background:rgba(255,255,255,.12)}
+.ucp-metric-label{font-size:.65rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:.2rem}
+.ucp-metric-value{font-size:1.2rem;font-weight:700;font-family:'Courier New',monospace}
+.ucp-metric-phrase{font-size:.65rem;color:rgba(255,255,255,.45);margin-top:.15rem}
+.val-great{color:#7fd8a8}
+.val-warn{color:#f5c842}
+.val-bad{color:#f08080}
+.ucp-bar-section{margin:.75rem 0}
+.ucp-gap-label{font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:.4rem;font-family:'Courier New',monospace}
+.ucp-bar-row{display:flex;align-items:center;gap:.5rem;margin:.3rem 0}
+.ucp-bar-name{font-size:.7rem;font-family:'Courier New',monospace;width:80px;color:rgba(255,255,255,.6)}
+.ucp-bar-track{flex:1;background:rgba(255,255,255,.1);border-radius:3px;height:8px;overflow:hidden}
+.ucp-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.fill-raw{background:var(--ucp-gold)}
+.fill-perc{background:var(--teal-mid)}
+.fill-morph{background:#e879f9}
+.ucp-bar-num{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.6);width:36px;text-align:right}
+.ucp-narrative{font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.6;padding:.6rem .75rem;background:rgba(255,255,255,.05);border-radius:.4rem;margin:.5rem 0}
+.ucp-error{background:#fee2e2;color:#7f1d1d;padding:.75rem 1rem;border-radius:.4rem;font-size:.84rem;margin:.5rem 0}
+/* ── Comparison ── */
+.compare-box{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.3);border-radius:.75rem;padding:1rem 1.25rem;margin-top:1rem;display:none}
+.compare-box h4{color:var(--ucp-gold);font-size:.85rem;margin-bottom:.5rem}
+.compare-box p{font-size:.82rem;color:rgba(255,255,255,.75);line-height:1.6}
+/* ── SxS panel ── */
+.sxs-panel{background:var(--ucp-navy);border:1px solid rgba(201,168,76,.25);border-radius:.875rem;padding:1.25rem;margin-top:1.5rem}
+.sxs-label{font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem}
+/* ── Robustness panel ── */
+.robustness-panel{background:var(--ucp-navy);border:1px solid rgba(201,168,76,.3);border-radius:.875rem;padding:1.25rem;margin-top:1.25rem;display:none}
+.robustness-label{font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.5rem}
+.rerun-btn{padding:.55rem 1.25rem;border:none;border-radius:.4rem;background:var(--ucp-gold);color:#fff;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s}
+.rerun-btn:hover{opacity:.85}
+.rerun-btn:disabled{opacity:.5;cursor:wait}
+.robustness-status{font-size:.78rem;color:rgba(255,255,255,.45);font-family:'Courier New',monospace;margin-left:.5rem}
+/* ── Journal ── */
+.journal-box{border:2px solid var(--amber-mid);background:var(--amber-light);border-radius:.625rem;padding:1rem 1.25rem;margin:1rem 0}
+.journal-label{font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber);margin-bottom:.6rem}
+.jta{width:100%;min-height:120px;border:1px solid var(--border);border-radius:.4rem;padding:.65rem;font-family:'Georgia',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
+.jta.q5{min-height:150px;border-color:var(--amber-mid);border-width:2px}
+.save-note{font-size:.72rem;color:var(--success);font-family:'Courier New',monospace;height:1.1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+/* ── Pred retrieve ── */
+.pred-retrieve{background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.25);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
+.pr-label{font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.3rem}
+.pr-text{font-size:.88rem;color:var(--ink);font-style:italic;line-height:1.6;border-left:3px solid var(--teal-mid);padding-left:.75rem;margin-top:.3rem}
+/* ── Fairness grid ── */
+.fairness-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.65rem;margin:.75rem 0}
+.fairness-card{border-radius:.5rem;padding:.7rem .85rem;border-left:3px solid}
+.fairness-card .fc-dim{font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;font-weight:700}
+.fairness-card .fc-mapping{font-size:.8rem;line-height:1.5}
+/* ── Civ stack ── */
+.civ-stack{display:flex;flex-direction:column;gap:.3rem;margin:.75rem 0}
+.civ-level{border-radius:.4rem;padding:.55rem .85rem;font-size:.83rem;display:flex;align-items:center;gap:.6rem}
+.civ-level .cl-label{font-family:'Courier New',monospace;font-size:.72rem;font-weight:700;white-space:nowrap}
+.civ-level .cl-desc{font-size:.82rem;opacity:.85}
+/* ── Footer ── */
+footer{text-align:center;padding:1.5rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);margin-top:3rem}
+/* ── Responsive ── */
+@media(max-width:600px){
+  .ucp-metrics{grid-template-columns:1fr 1fr}
+  .run-toggle{flex-direction:column}
+  .tab-pane{padding:1.25rem 1rem}
+  nav.tab-nav{padding:.4rem .75rem}
+}
+</style>
+</head>
+<body>
+
+<header class="course-header">
+  <div>
+    <div class="chapter-label">Chapter Eleven · Applied Sequence · Movement 1</div>
+    <h1>What the Economy Does to Coherent Agency</h1>
+    <div class="subtitle">Economic Systems and the Ethics of Institutional Architecture</div>
+  </div>
+</header>
+
+<nav class="tab-nav" role="tablist">
+  <button class="tab-btn active" onclick="showTab('overview',this)">§1–2 Overview</button>
+  <button class="tab-btn" onclick="showTab('fairness',this)">The Nine Dimensions</button>
+  <button class="tab-btn" onclick="showTab('simulation',this)">UCP Simulation</button>
+  <button class="tab-btn" onclick="showTab('temporal',this)">Temporal Commons</button>
+  <button class="tab-btn" onclick="showTab('sage',this)">SAGE Walkthrough</button>
+  <button class="tab-btn" onclick="showTab('journal',this)">Ethics Journal</button>
+</nav>
+
+<div class="tab-pane active" id="tab-overview">
+  <h2>§1 — The Suppression Gap at Economic Scale</h2>
+
+  <p>The foundational arc built a framework. You practiced that framework on cases drawn from individual lives, ecological movements, political transitions, scientific methodology, and economic modeling. Now the applied sequence asks a harder question: what does the Agency Conditions Principle require of <em>institutions</em> — not of persons under institutional pressure, but of the institutions themselves?</p>
+
+  <p>Chapter 7 showed you what Doyne Farmer found: the representative agent assumption makes certain populations structurally invisible, and that invisibility is not a technical artifact — it is a policy consequence. This chapter asks what that finding means for institutional design.</p>
+
+  <div class="card card-teal">
+    <h3>The Central ACP Question for Economic Systems</h3>
+    <p><strong>Which populations' agency conditions does this economic architecture preserve? Which does it export? And what is it handing forward to the next generation?</strong></p>
+    <p>This is not a question about whether the economy is growing. It is a question about whether growth is being produced by drawing on human capacity or by drawing it down — whether the economy is functioning more like the Green Belt Movement (Chapter 4) or more like the Rust Belt (Chapter 9).</p>
+  </div>
+
+  <div class="card card-amber">
+    <p><strong>One structural context before proceeding.</strong> Economic systems sit within a civilizational stack that runs from planetary biophysical limits at the top — the hard thermodynamic ceiling within which all economic activity must ultimately operate — down through international economic governance (trade agreements, capital mobility rules, currency regimes), to national policy, to markets and firms, to individual agents.</p>
+    <div class="civ-stack" style="margin:.5rem 0">
+      <div class="civ-level" style="background:#fee2e2;border-left:3px solid #dc2626"><span class="cl-label" style="color:#dc2626">Planetary</span><span class="cl-desc">Biophysical limits — the hard ceiling on all economic activity</span></div>
+      <div class="civ-level" style="background:#fef3c7;border-left:3px solid #f59e0b"><span class="cl-label" style="color:#ca8a04">International</span><span class="cl-desc">Trade agreements, capital mobility, currency regimes, tax competition</span></div>
+      <div class="civ-level" style="background:#dbeafe;border-left:3px solid #3b82f6"><span class="cl-label" style="color:#1d4ed8">National policy</span><span class="cl-desc">Where Market Humanism's program primarily operates</span></div>
+      <div class="civ-level" style="background:#f0fdf4;border-left:3px solid #16a34a"><span class="cl-label" style="color:#15803d">Markets & firms</span><span class="cl-desc">The institutional architectures this chapter models</span></div>
+      <div class="civ-level" style="background:var(--teal-light);border-left:3px solid var(--teal-mid)"><span class="cl-label" style="color:var(--teal-dark)">Individual agents</span><span class="cl-desc">Where agency conditions are either preserved or destroyed</span></div>
+    </div>
+    <p style="margin-bottom:0;font-size:.84rem"><strong>This chapter examines the institutional level.</strong> What looks like a stable coherence-preserving configuration here may be structurally unstable without corresponding governance at the levels above it. The applied sequence's later chapters will examine what coherence-preserving governance requires at civilizational scale.</p>
+  </div>
+
+  <h3>Two Questions the Simulation Cannot Settle</h3>
+  <p>The simulation models structural tendencies, not specific policy outcomes. It cannot tell you whether a particular minimum wage number produces employment gains or losses — that is a question for economists and the empirical literature.</p>
+  <p>What it can do is model whether an economic architecture preserves or exports the <em>conditions</em> under which coherent agency is possible. A policy can produce acceptable aggregate outcomes while simultaneously destroying the agency conditions of the populations it affects. That second kind of harm — harm to conditions rather than outcomes — is what you are learning to see in this chapter.</p>
+
+  <h2>§2 — What This Chapter Is About</h2>
+  <p>The simulation in this chapter models three economic architectures. Each one represents a structural configuration — a particular combination of evidence weighting, block fields, and environmental conditions — that either preserves or erodes the agency conditions of the populations inhabiting it.</p>
+  <p>Before moving to the nine fairness dimensions, make sure you can answer this question: <em>in the Challenger case, what was the difference between λ Raw and λ Perceived, and what caused it?</em> The economic architecture simulation uses the same structural logic at a different scale.</p>
+
+  <div class="card card-blue">
+    <h4>Learning Objectives</h4>
+    <p>After completing this chapter you should be able to: identify the structural difference between entropy-exporting and coherence-preserving economic architectures; apply the nine fairness dimensions as coherence conditions; run the three simulation configurations and interpret what each suppression gap value means; apply the temporal commons concept to economic design; and use SAGE to develop an ethically grounded response to a specific economic policy scenario.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-fairness">
+  <h2>The Nine Fairness Dimensions as Coherence Conditions</h2>
+
+  <p>Eric Beinhocker's framework for fair social contracts proposes nine dimensions of fairness that large-scale human collaboration depends on. These were derived independently from research on what makes social contracts functionally stable. The alignment with the EBB framework is evidence, not coincidence — each dimension is a different way the suppression gap can manifest at economic-institutional scale.</p>
+
+  <h3>Coherence Preconditions</h3>
+  <div class="fairness-grid">
+    <div class="fairness-card" style="border-color:#14b8a6;background:#f0fdfa">
+      <div class="fc-dim" style="color:#0d5e57">Agency</div>
+      <div class="fc-mapping">Maps to <strong>λ Raw</strong>. Whether agents have genuine capacity to make meaningful choices, or are structurally constrained to react. Chronic high-entropy survival mode — the Sapolsky gate substantially closed — erodes this dimension at the biological level.</div>
+    </div>
+    <div class="fairness-card" style="border-color:#3b82f6;background:#eff6ff">
+      <div class="fc-dim" style="color:#1d4ed8">Inclusion</div>
+      <div class="fc-mapping">Maps to <strong>community block field</strong>. Whether the architecture actually reaches the populations it claims to serve. The representative agent assumption is an inclusion failure at the modeling level.</div>
+    </div>
+    <div class="fairness-card" style="border-color:#8b5cf6;background:#f5f3ff">
+      <div class="fc-dim" style="color:#6d28d9">Dignity</div>
+      <div class="fc-mapping">Maps to <strong>evidence weighting</strong>. A system that weights certain populations' testimony at near-zero produces a suppression gap regardless of what those populations actually know or need.</div>
+    </div>
+  </div>
+
+  <h3>Institutional-Temporal Stabilizers</h3>
+  <div class="fairness-grid">
+    <div class="fairness-card" style="border-color:#f59e0b;background:#fffbeb">
+      <div class="fc-dim" style="color:#b45309">Rules-Based Order</div>
+      <div class="fc-mapping">Maps to <strong>entropy conditions</strong>. Unpredictable, arbitrarily enforced rules create high environmental entropy. High entropy degrades prospective coherence — the ATCF component that enables planning and forward projection.</div>
+    </div>
+    <div class="fairness-card" style="border-color:#10b981;background:#ecfdf5">
+      <div class="fc-dim" style="color:#065f46">Meritocratic Legitimacy</div>
+      <div class="fc-mapping">Maps to <strong>evidence architecture</strong>. Does the institution weight contributions in proportion to their actual quality, or route some contributions around decision processes regardless of quality? The Thiokol teleconference failed this dimension.</div>
+    </div>
+    <div class="fairness-card" style="border-color:#ef4444;background:#fef2f2">
+      <div class="fc-dim" style="color:#991b1b">Security</div>
+      <div class="fc-mapping">Maps to <strong>stress and the Sapolsky gate</strong>. Chronic economic insecurity — housing instability, medical debt, wage volatility — suppresses deliberate agency at the biological level regardless of what policies nominally offer.</div>
+    </div>
+  </div>
+
+  <h3>Forward-Horizon Conditions</h3>
+  <div class="fairness-grid">
+    <div class="fairness-card" style="border-color:#06b6d4;background:#ecfeff">
+      <div class="fc-dim" style="color:#0e7490">Capabilities</div>
+      <div class="fc-mapping">Maps to <strong>prospective coherence / ATCF</strong>. Not what resources people have but what they can actually do and become. Negative community blocks in the presence of high entropy ensure λ Perceived stays low even when λ Raw holds.</div>
+    </div>
+    <div class="fairness-card" style="border-color:#84cc16;background:#f7fee7">
+      <div class="fc-dim" style="color:#3f6212">Reciprocity</div>
+      <div class="fc-mapping">Maps to <strong>entropy-exporting mechanism</strong>. A system that offloads its disorder onto workers and communities while reporting stable aggregate metrics runs an accounting system that makes the extraction invisible.</div>
+    </div>
+    <div class="fairness-card" style="border-color:#f97316;background:#fff7ed">
+      <div class="fc-dim" style="color:#9a3412">Progress</div>
+      <div class="fc-mapping">Maps to <strong>temporal commons</strong>. Is the arc genuinely forward-moving for the populations inhabiting the system? This is the inter-generational question: what agency conditions is this architecture handing to the next generation?</div>
+    </div>
+  </div>
+
+  <div class="card card-teal" style="margin-top:1.5rem">
+    <h4>Before Moving to the Simulation</h4>
+    <p>Pick one of the nine dimensions. In one sentence, identify an economic institution you interact with regularly and name which specific block field, evidence weighting, or entropy condition you think is responsible for that dimension's strength or weakness in that institution. Be as specific as the simulation vocabulary allows. You will return to this observation in the journal.</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-simulation">
+  <h2>UCP Simulation — Three Economic Architectures</h2>
+
+  <p>This simulation models three structural configurations. You are not testing whether a specific minimum wage produces employment gains or losses. You are modeling what happens to coordination capacity, suppression gap, and morphic suppression when agents inhabit three different economic architectures.</p>
+
+  <div class="card card-blue">
+    <h4>What Each Configuration Models</h4>
+    <p><strong>Configuration A — Entropy-Exporting:</strong> authority-weighted evidence (employer/capital signal dominant), negative fairness and community block fields, high entropy reflecting unprotected labor market volatility, high stress reflecting chronic economic precarity. Watch λ Perceived collapse relative to λ Raw and morphic suppression build across steps.</p>
+    <p><strong>Configuration B — Coherence-Preserving:</strong> empirically-calibrated evidence weighting, positive block fields, lower entropy reflecting institutional predictability, lower stress reflecting adequate security floors. Watch λ Perceived approach λ Raw and OS2 Bridge become possible.</p>
+    <p><strong>Configuration C — BioBond Transition:</strong> begins in Configuration A's conditions, institutional support activates at step 4 (modeling wage floor, labor protections, or community investment requirements). Watch the lag: morphic suppression accumulated in steps 1–3 does not immediately collapse when the BioBond activates.</p>
+  </div>
+
+  <!-- Prediction scaffold -->
+  <div id="ch10PredDisplay" style="background:rgba(15,118,110,.1);border:1px solid rgba(20,184,166,.3);border-radius:.5rem;padding:.875rem 1.1rem;margin-bottom:1rem;display:none">
+    <div class="pr-label">Your Chapter 10 Prediction (retrieved from journal)</div>
+    <div id="ch10PredText" class="pr-text"></div>
+  </div>
+
+  <div class="card card-amber" id="predPanel">
+    <div class="journal-label">▶ Q5 Prediction — Before You Run the Simulations</div>
+    <p style="font-size:.84rem;margin-bottom:.6rem">Three configurations. Three structural claims. Before running any of them, commit to a prediction. <strong>Two definitions:</strong> λ Raw is the coordination capacity actually available to agents. λ Perceived is what reaches institutional decisions. The suppression gap is the distance between them.</p>
+    <p style="font-size:.84rem;font-weight:700;margin-bottom:.4rem">Three stances — pick the one closest to your intuition and explain why your PRF leads you there:</p>
+    <div class="stance-grid">
+      <div class="stance stance-a"><strong>Stance A — Large gap in Config A (0.50+):</strong> Authority-weighted evidence combined with negative block fields structurally routes labor's signal around decisions, regardless of what workers actually know or need.</div>
+      <div class="stance" style="background:#fef9c3;border-left:3px solid #ca8a04"><strong>Stance B — Config B shows meaningfully higher λ Perceived, but gap doesn't close entirely:</strong> Entropy and stress still impose biological constraints on deliberate agency. Coherence-preserving architecture helps but does not eliminate the Sapolsky floor.</div>
+      <div class="stance stance-c"><strong>Stance C — BioBond transition shows the clearest pattern:</strong> Morphic suppression declines only after several steps of sustained structural support, confirming that accumulated learned self-censorship requires time to unwind even when conditions improve.</div>
+    </div>
+    <p style="font-size:.83rem;margin:.6rem 0 .4rem">Write your prediction precisely enough that you will know whether the simulation confirmed or disconfirmed it — and note which of the nine fairness dimensions your prediction is most sensitive to.</p>
+    <textarea class="jta q5" id="jta-q5-pred" placeholder="I think Stance ___ fits because my PRF is most sensitive to...&#10;&#10;My predicted suppression gap for Config A: ___&#10;My predicted λ Perceived for Config B: ___&#10;My prediction for the BioBond lag: ___&#10;The fairness dimension my prediction is most sensitive to: ___" oninput="jSave('q5_pred',this.value)"></textarea>
+    <div class="save-note" id="sn-q5-pred">✓ Saved</div>
+    <p style="font-size:.83rem;margin:.75rem 0 .3rem;color:var(--amber)"><strong>Looking ahead to Chapters 12–14:</strong> if Configuration B is structurally unstable without international governance coordination, two possibilities — pick the one your PRF makes you most sensitive to:</p>
+    <div class="stance-grid">
+      <div class="stance" style="background:#dbeafe;border-left:3px solid #3b82f6;font-size:.83rem"><strong>Possibility A — Governance problem:</strong> International rules on tax competition, labor standards, or capital mobility could protect national coherence-preserving architectures if designed to do so. The rules-based order dimension is most at risk without them.</div>
+      <div class="stance" style="background:#f5f3ff;border-left:3px solid #8b5cf6;font-size:.83rem"><strong>Possibility B — Legitimacy problem:</strong> International governance mechanisms exist but lack democratic legitimacy to enforce coherence-preserving standards against mobile capital. The agency dimension is most at risk — the populations most harmed have the least voice in the structures that harm them.</div>
+    </div>
+    <textarea class="jta" id="jta-civ-pred" style="min-height:90px;margin-top:.5rem" placeholder="I think Possibility ___ because my PRF makes me most sensitive to...&#10;The chapter in the applied sequence I expect to address this: ___" oninput="jSave('civ_pred',this.value)"></textarea>
+    <div class="save-note" id="sn-civ-pred">✓ Saved</div>
+  </div>
+
+  <!-- Run toggle -->
+  <div class="run-toggle">
+    <button class="run-btn run-a active-run" id="btnA" onclick="selectConfig('A')">Configuration A<br><small>Entropy-Exporting</small></button>
+    <button class="run-btn run-b" id="btnB" onclick="selectConfig('B')">Configuration B<br><small>Coherence-Preserving</small></button>
+    <button class="run-btn run-c" id="btnC" onclick="selectConfig('C')">Configuration C<br><small>BioBond Transition</small></button>
+  </div>
+
+  <div class="ucp-panel">
+    <h3>Economic Architecture Simulation — <span id="runLabel">Configuration A: Entropy-Exporting</span></h3>
+    <button class="ucp-run-btn" id="ucpRunBtn" onclick="runEconSim()">▶ Run Simulation</button>
+    <div id="ucpResult" style="display:none">
+      <div class="ucp-metrics" id="ucpMetrics"></div>
+      <div class="ucp-bar-section" id="ucpBars"></div>
+      <div class="ucp-narrative" id="ucpNarrative"></div>
+    </div>
+    <div class="ucp-error" id="ucpError" style="display:none"></div>
+  </div>
+
+  <!-- Comparison panel -->
+  <div class="compare-box" id="compareBox">
+    <h4>Three-Architecture Comparison</h4>
+    <div id="compareText"></div>
+  </div>
+
+  <!-- SxS panel -->
+  <div class="sxs-panel" id="sxsPanel">
+    <div class="sxs-label">Side-by-Side — Three Architecture Comparison</div>
+    <div id="sxsBody"><div style="font-size:.84rem;color:rgba(255,255,255,.35);font-style:italic;text-align:center;padding:1.25rem 0">Run all three configurations to populate the comparison.</div></div>
+  </div>
+
+  <!-- Robustness panel -->
+  <div class="robustness-panel" id="robustnessPanel">
+    <div class="robustness-label">Structural Robustness — Try a Different Agent Population</div>
+    <p style="font-size:.83rem;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:.85rem">Each re-run populates the simulation with a different group of agents inhabiting the same structural conditions. <strong style="color:rgba(255,255,255,.9)">If the suppression gap pattern holds across many different agent populations, you are seeing structural robustness — the architecture is the causal explanation, not the particular agents who happened to inhabit it.</strong> This is what the chapter means by "structural" as opposed to "individual" causes of economic outcomes.</p>
+    <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
+      <button class="rerun-btn" id="rerunBtn" onclick="rerunWithNewSeed()">↺ Try a Different Agent Population</button>
+      <span class="robustness-status" id="rerunStatus"></span>
+    </div>
+    <div id="robustnessLog" style="display:none">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.35);margin-bottom:.5rem">Run History — same architecture, different populations</div>
+      <div style="overflow-x:auto">
+        <table id="robustnessTable" style="width:100%;border-collapse:collapse;min-width:500px">
+          <thead><tr style="border-bottom:1px solid rgba(255,255,255,.12)">
+            <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Run</td>
+            <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Config</td>
+            <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Raw</td>
+            <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">λ Perceived</td>
+            <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Gap</td>
+            <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Morphic</td>
+            <td style="padding:.3rem .5rem;font-size:.67rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">OS2 Bridge</td>
+          </tr></thead>
+          <tbody id="robustnessRows"></tbody>
+        </table>
+      </div>
+      <div id="robustnessSummary" style="margin-top:.75rem;font-size:.8rem;color:rgba(255,255,255,.55);font-style:italic;font-family:'Georgia',serif;line-height:1.5"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-temporal">
+  <h2>§4 — The Temporal Commons</h2>
+
+  <p>Every chapter in the foundational arc asked about the present: what are the agency conditions right now for the agents inhabiting this structure? The ACP's temporal commons concept asks a different question: what is this architecture handing forward?</p>
+
+  <h3>Three Temporal Commons Questions</h3>
+
+  <div class="card card-teal">
+    <h4>The Metabolic Question</h4>
+    <p>Is this economic architecture sustaining human capacity or consuming it? An economy that extracts labor intensity, concentrates gains, and exports the costs onto workers' health, families, and communities is consuming human capacity faster than it is restoring it. The distinction between a healthy metabolism and a depleting one is not visible in GDP statistics. It is visible in FHRI measures, in burnout rates, in population health gradients, and in what the simulation models as morphic suppression accumulating across generations.</p>
+  </div>
+
+  <div class="card card-teal">
+    <h4>The Generative Question</h4>
+    <p>What kind of agency capacity is the economic architecture handing to the next generation? A stable economy that provides adequate security floors, predictable rules, and genuine inclusion is handing forward structural conditions that enable children to develop the historical continuity, present integration, prospective coherence, and meta-constructor capacity that the ATCF measures. An economy that concentrates economic power while creating permanent precarity for a significant minority is handing forward a bifurcated agency landscape regardless of aggregate performance metrics.</p>
+  </div>
+
+  <div class="card card-teal">
+    <h4>The Civic Question</h4>
+    <p>Does the economic architecture sustain the deliberative capacity that democratic governance requires? Chapter 9 showed you that World Values Map positions are thermodynamic facts — where populations land on the security/self-expression axis is substantially determined by the material conditions they inhabit. An economy that keeps a significant population in permanent survival mode is not just producing economic harm; it is producing the conditions under which democratic deliberation becomes structurally difficult.</p>
+  </div>
+
+  <div class="card" style="background:#fff0f0;border-left:4px solid #dc2626;margin-top:1rem">
+    <h4 style="color:#dc2626">A Fourth Question — The Civilizational Level</h4>
+    <p>There is a temporal commons question that operates above the national level, and it is the hardest one the ACP raises. Climate change is the largest inter-generational cost externalization in human history: economic systems organized around short-run output have been exporting entropy onto the planetary systems that all future agency conditions depend on.</p>
+    <p>No national wage floor, labor protection, or redistributive policy can address this by itself. The suppression gap here operates between what the scientific community knows about the trajectory of planetary conditions and what reaches the international governance architectures that would need to act on it.</p>
+    <p>The entropy-exporting institution the ACP is ultimately most concerned about is civilization itself, when organized around architectures that cannot account for what they are handing forward. The applied sequence's existential risk chapter will address this directly. But students who have understood the temporal commons concept at the institutional level need to see it applied here, at the level where the stakes are highest and the governance architecture is most underdeveloped.</p>
+  </div>
+
+  <div class="card card-amber" style="margin-top:1.5rem">
+    <h4>The Temporal Commons Test</h4>
+    <p>Apply this test to any economic architecture or policy proposal:</p>
+    <p style="font-style:italic;font-size:.95rem"><strong>Will the people who inhabit this structure for twenty years enter the next twenty years with more or less capacity for coherent agency than they entered the first twenty with?</strong></p>
+    <p>If the honest answer is <em>less</em> — if the architecture systematically consumes human coherence capacity faster than it restores it — then the architecture is entropy-exporting regardless of its output metrics.</p>
+  </div>
+
+  <h3>Journal Reflection</h3>
+  <div class="journal-box">
+    <div class="journal-label">Temporal Commons — Your Context</div>
+    <p style="font-size:.85rem;margin-bottom:.5rem">Apply the temporal commons test to one economic institution in your life. Be specific about which of the three questions (metabolic, generative, civic) it performs best on and worst on — and name the specific simulation metric that would capture the failure mode you identify.</p>
+    <textarea class="jta" id="jta-temporal" placeholder="The institution: ...&#10;Metabolic question: ...&#10;Generative question: ...&#10;Civic question: ...&#10;The simulation metric that captures the key failure: ..." oninput="jSave('temporal',this.value)"></textarea>
+    <div class="save-note" id="sn-temporal">✓ Saved</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-sage">
+  <h2>§5 — SAGE Walkthrough: The Minimum Wage Case</h2>
+
+  <p>A mid-sized city is debating whether to raise the minimum wage from $10 to $15 per hour. The business association argues the increase will cause job losses. The labor coalition argues the current wage keeps full-time workers in chronic economic insecurity that prevents genuine economic agency. Both arguments are empirically contested. What does SAGE add?</p>
+
+  <div class="card card-teal">
+    <h4>See</h4>
+    <p>The standard debate sees two aggregate effects: employment and wages. SAGE asks you to see more specifically. What does chronic wage insecurity do to prospective coherence — the capacity to plan, to invest in longer-term choices? What is the suppression gap between what these workers actually know about their economic situation and what reaches the policymakers making decisions about it?</p>
+    <p>See also the businesses. A business that cannot sustain itself at $15 per hour is either operating in a market where margins are too thin, or it is depending on labor compensation below what the ACP's security dimension requires. Both are structural facts, not individual failures.</p>
+  </div>
+
+  <div class="card card-teal">
+    <h4>Analyze</h4>
+    <p>Apply the traditions from Chapter 8 that are most precise for this case:</p>
+    <p><strong>Consequentialism:</strong> what does the best available evidence say about aggregate effects at this scale in this market? Note that Chapter 7 showed you why aggregate models may miss distributional effects that matter most. A net-zero employment effect at the aggregate level can mask significant harm to specific populations.</p>
+    <p><strong>Deontology:</strong> is there a duty not to maintain a wage structure that keeps full-time workers in conditions of chronic insecurity? The ACP's security dimension suggests there is. What does the dignity dimension require: that workers be treated as genuine economic agents whose contribution warrants a wage that supports coherent agency?</p>
+    <p><strong>Capabilities approach:</strong> can workers at the current minimum wage exercise genuine economic capability — access education, maintain housing stability, care for dependents, participate in civic life — or does the current structure suppress those capabilities regardless of their nominal availability?</p>
+  </div>
+
+  <div class="card card-teal">
+    <h4>Generate</h4>
+    <p>A tiered wage law (smaller businesses get a slower increase timeline) is a real policy option. SAGE asks you to evaluate it against the nine fairness dimensions before recommending it. Does a tiered timeline preserve the rules-based order dimension — or does it create a two-tier labor market where workers in small businesses have structurally lower security and dignity for reasons that have nothing to do with their contribution?</p>
+    <p>Generate at least two alternatives. One option to consider: what happens if the wage floor increase is coupled with mechanisms that reduce entropy conditions for small businesses — simplified compliance, reduced administrative costs, targeted investment? The coherence-preserving approach does not simply redistribute within an entropy-exporting architecture. It asks what structural changes would reduce entropy for everyone.</p>
+  </div>
+
+  <div class="card card-teal">
+    <h4>Engage, Evaluate, and Iterate</h4>
+    <p>Economic policy operates in complex adaptive systems. A $15 minimum wage implemented in one market had different effects than the same policy in a different market, and both had different effects than simple models predicted. The commitment to engage — to act on the best available structural analysis even under uncertainty — paired with the commitment to evaluate and iterate is what distinguishes ACP-grounded policy from both paralysis and overconfidence.</p>
+    <p>The simulation gives you structural tendencies. The research literature gives you empirical evidence. Your PRF gives you the interpretive lens through which you see both. SAGE holds all three in productive tension.</p>
+  </div>
+
+  <div class="journal-box" style="margin-top:1.5rem">
+    <div class="journal-label">SAGE — Your Scenario</div>
+    <p style="font-size:.85rem;margin-bottom:.5rem">Choose one current economic policy debate — local, state, or national. Apply all four stages of SAGE. In the Evaluate and Iterate stage, name one specific thing you would need to measure to know whether the policy was actually improving agency conditions for the populations it affects, and identify which simulation metric is the closest proxy for that measure.</p>
+    <textarea class="jta" id="jta-sage" placeholder="The policy: ...&#10;&#10;See: ...&#10;Analyze: ...&#10;Generate: ...&#10;Engage/Evaluate/Iterate: ...&#10;&#10;What I would measure: ...&#10;The closest simulation metric: ..." oninput="jSave('sage',this.value)"></textarea>
+    <div class="save-note" id="sn-sage">✓ Saved</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+  <h2>Ethics Journal — Chapter 11</h2>
+
+  <div id="ch10PredJournal" style="display:none;margin-bottom:1rem">
+    <div class="pred-retrieve">
+      <div class="pr-label">Your Chapter 10 Prediction (retrieved)</div>
+      <div id="ch10PredJournalText" class="pr-text"></div>
+    </div>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Q1 — Structural Diagnosis</div>
+    <p style="font-size:.85rem;margin-bottom:.5rem">Identify one economic institution you regularly interact with. Apply the nine fairness dimensions as a diagnostic: which three does it perform well on, and which three does it most clearly fail? For each failure, name the specific simulation mechanism — which block field, evidence architecture, or entropy condition — that would model it.</p>
+    <textarea class="jta" id="jta-q1" placeholder="Institution: ...&#10;Strong dimensions: (1) ___ because... (2) ___ because... (3) ___ because...&#10;Weak dimensions: (1) ___ mechanism: ___ (2) ___ mechanism: ___ (3) ___ mechanism: ___" oninput="jSave('q1',this.value)"></textarea>
+    <div class="save-note" id="sn-q1">✓ Saved</div>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Q2 — Simulation Interpretation</div>
+    <p style="font-size:.85rem;margin-bottom:.5rem">After running all three configurations, compare your Q5 prediction to the actual results. Which metric showed the largest gap between what you predicted and what the structure produced? What does that gap reveal about which fairness dimension your PRF is most and least sensitive to?</p>
+    <textarea class="jta" id="jta-q2" placeholder="My prediction was: ...&#10;What the simulation showed: ...&#10;The largest gap between prediction and result: ...&#10;What this reveals about my PRF's sensitivity: ..." oninput="jSave('q2',this.value)"></textarea>
+    <div class="save-note" id="sn-q2">✓ Saved</div>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Q3 — Temporal Commons</div>
+    <p style="font-size:.85rem;margin-bottom:.5rem">Identify one economic policy currently being debated nationally or locally. Apply the temporal commons test: will the people who inhabit this structure for twenty years enter the next twenty with more or less capacity for coherent agency? Name one specific thing you would need to measure to answer this confidently — and identify which of the three temporal commons questions (metabolic, generative, civic) your PRF makes you most sensitive to.</p>
+    <textarea class="jta" id="jta-q3" placeholder="The policy: ...&#10;Temporal commons test result: ...&#10;What I would need to measure: ...&#10;The question my PRF makes me most sensitive to: ___" oninput="jSave('q3',this.value)"></textarea>
+    <div class="save-note" id="sn-q3">✓ Saved</div>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Q4 — The Capabilities-ATCF Bridge</div>
+    <p style="font-size:.85rem;margin-bottom:.5rem">Nussbaum argues that what matters is not resources but what people can actually do and become. Pick one of her central capabilities (bodily health, affiliation, practical reason, play, control over one's environment). Map it onto a specific ATCF component. What economic conditions would need to be present for that capability to be genuinely accessible rather than nominally available?</p>
+    <textarea class="jta" id="jta-q4" placeholder="The capability: ...&#10;ATCF component it maps to: ...&#10;Economic conditions needed for genuine (not nominal) access: ...&#10;What suppresses it despite nominal availability: ..." oninput="jSave('q4',this.value)"></textarea>
+    <div class="save-note" id="sn-q4">✓ Saved</div>
+  </div>
+
+  <div class="journal-box" style="border-color:var(--teal-mid);border-width:2px">
+    <div class="journal-label" style="color:var(--teal-dark)">Q5 — Your Economic Architecture Reading (Stored for Chapter 12)</div>
+
+    <div id="predRetrieve" style="display:none;margin-bottom:.75rem">
+      <div class="pred-retrieve">
+        <div class="pr-label">Your Q5 Prediction (from Simulation tab)</div>
+        <div id="predRetrieveText" class="pr-text"></div>
+      </div>
+    </div>
+
+    <p style="font-size:.85rem;margin-bottom:.5rem">Before moving to Chapter 12, commit to a prediction about what you will find there. Chapter 12 applies the same three-architecture framework to legal and governance systems — the evidence architectures that determine what counts as valid testimony, whose claims reach decisions, and what procedural rules govern the suppression gap between what people know and what institutions can hear.</p>
+    <p style="font-size:.85rem;margin-bottom:.5rem">Predict: which of the nine fairness dimensions do you expect legal systems to perform most poorly on, given what you have learned about how institutional architectures create suppression gaps? Which of the three social contract architectures (enforcement-dominant, rights-dominant, or shared-purpose hybrid) do you expect to produce the highest OS2 Bridge in the simulation? And which of the civilizational stack's levels do you expect to be most visible in the legal systems chapter?</p>
+    <textarea class="jta q5" id="jta-q5" placeholder="The fairness dimension I expect legal systems to fail most severely on: ___&#10;Why (mechanism): ...&#10;&#10;The legal architecture I expect to produce the highest OS2 Bridge: ___&#10;Why: ...&#10;&#10;The civilizational stack level I expect to be most visible: ___&#10;Because: ..." oninput="jSave('ch11_cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-ch11_cq5">✓ Saved for Chapter 12</div>
+  </div>
+
+  <div class="card card-blue" style="margin-top:1.5rem">
+    <h4>💾 Export Your Work</h4>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.5rem">
+      <button onclick="exportJournal()" style="padding:.5rem 1.1rem;border:none;border-radius:.4rem;background:var(--teal-dark);color:#fff;font-family:'Georgia',serif;font-size:.88rem;cursor:pointer">📥 Download</button>
+      <button onclick="copyJournal()" style="padding:.5rem 1.1rem;border:1px solid var(--border);border-radius:.4rem;background:var(--paper);color:var(--ink);font-family:'Georgia',serif;font-size:.88rem;cursor:pointer">📋 Copy</button>
+      <button onclick="clearJournal()" style="padding:.5rem 1.1rem;border:1px solid #fca5a5;border-radius:.4rem;background:#fee2e2;color:#7f1d1d;font-family:'Georgia',serif;font-size:.88rem;cursor:pointer">🗑️ Clear All</button>
+    </div>
+  </div>
+</div>
+
+<footer>Ethics Beyond Boundaries · Ethics Institute, Saint Petersburg College · Chapter 11: Economic Systems</footer>
+
+<script>
+'use strict';
+
+const JP = 'ch11_';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ── Storage ──────────────────────────────────────────────────
+function jSave(k, v) {
+  try {
+    localStorage.setItem(JP + k, v);
+    const sn = document.getElementById('sn-' + k) ||
+               document.getElementById('sn-' + k.replace('ch11_',''));
+    if (sn) { sn.classList.add('show'); setTimeout(() => sn.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+function jLoad(k) { try { return localStorage.getItem(JP + k) || ''; } catch(e) { return ''; } }
+
+// ── Tab switching ─────────────────────────────────────────────
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const pane = document.getElementById('tab-' + name);
+  if (pane) pane.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'journal') loadJournalFields();
+  if (name === 'simulation') loadSimFields();
+}
+
+function loadJournalFields() {
+  ['q1','q2','q3','q4','temporal','sage'].forEach(k => {
+    const el = document.getElementById('jta-' + k);
+    if (el) el.value = jLoad(k);
+  });
+  const q5 = document.getElementById('jta-q5');
+  if (q5) q5.value = jLoad('ch11_cq5') || jLoad('cq5') || '';
+  // Retrieve prediction
+  const pred = jLoad('q5_pred');
+  const predEl = document.getElementById('predRetrieveText');
+  const predBox = document.getElementById('predRetrieve');
+  if (pred && pred.trim() && predEl && predBox) {
+    predEl.textContent = pred;
+    predBox.style.display = 'block';
+  }
+  // Ch10 prediction retrieval
+  loadCh10Pred();
+}
+
+function loadSimFields() {
+  const pred = document.getElementById('jta-q5-pred');
+  if (pred) pred.value = jLoad('q5_pred');
+  const civPred = document.getElementById('jta-civ-pred');
+  if (civPred) civPred.value = jLoad('civ_pred');
+  loadCh10Pred();
+}
+
+function loadCh10Pred() {
+  try {
+    const pred = localStorage.getItem('ch10_cq5') || '';
+    if (pred.trim()) {
+      ['ch10PredDisplay','ch10PredJournal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'block';
+      });
+      ['ch10PredText','ch10PredJournalText'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = pred;
+      });
+    }
+  } catch(e) {}
+}
+
+// ── Simulation ────────────────────────────────────────────────
+let _config = 'A';
+let _results = {};
+let _econSeed = 100;
+let _econLog = [];
+let _econCount = 0;
+
+const CONFIG_LABELS = {
+  A: 'Configuration A: Entropy-Exporting',
+  B: 'Configuration B: Coherence-Preserving',
+  C: 'Configuration C: BioBond Transition',
+};
+
+const CONFIG_COLORS = { A: '#f08080', B: '#7fd8a8', C: '#c9a84c' };
+
+const PAYLOADS = {
+  A: {
+    num_agents: 18, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    worldview_distribution: {
+      role_order: 0.45, sacred_boundary: 0.25,
+      liberal_individualist: 0.18, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.62, tradition_weighted: 0.18,
+      empirical_calibrated: 0.12, alternative_facts: 0.08
+    },
+    scenario_physics: {
+      base_entropy: 0.60, base_stress: 0.56,
+      block_fields: { care: -0.30, fairness: -0.55, community: -0.40, boundary: 0.45 }
+    }
+  },
+  B: {
+    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 42,
+    worldview_distribution: {
+      ubuntu_relational: 0.30, liberal_individualist: 0.28,
+      indigenous_custodial: 0.18, role_order: 0.14, sacred_boundary: 0.10
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.55, tradition_weighted: 0.20,
+      authority_weighted: 0.15, alternative_facts: 0.10
+    },
+    scenario_physics: {
+      base_entropy: 0.42, base_stress: 0.38,
+      block_fields: { care: 0.38, fairness: 0.45, community: 0.40, boundary: 0.18 }
+    }
+  },
+  C: {
+    num_agents: 18, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    activate_biobond_at: 4,
+    worldview_distribution: {
+      role_order: 0.45, sacred_boundary: 0.25,
+      liberal_individualist: 0.18, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.62, tradition_weighted: 0.18,
+      empirical_calibrated: 0.12, alternative_facts: 0.08
+    },
+    scenario_physics: {
+      base_entropy: 0.60, base_stress: 0.56,
+      block_fields: { care: -0.30, fairness: -0.55, community: -0.40, boundary: 0.45 }
+    }
+  }
+};
+
+async function fetchWithRetry(url, opts, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
+      if (r.ok) return r;
+      if (i === retries) throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(res => setTimeout(res, 1200 * (i + 1)));
+    }
+  }
+}
+
+function selectConfig(cfg) {
+  _config = cfg;
+  document.getElementById('runLabel').textContent = CONFIG_LABELS[cfg];
+  ['A','B','C'].forEach(c => {
+    document.getElementById('btn'+c).classList.toggle('active-run', c === cfg);
+  });
+  document.getElementById('ucpError').style.display = 'none';
+  if (_results[cfg]) {
+    renderEconResult(_results[cfg]);
+    document.getElementById('ucpRunBtn').textContent = '↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display = 'none';
+    document.getElementById('ucpRunBtn').textContent = '▶ Run Simulation';
+  }
+}
+
+async function runEconSim() {
+  const btn = document.getElementById('ucpRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ucp-spinner"></span>Running…';
+  document.getElementById('ucpResult').style.display = 'none';
+  document.getElementById('ucpError').style.display = 'none';
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(PAYLOADS[_config]),
+    });
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics in response');
+
+    _results[_config] = data;
+    renderEconResult(data);
+    if (Object.keys(_results).length === 3) renderComparison();
+    // Log to robustness tracker
+    const m = data.metrics;
+    _econCount++;
+    _econLog.push({
+      run: _econCount, cfg: _config,
+      seed: PAYLOADS[_config].seed,
+      lr: m.lambda_raw || 0, lp: m.lambda_perceived || 0,
+      gap: Math.max(0, (m.lambda_raw||0) - (m.lambda_perceived||0)),
+      morph: m.morphic_suppression || 0,
+      os2: m.os2_synergy_bridge || 0,
+    });
+    const rp = document.getElementById('robustnessPanel');
+    if (rp) rp.style.display = 'block';
+    renderRobustnessLog();
+    renderSxS();
+    btn.disabled = false;
+    btn.textContent = '↺ Re-run Simulation';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '▶ Run Simulation';
+    const err = document.getElementById('ucpError');
+    err.textContent = 'Simulation unavailable — ' + e.message + '. Please try again in a moment.';
+    err.style.display = 'block';
+  }
+}
+
+function vc(v, hi = true) {
+  if (hi) return v > 0.55 ? 'val-great' : v > 0.30 ? 'val-warn' : 'val-bad';
+  return v < 0.15 ? 'val-great' : v < 0.35 ? 'val-warn' : 'val-bad';
+}
+
+function renderEconResult(data) {
+  const m = data.metrics || {};
+  const raw = m.lambda_raw || 0, perc = m.lambda_perceived || 0;
+  const fric = m.friction || 0, morph = m.morphic_suppression || 0;
+  const os2 = m.os2_synergy_bridge ?? m.os2_synergy ?? 0;
+  const gap = Math.max(0, raw - perc);
+  const cfg = _config;
+
+  document.getElementById('ucpMetrics').innerHTML = `
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Raw</div>
+      <div class="ucp-metric-value ${vc(raw)}">${raw.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${raw > 0.55 ? 'Capacity intact' : raw > 0.30 ? 'Strained' : 'Collapsed'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Perceived</div>
+      <div class="ucp-metric-value ${vc(perc)}">${perc.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${perc > 0.50 ? 'Voice reaching decisions' : perc > 0.25 ? 'Suppressed' : 'Near-absent'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Suppression Gap</div>
+      <div class="ucp-metric-value ${vc(gap, false)}">${(gap * 100).toFixed(1)}%</div>
+      <div class="ucp-metric-phrase">${gap > 0.35 ? 'Large — ACP concern' : gap > 0.15 ? 'Moderate' : 'Minimal'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Morphic Supp.</div>
+      <div class="ucp-metric-value" style="color:#e879f9">${morph.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${morph > 0.20 ? 'Learned self-censorship building' : morph > 0.08 ? 'Emerging' : 'Low'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">OS2 Bridge</div>
+      <div class="ucp-metric-value ${vc(os2)}">${os2.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${os2 > 0.45 ? 'Cross-framework coordination' : os2 > 0.25 ? 'Partial' : 'Low'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Friction</div>
+      <div class="ucp-metric-value ${vc(fric, false)}">${fric.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">Translation cost</div></div>`;
+
+  const bp = v => `${Math.round(v * 100)}%`;
+  document.getElementById('ucpBars').innerHTML = `
+    <div class="ucp-gap-label">Agency conditions — what is available vs. what reaches decisions</div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Raw</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${bp(raw)}"></div></div>
+      <span class="ucp-bar-num">${raw.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Perceived</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perc" style="width:${bp(perc)}"></div></div>
+      <span class="ucp-bar-num">${perc.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">Morphic</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-morph" style="width:${bp(morph)}"></div></div>
+      <span class="ucp-bar-num">${morph.toFixed(2)}</span></div>`;
+
+  const narratives = {
+    A: `Configuration A — Entropy-Exporting: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. Authority-weighted evidence (62%) combined with negative fairness and community block fields routes labor's signal around decisions. Morphic suppression at ${morph.toFixed(3)} reflects the accumulated learned self-censorship of agents whose contributions consistently fail to reach outcomes. This is the simulation's structural account of what chronic economic precarity does to coordination capacity — not a moral verdict on any individual, but a measurement of what the architecture makes possible.`,
+    B: `Configuration B — Coherence-Preserving: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. Empirically-calibrated evidence (55%) and positive block fields allow more of agents' genuine capability to reach the decision processes that govern them. OS2 Bridge at ${os2.toFixed(3)} reflects the cross-worldview coordination that becomes structurally possible when the evidence architecture does not systematically discount certain frameworks. Compare to Configuration A: same agents, different architecture.`,
+    C: `Configuration C — BioBond Transition: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. The same entropy-exporting conditions as Configuration A, with institutional support activating at step 4. Notice whether morphic suppression (${morph.toFixed(3)}) has declined relative to Configuration A — and whether the decline is immediate or lagged. Accumulated learned self-censorship does not dissolve the moment structural conditions improve. The lag is the simulation's account of why sustained institutional intervention is required, not one-time policy adjustment.`,
+  };
+  document.getElementById('ucpNarrative').textContent = narratives[cfg] || '';
+  document.getElementById('ucpResult').style.display = 'block';
+}
+
+function renderComparison() {
+  const rA = _results.A?.metrics || {}, rB = _results.B?.metrics || {}, rC = _results.C?.metrics || {};
+  const gapA = Math.max(0, (rA.lambda_raw||0) - (rA.lambda_perceived||0));
+  const gapB = Math.max(0, (rB.lambda_raw||0) - (rB.lambda_perceived||0));
+  const gapC = Math.max(0, (rC.lambda_raw||0) - (rC.lambda_perceived||0));
+  const box = document.getElementById('compareBox');
+  const txt = document.getElementById('compareText');
+  txt.innerHTML = `
+    <p><strong>Suppression gap comparison:</strong> Config A = ${(gapA*100).toFixed(1)}%, Config B = ${(gapB*100).toFixed(1)}%, Config C (with BioBond) = ${(gapC*100).toFixed(1)}%. ${gapB < gapA ? `Config B reduced the gap by ${((gapA-gapB)*100).toFixed(1)} percentage points — the structural difference between entropy-exporting and coherence-preserving architecture.` : 'The gap difference between configurations is smaller than expected — run again with different seeds to explore variation.'}</p>
+    <p><strong>Morphic suppression:</strong> Config A = ${(rA.morphic_suppression||0).toFixed(3)}, Config B = ${(rB.morphic_suppression||0).toFixed(3)}, Config C = ${(rC.morphic_suppression||0).toFixed(3)}. ${(rC.morphic_suppression||0) < (rA.morphic_suppression||0) ? `BioBond reduced accumulated learned self-censorship by ${(((rA.morphic_suppression||0)-(rC.morphic_suppression||0))*100).toFixed(1)}pp — confirming that structural support interrupts the accumulation, though the lag means it did not fully close the gap with Config B.` : 'Morphic suppression similar across configurations — the stochastic variation may be masking the structural signal. Try additional seeds using the robustness panel.'}</p>
+    <p><strong>OS2 Bridge:</strong> Config B = ${(rB.os2_synergy_bridge||0).toFixed(3)} vs Config A = ${(rA.os2_synergy_bridge||0).toFixed(3)}. ${(rB.os2_synergy_bridge||0) > (rA.os2_synergy_bridge||0) ? 'Coherence-preserving architecture produces measurably higher cross-worldview coordination — the structural account of why fair economic institutions tend to produce more durable social contracts.' : 'OS2 Bridge values are similar across configurations in this run.'}</p>`;
+  box.style.display = 'block';
+}
+
+function renderSxS() {
+  const CONFIGS = ['A','B','C'];
+  const LABELS = { A: 'Config A', B: 'Config B', C: 'Config C' };
+  const METRICS = [
+    {key:'lambda_raw', label:'λ Raw', hi:true, desc:'Coordination capacity available'},
+    {key:'lambda_perceived', label:'λ Perceived', hi:true, desc:'What reaches decisions'},
+    {key:'os2_synergy_bridge', label:'OS2 Bridge', hi:true, desc:'Cross-worldview coordination'},
+    {key:'friction', label:'Friction', hi:false, desc:'Translation cost'},
+    {key:'morphic_suppression', label:'Morphic Supp.', hi:false, desc:'Learned self-censorship'},
+  ];
+  const gv = (cfg, key) => {
+    const m = _results[cfg]?.metrics || {};
+    return key === 'os2_synergy_bridge' ? (m.os2_synergy_bridge ?? m.os2_synergy ?? 0) : (m[key] || 0);
+  };
+  const done = CONFIGS.filter(c => _results[c]);
+  if (!done.length) return;
+
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">
+    <tr><td style="width:32%;padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Metric</td>`;
+  CONFIGS.forEach(c => {
+    const d = !!_results[c];
+    html += `<td style="width:23%;padding:.4rem .5rem;text-align:center">
+      <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${d ? CONFIG_COLORS[c] : 'rgba(255,255,255,.2)'}">${LABELS[c]}</div></td>`;
+  });
+  html += `</tr>`;
+  METRICS.forEach(metric => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">
+      <td style="padding:.5rem .6rem">
+        <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${metric.label}</div>
+        <div style="font-size:.66rem;color:rgba(255,255,255,.32);margin-top:.1rem">${metric.desc}</div>
+      </td>`;
+    CONFIGS.forEach(c => {
+      const d = !!_results[c];
+      const val = d ? gv(c, metric.key) : null;
+      const nc = d ? (metric.hi ? (val > .55 ? '#7fd8a8' : val > .30 ? '#f5c842' : '#f08080')
+                                 : (val < .12 ? '#7fd8a8' : val < .25 ? '#f5c842' : '#f08080')) : 'rgba(255,255,255,.2)';
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (d) {
+        html += `<div style="font-size:1.1rem;font-weight:700;font-family:'Courier New',monospace;color:${nc}">${val.toFixed(3)}</div>
+          <div style="margin:.25rem auto 0;width:76%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${Math.round(val*100)}%;background:${CONFIG_COLORS[c]};border-radius:3px;transition:width 1s ease"></div></div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table></div>`;
+  document.getElementById('sxsBody').innerHTML = html;
+}
+
+// ── Robustness panel ──────────────────────────────────────────
+async function rerunWithNewSeed() {
+  const btn = document.getElementById('rerunBtn');
+  const status = document.getElementById('rerunStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '…running'; }
+  if (status) status.textContent = `seed ${_econSeed}…`;
+
+  const base = PAYLOADS[_config];
+  const payload = { ...base, seed: _econSeed };
+  payload.scenario_physics = { ...base.scenario_physics,
+    block_fields: { ...base.scenario_physics.block_fields } };
+  if (base.activate_biobond_at !== undefined) payload.activate_biobond_at = base.activate_biobond_at;
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    const m = data.metrics || {};
+    _econCount++;
+    _econLog.push({
+      run: _econCount, cfg: _config, seed: _econSeed,
+      lr: m.lambda_raw || 0, lp: m.lambda_perceived || 0,
+      gap: Math.max(0, (m.lambda_raw||0) - (m.lambda_perceived||0)),
+      morph: m.morphic_suppression || 0,
+      os2: m.os2_synergy_bridge || 0,
+    });
+    _econSeed += 13;
+    renderRobustnessLog();
+    renderEconResult(data);
+  } catch(e) {
+    if (status) status.textContent = 'unavailable — try again';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Try a Different Agent Population'; }
+    if (status) setTimeout(() => { if(status.textContent.includes('seed')) status.textContent = ''; }, 3000);
+  }
+}
+
+function renderRobustnessLog() {
+  const log = _econLog;
+  if (!log.length) return;
+  const logDiv = document.getElementById('robustnessLog');
+  const tbody = document.getElementById('robustnessRows');
+  const sumEl = document.getElementById('robustnessSummary');
+  if (!logDiv || !tbody || !sumEl) return;
+  logDiv.style.display = 'block';
+
+  tbody.innerHTML = [...log].reverse().map((r, i) => {
+    const gapCol = r.gap > 0.40 ? '#f08080' : r.gap > 0.20 ? '#f5c842' : '#7fd8a8';
+    const lpCol = r.lp < 0.25 ? '#f08080' : r.lp < 0.50 ? '#f5c842' : '#7fd8a8';
+    const os2Col = r.os2 > 0.40 ? '#7fd8a8' : r.os2 > 0.22 ? '#f5c842' : '#f08080';
+    const rowStyle = i === 0 ? 'background:rgba(201,168,76,.07);' : '';
+    return `<tr style="border-top:1px solid rgba(255,255,255,.06);${rowStyle}">
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4)">#${r.run}</td>
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:${CONFIG_COLORS[r.cfg]}">${CONFIG_LABELS[r.cfg].split(':')[0]}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7);font-weight:700">${r.lr.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${lpCol};font-weight:700">${r.lp.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${gapCol};font-weight:700">${(r.gap*100).toFixed(1)}%</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.55)">${r.morph.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:${os2Col}">${r.os2.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  if (log.length >= 2) {
+    const byCfg = { A: [], B: [], C: [] };
+    log.forEach(r => { if (byCfg[r.cfg]) byCfg[r.cfg].push(r); });
+    let summary = '';
+    ['A','B','C'].forEach(cfg => {
+      const entries = byCfg[cfg];
+      if (entries.length >= 2) {
+        const gaps = entries.map(r => r.gap);
+        const [mn, mx] = [Math.min(...gaps), Math.max(...gaps)];
+        const range = (mx - mn) * 100;
+        const avgLp = entries.reduce((s,r) => s+r.lp, 0) / entries.length;
+        summary += `${CONFIG_LABELS[cfg].split(':')[0]}: across ${entries.length} populations, suppression gap ranged ${(mn*100).toFixed(1)}%–${(mx*100).toFixed(1)}% (spread: ${range.toFixed(1)}pp), avg λ Perceived = ${avgLp.toFixed(3)}. `;
+        if (range < 10) summary += `Narrow range confirms structural cause. `;
+      }
+    });
+    if (byCfg.A.length >= 1 && byCfg.B.length >= 1) {
+      const avgGapA = byCfg.A.reduce((s,r)=>s+r.gap,0)/byCfg.A.length;
+      const avgGapB = byCfg.B.reduce((s,r)=>s+r.gap,0)/byCfg.B.length;
+      summary += `Average gap: Config A = ${(avgGapA*100).toFixed(1)}%, Config B = ${(avgGapB*100).toFixed(1)}% — a ${((avgGapA-avgGapB)*100).toFixed(1)}pp structural difference across all runs tested.`;
+    }
+    sumEl.textContent = summary;
+  }
+}
+
+// ── Export ────────────────────────────────────────────────────
+function buildExportText() {
+  const date = new Date().toLocaleDateString();
+  let out = `CHAPTER 11: ECONOMIC SYSTEMS — ETHICS JOURNAL\nDate: ${date}\nStudent: [YOUR NAME]\n\n`;
+  out += `Q5 PREDICTION (PRE-SIMULATION)\n${jLoad('q5_pred') || '[not completed]'}\n\n`;
+  out += `CIVILIZATIONAL STACK PREDICTION\n${jLoad('civ_pred') || '[not completed]'}\n\n`;
+  out += `Q1 — STRUCTURAL DIAGNOSIS\n${jLoad('q1') || '[not completed]'}\n\n`;
+  out += `Q2 — SIMULATION INTERPRETATION\n${jLoad('q2') || '[not completed]'}\n\n`;
+  out += `Q3 — TEMPORAL COMMONS\n${jLoad('q3') || '[not completed]'}\n\n`;
+  out += `Q4 — CAPABILITIES-ATCF BRIDGE\n${jLoad('q4') || '[not completed]'}\n\n`;
+  out += `TEMPORAL COMMONS — MY CONTEXT\n${jLoad('temporal') || '[not completed]'}\n\n`;
+  out += `SAGE WALKTHROUGH\n${jLoad('sage') || '[not completed]'}\n\n`;
+  out += `Q5 — PREDICTION FOR CHAPTER 12\n${jLoad('ch11_cq5') || jLoad('cq5') || '[not completed]'}\n`;
+  return out;
+}
+
+function exportJournal() {
+  const txt = buildExportText();
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'Ch11_Economic_Systems_Journal.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function copyJournal() {
+  const txt = buildExportText();
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => fallbackCopy(txt));
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt) {
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+function clearJournal() {
+  if (!confirm('Clear all saved responses? This cannot be undone.')) return;
+  ['q5_pred','civ_pred','q1','q2','q3','q4','temporal','sage','ch11_cq5','cq5'].forEach(k =>
+    localStorage.removeItem(JP + k));
+  location.reload();
+}
+
+// ── On load ───────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadSimFields();
+  // Restore any saved prediction fields
+  const pred = document.getElementById('jta-q5-pred');
+  if (pred) pred.value = jLoad('q5_pred');
+  const civPred = document.getElementById('jta-civ-pred');
+  if (civPred) civPred.value = jLoad('civ_pred');
+});
+</script>
+</body>
+</html>
