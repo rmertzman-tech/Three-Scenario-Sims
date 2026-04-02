@@ -87,6 +87,12 @@ p{margin-bottom:.8rem;font-size:.9rem;line-height:1.75;text-align:justify}
 .fill-os2{background:#7fd8a8}
 .ucp-narrative{font-size:.81rem;color:rgba(255,255,255,.65);line-height:1.6;padding:.55rem .7rem;background:rgba(255,255,255,.05);border-radius:.35rem;margin:.4rem 0}
 .ucp-error{background:#fee2e2;color:#7f1d1d;padding:.65rem .85rem;border-radius:.35rem;font-size:.82rem;margin:.4rem 0}
+.robustness-panel{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.25);border-radius:.5rem;padding:.85rem 1rem;margin:.75rem 0;display:none}
+.robustness-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(201,168,76,.6);margin-bottom:.4rem}
+.rerun-btn{padding:.4rem .9rem;border:none;border-radius:.35rem;background:var(--ucp-gold);color:#fff;font-family:'Georgia',serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s}
+.rerun-btn:hover{opacity:.85}
+.rerun-btn:disabled{opacity:.5;cursor:wait}
+.rb-status{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);margin-left:.5rem}
 /* ── ACP box ── */
 .acp-box{background:var(--amber-light);border:2px solid var(--amber-mid);border-radius:.6rem;padding:1rem 1.15rem;margin:.75rem 0}
 .acp-box .acp-head{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);font-weight:700;margin-bottom:.4rem}
@@ -196,16 +202,55 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
   </div>
 
   <div class="sim-panel">
-    <h3>Simulation Lens: <span class="sim-metric-badge">ATCF Trajectory — Historical Continuity + Prospective Coherence</span></h3>
-    <p>Watch the ATCF components across steps rather than final metrics. Historical continuity (H_C) measures whether agents maintain a coherent narrative of who they are over time — the simulation's account of Aristotelian autobiographical integrity. Prospective coherence (P_C) measures whether agents can project a viable future self — the relationship between current action and telos.</p>
-    <p>A run under conditions supporting character development (low entropy, stable relationships, positive community blocks) will show ATCF strengthening across steps. A run under entropy-exporting conditions will show fragmentation — exactly what Aristotle predicted when conditions for virtue cultivation are systematically undermined.</p>
-    <button class="run-btn" id="btnVirtue" onclick="runTrad('virtue')">▶ Run Virtue Ethics Simulation</button>
+    <h3>Simulation Lens: <span class="sim-metric-badge">Two-Configuration Contrast — Stable vs. Entropy-Exporting Conditions</span></h3>
+    <p>Because the backend returns final aggregate metrics rather than step-by-step trajectories, we model the virtue ethics claim through structural contrast rather than literal time-series. Run both configurations and compare what each architecture produces for the same question: <strong>what do these structural conditions make possible for agents' coherent agency?</strong></p>
+    <p><strong>Configuration A — Stable Conditions:</strong> entropy 0.38, positive care and community block fields, empirically-calibrated evidence. Models Aristotle's polis as supporting character formation — an institutional environment where agents' genuine capacity tends to reach outcomes and relational infrastructure supports the habituation that virtue requires.</p>
+    <p><strong>Configuration B — Entropy-Exporting Conditions:</strong> entropy 0.72, negative block fields, authority-weighted evidence. Models what chronic precarity does to the structural prerequisites for virtue: high stress degrades the deliberate agency that virtue cultivation requires, negative community blocks sever the relational networks through which character is formed, and authority-weighted evidence routes agents' contributions around the decisions that govern them.</p>
+    <p style="font-size:.83rem;color:rgba(255,255,255,.55);font-style:italic">The virtue ethics claim is not visible in a single run — it is visible in the comparison. A tradition that says character is formed through stable conditions predicts that Configuration A and B will produce systematically different final states. Run both and check whether the prediction holds.</p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0">
+      <button class="run-btn" id="btnVirtue" onclick="runTrad('virtue')" style="flex:1;min-width:180px">▶ Run Config A — Stable Conditions</button>
+      <button class="run-btn" id="btnVirtueB" onclick="runTrad('virtueB')" style="flex:1;min-width:180px;background:#7c3aed">▶ Run Config B — Entropy-Exporting</button>
+    </div>
     <div id="resultVirtue" style="display:none">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:rgba(127,216,168,.6);margin:.4rem 0 .2rem">Config A — Stable Conditions</div>
       <div class="ucp-metrics" id="metricsVirtue"></div>
       <div id="barsVirtue" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeVirtue"></div>
     </div>
+    <div id="resultVirtueB" style="display:none;margin-top:.75rem">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:#e879f9;margin:.4rem 0 .2rem">Config B — Entropy-Exporting</div>
+      <div class="ucp-metrics" id="metricsVirtueB"></div>
+      <div id="barsVirtueB" style="margin:.5rem 0"></div>
+      <div class="ucp-narrative" id="narrativeVirtueB"></div>
+    </div>
+    <div id="virtueCompare" style="display:none;margin-top:.75rem;padding:.65rem .85rem;background:rgba(255,255,255,.06);border-radius:.4rem;font-size:.83rem;color:rgba(255,255,255,.7)"></div>
     <div class="ucp-error" id="errVirtue" style="display:none"></div>
+    <div class="ucp-error" id="errVirtueB" style="display:none"></div>
+  <div class="robustness-panel" id="rp-virtue">
+    <div class="robustness-label">Structural Robustness — Try a Different Agent Population</div>
+    <p style="font-size:.81rem;color:rgba(255,255,255,.7);line-height:1.55;margin-bottom:.6rem">Re-runs the <em>currently active</em> configuration (A or B) with a different agent population. If the contrast between Config A and Config B holds across many different seed populations, you are observing a structural finding about what each architecture makes possible — not a feature of who the particular agents were.</p>
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
+      <button class="rerun-btn" id="rerunBtn-virtue" onclick="rerunTrad('virtue')">↺ Try a Different Agent Population</button>
+      <span class="rb-status" id="rbStatus-virtue"></span>
+    </div>
+    <div id="rbLog-virtue" style="display:none">
+      <div style="font-size:.67rem;font-family:'Courier New',monospace;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.35rem">Run History — same architecture, different populations</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;min-width:420px">
+          <thead><tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Run</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Config</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Raw</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Perceived</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Gap</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">OS2 Bridge</td>
+          </tr></thead>
+          <tbody id="rbRows-virtue"></tbody>
+        </table>
+      </div>
+      <div id="rbSummary-virtue" style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.45);font-style:italic;font-family:'Georgia',serif;line-height:1.45"></div>
+    </div>
+  </div>
   </div>
 
   <div class="acp-box">
@@ -263,6 +308,31 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-narrative" id="narrativeKant"></div>
     </div>
     <div class="ucp-error" id="errKant" style="display:none"></div>
+  <div class="robustness-panel" id="rp-kant">
+    <div class="robustness-label">Structural Robustness — Try a Different Agent Population</div>
+    <p style="font-size:.81rem;color:rgba(255,255,255,.7);line-height:1.55;margin-bottom:.6rem">Each re-run uses the same structural configuration with a different random agent population. If the pattern holds across populations, you are seeing a structural finding — the architecture is the causal explanation, not the particular agents who happened to inhabit it. Compare seeds to check whether your results are robust or stochastic.</p>
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
+      <button class="rerun-btn" id="rerunBtn-kant" onclick="rerunTrad('kant')">↺ Try a Different Agent Population</button>
+      <span class="rb-status" id="rbStatus-kant"></span>
+    </div>
+    <div id="rbLog-kant" style="display:none">
+      <div style="font-size:.67rem;font-family:'Courier New',monospace;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.35rem">Run History — same architecture, different populations</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;min-width:420px">
+          <thead><tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Run</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Seed</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Raw</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Perceived</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Gap</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">OS2 Bridge</td>
+          </tr></thead>
+          <tbody id="rbRows-kant"></tbody>
+        </table>
+      </div>
+      <div id="rbSummary-kant" style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.45);font-style:italic;font-family:'Georgia',serif;line-height:1.45"></div>
+    </div>
+  </div>
   </div>
 
   <div class="acp-box">
@@ -320,6 +390,31 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-narrative" id="narrativeMill"></div>
     </div>
     <div class="ucp-error" id="errMill" style="display:none"></div>
+  <div class="robustness-panel" id="rp-mill">
+    <div class="robustness-label">Structural Robustness — Try a Different Agent Population</div>
+    <p style="font-size:.81rem;color:rgba(255,255,255,.7);line-height:1.55;margin-bottom:.6rem">Each re-run uses the same structural configuration with a different random agent population. If the pattern holds across populations, you are seeing a structural finding — the architecture is the causal explanation, not the particular agents who happened to inhabit it. Compare seeds to check whether your results are robust or stochastic.</p>
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
+      <button class="rerun-btn" id="rerunBtn-mill" onclick="rerunTrad('mill')">↺ Try a Different Agent Population</button>
+      <span class="rb-status" id="rbStatus-mill"></span>
+    </div>
+    <div id="rbLog-mill" style="display:none">
+      <div style="font-size:.67rem;font-family:'Courier New',monospace;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.35rem">Run History — same architecture, different populations</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;min-width:420px">
+          <thead><tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Run</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Seed</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Raw</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Perceived</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Gap</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">OS2 Bridge</td>
+          </tr></thead>
+          <tbody id="rbRows-mill"></tbody>
+        </table>
+      </div>
+      <div id="rbSummary-mill" style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.45);font-style:italic;font-family:'Georgia',serif;line-height:1.45"></div>
+    </div>
+  </div>
   </div>
 
   <div class="acp-box">
@@ -377,6 +472,31 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-narrative" id="narrativeCare"></div>
     </div>
     <div class="ucp-error" id="errCare" style="display:none"></div>
+  <div class="robustness-panel" id="rp-care">
+    <div class="robustness-label">Structural Robustness — Try a Different Agent Population</div>
+    <p style="font-size:.81rem;color:rgba(255,255,255,.7);line-height:1.55;margin-bottom:.6rem">Each re-run uses the same structural configuration with a different random agent population. If the pattern holds across populations, you are seeing a structural finding — the architecture is the causal explanation, not the particular agents who happened to inhabit it. Compare seeds to check whether your results are robust or stochastic.</p>
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
+      <button class="rerun-btn" id="rerunBtn-care" onclick="rerunTrad('care')">↺ Try a Different Agent Population</button>
+      <span class="rb-status" id="rbStatus-care"></span>
+    </div>
+    <div id="rbLog-care" style="display:none">
+      <div style="font-size:.67rem;font-family:'Courier New',monospace;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.35rem">Run History — same architecture, different populations</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;min-width:420px">
+          <thead><tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Run</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Seed</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Raw</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Perceived</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Gap</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">OS2 Bridge</td>
+          </tr></thead>
+          <tbody id="rbRows-care"></tbody>
+        </table>
+      </div>
+      <div id="rbSummary-care" style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.45);font-style:italic;font-family:'Georgia',serif;line-height:1.45"></div>
+    </div>
+  </div>
   </div>
 
   <div class="acp-box">
@@ -457,6 +577,31 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-narrative" id="narrativeJustice"></div>
     </div>
     <div class="ucp-error" id="errJustice" style="display:none"></div>
+  <div class="robustness-panel" id="rp-justice">
+    <div class="robustness-label">Structural Robustness — Try a Different Agent Population</div>
+    <p style="font-size:.81rem;color:rgba(255,255,255,.7);line-height:1.55;margin-bottom:.6rem">Each re-run uses the same structural configuration with a different random agent population. If the pattern holds across populations, you are seeing a structural finding — the architecture is the causal explanation, not the particular agents who happened to inhabit it. Compare seeds to check whether your results are robust or stochastic.</p>
+    <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.6rem">
+      <button class="rerun-btn" id="rerunBtn-justice" onclick="rerunTrad('justice')">↺ Try a Different Agent Population</button>
+      <span class="rb-status" id="rbStatus-justice"></span>
+    </div>
+    <div id="rbLog-justice" style="display:none">
+      <div style="font-size:.67rem;font-family:'Courier New',monospace;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.35rem">Run History — same architecture, different populations</div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;min-width:420px">
+          <thead><tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Run</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Seed</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Raw</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">λ Perceived</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">Gap</td>
+            <td style="padding:.25rem .4rem;font-size:.62rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.3);text-transform:uppercase">OS2 Bridge</td>
+          </tr></thead>
+          <tbody id="rbRows-justice"></tbody>
+        </table>
+      </div>
+      <div id="rbSummary-justice" style="margin-top:.5rem;font-size:.78rem;color:rgba(255,255,255,.45);font-style:italic;font-family:'Georgia',serif;line-height:1.45"></div>
+    </div>
+  </div>
   </div>
 
   <div class="acp-box">
@@ -647,7 +792,7 @@ const TRAD_COLORS = {
 
 // Each payload is calibrated to foreground that tradition's primary metric
 const PAYLOADS = {
-  // Virtue: stable low-entropy conditions, ubuntu dominant — watch ATCF trajectory
+  // Virtue A: stable conditions — Aristotle's polis supporting character formation
   virtue: {
     num_agents: 16, scenario_name: 'baseline', steps: 8, seed: 42,
     worldview_distribution: {
@@ -661,6 +806,22 @@ const PAYLOADS = {
     scenario_physics: {
       base_entropy: 0.38, base_stress: 0.35,
       block_fields: { care: 0.45, fairness: 0.40, community: 0.50, boundary: 0.15 }
+    }
+  },
+  // Virtue B: entropy-exporting — what chronic precarity does to character conditions
+  virtueB: {
+    num_agents: 16, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    worldview_distribution: {
+      role_order: 0.48, sacred_boundary: 0.26,
+      liberal_individualist: 0.14, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.60, tradition_weighted: 0.20,
+      empirical_calibrated: 0.12, alternative_facts: 0.08
+    },
+    scenario_physics: {
+      base_entropy: 0.72, base_stress: 0.66,
+      block_fields: { care: -0.40, fairness: -0.55, community: -0.50, boundary: 0.45 }
     }
   },
   // Kant: whistleblower — high suppression gap, watch morphic suppression build
@@ -731,8 +892,15 @@ const PAYLOADS = {
 
 const NARRATIVES = {
   virtue: (m) => {
-    const raw = m.lambda_raw||0, perc = m.lambda_perceived||0, atcf = m.lambda_raw||0;
-    return `Virtue Ethics lens — ATCF trajectory: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${Math.max(0,raw-perc).toFixed(3)}. The stable low-entropy configuration (entropy 0.38, positive care and community blocks) provides the conditions Aristotle identified as prerequisites for virtue cultivation: predictable environment, relational infrastructure, evidence architecture that doesn't systematically discount certain frameworks. Notice that the suppression gap is small — when structural conditions support character development, agents' genuine capacity tends to reach outcomes. The virtue ethics question is not "what is the gap right now?" but "what is the trajectory over time, and what does this architecture make it possible to become?"`;
+    const raw = m.lambda_raw||0, perc = m.lambda_perceived||0;
+    const gap = Math.max(0,raw-perc);
+    return `Config A — Stable Conditions: \u03bb Raw = ${raw.toFixed(3)}, \u03bb Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. Entropy 0.38, positive care and community blocks, empirically-calibrated evidence. These are the structural prerequisites Aristotle identified for virtue cultivation: predictable environment, open relational channels, evidence architecture that does not systematically discount certain contributions. ${gap < 0.15 ? 'The small suppression gap confirms the prediction: when structural conditions support character development, agents\u2019 genuine capacity tends to reach outcomes.' : 'The gap is larger than the stable configuration predicts \u2014 run with different seeds to check whether this is stochastic variation or a structural pattern.'} Now run Config B to see the contrast.`;
+  },
+  virtueB: (m) => {
+    const raw = m.lambda_raw||0, perc = m.lambda_perceived||0;
+    const gap = Math.max(0,raw-perc);
+    const morph = m.morphic_suppression||0;
+    return `Config B \u2014 Entropy-Exporting: \u03bb Raw = ${raw.toFixed(3)}, \u03bb Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%, morphic suppression = ${morph.toFixed(3)}. Entropy 0.72, negative block fields, authority-weighted evidence (60%). These conditions model what chronic precarity does to the structural prerequisites for virtue: high stress degrades the deliberate agency that habituation requires, negative community blocks sever the relational networks through which character is formed. ${gap > 0.30 ? `The large gap (${(gap*100).toFixed(1)}pp) compared to Config A confirms the virtue ethics structural claim: entropy-exporting conditions do not merely make individual virtue harder \u2014 they make the institutional conditions for character formation systematically unavailable.` : 'The gap difference from Config A is smaller than expected. Try different seeds to see whether the structural contrast is consistent.'} The Aristotelian diagnosis: this is not a population of people with bad character. It is a population of people inhabiting an architecture that makes the development of good character structurally inaccessible.`;
   },
   kant: (m) => {
     const raw = m.lambda_raw||0, perc = m.lambda_perceived||0, morph = m.morphic_suppression||0;
@@ -798,6 +966,21 @@ async function runTrad(t) {
     if (!data.metrics) throw new Error('No metrics returned');
     _results[t] = data;
     renderTradResult(t, data);
+    // Track which virtue config was last run
+    if (t === 'virtue' || t === 'virtueB') _lastVirtueCfg = t;
+    // Log first run and show robustness panel
+    const m0 = data.metrics || {};
+    _tradCounts[t] = (_tradCounts[t]||0) + 1;
+    if (!_tradLogs[t]) _tradLogs[t] = [];
+    _tradLogs[t].push({
+      run: _tradCounts[t], cfg: t, seed: PAYLOADS[t].seed,
+      lr: m0.lambda_raw||0, lp: m0.lambda_perceived||0,
+      gap: Math.max(0,(m0.lambda_raw||0)-(m0.lambda_perceived||0)),
+      os2: m0.os2_synergy_bridge??m0.os2_synergy??0,
+    });
+    // Show robustness panel (virtue uses shared panel; virtueB shares virtue panel)
+    const panelKey = (t === 'virtueB') ? 'virtue' : t;
+    renderRobustnessLog(t, panelKey);
   } catch(e) {
     if (errDiv) { errDiv.textContent='Simulation unavailable — '+e.message+'. Try again in a moment.'; errDiv.style.display='block'; }
   } finally {
@@ -853,6 +1036,27 @@ function renderTradResult(t, data) {
 
   if (narEl) narEl.textContent = NARRATIVES[t] ? NARRATIVES[t](m) : 'Simulation complete.';
   if (resDiv) resDiv.style.display='block';
+
+  // Virtue A vs B comparison
+  if ((t === 'virtue' || t === 'virtueB') && _results.virtue && _results.virtueB) {
+    const mA = _results.virtue.metrics||{}, mB = _results.virtueB.metrics||{};
+    const gapA = Math.max(0,(mA.lambda_raw||0)-(mA.lambda_perceived||0));
+    const gapB = Math.max(0,(mB.lambda_raw||0)-(mB.lambda_perceived||0));
+    const morphDiff = ((mB.morphic_suppression||0)-(mA.morphic_suppression||0));
+    const lpDiff = ((mA.lambda_perceived||0)-(mB.lambda_perceived||0));
+    const cmp = document.getElementById('virtueCompare');
+    if (cmp) {
+      cmp.style.display = 'block';
+      cmp.innerHTML = `<strong style="color:#7fd8a8">Structural contrast (Config A vs B):</strong> `
+        + `λ Perceived: ${(mA.lambda_perceived||0).toFixed(3)} vs ${(mB.lambda_perceived||0).toFixed(3)} `
+        + `(Config A is ${lpDiff>=0?'+':''}${(lpDiff*100).toFixed(1)}pp higher). `
+        + `Suppression gap: ${(gapA*100).toFixed(1)}% vs ${(gapB*100).toFixed(1)}%. `
+        + `Morphic suppression: ${(mA.morphic_suppression||0).toFixed(3)} vs ${(mB.morphic_suppression||0).toFixed(3)} `
+        + `(${morphDiff>=0?'Config B higher by +':'Config B lower by '}${Math.abs(morphDiff*100).toFixed(1)}pp). `
+        + (lpDiff > 0.08 ? `<em>The contrast is structurally significant — the virtue ethics claim holds: stable conditions produce systematically higher coordination capacity and lower suppression than entropy-exporting conditions, for the same agent population structure.</em>`
+          : `<em>The contrast is smaller than expected. Try different seeds using the robustness panel to check whether this is stochastic variation.</em>`);
+    }
+  }
 }
 
 // ── Export ────────────────────────────────────────────────────
@@ -889,6 +1093,105 @@ function clearAll() {
   ['virtue','kant','mill','care','justice','supp_cq5'].forEach(k=>localStorage.removeItem(JP+k));
   location.reload();
 }
+
+// ── Robustness / seed variation ──────────────────────────────
+const _tradSeeds = { virtue:100, virtueB:100, kant:100, mill:100, care:100, justice:100 };
+const _tradLogs  = { virtue:[], virtueB:[], kant:[], mill:[], care:[], justice:[] };
+let   _tradCounts = { virtue:0, virtueB:0, kant:0, mill:0, care:0, justice:0 };
+
+// rerunTrad uses the same PAYLOAD as runTrad but with a stepped seed
+async function rerunTrad(t) {
+  // For virtue robustness, re-run whichever config was last run
+  // (we track _lastVirtueCfg)
+  const actualT = (t === 'virtue' && _lastVirtueCfg) ? _lastVirtueCfg : t;
+  const btn    = document.getElementById('rerunBtn-' + (t === 'virtueB' ? 'virtue' : t));
+  const status = document.getElementById('rbStatus-'  + (t === 'virtueB' ? 'virtue' : t));
+  if (btn) { btn.disabled=true; btn.textContent='…running'; }
+  if (status) status.textContent = 'seed ' + _tradSeeds[actualT] + '…';
+
+  const base    = PAYLOADS[actualT];
+  const payload = { ...base, seed: _tradSeeds[actualT] };
+  payload.scenario_physics = { ...base.scenario_physics,
+    block_fields: { ...base.scenario_physics.block_fields } };
+  if (base.activate_biobond_at !== undefined) payload.activate_biobond_at = base.activate_biobond_at;
+
+  try {
+    const resp = await fetchWithRetry(BACKEND + '/api/simulate/custom', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics');
+    const m = data.metrics;
+
+    _tradCounts[actualT]++;
+    _tradLogs[actualT].push({
+      run: _tradCounts[actualT],
+      cfg: actualT,
+      seed: _tradSeeds[actualT],
+      lr:   m.lambda_raw          || 0,
+      lp:   m.lambda_perceived    || 0,
+      gap:  Math.max(0, (m.lambda_raw||0) - (m.lambda_perceived||0)),
+      os2:  m.os2_synergy_bridge  ?? m.os2_synergy ?? 0,
+    });
+    _tradSeeds[actualT] += 13;
+    renderTradResult(actualT, data);          // refresh main result
+    renderRobustnessLog(actualT, t);          // t = which panel to update
+  } catch(e) {
+    if (status) status.textContent = 'unavailable — try again';
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='↺ Try a Different Agent Population'; }
+    if (status) setTimeout(()=>{ if(status.textContent.includes('seed')) status.textContent=''; }, 3000);
+  }
+}
+
+function renderRobustnessLog(actualT, panelT) {
+  const logKey = panelT === 'virtueB' ? 'virtue' : panelT; // which panel to write to
+  const log    = _tradLogs[actualT];
+  if (!log.length) return;
+  const rp  = document.getElementById('rp-' + logKey);
+  const logDiv = document.getElementById('rbLog-' + logKey);
+  const tbody  = document.getElementById('rbRows-' + logKey);
+  const sumEl  = document.getElementById('rbSummary-' + logKey);
+  if (rp) rp.style.display = 'block';
+  if (!logDiv || !tbody || !sumEl) return;
+  logDiv.style.display = 'block';
+
+  const cfgLabels = { virtue:'Config A', virtueB:'Config B',
+    kant:'Whistleblower', mill:'Resource Scarcity',
+    care:'Care Suppressed', justice:'Baseline' };
+  const cfgColors = { virtue:'#7fd8a8', virtueB:'#e879f9',
+    kant:'#f08080', mill:'#7fd8a8', care:'#f5c842', justice:'#7fd8a8' };
+
+  tbody.innerHTML = [...log].reverse().map((r, i) => {
+    const gapColor = r.gap>0.35?'#f08080':r.gap>0.15?'#f5c842':'#7fd8a8';
+    const lpColor  = r.lp<0.25?'#f08080':r.lp<0.50?'#f5c842':'#7fd8a8';
+    const rowStyle = i===0?'background:rgba(201,168,76,.06);':'';
+    return `<tr style="border-top:1px solid rgba(255,255,255,.06);${rowStyle}">
+      <td style="padding:.3rem .4rem;font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35)">#${r.run}</td>
+      <td style="padding:.3rem .4rem;font-size:.72rem;font-family:'Courier New',monospace;color:${cfgColors[r.cfg]||'#fff'}">${cfgLabels[r.cfg]||r.cfg}</td>
+      <td style="padding:.3rem .4rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${r.lr.toFixed(3)}</td>
+      <td style="padding:.3rem .4rem;font-size:.78rem;font-family:'Courier New',monospace;color:${lpColor};font-weight:700">${r.lp.toFixed(3)}</td>
+      <td style="padding:.3rem .4rem;font-size:.78rem;font-family:'Courier New',monospace;color:${gapColor};font-weight:700">${(r.gap*100).toFixed(1)}%</td>
+      <td style="padding:.3rem .4rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.55)">${r.os2.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  if (log.length >= 2) {
+    const gaps = log.map(r => r.gap);
+    const lps  = log.map(r => r.lp);
+    const [mnG, mxG] = [Math.min(...gaps), Math.max(...gaps)];
+    const avgLp = lps.reduce((s,v)=>s+v,0)/lps.length;
+    const range = (mxG - mnG) * 100;
+    let summary = `Across ${log.length} populations: suppression gap ranged ${(mnG*100).toFixed(1)}–${(mxG*100).toFixed(1)}% (spread: ${range.toFixed(1)}pp), avg λ Perceived = ${avgLp.toFixed(3)}. `;
+    summary += range < 8 ? 'Narrow range — structural finding confirmed: architecture is the primary driver, not the particular agents.' : 'Wider range — stochastic variation is significant. More seeds needed to confirm structural claim.';
+    sumEl.textContent = summary;
+  }
+}
+
+// Track which virtue config was last run (for rerun targeting)
+let _lastVirtueCfg = 'virtue';
 
 // ── On load ───────────────────────────────────────────────────
 window.addEventListener('load', () => {
