@@ -203,6 +203,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
 
   <div class="sim-panel">
     <h3>Simulation Lens: <span class="sim-metric-badge">Two-Configuration Contrast — Stable vs. Entropy-Exporting Conditions</span></h3>
+    <div style="font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.40);background:rgba(255,255,255,.05);border-radius:.3rem;padding:.25rem .6rem;margin-bottom:.5rem;display:inline-block">⚡ Generic structural contrast — illustrates Aristotle's polis claim, not a specific historical reconstruction</div>
     <p>Because the backend returns final aggregate metrics rather than step-by-step trajectories, we model the virtue ethics claim through structural contrast rather than literal time-series. Run both configurations and compare what each architecture produces for the same question: <strong>what do these structural conditions make possible for agents' coherent agency?</strong></p>
     <p><strong>Configuration A — Stable Conditions:</strong> entropy 0.38, positive care and community block fields, empirically-calibrated evidence. Models Aristotle's polis as supporting character formation — an institutional environment where agents' genuine capacity tends to reach outcomes and relational infrastructure supports the habituation that virtue requires.</p>
     <p><strong>Configuration B — Entropy-Exporting Conditions:</strong> entropy 0.72, negative block fields, authority-weighted evidence. Models what chronic precarity does to the structural prerequisites for virtue: high stress degrades the deliberate agency that virtue cultivation requires, negative community blocks sever the relational networks through which character is formed, and authority-weighted evidence routes agents' contributions around the decisions that govern them.</p>
@@ -299,6 +300,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
 
   <div class="sim-panel">
     <h3>Simulation Lens: <span class="sim-metric-badge">Morphic Suppression · Suppression Gap</span></h3>
+    <div style="font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.40);background:rgba(255,255,255,.05);border-radius:.3rem;padding:.25rem .6rem;margin-bottom:.5rem;display:inline-block">⚡ Generic institutional suppression configuration — illustrates Kant's non-instrumentalization claim across any whistleblower-type scenario</div>
     <p>The Kantian question: are agents being treated as ends or as means? The suppression gap measures what Kant called instrumentalization — the distance between what an agent can actually contribute (λ Raw) and what the institutional architecture allows to reach decisions (λ Perceived).</p>
     <p>When the Challenger engineers' knowledge failed to reach the launch decision, the teleconference architecture was, in Kantian terms, instrumentalizing them — using their presence to satisfy a procedural requirement while routing their actual signal around the decision. Morphic suppression measures the accumulated learned self-censorship that follows: agents whose contributions are consistently ignored begin to internalize the institutional judgment that their signal does not matter.</p>
     <button class="run-btn" id="btnKant" onclick="runTrad('kant')">▶ Run Deontological Simulation</button>
@@ -381,6 +383,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
 
   <div class="sim-panel">
     <h3>Simulation Lens: <span class="sim-metric-badge">OS2 Bridge · λ Perceived Mean</span></h3>
+    <div style="font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.40);background:rgba(255,255,255,.05);border-radius:.3rem;padding:.25rem .6rem;margin-bottom:.5rem;display:inline-block">⚡ Generic resource-scarcity configuration — illustrates Mill's aggregate welfare claim across a heterogeneous multi-worldview population</div>
     <p>The consequentialist question: does the coordination architecture produce the best outcomes for the largest number? OS2 Bridge measures cross-worldview coordination capacity — whether agents from different PRF positions can reach productive exchange. A high OS2 Bridge in Configuration B versus Configuration A is the simulation's consequentialist indicator.</p>
     <p>Note what the consequentialist metric cannot see: the <em>distribution</em> of λ Perceived across agents. The mean may be higher in Configuration B while some agents remain far below it. That distributional question requires Rawls. Run the simulation and ask: what is the mean? Then ask: what is the range? The first question is Mill's. The second is Rawls'.</p>
     <button class="run-btn" id="btnMill" onclick="runTrad('mill')">▶ Run Consequentialist Simulation</button>
@@ -463,15 +466,29 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
 
   <div class="sim-panel">
     <h3>Simulation Lens: <span class="sim-metric-badge">Community Block Field · Relational Infrastructure</span></h3>
-    <p>The care ethics question: are the relational channels through which people support each other open or suppressed? The community block field is the simulation's care ethics metric. A strongly negative community block field models an institutional architecture that systematically severs the relational infrastructure through which people coordinate, support each other, and develop the trust required for sustained cooperation.</p>
-    <p>Watch the community block field's effect on coordination capacity in this run versus the Maathai Phase 1 versus Phase 2 comparison you ran earlier: the shift from value-agreement to shared concrete task coordination is, in care ethics terms, a shift from abstract principle to relational engagement.</p>
-    <button class="run-btn" id="btnCare" onclick="runTrad('care')">▶ Run Care Ethics Simulation</button>
+    <div style="font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.40);background:rgba(255,255,255,.05);border-radius:.3rem;padding:.25rem .6rem;margin-bottom:.5rem;display:inline-block">&#x26A1; Generic structural contrast — same agent population, relational suppressed vs. relational supported. Illustrates care ethics' claim about what happens to coordination capacity when care infrastructure is severed versus sustained.</div>
+    <p>The care ethics question: are the relational channels through which people support each other open or suppressed? Both configurations use <em>identical agent populations</em> — the same worldview distribution, the same evidence architecture, the same scenario. What changes is whether the institutional block fields support or suppress relational infrastructure.</p>
+    <p><strong>Config A — Relational Suppressed:</strong> community block −0.65, care block −0.55, entropy 0.50. Models a care-disposed population (ubuntu_relational 40%) inhabiting an institution that systematically severs the channels through which their care capacity could flow. This is the care ethics diagnosis of most large institutional settings: people who are oriented toward care, operating within structures designed to suppress it.</p>
+    <p><strong>Config B — Relational Supported:</strong> community block +0.60, care block +0.55, entropy 0.42. Same agent population, open relational channels. Models what Wangari Maathai's Green Belt Movement achieved in Phase 2: a shared concrete task that activated the relational capacity already present in the population.</p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0">
+      <button class="run-btn" id="btnCare" onclick="runTrad('care')" style="flex:1;min-width:175px">&#x25B6; Run Config A — Relational Suppressed</button>
+      <button class="run-btn" id="btnCareB" onclick="runTrad('careB')" style="flex:1;min-width:175px;background:#db2777">&#x25B6; Run Config B — Relational Supported</button>
+    </div>
     <div id="resultCare" style="display:none">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:#f9a8d4;margin:.4rem 0 .2rem">Config A — Relational Suppressed</div>
       <div class="ucp-metrics" id="metricsCare"></div>
       <div id="barsCare" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeCare"></div>
     </div>
+    <div id="resultCareB" style="display:none;margin-top:.75rem">
+      <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:#7fd8a8;margin:.4rem 0 .2rem">Config B — Relational Supported</div>
+      <div class="ucp-metrics" id="metricsCareB"></div>
+      <div id="barsCareB" style="margin:.5rem 0"></div>
+      <div class="ucp-narrative" id="narrativeCareB"></div>
+    </div>
+    <div id="careCompare" style="display:none;margin-top:.75rem;padding:.65rem .85rem;background:rgba(255,255,255,.06);border-radius:.4rem;font-size:.83rem;color:rgba(255,255,255,.7)"></div>
     <div class="ucp-error" id="errCare" style="display:none"></div>
+    <div class="ucp-error" id="errCareB" style="display:none"></div>
   <div class="robustness-panel" id="rp-care">
     <div class="robustness-label">Structural Robustness — Try a Different Agent Population</div>
     <p style="font-size:.81rem;color:rgba(255,255,255,.7);line-height:1.55;margin-bottom:.6rem">Each re-run uses the same structural configuration with a different random agent population. If the pattern holds across populations, you are seeing a structural finding — the architecture is the causal explanation, not the particular agents who happened to inhabit it. Compare seeds to check whether your results are robust or stochastic.</p>
@@ -568,6 +585,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
 
   <div class="sim-panel">
     <h3>Simulation Lens: <span class="sim-metric-badge">Distributional Spread of λ Perceived</span></h3>
+    <div style="font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.40);background:rgba(255,255,255,.05);border-radius:.3rem;padding:.25rem .6rem;margin-bottom:.5rem;display:inline-block">⚡ Generic coherence-preserving configuration — illustrates Rawls' difference principle and Nussbaum's capability threshold across a diverse agent population</div>
     <p>This tradition asks a different question than the others: not the primary metric but the <em>distribution</em> across agents. The Rawlsian question: in which configuration does the lowest-λ Raw agent perform best? The difference principle says the architecture is more just if it makes the worst-off better off — not just the average.</p>
     <p>The Nussbaumian question adds a threshold: is there a minimum λ Perceived below which no agent should fall, regardless of what the architecture produces on average? These are related but distinct. An architecture could satisfy the difference principle while still leaving some agents below a meaningful capability threshold.</p>
     <button class="run-btn" id="btnJustice" onclick="runTrad('justice')">▶ Run Modern Justice Simulation</button>
@@ -856,7 +874,7 @@ const PAYLOADS = {
       block_fields: { care: 0.20, fairness: 0.35, community: 0.15, boundary: 0.22 }
     }
   },
-  // Care: resource scarcity with relational suppression — watch community block effect
+  // Care A: relational suppressed — institution severs care infrastructure
   care: {
     num_agents: 16, scenario_name: 'resource_scarcity', steps: 8, seed: 42,
     worldview_distribution: {
@@ -870,6 +888,22 @@ const PAYLOADS = {
     scenario_physics: {
       base_entropy: 0.50, base_stress: 0.48,
       block_fields: { care: -0.55, fairness: -0.30, community: -0.65, boundary: 0.30 }
+    }
+  },
+  // Care B: relational supported — institution sustains care infrastructure
+  careB: {
+    num_agents: 16, scenario_name: 'resource_scarcity', steps: 8, seed: 42,
+    worldview_distribution: {
+      ubuntu_relational: 0.40, indigenous_custodial: 0.22,
+      liberal_individualist: 0.18, role_order: 0.12, sacred_boundary: 0.08
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.45, tradition_weighted: 0.28,
+      authority_weighted: 0.18, alternative_facts: 0.09
+    },
+    scenario_physics: {
+      base_entropy: 0.42, base_stress: 0.38,
+      block_fields: { care: 0.55, fairness: 0.32, community: 0.60, boundary: 0.15 }
     }
   },
   // Justice: baseline heterogeneous — watch for distribution; compare to kant run
@@ -914,8 +948,15 @@ const NARRATIVES = {
   },
   care: (m) => {
     const perc = m.lambda_perceived||0, os2 = m.os2_synergy_bridge??m.os2_synergy??0;
-    const comm = -0.65;
-    return `Care ethics lens — Community block field effect: λ Perceived = ${perc.toFixed(3)}, OS2 Bridge = ${os2.toFixed(3)}. The community block field is set to ${comm} — the simulation's account of an institutional architecture that systematically severs relational channels. ${perc < 0.35 ? "The suppressed community block field is dramatically reducing how much agents genuine capacity reaches outcomes. This is the care ethics diagnosis: when relational infrastructure is undermined, coordination capacity collapses regardless of what the formal structure nominally provides." : "Despite the negative community block, some coordination capacity is reaching decisions. Examine whether the ubuntu_relational dominant worldview population (40%) is compensating \u2014 carrying the relational burden for the whole system."} Compare this run to the Maathai Phase 2 configuration you ran in Chapter 4: what difference does a positive community block make?`;
+    const raw = m.lambda_raw||0, morph = m.morphic_suppression||0;
+    const gap = Math.max(0, raw - perc);
+    return `Config A \u2014 Relational Suppressed: \u03bb Raw = ${raw.toFixed(3)}, \u03bb Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%, OS2 Bridge = ${os2.toFixed(3)}. Community block \u22120.65, care block \u22120.55. Same agent population that runs Config B \u2014 ubuntu_relational dominant (40%), care-disposed. ${perc < 0.35 ? `The strongly suppressed community block is routing most of this population\u2019s relational capacity around outcomes. \u03bb Perceived = ${perc.toFixed(3)} confirms the care ethics diagnosis: you can have a care-oriented population and a care-suppressing institution simultaneously. The agents\u2019 disposition toward care is irrelevant if the structural channels through which care could flow are blocked.` : `Despite the negative community block, \u03bb Perceived = ${perc.toFixed(3)} is higher than expected \u2014 the ubuntu_relational dominant population may be compensating through informal channels. This is itself a care ethics observation: relational agents find ways to care even in suppressive structures, but at a personal cost not visible in the aggregate metrics.`} Now run Config B to see the contrast with the same agents in a supportive structure.`;
+  },
+  careB: (m) => {
+    const perc = m.lambda_perceived||0, os2 = m.os2_synergy_bridge??m.os2_synergy??0;
+    const raw = m.lambda_raw||0;
+    const gap = Math.max(0, raw - perc);
+    return `Config B \u2014 Relational Supported: \u03bb Raw = ${raw.toFixed(3)}, \u03bb Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%, OS2 Bridge = ${os2.toFixed(3)}. Community block +0.60, care block +0.55, entropy 0.42. Identical agent population as Config A \u2014 same worldview distribution, same evidence weights, same scenario. What changed: the institutional block fields now support rather than suppress relational channels. ${os2 > 0.40 ? `OS2 Bridge = ${os2.toFixed(3)} confirms what care ethics predicts: when care infrastructure is sustained, cross-worldview coordination becomes possible in ways it structurally cannot be when relational channels are suppressed. The care-disposed ubuntu_relational population (40%) is not working against the institution \u2014 it is working with it.` : `OS2 Bridge = ${os2.toFixed(3)} is higher than Config A but not dramatically so. Run additional seeds: if the pattern holds across populations, the structural claim holds. If not, the stochastic variation is significant and worth examining.`} Compare \u03bb Perceived in this run to Config A \u2014 the difference is the simulation\u2019s measurement of what relational infrastructure is worth.`;
   },
   justice: (m) => {
     const raw = m.lambda_raw||0, perc = m.lambda_perceived||0;
@@ -968,6 +1009,7 @@ async function runTrad(t) {
     renderTradResult(t, data);
     // Track which virtue config was last run
     if (t === 'virtue' || t === 'virtueB') _lastVirtueCfg = t;
+    if (t === 'care' || t === 'careB') _lastCareCfg = t;
     // Log first run and show robustness panel
     const m0 = data.metrics || {};
     _tradCounts[t] = (_tradCounts[t]||0) + 1;
@@ -979,7 +1021,8 @@ async function runTrad(t) {
       os2: m0.os2_synergy_bridge??m0.os2_synergy??0,
     });
     // Show robustness panel (virtue uses shared panel; virtueB shares virtue panel)
-    const panelKey = (t === 'virtueB') ? 'virtue' : t;
+    const panelKey = (t === 'virtueB') ? 'virtue'
+      : (t === 'careB') ? 'care' : t;
     renderRobustnessLog(t, panelKey);
   } catch(e) {
     if (errDiv) { errDiv.textContent='Simulation unavailable — '+e.message+'. Try again in a moment.'; errDiv.style.display='block'; }
@@ -1037,6 +1080,27 @@ function renderTradResult(t, data) {
   if (narEl) narEl.textContent = NARRATIVES[t] ? NARRATIVES[t](m) : 'Simulation complete.';
   if (resDiv) resDiv.style.display='block';
 
+  // Care A vs B comparison
+  if ((t === 'care' || t === 'careB') && _results.care && _results.careB) {
+    const mA = _results.care.metrics||{}, mB = _results.careB.metrics||{};
+    const lpDiff  = ((mB.lambda_perceived||0) - (mA.lambda_perceived||0));
+    const os2Diff = ((mB.os2_synergy_bridge??mB.os2_synergy??0) - (mA.os2_synergy_bridge??mA.os2_synergy??0));
+    const gapA = Math.max(0,(mA.lambda_raw||0)-(mA.lambda_perceived||0));
+    const gapB = Math.max(0,(mB.lambda_raw||0)-(mB.lambda_perceived||0));
+    const cmp = document.getElementById('careCompare');
+    if (cmp) {
+      cmp.style.display = 'block';
+      cmp.innerHTML = `<strong style="color:#7fd8a8">Structural contrast (Config A vs B — same agents, different block fields):</strong> `
+        + `λ Perceived: ${(mA.lambda_perceived||0).toFixed(3)} → ${(mB.lambda_perceived||0).toFixed(3)} `
+        + `(relational support ${lpDiff>=0?'raised':'lowered'} λ Perceived by ${Math.abs(lpDiff*100).toFixed(1)}pp). `
+        + `Suppression gap: ${(gapA*100).toFixed(1)}% → ${(gapB*100).toFixed(1)}%. `
+        + `OS2 Bridge: ${(mA.os2_synergy_bridge??mA.os2_synergy??0).toFixed(3)} → ${(mB.os2_synergy_bridge??mB.os2_synergy??0).toFixed(3)} `
+        + `(${os2Diff>=0?'+':''}${(os2Diff*100).toFixed(1)}pp). `
+        + (lpDiff > 0.08 ? `<em>The contrast is structurally significant — same agents, open relational channels produce substantially higher coordination capacity. The care ethics claim holds: the institution, not the agents, is the primary determinant of whether care capacity reaches outcomes.</em>`
+          : lpDiff > 0 ? `<em>Config B shows higher λ Perceived but the difference is modest. Try different seeds — if the pattern is consistent across populations, the structural claim holds even when the magnitude is smaller than expected.</em>`
+          : `<em>Unexpected: Config B produced lower or equal λ Perceived. Run additional seeds — stochastic variation may be dominating in this run.</em>`);
+    }
+  }
   // Virtue A vs B comparison
   if ((t === 'virtue' || t === 'virtueB') && _results.virtue && _results.virtueB) {
     const mA = _results.virtue.metrics||{}, mB = _results.virtueB.metrics||{};
@@ -1095,15 +1159,17 @@ function clearAll() {
 }
 
 // ── Robustness / seed variation ──────────────────────────────
-const _tradSeeds = { virtue:100, virtueB:100, kant:100, mill:100, care:100, justice:100 };
-const _tradLogs  = { virtue:[], virtueB:[], kant:[], mill:[], care:[], justice:[] };
-let   _tradCounts = { virtue:0, virtueB:0, kant:0, mill:0, care:0, justice:0 };
+const _tradSeeds = { virtue:100, virtueB:100, kant:100, mill:100, care:100, careB:100, justice:100 };
+const _tradLogs  = { virtue:[], virtueB:[], kant:[], mill:[], care:[], careB:[], justice:[] };
+let   _tradCounts = { virtue:0, virtueB:0, kant:0, mill:0, care:0, careB:0, justice:0 };
 
 // rerunTrad uses the same PAYLOAD as runTrad but with a stepped seed
 async function rerunTrad(t) {
   // For virtue robustness, re-run whichever config was last run
   // (we track _lastVirtueCfg)
-  const actualT = (t === 'virtue' && _lastVirtueCfg) ? _lastVirtueCfg : t;
+  // For virtue/care, re-run whichever config was last run
+  const actualT = (t === 'virtue' && _lastVirtueCfg) ? _lastVirtueCfg
+    : (t === 'care' && _lastCareCfg) ? _lastCareCfg : t;
   const btn    = document.getElementById('rerunBtn-' + (t === 'virtueB' ? 'virtue' : t));
   const status = document.getElementById('rbStatus-'  + (t === 'virtueB' ? 'virtue' : t));
   if (btn) { btn.disabled=true; btn.textContent='…running'; }
@@ -1147,7 +1213,8 @@ async function rerunTrad(t) {
 }
 
 function renderRobustnessLog(actualT, panelT) {
-  const logKey = panelT === 'virtueB' ? 'virtue' : panelT; // which panel to write to
+  const logKey = panelT === 'virtueB' ? 'virtue'
+    : panelT === 'careB' ? 'care' : panelT; // which panel to write to
   const log    = _tradLogs[actualT];
   if (!log.length) return;
   const rp  = document.getElementById('rp-' + logKey);
@@ -1160,9 +1227,9 @@ function renderRobustnessLog(actualT, panelT) {
 
   const cfgLabels = { virtue:'Config A', virtueB:'Config B',
     kant:'Whistleblower', mill:'Resource Scarcity',
-    care:'Care Suppressed', justice:'Baseline' };
+    care:'Config A — Suppressed', careB:'Config B — Supported', justice:'Baseline' };
   const cfgColors = { virtue:'#7fd8a8', virtueB:'#e879f9',
-    kant:'#f08080', mill:'#7fd8a8', care:'#f5c842', justice:'#7fd8a8' };
+    kant:'#f08080', mill:'#7fd8a8', care:'#f5c842', careB:'#7fd8a8', justice:'#7fd8a8' };
 
   tbody.innerHTML = [...log].reverse().map((r, i) => {
     const gapColor = r.gap>0.35?'#f08080':r.gap>0.15?'#f5c842':'#7fd8a8';
@@ -1192,6 +1259,7 @@ function renderRobustnessLog(actualT, panelT) {
 
 // Track which virtue config was last run (for rerun targeting)
 let _lastVirtueCfg = 'virtue';
+let _lastCareCfg   = 'care';
 
 // ── On load ───────────────────────────────────────────────────
 window.addEventListener('load', () => {
