@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Traditions Behind the Framework — EBB Supplementary Chapter</title>
+<style>
+:root{
+  --teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#c2850a;--amber-light:#fef9ec;--amber-mid:#f5c842;
+  --ink:#1f2937;--muted:#4b5563;--border:#e5e7eb;--paper:#f9fafb;
+  --ucp-navy:#1a2744;--ucp-gold:#c9a84c;
+  /* Tradition colors */
+  --virtue:#7c3aed;--virtue-l:#f5f3ff;
+  --kant:#1d4ed8;--kant-l:#eff6ff;
+  --mill:#15803d;--mill-l:#f0fdf4;
+  --care:#db2777;--care-l:#fdf2f8;
+  --rawls:#b45309;--rawls-l:#fffbeb;
+  --nuss:#0e7490;--nuss-l:#ecfeff;
+  font-size:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:#f0fdfa;color:var(--ink);line-height:1.7}
+.course-header{background:var(--teal-dark);color:#fff;padding:1.1rem 1.5rem;position:sticky;top:0;z-index:100}
+.course-header .sup-label{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.55)}
+.course-header h1{font-size:1.05rem;font-weight:700;margin:.15rem 0}
+.course-header .sub{font-size:.75rem;color:rgba(255,255,255,.55)}
+/* ── Tradition nav ── */
+.trad-nav{background:#fff;border-bottom:2px solid var(--teal-mid);padding:.4rem 1rem;display:flex;flex-wrap:wrap;gap:.35rem;position:sticky;top:56px;z-index:99}
+.trad-btn{padding:.3rem .7rem;border-radius:.4rem;border:2px solid var(--border);background:var(--paper);font-family:'Georgia',serif;font-size:.78rem;cursor:pointer;transition:.15s;color:var(--muted)}
+.trad-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
+.trad-btn.active{color:#fff;border-color:currentColor;font-weight:700}
+.trad-btn[data-t="virtue"].active{background:var(--virtue);border-color:var(--virtue)}
+.trad-btn[data-t="kant"].active{background:var(--kant);border-color:var(--kant)}
+.trad-btn[data-t="mill"].active{background:var(--mill);border-color:var(--mill)}
+.trad-btn[data-t="care"].active{background:var(--care);border-color:var(--care)}
+.trad-btn[data-t="justice"].active{background:var(--rawls);border-color:var(--rawls)}
+.trad-btn[data-t="synthesis"].active{background:var(--teal-dark);border-color:var(--teal-dark)}
+/* ── Panes ── */
+.tab-pane{display:none;padding:1.75rem 1.5rem;max-width:900px;margin:0 auto}
+.tab-pane.active{display:block}
+/* ── Type ── */
+h2{font-size:1.2rem;color:var(--teal-dark);border-bottom:2px solid var(--teal-mid);padding-bottom:.35rem;margin:1.75rem 0 .65rem}
+h3{font-size:1rem;color:var(--teal-dark);margin:1.25rem 0 .4rem}
+p{margin-bottom:.8rem;font-size:.9rem;line-height:1.75;text-align:justify}
+/* ── Tradition header ── */
+.trad-header{border-radius:.75rem;padding:1.25rem 1.5rem;margin-bottom:1.25rem;color:#fff}
+.trad-header .tnum{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;opacity:.65;margin-bottom:.25rem}
+.trad-header h2{color:#fff;border:none;font-size:1.4rem;margin:0 0 .25rem;padding:0}
+.trad-header .tagline{font-size:.82rem;opacity:.75;font-style:italic}
+/* ── Cards ── */
+.card{border-radius:.6rem;padding:1rem 1.15rem;margin:.75rem 0;font-size:.88rem}
+.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
+.card-amber{background:var(--amber-light);border:2px solid var(--amber-mid)}
+/* ── PRF analysis ── */
+.prf-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.75rem 0}
+@media(max-width:640px){.prf-grid{grid-template-columns:1fr}}
+.prf-sees{background:#f0fdf4;border:1px solid #86efac;border-radius:.5rem;padding:.85rem 1rem}
+.prf-struggles{background:#fff1f2;border:1px solid #fda4af;border-radius:.5rem;padding:.85rem 1rem}
+.prf-head{font-family:'Courier New',monospace;font-size:.67rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:.5rem}
+.prf-sees .prf-head{color:#166534}
+.prf-struggles .prf-head{color:#9f1239}
+.prf-item{font-size:.83rem;line-height:1.5;padding:.3rem 0;border-top:1px solid rgba(0,0,0,.06)}
+.prf-item:first-of-type{border-top:none}
+/* ── Simulation panel ── */
+.sim-panel{background:var(--ucp-navy);border-radius:.875rem;padding:1.35rem;margin:1rem 0;color:rgba(255,255,255,.85)}
+.sim-panel h3{color:var(--teal-mid);border:none;margin:0 0 .65rem;font-size:.95rem}
+.sim-panel p{color:rgba(255,255,255,.75);font-size:.84rem}
+.sim-metric-badge{display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:.35rem;padding:.2rem .6rem;font-family:'Courier New',monospace;font-size:.75rem;color:#7fd8a8;margin:.3rem 0}
+.run-btn{width:100%;padding:.65rem;border:none;border-radius:.4rem;background:var(--teal-mid);color:#fff;font-family:'Georgia',serif;font-size:.9rem;font-weight:700;cursor:pointer;margin:.5rem 0;transition:.2s}
+.run-btn:hover{background:var(--teal-dark)}
+.run-btn:disabled{opacity:.5;cursor:wait}
+.ucp-spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:.45rem;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.5rem;margin:.6rem 0}
+.ucp-metric{background:rgba(255,255,255,.07);border-radius:.4rem;padding:.55rem .65rem}
+.ucp-metric-label{font-size:.62rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.45);margin-bottom:.15rem}
+.ucp-metric-value{font-size:1.1rem;font-weight:700;font-family:'Courier New',monospace}
+.ucp-metric-phrase{font-size:.63rem;color:rgba(255,255,255,.38);margin-top:.1rem}
+.ucp-bar-row{display:flex;align-items:center;gap:.4rem;margin:.25rem 0}
+.ucp-bar-name{font-size:.68rem;font-family:'Courier New',monospace;width:75px;color:rgba(255,255,255,.5)}
+.ucp-bar-track{flex:1;background:rgba(255,255,255,.1);border-radius:2px;height:7px;overflow:hidden}
+.ucp-bar-fill{height:100%;border-radius:2px;transition:width .8s ease}
+.fill-raw{background:#c9a84c}
+.fill-perc{background:#14b8a6}
+.fill-morph{background:#e879f9}
+.fill-os2{background:#7fd8a8}
+.ucp-narrative{font-size:.81rem;color:rgba(255,255,255,.65);line-height:1.6;padding:.55rem .7rem;background:rgba(255,255,255,.05);border-radius:.35rem;margin:.4rem 0}
+.ucp-error{background:#fee2e2;color:#7f1d1d;padding:.65rem .85rem;border-radius:.35rem;font-size:.82rem;margin:.4rem 0}
+/* ── ACP box ── */
+.acp-box{background:var(--amber-light);border:2px solid var(--amber-mid);border-radius:.6rem;padding:1rem 1.15rem;margin:.75rem 0}
+.acp-box .acp-head{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);font-weight:700;margin-bottom:.4rem}
+.acp-box p{font-size:.87rem;margin-bottom:0}
+/* ── Synthesis grid ── */
+.synth-grid{display:grid;gap:.5rem;margin:.75rem 0}
+.synth-card{border-radius:.5rem;padding:.75rem 1rem;font-size:.85rem;line-height:1.55}
+/* ── Comparison table ── */
+.compare-tbl{width:100%;border-collapse:collapse;font-size:.82rem;margin:.75rem 0}
+.compare-tbl th{background:var(--teal-dark);color:#fff;padding:.5rem .65rem;text-align:left;font-size:.75rem}
+.compare-tbl td{padding:.45rem .65rem;border-top:1px solid var(--border);vertical-align:top}
+.compare-tbl tr:nth-child(even) td{background:var(--paper)}
+/* ── Journal ── */
+.journal-box{border:2px solid var(--amber-mid);background:var(--amber-light);border-radius:.6rem;padding:.9rem 1.1rem;margin:.85rem 0}
+.journal-label{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber);margin-bottom:.5rem}
+.jta{width:100%;min-height:110px;border:1px solid var(--border);border-radius:.35rem;padding:.55rem;font-family:'Georgia',serif;font-size:.88rem;line-height:1.6;resize:vertical;color:var(--ink)}
+.save-note{font-size:.7rem;color:#16a34a;font-family:'Courier New',monospace;height:1rem;opacity:0;transition:.3s}
+.save-note.show{opacity:1}
+/* ── Val colors ── */
+.val-great{color:#7fd8a8}
+.val-warn{color:#f5c842}
+.val-bad{color:#f08080}
+footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);border-top:1px solid var(--border);margin-top:2.5rem}
+</style>
+</head>
+<body>
+<header class="course-header">
+  <div class="sup-label">Ethics Beyond Boundaries · Supplementary Chapter · Available After Chapter 5</div>
+  <h1>The Traditions Behind the Framework: Six Ethical Perspectives Through the EBB Lens</h1>
+  <div class="sub">Where each tradition came from · What each one sees · What each one contributed to the ACP</div>
+</header>
+
+<nav class="trad-nav" role="tablist">
+  <button class="trad-btn active" data-t="overview" onclick="showT('overview',this)">Overview</button>
+  <button class="trad-btn" data-t="virtue" onclick="showT('virtue',this)">① Virtue Ethics</button>
+  <button class="trad-btn" data-t="kant" onclick="showT('kant',this)">② Deontology</button>
+  <button class="trad-btn" data-t="mill" onclick="showT('mill',this)">③ Consequentialism</button>
+  <button class="trad-btn" data-t="care" onclick="showT('care',this)">④ Care Ethics</button>
+  <button class="trad-btn" data-t="justice" onclick="showT('justice',this)">⑤ Modern Justice</button>
+  <button class="trad-btn" data-t="synthesis" onclick="showT('synthesis',this)">Synthesis</button>
+  <button class="trad-btn" data-t="journal" onclick="showT('journal',this)">Journal</button>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-overview">
+  <h2>How to Use This Chapter</h2>
+  <p>This chapter can be placed anywhere in the EBB course after Chapter 5. You have enough vocabulary — PRF, suppression gap, λ Raw, λ Perceived, ATCF, the five worldview distributions — to engage fully with each tradition. Everything else is introduced here as needed.</p>
+  <p>Chapter 8 shows what each ethical tradition <em>measures</em> in the simulation. This chapter asks the prior question: <strong>where did each tradition come from, and why does it see what it sees?</strong> The answer, in every case, is that each tradition was designed to solve a specific historical problem — a failure, injustice, or inadequacy in the moral thinking that preceded it.</p>
+
+  <div class="card card-teal">
+    <h3>The Four Lenses</h3>
+    <p>Each tradition is analyzed through four consistent lenses:</p>
+    <p><strong>1. The Historical Problem</strong> — what specific crisis or failure prompted this tradition?</p>
+    <p><strong>2. The PRF It Holds</strong> — what does it make immediately visible? What does it structurally struggle to see?</p>
+    <p><strong>3. The Simulation Lens</strong> — which metric best captures its distinctive discovery?</p>
+    <p><strong>4. ACP Contribution</strong> — what did this tradition discover that the Agency Conditions Principle requires?</p>
+  </div>
+
+  <div class="card card-amber">
+    <h3>The Argument in One Paragraph</h3>
+    <p>Each tradition solved a real problem by developing a distinctive way of seeing — and in doing so, developed a structural blind spot that the next tradition would identify. The six traditions form a cumulative genealogy: Virtue Ethics → Kant → Mill → Care Ethics → Rawls → Nussbaum. The Agency Conditions Principle is not a seventh tradition that supersedes the others. It is the structure that holds all six partial perceptions simultaneously. Navigate the tabs in sequence the first time through, then return to any tradition when it becomes relevant to a case study or applied sequence chapter.</p>
+  </div>
+
+  <table class="compare-tbl">
+    <thead><tr>
+      <th>Tradition</th><th>Historical Problem</th><th>Primary Metric</th><th>ACP Link</th>
+    </tr></thead>
+    <tbody>
+      <tr><td style="color:var(--virtue);font-weight:700">Virtue Ethics</td><td>Polis fragmentation; what makes a life go well when institutions are unreliable?</td><td>ATCF trajectory over time</td><td>Historical continuity component</td></tr>
+      <tr><td style="color:var(--kant);font-weight:700">Deontology (Kant)</td><td>Arbitrary authority; grounding moral obligation independent of power</td><td>Suppression gap / morphic suppression</td><td>Non-instrumentalization requirement</td></tr>
+      <tr><td style="color:var(--mill);font-weight:700">Consequentialism (Mill)</td><td>Industrial governance; making the claims of all populations count</td><td>OS2 Bridge aggregate / λ Perceived mean</td><td>All-population inclusion requirement</td></tr>
+      <tr><td style="color:var(--care);font-weight:700">Care Ethics</td><td>Invisible dependency labor; starting from vulnerability, not autonomy</td><td>Community block field</td><td>Relational infrastructure condition</td></tr>
+      <tr><td style="color:var(--rawls);font-weight:700">Modern Justice (Rawls + Nussbaum)</td><td>Utilitarian inadequacy for institutional design; who gets left behind?</td><td>Distributional spread of λ Perceived</td><td>Difference principle + capability threshold</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-virtue">
+  <div class="trad-header" style="background:var(--virtue)">
+    <div class="tnum">Tradition One</div>
+    <h2>Virtue Ethics</h2>
+    <div class="tagline">Aristotle · ca. 350 BCE · Later: MacIntyre, contemporary revival</div>
+  </div>
+
+  <h2>The Historical Problem</h2>
+  <p>Aristotle wrote the Nicomachean Ethics in the aftermath of Macedonian conquest and Athenian political instability. The question was existential: if the polis — the city-state that is the natural context for human flourishing — is fragile and often corrupt, what makes a human life go well? What kind of person can live well when external political stability cannot be guaranteed?</p>
+  <p>The moral traditions that preceded Aristotle were either too dependent on divine command (telling you what to do but not what kind of person to become) or too focused on abstract principles (applicable universally but giving little guidance for particular situations). Aristotle's innovation was to ask differently: instead of "what is the right action?" he asked "what is the right kind of person to be?" The answer: someone who has developed stable character dispositions through practice and habituation, so that excellent action becomes the natural expression of who they are rather than effortful compliance with a rule.</p>
+
+  <h2>The PRF Virtue Ethics Holds</h2>
+  <div class="prf-grid">
+    <div class="prf-sees">
+      <div class="prf-head">✓ Makes immediately visible</div>
+      <div class="prf-item">Character development over time — the trajectory of who someone is becoming, not just what they do in any given moment</div>
+      <div class="prf-item">Habituation as the mechanism of moral development — how repeated action crystallizes into stable disposition</div>
+      <div class="prf-item">Eudaimonia (flourishing) as the measure of a life — neither compliance with rules nor maximization of outcomes but genuine human thriving</div>
+      <div class="prf-item">The moral significance of emotion — the virtuous person feels the right way, with neither excess nor deficiency</div>
+      <div class="prf-item">Phronesis (practical wisdom) — the capacity to perceive what a situation requires, irreducible to rule-following</div>
+    </div>
+    <div class="prf-struggles">
+      <div class="prf-head">✗ Structurally struggles to see</div>
+      <div class="prf-item">Those without access to conditions for virtue cultivation — in Aristotle's own account: the enslaved, women, non-citizens</div>
+      <div class="prf-item">Structural injustice that makes virtue cultivation impossible regardless of individual effort — you cannot develop practical wisdom in permanent survival mode</div>
+      <div class="prf-item">Obligations to strangers, future generations, or distant populations we will never meet</div>
+      <div class="prf-item">Situations requiring rapid institutional design decisions rather than slow character formation over a lifetime</div>
+    </div>
+  </div>
+
+  <div class="sim-panel">
+    <h3>Simulation Lens: <span class="sim-metric-badge">ATCF Trajectory — Historical Continuity + Prospective Coherence</span></h3>
+    <p>Watch the ATCF components across steps rather than final metrics. Historical continuity (H_C) measures whether agents maintain a coherent narrative of who they are over time — the simulation's account of Aristotelian autobiographical integrity. Prospective coherence (P_C) measures whether agents can project a viable future self — the relationship between current action and telos.</p>
+    <p>A run under conditions supporting character development (low entropy, stable relationships, positive community blocks) will show ATCF strengthening across steps. A run under entropy-exporting conditions will show fragmentation — exactly what Aristotle predicted when conditions for virtue cultivation are systematically undermined.</p>
+    <button class="run-btn" id="btnVirtue" onclick="runTrad('virtue')">▶ Run Virtue Ethics Simulation</button>
+    <div id="resultVirtue" style="display:none">
+      <div class="ucp-metrics" id="metricsVirtue"></div>
+      <div id="barsVirtue" style="margin:.5rem 0"></div>
+      <div class="ucp-narrative" id="narrativeVirtue"></div>
+    </div>
+    <div class="ucp-error" id="errVirtue" style="display:none"></div>
+  </div>
+
+  <div class="acp-box">
+    <div class="acp-head">Contribution to the Agency Conditions Principle</div>
+    <p>Virtue ethics discovered that the conditions for coherent agency are developmental — that agency is a temporal achievement built through practice over time, not a standing property of persons. This grounds the ATCF's historical continuity component and the course's emphasis on what institutions do to the conditions for character formation across generations. The temporal commons question — what is this architecture handing forward? — is a virtue ethics question applied at institutional scale.</p>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Virtue Ethics Reflection</div>
+    <p style="font-size:.83rem;margin-bottom:.4rem">Identify one institution in your life — employer, school, family, community organization. Does it function more like a polis that supports character formation, or like an entropy-exporting structure that fragments it? Name one specific ATCF component it either supports or erodes.</p>
+    <textarea class="jta" id="jta-virtue" placeholder="Institution: ...&#10;Its effect on my character formation: ...&#10;Specific ATCF component affected: ..." oninput="jSave('virtue',this.value)"></textarea>
+    <div class="save-note" id="sn-virtue">✓ Saved</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-kant">
+  <div class="trad-header" style="background:var(--kant)">
+    <div class="tnum">Tradition Two</div>
+    <h2>Deontological Ethics</h2>
+    <div class="tagline">Immanuel Kant · 1785 · Groundwork of the Metaphysics of Morals</div>
+  </div>
+
+  <h2>The Historical Problem</h2>
+  <p>Kant wrote the Groundwork in 1785, during the European Enlightenment, targeting a specific philosophical crisis: the arbitrariness of moral authority. For centuries, moral obligation had been grounded in divine command, natural law interpreted by the Church, or royal decree. All three have the same structural problem: morality depends on who happens to have power.</p>
+  <p>Kant's problem was to find a foundation for moral obligation independent of all external authority — one a rational agent could discover through reason alone. His answer: act only according to the maxim you can at the same time will to be a universal law. The second formulation goes further: treat persons always as ends, never merely as means. This was a direct response to the systematic instrumentalization of persons — slavery, serfdom, child labor — by institutions claiming moral legitimacy from tradition or authority.</p>
+
+  <h2>The PRF Deontological Ethics Holds</h2>
+  <div class="prf-grid">
+    <div class="prf-sees">
+      <div class="prf-head">✓ Makes immediately visible</div>
+      <div class="prf-item">The dignity of persons as non-negotiable — things you cannot do to people regardless of consequences</div>
+      <div class="prf-item">The corruption of instrumentalization — using persons as means to ends rather than as ends in themselves</div>
+      <div class="prf-item">Universal obligation — moral requirements applying to all rational agents regardless of culture or position</div>
+      <div class="prf-item">The moral weight of will and intention — what makes an action worthy is acting from duty, not from consequence</div>
+      <div class="prf-item">Institutional integrity — promise-keeping and rule-following have value independent of consequences</div>
+    </div>
+    <div class="prf-struggles">
+      <div class="prf-head">✗ Structurally struggles to see</div>
+      <div class="prf-item">Agents whose capacity for rational agency is compromised by material conditions — survival mode undermines the autonomous rational will Kant assumes</div>
+      <div class="prf-item">Situations where rigid universal rules produce catastrophic results for specific populations</div>
+      <div class="prf-item">The thickness of actual human lives beneath the abstraction of "rational agent"</div>
+      <div class="prf-item">Structural injustice that makes the exercise of formal rights impossible without specifying what must be done to enable them</div>
+    </div>
+  </div>
+
+  <div class="sim-panel">
+    <h3>Simulation Lens: <span class="sim-metric-badge">Morphic Suppression · Suppression Gap</span></h3>
+    <p>The Kantian question: are agents being treated as ends or as means? The suppression gap measures what Kant called instrumentalization — the distance between what an agent can actually contribute (λ Raw) and what the institutional architecture allows to reach decisions (λ Perceived).</p>
+    <p>When the Challenger engineers' knowledge failed to reach the launch decision, the teleconference architecture was, in Kantian terms, instrumentalizing them — using their presence to satisfy a procedural requirement while routing their actual signal around the decision. Morphic suppression measures the accumulated learned self-censorship that follows: agents whose contributions are consistently ignored begin to internalize the institutional judgment that their signal does not matter.</p>
+    <button class="run-btn" id="btnKant" onclick="runTrad('kant')">▶ Run Deontological Simulation</button>
+    <div id="resultKant" style="display:none">
+      <div class="ucp-metrics" id="metricsKant"></div>
+      <div id="barsKant" style="margin:.5rem 0"></div>
+      <div class="ucp-narrative" id="narrativeKant"></div>
+    </div>
+    <div class="ucp-error" id="errKant" style="display:none"></div>
+  </div>
+
+  <div class="acp-box">
+    <div class="acp-head">Contribution to the Agency Conditions Principle</div>
+    <p>Deontological ethics discovered that coherent agency has a dignity condition — the non-negotiable protection of each agent's signal from being instrumentalized by institutional architecture. The suppression gap is not merely a coordination failure. It is a moral violation: agents whose knowledge and judgment are systematically excluded are being treated as means. The ACP's requirement that genuine capacity reach decisions is a Kantian requirement applied through simulation vocabulary.</p>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Kantian Reflection</div>
+    <p style="font-size:.83rem;margin-bottom:.4rem">Identify one institutional process in which you participate (a meeting, a hiring process, an administrative procedure). Are the participants' genuine contributions actually reaching the outcomes, or are they being consulted as a procedural requirement while the decision has already been made? Estimate the suppression gap in simulation terms.</p>
+    <textarea class="jta" id="jta-kant" placeholder="The process: ...&#10;Whether contributions actually reach outcomes: ...&#10;Estimated suppression gap: ___&#10;The Kantian diagnosis: ..." oninput="jSave('kant',this.value)"></textarea>
+    <div class="save-note" id="sn-kant">✓ Saved</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-mill">
+  <div class="trad-header" style="background:var(--mill)">
+    <div class="tnum">Tradition Three</div>
+    <h2>Consequentialism</h2>
+    <div class="tagline">Jeremy Bentham · 1789 · Refined by John Stuart Mill · 1863</div>
+  </div>
+
+  <h2>The Historical Problem</h2>
+  <p>Bentham published in 1789 — the year of the French Revolution — as an explicit reform tool targeting English common law and the aristocratic privilege embedded in it. The hedonic calculus — the greatest happiness of the greatest number — was designed as a reform criterion that could override tradition, class interest, and inherited privilege. If a law produces more suffering than happiness, change it, regardless of how long it has existed or whose interests it protects.</p>
+  <p>Mill refined Bentham in two important ways: pleasures differ in quality, not just quantity; and more crucially for the EBB framework, the utilitarian calculus makes the welfare of distant, invisible, and politically powerless populations morally relevant for the first time. The factory worker's suffering counts. The colonial subject's welfare counts. Future generations' interests count. This egalitarian reach — that all affected populations' claims must enter the moral calculus — is consequentialism's most enduring contribution.</p>
+
+  <h2>The PRF Consequentialism Holds</h2>
+  <div class="prf-grid">
+    <div class="prf-sees">
+      <div class="prf-head">✓ Makes immediately visible</div>
+      <div class="prf-item">Aggregate welfare — the total effect on all affected populations, weighted equally regardless of social status</div>
+      <div class="prf-item">Measurable outcomes — empirical evidence about what actually happens rather than what theoretically should</div>
+      <div class="prf-item">The claims of distant and invisible populations — future generations, faraway communities, the politically voiceless</div>
+      <div class="prf-item">The reformist critique of tradition — existing arrangements must justify themselves by what they produce</div>
+      <div class="prf-item">Proportionality — moral weight tracks scale of effects, not identity of affected parties</div>
+    </div>
+    <div class="prf-struggles">
+      <div class="prf-head">✗ Structurally struggles to see</div>
+      <div class="prf-item">Distribution within the aggregate — a policy can maximize total welfare while systematically disadvantaging specific populations</div>
+      <div class="prf-item">Rights of minorities against welfare-maximizing majorities — utility maximization is compatible with serious rights violations</div>
+      <div class="prf-item">The incomparability of different kinds of goods — some things cannot be traded off against others</div>
+      <div class="prf-item">Long-run costs that the calculus systematically discounts — the temporal commons problem is partly a failure of consequentialist accounting</div>
+    </div>
+  </div>
+
+  <div class="sim-panel">
+    <h3>Simulation Lens: <span class="sim-metric-badge">OS2 Bridge · λ Perceived Mean</span></h3>
+    <p>The consequentialist question: does the coordination architecture produce the best outcomes for the largest number? OS2 Bridge measures cross-worldview coordination capacity — whether agents from different PRF positions can reach productive exchange. A high OS2 Bridge in Configuration B versus Configuration A is the simulation's consequentialist indicator.</p>
+    <p>Note what the consequentialist metric cannot see: the <em>distribution</em> of λ Perceived across agents. The mean may be higher in Configuration B while some agents remain far below it. That distributional question requires Rawls. Run the simulation and ask: what is the mean? Then ask: what is the range? The first question is Mill's. The second is Rawls'.</p>
+    <button class="run-btn" id="btnMill" onclick="runTrad('mill')">▶ Run Consequentialist Simulation</button>
+    <div id="resultMill" style="display:none">
+      <div class="ucp-metrics" id="metricsMill"></div>
+      <div id="barsMill" style="margin:.5rem 0"></div>
+      <div class="ucp-narrative" id="narrativeMill"></div>
+    </div>
+    <div class="ucp-error" id="errMill" style="display:none"></div>
+  </div>
+
+  <div class="acp-box">
+    <div class="acp-head">Contribution to the Agency Conditions Principle</div>
+    <p>Consequentialism discovered that the conditions for coherent agency must include the claims of all affected populations — not only those with political voice or institutional standing. The ACP's insistence that coherence-preserving governance accounts for populations rendered invisible by modeling assumptions (the Farmer critique of Chapter 7) is a consequentialist requirement: all populations' agency conditions count, and architectures that average them away are morally deficient because they produce worse outcomes for real people who were never in the model.</p>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Consequentialist Reflection</div>
+    <p style="font-size:.83rem;margin-bottom:.4rem">Identify one policy decision you have recently encountered (at school, work, community, or in the news). Who are the affected populations the decision-makers appeared to be counting? Who appears to have been outside the calculus — whose welfare did not enter the analysis? Name the suppression gap between those included and those excluded.</p>
+    <textarea class="jta" id="jta-mill" placeholder="The decision: ...&#10;Populations counted: ...&#10;Populations outside the calculus: ...&#10;The consequentialist diagnosis: ..." oninput="jSave('mill',this.value)"></textarea>
+    <div class="save-note" id="sn-mill">✓ Saved</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-care">
+  <div class="trad-header" style="background:var(--care)">
+    <div class="tnum">Tradition Four</div>
+    <h2>Care Ethics</h2>
+    <div class="tagline">Carol Gilligan · 1982 · Nel Noddings, Joan Tronto · subsequent development</div>
+  </div>
+
+  <h2>The Historical Problem</h2>
+  <p>Carol Gilligan published In a Different Voice in 1982 as a direct critique of Lawrence Kohlberg's theory of moral development. Kohlberg's six-stage developmental sequence was derived entirely from male subjects and treated contextual, relational, care-based reasoning as a lower developmental stage. Women consistently scored at the conventional stage — not because they were morally underdeveloped, Gilligan argued, but because the scale was calibrated not to hear the moral voice they were developing.</p>
+  <p>The deeper historical problem runs further back than Kohlberg. Liberal moral theory — from Locke through Rawls — constructs its moral agent as an autonomous, rational, self-sufficient adult who enters social arrangements by choice. This is a fiction, and it is a gendered fiction. Every such autonomous agent was once a helpless infant, will probably be a vulnerable elder, and may at various points be ill, disabled, or dependent. The caregiving labor that makes autonomous adult life possible is systematically invisible in liberal theory — performed predominantly by women, uncompensated, treated as private rather than political, and excluded from the moral calculus that governs public life.</p>
+
+  <h2>The PRF Care Ethics Holds</h2>
+  <div class="prf-grid">
+    <div class="prf-sees">
+      <div class="prf-head">✓ Makes immediately visible</div>
+      <div class="prf-item">Dependency and vulnerability as the baseline of human existence, not exceptions to be managed</div>
+      <div class="prf-item">Relational obligation — the moral weight of particular relationships and the specific duties they generate</div>
+      <div class="prf-item">The invisible labor that sustains social life — caregiving, domestic work, emotional labor, the infrastructure of human connection</div>
+      <div class="prf-item">Context and particularity — what is required for this specific person in this specific situation</div>
+      <div class="prf-item">The moral significance of emotion — care and empathy as morally relevant, not as biases to be overcome</div>
+    </div>
+    <div class="prf-struggles">
+      <div class="prf-head">✗ Structurally struggles to see</div>
+      <div class="prf-item">How to scale care beyond personal relationships — works for face-to-face obligations, struggles with institutional design or obligations to strangers</div>
+      <div class="prf-item">The risk of reinforcing traditional gender roles by valorizing care work without addressing its gendered distribution</div>
+      <div class="prf-item">Obligations to future generations, distant communities, or people we will never meet</div>
+      <div class="prf-item">How to adjudicate between competing care relationships when resources are limited</div>
+    </div>
+  </div>
+
+  <div class="sim-panel">
+    <h3>Simulation Lens: <span class="sim-metric-badge">Community Block Field · Relational Infrastructure</span></h3>
+    <p>The care ethics question: are the relational channels through which people support each other open or suppressed? The community block field is the simulation's care ethics metric. A strongly negative community block field models an institutional architecture that systematically severs the relational infrastructure through which people coordinate, support each other, and develop the trust required for sustained cooperation.</p>
+    <p>Watch the community block field's effect on coordination capacity in this run versus the Maathai Phase 1 versus Phase 2 comparison you ran earlier: the shift from value-agreement to shared concrete task coordination is, in care ethics terms, a shift from abstract principle to relational engagement.</p>
+    <button class="run-btn" id="btnCare" onclick="runTrad('care')">▶ Run Care Ethics Simulation</button>
+    <div id="resultCare" style="display:none">
+      <div class="ucp-metrics" id="metricsCare"></div>
+      <div id="barsCare" style="margin:.5rem 0"></div>
+      <div class="ucp-narrative" id="narrativeCare"></div>
+    </div>
+    <div class="ucp-error" id="errCare" style="display:none"></div>
+  </div>
+
+  <div class="acp-box">
+    <div class="acp-head">Contribution to the Agency Conditions Principle</div>
+    <p>Care ethics discovered that coherent agency requires relational infrastructure — that the community block field is not a peripheral variable but a load-bearing structural condition. An agent's capacity to exercise genuine agency depends on whether they are embedded in networks of relationship, support, and mutual recognition. Institutions that claim to serve persons while systematically severing the relational infrastructure that makes their agency possible are failing the care ethics test regardless of their formal commitments.</p>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Care Ethics Reflection</div>
+    <p style="font-size:.83rem;margin-bottom:.4rem">Name one person in your life whose care work is largely invisible to the institutions that depend on it. What relational channels does that person rely on, and are those channels supported or suppressed by the economic or institutional architecture around them? Use community block field language to describe what you observe.</p>
+    <textarea class="jta" id="jta-care" placeholder="The person and their care work: ...&#10;Relational channels they depend on: ...&#10;Whether those channels are supported or suppressed: ...&#10;Community block field assessment: ..." oninput="jSave('care',this.value)"></textarea>
+    <div class="save-note" id="sn-care">✓ Saved</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-justice">
+  <div class="trad-header" style="background:var(--rawls)">
+    <div class="tnum">Tradition Five — In Dialogue</div>
+    <h2>Modern Justice Theories</h2>
+    <div class="tagline">John Rawls (1971) and Martha Nussbaum (1990s–2006) · Procedure meets Substance</div>
+  </div>
+
+  <h2>The Shared Historical Problem</h2>
+  <p>Both Rawls and Nussbaum are responding to the same failure: the inadequacy of utilitarian reasoning for institutional design. Mill showed that all populations' welfare counts and that reform requires empirical accountability. But the consequentialist framework aggregates in ways that make distributions invisible. You can maximize total welfare while systematically disadvantaging specific populations. You can average away the worst-off while reporting improvement in the mean.</p>
+  <p>Post-WWII liberal democracies needed to justify welfare state institutions without either socialist collectivism or libertarian minimalism. The utilitarian argument — welfare states produce better aggregate outcomes — was empirically vulnerable and failed to ground the intuition that something specific is <em>owed</em> to the worst-off that cannot be traded against aggregate gains for the majority.</p>
+
+  <h2>Rawls: The PRF of Procedural Fairness</h2>
+  <p>Rawls' central innovation: the <em>original position</em> — what principles would rational agents choose if they did not know their place in society, their class, their natural abilities, or any contingent fact about their identity? Strip away arbitrary advantages; ask what rational agents would endorse if they could not benefit from bias.</p>
+  <p>Two principles emerge: equal basic liberties for all; and the <strong>difference principle</strong> — inequalities are just only if they benefit the least advantaged members of society. This is the political philosophy complement to the ACP's temporal commons test: it asks whether the architecture improves conditions for those with the least, not just the average or majority.</p>
+
+  <div class="prf-grid">
+    <div class="prf-sees">
+      <div class="prf-head" style="color:#92400e">✓ Rawls sees</div>
+      <div class="prf-item">The separateness of persons — the argument against aggregating welfare in ways that sacrifice individuals for the aggregate</div>
+      <div class="prf-item">The arbitrariness of natural talent and social position — advantages in competition are not morally deserved</div>
+      <div class="prf-item">The claims of the least advantaged — the difference principle as structural protection for those any other arrangement would leave behind</div>
+      <div class="prf-item">Procedural justice — fair procedures are independently morally required, not only fair outcomes</div>
+    </div>
+    <div class="prf-struggles">
+      <div class="prf-head" style="color:#9f1239">✗ Rawls struggles to see</div>
+      <div class="prf-item">Agents whose capacity to exercise formal primary goods is compromised by conditions the difference principle doesn't specify</div>
+      <div class="prf-item">Cultural variation in what primary goods mean across different populations</div>
+      <div class="prf-item">The threshold below which no one should be allowed to fall — the difference principle says improve the worst-off but not how much</div>
+      <div class="prf-item">The claims of persons with severe disabilities whose needs can't be captured in primary goods distributions</div>
+    </div>
+  </div>
+
+  <h2>Nussbaum: The PRF of Substantive Capability</h2>
+  <p>Nussbaum's foundational argument: the right question is not "what does this person have?" but "what can this person <em>do and be</em>?" Two people may have equal formal access to education while one — because of chronic illness, caregiving responsibilities, or economic precarity — is functionally incapable of using that access. Formal equality of primary goods cannot guarantee substantive equality of capability.</p>
+  <p>Nussbaum proposes ten central human capabilities — including bodily health, practical reason, affiliation, and control over one's political and material environment — each of which must be secured above a minimum threshold. Justice requires not equal capabilities but that <em>no person fall below the threshold</em> for any of them.</p>
+
+  <div class="prf-grid">
+    <div class="prf-sees">
+      <div class="prf-head" style="color:#0e7490">✓ Nussbaum sees</div>
+      <div class="prf-item">What people can actually do and become, not just what they formally have access to</div>
+      <div class="prf-item">The ten central capabilities as threshold conditions that institutional design must guarantee</div>
+      <div class="prf-item">The feminist argument that Rawls' primary goods framework undervalues care work and dependency</div>
+      <div class="prf-item">The development economics critique: GDP and income metrics mask real deprivation</div>
+    </div>
+    <div class="prf-struggles">
+      <div class="prf-head" style="color:#9f1239">✗ Nussbaum struggles to see</div>
+      <div class="prf-item">Who defines the list of capabilities and from whose standpoint</div>
+      <div class="prf-item">Cultural variation in how capabilities are expressed and prioritized</div>
+      <div class="prf-item">The tension between capability thresholds and individual liberty — ensuring capability sometimes requires constraining choices</div>
+      <div class="prf-item">How to implement specific threshold requirements consistently across diverse societies</div>
+    </div>
+  </div>
+
+  <div class="sim-panel">
+    <h3>Simulation Lens: <span class="sim-metric-badge">Distributional Spread of λ Perceived</span></h3>
+    <p>This tradition asks a different question than the others: not the primary metric but the <em>distribution</em> across agents. The Rawlsian question: in which configuration does the lowest-λ Raw agent perform best? The difference principle says the architecture is more just if it makes the worst-off better off — not just the average.</p>
+    <p>The Nussbaumian question adds a threshold: is there a minimum λ Perceived below which no agent should fall, regardless of what the architecture produces on average? These are related but distinct. An architecture could satisfy the difference principle while still leaving some agents below a meaningful capability threshold.</p>
+    <button class="run-btn" id="btnJustice" onclick="runTrad('justice')">▶ Run Modern Justice Simulation</button>
+    <div id="resultJustice" style="display:none">
+      <div class="ucp-metrics" id="metricsJustice"></div>
+      <div id="barsJustice" style="margin:.5rem 0"></div>
+      <div class="ucp-narrative" id="narrativeJustice"></div>
+    </div>
+    <div class="ucp-error" id="errJustice" style="display:none"></div>
+  </div>
+
+  <div class="acp-box">
+    <div class="acp-head">Contribution to the Agency Conditions Principle</div>
+    <p>Rawls contributed the structural argument that coherence-preserving governance must evaluate itself by what it produces for the least advantaged — the difference principle applied to λ Perceived distributions. Nussbaum contributed the substantive specification: the nine fairness dimensions of Chapter 11 are Nussbaumian in structure, specifying threshold conditions rather than only procedural fairness. Together they ground the ACP's temporal commons test: not only must conditions improve for the least advantaged now, but the architecture must preserve and extend those improvements across generations.</p>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Modern Justice Reflection</div>
+    <p style="font-size:.83rem;margin-bottom:.4rem">Apply the Rawlsian veil of ignorance to one institution in your life. If you didn't know whether you would be at the top, middle, or bottom of its hierarchy, would you endorse its current arrangements? Then apply Nussbaum's threshold test: does this institution guarantee that everyone in it maintains at least a minimum capability floor? Which test does it fail first, and what does that tell you about its architecture?</p>
+    <textarea class="jta" id="jta-justice" placeholder="The institution: ...&#10;Veil of ignorance test: ...&#10;Nussbaum threshold test: ...&#10;Which test fails first, and what that reveals: ..." oninput="jSave('justice',this.value)"></textarea>
+    <div class="save-note" id="sn-justice">✓ Saved</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-synthesis">
+  <h2>Synthesis: Six Partial Perceptions of the ACP</h2>
+  <p>Each tradition was designed to solve a specific historical problem. Each developed a distinctive way of seeing. Each, in solving its problem, developed a blind spot — which became the historical problem that prompted the next tradition. Together they form a cumulative genealogy of moral insight.</p>
+
+  <div class="synth-grid">
+    <div class="synth-card" style="background:var(--virtue-l);border-left:4px solid var(--virtue)">
+      <strong style="color:var(--virtue)">Virtue Ethics</strong> discovered that agency is developmental — that the conditions for coherent ethical life must be cultivated over time. <em>ACP link: Historical continuity component of ATCF; the temporal commons question applied to character formation.</em>
+    </div>
+    <div class="synth-card" style="background:var(--kant-l);border-left:4px solid var(--kant)">
+      <strong style="color:var(--kant)">Deontological Ethics</strong> discovered that agency has a dignity condition — persons cannot be instrumentalized by institutional architecture regardless of efficiency gains. <em>ACP link: Suppression gap requirement; non-negotiability of morphic fidelity.</em>
+    </div>
+    <div class="synth-card" style="background:var(--mill-l);border-left:4px solid var(--mill)">
+      <strong style="color:var(--mill)">Consequentialism</strong> discovered that the claims of all affected populations must count — institutional design must answer for what it produces for everyone, including those invisible to the model. <em>ACP link: OS2 Bridge requirement; the Farmer critique of representative-agent modeling.</em>
+    </div>
+    <div class="synth-card" style="background:var(--care-l);border-left:4px solid var(--care)">
+      <strong style="color:var(--care)">Care Ethics</strong> discovered that relational infrastructure is a precondition for agency, not a peripheral feature. <em>ACP link: Community block field; the inclusion dimension of coherence-preserving governance.</em>
+    </div>
+    <div class="synth-card" style="background:var(--rawls-l);border-left:4px solid var(--rawls)">
+      <strong style="color:var(--rawls)">Rawlsian Justice</strong> discovered that institutional design must be evaluated by what it produces for the least advantaged — distributions matter, not only means. <em>ACP link: Distributional requirement; difference principle applied to λ Perceived.</em>
+    </div>
+    <div class="synth-card" style="background:var(--nuss-l);border-left:4px solid var(--nuss)">
+      <strong style="color:var(--nuss)">Capabilities Approach</strong> discovered that justice requires substantive specification of what agency conditions must include — threshold conditions, not only procedural fairness. <em>ACP link: The nine fairness dimensions; capability-ATCF mapping; temporal commons test across generations.</em>
+    </div>
+  </div>
+
+  <div class="card card-teal" style="margin-top:1.25rem">
+    <h3>The ACP as Synthesis</h3>
+    <p>No single tradition can be the ACP. Virtue ethics without Kant produces character-based reasoning with nothing to say about the dignity of those systemically denied access to virtue's conditions. Kant without Mill produces deontological rigor that cannot account for invisible populations. Mill without care ethics produces welfare calculations that render dependency labor invisible. Care ethics without Rawls cannot generate principles for institutional design. Rawls without Nussbaum cannot specify the substantive capability threshold below which no person should fall.</p>
+    <p>Together they describe what the ACP names as a single normative requirement: that institutional design must preserve — and where degraded, repair — the conditions under which coherent agency is possible for all the populations it governs, across time, across generations, and at every level of the civilizational stack.</p>
+  </div>
+
+  <!-- All-traditions comparison -->
+  <div id="synthPanel" style="display:none;margin-top:1.25rem">
+    <h3>Your Simulation Results — All Traditions</h3>
+    <div id="synthTable"></div>
+  </div>
+
+  <div class="card card-amber" style="margin-top:1rem">
+    <h3>Synthesis Question</h3>
+    <p>After running all six tradition simulations, which tradition's metric surfaced the most urgent signal in the scenario you ran? Which required the most interpretive effort? Which blind spot concerns you most when you imagine an institution designed entirely by practitioners of that tradition?</p>
+    <p>Your answers reveal your PRF — the tradition whose lens your intuitions most closely track is showing you something about the interpretive filter you bring to ethical situations.</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+  <h2>Ethics Journal — Supplementary Chapter</h2>
+
+  <div class="journal-box" style="border-color:var(--teal-mid);border-width:2px">
+    <div class="journal-label" style="color:var(--teal-dark)">Q5 — Your Tradition Reading (Stored for Retrieval)</div>
+    <p style="font-size:.85rem;margin-bottom:.5rem">After working through all six traditions and their simulations, commit to three specific observations: which tradition's primary metric surfaced the most urgent signal; which tradition required the most deliberate effort to interpret and what that felt like; and which blind spot you find most dangerous — the one that most concerns you when you imagine an institution designed entirely by practitioners of that tradition.</p>
+    <p style="font-size:.85rem;margin-bottom:.5rem">Be as specific as the simulation vocabulary allows. Name the metric, name the suppression gap value or OS2 Bridge reading that most concerned you. Write precisely enough that you can compare this entry to your analysis of real institutions in the applied sequence chapters.</p>
+    <textarea class="jta" id="jta-q5" style="min-height:160px" placeholder="Most urgent signal: tradition = ___, metric = ___, value = ___&#10;Why it alarmed me: ...&#10;&#10;Tradition that required most interpretive effort: ___&#10;What the effort felt like: ...&#10;&#10;Most dangerous blind spot: tradition = ___&#10;Because in an institution designed entirely by that tradition's practitioners: ..." oninput="jSave('supp_cq5',this.value)"></textarea>
+    <div class="save-note" id="sn-supp_cq5">✓ Saved for retrieval</div>
+  </div>
+
+  <div class="journal-box">
+    <div class="journal-label">Per-Tradition Reflections (retrieved)</div>
+    <p style="font-size:.83rem;margin-bottom:.6rem">Your notes from each tradition tab are collected here.</p>
+    <div id="allReflections"></div>
+  </div>
+
+  <div class="card card-blue" style="margin-top:1rem;background:var(--teal-light);border-left:4px solid var(--teal-mid)">
+    <div style="display:flex;gap:.65rem;flex-wrap:wrap;margin-top:.25rem">
+      <button onclick="exportJournal()" style="padding:.45rem 1rem;border:none;border-radius:.35rem;background:var(--teal-dark);color:#fff;font-family:'Georgia',serif;font-size:.85rem;cursor:pointer">📥 Download</button>
+      <button onclick="copyJournal()" style="padding:.45rem 1rem;border:1px solid var(--border);border-radius:.35rem;background:#fff;font-family:'Georgia',serif;font-size:.85rem;cursor:pointer">📋 Copy</button>
+      <button onclick="clearAll()" style="padding:.45rem 1rem;border:1px solid #fca5a5;border-radius:.35rem;background:#fee2e2;color:#7f1d1d;font-family:'Georgia',serif;font-size:.85rem;cursor:pointer">🗑️ Clear All</button>
+    </div>
+  </div>
+</div>
+
+<footer>Ethics Beyond Boundaries · Ethics Institute, Saint Petersburg College · Supplementary Chapter: Six Ethical Traditions</footer>
+
+<script>
+'use strict';
+const JP = 'supp_';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ── Storage ───────────────────────────────────────────────────
+function jSave(k, v) {
+  try {
+    localStorage.setItem(JP + k, v);
+    const sn = document.getElementById('sn-' + k);
+    if (sn) { sn.classList.add('show'); setTimeout(() => sn.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+function jLoad(k) { try { return localStorage.getItem(JP + k) || ''; } catch(e) { return ''; } }
+
+// ── Tab switching ─────────────────────────────────────────────
+function showT(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.trad-btn').forEach(b => b.classList.remove('active'));
+  const pane = document.getElementById('tab-' + name);
+  if (pane) pane.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'journal') loadJournal();
+  if (name === 'synthesis') loadSynthesis();
+}
+
+function loadJournal() {
+  const q5 = document.getElementById('jta-q5');
+  if (q5) q5.value = jLoad('supp_cq5');
+  const keys = ['virtue','kant','mill','care','justice'];
+  const labels = {
+    virtue:'Virtue Ethics', kant:'Deontology', mill:'Consequentialism',
+    care:'Care Ethics', justice:'Modern Justice'
+  };
+  const box = document.getElementById('allReflections');
+  if (!box) return;
+  box.innerHTML = keys.map(k => {
+    const v = jLoad(k);
+    return `<div style="margin-bottom:.65rem">
+      <div style="font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem">${labels[k]}</div>
+      <div style="font-size:.86rem;color:var(--ink);padding:.4rem .6rem;background:rgba(0,0,0,.03);border-radius:.35rem;min-height:2rem;white-space:pre-wrap">${v || '<span style="color:var(--muted);font-style:italic">No reflection written yet</span>'}</div>
+    </div>`;
+  }).join('');
+}
+
+function loadSynthesis() {
+  const done = Object.keys(_results);
+  if (!done.length) return;
+  const synthPanel = document.getElementById('synthPanel');
+  if (synthPanel) synthPanel.style.display = 'block';
+  const tbl = document.getElementById('synthTable');
+  if (!tbl) return;
+
+  const rows = done.map(t => {
+    const m = _results[t]?.metrics || {};
+    const raw = (m.lambda_raw||0).toFixed(3);
+    const perc = (m.lambda_perceived||0).toFixed(3);
+    const gap = Math.max(0,(m.lambda_raw||0)-(m.lambda_perceived||0));
+    const os2 = (m.os2_synergy_bridge??m.os2_synergy??0).toFixed(3);
+    const morph = (m.morphic_suppression||0).toFixed(3);
+    const color = TRAD_COLORS[t] || 'var(--teal-dark)';
+    const label = TRAD_LABELS[t] || t;
+    const gapColor = gap>0.35?'#dc2626':gap>0.15?'#ca8a04':'#16a34a';
+    return `<tr>
+      <td style="font-weight:700;color:${color};padding:.4rem .6rem">${label}</td>
+      <td style="font-family:'Courier New',monospace;text-align:center;padding:.4rem">${raw}</td>
+      <td style="font-family:'Courier New',monospace;text-align:center;padding:.4rem">${perc}</td>
+      <td style="font-family:'Courier New',monospace;text-align:center;padding:.4rem;color:${gapColor};font-weight:700">${(gap*100).toFixed(1)}%</td>
+      <td style="font-family:'Courier New',monospace;text-align:center;padding:.4rem">${os2}</td>
+      <td style="font-family:'Courier New',monospace;text-align:center;padding:.4rem">${morph}</td>
+    </tr>`;
+  }).join('');
+
+  tbl.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:.83rem">
+    <thead><tr style="background:var(--teal-dark);color:#fff">
+      <th style="padding:.4rem .6rem;text-align:left">Tradition</th>
+      <th style="padding:.4rem;text-align:center">λ Raw</th>
+      <th style="padding:.4rem;text-align:center">λ Perceived</th>
+      <th style="padding:.4rem;text-align:center">Gap</th>
+      <th style="padding:.4rem;text-align:center">OS2 Bridge</th>
+      <th style="padding:.4rem;text-align:center">Morphic</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ── Simulation payloads per tradition ─────────────────────────
+const TRAD_LABELS = {
+  virtue: 'Virtue Ethics',
+  kant: 'Deontology (Kant)',
+  mill: 'Consequentialism (Mill)',
+  care: 'Care Ethics',
+  justice: 'Modern Justice',
+};
+const TRAD_COLORS = {
+  virtue: 'var(--virtue)', kant: 'var(--kant)',
+  mill: 'var(--mill)', care: 'var(--care)', justice: 'var(--rawls)',
+};
+
+// Each payload is calibrated to foreground that tradition's primary metric
+const PAYLOADS = {
+  // Virtue: stable low-entropy conditions, ubuntu dominant — watch ATCF trajectory
+  virtue: {
+    num_agents: 16, scenario_name: 'baseline', steps: 8, seed: 42,
+    worldview_distribution: {
+      ubuntu_relational: 0.35, liberal_individualist: 0.25,
+      role_order: 0.20, indigenous_custodial: 0.12, sacred_boundary: 0.08
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.50, tradition_weighted: 0.25,
+      authority_weighted: 0.15, alternative_facts: 0.10
+    },
+    scenario_physics: {
+      base_entropy: 0.38, base_stress: 0.35,
+      block_fields: { care: 0.45, fairness: 0.40, community: 0.50, boundary: 0.15 }
+    }
+  },
+  // Kant: whistleblower — high suppression gap, watch morphic suppression build
+  kant: {
+    num_agents: 16, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    worldview_distribution: {
+      role_order: 0.52, sacred_boundary: 0.22,
+      liberal_individualist: 0.14, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.65, tradition_weighted: 0.18,
+      empirical_calibrated: 0.10, alternative_facts: 0.07
+    },
+    scenario_physics: {
+      base_entropy: 0.58, base_stress: 0.52,
+      block_fields: { care: -0.35, fairness: -0.60, community: -0.45, boundary: 0.50 }
+    }
+  },
+  // Mill: resource scarcity — heterogeneous worldviews, watch OS2 Bridge
+  mill: {
+    num_agents: 18, scenario_name: 'resource_scarcity', steps: 8, seed: 42,
+    worldview_distribution: {
+      liberal_individualist: 0.30, role_order: 0.25, ubuntu_relational: 0.20,
+      sacred_boundary: 0.15, indigenous_custodial: 0.10
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.48, authority_weighted: 0.25,
+      tradition_weighted: 0.18, alternative_facts: 0.09
+    },
+    scenario_physics: {
+      base_entropy: 0.44, base_stress: 0.40,
+      block_fields: { care: 0.20, fairness: 0.35, community: 0.15, boundary: 0.22 }
+    }
+  },
+  // Care: resource scarcity with relational suppression — watch community block effect
+  care: {
+    num_agents: 16, scenario_name: 'resource_scarcity', steps: 8, seed: 42,
+    worldview_distribution: {
+      ubuntu_relational: 0.40, indigenous_custodial: 0.22,
+      liberal_individualist: 0.18, role_order: 0.12, sacred_boundary: 0.08
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.45, tradition_weighted: 0.28,
+      authority_weighted: 0.18, alternative_facts: 0.09
+    },
+    scenario_physics: {
+      base_entropy: 0.50, base_stress: 0.48,
+      block_fields: { care: -0.55, fairness: -0.30, community: -0.65, boundary: 0.30 }
+    }
+  },
+  // Justice: baseline heterogeneous — watch for distribution; compare to kant run
+  justice: {
+    num_agents: 20, scenario_name: 'baseline', steps: 8, seed: 42,
+    worldview_distribution: {
+      ubuntu_relational: 0.28, liberal_individualist: 0.26,
+      role_order: 0.22, sacred_boundary: 0.14, indigenous_custodial: 0.10
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.52, tradition_weighted: 0.22,
+      authority_weighted: 0.16, alternative_facts: 0.10
+    },
+    scenario_physics: {
+      base_entropy: 0.42, base_stress: 0.38,
+      block_fields: { care: 0.35, fairness: 0.42, community: 0.38, boundary: 0.18 }
+    }
+  },
+};
+
+const NARRATIVES = {
+  virtue: (m) => {
+    const raw = m.lambda_raw||0, perc = m.lambda_perceived||0, atcf = m.lambda_raw||0;
+    return `Virtue Ethics lens — ATCF trajectory: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${Math.max(0,raw-perc).toFixed(3)}. The stable low-entropy configuration (entropy 0.38, positive care and community blocks) provides the conditions Aristotle identified as prerequisites for virtue cultivation: predictable environment, relational infrastructure, evidence architecture that doesn't systematically discount certain frameworks. Notice that the suppression gap is small — when structural conditions support character development, agents' genuine capacity tends to reach outcomes. The virtue ethics question is not "what is the gap right now?" but "what is the trajectory over time, and what does this architecture make it possible to become?"`;
+  },
+  kant: (m) => {
+    const raw = m.lambda_raw||0, perc = m.lambda_perceived||0, morph = m.morphic_suppression||0;
+    const gap = Math.max(0,raw-perc);
+    return `Deontological lens — Suppression gap and morphic suppression: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, gap = ${gap.toFixed(3)}, morphic suppression = ${morph.toFixed(3)}. ${gap > 0.30 ? `The gap of ${gap.toFixed(3)} is the simulation's Kantian indicator: ${Math.round(gap*100)}% of agents' genuine coordination capacity is not reaching decisions. Authority-weighted evidence (65%) combined with negative fairness and community blocks routes the signal systematically away from outcomes.` : `The gap is moderate. The authority-weighted evidence distribution is creating suppression, but the magnitude is less than in the Challenger configuration.`} Morphic suppression at ${morph.toFixed(3)} reflects the accumulated learned self-censorship of agents who have repeatedly experienced their contributions being ignored. In Kantian terms: they are being treated as means.`;
+  },
+  mill: (m) => {
+    const os2 = m.os2_synergy_bridge??m.os2_synergy??0;
+    const perc = m.lambda_perceived||0;
+    return `Consequentialist lens — OS2 Bridge and aggregate λ Perceived: OS2 Bridge = ${os2.toFixed(3)}, mean λ Perceived = ${perc.toFixed(3)}. ${os2 > 0.40 ? "The heterogeneous worldview distribution with empirically-calibrated evidence weighting produces cross-framework coordination \u2014 the Millian indicator that multiple populations have contributions reaching outcomes." : "The coordination capacity is moderate. The diverse worldview distribution is producing some cross-framework exchange, but the evidence architecture is limiting how much reaches decisions."} The consequentialist asks: is this the best outcome for the largest number? But notice what the aggregate cannot tell you: whether all five worldview populations are contributing equally to this OS2 Bridge, or whether some are carrying more of the coordination burden than others. That distributional question requires Rawls.`;
+  },
+  care: (m) => {
+    const perc = m.lambda_perceived||0, os2 = m.os2_synergy_bridge??m.os2_synergy??0;
+    const comm = -0.65;
+    return `Care ethics lens — Community block field effect: λ Perceived = ${perc.toFixed(3)}, OS2 Bridge = ${os2.toFixed(3)}. The community block field is set to ${comm} — the simulation's account of an institutional architecture that systematically severs relational channels. ${perc < 0.35 ? "The suppressed community block field is dramatically reducing how much agents genuine capacity reaches outcomes. This is the care ethics diagnosis: when relational infrastructure is undermined, coordination capacity collapses regardless of what the formal structure nominally provides." : "Despite the negative community block, some coordination capacity is reaching decisions. Examine whether the ubuntu_relational dominant worldview population (40%) is compensating \u2014 carrying the relational burden for the whole system."} Compare this run to the Maathai Phase 2 configuration you ran in Chapter 4: what difference does a positive community block make?`;
+  },
+  justice: (m) => {
+    const raw = m.lambda_raw||0, perc = m.lambda_perceived||0;
+    const gap = Math.max(0,raw-perc);
+    const os2 = m.os2_synergy_bridge??m.os2_synergy??0;
+    return `Modern Justice lens — Distributional spread: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, gap = ${gap.toFixed(3)}, OS2 Bridge = ${os2.toFixed(3)}. The Rawlsian question is not what the mean λ Perceived is, but what the lowest-λ agent's value is. The Nussbaumian question adds: is there a minimum threshold below which no agent should fall, and is every agent above it? The coherence-preserving configuration (positive blocks, empirically-calibrated evidence) tends to raise both the mean and the floor — but the simulation cannot show you the individual distribution directly. Run this alongside the Kantian configuration to compare: in which run is the worst-off agent better off? That is the difference principle applied to simulation output.`;
+  },
+};
+
+// ── Results store ─────────────────────────────────────────────
+const _results = {};
+
+// ── Fetch helper ──────────────────────────────────────────────
+async function fetchWithRetry(url, opts, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(28000) });
+      if (r.ok) return r;
+      if (i === retries) throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(res => setTimeout(res, 1000 * (i+1)));
+    }
+  }
+}
+
+// ── Run simulation ────────────────────────────────────────────
+function vc(v, hi=true) {
+  if (hi) return v>0.55?'val-great':v>0.30?'val-warn':'val-bad';
+  return v<0.12?'val-great':v<0.28?'val-warn':'val-bad';
+}
+
+async function runTrad(t) {
+  const btn = document.getElementById('btn' + cap(t));
+  const resDiv = document.getElementById('result' + cap(t));
+  const errDiv = document.getElementById('err' + cap(t));
+  if (btn) { btn.disabled=true; btn.innerHTML='<span class="ucp-spinner"></span>Running…'; }
+  if (resDiv) resDiv.style.display='none';
+  if (errDiv) errDiv.style.display='none';
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(PAYLOADS[t]),
+    });
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics returned');
+    _results[t] = data;
+    renderTradResult(t, data);
+  } catch(e) {
+    if (errDiv) { errDiv.textContent='Simulation unavailable — '+e.message+'. Try again in a moment.'; errDiv.style.display='block'; }
+  } finally {
+    if (btn) { btn.disabled=false; btn.innerHTML='↺ Re-run Simulation'; }
+  }
+}
+
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function renderTradResult(t, data) {
+  const m = data.metrics||{};
+  const raw=m.lambda_raw||0, perc=m.lambda_perceived||0;
+  const fric=m.friction||0, morph=m.morphic_suppression||0;
+  const os2=m.os2_synergy_bridge??m.os2_synergy??0;
+  const gap=Math.max(0,raw-perc);
+
+  const metricsEl = document.getElementById('metrics'+cap(t));
+  const barsEl = document.getElementById('bars'+cap(t));
+  const narEl = document.getElementById('narrative'+cap(t));
+  const resDiv = document.getElementById('result'+cap(t));
+
+  if (metricsEl) metricsEl.innerHTML = `
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Raw</div>
+      <div class="ucp-metric-value ${vc(raw)}">${raw.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${raw>.55?'Intact':raw>.30?'Strained':'Collapsed'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Perceived</div>
+      <div class="ucp-metric-value ${vc(perc)}">${perc.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${perc>.50?'Voice reaching decisions':perc>.25?'Suppressed':'Near-absent'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Supp. Gap</div>
+      <div class="ucp-metric-value ${vc(gap,false)}">${(gap*100).toFixed(1)}%</div>
+      <div class="ucp-metric-phrase">${gap>.35?'Large':gap>.15?'Moderate':'Minimal'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">OS2 Bridge</div>
+      <div class="ucp-metric-value ${vc(os2)}">${os2.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">Cross-worldview coord.</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Morphic</div>
+      <div class="ucp-metric-value" style="color:#e879f9">${morph.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">Learned self-censorship</div></div>`;
+
+  const bp = v => `${Math.round(v*100)}%`;
+  if (barsEl) barsEl.innerHTML = `
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Raw</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${bp(raw)}"></div></div>
+      <span style="font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5);width:36px;text-align:right">${raw.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Perceived</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perc" style="width:${bp(perc)}"></div></div>
+      <span style="font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5);width:36px;text-align:right">${perc.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">OS2 Bridge</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-os2" style="width:${bp(os2)}"></div></div>
+      <span style="font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5);width:36px;text-align:right">${os2.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">Morphic</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-morph" style="width:${bp(morph)}"></div></div>
+      <span style="font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5);width:36px;text-align:right">${morph.toFixed(2)}</span></div>`;
+
+  if (narEl) narEl.textContent = NARRATIVES[t] ? NARRATIVES[t](m) : 'Simulation complete.';
+  if (resDiv) resDiv.style.display='block';
+}
+
+// ── Export ────────────────────────────────────────────────────
+function buildText() {
+  const date = new Date().toLocaleDateString();
+  let out = `SUPPLEMENTARY CHAPTER: SIX ETHICAL TRADITIONS — JOURNAL\nDate: ${date}\n\n`;
+  out += `VIRTUE ETHICS REFLECTION\n${jLoad('virtue')||'[not completed]'}\n\n`;
+  out += `DEONTOLOGICAL REFLECTION\n${jLoad('kant')||'[not completed]'}\n\n`;
+  out += `CONSEQUENTIALIST REFLECTION\n${jLoad('mill')||'[not completed]'}\n\n`;
+  out += `CARE ETHICS REFLECTION\n${jLoad('care')||'[not completed]'}\n\n`;
+  out += `MODERN JUSTICE REFLECTION\n${jLoad('justice')||'[not completed]'}\n\n`;
+  out += `Q5 — YOUR TRADITION READING\n${jLoad('supp_cq5')||'[not completed]'}\n`;
+  return out;
+}
+function exportJournal() {
+  const txt = buildText();
+  const url = URL.createObjectURL(new Blob([txt],{type:'text/plain'}));
+  const a = document.createElement('a'); a.href=url; a.download='Supplementary_Traditions_Journal.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function copyJournal() {
+  const txt = buildText();
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(()=>fbCopy(txt));
+  else fbCopy(txt);
+}
+function fbCopy(txt) {
+  const ta=document.createElement('textarea'); ta.value=txt;
+  ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+  ta.select(); try{document.execCommand('copy');}catch(e){}
+  document.body.removeChild(ta);
+}
+function clearAll() {
+  if (!confirm('Clear all saved journal entries?')) return;
+  ['virtue','kant','mill','care','justice','supp_cq5'].forEach(k=>localStorage.removeItem(JP+k));
+  location.reload();
+}
+
+// ── On load ───────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  ['virtue','kant','mill','care','justice'].forEach(k => {
+    const el = document.getElementById('jta-'+k);
+    if (el) el.value = jLoad(k);
+  });
+});
+</script>
+</body>
+</html>
