@@ -89,6 +89,7 @@ p{margin-bottom:.8rem;font-size:.9rem;line-height:1.75;text-align:justify}
 .ucp-error{background:#fee2e2;color:#7f1d1d;padding:.65rem .85rem;border-radius:.35rem;font-size:.82rem;margin:.4rem 0}
 .robustness-panel{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.25);border-radius:.5rem;padding:.85rem 1rem;margin:.75rem 0;display:none}
 .robustness-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(201,168,76,.6);margin-bottom:.4rem}
+.step-chart-wrap{background:rgba(0,0,0,.18);border-radius:.4rem;padding:.65rem .5rem .4rem;margin:.6rem 0;min-height:80px}
 .rerun-btn{padding:.4rem .9rem;border:none;border-radius:.35rem;background:var(--ucp-gold);color:#fff;font-family:'Georgia',serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:.2s}
 .rerun-btn:hover{opacity:.85}
 .rerun-btn:disabled{opacity:.5;cursor:wait}
@@ -217,12 +218,14 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-metrics" id="metricsVirtue"></div>
       <div id="barsVirtue" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeVirtue"></div>
+      <div class="step-chart-wrap" id="chartVirtue"></div>
     </div>
     <div id="resultVirtueB" style="display:none;margin-top:.75rem">
       <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:#e879f9;margin:.4rem 0 .2rem">Config B — Entropy-Exporting</div>
       <div class="ucp-metrics" id="metricsVirtueB"></div>
       <div id="barsVirtueB" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeVirtueB"></div>
+      <div class="step-chart-wrap" id="chartVirtueB"></div>
     </div>
     <div id="virtueCompare" style="display:none;margin-top:.75rem;padding:.65rem .85rem;background:rgba(255,255,255,.06);border-radius:.4rem;font-size:.83rem;color:rgba(255,255,255,.7)"></div>
     <div class="ucp-error" id="errVirtue" style="display:none"></div>
@@ -308,6 +311,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-metrics" id="metricsKant"></div>
       <div id="barsKant" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeKant"></div>
+      <div class="step-chart-wrap" id="chartKant"></div>
     </div>
     <div class="ucp-error" id="errKant" style="display:none"></div>
   <div class="robustness-panel" id="rp-kant">
@@ -391,6 +395,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-metrics" id="metricsMill"></div>
       <div id="barsMill" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeMill"></div>
+      <div class="step-chart-wrap" id="chartMill"></div>
     </div>
     <div class="ucp-error" id="errMill" style="display:none"></div>
   <div class="robustness-panel" id="rp-mill">
@@ -479,6 +484,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-metrics" id="metricsCare"></div>
       <div id="barsCare" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeCare"></div>
+      <div class="step-chart-wrap" id="chartCare"></div>
     </div>
     <div id="resultCareB" style="display:none;margin-top:.75rem">
       <div style="font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.07em;color:#7fd8a8;margin:.4rem 0 .2rem">Config B — Relational Supported</div>
@@ -593,6 +599,7 @@ footer{text-align:center;padding:1.25rem;font-size:.73rem;color:var(--muted);bor
       <div class="ucp-metrics" id="metricsJustice"></div>
       <div id="barsJustice" style="margin:.5rem 0"></div>
       <div class="ucp-narrative" id="narrativeJustice"></div>
+      <div class="step-chart-wrap" id="chartJustice"></div>
     </div>
     <div class="ucp-error" id="errJustice" style="display:none"></div>
   <div class="robustness-panel" id="rp-justice">
@@ -1080,6 +1087,17 @@ function renderTradResult(t, data) {
   if (narEl) narEl.textContent = NARRATIVES[t] ? NARRATIVES[t](m) : 'Simulation complete.';
   if (resDiv) resDiv.style.display='block';
 
+  // Render step chart
+  if (data.timeline && data.timeline.length) {
+    const chartId = 'chart' + cap(t);
+    const chartEl = document.getElementById(chartId);
+    if (chartEl) {
+      renderStepChart(data.timeline, chartId, {
+        title: (TRAD_LABELS[t]||t) + ' — step trace', height: 165
+      });
+    }
+  }
+
   // Care A vs B comparison
   if ((t === 'care' || t === 'careB') && _results.care && _results.careB) {
     const mA = _results.care.metrics||{}, mB = _results.careB.metrics||{};
@@ -1156,6 +1174,69 @@ function clearAll() {
   if (!confirm('Clear all saved journal entries?')) return;
   ['virtue','kant','mill','care','justice','supp_cq5'].forEach(k=>localStorage.removeItem(JP+k));
   location.reload();
+}
+
+
+// ── Step-by-step trace chart renderer ────────────────────────
+function renderStepChart(timeline, containerId, options) {
+  const el = document.getElementById(containerId);
+  if (!el || !timeline || !timeline.length) return;
+  options = options || {};
+  const W = Math.max(300, el.offsetWidth || 520);
+  const H = options.height || 170;
+  const PAD = {top:28,right:16,bottom:38,left:40};
+  const CW = W - PAD.left - PAD.right;
+  const CH = H - PAD.top - PAD.bottom;
+  const steps = timeline.length;
+  let bbStep = null;
+  for (let i=0; i<timeline.length; i++) {
+    if (timeline[i].biobond_active && (i===0||!timeline[i-1].biobond_active)){bbStep=i;break;}
+  }
+  const xPos = i => PAD.left + (steps>1?i/(steps-1):0)*CW;
+  const yPos = v => PAD.top + CH - Math.max(0,Math.min(1,v))*CH;
+  const TRACES = [
+    ['lambda_raw',         '#c9a84c', '\u03bb Raw'],
+    ['lambda_perceived',   '#14b8a6', '\u03bb Perceived'],
+    ['morphic_suppression','#e879f9', 'Morphic'],
+    ['os2_synergy_bridge', '#7fd8a8', 'OS2'],
+  ];
+  const mkPath = key => timeline.map((s,i)=>
+    `${i===0?'M':'L'}${xPos(i).toFixed(1)},${yPos(s[key]||0).toFixed(1)}`
+  ).join(' ');
+  const title = options.title||'Step-by-Step Trace';
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" style="display:block;overflow:visible">`;
+  svg += `<text x="${PAD.left}" y="${PAD.top-10}" font-size="9.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.38)" letter-spacing=".06em">${title}</text>`;
+  [0,.25,.5,.75,1].forEach(v=>{
+    const y=yPos(v);
+    svg+=`<line x1="${PAD.left}" y1="${y}" x2="${PAD.left+CW}" y2="${y}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
+    svg+=`<text x="${PAD.left-4}" y="${y+3.5}" text-anchor="end" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.28)">${v.toFixed(2)}</text>`;
+  });
+  timeline.forEach((s,i)=>{
+    if(i===0||i===steps-1||i%Math.max(1,Math.floor(steps/4))===0){
+      svg+=`<text x="${xPos(i)}" y="${PAD.top+CH+13}" text-anchor="middle" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.28)">s${s.step}</text>`;
+    }
+  });
+  svg+=`<text x="${PAD.left+CW/2}" y="${H-3}" text-anchor="middle" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.2)">simulation step</text>`;
+  if(bbStep!==null){
+    const bx=xPos(bbStep);
+    svg+=`<line x1="${bx}" y1="${PAD.top}" x2="${bx}" y2="${PAD.top+CH}" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="4,3" opacity=".7"/>`;
+    svg+=`<text x="${bx+3}" y="${PAD.top+10}" font-size="8.5" font-family="'Courier New',monospace" fill="#c9a84c" opacity=".75">BioBond</text>`;
+  }
+  TRACES.forEach(([key,color])=>{
+    svg+=`<path d="${mkPath(key)}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".88"/>`;
+  });
+  TRACES.forEach(([key,color])=>{
+    const v=(timeline[steps-1][key]||0);
+    svg+=`<circle cx="${xPos(steps-1)}" cy="${yPos(v)}" r="2.8" fill="${color}" opacity=".9"/>`;
+  });
+  let lx=PAD.left; const ly=H-5;
+  TRACES.forEach(([key,color,label])=>{
+    svg+=`<line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="${color}" stroke-width="2"/>`;
+    svg+=`<text x="${lx+15}" y="${ly+3.5}" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.45)">${label}</text>`;
+    lx+=label.length*5.5+22;
+  });
+  svg+='</svg>';
+  el.innerHTML=svg;
 }
 
 // ── Robustness / seed variation ──────────────────────────────
