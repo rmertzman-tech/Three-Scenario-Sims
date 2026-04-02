@@ -455,7 +455,8 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
     .sg-mv{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700}
     .sg-narr{background:var(--sky-light);border-left:3px solid var(--sky-mid);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;color:var(--ink);line-height:1.65;margin-top:.75rem}
     details summary::-webkit-details-marker{display:none}
-    </style>
+    .step-chart-wrap{background:rgba(0,0,0,.18);border-radius:.4rem;padding:.65rem .5rem .4rem;margin:.65rem 0;min-height:80px}
+</style>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
       <!-- Left: Agents -->
@@ -552,6 +553,7 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
     </div>
 
     <div id="sgNarrative" class="sg-narr"></div>
+  <div class="step-chart-wrap" id="sgStepChart" style="margin-top:.5rem"></div>
   </div>
 
   <div class="journal-q" style="margin-top:1.25rem">
@@ -697,6 +699,69 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
 </div><!-- end app-wrap -->
 
 <script>
+
+// ── Step-by-step trace chart renderer ────────────────────────
+function renderStepChart(timeline, containerId, options) {
+  const el = document.getElementById(containerId);
+  if (!el || !timeline || !timeline.length) return;
+  options = options || {};
+  const W = Math.max(300, el.offsetWidth || 520);
+  const H = options.height || 165;
+  const PAD = {top:28,right:16,bottom:38,left:40};
+  const CW = W - PAD.left - PAD.right;
+  const CH = H - PAD.top - PAD.bottom;
+  const steps = timeline.length;
+  let bbStep = null;
+  for (let i=0; i<timeline.length; i++) {
+    if (timeline[i].biobond_active && (i===0||!timeline[i-1].biobond_active)){bbStep=i;break;}
+  }
+  const xPos = i => PAD.left + (steps>1?i/(steps-1):0)*CW;
+  const yPos = v => PAD.top + CH - Math.max(0,Math.min(1,v))*CH;
+  const TRACES = [
+    ['lambda_raw',         '#c9a84c', '\u03bb Raw'],
+    ['lambda_perceived',   '#14b8a6', '\u03bb Perceived'],
+    ['morphic_suppression','#e879f9', 'Morphic'],
+    ['os2_synergy_bridge', '#7fd8a8', 'OS2 Bridge'],
+  ];
+  const mkPath = key => timeline.map((s,i)=>
+    `${i===0?'M':'L'}${xPos(i).toFixed(1)},${yPos(s[key]||0).toFixed(1)}`
+  ).join(' ');
+  const title = options.title||'Step-by-Step Trace';
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" style="display:block;overflow:visible">`;
+  svg += `<text x="${PAD.left}" y="${PAD.top-10}" font-size="9.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.38)" letter-spacing=".06em">${title}</text>`;
+  [0,.25,.5,.75,1].forEach(v=>{
+    const y=yPos(v);
+    svg+=`<line x1="${PAD.left}" y1="${y}" x2="${PAD.left+CW}" y2="${y}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
+    svg+=`<text x="${PAD.left-4}" y="${y+3.5}" text-anchor="end" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.28)">${v.toFixed(2)}</text>`;
+  });
+  timeline.forEach((s,i)=>{
+    if(i===0||i===steps-1||i%Math.max(1,Math.floor(steps/4))===0){
+      svg+=`<text x="${xPos(i)}" y="${PAD.top+CH+13}" text-anchor="middle" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.28)">s${s.step}</text>`;
+    }
+  });
+  svg+=`<text x="${PAD.left+CW/2}" y="${H-3}" text-anchor="middle" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.2)">simulation step</text>`;
+  if(bbStep!==null){
+    const bx=xPos(bbStep);
+    svg+=`<line x1="${bx}" y1="${PAD.top}" x2="${bx}" y2="${PAD.top+CH}" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="4,3" opacity=".7"/>`;
+    svg+=`<text x="${bx+3}" y="${PAD.top+10}" font-size="8.5" font-family="'Courier New',monospace" fill="#c9a84c" opacity=".75">BioBond</text>`;
+  }
+  TRACES.forEach(([key,color])=>{
+    svg+=`<path d="${mkPath(key)}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity=".88"/>`;
+  });
+  TRACES.forEach(([key,color])=>{
+    const v=(timeline[steps-1][key]||0);
+    svg+=`<circle cx="${xPos(steps-1)}" cy="${yPos(v)}" r="2.8" fill="${color}" opacity=".9"/>`;
+  });
+  let lx=PAD.left; const ly=H-5;
+  TRACES.forEach(([key,color,label])=>{
+    svg+=`<line x1="${lx}" y1="${ly}" x2="${lx+12}" y2="${ly}" stroke="${color}" stroke-width="2"/>`;
+    svg+=`<text x="${lx+15}" y="${ly+3.5}" font-size="8.5" font-family="'Courier New',monospace" fill="rgba(255,255,255,.45)">${label}</text>`;
+    lx+=label.length*5.5+22;
+  });
+  svg+='</svg>';
+  el.innerHTML=svg;
+}
+
 'use strict';
 
 const JP = 'ch2_';
@@ -1114,6 +1179,9 @@ function sgSetPreset(name, btn) {
   metGap.style.color = gap > 0.35 ? '#dc2626' : gap > 0.15 ? '#f59e0b' : '#0f766e';
 
   document.getElementById('sgNarrative').textContent = p.narrative;
+  if (p.timeline && p.timeline.length) {
+    renderStepChart(p.timeline, 'sgStepChart', {title: p.label + ' — step trace'});
+  }
 
   const bfExp = document.getElementById('bfExplainContent');
   if (bfExp) bfExp.innerHTML = (name === 'challenger') ? BF_EXPLAIN_A : BF_EXPLAIN_B;
@@ -1186,6 +1254,7 @@ async function fetchAndSetPreset(name) {
     p.morphic = m.morphic_suppression || 0;
     p.os2    = m.os2_synergy_bridge   || 0;
     p.gapTraj = data.gap_trajectory    || [];
+    p.timeline = data.timeline         || [];
   } catch(e) {
     console.warn('Backend unavailable — using preset values:', e.message);
   }
