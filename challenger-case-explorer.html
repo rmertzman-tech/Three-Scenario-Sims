@@ -1211,8 +1211,17 @@ function sgSetPreset(name, btn) {
   metGap.style.color = gap > 0.35 ? '#dc2626' : gap > 0.15 ? '#f59e0b' : '#0f766e';
 
   document.getElementById('sgNarrative').textContent = p.narrative;
-  if (p.timeline && p.timeline.length) {
-    renderStepChart(p.timeline, 'sgStepChart', {title: p.label + ' — step trace'});
+  // Always reset chart container when switching configs — prevents stale chart
+  // from Config A persisting while Config B's timeline loads
+  const sgChart = document.getElementById('sgStepChart');
+  if (sgChart) {
+    if (p.timeline && p.timeline.length) {
+      renderStepChart(p.timeline, 'sgStepChart',
+        {title: p.label + ' — step trace', height: 200});
+    } else {
+      // Show placeholder — chart will render after live fetch completes
+      sgChart.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:120px;background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)"><span style=\"font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.06em\">Loading step trace from backend…</span></div>';
+    }
   }
 
   const bfExp = document.getElementById('bfExplainContent');
@@ -1240,7 +1249,11 @@ async function fetchAndSetPreset(name) {
   const isA = name === 'challenger';
 
   // Optimistic render with existing values while fetch is in flight
+  // p.timeline is set to [] temporarily so sgSetPreset shows placeholder
+  const _savedTimeline = p.timeline;
+  p.timeline = [];  // force placeholder on optimistic render
   sgSetPreset(name, null);
+  p.timeline = _savedTimeline;  // restore in case fetch fails
 
   // Show live-loading state on the two key metric tiles
   const metLP  = document.getElementById('sgMetLP');

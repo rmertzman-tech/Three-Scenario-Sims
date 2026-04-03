@@ -1387,6 +1387,8 @@ async function runSimulation(){
   const btn=document.getElementById('ucpRunBtn');
   btn.disabled=true;
   btn.innerHTML='<span class="ucp-spinner"></span>Running simulation...';
+  const _mChart=document.getElementById('maathaiStepChart');
+  if(_mChart)_mChart.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:120px;background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)"><span style=\"font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35)\">Loading step trace…</span></div>';
   document.getElementById('ucpResult').style.display='none';
   document.getElementById('ucpError').style.display='none';
 
