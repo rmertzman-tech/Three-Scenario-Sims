@@ -771,7 +771,7 @@ async function runComposite() {
   const btn = document.getElementById('compositeRunBtn');
   const spinner = document.getElementById('compositeSpinner');
   const errEl = document.getElementById('compositeError');
-  btn.disabled = true; spinner.style.display = 'inline-block'; errEl.style.display = 'none';
+  btn.disabled = true; if(spinner) spinner.style.display = 'inline-block'; errEl.style.display = 'none';
 
   const payload = {
     scenario_name: 'resource_scarcity', num_agents: 16, steps: 10,
@@ -816,13 +816,13 @@ async function runComposite() {
     html += '</div>';
     document.getElementById('compositeResults').innerHTML = html;
     document.getElementById('compositeResults').style.display = 'block';
-    btn.innerHTML = '&#8635; Re-run Composite Simulation';
+    btn.innerHTML = '<span class="ucp-spinner" id="compositeSpinner"></span>&#8635; Re-run Composite Simulation';
   } catch(e) {
     errEl.textContent = 'Simulation error: ' + e.message;
     errEl.style.display = 'block';
-    btn.innerHTML = '&#9654; Run Composite Simulation';
+    btn.innerHTML = '<span class="ucp-spinner" id="compositeSpinner"></span>&#9654; Run Composite Simulation';
   } finally {
-    btn.disabled = false; spinner.style.display = 'none';
+    btn.disabled = false; const s=document.getElementById('compositeSpinner'); if(s) s.style.display='none';
   }
 }
 
