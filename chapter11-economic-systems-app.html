@@ -762,6 +762,156 @@ function selectConfig(cfg) {
   }
 }
 
+
+// ── V3.3 phased manifest helpers ─────────────────────────────────────────────
+// buildPhasedPayload() enriches the existing PAYLOADS[config] with
+// institution_state_lite, phases, and interventions for /api/simulate/phased_manifest.
+// buildLegacyPayload() extracts the flat payload for the fallback route.
+
+function buildLegacyPayload(base, seed) {
+  const p = { ...base, seed };
+  if (base.scenario_physics) {
+    p.scenario_physics = {
+      ...base.scenario_physics,
+      block_fields: { ...(base.scenario_physics.block_fields || {}) }
+    };
+  }
+  if (base.activate_biobond_at !== undefined)
+    p.activate_biobond_at = base.activate_biobond_at;
+  return p;
+}
+
+function buildPhasedPayload(configKey, seed) {
+  const base = PAYLOADS[configKey];
+  const sp   = base.scenario_physics || {};
+
+  // Common fields passed through unchanged
+  const common = {
+    num_agents:             base.num_agents || 18,
+    scenario_name:          base.scenario_name || 'baseline',
+    steps:                  base.steps || 8,
+    seed,
+    worldview_distribution: { ...(base.worldview_distribution || {}) },
+    evidence_distribution:  { ...(base.evidence_distribution  || {}) },
+    scenario_physics:       { ...sp, block_fields: { ...(sp.block_fields || {}) } },
+  };
+  if (base.activate_biobond_at !== undefined)
+    common.activate_biobond_at = base.activate_biobond_at;
+
+  // Config-specific institution state and phases
+  if (configKey === 'A') {
+    // Entropy-exporting: high rigidity, low legitimacy, minimal repair
+    return {
+      ...common,
+      institution_state_lite: {
+        phase: 'baseline', policy_rigidity: 0.75, legitimacy: 0.38,
+        repair_bandwidth: 0.12, support_reserve: 0.10,
+        entropy_export: 0.68, routing_quality: 0.35, shared_task_strength: 0.25,
+        chapter_variables: {
+          wage_floor: 0.18, labor_voice_access: 0.15, retaliation_risk: 0.82,
+          schedule_volatility: 0.72, security_floor: 0.15, market_power: 0.80
+        }
+      },
+      phases: [],
+      interventions: [],
+    };
+  }
+
+  if (configKey === 'B') {
+    // Coherence-preserving: moderate rigidity, high legitimacy, good repair
+    return {
+      ...common,
+      institution_state_lite: {
+        phase: 'baseline', policy_rigidity: 0.42, legitimacy: 0.68,
+        repair_bandwidth: 0.38, support_reserve: 0.32,
+        entropy_export: 0.35, routing_quality: 0.62, shared_task_strength: 0.58,
+        chapter_variables: {
+          wage_floor: 0.55, labor_voice_access: 0.60, retaliation_risk: 0.22,
+          schedule_volatility: 0.28, security_floor: 0.58, market_power: 0.35
+        }
+      },
+      phases: [],
+      interventions: [],
+    };
+  }
+
+  // Config C — BioBond transition: starts like A, shifts at step 4
+  return {
+    ...common,
+    institution_state_lite: {
+      phase: 'baseline', policy_rigidity: 0.72, legitimacy: 0.40,
+      repair_bandwidth: 0.14, support_reserve: 0.10,
+      entropy_export: 0.65, routing_quality: 0.32, shared_task_strength: 0.22,
+      chapter_variables: {
+        wage_floor: 0.18, labor_voice_access: 0.18, retaliation_risk: 0.80,
+        schedule_volatility: 0.70, security_floor: 0.16, market_power: 0.78
+      }
+    },
+    phases: [
+      {
+        phase_id: 'pre_intervention', start_step: 1, end_step: 3,
+        scenario_override: {
+          base_entropy: sp.base_entropy || 0.60,
+          base_stress:  sp.base_stress  || 0.56,
+          block_fields: { ...(sp.block_fields || {}) }
+        },
+        institution_deltas: {}, intervention_ids: []
+      },
+      {
+        phase_id: 'biobond_active', start_step: 4, end_step: common.steps,
+        scenario_override: {
+          base_entropy: Math.max(0, (sp.base_entropy||0.60) - 0.10),
+          base_stress:  Math.max(0, (sp.base_stress ||0.56) - 0.12),
+          block_fields: {
+            ...(sp.block_fields || {}),
+            care:      ((sp.block_fields?.care      ?? 0) + 0.28),
+            fairness:  ((sp.block_fields?.fairness  ?? 0) + 0.38),
+            community: ((sp.block_fields?.community ?? 0) + 0.32),
+          }
+        },
+        institution_deltas: {
+          repair_bandwidth: 0.36, support_reserve: 0.34,
+          legitimacy: 0.54, entropy_export: 0.38
+        },
+        intervention_ids: ['biobond_support']
+      }
+    ],
+    interventions: [
+      {
+        intervention_id: 'biobond_support', kind: 'support_transfer',
+        start_step: 4, end_step: common.steps,
+        targets: ['institution', 'high_vulnerability'],
+        parameter_deltas: {
+          repair_bandwidth: 0.22, support_reserve: 0.26,
+          'chapter_variables.security_floor':      0.26,
+          'chapter_variables.retaliation_risk':   -0.22,
+          'chapter_variables.labor_voice_access':  0.20,
+        },
+        notes: 'Models wage floor, labor protection, and community investment activation.'
+      }
+    ],
+  };
+}
+
+async function postEconSimulation(payload, seed) {
+  // Prefer phased_manifest; fall back to custom if unavailable
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/phased_manifest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (resp && resp.ok) return resp;
+  } catch (_) { /* fall through */ }
+  // Fallback — preserves all existing behaviour
+  const legacy = buildLegacyPayload(PAYLOADS[_config], seed);
+  return fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(legacy),
+  });
+}
+
 async function runEconSim() {
   const btn = document.getElementById('ucpRunBtn');
   btn.disabled = true;
@@ -770,11 +920,8 @@ async function runEconSim() {
   document.getElementById('ucpError').style.display = 'none';
 
   try {
-    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(PAYLOADS[_config]),
-    });
+    const phasedPayload = buildPhasedPayload(_config, _econSeed);
+    const resp = await postEconSimulation(phasedPayload, _econSeed);
     const data = await resp.json();
     if (!data.metrics) throw new Error('No metrics in response');
 
