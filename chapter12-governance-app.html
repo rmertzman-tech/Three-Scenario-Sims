@@ -233,6 +233,36 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
     <div class="narrative-panel teal">
       <strong>The governance suppression gap</strong> — the central measurement of this chapter — is produced by high procedural legitimacy paired with low routing quality. This is precisely the configuration that Tim Palmer's climate projections face: high formal legitimacy as a knowledge source, low routing quality into governance decisions. The IPCC findings are not suppressed because anyone denies their procedural legitimacy. They are suppressed because the evidence architecture of climate governance is calibrated to weight authority-endorsed conclusions and short-term economic considerations far above empirically-calibrated long-horizon risk assessment.
     </div>
+
+    <div style="margin-top:.8rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:.5rem;padding:.9rem">
+      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.6rem">Evidence Architecture: Three Compounding Filters</div>
+      <div style="display:grid;gap:.55rem">
+        <div style="display:flex;gap:.7rem;align-items:flex-start">
+          <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">1</div>
+          <div>
+            <div style="font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.2rem">Evidence distribution policy</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.72);line-height:1.55">The population-level weighting of four epistemic processing modes: authority-weighted (defer to hierarchy), empirical-calibrated (update from data), tradition-weighted (follow precedent), alternative-facts (motivated reinterpretation). In Config A: 52% authority-weighted, 10% empirical-calibrated. In Config B: 52% empirical-calibrated, 18% authority-weighted. The IPCC's physical measurements are in the 10% pool in Config A.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start">
+          <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">2</div>
+          <div>
+            <div style="font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.2rem">Block fields — value-framing frictions</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.72);line-height:1.55">The structural amplifiers and penalties on how contributions are framed. A care-framed finding about vulnerable populations creates institutional friction in Config A (care = −0.25) regardless of its empirical quality — the evidence architecture penalizes that framing before the content is evaluated. In Config B, care-framed contributions advance deliberation (care = +0.35). The strongest signal in Config A is boundary (+0.40): protecting existing arrangements is the most structurally amplified input the institution receives.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:.7rem;align-items:flex-start">
+          <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">3</div>
+          <div>
+            <div style="font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.2rem">Routing quality — the final filter</div>
+            <div style="font-size:.8rem;color:rgba(255,255,255,.72);line-height:1.55">Distinct from evidence processing: the fraction of institutional deliberation output that actually reaches decision authority. Committee structures, agenda-setting gatekeepers, executive filtering. Config A routing quality = 0.22: even contributions that survive the first two filters are further attenuated before reaching the cabinet or regulatory body. Config B = 0.65. This filter operates on institutional output, not on individual contributions.</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:.7rem;padding:.55rem .7rem;background:rgba(20,184,166,.07);border-left:3px solid var(--teal);border-radius:0 .3rem .3rem 0;font-size:.8rem;color:rgba(255,255,255,.8)">
+        <strong>The compound effect:</strong> λ Perceived is the product of all three filters operating simultaneously. Config A's ~74% attenuation is not produced by any single parameter — it is produced by the evidence distribution, block fields, and routing quality all calibrated in the same direction against empirical-calibrated, long-horizon, care-framed knowledge. Each filter alone would reduce λ Perceived. All three together produce the governance suppression gap students will observe in the simulation.
+      </div>
+    </div>
   </div>
 </div>
 
@@ -482,10 +512,23 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
   <!-- Collapsible block field explanation -->
   <button class="explain-toggle" onclick="toggleExplain('blockExplain')">▸ What do these parameters mean?</button>
   <div class="explain-body" id="blockExplain">
-    <p style="margin-bottom:.5rem"><strong>Evidence distribution</strong> — how the governance institution weights different categories of input. Authority-weighted: defer to official hierarchy. Empirical-calibrated: weight physical evidence and expert analysis. Alternative-facts: elevated noise from advocacy distortion. Tradition-weighted: precedent and established practice.</p>
-    <p style="margin-bottom:.5rem"><strong>Block fields</strong> — structural frictions and facilitators. Negative care/fairness/community means raising human consequences or distributional concerns creates institutional friction. Positive boundary means existing arrangements are strongly protected.</p>
-    <p style="margin-bottom:.5rem"><strong>Institution state</strong> — policy_rigidity: how much existing arrangements resist evidence-based challenge. routing_quality: fraction of expert/citizen signal reaching decision authority. repair_bandwidth: capacity to incorporate evidence that challenges current trajectories. legitimacy: both procedural and substantive combined.</p>
-    <p><strong>λ Raw fixed (Config A & C):</strong> Expert knowledge and citizen understanding is held constant at 0.72. The architecture is the filter — not the capacity. Config B uses emergent λ Raw, reflecting what coherence-preserving deliberation produces naturally.</p>
+    <p style="margin-bottom:.6rem"><strong>1. Evidence distribution</strong> — the population-level weighting of four distinct epistemic processing modes across the agent population:</p>
+    <div style="display:grid;gap:.3rem;margin-bottom:.7rem;padding:.5rem .7rem;background:rgba(255,255,255,.03);border-radius:.3rem">
+      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#f08080;width:130px;flex-shrink:0;font-weight:600">Authority-weighted</span><span style="color:rgba(255,255,255,.7)">Agents defer to official hierarchy and credentialed institutions regardless of underlying evidence quality. In governance: deference to economic ministries, incumbent bodies, official position.</span></div>
+      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#7fd8a8;width:130px;flex-shrink:0;font-weight:600">Empirical-calibrated</span><span style="color:rgba(255,255,255,.7)">Agents update beliefs based on observable data with minimal prior bias. Physical measurements, replicable findings, peer-reviewed analysis. The mode IPCC science operates in.</span></div>
+      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#f5c842;width:130px;flex-shrink:0;font-weight:600">Tradition-weighted</span><span style="color:rgba(255,255,255,.7)">Agents prioritize precedent, continuity, established practice. What has worked before; what the institution has historically recognized as legitimate input.</span></div>
+      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#f97316;width:130px;flex-shrink:0;font-weight:600">Alternative-facts</span><span style="color:rgba(255,255,255,.7)">Agents actively reinterpret evidence to match prior beliefs. High interpretive override and motivated reasoning. In governance: noise generated by incumbent interest advocacy.</span></div>
+    </div>
+    <p style="margin-bottom:.6rem"><strong>2. Block fields</strong> — structural frictions and facilitators on <em>how</em> contributions are framed. These are not evidence categories — they are the value and relational contexts in which evidence is presented:</p>
+    <div style="padding:.5rem .7rem;background:rgba(255,255,255,.03);border-radius:.3rem;margin-bottom:.7rem;font-size:.8rem;color:rgba(255,255,255,.7)">
+      <p style="margin-bottom:.3rem">Negative care/fairness/community means that contributions framed in terms of human consequences, distributional effects, or collective interests create institutional <em>friction</em> rather than advancing deliberation — regardless of their empirical quality. A care-framed IPCC finding about vulnerable populations is not just underweighted; it is actively penalized.</p>
+      <p>Positive boundary means contributions that protect existing arrangements are structurally amplified. In Config A, boundary = +0.40: the strongest single block field signal in the system favors the status quo.</p>
+    </div>
+    <p style="margin-bottom:.6rem"><strong>3. Institution state → routing quality</strong> — distinct from evidence processing, this is the fraction of the institutional deliberation output that reaches actual decision authority. Policy committees, agenda-setting gatekeepers, executive filtering: even contributions that survive the evidence distribution and block field filters are further attenuated here. Config A routing quality = 0.22. Config B = 0.65.</p>
+    <p style="margin-bottom:.6rem"><strong>λ Raw fixed (Config A &amp; C):</strong> Expert knowledge and citizen understanding is held constant at 0.72. The architecture is the filter — not the capacity. Config B uses emergent λ Raw, reflecting what coherence-preserving deliberation produces naturally.</p>
+    <div style="background:rgba(20,184,166,.08);border-left:3px solid var(--teal);border-radius:0 .3rem .3rem 0;padding:.6rem .8rem;font-size:.82rem;color:rgba(255,255,255,.82)">
+      <strong>Evidence architecture (combined effect):</strong> λ Perceived is the product of all three filters operating simultaneously. The evidence distribution determines what epistemic processing modes dominate. The block fields determine which value-framed contributions advance or create friction. The routing quality determines how much of the institutional output reaches actual decision authority. Config A's ~74% attenuation is not produced by any one of these — it is produced by all three calibrated in the same direction against empirical-calibrated, long-horizon, care-framed knowledge. Config B's near-zero gap is produced by all three aligned in the other direction.
+    </div>
   </div>
 
   <button class="ucp-run-btn" id="ucpRunBtn" onclick="runGovSim()">
@@ -1151,8 +1194,11 @@ function renderSxS() {
 
     html += `<div style="margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem">`;
     html += `<div class="sxs-annotation">
-      <div class="sxs-ann-label">The Routing Quality Gap</div>
-      <div class="sxs-ann-text">Config A λ Perceived: ${lpA.toFixed(3)} → Config B λ Perceived: ${lpB.toFixed(3)} — approximately ${ratioAB}× more expert and citizen signal reaching governance decisions in the coherence-preserving architecture. This is not because different people inhabit the institution. The same populations are present with the same knowledge. The evidence architecture is the filter.</div>
+      <div class="sxs-ann-label">The Evidence Architecture Gap</div>
+      <div class="sxs-ann-text">Config A λ Perceived: ${lpA.toFixed(3)} → Config B λ Perceived: ${lpB.toFixed(3)} — approximately ${ratioAB}× more expert and citizen signal reaching governance decisions in the coherence-preserving architecture. This is not because different people inhabit the institution. The same populations are present with the same knowledge. What differs is the institution's evidence architecture — three compounding filters operating simultaneously:<br><br>
+      <strong>1. Evidence distribution:</strong> Config A weights authority-weighted input at 52% and empirical-calibrated at 10%. Config B reverses this: empirical-calibrated at 52%, authority-weighted at 18%. The IPCC's physical measurements are in the 10% pool in Config A. They are in the 52% pool in Config B.<br><br>
+      <strong>2. Block fields:</strong> Config A penalizes care-framed, fairness-framed, and community-framed contributions (all negative), while amplifying boundary-protecting contributions (+0.40). Config B does the reverse. A care-framed finding about vulnerable populations creates friction in Config A's deliberation and advances it in Config B's — regardless of its empirical quality.<br><br>
+      <strong>3. Routing quality:</strong> Config A = 0.22 — even contributions that survive the first two filters are further attenuated before reaching decision authority. Config B = 0.65. All three filters compound. The ${(gapA*100).toFixed(0)}% attenuation in Config A is their combined product.</div>
     </div>`;
     html += `<div class="sxs-annotation" style="border-left-color:#e879f9">
       <div class="sxs-ann-label" style="color:#e879f9">Morphic Suppression: The Reform Lag</div>
@@ -1160,7 +1206,8 @@ function renderSxS() {
     </div>`;
     html += `<div class="sxs-annotation" style="border-left-color:var(--amber)">
       <div class="sxs-ann-label" style="color:var(--amber)">What This Means for Tim Palmer's Research Program</div>
-      <div class="sxs-ann-text">Palmer's ensemble forecasting produces λ Raw for climate governance: the expert knowledge and analytical precision that exists and could reach policy decisions. The governance suppression gap — the structural distance between that knowledge and what the evidence architecture of national governance systems allows to reach decisions — is what this simulation measures. Config A is not an extreme case. It is a description of the evidence architecture of climate governance in most national jurisdictions since 1988.</div>
+      <div class="sxs-ann-text">Palmer's ensemble forecasting produces λ Raw for climate governance: the expert knowledge and analytical precision that exists and could reach policy decisions. The governance suppression gap — the structural distance between that knowledge and what reaches decisions — is what this simulation measures.<br><br>
+      Config A is not an extreme case. It describes the evidence architecture of national climate governance in most jurisdictions since 1988: authority-weighted epistemic processing dominant, care and fairness framing penalized as "political" rather than evidential, and routing quality low enough that expert deliberation outputs are substantially filtered before reaching cabinet or legislative authority. Palmer's findings enter at the 10% empirical-calibrated channel. Economic incumbency arguments enter at the 52% authority-weighted channel. That asymmetry has been structural for four decades — not a function of who holds office, but of the institutional architecture those officeholders inhabit.</div>
     </div>`;
     html += `</div>`;
   }
