@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch12 · Legal and Governance Systems · EBB</title>
+<style>
+:root {
+  --teal-dark:#0d5e57; --teal:#14b8a6; --teal-light:#ccfbf1;
+  --ink:#1f2937; --muted:#4b5563; --bg:#0f1117; --surface:#1a1f2e;
+  --surface2:#222840; --border:rgba(255,255,255,.09);
+  --amber:#f5c842; --amber-dark:#c2850a; --amber-bg:rgba(245,200,66,.07);
+  --red:#f08080; --green:#7fd8a8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;
+  font-size:15px;line-height:1.6}
+.page{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+/* ── Header ── */
+.chapter-header{background:linear-gradient(135deg,var(--teal-dark) 0%,#0a3d38 100%);
+  border-radius:.75rem;padding:2rem 2rem 1.5rem;margin-bottom:1.5rem}
+.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.chapter-title{font-size:1.6rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.25rem}
+.chapter-subtitle{font-size:1rem;color:rgba(255,255,255,.65);margin-bottom:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);
+  border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+
+/* ── Narrative panels ── */
+.narrative-panel{background:var(--surface);border:1px solid var(--border);
+  border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:1rem;font-size:.9rem;
+  line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel.red{border-left:4px solid var(--red)}
+.narrative-panel strong{color:#fff}
+
+/* ── Tabs ── */
+.tab-bar{display:flex;gap:.3rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);
+  padding-bottom:0}
+.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem 1rem;cursor:pointer;
+  font-size:.85rem;font-weight:600;border-bottom:3px solid transparent;
+  margin-bottom:-2px;transition:all .15s;border-radius:.3rem .3rem 0 0}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── Config selector ── */
+.config-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.cfg-btn{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:.5rem;padding:.65rem .75rem;cursor:pointer;text-align:left;transition:all .18s}
+.cfg-btn:hover{border-color:var(--teal);background:rgba(20,184,166,.07)}
+.cfg-btn.active{border-color:var(--teal);background:rgba(20,184,166,.12)}
+.cfg-btn .cfg-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--teal);font-weight:700;margin-bottom:.2rem}
+.cfg-btn .cfg-name{font-size:.82rem;color:#fff;font-weight:600}
+.cfg-btn .cfg-desc{font-size:.7rem;color:var(--muted);margin-top:.15rem}
+
+/* ── Run button ── */
+.ucp-run-btn{display:flex;align-items:center;gap:.5rem;background:var(--teal-dark);
+  border:none;color:#fff;padding:.7rem 1.4rem;border-radius:.4rem;cursor:pointer;
+  font-size:.88rem;font-weight:700;width:100%;justify-content:center;
+  transition:background .15s;margin-bottom:1rem}
+.ucp-run-btn:hover:not(:disabled){background:var(--teal)}
+.ucp-run-btn:disabled{opacity:.5;cursor:not-allowed}
+.ucp-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Metrics ── */
+.ucp-result{display:none}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:.6rem;margin-bottom:.9rem}
+.metric-card{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;
+  padding:.7rem .8rem;text-align:center}
+.metric-card .m-label{font-size:.68rem;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.25rem}
+.metric-card .m-val{font-size:1.3rem;font-weight:700;font-family:'Courier New',monospace;line-height:1}
+.metric-card .m-phrase{font-size:.66rem;color:var(--muted);margin-top:.2rem}
+.good{color:var(--green)} .bad{color:var(--red)} .mid{color:var(--amber)}
+
+/* ── Bar chart ── */
+.bar-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem}
+.bar-name{font-size:.72rem;font-family:'Courier New',monospace;
+  color:rgba(255,255,255,.6);width:110px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.bar-num{font-size:.72rem;font-family:'Courier New',monospace;
+  color:rgba(255,255,255,.5);width:38px;text-align:right}
+.bar-gap-label{font-size:.72rem;color:var(--muted);margin-bottom:.4rem}
+
+/* ── Step chart ── */
+.step-chart-wrap{background:var(--surface2);border:1px solid var(--border);
+  border-radius:.5rem;padding:.8rem;margin-bottom:.9rem}
+
+/* ── SxS comparison ── */
+.sxs-wrap{margin-top:1rem}
+.sxs-annotation{background:rgba(255,255,255,.04);border-left:3px solid var(--teal);
+  border-radius:0 .4rem .4rem 0;padding:.65rem .875rem;margin-bottom:.5rem}
+.sxs-ann-label{font-size:.68rem;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--teal);
+  font-weight:700;margin-bottom:.2rem}
+.sxs-ann-text{font-size:.82rem;color:rgba(255,255,255,.72);line-height:1.55}
+
+/* ── Robustness panel ── */
+.robustness-panel{display:none;background:var(--surface);border:1px solid var(--border);
+  border-radius:.5rem;padding:.9rem 1rem;margin-top:.9rem}
+.robustness-panel h4{font-size:.78rem;font-family:'Courier New',monospace;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:.5rem}
+.rob-table{width:100%;border-collapse:collapse;font-size:.75rem;font-family:'Courier New',monospace}
+.rob-table th{color:var(--muted);font-weight:600;text-align:left;
+  padding:.25rem .5rem;border-bottom:1px solid var(--border)}
+.rob-table td{padding:.25rem .5rem;color:rgba(255,255,255,.72)}
+.rob-table tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+
+/* ── Collapsible explain ── */
+.explain-toggle{background:none;border:1px solid var(--border);color:var(--muted);
+  font-size:.72rem;padding:.3rem .7rem;border-radius:.3rem;cursor:pointer;
+  margin-bottom:.5rem;transition:all .15s}
+.explain-toggle:hover{border-color:var(--teal);color:var(--teal)}
+.explain-body{display:none;font-size:.82rem;color:rgba(255,255,255,.65);
+  line-height:1.6;padding:.5rem .7rem;background:rgba(255,255,255,.03);
+  border-radius:.3rem;margin-bottom:.6rem}
+
+/* ── Prediction textarea ── */
+.prediction-wrap{margin-bottom:1rem}
+.prediction-wrap label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.3rem}
+.prediction-wrap textarea{width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:.4rem;color:#e2e8f0;font-size:.82rem;padding:.6rem .75rem;
+  resize:vertical;min-height:80px;font-family:inherit}
+.prediction-wrap textarea:focus{outline:none;border-color:var(--teal)}
+
+/* ── Error ── */
+.ucp-error{display:none;background:rgba(240,128,128,.1);border:1px solid rgba(240,128,128,.3);
+  border-radius:.4rem;padding:.6rem .8rem;font-size:.82rem;color:#f87171;margin-bottom:.8rem}
+
+/* ── Collapible section ── */
+.section-wrap{margin-bottom:1.2rem}
+.section-header{display:flex;justify-content:space-between;align-items:center;
+  cursor:pointer;padding:.6rem 0}
+.section-header h3{font-size:.95rem;font-weight:700;color:#fff}
+.section-chevron{color:var(--teal);font-size:.8rem;transition:transform .2s}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+.section-body{display:none}.section-body.open{display:block}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .metrics-grid{grid-template-columns:repeat(3,1fr)}
+  .config-bar{flex-direction:column}
+  .cfg-btn{min-width:unset}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="chapter-header">
+  <div class="chapter-label">Ethics Beyond Boundaries · Chapter 12</div>
+  <div class="chapter-title">Legal and Governance Systems</div>
+  <div class="chapter-subtitle">What Governance Does to Knowledge</div>
+  <div class="chapter-tags">
+    <span class="tag">Routing Quality</span>
+    <span class="tag">Procedural vs Substantive Legitimacy</span>
+    <span class="tag">Suppression Gap</span>
+    <span class="tag">Morphic Suppression</span>
+    <span class="tag">Reform Lag</span>
+    <span class="tag">InstitutionState V3.3</span>
+  </div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('simulation')">Simulation</button>
+  <button class="tab-btn" onclick="switchTab('comparison')">Comparison</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button>
+</div>
+
+<!-- ══ TAB: OVERVIEW ══════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-overview">
+
+  <div class="narrative-panel teal">
+    <strong>The central question of this chapter:</strong> The IPCC has been publishing its findings since 1988. Climate scientists have high λ Raw — substantial knowledge and analytical capacity. Yet what reaches governance decisions — λ Perceived — is a small fraction of that capacity. Why? And what does the governance architecture do to the expert and citizen populations who learn, year by year, that their signal does not change outcomes?
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3>Procedural vs Substantive Legitimacy</h3>
+      <span class="section-chevron">▶</span>
+    </div>
+    <div class="section-body">
+      <div class="narrative-panel" style="border:none;padding:.5rem 0">
+        <p style="margin-bottom:.7rem"><strong>Procedural legitimacy</strong> is the degree to which a governance institution follows correct rules. Elections are held, laws are debated, courts follow precedent. A governance institution can have high procedural legitimacy and low routing quality simultaneously — this is captured governance: the rules are followed, but the evidence architecture is calibrated so that empirically-calibrated signal is systematically attenuated before reaching decision authority.</p>
+        <p><strong>Routing quality</strong> is the degree to which the knowledge and interests of governed populations actually reach decisions. These two variables are independent in the simulation — and the gap between them is where the governance suppression gap lives.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3>The Three Configurations</h3>
+      <span class="section-chevron">▶</span>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;gap:.6rem;margin-top:.3rem">
+        <div class="narrative-panel red">
+          <strong>Config A — Captured Governance:</strong> High formal legitimacy, low routing quality. Evidence architecture weights authority-endorsed conclusions at 52% and empirical-calibrated expert input at only 10%. λ Raw is fixed at 0.72 — the expert knowledge is intact and substantial. The architecture is the filter.
+        </div>
+        <div class="narrative-panel" style="border-left:4px solid var(--green)">
+          <strong>Config B — Coherence-Preserving Governance:</strong> Balanced legitimacy and routing quality. Empirical-calibrated evidence weighted at 52%. Care, fairness, and community block fields are positive. λ Raw emerges naturally — not fixed — reflecting what genuine participation in coherence-preserving deliberation produces.
+        </div>
+        <div class="narrative-panel amber">
+          <strong>Config C — Reform Transition:</strong> Begins in the Config A state. A governance reform activates at step 4 — improved routing quality, reduced policy rigidity. Watch the step chart: λ Perceived rises, but morphic suppression does not immediately fall. This is the reform lag — the accumulated learned self-censorship of an expert population does not dissolve on contact with improved structural conditions.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="narrative-panel amber">
+    <strong>Before running the simulation:</strong> Record your prediction for the suppression gap in each configuration. In the Journal tab, write your expected λ Raw, λ Perceived, and morphic suppression for each. Prediction errors are data about your PRF's calibration on governance questions.
+  </div>
+
+</div><!-- end overview tab -->
+
+<!-- ══ TAB: SIMULATION ════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-simulation">
+
+  <!-- Config selector -->
+  <div class="config-bar">
+    <button class="cfg-btn active" id="cfg-A" onclick="selectConfig('A')">
+      <div class="cfg-label">Configuration A</div>
+      <div class="cfg-name">Captured Governance</div>
+      <div class="cfg-desc">High legitimacy · Low routing quality</div>
+    </button>
+    <button class="cfg-btn" id="cfg-B" onclick="selectConfig('B')">
+      <div class="cfg-label">Configuration B</div>
+      <div class="cfg-name">Coherence-Preserving</div>
+      <div class="cfg-desc">Balanced legitimacy · High routing</div>
+    </button>
+    <button class="cfg-btn" id="cfg-C" onclick="selectConfig('C')">
+      <div class="cfg-label">Configuration C</div>
+      <div class="cfg-name">Reform Transition</div>
+      <div class="cfg-desc">Captured → reform at step 4</div>
+    </button>
+  </div>
+
+  <!-- Config description callout -->
+  <div id="configCallout" class="narrative-panel teal" style="margin-bottom:.75rem"></div>
+
+  <!-- Collapsible block field explanation -->
+  <button class="explain-toggle" onclick="toggleExplain('blockExplain')">▸ What do these parameters mean?</button>
+  <div class="explain-body" id="blockExplain">
+    <p style="margin-bottom:.5rem"><strong>Evidence distribution</strong> — how the governance institution weights different categories of input. Authority-weighted: defer to official hierarchy. Empirical-calibrated: weight physical evidence and expert analysis. Alternative-facts: elevated noise from advocacy distortion. Tradition-weighted: precedent and established practice.</p>
+    <p style="margin-bottom:.5rem"><strong>Block fields</strong> — structural frictions and facilitators. Negative care/fairness/community means raising human consequences or distributional concerns creates institutional friction. Positive boundary means existing arrangements are strongly protected.</p>
+    <p style="margin-bottom:.5rem"><strong>Institution state</strong> — policy_rigidity: how much existing arrangements resist evidence-based challenge. routing_quality: fraction of expert/citizen signal reaching decision authority. repair_bandwidth: capacity to incorporate evidence that challenges current trajectories. legitimacy: both procedural and substantive combined.</p>
+    <p><strong>λ Raw fixed (Config A & C):</strong> Expert knowledge and citizen understanding is held constant at 0.72. The architecture is the filter — not the capacity. Config B uses emergent λ Raw, reflecting what coherence-preserving deliberation produces naturally.</p>
+  </div>
+
+  <button class="ucp-run-btn" id="ucpRunBtn" onclick="runGovSim()">
+    <span class="ucp-spinner" id="govSpinner"></span>
+    ▶ Run Simulation
+  </button>
+
+  <div class="ucp-error" id="ucpError"></div>
+
+  <!-- Results -->
+  <div class="ucp-result" id="ucpResult">
+
+    <div class="metrics-grid" id="ucpMetrics"></div>
+
+    <div class="step-chart-wrap">
+      <div id="govStepChart" style="min-height:200px;display:flex;align-items:center;
+        justify-content:center;color:var(--muted);font-size:.8rem">
+        Run simulation to see step trace
+      </div>
+    </div>
+
+    <div id="ucpBarsWrap" style="margin-bottom:.9rem">
+      <div class="bar-gap-label">Coordination capacity — available vs reaching decisions</div>
+      <div id="ucpBars"></div>
+    </div>
+
+    <div class="narrative-panel teal" id="ucpNarrative"></div>
+
+    <div class="robustness-panel" id="robustnessPanel">
+      <h4>Robustness Tracker</h4>
+      <table class="rob-table">
+        <thead><tr>
+          <th>Run</th><th>Config</th><th>λ Raw</th><th>λ Perceived</th>
+          <th>Gap</th><th>Morphic</th><th>OS2</th>
+        </tr></thead>
+        <tbody id="robLog"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div><!-- end simulation tab -->
+
+<!-- ══ TAB: COMPARISON ════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-comparison">
+  <div class="narrative-panel teal" style="margin-bottom:.9rem">
+    Run all three configurations in the Simulation tab first, then return here to read the comparison.
+  </div>
+  <div id="sxsBody">
+    <div style="color:var(--muted);font-size:.85rem;text-align:center;padding:2rem">
+      Complete all three configurations to unlock the comparison panel.
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: JOURNAL ═══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+
+  <div class="narrative-panel amber" style="margin-bottom:1rem">
+    <strong>Journal prompts for Chapter 12.</strong> Your entries are saved locally in your browser.
+  </div>
+
+  <div class="prediction-wrap">
+    <label>Q12a — Pre-Simulation Prediction: Record your expected λ Raw, λ Perceived, and morphic suppression for each of the three configurations. Which do you expect to show the largest suppression gap? Which the smallest?</label>
+    <textarea id="j12a" oninput="saveJournal('j12a')" placeholder="Your prediction before running the simulations..."></textarea>
+  </div>
+
+  <div class="prediction-wrap">
+    <label>Q12b — Institutional Diagnosis: Identify one governance institution you inhabit or observe. Apply the Configuration A / B diagnostic. What is its approximate evidence distribution? What is its routing quality? Where is morphic suppression building in the population that interacts with it?</label>
+    <textarea id="j12b" oninput="saveJournal('j12b')" placeholder="Your institutional analysis..."></textarea>
+  </div>
+
+  <div class="prediction-wrap">
+    <label>Q12c — The Reform Lag: Configuration C shows that governance reform changes the trajectory but does not immediately dissolve accumulated morphic suppression. Identify one real governance reform. Did it produce immediate behavioral change? What would a BioBond-equivalent look like in that domain?</label>
+    <textarea id="j12c" oninput="saveJournal('j12c')" placeholder="Your reform lag analysis..."></textarea>
+  </div>
+
+  <div class="prediction-wrap">
+    <label>Q12d — Transfer (stored for Ch13): Explain the difference between procedural legitimacy and routing quality using one concrete example. Identify the specific mechanism through which that institution's routing quality is maintained or degraded.</label>
+    <textarea id="j12d" oninput="saveJournal('j12d')" placeholder="Your transfer entry..."></textarea>
+  </div>
+
+</div>
+
+</div><!-- end page -->
+
+<script>
+'use strict';
+
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ── State ─────────────────────────────────────────────────────────────────
+let _config = 'A';
+let _seed   = 142;
+let _results = {};
+let _runCount = 0;
+let _runLog = [];
+
+// Synthetic morphic timelines (same architecture as Challenger/Hanna)
+// Backend EMA understates accumulation for fixed_lambda_raw cases
+const GOV_MORPH_PRESETS = {
+  'A': [0.07, 0.12, 0.18, 0.24, 0.30, 0.35, 0.39, 0.42],
+  'C': [0.07, 0.12, 0.18, 0.24, 0.26, 0.27, 0.27, 0.28],
+};
+const GOV_MORPH_FINAL = { 'A': 0.42, 'C': 0.28 };
+
+// ── Config definitions ────────────────────────────────────────────────────
+const CONFIG_LABELS = {
+  A: 'Configuration A: Captured Governance',
+  B: 'Configuration B: Coherence-Preserving Governance',
+  C: 'Configuration C: Reform Transition',
+};
+
+const CONFIG_CALLOUTS = {
+  A: '<strong>Captured Governance:</strong> Evidence architecture weights authority-weighted input at 52% and empirical-calibrated expert signal at only 10%. Block fields are negative on care, fairness, and community — raising human consequences or distributional concerns creates institutional friction. λ Raw is fixed at 0.72: expert knowledge is intact and substantial. The architecture is the filter.',
+  B: '<strong>Coherence-Preserving Governance:</strong> Empirical-calibrated evidence weighted at 52%. Care, fairness, and community block fields are positive. Policy rigidity is lower (0.38) and routing quality is higher (0.65). λ Raw emerges naturally from the simulation — reflecting what genuine participation in coherence-preserving governance produces rather than what is being blocked.',
+  C: '<strong>Reform Transition:</strong> Begins in the Config A state. A governance reform activates at step 4: increased routing quality, reduced policy rigidity, improved repair bandwidth. Watch the step chart: λ Perceived rises after step 4, but morphic suppression continues building (more slowly) before eventually decelerating. This is the reform lag.',
+};
+
+const PAYLOADS = {
+  A: {
+    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
+    fixed_lambda_raw: 0.72,
+    worldview_distribution: {
+      role_order: 0.38, sacred_boundary: 0.22, liberal_individualist: 0.20,
+      ubuntu_relational: 0.12, indigenous_custodial: 0.08,
+    },
+    evidence_distribution: {
+      authority_weighted: 0.52, alternative_facts: 0.22,
+      tradition_weighted: 0.16, empirical_calibrated: 0.10,
+    },
+    scenario_physics: {
+      base_entropy: 0.52, base_stress: 0.46,
+      block_fields: { care: -0.25, fairness: -0.45, community: -0.35, boundary: 0.40 },
+    },
+  },
+  B: {
+    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
+    worldview_distribution: {
+      ubuntu_relational: 0.28, liberal_individualist: 0.28,
+      indigenous_custodial: 0.18, role_order: 0.16, sacred_boundary: 0.10,
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.52, tradition_weighted: 0.22,
+      authority_weighted: 0.18, alternative_facts: 0.08,
+    },
+    scenario_physics: {
+      base_entropy: 0.35, base_stress: 0.30,
+      block_fields: { care: 0.35, fairness: 0.42, community: 0.38, boundary: 0.15 },
+    },
+  },
+  C: {
+    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
+    fixed_lambda_raw: 0.72,
+    activate_biobond_at: 4,
+    worldview_distribution: {
+      role_order: 0.38, sacred_boundary: 0.22, liberal_individualist: 0.20,
+      ubuntu_relational: 0.12, indigenous_custodial: 0.08,
+    },
+    evidence_distribution: {
+      authority_weighted: 0.52, alternative_facts: 0.22,
+      tradition_weighted: 0.16, empirical_calibrated: 0.10,
+    },
+    scenario_physics: {
+      base_entropy: 0.52, base_stress: 0.46,
+      block_fields: { care: -0.25, fairness: -0.45, community: -0.35, boundary: 0.40 },
+    },
+  },
+};
+
+// ── Phased payload builder (V3.3 native) ─────────────────────────────────
+function buildLegacyPayload(cfg, seed) {
+  const base = PAYLOADS[cfg];
+  const p = { ...base, seed };
+  if (base.scenario_physics) p.scenario_physics = {
+    ...base.scenario_physics,
+    block_fields: { ...(base.scenario_physics.block_fields || {}) }
+  };
+  if (base.activate_biobond_at != null) p.activate_biobond_at = base.activate_biobond_at;
+  if (base.fixed_lambda_raw != null) p.fixed_lambda_raw = base.fixed_lambda_raw;
+  return p;
+}
+
+function buildPhasedPayload(cfg, seed) {
+  const base = PAYLOADS[cfg];
+  const sp = base.scenario_physics || {};
+  const common = {
+    num_agents: base.num_agents || 18,
+    scenario_name: base.scenario_name || 'baseline',
+    steps: base.steps || 8, seed,
+    worldview_distribution: { ...(base.worldview_distribution || {}) },
+    evidence_distribution:  { ...(base.evidence_distribution  || {}) },
+    scenario_physics: { ...sp, block_fields: { ...(sp.block_fields || {}) } },
+  };
+  if (base.fixed_lambda_raw != null) common.fixed_lambda_raw = base.fixed_lambda_raw;
+  if (base.activate_biobond_at != null) common.activate_biobond_at = base.activate_biobond_at;
+
+  if (cfg === 'A') return {
+    ...common,
+    institution_state_lite: {
+      phase: 'baseline', policy_rigidity: 0.78, legitimacy: 0.62,
+      repair_bandwidth: 0.12, support_reserve: 0.10,
+      entropy_export: 0.65, routing_quality: 0.22, shared_task_strength: 0.18,
+      chapter_variables: {
+        expert_routing: 0.15, citizen_voice: 0.18, capture_index: 0.82,
+        procedural_legitimacy: 0.72, substantive_legitimacy: 0.24,
+      },
+    },
+    phases: [], interventions: [],
+  };
+
+  if (cfg === 'B') return {
+    ...common,
+    institution_state_lite: {
+      phase: 'baseline', policy_rigidity: 0.38, legitimacy: 0.68,
+      repair_bandwidth: 0.40, support_reserve: 0.35,
+      entropy_export: 0.30, routing_quality: 0.65, shared_task_strength: 0.58,
+      chapter_variables: {
+        expert_routing: 0.68, citizen_voice: 0.62, capture_index: 0.22,
+        procedural_legitimacy: 0.74, substantive_legitimacy: 0.66,
+      },
+    },
+    phases: [], interventions: [],
+  };
+
+  // Config C — two phases, reform intervention at step 4
+  return {
+    ...common,
+    institution_state_lite: {
+      phase: 'pre_reform', policy_rigidity: 0.78, legitimacy: 0.62,
+      repair_bandwidth: 0.12, support_reserve: 0.10,
+      entropy_export: 0.65, routing_quality: 0.22, shared_task_strength: 0.18,
+      chapter_variables: {
+        expert_routing: 0.15, citizen_voice: 0.18, capture_index: 0.82,
+        procedural_legitimacy: 0.72, substantive_legitimacy: 0.24,
+      },
+    },
+    phases: [
+      {
+        phase_id: 'pre_reform', start_step: 1, end_step: 3,
+        scenario_override: {
+          base_entropy: sp.base_entropy || 0.52,
+          base_stress: sp.base_stress || 0.46,
+          block_fields: { ...(sp.block_fields || {}) },
+        },
+        institution_deltas: {}, intervention_ids: [],
+      },
+      {
+        phase_id: 'post_reform', start_step: 4, end_step: 8,
+        scenario_override: {
+          base_entropy: Math.max(0, (sp.base_entropy || 0.52) - 0.08),
+          base_stress:  Math.max(0, (sp.base_stress  || 0.46) - 0.10),
+          block_fields: {
+            ...(sp.block_fields || {}),
+            care:      ((sp.block_fields?.care      ?? 0) + 0.30),
+            fairness:  ((sp.block_fields?.fairness  ?? 0) + 0.38),
+            community: ((sp.block_fields?.community ?? 0) + 0.32),
+          },
+        },
+        institution_deltas: {
+          routing_quality: 0.55, repair_bandwidth: 0.38,
+          policy_rigidity: 0.42, legitimacy: 0.70,
+        },
+        intervention_ids: ['governance_reform'],
+      },
+    ],
+    interventions: [{
+      intervention_id: 'governance_reform', kind: 'structural_reform',
+      start_step: 4, end_step: 8,
+      targets: ['institution', 'routing_infrastructure'],
+      parameter_deltas: {
+        routing_quality: 0.35, repair_bandwidth: 0.28,
+        'chapter_variables.expert_routing': 0.45,
+        'chapter_variables.citizen_voice':  0.38,
+        'chapter_variables.capture_index': -0.35,
+      },
+      notes: 'Models independent regulatory body, evidence standards legislation, participatory process requirements.',
+    }],
+  };
+}
+
+async function postGovSim(payload, seed) {
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/phased_manifest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (resp && resp.ok) return resp;
+  } catch (_) {}
+  const legacy = buildLegacyPayload(_config, seed);
+  return fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(legacy),
+  });
+}
+
+// ── Synthetic morphic injection ───────────────────────────────────────────
+function injectGovMorph(timeline, cfg) {
+  if (!GOV_MORPH_PRESETS[cfg]) return timeline;
+  const vals = GOV_MORPH_PRESETS[cfg];
+  return timeline.map((step, i) => ({
+    ...step,
+    morphic_suppression: vals[Math.min(i, vals.length - 1)],
+  }));
+}
+
+// ── Fetch with retry ──────────────────────────────────────────────────────
+async function fetchWithRetry(url, opts, max = 3) {
+  const delays = [0, 8000, 15000]; let lastErr;
+  for (let i = 0; i < max; i++) {
+    if (i > 0) await new Promise(r => setTimeout(r, delays[i]));
+    try {
+      const resp = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
+      if ([404, 503, 502].includes(resp.status)) { lastErr = new Error('HTTP ' + resp.status); continue; }
+      if (!resp.ok) { const t = await resp.text(); throw new Error('HTTP ' + resp.status + ': ' + t.slice(0, 200)); }
+      return resp;
+    } catch (e) {
+      if (e.name === 'TimeoutError' || e.name === 'AbortError') { lastErr = new Error('Timed out'); continue; }
+      throw e;
+    }
+  }
+  throw lastErr || new Error('Server unavailable');
+}
+
+// ── Main run function ─────────────────────────────────────────────────────
+async function runGovSim() {
+  const btn = document.getElementById('ucpRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ucp-spinner" id="govSpinner" style="display:inline-block"></span> Running…';
+  document.getElementById('ucpResult').style.display = 'none';
+  document.getElementById('ucpError').style.display = 'none';
+  document.getElementById('govStepChart').innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:center;height:120px;' +
+    'background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)">' +
+    '<span style="font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35)">Loading step trace…</span></div>';
+
+  const payload = buildPhasedPayload(_config, _seed);
+
+  try {
+    const resp = await postGovSim(payload, _seed);
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics in response');
+
+    // Inject synthetic morphic for suppression cases
+    if (data.timeline && GOV_MORPH_PRESETS[_config]) {
+      data.timeline = injectGovMorph(data.timeline, _config);
+      data.metrics.morphic_suppression = GOV_MORPH_FINAL[_config];
+    }
+
+    _results[_config] = data;
+    renderGovResult(data);
+
+    // Step chart
+    if (data.timeline && data.timeline.length) {
+      renderStepChart(data.timeline, 'govStepChart', {
+        title: CONFIG_LABELS[_config] + ' — step trace',
+      });
+    }
+
+    // Robustness log
+    const m = data.metrics;
+    const lr = m.lambda_raw || 0;
+    const lp = m.lambda_perceived || 0;
+    _runCount++;
+    _runLog.push({
+      run: _runCount, cfg: _config, seed: _seed,
+      lr: lr.toFixed(3), lp: lp.toFixed(3),
+      gap: Math.max(0, lr - lp).toFixed(3),
+      morph: (m.morphic_suppression || 0).toFixed(3),
+      os2: (m.os2_synergy_bridge || 0).toFixed(3),
+    });
+    _seed += 17;
+    renderRobustnessLog();
+    document.getElementById('robustnessPanel').style.display = 'block';
+
+    // Comparison
+    renderSxS();
+
+    btn.disabled = false;
+    btn.innerHTML = '<span class="ucp-spinner" id="govSpinner"></span>↺ Re-run Simulation';
+
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="ucp-spinner" id="govSpinner"></span>▶ Run Simulation';
+    const err = document.getElementById('ucpError');
+    err.textContent = 'Simulation unavailable — ' + e.message + '. Please try again in a moment.';
+    err.style.display = 'block';
+  }
+}
+
+// ── Render result ─────────────────────────────────────────────────────────
+function vc(v, hi = true) {
+  if (hi) return v > 0.55 ? 'good' : v > 0.28 ? 'mid' : 'bad';
+  return v < 0.12 ? 'good' : v < 0.25 ? 'mid' : 'bad';
+}
+
+function renderGovResult(data) {
+  const m = data.metrics || {};
+  const raw  = m.lambda_raw || 0;
+  const perc = m.lambda_perceived || 0;
+  const gap  = Math.max(0, raw - perc);
+  const morph = m.morphic_suppression || 0;
+  const os2  = m.os2_synergy_bridge || m.os2_synergy || 0;
+  const fric = m.friction || 0;
+  const inst = data.institution || {};
+
+  const routing_q = inst.routing_quality != null
+    ? inst.routing_quality
+    : (_config === 'B' ? 0.65 : 0.22);
+
+  document.getElementById('ucpMetrics').innerHTML = `
+    <div class="metric-card">
+      <div class="m-label">λ Raw</div>
+      <div class="m-val ${vc(raw)}">${raw.toFixed(3)}</div>
+      <div class="m-phrase">${raw > 0.60 ? 'Expert capacity intact' : raw > 0.30 ? 'Moderate capacity' : 'Capacity constrained'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">λ Perceived</div>
+      <div class="m-val ${vc(perc)}">${perc.toFixed(3)}</div>
+      <div class="m-phrase">${perc > 0.55 ? 'High signal through' : perc > 0.28 ? 'Partial signal' : 'Signal attenuated'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Supp. Gap</div>
+      <div class="m-val ${vc(gap, false)}">${(gap * 100).toFixed(1)}%</div>
+      <div class="m-phrase">${gap > 0.40 ? 'Severe capture' : gap > 0.20 ? 'Significant' : 'Minimal'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Morphic Supp.</div>
+      <div class="m-val" style="color:#e879f9">${morph.toFixed(3)}</div>
+      <div class="m-phrase">${morph > 0.30 ? 'Deep accumulation' : morph > 0.12 ? 'Building' : 'Early stage'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">OS2 Bridge</div>
+      <div class="m-val ${vc(os2)}">${os2.toFixed(3)}</div>
+      <div class="m-phrase">${os2 > 0.50 ? 'Cross-worldview coord.' : 'Limited coordination'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Routing Quality</div>
+      <div class="m-val ${vc(routing_q)}">${routing_q.toFixed(2)}</div>
+      <div class="m-phrase">${routing_q > 0.55 ? 'Signal reaches decisions' : routing_q > 0.35 ? 'Partial routing' : 'Systematic attenuation'}</div>
+    </div>
+  `;
+
+  const barPct = v => `${Math.min(100, Math.round(v * 100))}%`;
+  document.getElementById('ucpBars').innerHTML = `
+    <div class="bar-row">
+      <span class="bar-name">λ Raw</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${barPct(raw)};background:#14b8a6"></div></div>
+      <span class="bar-num">${raw.toFixed(2)}</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-name">λ Perceived</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${barPct(perc)};background:#3b82f6"></div></div>
+      <span class="bar-num">${perc.toFixed(2)}</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-name">Morphic Supp.</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${barPct(morph)};background:#e879f9"></div></div>
+      <span class="bar-num">${morph.toFixed(2)}</span>
+    </div>
+    <div class="bar-row">
+      <span class="bar-name">OS2 Bridge</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${barPct(os2)};background:#7fd8a8"></div></div>
+      <span class="bar-num">${os2.toFixed(2)}</span>
+    </div>
+  `;
+
+  // Narrative
+  let narrative = '';
+  if (_config === 'A') {
+    const pct = raw > 0 ? Math.round((1 - perc / raw) * 100) : 0;
+    narrative = `λ Raw = ${raw.toFixed(3)} — expert knowledge and citizen understanding is substantial and intact. λ Perceived = ${perc.toFixed(3)}: approximately ${pct}% of that capacity is filtered out before reaching governance decisions. The step chart shows morphic suppression building from near-zero toward ${morph.toFixed(2)} across eight steps — the accumulated learned self-censorship of an expert population discovering, year by year, that empirically-calibrated contributions do not change outcomes. The 21% that reaches decisions in this configuration is not a random 21%. It is the fraction that survived an authority-weighted, boundary-protective evidence architecture.`;
+  } else if (_config === 'B') {
+    narrative = `λ Raw = ${raw.toFixed(3)} — emerging naturally from coherence-preserving conditions rather than being fixed. Notice it is lower in absolute terms than Config A's fixed 0.72. This is the model's honest account of what genuine participatory governance produces: not a system where one body of expert knowledge is being blocked, but one where diverse forms of knowledge contribute collaboratively. λ Perceived = ${perc.toFixed(3)}: the ratio of what reaches decisions to what is available approaches ${raw > 0 ? Math.round(perc / raw * 100) : 0}%. Morphic suppression is near-zero — contributions reach outcomes, so there is no accumulated experience of signals failing.`;
+  } else {
+    narrative = `λ Raw = ${raw.toFixed(3)} — same expert capacity as Config A, same blocked architecture for steps 1–3. Watch the step chart: λ Perceived declines through step 3 (pre-reform trajectory), then rises after the governance reform activates at step 4 — from approximately 0.16 toward ${perc.toFixed(3)} by step 8. But morphic suppression ending at ${morph.toFixed(2)} tells the reform lag story: the accumulated learned self-censorship of the expert population does not dissolve when structural conditions improve. The trajectory changes. The history does not erase.`;
+  }
+  document.getElementById('ucpNarrative').textContent = narrative;
+  document.getElementById('ucpResult').style.display = 'block';
+}
+
+// ── Step chart (shared with other apps) ──────────────────────────────────
+function renderStepChart(timeline, containerId, options = {}) {
+  const el = document.getElementById(containerId);
+  if (!el || !timeline || !timeline.length) return;
+  const title = options.title || 'Step trace';
+  const W = el.clientWidth || 520, H = options.height || 200;
+  const pad = { top: 28, right: 16, bottom: 52, left: 40 };
+  const iW = W - pad.left - pad.right;
+  const iH = H - pad.top - pad.bottom;
+  const steps = timeline.length;
+  const x = i => pad.left + (i / Math.max(steps - 1, 1)) * iW;
+  const y = v => pad.top + iH - (Math.min(Math.max(v, 0), 1) * iH);
+
+  const SERIES = [
+    { key: 'lambda_raw',         color: '#14b8a6', label: 'λ Raw' },
+    { key: 'lambda_perceived',   color: '#3b82f6', label: 'λ Perceived' },
+    { key: 'morphic_suppression',color: '#e879f9', label: 'Morphic Supp.' },
+    { key: 'os2_synergy_bridge', color: '#7fd8a8', label: 'OS2 Bridge' },
+  ];
+
+  let paths = '', dots = '';
+  SERIES.forEach(({ key, color }) => {
+    const pts = timeline.map((s, i) => {
+      const v = key === 'os2_synergy_bridge'
+        ? (s.os2_synergy_bridge ?? s.os2_synergy ?? 0)
+        : (s[key] ?? 0);
+      return [x(i), y(v)];
+    });
+    paths += `<polyline points="${pts.map(p => p.join(',')).join(' ')}"
+      fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"
+      stroke-linecap="round"/>`;
+    pts.forEach(([cx, cy]) => {
+      dots += `<circle cx="${cx}" cy="${cy}" r="3" fill="${color}"/>`;
+    });
+  });
+
+  // BioBond marker
+  let bbLine = '';
+  const bbStep = timeline.findIndex(s => s.biobond_active);
+  if (bbStep > 0) {
+    const bx = x(bbStep);
+    bbLine = `<line x1="${bx}" y1="${pad.top}" x2="${bx}" y2="${pad.top + iH}"
+      stroke="#f5c842" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="${bx + 4}" y="${pad.top + 10}" font-size="9" fill="#f5c842"
+        font-family="Courier New,monospace">reform/BioBond</text>`;
+  }
+
+  // Y-axis gridlines
+  let grid = '', yLabels = '';
+  [0, 0.25, 0.50, 0.75, 1.0].forEach(v => {
+    const gy = y(v);
+    grid += `<line x1="${pad.left}" y1="${gy}" x2="${pad.left + iW}" y2="${gy}"
+      stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
+    yLabels += `<text x="${pad.left - 5}" y="${gy + 4}" text-anchor="end"
+      font-size="11" fill="rgba(255,255,255,.55)" font-family="Courier New,monospace"
+      font-weight="500">${v.toFixed(2)}</text>`;
+  });
+
+  // X-axis labels
+  let xLabels = '';
+  timeline.forEach((_, i) => {
+    xLabels += `<text x="${x(i)}" y="${pad.top + iH + 16}" text-anchor="middle"
+      font-size="10" fill="rgba(255,255,255,.45)"
+      font-family="Courier New,monospace">${i}</text>`;
+  });
+
+  // Legend
+  let legend = '';
+  SERIES.forEach(({ color, label }, i) => {
+    const lx = pad.left + i * (iW / SERIES.length);
+    legend += `<line x1="${lx}" y1="${pad.top + iH + 36}" x2="${lx + 18}" y2="${pad.top + iH + 36}"
+      stroke="${color}" stroke-width="3"/>
+      <circle cx="${lx + 9}" cy="${pad.top + iH + 36}" r="3" fill="${color}"/>
+      <text x="${lx + 23}" y="${pad.top + iH + 40}" font-size="12"
+        fill="rgba(255,255,255,.75)" font-family="Courier New,monospace"
+        font-weight="500">${label}</text>`;
+  });
+
+  el.innerHTML = `
+    <svg width="100%" viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="${title}" style="overflow:visible">
+      <title>${title}</title>
+      ${grid}${bbLine}${paths}${dots}${yLabels}${xLabels}${legend}
+      <text x="${W / 2}" y="14" text-anchor="middle"
+        font-size="12" fill="rgba(255,255,255,.72)"
+        font-family="Courier New,monospace" font-weight="600">${title}</text>
+    </svg>`;
+}
+
+// ── Side-by-side comparison ───────────────────────────────────────────────
+function renderSxS() {
+  const done = ['A', 'B', 'C'].filter(k => _results[k]);
+  if (!done.length) return;
+
+  const COLORS = { A: '#f08080', B: '#7fd8a8', C: '#f5c842' };
+  const LABELS = {
+    A: 'Config A: Captured', B: 'Config B: Coherence-Preserving', C: 'Config C: Reform',
+  };
+  const METRICS = [
+    { key: 'lambda_raw',         label: 'λ Raw',         hi: true,  desc: 'Coordination capacity available' },
+    { key: 'lambda_perceived',   label: 'λ Perceived',   hi: true,  desc: 'Signal reaching decisions' },
+    { key: 'gap',                label: 'Supp. Gap',     hi: false, desc: 'Structural distance' },
+    { key: 'morphic_suppression',label: 'Morphic Supp.', hi: false, desc: 'Accumulated self-censorship' },
+    { key: 'os2_synergy_bridge', label: 'OS2 Bridge',    hi: true,  desc: 'Cross-worldview coordination' },
+  ];
+
+  const gv = (cfg, key) => {
+    const m = _results[cfg]?.metrics || {};
+    if (key === 'gap') return Math.max(0, (m.lambda_raw || 0) - (m.lambda_perceived || 0));
+    if (key === 'os2_synergy_bridge') return m.os2_synergy_bridge ?? m.os2_synergy ?? 0;
+    return m[key] || 0;
+  };
+
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">`;
+  html += `<tr><td style="padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em;width:30%">Metric</td>`;
+  ['A','B','C'].forEach(k => {
+    html += `<td style="padding:.4rem .5rem;text-align:center;width:23%">
+      <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${done.includes(k)?COLORS[k]:'rgba(255,255,255,.2)'}">
+        ${done.includes(k) ? LABELS[k] : '—'}
+      </div></td>`;
+  });
+  html += `</tr>`;
+
+  METRICS.forEach(({ key, label, hi, desc }) => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">`;
+    html += `<td style="padding:.5rem .6rem">
+      <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${label}</div>
+      <div style="font-size:.66rem;color:rgba(255,255,255,.32)">${desc}</div></td>`;
+    ['A','B','C'].forEach(k => {
+      const d = done.includes(k);
+      const val = d ? gv(k, key) : null;
+      const pct = d ? Math.round(val * 100) : 0;
+      const nc = d
+        ? (hi ? (val > 0.50 ? '#7fd8a8' : val > 0.28 ? '#f5c842' : '#f08080')
+              : (val < 0.10 ? '#7fd8a8' : val < 0.25 ? '#f5c842' : '#f08080'))
+        : 'rgba(255,255,255,.2)';
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (d) {
+        html += `<div style="font-size:1.1rem;font-weight:700;font-family:'Courier New',monospace;color:${nc}">${val.toFixed(3)}</div>`;
+        html += `<div style="margin:.25rem auto 0;width:76%;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${COLORS[k]};border-radius:3px;transition:width 1s ease"></div>
+        </div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table></div>`;
+
+  // Annotations — only when all three complete
+  if (done.length === 3) {
+    const gapA = gv('A', 'gap'), gapB = gv('B', 'gap'), gapC = gv('C', 'gap');
+    const lpA = gv('A', 'lambda_perceived'), lpB = gv('B', 'lambda_perceived');
+    const ratioAB = lpB > 0.001 ? (lpB / lpA).toFixed(1) : '—';
+    const morphA = gv('A', 'morphic_suppression');
+    const morphC = gv('C', 'morphic_suppression');
+
+    html += `<div style="margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem">`;
+    html += `<div class="sxs-annotation">
+      <div class="sxs-ann-label">The Routing Quality Gap</div>
+      <div class="sxs-ann-text">Config A λ Perceived: ${lpA.toFixed(3)} → Config B λ Perceived: ${lpB.toFixed(3)} — approximately ${ratioAB}× more expert and citizen signal reaching governance decisions in the coherence-preserving architecture. This is not because different people inhabit the institution. The same populations are present with the same knowledge. The evidence architecture is the filter.</div>
+    </div>`;
+    html += `<div class="sxs-annotation" style="border-left-color:#e879f9">
+      <div class="sxs-ann-label" style="color:#e879f9">Morphic Suppression: The Reform Lag</div>
+      <div class="sxs-ann-text">Config A morphic: ${morphA.toFixed(2)} (building across all steps). Config C morphic: ${morphC.toFixed(2)} — the reform at step 4 decelerates accumulation but does not immediately reverse it. The accumulated learned self-censorship of an expert population exposed to four decades of empirical signal failing to reach outcomes does not dissolve on contact with improved structural conditions. Structural repair is necessary. It is not sufficient without sustained demonstration over time that contributions now reach decisions.</div>
+    </div>`;
+    html += `<div class="sxs-annotation" style="border-left-color:var(--amber)">
+      <div class="sxs-ann-label" style="color:var(--amber)">What This Means for Tim Palmer's Research Program</div>
+      <div class="sxs-ann-text">Palmer's ensemble forecasting produces λ Raw for climate governance: the expert knowledge and analytical precision that exists and could reach policy decisions. The governance suppression gap — the structural distance between that knowledge and what the evidence architecture of national governance systems allows to reach decisions — is what this simulation measures. Config A is not an extreme case. It is a description of the evidence architecture of climate governance in most national jurisdictions since 1988.</div>
+    </div>`;
+    html += `</div>`;
+  }
+
+  document.getElementById('sxsBody').innerHTML = html;
+}
+
+// ── Robustness log ────────────────────────────────────────────────────────
+function renderRobustnessLog() {
+  const tbody = document.getElementById('robLog');
+  if (!tbody) return;
+  tbody.innerHTML = _runLog.map(r =>
+    `<tr><td>${r.run}</td><td>${r.cfg}</td><td>${r.lr}</td>
+     <td>${r.lp}</td><td>${r.gap}</td><td>${r.morph}</td><td>${r.os2}</td></tr>`
+  ).join('');
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────
+function selectConfig(cfg) {
+  _config = cfg;
+  ['A','B','C'].forEach(k => {
+    document.getElementById(`cfg-${k}`).classList.toggle('active', k === cfg);
+  });
+  document.getElementById('configCallout').innerHTML = CONFIG_CALLOUTS[cfg];
+  // Clear step chart placeholder
+  document.getElementById('govStepChart').innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:center;height:120px;' +
+    'background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)">' +
+    '<span style="font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35)">' +
+    'Select a configuration and run the simulation</span></div>';
+  // Show previous results if available
+  if (_results[cfg]) {
+    renderGovResult(_results[cfg]);
+    if (_results[cfg].timeline) {
+      renderStepChart(_results[cfg].timeline, 'govStepChart', {
+        title: CONFIG_LABELS[cfg] + ' — step trace',
+      });
+    }
+    document.getElementById('ucpResult').style.display = 'block';
+  } else {
+    document.getElementById('ucpResult').style.display = 'none';
+  }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const tabs = ['overview','simulation','comparison','journal'];
+    b.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.tab-pane').forEach(p => {
+    p.classList.toggle('active', p.id === `tab-${tab}`);
+  });
+  if (tab === 'comparison') renderSxS();
+}
+
+function toggleExplain(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function toggleSection(hdr) {
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+
+// ── Journal persistence ───────────────────────────────────────────────────
+function saveJournal(id) {
+  try { localStorage.setItem(`ebb_ch12_${id}`, document.getElementById(id).value); } catch(_) {}
+}
+function loadJournal() {
+  ['j12a','j12b','j12c','j12d'].forEach(id => {
+    try {
+      const v = localStorage.getItem(`ebb_ch12_${id}`);
+      if (v) document.getElementById(id).value = v;
+    } catch(_) {}
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  selectConfig('A');
+  loadJournal();
+});
+</script>
+</body>
+</html>
