@@ -145,6 +145,9 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
 .section-header.open .section-chevron{transform:rotate(90deg)}
 .section-body{display:none}.section-body.open{display:block}
 
+/* ── Theory toggle cards ── */
+.theory-body { border-top: 1px solid rgba(255,255,255,.07) }
+
 /* ── Responsive ── */
 @media(max-width:600px){
   .metrics-grid{grid-template-columns:repeat(3,1fr)}
@@ -182,46 +185,272 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
 <!-- ══ TAB: OVERVIEW ══════════════════════════════════════════════════════════ -->
 <div class="tab-pane active" id="tab-overview">
 
-  <div class="narrative-panel teal">
-    <strong>The central question of this chapter:</strong> The IPCC has been publishing its findings since 1988. Climate scientists have high λ Raw — substantial knowledge and analytical capacity. Yet what reaches governance decisions — λ Perceived — is a small fraction of that capacity. Why? And what does the governance architecture do to the expert and citizen populations who learn, year by year, that their signal does not change outcomes?
-  </div>
+<!-- ── Learning Objectives ── -->
+<div class="narrative-panel amber" style="margin-bottom:1.1rem">
+  <strong>Learning Objectives — Chapter 12</strong>
+  <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
+    <li>Distinguish <strong>procedural legitimacy</strong> (governance follows correct rules) from <strong>routing quality</strong> (governance actually routes knowledge into decisions) — and explain why they are independent variables.</li>
+    <li>Apply the suppression gap concept to expert knowledge and governance decisions, identifying not only how much signal is lost but <em>which categories</em> are systematically attenuated.</li>
+    <li>Use the OS2 reference frame to analyze governance as a coordination architecture — asking what structural configurations allow diverse populations' knowledge to reach decisions.</li>
+    <li>Read the routing quality / policy rigidity distinction in the simulation and connect it to real cases including climate governance, administrative law, and democratic representation.</li>
+    <li>Identify the forward limit of the current simulation and describe the multi-institutional trust vector extension the governance domain specifically requires.</li>
+  </ul>
+</div>
 
-  <div class="section-wrap">
-    <div class="section-header" onclick="toggleSection(this)">
-      <h3>Procedural vs Substantive Legitimacy</h3>
-      <span class="section-chevron">▶</span>
+<!-- ── Section I: The Knowledge-to-Decision Gap ── -->
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>§I — The Knowledge-to-Decision Gap</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">In 1988, James Hansen testified before the United States Senate that global warming had begun with a high degree of scientific confidence. The IPCC was established that same year. In the nearly four decades since, the gap between what climate science has established and what governance systems have done about it has remained one of the defining puzzles of modern political life. Every major scientific institution agrees on the basic facts. Multiple international agreements have been signed. Yet the gap between scientific consensus and policy action persists across jurisdictions, across governments, and across decades.</p>
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The standard explanation is political: climate action is blocked by powerful economic interests, by short-term electoral incentives, by ideological resistance, or by international coordination failures. These explanations are correct as far as they go. But they leave unexplained a prior structural question: why is it that in governance systems with formal procedural integrity — where elections happen, laws pass, courts review, and experts are consulted — the knowledge that those experts hold so consistently fails to reach the decisions that need it?</p>
+    <div class="narrative-panel teal">
+      <strong>The Copernican Move for Governance.</strong> The individual-centered frame asks: why don't politicians do the right thing? The OS2 frame asks: what does the evidence architecture of this governance institution do to the routing of knowledge from expert and citizen populations into decisions? The first question generates moral evaluation of individuals. The second generates structural analysis of institutions. Chapter 12 pursues the second question — not because individual moral responsibility disappears, but because structural analysis is what identifies leverage points for repair.
     </div>
-    <div class="section-body">
-      <div class="narrative-panel" style="border:none;padding:.5rem 0">
-        <p style="margin-bottom:.7rem"><strong>Procedural legitimacy</strong> is the degree to which a governance institution follows correct rules. Elections are held, laws are debated, courts follow precedent. A governance institution can have high procedural legitimacy and low routing quality simultaneously — this is captured governance: the rules are followed, but the evidence architecture is calibrated so that empirically-calibrated signal is systematically attenuated before reaching decision authority.</p>
-        <p><strong>Routing quality</strong> is the degree to which the knowledge and interests of governed populations actually reach decisions. These two variables are independent in the simulation — and the gap between them is where the governance suppression gap lives.</p>
+    <p style="margin-top:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">This chapter uses the EBB simulation to make that structural question precise. The answer, as the simulation will show, is not primarily about individual failures of courage or integrity. It is about the <strong>evidence architecture</strong> of governance institutions — the distribution of epistemic weight across different categories of input that determines which knowledge is transmissible through the institutional filter from expert understanding toward decision authority.</p>
+  </div>
+</div>
+
+<!-- ── Section II: Procedural vs Routing Quality ── -->
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>§II — Procedural Legitimacy vs Routing Quality: Two Independent Variables</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.9rem">
+      <div style="background:rgba(240,128,128,.08);border:1px solid rgba(240,128,128,.25);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#f08080;font-weight:700;margin-bottom:.4rem">Procedural Legitimacy</div>
+        <p style="font-size:.84rem;line-height:1.6;color:rgba(255,255,255,.78)">The degree to which a governance institution follows <em>correct rules</em>. Elections are held. Laws are debated. Courts follow precedent. Due process is observed. A governance institution can have high procedural legitimacy and low routing quality simultaneously — this is <strong>captured governance</strong>: the rules are followed, the forms are correct, but the evidence architecture is calibrated so that empirically-calibrated signal is systematically attenuated before reaching decision authority.</p>
+      </div>
+      <div style="background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Routing Quality</div>
+        <p style="font-size:.84rem;line-height:1.6;color:rgba(255,255,255,.78)">The degree to which the knowledge and interests of the populations a governance institution serves <em>actually reach its decisions</em>. An institution with high routing quality has an evidence architecture calibrated to transmit empirical-calibrated signal from expert populations, value-calibrated signal from affected populations, and cross-worldview signal from diverse PRFs. Its decisions reflect what those populations know and care about.</p>
+      </div>
+    </div>
+    <div class="narrative-panel teal">
+      <strong>The governance suppression gap</strong> — the central measurement of this chapter — is produced by high procedural legitimacy paired with low routing quality. This is precisely the configuration that Tim Palmer's climate projections face: high formal legitimacy as a knowledge source, low routing quality into governance decisions. The IPCC findings are not suppressed because anyone denies their procedural legitimacy. They are suppressed because the evidence architecture of climate governance is calibrated to weight authority-endorsed conclusions and short-term economic considerations far above empirically-calibrated long-horizon risk assessment.
+    </div>
+  </div>
+</div>
+
+<!-- ── Section III: Climate Governance Case ── -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§III — The Climate Governance Case Study</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">This chapter uses climate governance as its primary case because it is the clearest contemporary example of the suppression gap operating at civilizational scale — and because it connects directly to the research programs the EBB simulation is designed to complement. Tim Palmer's ensemble forecasting at Oxford and Doyne Farmer's household-and-firm model at INET both assume their outputs will reach governance decisions. The governance suppression gap is the structural reason that assumption may not hold.</p>
+
+    <h4 style="color:var(--teal);font-size:.9rem;margin:.8rem 0 .4rem">The Structure of the Gap</h4>
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The expert knowledge of the scientific community is intact and substantial: decades of observational data, increasingly precise models, high-confidence projections. This is λ Raw for climate governance — the knowledge that exists and could in principle reach decisions. What reaches governance decisions — λ Perceived — is dramatically smaller. The evidence architecture of most national governance systems weights authority-weighted evidence (conclusions endorsed by economic ministries, energy incumbents, short-term budget authorities) most heavily, with empirical-calibrated evidence last.</p>
+
+    <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;margin-bottom:.9rem">
+      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem">Evidence Architecture — Climate Governance (Config A)</div>
+      <div style="display:grid;gap:.3rem">
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Authority-weighted</span>
+          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
+            <div style="width:52%;height:100%;background:#f08080;border-radius:4px"></div>
+          </div>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">52%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Alternative-facts</span>
+          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
+            <div style="width:22%;height:100%;background:#f97316;border-radius:4px"></div>
+          </div>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">22%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Tradition-weighted</span>
+          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
+            <div style="width:16%;height:100%;background:#f5c842;border-radius:4px"></div>
+          </div>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">16%</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Empirical-calibrated</span>
+          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
+            <div style="width:10%;height:100%;background:#7fd8a8;border-radius:4px"></div>
+          </div>
+          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">10%</span>
+        </div>
+      </div>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:.5rem">The IPCC's physical measurements live in the 10%. The fossil fuel industry's economic projections live in the 52%. That asymmetry is structural, not accidental.</p>
+    </div>
+
+    <h4 style="color:var(--teal);font-size:.9rem;margin:.8rem 0 .4rem">Morphic Suppression in the Scientific Community</h4>
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The simulation makes visible something that surveys of the scientific community confirm but that governance analysis rarely names: <strong>morphic suppression in the expert population</strong>. When empirically-calibrated contributions consistently fail to change governance outcomes — when decades of increasingly precise projections produce no proportionate policy response — the scientific community begins to learn that its signal does not reach outcomes.</p>
+    <p style="line-height:1.65;color:rgba(255,255,255,.82)">This accumulated learned self-censorship is not always conscious. It manifests as the self-editing that occurs before writing a policy brief, the careful qualification of findings to avoid political controversy, the avoidance of the most alarming projections because previous experience has shown they produce backlash rather than action. The morphic suppression step chart in Configuration A — building steadily across each step — is the model's account of four decades of this dynamic. And it introduces a feedback loop: the suppression gap does not only prevent expert knowledge from reaching decisions. It gradually changes the quality of the contributions the system receives. When experts learn that precision produces no better outcomes than vagueness, they stop being precise.</p>
+  </div>
+</div>
+
+<!-- ── Section IV: Four Traditions at Governance Scale ── -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§IV — The Four Traditions at Governance Scale</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.9rem;line-height:1.65;color:rgba(255,255,255,.75)">Each ethical tradition has something to say about governance failure — and as in every previous chapter, each individual-level analysis is correct and insufficient. The OS2 column below makes the structural causal claim available. Read each row as: the left reading is not wrong; the right reading is what makes the left reading actionable.</p>
+
+    <!-- Virtue Ethics -->
+    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
+      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
+        <span style="font-weight:700;color:#fff;font-size:.9rem">Virtue Ethics</span>
+        <span style="font-size:.75rem;color:var(--teal)">Who are you becoming? ▾</span>
+      </div>
+      <div class="theory-body" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Climate inaction reflects failures of practical wisdom and political courage. Officials who defer to incumbent interests rather than acting on expert knowledge are failing their virtue obligations. Better leaders with more courage would produce better outcomes.</p>
+          </div>
+          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What governance architecture produces or destroys the character of the officials who inhabit it? A governance institution whose reward structure systematically punishes engagement with empirical-calibrated long-horizon thinking and rewards short-term economic constituency responsiveness will produce officials whose practical wisdom is calibrated precisely against what the climate crisis requires — regardless of their individual character entering office.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deontology -->
+    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
+      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
+        <span style="font-weight:700;color:#fff;font-size:.9rem">Deontology (Kant)</span>
+        <span style="font-size:.75rem;color:var(--teal)">What is your duty? ▾</span>
+      </div>
+      <div class="theory-body" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Governance officials have a categorical duty to act on the best available evidence about threats to the persons they govern. Failure to act on climate science is a Kantian violation — treating the bearers of future harm as means to short-term political survival rather than as ends in themselves.</p>
+          </div>
+          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What governance architecture enables rational agency — of both officials and citizens — to reach decisions? The suppression gap in climate governance is a structural Kantian violation: the institutional architecture consults experts to satisfy procedural requirements while routing their signal away from decision authority. It treats the bearers of empirical knowledge as means to legitimacy performance rather than sources of genuine input.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consequentialism -->
+    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
+      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
+        <span style="font-weight:700;color:#fff;font-size:.9rem">Consequentialism (Mill/Bentham)</span>
+        <span style="font-size:.75rem;color:var(--teal)">What does this produce? ▾</span>
+      </div>
+      <div class="theory-body" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Climate governance failure produces immense aggregate harm. Officials have miscalculated expected value — the cost of action is less than the cost of inaction by any reasonable discount rate. Better information and better calculation would produce better outcomes.</p>
+          </div>
+          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What does this governance architecture produce as a population-level emergent pattern? The answer is not miscalculation but structural attenuation: the evidence architecture is calibrated to systematically underweight exactly the category of input (empirically-calibrated long-horizon risk) that correct expected value calculation would require to weight most heavily. The problem is not the calculation. It is the information that reaches the calculation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Care Ethics -->
+    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
+      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
+        <span style="font-weight:700;color:#fff;font-size:.9rem">Care Ethics (Noddings/Gilligan)</span>
+        <span style="font-size:.75rem;color:var(--teal)">Who are you in relation with? ▾</span>
+      </div>
+      <div class="theory-body" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Climate governance fails to attend to the specific populations most vulnerable to climate harm — future generations, low-lying coastal communities, subsistence agricultural populations. Officials have failed their relational obligations to those they govern.</p>
+          </div>
+          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
+            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
+            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What governance architecture severs the relational networks through which affected populations' knowledge reaches decisions? The care block field in captured governance is negative: raising the human consequences of climate inaction creates friction rather than advancing deliberation. The relational infrastructure through which the most affected populations should be able to communicate their situation has been structurally severed — not by any individual official's indifference, but by an evidence architecture that treats care-framed contributions as off-topic.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="narrative-panel" style="border-left:4px solid var(--muted);margin-top:.5rem">
+      <strong>Read this table as you have read all previous tradition tables:</strong> the OS1 column is correct and insufficient. Changing individual officials without changing the governance architecture will reproduce the same suppression gap from whoever replaces them. The architecture is the primary causal agent — which is also why it is the primary site of repair.
+    </div>
+  </div>
+</div>
+
+<!-- ── Section V: Rawls and Nussbaum ── -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§V — Rawls, Nussbaum, and Governance Design</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The supplementary chapter on Modern Justice Theories provides the normative framework for what the simulation is measuring. Two principles apply directly to governance architecture.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem">
+      <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;border:1px solid rgba(255,255,255,.09)">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Rawls — The Difference Principle Applied to Routing</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Governance architecture is just only if it makes the routing quality for the least advantaged populations better, not only for the majority or the powerful. Config A routes the contributions of the most powerful constituencies most effectively. Config B gives all populations a more proportionate chance of reaching decisions. The Rawlsian judgment is clear regardless of which configuration produces better aggregate outcomes.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;border:1px solid rgba(255,255,255,.09)">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Nussbaum — The Capability Threshold for Political Participation</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">A governance institution whose routing quality is below the threshold required for genuine political participation is failing to provide the political control capability Nussbaum identifies as one of the ten central human capabilities. The morphic suppression trajectory in Config A is the simulation's account of what happens when routing quality is chronically below threshold: the capability is not simply unexercised — it is gradually degraded as accumulated experience changes what people believe is possible.</p>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="section-wrap">
-    <div class="section-header" onclick="toggleSection(this)">
-      <h3>The Three Configurations</h3>
-      <span class="section-chevron">▶</span>
-    </div>
-    <div class="section-body">
-      <div style="display:grid;gap:.6rem;margin-top:.3rem">
-        <div class="narrative-panel red">
-          <strong>Config A — Captured Governance:</strong> High formal legitimacy, low routing quality. Evidence architecture weights authority-endorsed conclusions at 52% and empirical-calibrated expert input at only 10%. λ Raw is fixed at 0.72 — the expert knowledge is intact and substantial. The architecture is the filter.
-        </div>
-        <div class="narrative-panel" style="border-left:4px solid var(--green)">
-          <strong>Config B — Coherence-Preserving Governance:</strong> Balanced legitimacy and routing quality. Empirical-calibrated evidence weighted at 52%. Care, fairness, and community block fields are positive. λ Raw emerges naturally — not fixed — reflecting what genuine participation in coherence-preserving deliberation produces.
-        </div>
-        <div class="narrative-panel amber">
-          <strong>Config C — Reform Transition:</strong> Begins in the Config A state. A governance reform activates at step 4 — improved routing quality, reduced policy rigidity. Watch the step chart: λ Perceived rises, but morphic suppression does not immediately fall. This is the reform lag — the accumulated learned self-censorship of an expert population does not dissolve on contact with improved structural conditions.
-        </div>
+<!-- ── Section VI: Simulation Guide ── -->
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>§VI — Reading the Simulation: What to Watch</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <div style="display:grid;gap:.6rem">
+
+      <div class="narrative-panel red">
+        <strong>Config A — Captured Governance.</strong> Watch λ Perceived: it will be far below λ Raw (fixed at 0.72). That gap is the governance suppression gap — roughly 74% of available expert knowledge filtered before reaching decisions. Then watch the step chart: morphic suppression builds steadily from step 1 to step 8. Each step is another cycle of expert contribution entering the institutional filter, being attenuated, producing no outcome change. The trajectory is four decades of IPCC reports that changed the scientific certainty without changing the policy response.
+        <br><br><em>Key question: the 21% that reaches decisions is not a random 21%. What specific categories of input survived the authority-weighted, boundary-protective filter?</em>
       </div>
+
+      <div class="narrative-panel" style="border-left:4px solid var(--green)">
+        <strong>Config B — Coherence-Preserving.</strong> Notice that λ Raw is <em>lower</em> than in Config A — around 0.29 rather than 0.72. This counterintuitive result is the chapter's most important conceptual transfer: Config B is not modeling a large body of expert knowledge being blocked. It is modeling genuine participatory deliberation where diverse forms of knowledge contribute collaboratively. The suppression gap is near zero. Morphic suppression is flat. OS2 Bridge is higher.
+        <br><br><em>Key question: why is the ratio of λ Perceived to λ Raw closer to 1.0 in Config B, even though absolute λ Raw is lower? What does this reveal about the difference between capacity blocked and capacity expressed?</em>
+      </div>
+
+      <div class="narrative-panel amber">
+        <strong>Config C — Reform Transition.</strong> Watch the step chart carefully at step 4 when the governance reform activates. λ Perceived begins rising — the architecture is improving its routing quality. But morphic suppression does not fall at step 4. It continues building, more slowly, for steps 5, 6, 7 before finally decelerating. This is the reform lag: accumulated learned self-censorship does not dissolve when structural conditions improve.
+        <br><br><em>Key question: what would a BioBond-equivalent look like in this governance domain — what structural support would accelerate the transition from improved architecture to restored expert contribution?</em>
+      </div>
+
+    </div>
+
+    <div class="narrative-panel amber" style="margin-top:.8rem">
+      <strong>Before switching to the Simulation tab:</strong> go to the Journal tab and record your predictions for λ Raw, λ Perceived, and morphic suppression in each of the three configurations. Prediction errors are data about your PRF's calibration on governance questions — they are as important as the results themselves.
     </div>
   </div>
+</div>
 
-  <div class="narrative-panel amber">
-    <strong>Before running the simulation:</strong> Record your prediction for the suppression gap in each configuration. In the Journal tab, write your expected λ Raw, λ Perceived, and morphic suppression for each. Prediction errors are data about your PRF's calibration on governance questions.
+<!-- ── Section VII: The Simulation's Horizon ── -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§VII — The Horizon of This Instrument</h3>
+    <span class="section-chevron">▶</span>
   </div>
+  <div class="section-body">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The simulation models one governance institution. The climate governance challenge involves multiple institutional actors simultaneously: scientific bodies, regulatory agencies, legislative bodies, international treaty organizations, civil society groups, and incumbent economic interests. Each has its own <code>InstitutionState</code>. Each is connected to every other through trust vectors that have been building or decaying for decades.</p>
+    <div class="narrative-panel teal">
+      <strong>The research extension</strong> uses Social Field Theory's potential energy formulation <strong>PE = −k(S<sub>i</sub>I<sub>j</sub>/r<sub>ij</sub>)</strong>, where 1/r is the trust vector Γ between institutional actors. When you run the current simulation, you are measuring the suppression gap <em>within</em> one institution. The research extension measures the suppression gap <em>across</em> institutional boundaries — whether what the scientific institution knows can reach the legislative institution's decisions across a trust vector that has been eroding since the first IPCC report. That measurement is what determines whether Tim Palmer's findings can reach the governance decisions that need them. It is the missing instrument identified in the "From Agent to Civilization" framework.
+    </div>
+    <p style="margin-top:.75rem;line-height:1.65;color:rgba(255,255,255,.75)">This limitation is not a failure of the current instrument. It is its precise horizon — the point where the current resolution ends and the next instrument begins. Every chapter of this course has taught you to read one level of the same measurement. Chapter 12 shows you the governance institution's suppression gap. The research sequence that follows shows you the inter-institutional field that produces all of them.</p>
+  </div>
+</div>
 
 </div><!-- end overview tab -->
 
@@ -305,6 +534,27 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
   <div class="narrative-panel teal" style="margin-bottom:.9rem">
     Run all three configurations in the Simulation tab first, then return here to read the comparison.
   </div>
+
+  <div class="section-wrap" style="margin-bottom:1rem">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3>Reading Your Results — Common Prediction Errors</h3>
+      <span class="section-chevron">▶</span>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;gap:.6rem">
+        <div class="narrative-panel red">
+          <strong>Config A — Most common error: underestimating the suppression gap.</strong> Most students predict λ Perceived around 0.30–0.40, not 0.19. This error is instructive: if your PRF has high empirical-calibrated sensitivity, you implicitly expect governance institutions to weight empirical evidence similarly to how you weight it. The simulation is showing you that your expectation is wrong by a factor of three to four. The institutional evidence architecture you are measuring is calibrated by incentives and pressures that are structurally independent of your epistemic commitments.
+        </div>
+        <div class="narrative-panel" style="border-left:4px solid var(--green)">
+          <strong>Config B — Most common error: expecting λ Raw to be higher than Config A.</strong> Config B's λ Raw emerges around 0.29 — lower than Config A's fixed 0.72. Students often read this as Config B performing worse. The correct reading: Config B is not modeling a large blocked reservoir. It is modeling authentic participatory deliberation. The ratio of λ Perceived to λ Raw is near 1.0. Almost everything that is available reaches decisions. That is the achievement — not the absolute level, the ratio.
+        </div>
+        <div class="narrative-panel amber">
+          <strong>Config C — Most common error: expecting morphic suppression to fall immediately at step 4.</strong> Students who correctly predict that λ Perceived rises after the reform often simultaneously predict morphic suppression falling at the same moment. The step chart shows that suppression continues building (more slowly) for steps 5–7 before decelerating. The accumulated learned self-censorship of four decades does not reverse on contact with new institutional conditions. Structural repair changes the trajectory. It does not erase the history.
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="sxsBody">
     <div style="color:var(--muted);font-size:.85rem;text-align:center;padding:2rem">
       Complete all three configurations to unlock the comparison panel.
@@ -969,6 +1219,14 @@ function switchTab(tab) {
 function toggleExplain(id) {
   const el = document.getElementById(id);
   el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+
+function toggleTheory(hdr) {
+  const body = hdr.nextElementSibling;
+  const arrow = hdr.querySelector('span:last-child');
+  const open = body.style.display === 'block';
+  body.style.display = open ? 'none' : 'block';
+  if (arrow) arrow.textContent = arrow.textContent.replace(open ? '▴' : '▾', open ? '▾' : '▴');
 }
 
 function toggleSection(hdr) {
