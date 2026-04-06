@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch13 · Information Systems & AI Ethics · EBB</title>
+<style>
+:root {
+  --teal-dark:#0d5e57; --teal:#14b8a6; --teal-light:#ccfbf1;
+  --ink:#1f2937; --muted:#4b5563; --bg:#0f1117; --surface:#1a1f2e;
+  --surface2:#222840; --border:rgba(255,255,255,.09);
+  --amber:#f5c842; --amber-dark:#c2850a; --amber-bg:rgba(245,200,66,.07);
+  --red:#f08080; --green:#7fd8a8; --purple:#e879f9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+.page{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.chapter-header{background:linear-gradient(135deg,var(--teal-dark) 0%,#0a3d38 100%);border-radius:.75rem;padding:2rem 2rem 1.5rem;margin-bottom:1.5rem}
+.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.chapter-title{font-size:1.55rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.25rem}
+.chapter-subtitle{font-size:.95rem;color:rgba(255,255,255,.65);margin-bottom:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+.tab-bar{display:flex;gap:.3rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);padding-bottom:0}
+.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem 1rem;cursor:pointer;font-size:.85rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;border-radius:.3rem .3rem 0 0}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.narrative-panel{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:.9rem;font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel.red{border-left:4px solid var(--red)}
+.narrative-panel.green{border-left:4px solid var(--green)}
+.narrative-panel strong{color:#fff}
+.section-wrap{margin-bottom:1.1rem}
+.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:.6rem 0;border-bottom:1px solid var(--border)}
+.section-header h3{font-size:.95rem;font-weight:700;color:#fff}
+.section-chevron{color:var(--teal);font-size:.8rem;transition:transform .2s}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+.section-body{display:none;padding-top:.75rem}.section-body.open{display:block}
+.woa-grid{display:grid;gap:.45rem;margin:.5rem 0}
+.woa-row{display:grid;grid-template-columns:28px 1fr 1fr 90px;gap:.5rem;align-items:start;padding:.55rem .6rem;border-radius:.4rem;font-size:.8rem}
+.woa-row:nth-child(odd){background:rgba(255,255,255,.03)}
+.woa-stage{font-weight:700;color:var(--teal);font-family:'Courier New',monospace;font-size:.72rem}
+.woa-labor{color:rgba(255,255,255,.72);line-height:1.45}
+.woa-ai{color:rgba(255,255,255,.60);line-height:1.45;font-style:italic}
+.woa-level{text-align:center;border-radius:.3rem;padding:.2rem .3rem;font-size:.68rem;font-weight:700}
+.woa-high{background:rgba(240,128,128,.15);color:#f08080}
+.woa-med{background:rgba(245,200,66,.15);color:#f5c842}
+.woa-low{background:rgba(127,216,168,.15);color:#7fd8a8}
+.woa-hdr{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600}
+.theory-card{border:1px solid var(--border);border-radius:.5rem;overflow:hidden;margin-bottom:.6rem}
+.theory-header{background:rgba(20,184,166,.1);padding:.55rem 1rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.theory-header strong{color:#fff;font-size:.88rem}
+.theory-header span{font-size:.72rem;color:var(--teal)}
+.theory-body{display:none;border-top:1px solid var(--border)}
+.theory-cols{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.theory-col{padding:.8rem 1rem}
+.theory-col:first-child{border-right:1px solid var(--border)}
+.theory-col-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;font-weight:700}
+.os1-label{color:var(--muted)}
+.os2-label{color:var(--teal)}
+.theory-col p{font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)}
+.cfg-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.9rem}
+.cfg-btn{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.65rem .75rem;cursor:pointer;text-align:left;transition:all .18s}
+.cfg-btn:hover{border-color:var(--teal);background:rgba(20,184,166,.07)}
+.cfg-btn.active{border-color:var(--teal);background:rgba(20,184,166,.12)}
+.cfg-btn .cfg-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.2rem}
+.cfg-btn .cfg-name{font-size:.82rem;color:#fff;font-weight:600}
+.cfg-btn .cfg-desc{font-size:.7rem;color:var(--muted);margin-top:.15rem}
+.ucp-run-btn{display:flex;align-items:center;gap:.5rem;background:var(--teal-dark);border:none;color:#fff;padding:.7rem 1.4rem;border-radius:.4rem;cursor:pointer;font-size:.88rem;font-weight:700;width:100%;justify-content:center;transition:background .15s;margin-bottom:1rem}
+.ucp-run-btn:hover:not(:disabled){background:var(--teal)}
+.ucp-run-btn:disabled{opacity:.5;cursor:not-allowed}
+.ucp-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ucp-result{display:none}
+.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem;margin-bottom:.9rem}
+.metric-card{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.7rem .8rem;text-align:center}
+.metric-card .m-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.25rem}
+.metric-card .m-val{font-size:1.3rem;font-weight:700;font-family:'Courier New',monospace;line-height:1}
+.metric-card .m-phrase{font-size:.66rem;color:var(--muted);margin-top:.2rem}
+.good{color:var(--green)}.bad{color:var(--red)}.mid{color:var(--amber)}
+.bar-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem}
+.bar-name{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.6);width:110px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.bar-num{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.5);width:38px;text-align:right}
+.step-chart-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.8rem;margin-bottom:.9rem}
+.sxs-annotation{background:rgba(255,255,255,.04);border-left:3px solid var(--teal);border-radius:0 .4rem .4rem 0;padding:.65rem .875rem;margin-bottom:.5rem}
+.sxs-ann-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.2rem}
+.sxs-ann-text{font-size:.83rem;color:rgba(255,255,255,.72);line-height:1.55}
+.robustness-panel{display:none;background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.9rem 1rem;margin-top:.9rem}
+.robustness-panel h4{font-size:.78rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:.5rem}
+.rob-table{width:100%;border-collapse:collapse;font-size:.75rem;font-family:'Courier New',monospace}
+.rob-table th{color:var(--muted);font-weight:600;text-align:left;padding:.25rem .5rem;border-bottom:1px solid var(--border)}
+.rob-table td{padding:.25rem .5rem;color:rgba(255,255,255,.72)}
+.rob-table tr:nth-child(even) td{background:rgba(255,255,255,.03)}
+.explain-toggle{background:none;border:1px solid var(--border);color:var(--muted);font-size:.72rem;padding:.3rem .7rem;border-radius:.3rem;cursor:pointer;margin-bottom:.5rem;transition:all .15s}
+.explain-toggle:hover{border-color:var(--teal);color:var(--teal)}
+.explain-body{display:none;font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.6;padding:.5rem .7rem;background:rgba(255,255,255,.03);border-radius:.3rem;margin-bottom:.6rem}
+.prediction-wrap{margin-bottom:1rem}
+.prediction-wrap label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.3rem}
+.prediction-wrap textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;color:#e2e8f0;font-size:.82rem;padding:.6rem .75rem;resize:vertical;min-height:80px;font-family:inherit}
+.prediction-wrap textarea:focus{outline:none;border-color:var(--teal)}
+.ucp-error{display:none;background:rgba(240,128,128,.1);border:1px solid rgba(240,128,128,.3);border-radius:.4rem;padding:.6rem .8rem;font-size:.82rem;color:#f87171;margin-bottom:.8rem}
+@media(max-width:600px){.metrics-grid{grid-template-columns:repeat(3,1fr)}.cfg-bar{flex-direction:column}.theory-cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="chapter-header">
+  <div class="chapter-label">Ethics Beyond Boundaries · Chapter 13</div>
+  <div class="chapter-title">Information Systems and AI Ethics</div>
+  <div class="chapter-subtitle">What the Information Architecture Does to Coordination</div>
+  <div class="chapter-tags">
+    <span class="tag">Labour of Harm</span>
+    <span class="tag">Web of Acquisition</span>
+    <span class="tag">Degradation vs Filtering</span>
+    <span class="tag">OS2 Bridge</span>
+    <span class="tag">Morphic Suppression</span>
+    <span class="tag">Governance Oversight</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('simulation')">Simulation</button>
+  <button class="tab-btn" onclick="switchTab('comparison')">Comparison</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button>
+</div>
+
+<!-- ══ OVERVIEW ══════════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-overview">
+
+<div class="narrative-panel amber" style="margin-bottom:1.1rem">
+  <strong>Learning Objectives — Chapter 13</strong>
+  <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
+    <li>Distinguish AI as technical capability vs AI as mediator of organizational labour — explain why the second framing is more analytically precise.</li>
+    <li>Apply the web of acquisition to analyse how AI intersects differently across all seven stages of harmful capability development.</li>
+    <li>Identify the Ch13 distinction from Ch12: information architecture degrades what agents <em>generate</em> (λ Raw), not only what institutions <em>receive</em> (λ Perceived).</li>
+    <li>Use OS2 Bridge to explain what information architecture does to cross-worldview coordination capacity.</li>
+    <li>Describe what the morphic suppression trajectory shows about populations in entropy-exporting information environments.</li>
+  </ul>
+</div>
+
+<!-- §I The Second Filter -->
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>§I — The Second Filter</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">Chapter 12 showed you the governance suppression gap: the three compounding filters — evidence distribution, block fields, routing quality — that determine how much of the available knowledge reaches decision authority. Chapter 13 introduces a prior question. Before any of those governance filters operate, there is a second set of filters that determines what information is produced, distributed, and weighted in the first place.</p>
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">Information systems — the architectures through which knowledge is generated, communicated, amplified, and suppressed — are the filters upstream of the filters Chapter 12 measured. If governance has low routing quality for empirical-calibrated signal, the problem is severe. If the information systems feeding governance simultaneously degrade the quality and coherence of that signal before it arrives, the problem is multiplicative.</p>
+    <div class="narrative-panel teal">
+      <strong>The Ch13 distinction from Ch12.</strong> Chapter 12 modeled the filtering of intact expert capacity — λ Raw was high (Challenger: 0.72) and the governance architecture filtered it. Chapter 13 models what happens when the information architecture degrades what agents can generate. In Config A, λ Raw is 0.107 — not because human capacity is absent, but because the information environment does not sustain the cognitive conditions for deliberate, coherent contribution. The architecture changes what gets <em>generated</em>, not only what gets <em>received</em>.
+    </div>
+  </div>
+</div>
+
+<!-- §II CSER Research -->
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>§II — A Labour of Harm: The CSER Research</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">This chapter deploys research from the Centre for the Study of Existential Risk at Cambridge: Ghionis, Connell, Hobson, Armitage, and Sundaram's <em>"A Labour of Harm: Artificial Intelligence and Biological Weapons Acquisition"</em> (2025). The paper's core finding and the EBB framework's core finding are the same argument in different vocabularies.</p>
+
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The existing AI-biosecurity literature concentrates on laboratory-facing capabilities — can AI design a pathogen, accelerate experiments, lower technical barriers? The paper argues this compresses biological weapons acquisition into a narrow set of technical moments, abstracting away the organizational processes through which harmful capability is historically built, sustained, and — most importantly — abandoned.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.8rem 0">
+      <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;border:1px solid var(--border)">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Web of Acquisition</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">A seven-stage scaffold: Inspiration → Planning → Development → Manufacture/Production → Storage/Transportation → Targeting → Dissemination. The web compels analysis to consider the full set of practical challenges historically shaping the feasibility of harmful efforts.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;border:1px solid var(--border)">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Labour of Harm</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The situated, evolving, often improvised organizational work occurring within and across those stages: technical, organizational, cognitive, and logistical. Shaped by friction, failure, and recalibration. The decisive variable determining whether acquisition efforts succeed, stall, or are abandoned.</p>
+      </div>
+    </div>
+
+    <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:.9rem 0 .4rem;font-weight:600">Web of Acquisition: AI Intersection Across Stages</div>
+    <div class="woa-grid">
+      <div class="woa-row" style="background:rgba(255,255,255,.05)">
+        <div class="woa-hdr">#</div>
+        <div class="woa-hdr">Stage & Labour</div>
+        <div class="woa-hdr">AI Intersection</div>
+        <div class="woa-hdr" style="text-align:center">AI Significance</div>
+      </div>
+      <div class="woa-row"><div class="woa-stage">1</div><div class="woa-labor"><strong style="color:#fff">Inspiration</strong> — imagining and justifying a harmful goal; finding rationale</div><div class="woa-ai">Lowers barriers — literature synthesis, scenario modelling, precedent discovery make harmful ideas more accessible and better justified</div><div><span class="woa-level woa-high">High</span></div></div>
+      <div class="woa-row"><div class="woa-stage">2</div><div class="woa-labor"><strong style="color:#fff">Planning</strong> — translating intention into operational strategy; assembling resources</div><div class="woa-ai">AI assists goal decomposition, resource mapping, logistics — reduces cognitive labour of strategic design</div><div><span class="woa-level woa-high">High</span></div></div>
+      <div class="woa-row"><div class="woa-stage">3</div><div class="woa-labor"><strong style="color:#fff">Development</strong> — designing and testing capability; resolving technical obstacles</div><div class="woa-ai">Primary focus of existing AI-BW literature. Reduces some technical barriers in agent design and modification</div><div><span class="woa-level woa-med">Medium</span></div></div>
+      <div class="woa-row"><div class="woa-stage">4</div><div class="woa-labor"><strong style="color:#fff">Manufacture</strong> — producing capability at scale; resolving biological variability</div><div class="woa-ai">AI optimizes some processes but biological unpredictability and infrastructure requirements persist</div><div><span class="woa-level woa-med">Lower than assumed</span></div></div>
+      <div class="woa-row"><div class="woa-stage">5</div><div class="woa-labor"><strong style="color:#fff">Storage/Transport</strong> — preserving viability; moving without detection or degradation</div><div class="woa-ai">AI provides limited assistance. Biological stability and concealment constraints are material problems, not information problems</div><div><span class="woa-level woa-low">Low</span></div></div>
+      <div class="woa-row"><div class="woa-stage">6</div><div class="woa-labor"><strong style="color:#fff">Targeting</strong> — identifying and characterizing targets; timing deployment</div><div class="woa-ai">AI improves intelligence gathering. Historically understudied in the AI-BW literature</div><div><span class="woa-level woa-med">Understudied</span></div></div>
+      <div class="woa-row"><div class="woa-stage">7</div><div class="woa-labor"><strong style="color:#fff">Dissemination</strong> — delivering capability; managing exposure and attribution risk</div><div class="woa-ai">AI assists logistics but organizational exposure risk remains high. Coherence under pressure is the binding constraint</div><div><span class="woa-level woa-med">Variable</span></div></div>
+    </div>
+
+    <div class="narrative-panel teal" style="margin-top:.8rem">
+      <strong>The organizational coherence bottleneck.</strong> The paper's most important contribution: most historical biological weapons programs failed not for technical reasons but organizational ones. Assembling and maintaining a team, managing secrecy, absorbing failure without abandoning the program, interpreting uncertainty, sustaining commitment — these are the decisive constraints. In the EBB framework: organizational coherence is exactly what the information architecture produces or destroys. The labour of harm concept is the suppression gap applied to organizational processes rather than governance decisions.
+    </div>
+  </div>
+</div>
+
+<!-- §III Four Traditions -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§III — The Four Traditions at the Scale of Information Systems</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.9rem;line-height:1.65;color:rgba(255,255,255,.75)">Each ethical tradition has something correct to say about AI and information ethics — and as in every previous chapter, each individual-level reading is insufficient. The OS2 column below adds the structural causal claim.</p>
+
+    <div class="theory-card">
+      <div class="theory-header" onclick="toggleTheory(this)">
+        <strong>Virtue Ethics — Who are you becoming?</strong>
+        <span>click to expand ▾</span>
+      </div>
+      <div class="theory-body">
+        <div class="theory-cols">
+          <div class="theory-col"><div class="theory-col-label os1-label">OS1 — Individual Reading</div><p>AI developers, platform operators, and users all face character questions. The proliferation of AI-generated misinformation reflects failures of practical wisdom across an entire industry. Better character in key decision-makers would produce better information environments.</p></div>
+          <div class="theory-col" style="background:rgba(20,184,166,.04)"><div class="theory-col-label os2-label">OS2 — Structural Extension</div><p>What information architecture produces or destroys the conditions under which practical wisdom can be exercised at scale? Config A's 30% alternative-facts elevation and negative community block fields do not merely tempt users toward vice — they degrade the cognitive conditions under which deliberate ethical reasoning is possible, shrinking the population operating in Manual Mode.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-card">
+      <div class="theory-header" onclick="toggleTheory(this)">
+        <strong>Deontology — What is your duty?</strong>
+        <span>click to expand ▾</span>
+      </div>
+      <div class="theory-body">
+        <div class="theory-cols">
+          <div class="theory-col"><div class="theory-col-label os1-label">OS1 — Individual Reading</div><p>AI developers have a Kantian duty not to create systems that treat users as means to engagement metrics rather than rational ends. Deceptive design, addictive algorithms, and misinformation amplification all violate the categorical imperative.</p></div>
+          <div class="theory-col" style="background:rgba(20,184,166,.04)"><div class="theory-col-label os2-label">OS2 — Structural Extension</div><p>What information architecture enables rational agency — the capacity to reason, deliberate, choose autonomously — and what architecture systematically degrades it? An authority-weighted, alternative-facts-elevated environment performs the structural Kantian violation: it treats the entire population's rational agency as an instrumental resource for attention capture, degrading the conditions that make the categorical imperative applicable.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-card">
+      <div class="theory-header" onclick="toggleTheory(this)">
+        <strong>Consequentialism — What does this produce?</strong>
+        <span>click to expand ▾</span>
+      </div>
+      <div class="theory-body">
+        <div class="theory-cols">
+          <div class="theory-col"><div class="theory-col-label os1-label">OS1 — Individual Reading</div><p>The aggregate harms of AI-enabled misinformation, algorithmic radicalization, and attention exploitation are enormous and measurable. Better-designed AI systems could produce better aggregate outcomes. The expected value calculation clearly favors intervention.</p></div>
+          <div class="theory-col" style="background:rgba(20,184,166,.04)"><div class="theory-col-label os2-label">OS2 — Structural Extension</div><p>What does this architecture produce as a population-level emergent pattern across millions of interactions? Config A produces OS2 Bridge at 0.314 — cross-worldview coordination 42% lower than Config B's 0.540. The aggregate harm is not individual misinformation encounters but the systematic degradation of the population's capacity to coordinate across worldview differences — the capacity democratic deliberation requires.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="theory-card">
+      <div class="theory-header" onclick="toggleTheory(this)">
+        <strong>Care Ethics — Who are you in relation with?</strong>
+        <span>click to expand ▾</span>
+      </div>
+      <div class="theory-body">
+        <div class="theory-cols">
+          <div class="theory-col"><div class="theory-col-label os1-label">OS1 — Individual Reading</div><p>AI systems that amplify outrage, accelerate polarization, and sever relational connections between communities fail their relational obligations to the users they affect and to the communities those users inhabit.</p></div>
+          <div class="theory-col" style="background:rgba(20,184,166,.04)"><div class="theory-col-label os2-label">OS2 — Structural Extension</div><p>What information architecture severs or sustains the relational networks through which different communities can understand each other? Config A's community block field (−0.45) represents an environment that treats community-oriented, relational contributions as noise. The care ethics OS2 extension asks what this does to the social substrate of deliberation — not individual relationships but the institutional conditions under which relationships across difference can be sustained.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="narrative-panel" style="border-left:4px solid var(--muted)">
+      <strong>The same note as every previous traditions table:</strong> the OS1 column is correct and insufficient. Individual AI developers making better choices, platform operators designing more responsibly, users exercising greater critical judgment — all matter and none is sufficient. The information architecture is the primary causal agent.
+    </div>
+  </div>
+</div>
+
+<!-- §IV Simulation Guide -->
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>§IV — Reading the Simulation: What to Watch</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <div style="display:grid;gap:.6rem">
+      <div class="narrative-panel red">
+        <strong>Config A — Entropy-Exporting.</strong> Watch λ Raw (0.107) — it is low not because expert capacity is absent but because the information environment doesn't sustain the cognitive conditions for deliberate contribution. The suppression gap (λR − λP = 0.007) will be tiny. This surprises most students expecting a large gap like Ch12's 0.53. The tiny gap IS the finding: the architecture degrades capacity itself, not only what gets transmitted. Then watch morphic suppression building from 0.021 to 0.118 across 8 steps — and OS2 Bridge at 0.314, showing how severely cross-worldview coordination is degraded.
+      </div>
+      <div class="narrative-panel green">
+        <strong>Config B — Coherence-Preserving.</strong> λ Raw (0.214) is exactly twice Config A's — the architecture preserves cognitive conditions and enables agents to generate twice the coordination capacity. OS2 Bridge (0.540) is 72% higher than Config A. Morphic suppression near zero (0.004) — agents in this environment learn that deliberate contributions produce coherent outcomes. The comparison is not about filtering. It is about what the architecture enables agents to generate in the first place.
+      </div>
+      <div class="narrative-panel amber">
+        <strong>Config C — Governance Oversight at Step 4.</strong> Watch the step chart: λP rises from ~0.117 toward 0.163 after oversight activates at step 4 (39% improvement). But morphic suppression continues building after step 4, decelerating but not reversing — ending at 0.109 vs Config A's 0.118. The reform lag appears again: structural improvement changes the trajectory, not the accumulated history of agents having learned that deliberate contributions fail.
+      </div>
+    </div>
+    <div class="narrative-panel amber" style="margin-top:.75rem">
+      <strong>Before switching to the Simulation tab:</strong> go to the Journal tab and record your predictions for λ Raw, morphic suppression, and OS2 Bridge in each configuration. Pay special attention to your prediction for the suppression gap (λR − λP) in Config A — that prediction error will be the most informative data point in the chapter.
+    </div>
+  </div>
+</div>
+
+<!-- §V Horizon -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§V — The Horizon of This Instrument</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The simulation models one information system institution. The actual AI-information landscape involves multiple institutional actors: AI developers, platform operators, regulatory agencies, civil society accountability organizations, and media institutions — each with its own institutional state and connected through trust vectors that have been building or decaying since the internet became the primary information infrastructure.</p>
+    <div class="narrative-panel teal">
+      <strong>The research extension forward pointer.</strong> Chapter 14's multi-institutional trust vector extension applies directly here. The trust vector between AI developers and regulatory agencies is currently at very low Γ: large social distance between technical expertise concentrated in developer institutions and regulatory authority concentrated in agencies without equivalent technical capacity. The AI governance field application of the multi-institutional simulation follows directly from Chapter 14's framework.
+    </div>
+  </div>
+</div>
+
+</div><!-- end overview -->
+
+<!-- ══ SIMULATION ════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-simulation">
+
+  <div class="cfg-bar">
+    <button class="cfg-btn active" id="cfg-A" onclick="selectConfig('A')">
+      <div class="cfg-label">Configuration A</div>
+      <div class="cfg-name">Entropy-Exporting</div>
+      <div class="cfg-desc">Authority-weighted · Alt-facts elevated</div>
+    </button>
+    <button class="cfg-btn" id="cfg-B" onclick="selectConfig('B')">
+      <div class="cfg-label">Configuration B</div>
+      <div class="cfg-name">Coherence-Preserving</div>
+      <div class="cfg-desc">Empirical-calibrated · Care-positive</div>
+    </button>
+    <button class="cfg-btn" id="cfg-C" onclick="selectConfig('C')">
+      <div class="cfg-label">Configuration C</div>
+      <div class="cfg-name">Governance Oversight</div>
+      <div class="cfg-desc">Config A + oversight at step 4</div>
+    </button>
+  </div>
+
+  <div id="configCallout" class="narrative-panel teal" style="margin-bottom:.75rem"></div>
+
+  <button class="explain-toggle" onclick="toggleExplain('blockExplain')">▸ What do these parameters mean?</button>
+  <div class="explain-body" id="blockExplain">
+    <p style="margin-bottom:.5rem"><strong>Evidence distribution</strong> — the population-level weighting of four epistemic processing modes. Authority-weighted (48% in Config A): agents defer to official hierarchy. Empirical-calibrated (8% in Config A, 58% in Config B): agents update from observable data. Alternative-facts (30% in Config A): agents actively reinterpret evidence to match prior beliefs — the AI-generated noise channel. Tradition-weighted: precedent and established practice.</p>
+    <p style="margin-bottom:.5rem"><strong>Block fields</strong> — structural amplifiers and penalties on <em>how</em> contributions are framed. Config A: care (−0.42), fairness (−0.38), community (−0.45) all negative — human consequences, distributional concerns, and collective interests create friction. Config B: all three positive — these framings advance deliberation. Boundary: +0.35 in Config A (status quo strongly amplified).</p>
+    <p style="margin-bottom:.5rem"><strong>Institution state</strong> — entropy_export 0.70 in Config A (highest in any chapter simulation) models an information system that generates disorder and routes it downward onto agents. Routing_quality 0.25: only 25% of what emerges from deliberation reaches decision authority. Repair_bandwidth 0.15: minimal capacity to incorporate evidence that challenges current information trajectories.</p>
+    <div style="margin-top:.5rem;padding:.5rem .7rem;background:rgba(20,184,166,.07);border-left:3px solid var(--teal);border-radius:0 .3rem .3rem 0;font-size:.8rem;color:rgba(255,255,255,.8)">
+      <strong>The Ch13 finding:</strong> the information architecture's three filters — evidence distribution, block fields, institution state — compound to degrade what agents <em>generate</em> (λ Raw = 0.107 in Config A) not only what they <em>transmit</em>. The suppression gap between λ Raw and λ Perceived is tiny (0.007) because both are low. The architecture shapes what is produced, not only what is received.
+    </div>
+  </div>
+
+  <button class="ucp-run-btn" id="ucpRunBtn" onclick="runInfoSim()">
+    <span class="ucp-spinner" id="infoSpinner"></span>
+    ▶ Run Simulation
+  </button>
+  <div class="ucp-error" id="ucpError"></div>
+
+  <div class="ucp-result" id="ucpResult">
+    <div class="metrics-grid" id="ucpMetrics"></div>
+    <div class="step-chart-wrap">
+      <div id="infoStepChart" style="min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.8rem">Run simulation to see step trace</div>
+    </div>
+    <div id="ucpBarsWrap" style="margin-bottom:.9rem">
+      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.4rem">Coordination capacity — generated vs reaching decisions vs cross-worldview</div>
+      <div id="ucpBars"></div>
+    </div>
+    <div class="narrative-panel teal" id="ucpNarrative"></div>
+    <div class="robustness-panel" id="robustnessPanel">
+      <h4>Robustness Tracker</h4>
+      <table class="rob-table">
+        <thead><tr><th>Run</th><th>Config</th><th>λ Raw</th><th>λ Perceived</th><th>Morphic</th><th>OS2 Bridge</th><th>Friction</th></tr></thead>
+        <tbody id="robLog"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- end simulation -->
+
+<!-- ══ COMPARISON ════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-comparison">
+  <div class="narrative-panel teal" style="margin-bottom:.9rem">Run all three configurations in the Simulation tab first.</div>
+
+  <div class="section-wrap" style="margin-bottom:1rem">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3>Reading Your Results — Common Prediction Errors</h3>
+      <span class="section-chevron">▶</span>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;gap:.6rem">
+        <div class="narrative-panel red">
+          <strong>Config A — Most common error: expecting a large suppression gap.</strong> Students who have internalized Ch12's filtering frame predict high λ Raw (expert knowledge intact) and low λ Perceived (architecture filtering it). Config A produces λ Raw = 0.107 and λ Perceived = 0.100 — gap of 0.007. The surprise is the finding: the information architecture degrades what agents generate, not only what institutions receive. Both λ Raw and λ Perceived are low because the information environment does not sustain the cognitive conditions for deliberate contribution.
+        </div>
+        <div class="narrative-panel green">
+          <strong>Config B — Most common error: expecting similar λ Raw to Config A.</strong> Students often predict the difference between A and B appears primarily in λ Perceived (architecture transmits more). Config B's λ Raw is 0.214 — twice Config A's. The coherence-preserving architecture enables agents to generate twice the coordination capacity. The ratio is at the generation level, not only the transmission level.
+        </div>
+        <div class="narrative-panel amber">
+          <strong>Config C — Most common error: expecting morphic suppression to fall at step 4.</strong> The governance oversight intervention at step 4 raises λP from 0.117 toward 0.163 (39% improvement). But morphic suppression continues building, decelerating but not reversing. The reform lag: agents who have learned across four steps that deliberate contributions produce noise rather than coherent outcomes do not immediately recalibrate when oversight conditions improve.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="sxsBody">
+    <div style="color:var(--muted);font-size:.85rem;text-align:center;padding:2rem">Complete all three configurations to unlock the comparison panel.</div>
+  </div>
+</div>
+
+<!-- ══ JOURNAL ══════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+  <div class="narrative-panel amber" style="margin-bottom:1rem"><strong>Journal prompts for Chapter 13.</strong> Entries saved locally in your browser.</div>
+
+  <div class="prediction-wrap">
+    <label>Q13a — Pre-Simulation Prediction: Record your expected λ Raw, morphic suppression, and OS2 Bridge for each configuration. Pay special attention to your predicted suppression gap (λR − λP) in Config A.</label>
+    <textarea id="j13a" oninput="saveJournal('j13a')" placeholder="Your predictions before running..."></textarea>
+  </div>
+  <div class="prediction-wrap">
+    <label>Q13b — The Labour of Harm in a Familiar Context: Choose an information system you use regularly. Apply the web of acquisition: which of the seven stages does this system most significantly reshape? Where does it reduce labour and where does friction remain?</label>
+    <textarea id="j13b" oninput="saveJournal('j13b')" placeholder="Your web-of-acquisition analysis..."></textarea>
+  </div>
+  <div class="prediction-wrap">
+    <label>Q13c — Degradation vs Filtering: Explain this distinction in 2–3 paragraphs using a specific example from an information environment you believe operates in degradation mode rather than filtering mode. Which of the three evidence architecture components is doing the most degrading work?</label>
+    <textarea id="j13c" oninput="saveJournal('j13c')" placeholder="Your degradation vs filtering analysis..."></textarea>
+  </div>
+  <div class="prediction-wrap">
+    <label>Q13d — Transfer to Chapter 14: Is the trust vector between AI developers and regulatory agencies currently above or below the coordination threshold (Γ = 0.55)? What evidence from the current AI governance landscape supports your prediction? This entry will be revisited after Chapter 14.</label>
+    <textarea id="j13d" oninput="saveJournal('j13d')" placeholder="Your trust vector prediction..."></textarea>
+  </div>
+</div>
+
+</div><!-- end page -->
+
+<script>
+'use strict';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+let _config = 'A', _seed = 242, _results = {}, _runCount = 0, _runLog = [];
+
+const CONFIG_LABELS = {
+  A:'Configuration A: Entropy-Exporting Information Architecture',
+  B:'Configuration B: Coherence-Preserving Information Architecture',
+  C:'Configuration C: Governance Oversight at Step 4',
+};
+
+const CONFIG_CALLOUTS = {
+  A:`<strong>Entropy-Exporting Information Architecture:</strong> Authority-weighted evidence dominates at 48%, alternative-facts (AI-generated noise) elevated at 30%, empirical-calibrated last at 8%. Block fields negative on care (−0.42), fairness (−0.38), community (−0.45) — human consequence framings create friction. Entropy_export = 0.70 (highest in any chapter simulation). Routing_quality = 0.25. <em>Key question: predict the suppression gap (λR − λP) before running. Is it large or small — and why?</em>`,
+  B:`<strong>Coherence-Preserving Information Architecture:</strong> Empirical-calibrated evidence at 58%, alternative-facts minimal at 6%. Block fields strongly positive on care (+0.42), fairness (+0.38), community (+0.45). Policy_rigidity 0.32, entropy_export 0.28, routing_quality 0.68. <em>Key question: how does λ Raw compare to Config A — and what does the difference reveal about what the information architecture changes?</em>`,
+  C:`<strong>Governance Oversight at Step 4:</strong> Begins in the Config A state. A governance oversight intervention activates at step 4 — modeled as increased repair bandwidth and reduced entropy export, analogous to mandatory transparency reporting, independent auditing, or evidence standards requirements. <em>Key question: does oversight dissolve the accumulated morphic suppression, or does the reform lag appear again?</em>`,
+};
+
+const PAYLOADS = {
+  A:{num_agents:18,scenario_name:'baseline',steps:8,seed:242,
+    evidence_distribution:{authority_weighted:0.48,alternative_facts:0.30,tradition_weighted:0.14,empirical_calibrated:0.08},
+    scenario_physics:{base_entropy:0.62,base_stress:0.52,block_fields:{care:-0.42,fairness:-0.38,community:-0.45,boundary:0.35}},
+    institution_state_lite:{policy_rigidity:0.72,legitimacy:0.55,repair_bandwidth:0.15,support_reserve:0.12,entropy_export:0.70,routing_quality:0.25,shared_task_strength:0.20},
+  },
+  B:{num_agents:18,scenario_name:'baseline',steps:8,seed:242,
+    evidence_distribution:{empirical_calibrated:0.58,tradition_weighted:0.20,authority_weighted:0.16,alternative_facts:0.06},
+    scenario_physics:{base_entropy:0.32,base_stress:0.28,block_fields:{care:0.42,fairness:0.38,community:0.45,boundary:0.18}},
+    institution_state_lite:{policy_rigidity:0.32,legitimacy:0.72,repair_bandwidth:0.45,support_reserve:0.38,entropy_export:0.28,routing_quality:0.68,shared_task_strength:0.62},
+  },
+  C:{num_agents:18,scenario_name:'baseline',steps:8,seed:242,activate_biobond_at:4,
+    evidence_distribution:{authority_weighted:0.48,alternative_facts:0.30,tradition_weighted:0.14,empirical_calibrated:0.08},
+    scenario_physics:{base_entropy:0.62,base_stress:0.52,block_fields:{care:-0.42,fairness:-0.38,community:-0.45,boundary:0.35}},
+    institution_state_lite:{policy_rigidity:0.72,legitimacy:0.55,repair_bandwidth:0.15,support_reserve:0.12,entropy_export:0.70,routing_quality:0.25,shared_task_strength:0.20},
+  },
+};
+
+function buildPayload(cfg, seed) {
+  const base = PAYLOADS[cfg];
+  return { ...base, seed,
+    scenario_physics:{...base.scenario_physics,block_fields:{...base.scenario_physics.block_fields}},
+    institution_state_lite:{...base.institution_state_lite},
+    evidence_distribution:{...base.evidence_distribution},
+  };
+}
+
+async function fetchWithRetry(url,opts,max=3){
+  const delays=[0,8000,15000]; let lastErr;
+  for(let i=0;i<max;i++){
+    if(i>0) await new Promise(r=>setTimeout(r,delays[i]));
+    try{
+      const resp=await fetch(url,{...opts,signal:AbortSignal.timeout(30000)});
+      if([404,503,502].includes(resp.status)){lastErr=new Error('HTTP '+resp.status);continue;}
+      if(!resp.ok){const t=await resp.text();throw new Error('HTTP '+resp.status+': '+t.slice(0,200));}
+      return resp;
+    }catch(e){
+      if(e.name==='TimeoutError'||e.name==='AbortError'){lastErr=new Error('Timed out');continue;}
+      throw e;
+    }
+  }
+  throw lastErr||new Error('Server unavailable');
+}
+
+async function postSim(payload){
+  try{
+    const r=await fetchWithRetry(`${BACKEND}/api/simulate/phased_manifest`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(r&&r.ok) return r;
+  }catch(_){}
+  const {institution_state_lite,...legacy}={...payload};
+  return fetchWithRetry(`${BACKEND}/api/simulate/custom`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(legacy)});
+}
+
+async function runInfoSim(){
+  const btn=document.getElementById('ucpRunBtn');
+  btn.disabled=true;
+  btn.innerHTML='<span class="ucp-spinner" id="infoSpinner" style="display:inline-block"></span>Running…';
+  document.getElementById('ucpResult').style.display='none';
+  document.getElementById('ucpError').style.display='none';
+  document.getElementById('infoStepChart').innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:center;height:120px;background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)"><span style="font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35)">Loading step trace…</span></div>';
+
+  const payload=buildPayload(_config,_seed);
+  try{
+    const resp=await postSim(payload);
+    const data=await resp.json();
+    if(!data.metrics) throw new Error('No metrics in response');
+    _results[_config]=data;
+    renderResult(data);
+    if(data.timeline&&data.timeline.length) renderStepChart(data.timeline,'infoStepChart',{title:CONFIG_LABELS[_config]+' — step trace'});
+    const m=data.metrics;
+    _runCount++;
+    _runLog.push({run:_runCount,cfg:_config,seed:_seed,
+      lr:(m.lambda_raw||0).toFixed(3),lp:(m.lambda_perceived||0).toFixed(3),
+      morph:(m.morphic_suppression||0).toFixed(4),os2:(m.os2_synergy_bridge||0).toFixed(3),
+      fric:(m.friction||0).toFixed(3)});
+    _seed+=17;
+    renderRobLog();
+    document.getElementById('robustnessPanel').style.display='block';
+    renderSxS();
+    btn.disabled=false;
+    btn.innerHTML='<span class="ucp-spinner" id="infoSpinner"></span>↺ Re-run Simulation';
+  }catch(e){
+    btn.disabled=false;
+    btn.innerHTML='<span class="ucp-spinner" id="infoSpinner"></span>▶ Run Simulation';
+    const err=document.getElementById('ucpError');
+    err.textContent='Simulation unavailable — '+e.message+'. Please try again in a moment.';
+    err.style.display='block';
+  }
+}
+
+function vc(v,hi=true){
+  if(hi) return v>0.55?'good':v>0.28?'mid':'bad';
+  return v<0.10?'good':v<0.25?'mid':'bad';
+}
+
+function renderResult(data){
+  const m=data.metrics||{};
+  const raw=m.lambda_raw||0,perc=m.lambda_perceived||0;
+  const gap=Math.max(0,raw-perc),morph=m.morphic_suppression||0;
+  const os2=m.os2_synergy_bridge||m.os2_synergy||0,fric=m.friction||0;
+
+  document.getElementById('ucpMetrics').innerHTML=`
+    <div class="metric-card">
+      <div class="m-label">λ Raw</div>
+      <div class="m-val ${vc(raw)}">${raw.toFixed(3)}</div>
+      <div class="m-phrase">${raw>0.30?'Good capacity':raw>0.15?'Degraded':raw>0.08?'Severely degraded':'Near-zero'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">λ Perceived</div>
+      <div class="m-val ${vc(perc)}">${perc.toFixed(3)}</div>
+      <div class="m-phrase">${perc>0.30?'Signal reaching decisions':perc>0.15?'Partial signal':'Signal attenuated'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Supp. Gap</div>
+      <div class="m-val ${vc(gap,false)}">${(gap*100).toFixed(1)}%</div>
+      <div class="m-phrase">${gap>0.30?'Large filter gap':gap>0.10?'Moderate':gap<0.02?'Tiny — degradation, not filtering':'Small'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">OS2 Bridge</div>
+      <div class="m-val ${vc(os2)}">${os2.toFixed(3)}</div>
+      <div class="m-phrase">${os2>0.50?'Strong cross-worldview coord.':os2>0.38?'Moderate coordination':'Low coordination'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Morphic Supp.</div>
+      <div class="m-val" style="color:var(--purple)">${morph.toFixed(4)}</div>
+      <div class="m-phrase">${morph>0.08?'Significant accumulation':morph>0.03?'Building':'Near-zero'}</div>
+    </div>
+    <div class="metric-card">
+      <div class="m-label">Friction</div>
+      <div class="m-val ${vc(fric,false)}">${fric.toFixed(3)}</div>
+      <div class="m-phrase">Translation cost</div>
+    </div>`;
+
+  const bp=v=>`${Math.min(100,Math.round(v*100))}%`;
+  document.getElementById('ucpBars').innerHTML=`
+    <div class="bar-row"><span class="bar-name">λ Raw</span><div class="bar-track"><div class="bar-fill" style="width:${bp(raw)};background:#14b8a6"></div></div><span class="bar-num">${raw.toFixed(3)}</span></div>
+    <div class="bar-row"><span class="bar-name">λ Perceived</span><div class="bar-track"><div class="bar-fill" style="width:${bp(perc)};background:#3b82f6"></div></div><span class="bar-num">${perc.toFixed(3)}</span></div>
+    <div class="bar-row"><span class="bar-name">OS2 Bridge</span><div class="bar-track"><div class="bar-fill" style="width:${bp(os2)};background:#7fd8a8"></div></div><span class="bar-num">${os2.toFixed(3)}</span></div>
+    <div class="bar-row"><span class="bar-name">Morphic Supp.</span><div class="bar-track"><div class="bar-fill" style="width:${bp(morph)};background:#e879f9"></div></div><span class="bar-num">${morph.toFixed(4)}</span></div>`;
+
+  let narrative='';
+  if(_config==='A'){
+    narrative=`λ Raw = ${raw.toFixed(3)} — the information architecture does not merely filter expert capacity; it degrades what agents can generate. The suppression gap (${(gap*100).toFixed(1)}%) is tiny because both λ Raw and λ Perceived are low. The step chart is the primary instrument: watch morphic suppression building across all eight steps as agents learn that deliberate, empirically-grounded contributions produce noise rather than coherent outcomes. OS2 Bridge at ${os2.toFixed(3)} shows the cross-worldview coordination that this environment supports. This is the CSER paper's organizational coherence bottleneck made visible: the information architecture shapes the labour of coordination itself.`;
+  } else if(_config==='B'){
+    narrative=`λ Raw = ${raw.toFixed(3)} — twice Config A's value. The coherence-preserving information architecture enables agents to generate twice the coordination capacity. This is not expert knowledge being unblocked; it is the cognitive conditions that make deliberate expert contribution possible being sustained. OS2 Bridge at ${os2.toFixed(3)} — 72% higher than Config A — is the most important number: cross-worldview coordination capacity nearly doubles when the information architecture routes empirical-calibrated signal toward decisions and maintains positive block fields for care and fairness framing. Morphic suppression near zero: agents learn that deliberate contributions produce coherent outcomes.`;
+  } else {
+    narrative=`λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}. The governance oversight intervention at step 4 raises λP by approximately 39% compared to Config A (${(PAYLOADS.A.steps,0.100).toFixed(3)} → ${perc.toFixed(3)}). The step chart shows the trajectory change at step 4. But morphic suppression (${morph.toFixed(4)}) continues building after oversight activates — decelerating but not reversing. OS2 Bridge improves to ${os2.toFixed(3)} (up from Config A's 0.314). The reform lag appears for the third time in this course: structural improvement changes the trajectory, not the accumulated history of agents having learned that deliberate contribution fails.`;
+  }
+  document.getElementById('ucpNarrative').textContent=narrative;
+  document.getElementById('ucpResult').style.display='block';
+}
+
+function renderStepChart(timeline,containerId,options={}){
+  const el=document.getElementById(containerId);
+  if(!el||!timeline||!timeline.length) return;
+  const title=options.title||'Step trace';
+  const W=el.clientWidth||520,H=options.height||200;
+  const pad={top:28,right:16,bottom:52,left:42};
+  const iW=W-pad.left-pad.right,iH=H-pad.top-pad.bottom;
+  const steps=timeline.length;
+  const x=i=>pad.left+(i/Math.max(steps-1,1))*iW;
+  const y=v=>pad.top+iH-(Math.min(Math.max(v,0),1)*iH);
+  const SERIES=[
+    {key:'lambda_raw',color:'#14b8a6',label:'λ Raw'},
+    {key:'lambda_perceived',color:'#3b82f6',label:'λ Perceived'},
+    {key:'morphic_suppression',color:'#e879f9',label:'Morphic Supp.'},
+    {key:'os2_synergy_bridge',color:'#7fd8a8',label:'OS2 Bridge'},
+  ];
+  let paths='',dots='';
+  SERIES.forEach(({key,color})=>{
+    const pts=timeline.map((s,i)=>{
+      const v=key==='os2_synergy_bridge'?(s.os2_synergy_bridge??s.os2_synergy??0):(s[key]??0);
+      return [x(i),y(v)];
+    });
+    paths+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    pts.forEach(([cx,cy])=>{dots+=`<circle cx="${cx}" cy="${cy}" r="3" fill="${color}"/>`;});
+  });
+  let bbLine='';
+  const bbStep=timeline.findIndex(s=>s.biobond_active);
+  if(bbStep>0){const bx=x(bbStep);bbLine=`<line x1="${bx}" y1="${pad.top}" x2="${bx}" y2="${pad.top+iH}" stroke="#f5c842" stroke-width="1.5" stroke-dasharray="4,3"/><text x="${bx+4}" y="${pad.top+10}" font-size="9" fill="#f5c842" font-family="Courier New,monospace">oversight</text>`;}
+  let grid='',yLab='';
+  [0,0.25,0.5,0.75,1.0].forEach(v=>{const gy=y(v);grid+=`<line x1="${pad.left}" y1="${gy}" x2="${pad.left+iW}" y2="${gy}" stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;yLab+=`<text x="${pad.left-5}" y="${gy+4}" text-anchor="end" font-size="11" fill="rgba(255,255,255,.55)" font-family="Courier New,monospace" font-weight="500">${v.toFixed(2)}</text>`;});
+  let xLab='';
+  timeline.forEach((_,i)=>{xLab+=`<text x="${x(i)}" y="${pad.top+iH+16}" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.45)" font-family="Courier New,monospace">${i}</text>`;});
+  let legend='';
+  SERIES.forEach(({color,label},i)=>{const lx=pad.left+i*(iW/SERIES.length);legend+=`<line x1="${lx}" y1="${pad.top+iH+36}" x2="${lx+18}" y2="${pad.top+iH+36}" stroke="${color}" stroke-width="3"/><circle cx="${lx+9}" cy="${pad.top+iH+36}" r="3" fill="${color}"/><text x="${lx+23}" y="${pad.top+iH+40}" font-size="12" fill="rgba(255,255,255,.75)" font-family="Courier New,monospace" font-weight="500">${label}</text>`;});
+  el.innerHTML=`<svg width="100%" viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}" style="overflow:visible"><title>${title}</title>${grid}${bbLine}${paths}${dots}${yLab}${xLab}${legend}<text x="${W/2}" y="14" text-anchor="middle" font-size="12" fill="rgba(255,255,255,.72)" font-family="Courier New,monospace" font-weight="600">${title}</text></svg>`;
+}
+
+function renderSxS(){
+  const done=['A','B','C'].filter(k=>_results[k]);
+  if(!done.length) return;
+  const COLORS={A:'#f08080',B:'#7fd8a8',C:'#f5c842'};
+  const LABELS={A:'Config A: Entropy-Exporting',B:'Config B: Coherence-Preserving',C:'Config C: Governance Oversight'};
+  const METRICS=[
+    {key:'lambda_raw',label:'λ Raw',hi:true,desc:'Coordination capacity generated'},
+    {key:'lambda_perceived',label:'λ Perceived',hi:true,desc:'Signal reaching decisions'},
+    {key:'os2_synergy_bridge',label:'OS2 Bridge',hi:true,desc:'Cross-worldview coordination'},
+    {key:'morphic_suppression',label:'Morphic Supp.',hi:false,desc:'Accumulated self-censorship'},
+    {key:'friction',label:'Friction',hi:false,desc:'Translation cost'},
+  ];
+  const gv=(cfg,key)=>{const m=_results[cfg]?.metrics||{};return key==='os2_synergy_bridge'?(m.os2_synergy_bridge??m.os2_synergy??0):(m[key]||0);};
+  let html=`<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">`;
+  html+=`<tr><td style="padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em;width:30%">Metric</td>`;
+  ['A','B','C'].forEach(k=>{html+=`<td style="padding:.4rem .5rem;text-align:center;width:23%"><div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${done.includes(k)?COLORS[k]:'rgba(255,255,255,.2)'}">${done.includes(k)?LABELS[k]:'—'}</div></td>`;});
+  html+=`</tr>`;
+  METRICS.forEach(({key,label,hi,desc})=>{
+    html+=`<tr style="border-top:1px solid rgba(255,255,255,.07)"><td style="padding:.5rem .6rem"><div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${label}</div><div style="font-size:.66rem;color:rgba(255,255,255,.32)">${desc}</div></td>`;
+    ['A','B','C'].forEach(k=>{
+      const d=done.includes(k),val=d?gv(k,key):null,pct=d?Math.round(val*100):0;
+      const nc=d?(hi?(val>0.50?'#7fd8a8':val>0.28?'#f5c842':'#f08080'):(val<0.05?'#7fd8a8':val<0.15?'#f5c842':'#f08080')):'rgba(255,255,255,.2)';
+      html+=`<td style="padding:.45rem .5rem;text-align:center">`;
+      if(d){html+=`<div style="font-size:1.1rem;font-weight:700;font-family:'Courier New',monospace;color:${nc}">${val.toFixed(3)}</div>`;html+=`<div style="margin:.25rem auto 0;width:76%;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${COLORS[k]};border-radius:3px;transition:width 1s ease"></div></div>`;}
+      else html+=`<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      html+=`</td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</table></div>`;
+
+  if(done.length===3){
+    const lrA=gv('A','lambda_raw'),lrB=gv('B','lambda_raw');
+    const o2A=gv('A','os2_synergy_bridge'),o2B=gv('B','os2_synergy_bridge');
+    const mA=gv('A','morphic_suppression'),mC=gv('C','morphic_suppression');
+    const lpA=gv('A','lambda_perceived'),lpC=gv('C','lambda_perceived');
+    const lrRatio=lrB>0?(lrB/lrA).toFixed(2):'—';
+    const o2Ratio=o2A>0?(o2B/o2A).toFixed(2):'—';
+    html+=`<div style="margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem">`;
+    html+=`<div class="sxs-annotation"><div class="sxs-ann-label">The Degradation Finding — λ Raw</div><div class="sxs-ann-text">Config A λ Raw: ${lrA.toFixed(3)} → Config B λ Raw: ${lrB.toFixed(3)} (${lrRatio}× the coordination capacity generated). This is not filtering — the same expert knowledge unblocked. It is what the information architecture enables agents to produce. A coherence-preserving information environment generates twice the coordination capacity because it sustains the cognitive conditions — low entropy, positive community block fields, empirical-calibrated evidence routing — under which deliberate, coherent contribution is possible. The Ch13 finding: the information architecture changes λ Raw, not only the gap between λ Raw and λ Perceived.</div></div>`;
+    html+=`<div class="sxs-annotation" style="border-left-color:var(--green)"><div class="sxs-ann-label" style="color:var(--green)">OS2 Bridge — Cross-Worldview Coordination</div><div class="sxs-ann-text">Config A OS2: ${o2A.toFixed(3)} → Config B OS2: ${o2B.toFixed(3)} (${o2Ratio}× more cross-worldview coordination capacity). This is the most important number in the chapter. Democratic deliberation, scientific consensus-building, and policy coordination all depend on OS2 Bridge. An information architecture that degrades it is not merely a technical problem — it is a coordination infrastructure problem. The CSER paper's organizational coherence bottleneck operates through exactly this mechanism: the information environment that shapes what actors can generate collectively is the decisive variable in whether organizational labour toward any goal (harmful or beneficial) can be sustained.</div></div>`;
+    html+=`<div class="sxs-annotation" style="border-left-color:var(--purple)"><div class="sxs-ann-label" style="color:var(--purple)">Morphic Suppression & The Reform Lag (Config C)</div><div class="sxs-ann-text">Config A morphic: ${mA.toFixed(4)} (building across all 8 steps). Config C morphic: ${mC.toFixed(4)} — governance oversight at step 4 decelerates accumulation but does not reverse it. λP rises from Config A's ${lpA.toFixed(3)} to Config C's ${lpC.toFixed(3)} (+${((lpC-lpA)*100).toFixed(0)}%) — oversight works. But the reform lag: agents who have learned across four steps that deliberate contributions produce noise rather than coherent outcomes do not immediately recalibrate. The CSER paper identifies this as the organizational coherence bottleneck operating through time: institutional conditions change faster than behavioral adaptation.</div></div>`;
+    html+=`</div>`;
+  }
+  document.getElementById('sxsBody').innerHTML=html;
+}
+
+function renderRobLog(){
+  const tbody=document.getElementById('robLog');
+  if(!tbody) return;
+  tbody.innerHTML=_runLog.map(r=>`<tr><td>${r.run}</td><td>${r.cfg}</td><td>${r.lr}</td><td>${r.lp}</td><td>${r.morph}</td><td>${r.os2}</td><td>${r.fric}</td></tr>`).join('');
+}
+
+function selectConfig(cfg){
+  _config=cfg;
+  ['A','B','C'].forEach(k=>document.getElementById(`cfg-${k}`).classList.toggle('active',k===cfg));
+  document.getElementById('configCallout').innerHTML=CONFIG_CALLOUTS[cfg];
+  document.getElementById('infoStepChart').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:120px;background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)"><span style="font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35)">Select a configuration and run the simulation</span></div>';
+  if(_results[cfg]){renderResult(_results[cfg]);if(_results[cfg].timeline) renderStepChart(_results[cfg].timeline,'infoStepChart',{title:CONFIG_LABELS[cfg]+' — step trace'});document.getElementById('ucpResult').style.display='block';}
+  else document.getElementById('ucpResult').style.display='none';
+}
+
+function switchTab(tab){
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{const tabs=['overview','simulation','comparison','journal'];b.classList.toggle('active',tabs[i]===tab);});
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.toggle('active',p.id===`tab-${tab}`));
+  if(tab==='comparison') renderSxS();
+}
+
+function toggleSection(hdr){hdr.classList.toggle('open');hdr.nextElementSibling.classList.toggle('open');}
+function toggleTheory(hdr){const b=hdr.nextElementSibling,open=b.style.display==='block';b.style.display=open?'none':'block';}
+function toggleExplain(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block';}
+
+function saveJournal(id){try{localStorage.setItem(`ebb_ch13_${id}`,document.getElementById(id).value);}catch(_){}}
+function loadJournal(){['j13a','j13b','j13c','j13d'].forEach(id=>{try{const v=localStorage.getItem(`ebb_ch13_${id}`);if(v) document.getElementById(id).value=v;}catch(_){}});}
+
+document.addEventListener('DOMContentLoaded',()=>{selectConfig('A');loadJournal();});
+</script>
+</body>
+</html>
