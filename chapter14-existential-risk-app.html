@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch14 · Existential Risk, Leverage & the AMC · EBB</title>
+<style>
+:root {
+  --teal-dark:#0d5e57; --teal:#14b8a6; --teal-light:#ccfbf1;
+  --ink:#1f2937; --muted:#4b5563; --bg:#0f1117; --surface:#1a1f2e;
+  --surface2:#222840; --border:rgba(255,255,255,.09);
+  --amber:#f5c842; --amber-dark:#c2850a;
+  --red:#f08080; --green:#7fd8a8; --purple:#e879f9;
+  --navy:#1a2744; --gold:#c9a84c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+.page{max-width:940px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+.chapter-header{background:linear-gradient(135deg,#0a1628 0%,var(--teal-dark) 100%);border-radius:.75rem;padding:2rem 2rem 1.5rem;margin-bottom:1.5rem;border:1px solid rgba(20,184,166,.2)}
+.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.chapter-title{font-size:1.55rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.25rem}
+.chapter-subtitle{font-size:.95rem;color:rgba(255,255,255,.6);margin-bottom:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.15);border:1px solid rgba(20,184,166,.3);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+
+.tab-bar{display:flex;gap:.3rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);padding-bottom:0;overflow-x:auto}
+.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem .9rem;cursor:pointer;font-size:.82rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;border-radius:.3rem .3rem 0 0;white-space:nowrap}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+.narrative-panel{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:.9rem;font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel.red{border-left:4px solid var(--red)}
+.narrative-panel.green{border-left:4px solid var(--green)}
+.narrative-panel strong{color:#fff}
+
+.section-wrap{margin-bottom:1.1rem}
+.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:.6rem 0;border-bottom:1px solid var(--border)}
+.section-header h3{font-size:.95rem;font-weight:700;color:#fff}
+.section-chevron{color:var(--teal);font-size:.8rem;transition:transform .2s}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+.section-body{display:none;padding-top:.75rem}.section-body.open{display:block}
+
+/* Meadows table */
+.meadows-table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.6rem 0}
+.meadows-table th{background:var(--teal-dark);color:#fff;padding:.5rem .7rem;text-align:left;font-size:.72rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.05em}
+.meadows-table td{padding:.55rem .7rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.45}
+.meadows-table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.meadows-table tr.highlight td{background:rgba(20,184,166,.08);border-left:3px solid var(--teal)}
+.level-badge{display:inline-block;background:rgba(20,184,166,.2);color:var(--teal);font-family:'Courier New',monospace;font-size:.7rem;font-weight:700;padding:.1rem .4rem;border-radius:.25rem;margin-right:.4rem}
+
+/* Trust vector display */
+.tv-grid{display:grid;gap:.45rem;margin:.6rem 0}
+.tv-row{display:flex;align-items:center;gap:.7rem;padding:.5rem .7rem;border-radius:.4rem;background:var(--surface2);font-size:.82rem}
+.tv-pair{flex:1;color:rgba(255,255,255,.75)}
+.tv-gamma{font-family:'Courier New',monospace;font-size:.95rem;font-weight:700;width:52px;text-align:right}
+.tv-bar-wrap{width:120px;flex-shrink:0}
+.tv-bar-track{height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;position:relative}
+.tv-bar-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.tv-threshold-line{position:absolute;top:0;height:100%;width:2px;background:rgba(245,200,66,.7)}
+.tv-status{font-size:.68rem;font-family:'Courier New',monospace;font-weight:700;width:52px;text-align:center}
+.tv-above{color:var(--green)}.tv-below{color:var(--red)}.tv-adverse{color:var(--amber)}
+
+/* Step trajectory chart */
+.traj-chart-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.8rem;margin:.7rem 0}
+
+/* Institution cards */
+.inst-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.6rem 0}
+.inst-card{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.8rem}
+.inst-card-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.inst-card-name{font-size:.88rem;font-weight:700;color:#fff;margin-bottom:.45rem}
+.inst-metric-row{display:flex;justify-content:space-between;align-items:center;padding:.2rem 0;border-top:1px solid rgba(255,255,255,.05)}
+.inst-metric-label{font-size:.7rem;color:var(--muted);font-family:'Courier New',monospace}
+.inst-metric-val{font-size:.82rem;font-family:'Courier New',monospace;font-weight:700}
+
+/* Event timeline */
+.event-timeline{display:flex;flex-direction:column;gap:.4rem;margin:.6rem 0}
+.event-item{display:flex;align-items:flex-start;gap:.6rem;padding:.5rem .7rem;border-radius:.4rem;background:var(--surface2)}
+.event-step{font-family:'Courier New',monospace;font-size:.75rem;font-weight:700;color:var(--muted);width:40px;flex-shrink:0;padding-top:.1rem}
+.event-type{font-size:.78rem;line-height:1.45;color:rgba(255,255,255,.75)}
+.event-lost{border-left:3px solid var(--red)}
+.event-achieved{border-left:3px solid var(--green)}
+
+/* Calibration table */
+.calib-table{width:100%;border-collapse:collapse;font-size:.78rem;margin:.5rem 0}
+.calib-table th{background:var(--teal-dark);color:#fff;padding:.5rem .6rem;text-align:left;font-size:.7rem}
+.calib-table td{padding:.5rem .6rem;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.45;color:rgba(255,255,255,.75)}
+.calib-table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.calib-table .gamma-cell{font-family:'Courier New',monospace;font-weight:700;font-size:.88rem;text-align:center}
+
+.prediction-wrap{margin-bottom:1rem}
+.prediction-wrap label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.3rem}
+.prediction-wrap textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;color:#e2e8f0;font-size:.82rem;padding:.6rem .75rem;resize:vertical;min-height:80px;font-family:inherit}
+.prediction-wrap textarea:focus{outline:none;border-color:var(--teal)}
+
+.finding-box{background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.2);border-radius:.5rem;padding:1rem 1.1rem;margin:.8rem 0}
+.finding-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.finding-text{font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.82)}
+
+.data-badge{display:inline-block;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:.3rem;padding:.15rem .45rem;font-family:'Courier New',monospace;font-size:.78rem;color:rgba(255,255,255,.7)}
+
+@media(max-width:640px){.inst-grid{grid-template-columns:1fr}.tab-btn{font-size:.75rem;padding:.5rem .6rem}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="chapter-header">
+  <div class="chapter-label">Ethics Beyond Boundaries · Chapter 14</div>
+  <div class="chapter-title">Existential Risk, Leverage, and the Adaptive Moral Commonwealth</div>
+  <div class="chapter-subtitle">Meadows · Inter-Institutional Trust Vectors · What Models Can and Cannot Tell Us</div>
+  <div class="chapter-tags">
+    <span class="tag">Meadows Hierarchy</span>
+    <span class="tag">Trust Vectors</span>
+    <span class="tag">Social Field Theory</span>
+    <span class="tag">Calibrated Projections</span>
+    <span class="tag">Iron Cage</span>
+    <span class="tag">AMC Field Configuration</span>
+    <span class="tag">V4.0 Engine</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('results')">Field Results</button>
+  <button class="tab-btn" onclick="switchTab('leverage')">Meadows Leverage</button>
+  <button class="tab-btn" onclick="switchTab('epistemology')">What Models Tell Us</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button>
+</div>
+
+<!-- ══ OVERVIEW ══════════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-overview">
+
+<div class="narrative-panel amber">
+  <strong>Learning Objectives — Chapter 14</strong>
+  <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
+    <li>Use Meadows' leverage hierarchy to locate where in a complex system an intervention will have the most durable effect — and explain why the EBB course has been ascending that hierarchy from Chapter 2 onward.</li>
+    <li>Distinguish between what a simulation demonstrates (internal consistency, calibrated projections) and what it proves (nothing, until validated against independent data).</li>
+    <li>Read the inter-institutional trust vector matrix as a measurement of the structural relationships that determine whether any intra-institutional intervention can be sustained.</li>
+    <li>Identify what empirical data would be needed to validate or falsify the climate governance field simulation's key predictions.</li>
+    <li>Apply the AMC framework as a computationally derived description of the inter-institutional field configuration required for coordinated response to existential risk.</li>
+  </ul>
+</div>
+
+<!-- §I Course Hidden Structure -->
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>§I — The Leverage Hierarchy the Course Has Been Building</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">Donella Meadows identified twelve places to intervene in a system, ordered from least to most effective. She published them in 1999 and expanded the account in <em>Thinking in Systems</em> (2008). The hierarchy is taught in systems thinking curricula worldwide as a general heuristic: changing parameters is low leverage, feedback loops higher, information flows higher still, rules, self-organization, goals, and paradigms upward from there.</p>
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">What those curricula rarely do is connect the hierarchy to a measurement instrument. Meadows can tell you information flows are more powerful than parameters — but not by how much, in a specific system, for a specific intervention. The EBB simulation has been building that measurement capacity since Chapter 2. And Chapter 14 makes visible something that has been true throughout the course: <strong>every chapter has been teaching you to operate at a progressively higher level of the hierarchy.</strong></p>
+
+    <div style="overflow-x:auto;margin:.7rem 0">
+    <table class="meadows-table">
+      <thead><tr>
+        <th>Level</th><th>Meadows Name</th><th>Description</th>
+        <th>EBB Simulation Variable</th><th>Course Chapter</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><span class="level-badge">L12</span>Parameters</td><td>Numeric constants, rates</td><td>scenario_physics values</td><td>Ch2 — changing parameters didn't close the gap</td></tr>
+        <tr><td><span class="level-badge">L9-8</span>Feedback loops</td><td>Reinforcing/balancing loop gain</td><td>morphic_suppression EMA trajectory</td><td>Ch3-5 — BioBond changes loop dynamics</td></tr>
+        <tr><td><span class="level-badge">L7</span>Information flows</td><td>Who receives what evidence</td><td>evidence_distribution policy</td><td>Ch12 — evidence architecture (3 filters)</td></tr>
+        <tr><td><span class="level-badge">L6</span>Rules</td><td>Incentives, constraints, procedures</td><td>policy_rigidity, block fields</td><td>Ch12 Config C — governance reform</td></tr>
+        <tr class="highlight"><td><span class="level-badge">L5</span>Self-organization</td><td>Power to change system structure</td><td><strong>Trust vector Γ matrix between institutions</strong></td><td><strong>Ch14 — NEW in V4.0 engine</strong></td></tr>
+        <tr><td><span class="level-badge">L4</span>Goals</td><td>Purpose of the system</td><td>legitimacy × entropy_export configuration</td><td>Ch14 — Paris Agreement as attempted L4 shift</td></tr>
+        <tr><td><span class="level-badge">L3-1</span>Paradigm</td><td>Mindset the system arises from</td><td>worldview_distribution across agents</td><td>Ch14 — highest leverage, most difficult</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="narrative-panel teal" style="margin-top:.5rem">
+      <strong>What Meadows needs that the simulation provides.</strong> Meadows gives the hierarchy but not the measurement. The simulation turns the qualitative hierarchy into a quantitative instrument: the suppression gap is a direct measurement of L7 failure; the morphic suppression trajectory measures the L8-9 reinforcing loop; the trust vector matrix measures the L5 structural relationships. Chapter 14 shows this instrument operating at the scale where the hierarchy's highest levels become visible — and where the gap between the current field configuration and what coordinated response requires becomes computable.
+    </div>
+  </div>
+</div>
+
+<!-- §II Iron Cage and Obsolescence Trap -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§II — Two Failure Modes: The Iron Cage and the Obsolescence Trap</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem">
+      <div style="background:rgba(240,128,128,.06);border:1px solid rgba(240,128,128,.2);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:.4rem">The Iron Cage Attractor</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The field configuration in which the high trust vector between national governance and the incumbent economic sector (Γ = 0.80 in the simulation) systematically overrides all L6 and L7 interventions. The incumbent sector's routing quality into governance is not accidental — it is actively maintained by structural investment in lobbying, regulatory access, and revolving-door mechanisms. The simulation shows this as a self-reinforcing pattern: the strong adverse trust vector ensures that alternative-facts entropy export reaches governance with high fidelity, degrading the evidence architecture that would otherwise route scientific findings.</p>
+      </div>
+      <div style="background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);font-weight:700;margin-bottom:.4rem">The Obsolescence Trap</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The failure mode when a scientific institution becomes so tightly bounded around physical precision that its output, even when the inter-institutional trust vector improves, cannot be received by the governance institution's deliberative capacity. High legitimacy, high internal coherence, high physical precision — but zero routing quality because the signal is not framed in vocabulary that governance institutions can process. Improving the trust vector alone is insufficient without simultaneously improving the translation capacity at the institutional boundary.</p>
+      </div>
+    </div>
+    <div class="narrative-panel teal">
+      <strong>The AMC as a field configuration — not a normative proposal.</strong> The Adaptive Moral Commonwealth is the description of the inter-institutional field configuration that avoids both failure modes, specified in the model's vocabulary: (1) trust vector between scientific institution and national governance above coordination threshold, maintained by a structural mechanism with enforcement capacity; (2) treaty organization ↔ national governance above threshold, maintained by binding commitments rather than voluntary NDCs; (3) incumbent economic sector's routing quality into governance constrained by L6 rules preventing its entropy export from dominating the evidence architecture; (4) repair bandwidth within governance sufficient to incorporate evidence challenging existing trajectories — which requires L4 goal change. This is a specification of what the field needs to look like for coordinated response to be structurally available. Not a utopia. A measurement target.
+    </div>
+  </div>
+</div>
+
+<!-- §III Course as demonstration -->
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>§III — The Course as Its Own Demonstration</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">Students who have completed Chapters 1 through 14 have been participants in a meta-constructor process — building, step by step, an instrument capable of measuring phenomena that were previously only describable in qualitative terms.</p>
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">Ch2 gave you the suppression gap. Ch3 showed you what it feels like from inside. Ch4 showed repair. Ch5 resilience under sustained assault. Ch6 information systems. Ch7 the distributional question. Ch8 synthesized the ethical traditions. Ch9-11 applied the framework to markets. Ch12 made the governance suppression gap precise and introduced the three-component evidence architecture. Ch13 applied the labour of harm framework. This chapter extended the instrument to the inter-institutional field and connected it to Meadows' hierarchy.</p>
+    <div class="finding-box">
+      <div class="finding-label">The meta-constructor principle</div>
+      <div class="finding-text">The simulation has a resolution limit. The current instrument can show you the suppression gap within one institution and the trust vector dynamics between institutions in a pre-computed field run. The research extension will validate the trust vector calibrations against independent empirical data, model multiple institutions simultaneously in real time, and produce the ATCF validation findings that turn the simulation's projections into empirical research outputs. That extension is not a different course. It is the same course at higher resolution, using the same method you have been practicing since Chapter 1: careful specification of what we are measuring, honest acknowledgment of what we cannot yet see, and systematic construction of the tools needed to see it.</div>
+    </div>
+  </div>
+</div>
+
+<div class="narrative-panel amber">
+  <strong>How to use this app:</strong> The Field Results tab shows the pre-computed climate governance field simulation — four institutions, eight steps, 2015–2023 calibration. The Meadows Leverage tab shows what those results mean for intervention strategy. The "What Models Tell Us" tab names precisely what the simulation can and cannot claim. Read the Field Results tab before the journal questions — they require the specific numbers from the simulation output.
+</div>
+
+</div><!-- end overview -->
+
+<!-- ══ FIELD RESULTS ══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-results">
+
+<div class="finding-box" style="margin-bottom:1rem">
+  <div class="finding-label">Primary Research Finding</div>
+  <div class="finding-text">Trust vector between Scientific Body (IPCC) and National Executive Governance is <strong>below coordination threshold</strong> throughout the simulation period (Γ declines from 0.420 → 0.220, threshold = 0.55). Field-level suppression gap reaches <strong>94.5%</strong> by step 7 — 94.5% of the scientific institution's signal is attenuated before reaching national governance deliberation. Active Meadows leverage level: <strong>L7 throughout</strong> (information flows blocked at inter-institutional level).</div>
+</div>
+
+<div class="narrative-panel amber" style="margin-bottom:.9rem">
+  <strong>Note on these results.</strong> The values below are outputs of a theoretically grounded, historically calibrated simulation model — not independent empirical measurements. The trust vector initial values were calibrated from qualitative reading of the historical record. The "What Models Tell Us" tab explains precisely what can and cannot be inferred from these results.
+</div>
+
+<!-- Institution metrics -->
+<div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.4rem;font-weight:600">Per-Institution Final Metrics (Step 7)</div>
+<div class="inst-grid" id="instGrid">
+  <div class="inst-card" style="border-color:rgba(20,184,166,.25)">
+    <div class="inst-card-label">Institution 1</div>
+    <div class="inst-card-name">Scientific Body (IPCC)</div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Raw</span><span class="inst-metric-val good">0.234</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Perceived</span><span class="inst-metric-val good">0.238</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Morphic Supp.</span><span class="inst-metric-val good">0.000</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">OS2 Bridge</span><span class="inst-metric-val mid">0.439</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Routing Quality</span><span class="inst-metric-val mid">0.35</span></div>
+    <div style="margin-top:.5rem;font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.4">Internal coherence intact. Low morphic suppression. High routing quality out is constrained by trust vector to governance — not by what the institution produces.</div>
+  </div>
+  <div class="inst-card" style="border-color:rgba(240,128,128,.25)">
+    <div class="inst-card-label">Institution 2</div>
+    <div class="inst-card-name">National Executive Governance</div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Raw</span><span class="inst-metric-val mid">0.195</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Perceived</span><span class="inst-metric-val mid">0.183</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Morphic Supp.</span><span class="inst-metric-val bad">0.117</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">OS2 Bridge</span><span class="inst-metric-val mid">0.477</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Routing Quality</span><span class="inst-metric-val bad">0.22</span></div>
+    <div style="margin-top:.5rem;font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.4">Config A from Ch12 operating as a field node. Morphic suppression building. Low routing quality means trust vector improvement alone is insufficient — internal evidence architecture also needs reform.</div>
+  </div>
+  <div class="inst-card" style="border-color:rgba(245,200,66,.2)">
+    <div class="inst-card-label">Institution 3</div>
+    <div class="inst-card-name">International Treaty Org. (UNFCCC)</div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Raw</span><span class="inst-metric-val mid">0.251</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Perceived</span><span class="inst-metric-val mid">0.250</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Morphic Supp.</span><span class="inst-metric-val good">0.005</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">OS2 Bridge</span><span class="inst-metric-val mid">0.464</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Routing Quality</span><span class="inst-metric-val mid">0.48</span></div>
+    <div style="margin-top:.5rem;font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.4">Moderate routing quality but declining trust vector to national governance means its outputs reach national deliberation with decreasing fidelity. Lost coordination with Scientific Body at step 5.</div>
+  </div>
+  <div class="inst-card" style="border-color:rgba(245,200,66,.3)">
+    <div class="inst-card-label">Institution 4</div>
+    <div class="inst-card-name">Incumbent Economic Sector</div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Raw</span><span class="inst-metric-val bad">0.185</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">λ Perceived</span><span class="inst-metric-val bad">0.159</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Morphic Supp.</span><span class="inst-metric-val bad">0.176</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">OS2 Bridge</span><span class="inst-metric-val mid">0.525</span></div>
+    <div class="inst-metric-row"><span class="inst-metric-label">Routing Quality → Gov</span><span class="inst-metric-val bad">0.80 ↑</span></div>
+    <div style="margin-top:.5rem;font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.4">Highest routing quality INTO national governance (0.80) despite lowest internal λ Raw. High morphic suppression — internal agents know their outputs are strategically calibrated, not empirically grounded. The only institution with an above-threshold trust vector to governance.</div>
+  </div>
+</div>
+
+<!-- Trust vector table -->
+<div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:1.1rem 0 .4rem;font-weight:600">Trust Vector Matrix — Initial Calibration and Final State</div>
+
+<div style="overflow-x:auto">
+<table class="calib-table">
+  <thead><tr>
+    <th>Institutional Pair</th>
+    <th>Initial Γ</th><th>Calibration Reasoning</th>
+    <th>Final Γ (step 7)</th><th>Status</th>
+  </tr></thead>
+  <tbody>
+    <tr>
+      <td><strong style="color:#fff">Scientific ↔ National Governance</strong></td>
+      <td class="gamma-cell mid">0.420</td>
+      <td>IPCC findings have high procedural legitimacy but declining routing quality since 3rd Assessment Report (2001) produced no proportionate policy response</td>
+      <td class="gamma-cell bad">0.220</td>
+      <td><span style="color:var(--red);font-weight:700;font-size:.78rem">CRITICAL BOTTLENECK — deficit 0.330</span></td>
+    </tr>
+    <tr>
+      <td>Scientific ↔ Treaty Org. (UNFCCC)</td>
+      <td class="gamma-cell good">0.680</td>
+      <td>UNFCCC process explicitly incorporates IPCC findings; stronger at Paris 2015</td>
+      <td class="gamma-cell mid">0.480</td>
+      <td><span style="color:var(--amber);font-weight:700;font-size:.78rem">Lost threshold at step 5 — deficit 0.070</span></td>
+    </tr>
+    <tr>
+      <td>National Governance ↔ Treaty Org.</td>
+      <td class="gamma-cell mid">0.520</td>
+      <td>Gap between NDC commitments and national implementation is the social distance measure</td>
+      <td class="gamma-cell bad">0.320</td>
+      <td><span style="color:var(--red);font-size:.78rem">Below threshold — deficit 0.230</span></td>
+    </tr>
+    <tr style="background:rgba(245,200,66,.04)">
+      <td><strong style="color:var(--amber)">National Governance ↔ Incumbent Economic</strong></td>
+      <td class="gamma-cell" style="color:var(--amber)">0.800</td>
+      <td>High routing quality of economic sector into governance via lobbying and regulatory access. <em>The strongest trust vector in the field — and it works against coordination.</em></td>
+      <td class="gamma-cell" style="color:var(--green)">0.600</td>
+      <td><span style="color:var(--green);font-weight:700;font-size:.78rem">ABOVE THRESHOLD — only pair above by step 7</span></td>
+    </tr>
+    <tr>
+      <td>Scientific ↔ Incumbent Economic</td>
+      <td class="gamma-cell bad">0.180</td>
+      <td>Near-alienation. Active opposition since tobacco-strategy playbook applied to climate science in the 1990s</td>
+      <td class="gamma-cell bad">0.050</td>
+      <td><span style="color:var(--red);font-size:.78rem">At floor — deficit 0.500</span></td>
+    </tr>
+    <tr>
+      <td>Treaty Org. ↔ Incumbent Economic</td>
+      <td class="gamma-cell bad">0.430</td>
+      <td>Economic sector participates in COP proceedings but in opposition mode</td>
+      <td class="gamma-cell bad">0.230</td>
+      <td><span style="color:var(--red);font-size:.78rem">Below threshold — deficit 0.320</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- Trust vector trajectory chart -->
+<div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:1.1rem 0 .4rem;font-weight:600">Trust Vector Trajectory: Scientific → National Governance</div>
+<div class="traj-chart-wrap">
+  <div id="tvTrajectoryChart" style="min-height:160px"></div>
+</div>
+
+<!-- Field suppression gap trajectory -->
+<div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:1rem 0 .4rem;font-weight:600">Field-Level Suppression Gap (% of scientific signal attenuated)</div>
+<div class="traj-chart-wrap">
+  <div id="fsgChart" style="min-height:140px"></div>
+</div>
+
+<!-- Coordination events -->
+<div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:1rem 0 .4rem;font-weight:600">Coordination Events</div>
+<div class="event-timeline">
+  <div class="event-item event-lost">
+    <div class="event-step">Step 5</div>
+    <div class="event-type"><strong style="color:var(--red)">Coordination lost:</strong> Scientific Body (IPCC) ↔ International Treaty Organization (UNFCCC) — trust vector crosses below coordination threshold (Γ = 0.55). The one inter-institutional trust vector that was above threshold at the Paris Agreement (2015) has been eroding as the gap between treaty commitments and national NDC implementation has grown. After step 5, no trust vector between the scientific institution and any other actor remains above coordination threshold.</div>
+  </div>
+  <div class="event-item" style="border-left:3px solid var(--muted)">
+    <div class="event-step">All steps</div>
+    <div class="event-type" style="color:rgba(255,255,255,.55)">No coordination achieved events recorded. The National Governance ↔ Incumbent Economic trust vector (Γ = 0.80) remains above threshold throughout — it is the only pair that does. This is the simulation's account of the structural feature that the iron cage attractor depends on: the only well-functioning inter-institutional trust vector in the field runs from the incumbent sector into national governance, against the direction that coordinated scientific response requires.</div>
+  </div>
+</div>
+
+</div><!-- end field results -->
+
+<!-- ══ MEADOWS LEVERAGE ═══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-leverage">
+
+<div class="finding-box" style="margin-bottom:1rem">
+  <div class="finding-label">Meadows Leverage Finding</div>
+  <div class="finding-text">The climate governance field operates at <strong>L7 (information flows)</strong> throughout all 8 steps — 4 of 6 inter-institutional trust vectors below coordination threshold from step 0, rising to 5 of 6 below threshold by step 6. The Meadows diagnosis: the field is stuck at the information flow level because the L5 structural relationships (trust vectors) are too weak to carry any L6 or L7 intra-institutional improvement across institutional boundaries. Fixing the evidence architecture within national governance (L7) while the trust vector to the scientific institution remains at Γ = 0.22 produces local improvement that the inter-institutional constraint immediately attenuates.</div>
+</div>
+
+<div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem;font-weight:600">Leverage Level Across 8 Steps</div>
+<div id="leverageSteps" style="display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;margin-bottom:1rem"></div>
+
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>Why L7 Is Insufficient Without L5</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">Meadows identifies level 7 (information flows) as high leverage — far above parameters (L12) and feedback loop gain (L8-9). The simulation confirms this: the Ch12 Config A → Config B shift was a L7 intervention, and it produced a large improvement in routing quality within national governance. But the inter-institutional field simulation shows what single-institution analysis cannot: a L7 improvement within national governance does not propagate to the scientific institution unless the trust vector between them is above the coordination threshold.</p>
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The trust vector threshold is the L5 structural relationship that determines whether improvements at L6 and L7 can cross institutional boundaries. When the Scientific Body ↔ National Governance trust vector is at Γ = 0.22 (far below the 0.55 threshold), the routing success condition — λ_perceived × routing_quality × Γ > 0.50 — is never met. Scientific findings do not reach national governance deliberation regardless of what the evidence architecture within national governance does internally.</p>
+    <div class="narrative-panel teal">
+      <strong>The specific intervention the model identifies.</strong> Restoring the Scientific Body ↔ National Governance trust vector from Γ = 0.22 to above Γ = 0.55 (a change of 0.33) would change the routing success condition from consistently failing to consistently meeting threshold. In the model's vocabulary, this requires: (1) a binding scientific advisory mechanism with enforcement capacity that increases routing_quality within national governance for scientific input specifically; (2) sustained demonstration over multiple steps that scientific contributions reach policy outcomes — which is the structural condition that allows the trust vector to build rather than erode. This is a L5 intervention in Meadows' terms: it changes the structural relationship, not only the parameters or rules within the existing structure.
+    </div>
+  </div>
+</div>
+
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>The Adverse Trust Vector Problem</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The simulation reveals a structural feature that Meadows' hierarchy does not automatically surface: the existence of trust vectors that are above the coordination threshold but working against the coordination the field needs. The National Governance ↔ Incumbent Economic Sector trust vector (Γ = 0.80, the only pair above threshold) is not a coordination resource — it is a coordination obstacle. The incumbent sector's routing quality into national governance is 0.80; the scientific institution's effective routing quality (after the trust vector constraint) is approximately 0.22 × 0.35 = 0.08.</p>
+    <p style="line-height:1.65;color:rgba(255,255,255,.82)">This means the adverse trust vector actively maintains the L7 blockage: the high-fidelity channel from the incumbent sector to national governance routes alternative-facts entropy export into the governance evidence architecture, degrading the routing conditions that scientific signal would need. Restoring the scientific ↔ governance trust vector is necessary but insufficient if the adverse trust vector simultaneously continues degrading the evidence architecture from the other side. The AMC field configuration requires both: trust vector restoration on the scientific side AND routing quality constraint on the incumbent side (L6 rules — evidence standards requirements, fiduciary disclosure mandates, regulatory capture prohibitions).</p>
+  </div>
+</div>
+
+</div><!-- end leverage -->
+
+<!-- ══ EPISTEMOLOGY ══════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-epistemology">
+
+<div class="narrative-panel amber" style="margin-bottom:1rem">
+  <strong>This tab is the most important in the app.</strong> The Field Results tab shows what the simulation produces. This tab explains what that means — and what it does not mean. Students who leave Chapter 14 able to make this distinction are equipped with the most important analytical skill the course can teach at civilizational scale.
+</div>
+
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>What the Simulation Demonstrates</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The climate governance field simulation is <strong>theoretically grounded and internally consistent</strong>. The underlying physics — the thermodynamic constraints on agent capacity, the Social Field Theory potential energy formula, the Meadows leverage hierarchy — are all derivable from first principles and validated across the course's case studies at smaller scales. The simulation produces findings that are consistent with what we know from the historical record of the IPCC-governance relationship. This gives us grounds to take the model's outputs seriously as a starting point for analysis.</p>
+    <p style="line-height:1.65;color:rgba(255,255,255,.82)">The simulation puts the EBB framework in the same category as Palmer's first ensemble climate models in the early 1990s: theoretically grounded, physically principled, producing findings consistent with observed dynamics, but not yet validated against independent empirical data. Palmer's models became credible over decades as their predictions were tested against observations. The AMC simulation is at the beginning of that validation arc.</p>
+  </div>
+</div>
+
+<div class="section-wrap">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>What the Simulation Projects, Not Proves</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body open">
+    <div style="display:grid;gap:.5rem;margin-bottom:.8rem">
+      <div style="background:rgba(255,255,255,.04);border-radius:.4rem;padding:.75rem;border-left:3px solid var(--amber)">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--amber);font-weight:700;margin-bottom:.3rem">Calibrated estimates, not measurements</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The specific trust vector values (Γ = 0.42 for scientific ↔ governance, Γ = 0.80 for governance ↔ incumbent economic) are our best estimates derived from qualitative reading of the historical record — not independent measurements. Different calibration choices would produce different trajectories.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border-radius:.4rem;padding:.75rem;border-left:3px solid var(--amber)">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--amber);font-weight:700;margin-bottom:.3rem">Theoretically motivated thresholds</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The coordination threshold of 0.55 is theoretically motivated, not empirically derived from data about when inter-institutional coordination actually succeeds or fails. The ATCF validation study — running thousands of parameter sweeps — is what would make this threshold empirical rather than theoretical.</p>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border-radius:.4rem;padding:.75rem;border-left:3px solid var(--amber)">
+        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--amber);font-weight:700;margin-bottom:.3rem">Calibrated dynamics, not measured rates</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The trust build rate (0.010) and erode rate (0.025) are calibrated to produce dynamics that match the observed pattern, not measured from any dataset. The asymmetry (erodes faster than builds) is theoretically motivated by the historical record but not independently validated.</p>
+      </div>
+    </div>
+    <div class="finding-box">
+      <div class="finding-label">The epistemological standard being applied</div>
+      <div class="finding-text">A model is credible when (1) its theoretical foundations are sound, (2) its parameters are calibrated from the best available evidence, (3) its outputs are consistent with the historical record, and (4) it makes falsifiable predictions that independent data could test. This simulation meets the first three criteria. It does not yet meet the fourth — not because the predictions are not falsifiable, but because the empirical measurement program to test them does not yet exist. That measurement program is what the AMC research extension is designed to produce.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-wrap">
+  <div class="section-header" onclick="toggleSection(this)">
+    <h3>What Would Validate or Falsify the Model</h3>
+    <span class="section-chevron">▶</span>
+  </div>
+  <div class="section-body">
+    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The simulation's primary prediction is: the trust vector between the scientific institution and national governance has been declining since approximately 2000 and is currently below the coordination threshold. Four empirical measures would test this:</p>
+    <div style="display:grid;gap:.45rem">
+      <div style="background:var(--surface2);border-radius:.4rem;padding:.7rem .8rem;display:flex;gap:.7rem;align-items:flex-start">
+        <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">1</div>
+        <div><strong style="color:#fff;font-size:.83rem">Expert engagement rates</strong><br><span style="font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.5">Frequency with which IPCC authors participate in national policy deliberations versus international treaty processes. If Γ(sci↔gov) < Γ(sci↔treaty), engagement should be lower in national processes — which is testable from attendance records and participation logs.</span></div>
+      </div>
+      <div style="background:var(--surface2);border-radius:.4rem;padding:.7rem .8rem;display:flex;gap:.7rem;align-items:flex-start">
+        <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">2</div>
+        <div><strong style="color:#fff;font-size:.83rem">Policy responsiveness analysis</strong><br><span style="font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.5">Correlation across jurisdictions and time periods between improvements in IPCC certainty levels and changes in national emissions policy. If the trust vector has been declining, this correlation should be weak and weakening — consistent with observed patterns but not formally tested against the simulation's specific trajectory.</span></div>
+      </div>
+      <div style="background:var(--surface2);border-radius:.4rem;padding:.7rem .8rem;display:flex;gap:.7rem;align-items:flex-start">
+        <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">3</div>
+        <div><strong style="color:#fff;font-size:.83rem">Morphic suppression proxies</strong><br><span style="font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.5">Surveys of the climate science community measuring self-editing frequency, strategic qualification of findings, and avoidance of alarming projections. The model predicts morphic suppression building in the scientific institution across 2015–2023, accelerating after step 5 (~2020) as the treaty trust vector also falls below threshold.</span></div>
+      </div>
+      <div style="background:var(--surface2);border-radius:.4rem;padding:.7rem .8rem;display:flex;gap:.7rem;align-items:flex-start">
+        <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">4</div>
+        <div><strong style="color:#fff;font-size:.83rem">Trust vector direct measurement</strong><br><span style="font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.5">Political scientists and network analysts measuring formal and informal communication pathways between IPCC institutions and national executive governance across jurisdictions — tracking whether pathways have become more or less dense, more or less reciprocal, and more or less effective in transmitting scientific consensus into policy deliberation.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end epistemology -->
+
+<!-- ══ JOURNAL ══════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+  <div class="narrative-panel amber" style="margin-bottom:1rem"><strong>Journal prompts for Chapter 14.</strong> Q14b specifically requires the simulation results from the Field Results tab. Read those first. Entries saved locally in your browser.</div>
+
+  <div class="prediction-wrap">
+    <label>Q14a — The Leverage Hierarchy Applied: Choose one governance institution you engage with regularly. Apply Meadows' hierarchy to diagnose where it is stuck. What interventions have been attempted at L12 through L7? Which produced local improvement and then reverted? Is the sticking point at L5 — a structural relationship between institutions that prevents L6/L7 improvements from propagating? Identify one specific L5 intervention that would change the trust vector architecture rather than optimize within the existing structure.</label>
+    <textarea id="j14a" oninput="saveJournal('j14a')" placeholder="Your leverage hierarchy analysis..."></textarea>
+  </div>
+  <div class="prediction-wrap">
+    <label>Q14b — Interrogating the Calibration: The simulation initializes Scientific ↔ National Governance at Γ = 0.42. Make the case for a different value — either higher (Γ = 0.55+, arguing the model overestimates alienation) or lower (Γ = 0.30, arguing it underestimates it). What historical evidence would you cite? What would a different initial value imply for the trajectory and Meadows classification? This is the most important question in the chapter — treat the simulation as a falsifiable model, not an authority.</label>
+    <textarea id="j14b" oninput="saveJournal('j14b')" placeholder="Your calibration critique..."></textarea>
+  </div>
+  <div class="prediction-wrap">
+    <label>Q14c — The Validation Program: Choose one of the four empirical measures from the "What Models Tell Us" tab. Describe what a research project to collect that data would look like. What institutions would you study? What time period? What finding would confirm the simulation's prediction — and what finding would falsify it? Write it as if proposing to CSER or the Santa Fe Institute.</label>
+    <textarea id="j14c" oninput="saveJournal('j14c')" placeholder="Your research design..."></textarea>
+  </div>
+  <div class="prediction-wrap">
+    <label>Q14d — The AMC Question: Identify the single L5 structural change that would most efficiently move the climate governance field above the coordination threshold on the critical trust vector (Scientific ↔ National Governance). Specify it in the model's vocabulary: what would it change in institutional state parameters, and what trust vector value would it need to produce? Then — separately — assess its political feasibility in the current environment. These are two different questions. The model answers the first. The second is yours.</label>
+    <textarea id="j14d" oninput="saveJournal('j14d')" placeholder="Your AMC intervention analysis..."></textarea>
+  </div>
+</div>
+
+</div><!-- end page -->
+
+<script>
+'use strict';
+
+// ── Pre-computed simulation results (climate governance field, 2015-2023) ──
+const FIELD_DATA = {
+  gamma_traj: [0.420, 0.395, 0.370, 0.345, 0.320, 0.295, 0.270, 0.245],
+  fsg_traj:   [90.6,  91.2,  91.7,  92.3,  92.8,  93.4,  94.0,  94.5],
+  meadows:    [7,7,7,7,7,7,7,7],
+  bottlenecks:[4,4,4,4,4,4,5,5],
+  threshold:  0.55,
+  steps:      8,
+  year_labels:['2015','2016','2017','2018','2019','2020','2021','2022'],
+};
+
+// ── Render trust vector trajectory chart ─────────────────────────────────
+function renderTVChart() {
+  const el = document.getElementById('tvTrajectoryChart');
+  if (!el) return;
+  const W = el.clientWidth || 520, H = 160;
+  const pad = { top: 24, right: 16, bottom: 48, left: 46 };
+  const iW = W - pad.left - pad.right, iH = H - pad.top - pad.bottom;
+  const steps = FIELD_DATA.gamma_traj.length;
+  const maxG = 0.80, minG = 0.10;
+  const x = i => pad.left + (i / (steps - 1)) * iW;
+  const y = v => pad.top + iH - ((v - minG) / (maxG - minG)) * iH;
+
+  // Threshold line
+  const ty = y(FIELD_DATA.threshold);
+  const threshLine = `<line x1="${pad.left}" y1="${ty}" x2="${pad.left+iW}" y2="${ty}" stroke="rgba(245,200,66,.6)" stroke-width="1.5" stroke-dasharray="5,3"/>`;
+  const threshLabel = `<text x="${pad.left+iW-2}" y="${ty-5}" text-anchor="end" font-size="10" fill="rgba(245,200,66,.8)" font-family="Courier New,monospace">threshold=0.55</text>`;
+
+  // Γ trajectory — scientific → governance
+  const pts = FIELD_DATA.gamma_traj.map((g, i) => [x(i), y(g)]);
+  const path = `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="#f08080" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const dots = pts.map(([cx, cy], i) => {
+    const col = FIELD_DATA.gamma_traj[i] >= FIELD_DATA.threshold ? '#7fd8a8' : '#f08080';
+    return `<circle cx="${cx}" cy="${cy}" r="4" fill="${col}" stroke="${col}22" stroke-width="3"/>`;
+  }).join('');
+
+  // Shaded "below threshold" region
+  const shadePts = pts.map(([cx, cy]) => `${cx},${Math.max(cy, ty)}`).join(' ');
+  const shade = `<polygon points="${pad.left},${ty} ${pts.map(([cx]) => `${cx},${ty}`).join(' ')} ${pad.left+iW},${ty}" fill="rgba(240,128,128,.06)"/>`;
+
+  // Y axis labels
+  let yLab = '';
+  [0.20, 0.40, 0.55, 0.60, 0.80].forEach(v => {
+    const gy = y(v);
+    if (gy >= pad.top && gy <= pad.top + iH) {
+      yLab += `<text x="${pad.left-5}" y="${gy+4}" text-anchor="end" font-size="10" fill="rgba(255,255,255,.45)" font-family="Courier New,monospace">${v.toFixed(2)}</text>`;
+    }
+  });
+
+  // X axis labels
+  let xLab = '';
+  FIELD_DATA.year_labels.forEach((yr, i) => {
+    xLab += `<text x="${x(i)}" y="${pad.top+iH+15}" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.45)" font-family="Courier New,monospace">${yr}</text>`;
+  });
+
+  // Grid
+  let grid = '';
+  [0.20, 0.40, 0.60, 0.80].forEach(v => {
+    const gy = y(v);
+    if (gy >= pad.top && gy <= pad.top + iH)
+      grid += `<line x1="${pad.left}" y1="${gy}" x2="${pad.left+iW}" y2="${gy}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`;
+  });
+
+  // Legend
+  const legend = `<line x1="${pad.left}" y1="${pad.top+iH+34}" x2="${pad.left+22}" y2="${pad.top+iH+34}" stroke="#f08080" stroke-width="2.5"/>
+    <circle cx="${pad.left+11}" cy="${pad.top+iH+34}" r="3" fill="#f08080"/>
+    <text x="${pad.left+28}" y="${pad.top+iH+38}" font-size="11" fill="rgba(255,255,255,.7)" font-family="Courier New,monospace" font-weight="500">Γ (Scientific → National Gov.)</text>
+    <line x1="${pad.left+210}" y1="${pad.top+iH+34}" x2="${pad.left+232}" y2="${pad.top+iH+34}" stroke="rgba(245,200,66,.7)" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="${pad.left+238}" y="${pad.top+iH+38}" font-size="11" fill="rgba(245,200,66,.75)" font-family="Courier New,monospace">Coordination threshold</text>`;
+
+  const title = `<text x="${W/2}" y="14" text-anchor="middle" font-size="12" fill="rgba(255,255,255,.7)" font-family="Courier New,monospace" font-weight="600">Trust Vector: Scientific Body → National Governance (2015–2022)</text>`;
+
+  el.innerHTML = `<svg width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible" role="img" aria-label="Trust vector trajectory">
+    ${title}${grid}${shade}${threshLine}${threshLabel}${path}${dots}${yLab}${xLab}${legend}
+  </svg>`;
+}
+
+// ── Render FSG trajectory ──────────────────────────────────────────────────
+function renderFSGChart() {
+  const el = document.getElementById('fsgChart');
+  if (!el) return;
+  const W = el.clientWidth || 520, H = 140;
+  const pad = { top: 20, right: 16, bottom: 44, left: 50 };
+  const iW = W - pad.left - pad.right, iH = H - pad.top - pad.bottom;
+  const steps = FIELD_DATA.fsg_traj.length;
+  const minV = 88, maxV = 97;
+  const x = i => pad.left + (i / (steps - 1)) * iW;
+  const y = v => pad.top + iH - ((v - minV) / (maxV - minV)) * iH;
+
+  const pts = FIELD_DATA.fsg_traj.map((v, i) => [x(i), y(v)]);
+  const path = `<polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="var(--purple)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const fill_pts = `${pad.left},${pad.top+iH} ${pts.map(p => p.join(',')).join(' ')} ${pad.left+iW},${pad.top+iH}`;
+  const area = `<polygon points="${fill_pts}" fill="rgba(232,121,249,.08)"/>`;
+  const dots = pts.map(([cx, cy]) => `<circle cx="${cx}" cy="${cy}" r="3.5" fill="#e879f9"/>`).join('');
+
+  let yLab = '', grid = '';
+  [90, 92, 94, 96].forEach(v => {
+    const gy = y(v);
+    yLab += `<text x="${pad.left-5}" y="${gy+4}" text-anchor="end" font-size="10" fill="rgba(255,255,255,.45)" font-family="Courier New,monospace">${v}%</text>`;
+    grid += `<line x1="${pad.left}" y1="${gy}" x2="${pad.left+iW}" y2="${gy}" stroke="rgba(255,255,255,.06)" stroke-width="1"/>`;
+  });
+
+  let xLab = '';
+  FIELD_DATA.year_labels.forEach((yr, i) => {
+    xLab += `<text x="${x(i)}" y="${pad.top+iH+14}" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.45)" font-family="Courier New,monospace">${yr}</text>`;
+  });
+
+  // Value labels on points
+  const valLabs = pts.map(([cx, cy], i) =>
+    `<text x="${cx}" y="${cy-7}" text-anchor="middle" font-size="9.5" fill="rgba(232,121,249,.8)" font-family="Courier New,monospace">${FIELD_DATA.fsg_traj[i]}%</text>`
+  ).join('');
+
+  const title = `<text x="${W/2}" y="14" text-anchor="middle" font-size="12" fill="rgba(255,255,255,.7)" font-family="Courier New,monospace" font-weight="600">Field-Level Suppression Gap — % of Scientific Signal Attenuated</text>`;
+
+  el.innerHTML = `<svg width="100%" viewBox="0 0 ${W} ${H}" style="overflow:visible" role="img" aria-label="Field suppression gap trajectory">
+    ${title}${grid}${area}${path}${dots}${valLabs}${yLab}${xLab}
+  </svg>`;
+}
+
+// ── Render Meadows leverage step badges ────────────────────────────────────
+function renderLeverageSteps() {
+  const el = document.getElementById('leverageSteps');
+  if (!el) return;
+  el.innerHTML = FIELD_DATA.meadows.map((lvl, i) => {
+    const bk = FIELD_DATA.bottlenecks[i];
+    const yr = FIELD_DATA.year_labels[i];
+    return `<div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.15);border-radius:.4rem;padding:.5rem .4rem;text-align:center">
+      <div style="font-size:.65rem;color:var(--muted);font-family:'Courier New',monospace">${yr}</div>
+      <div style="font-size:1.1rem;font-weight:800;color:var(--red);font-family:'Courier New',monospace">L${lvl}</div>
+      <div style="font-size:.65rem;color:rgba(240,128,128,.7);margin-top:.1rem">${bk} bottlenecks</div>
+    </div>`;
+  }).join('');
+}
+
+// ── UI helpers ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  const tabs = ['overview', 'results', 'leverage', 'epistemology', 'journal'];
+  document.querySelectorAll('.tab-btn').forEach((b, i) =>
+    b.classList.toggle('active', tabs[i] === tab));
+  document.querySelectorAll('.tab-pane').forEach(p =>
+    p.classList.toggle('active', p.id === `tab-${tab}`));
+  if (tab === 'results') { renderTVChart(); renderFSGChart(); }
+  if (tab === 'leverage') renderLeverageSteps();
+}
+
+function toggleSection(hdr) {
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+
+function saveJournal(id) {
+  try { localStorage.setItem(`ebb_ch14_${id}`, document.getElementById(id).value); } catch(_) {}
+}
+function loadJournal() {
+  ['j14a','j14b','j14c','j14d'].forEach(id => {
+    try {
+      const v = localStorage.getItem(`ebb_ch14_${id}`);
+      if (v) document.getElementById(id).value = v;
+    } catch(_) {}
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadJournal();
+  // Pre-render charts so they're ready when tabs switch
+  setTimeout(() => {
+    renderTVChart();
+    renderFSGChart();
+    renderLeverageSteps();
+  }, 100);
+});
+</script>
+</body>
+</html>
