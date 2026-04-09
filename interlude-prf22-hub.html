@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EBB Interlude · Meeting Your Ethical Twin</title>
+<style>
+:root {
+  --teal-dark:#0d5e57; --teal:#14b8a6; --teal-light:#ccfbf1;
+  --bg:#0f1117; --surface:#1a1f2e; --surface2:#222840;
+  --border:rgba(255,255,255,.09); --ink:#1f2937; --muted:#4b5563;
+  --amber:#f5c842; --amber-dark:#c2850a;
+  --red:#f08080; --green:#7fd8a8; --purple:#e879f9;
+  --navy:#0a1628;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+.page{max-width:920px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+/* ── Header ── */
+.interlude-header{background:linear-gradient(135deg,var(--navy) 0%,#0d3520 100%);border-radius:.75rem;padding:2rem;margin-bottom:1.5rem;border:1px solid rgba(20,184,166,.2)}
+.int-eyebrow{font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.int-title{font-size:1.6rem;font-weight:800;color:#fff;line-height:1.15;margin-bottom:.3rem}
+.int-subtitle{font-size:.95rem;color:rgba(255,255,255,.55);margin-bottom:1rem}
+.int-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.25);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+
+/* ── Tabs ── */
+.tab-bar{display:flex;gap:.25rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);overflow-x:auto}
+.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem .85rem;cursor:pointer;font-size:.8rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;border-radius:.3rem .3rem 0 0}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── Narrative panels ── */
+.narrative-panel{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1rem 1.1rem;margin-bottom:.85rem;font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel strong{color:#fff}
+
+/* ── Arc diagram ── */
+.arc-bar{display:flex;align-items:stretch;gap:0;margin:.9rem 0;border-radius:.5rem;overflow:hidden;border:1px solid var(--border)}
+.arc-step{flex:1;padding:.55rem .4rem;text-align:center;cursor:default;font-size:.68rem;line-height:1.3;transition:background .2s}
+.arc-step:not(:last-child){border-right:1px solid rgba(255,255,255,.07)}
+.arc-step .arc-num{font-family:'Courier New',monospace;font-size:.7rem;font-weight:700;margin-bottom:.2rem}
+.arc-step .arc-label{color:rgba(255,255,255,.6)}
+.arc-step.done{background:rgba(20,184,166,.12)}
+.arc-step.done .arc-num{color:var(--teal)}
+
+/* ── App cards ── */
+.apps-grid{display:grid;gap:1rem;margin:.6rem 0}
+.app-card{background:var(--surface2);border:1px solid var(--border);border-radius:.65rem;overflow:hidden;transition:border-color .2s}
+.app-card:hover{border-color:rgba(20,184,166,.4)}
+.app-card.visited{border-color:rgba(20,184,166,.3)}
+.app-card-header{display:flex;align-items:center;gap:.8rem;padding:.9rem 1rem;cursor:pointer}
+.app-card-emoji{font-size:1.5rem;flex-shrink:0}
+.app-card-meta{flex:1}
+.app-card-num{font-size:.65rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.15rem}
+.app-card-title{font-size:.92rem;font-weight:700;color:#fff;margin-bottom:.1rem}
+.app-card-ch{font-size:.72rem;color:var(--muted);font-style:italic}
+.app-card-badge{font-size:.65rem;font-family:'Courier New',monospace;font-weight:700;padding:.2rem .5rem;border-radius:999px;flex-shrink:0}
+.badge-new{background:rgba(20,184,166,.15);color:var(--teal);border:1px solid rgba(20,184,166,.3)}
+.badge-done{background:rgba(127,216,168,.15);color:#7fd8a8;border:1px solid rgba(127,216,168,.3)}
+.app-card-body{display:none;border-top:1px solid var(--border);padding:.85rem 1rem 1rem}
+.app-card-body.open{display:block}
+.app-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.6rem 0}
+.app-detail{background:var(--surface);border-radius:.4rem;padding:.65rem .75rem}
+.app-detail-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);font-weight:700;margin-bottom:.3rem}
+.app-detail-text{font-size:.81rem;color:rgba(255,255,255,.72);line-height:1.55}
+.launch-btn{display:flex;align-items:center;justify-content:center;gap:.5rem;background:var(--teal-dark);border:none;color:#fff;padding:.65rem 1.2rem;border-radius:.4rem;cursor:pointer;font-size:.85rem;font-weight:700;text-decoration:none;transition:background .15s;width:100%;margin-top:.75rem}
+.launch-btn:hover{background:var(--teal)}
+.mark-done-btn{background:rgba(127,216,168,.1);border:1px solid rgba(127,216,168,.3);color:#7fd8a8;padding:.4rem .9rem;border-radius:.3rem;cursor:pointer;font-size:.75rem;font-weight:700;margin-left:.5rem;transition:all .15s}
+.mark-done-btn:hover{background:rgba(127,216,168,.2)}
+
+/* ── Progress tracker ── */
+.progress-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.9rem 1rem;margin-bottom:1rem}
+.progress-label{font-size:.7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem}
+.progress-bar-track{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin-bottom:.4rem}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--teal-dark),var(--teal));border-radius:4px;transition:width .6s ease}
+.progress-count{font-size:.78rem;font-family:'Courier New',monospace;color:var(--teal)}
+
+/* ── Chapter map ── */
+.ch-map{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:.6rem 0}
+.ch-block{background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;padding:.55rem .5rem;text-align:center}
+.ch-block .ch-num{font-size:.68rem;font-family:'Courier New',monospace;color:var(--teal);font-weight:700;margin-bottom:.2rem}
+.ch-block .ch-label{font-size:.7rem;color:rgba(255,255,255,.6);line-height:1.35}
+.ch-block .ch-concept{font-size:.63rem;color:rgba(255,255,255,.35);margin-top:.2rem;font-style:italic}
+
+/* ── Journal ── */
+.journal-prompt{margin-bottom:.9rem}
+.journal-prompt label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.25rem}
+.journal-prompt label strong{color:rgba(255,255,255,.7)}
+.journal-prompt textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;color:#e2e8f0;font-size:.82rem;padding:.6rem .75rem;resize:vertical;min-height:90px;font-family:inherit}
+.journal-prompt textarea:focus{outline:none;border-color:var(--teal)}
+
+/* ── Limit cards ── */
+.limit-card{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.85rem 1rem;margin-bottom:.6rem}
+.limit-card-header{font-size:.85rem;font-weight:700;color:#fff;margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem}
+.limit-card-header span{font-size:1rem}
+.limit-card-body{font-size:.83rem;color:rgba(255,255,255,.72);line-height:1.6}
+
+/* ── Section toggles ── */
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:.5rem 0;border-bottom:1px solid var(--border);margin-bottom:.6rem}
+.sec-hdr h3{font-size:.92rem;font-weight:700;color:#fff}
+.sec-chev{color:var(--teal);font-size:.78rem;transition:transform .2s}
+.sec-hdr.open .sec-chev{transform:rotate(90deg)}
+.sec-body{display:none}.sec-body.open{display:block}
+
+@media(max-width:620px){.app-detail-grid{grid-template-columns:1fr}.ch-map{grid-template-columns:repeat(3,1fr)}.arc-bar{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="interlude-header">
+  <div class="int-eyebrow">Ethics Beyond Boundaries · Chapters 1–5 · Interlude</div>
+  <div class="int-title">Meeting Your Ethical Twin</div>
+  <div class="int-subtitle">The PRF-22 in Seven Acts — Self · Origins · Meaning · Type · Method · Other · Future</div>
+  <div class="int-tags">
+    <span class="tag">PRF-22</span>
+    <span class="tag">E-Twin</span>
+    <span class="tag">Moral Foundations</span>
+    <span class="tag">SAGE</span>
+    <span class="tag">Empathy</span>
+    <span class="tag">Assembly History</span>
+    <span class="tag">Growth Planning</span>
+    <span class="tag">Ch1–5 Integration</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('apps')">Seven Acts</button>
+  <button class="tab-btn" onclick="switchTab('limits')">Limits of the E-Twin</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button>
+</div>
+
+<!-- ══ OVERVIEW ══════════════════════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-overview">
+
+<div class="progress-wrap">
+  <div class="progress-label">Interlude Progress</div>
+  <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="progress-count" id="progressCount">0 of 7 acts completed</div>
+</div>
+
+<div class="narrative-panel amber">
+  <strong>Learning Objectives — The Interlude</strong>
+  <ul style="margin:.45rem 0 0 1rem;line-height:1.75">
+    <li>Synthesize Chapters 1–5 into a unified picture of how you reason ethically.</li>
+    <li>Build and export your PRF-22 Digital E-Twin — the JSON key that personalizes every remaining simulation in the course.</li>
+    <li>Use each of the seven ecosystem apps to deepen one specific Ch1–5 concept.</li>
+    <li>Practice reading another person's moral foundations from behavioral observation.</li>
+    <li>Identify one ethical foundation you want to deliberately develop and name the life experience that most shaped it.</li>
+    <li>Articulate what your E-Twin cannot tell you — why structural analysis is still necessary.</li>
+  </ul>
+</div>
+
+<!-- Five-chapter arc -->
+<div class="sec-hdr open" onclick="toggleSec(this)">
+  <h3>The Hidden Structure of Chapters 1–5</h3>
+  <span class="sec-chev">▶</span>
+</div>
+<div class="sec-body open">
+  <p style="font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.78);margin-bottom:.75rem">Chapters 1–5 are not five independent topics. They are five layers of the same argument, each adding a level of context to the one before. Reading them as a sequence reveals a hidden structure:</p>
+  <div class="ch-map">
+    <div class="ch-block"><div class="ch-num">Ch 1</div><div class="ch-label">PRF</div><div class="ch-concept">What you perceive morally</div></div>
+    <div class="ch-block"><div class="ch-num">Ch 2</div><div class="ch-label">SAGE</div><div class="ch-concept">How to analyze beyond first intuition</div></div>
+    <div class="ch-block"><div class="ch-num">Ch 3</div><div class="ch-label">ABCD + Neuro</div><div class="ch-concept">Why cognition is constrained by biology</div></div>
+    <div class="ch-block"><div class="ch-num">Ch 4</div><div class="ch-label">Complexity</div><div class="ch-concept">How individual PRFs produce collective patterns</div></div>
+    <div class="ch-block"><div class="ch-num">Ch 5</div><div class="ch-label">Social Contract</div><div class="ch-concept">How institutions coordinate across PRF diversity</div></div>
+  </div>
+  <p style="font-size:.86rem;line-height:1.65;color:rgba(255,255,255,.72)">The Interlude reverses the direction. Chapters 1–5 built from concepts to self — outside in. The Interlude builds from self to concepts — inside out. You are not learning something new here. You are learning what you already know from the inside.</p>
+</div>
+
+<!-- What the E-Twin is -->
+<div class="sec-hdr open" onclick="toggleSec(this)">
+  <h3>What Is a Digital E-Twin?</h3>
+  <span class="sec-chev">▶</span>
+</div>
+<div class="sec-body open">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.7rem">
+    <div style="background:var(--surface2);border-radius:.5rem;padding:.85rem;border:1px solid var(--border)">
+      <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);font-weight:700;margin-bottom:.35rem">E-Twin = Ethics Module Twin</div>
+      <p style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.72)">A parameterized model of your ethical perception and reasoning. Built from 22 measured parameters across three domains. Exported as a JSON file that personalizes every subsequent app's feedback to your specific moral topology.</p>
+    </div>
+    <div style="background:var(--surface2);border-radius:.5rem;padding:.85rem;border:1px solid var(--border)">
+      <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);font-weight:700;margin-bottom:.35rem">The JSON File is Your Key</div>
+      <p style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.72)">Every remaining app in the ecosystem accepts this file and uses it to personalize its output. Keep it saved. When the course simulations show a suppression gap for agents with your foundation configuration, the E-Twin is how you know those agents are like you.</p>
+    </div>
+  </div>
+  <div class="narrative-panel teal">
+    <strong>Privacy:</strong> Your PRF-22 data never leaves your device. Nothing is uploaded. No one — including your instructor — can see your individual responses unless you choose to share the file. The apps run entirely in your browser.
+  </div>
+</div>
+
+<!-- The seven-act sequence -->
+<div class="sec-hdr open" onclick="toggleSec(this)">
+  <h3>The Seven-Act Sequence — Use This Order</h3>
+  <span class="sec-chev">▶</span>
+</div>
+<div class="sec-body open">
+  <p style="font-size:.86rem;line-height:1.6;color:rgba(255,255,255,.72);margin-bottom:.6rem">Each act builds on the one before it. The Builder produces the key. The Assembly Detective traces its origins. The Foundation Explorer reads what it means. The Archetype Matcher locates it in the human moral landscape. The Ethical Lens connects it to the analytical traditions. The Empathy Simulator teaches you to read the same structure in others. The Growth Planner shows you how to develop it deliberately.</p>
+  <div class="arc-bar" id="arcBar">
+    <div class="arc-step" id="arc0"><div class="arc-num">1</div><div class="arc-label">Builder</div></div>
+    <div class="arc-step" id="arc1"><div class="arc-num">2</div><div class="arc-label">Assembly</div></div>
+    <div class="arc-step" id="arc2"><div class="arc-num">3</div><div class="arc-label">Foundations</div></div>
+    <div class="arc-step" id="arc3"><div class="arc-num">4</div><div class="arc-label">Archetype</div></div>
+    <div class="arc-step" id="arc4"><div class="arc-num">5</div><div class="arc-label">Lens</div></div>
+    <div class="arc-step" id="arc5"><div class="arc-num">6</div><div class="arc-label">Empathy</div></div>
+    <div class="arc-step" id="arc6"><div class="arc-num">7</div><div class="arc-label">Growth</div></div>
+  </div>
+  <p style="font-size:.8rem;color:var(--muted);text-align:center">Switch to the Seven Acts tab to open each app with its teaching context.</p>
+</div>
+
+</div><!-- end overview -->
+
+<!-- ══ SEVEN ACTS ════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-apps">
+
+<div class="narrative-panel teal" style="margin-bottom:1rem">
+  Each card below has four sections: <strong>Before</strong> (what to do before opening the app), <strong>Inside</strong> (what to notice), <strong>Bring back</strong> (what to record in your journal), and <strong>Forward</strong> (how this connects to what comes next). Expand the card, then launch the app.
+</div>
+
+<div class="apps-grid" id="appsGrid"></div>
+
+</div><!-- end apps -->
+
+<!-- ══ LIMITS ════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-limits">
+
+<div class="narrative-panel amber" style="margin-bottom:1rem">
+  <strong>Understanding the E-Twin's limits is as important as understanding its capabilities.</strong> These are not flaws in the instrument. They are the boundary conditions that make structural analysis in Chapters 6–14 necessary even for students who know their PRF precisely.
+</div>
+
+<div class="limit-card">
+  <div class="limit-card-header"><span>🧠</span> It cannot tell you what you will do under actual stress.</div>
+  <div class="limit-card-body">The PRF-22 measures your values in a low-stakes reflective context — Manual Mode responses. Under genuine stress, organizational authority, or peer pressure, your behavior will be influenced by automatic-mode processing that may diverge substantially from your PRF profile. Roger Boisjoly's E-Twin would have shown high professional integrity, high Care for safety. His behavior confirmed this. But the organizational structure tested whether those weights could sustain Manual Mode under sustained assault. The E-Twin shows what you value. The simulations in subsequent chapters show what happens when the institutional environment makes acting on those values costly.</div>
+</div>
+
+<div class="limit-card">
+  <div class="limit-card-header"><span>⚖️</span> It cannot tell you which ethical judgments are correct.</div>
+  <div class="limit-card-body">The PRF-22 is a descriptive instrument, not a normative one. It tells you how ethical situations feel to you — which aspects you prioritize, which you find obvious, which you find difficult. It does not tell you which responses are morally justified. Two people with very different PRF configurations can both be making morally serious, defensible judgments. SAGE provides the normative resources the descriptive PRF does not supply. Your E-Twin shows where you stand. The traditions show the full landscape of where principled people can stand and why.</div>
+</div>
+
+<div class="limit-card">
+  <div class="limit-card-header"><span>🏛️</span> It cannot tell you about structural constraints on acting on your values.</div>
+  <div class="limit-card-body">The most important analytical insight in this course is that the gap between what people value and what they can enact is primarily a structural problem, not a character problem. Healthcare workers who score high on Care and then find themselves unable to provide the care they believe in are not failing their values. They are operating in an institutional environment with a suppression gap between what agents know is right and what the architecture allows to reach decisions. Your E-Twin describes your values. It cannot tell you about the suppression gap you will encounter when you try to act on them. Chapters 6–14 show what that gap looks like in real institutional environments.</div>
+</div>
+
+<div class="limit-card">
+  <div class="limit-card-header"><span>🕸️</span> It cannot tell you how your PRF interacts with others' in complex systems.</div>
+  <div class="limit-card-body">Chapter 4's agent-based modeling showed that individual preferences, even moderate ones, can produce large-scale collective patterns that no individual intends or foresaw. Your PRF interacts with every other PRF in any institutional environment you inhabit. The emergent pattern of those interactions is what the simulation engine models. Understanding your own PRF is necessary but not sufficient for understanding what you will encounter in real institutions. That is why the simulations matter — they show what happens when many different PRF configurations interact under the specific institutional conditions that the evidence architecture and trust vector matrix define.</div>
+</div>
+
+<div class="narrative-panel teal" style="margin-top:.75rem">
+  <strong>The E-Twin as a starting point.</strong> Everything the PRF-22 ecosystem has shown you in this Interlude is the foundation for the analytical work in Chapters 6–14. Your E-Twin is not a ceiling. It is a map of where you are standing when the applied work begins. The four limits above are not reasons to distrust it — they are the reasons why the structural analysis in the chapters ahead is necessary alongside the self-knowledge this Interlude provides.
+</div>
+
+</div><!-- end limits -->
+
+<!-- ══ JOURNAL ════════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+  <div class="narrative-panel amber" style="margin-bottom:1rem"><strong>Interlude Journal — five required entries.</strong> Complete the corresponding app before answering each prompt. Entries saved locally in your browser.</div>
+
+  <div class="journal-prompt">
+    <label><strong>IQ1 — Your Foundation Ranking and Its Origin</strong><br>List your five foundations from highest to lowest weight. Then choose your highest-weighted foundation and write a specific account of the life experience you believe most shaped it. Be concrete — not "my family valued fairness" but a specific moment where something became visible to you for the first time.</label>
+    <textarea id="iq1" oninput="saveJ('iq1')" placeholder="Foundation ranking and origin story..."></textarea>
+  </div>
+
+  <div class="journal-prompt">
+    <label><strong>IQ2 — The Framework in Tension with Your PRF</strong><br>Name the ethical tradition the Ethical Frameworks Lens identified as most in tension with your foundation profile. Describe one specific situation from your own experience where you now suspect that tradition would have produced a better judgment than your dominant foundation did. This is your analytical blind spot — the moral consideration you are most likely to underweight in the applied chapters ahead.</label>
+    <textarea id="iq2" oninput="saveJ('iq2')" placeholder="Framework in tension and blind spot..."></textarea>
+  </div>
+
+  <div class="journal-prompt">
+    <label><strong>IQ3 — The PRF You Found Hardest to Read in the Empathy Simulator</strong><br>Describe the foundation configuration you most consistently misread. What was your error pattern? Now describe (without identifying them) a real person whose moral reactions sometimes seem puzzling. What foundation configuration would make those reactions internally coherent rather than irrational? This entry is private and will be referenced in the OS2 Bridge discussions in Chapter 12.</label>
+    <textarea id="iq3" oninput="saveJ('iq3')" placeholder="Your empathy error pattern and real-world application..."></textarea>
+  </div>
+
+  <div class="journal-prompt">
+    <label><strong>IQ4 — Your 12-Week Growth Commitment</strong><br>Paste or describe the growth target you chose in the Growth Planner. Explain why you chose that particular foundation rather than your lowest-weighted one. Describe the professional, civic, or personal context in which you most want to expand your ethical range. This entry will be revisited at the end of the semester.</label>
+    <textarea id="iq4" oninput="saveJ('iq4')" placeholder="Your growth target and development commitment..."></textarea>
+  </div>
+
+  <div class="journal-prompt">
+    <label><strong>IQ5 — What Your E-Twin Cannot Tell You</strong><br>Choose one of the four limits from the "Limits of the E-Twin" tab and apply it to a specific ethical situation you have witnessed or been part of. Describe how the gap between knowing your values and being able to act on them appeared — or might have appeared — in that situation. This entry bridges the personal work of the Interlude with the structural analysis that begins in Chapter 6.</label>
+    <textarea id="iq5" oninput="saveJ('iq5')" placeholder="The limit you chose and how it appeared in a real situation..."></textarea>
+  </div>
+</div>
+
+</div><!-- page end -->
+
+<script>
+'use strict';
+
+// ── App data ─────────────────────────────────────────────────────────────────
+const APPS = [
+  {
+    id: 0, emoji: '🔄', act: 'Act 1',
+    title: 'PRF-22 Builder',
+    subtitle: 'Discover Your Ethical Framework',
+    url: 'https://rmertzman-tech.github.io/PRF-22/',
+    chapter: 'Chapter 1: The Phenomenological Reference Frame',
+    what: 'A 22-item assessment across three domains — moral foundations, core values and ATCF resilience, ethical reasoning style — that produces your Digital E-Twin: a JSON file containing your parameterized moral topology. Includes a 3D visualization of your ethical manifold.',
+    before: 'Write one paragraph in your journal: describe a recent situation in which you had a strong moral intuition. What was the feeling? What did you do? Keep this visible while you complete the assessment — you will return to it afterward.',
+    during: 'Notice which questions feel easy and which feel genuinely uncertain. Easy questions reveal your high-confidence foundations. Uncertain questions often reveal foundations in tension with each other — or aspects of your PRF that your experience has left partially formed.',
+    after: 'Export your JSON file and save it — this is your key for every remaining app. Record your five foundation weights in order from highest to lowest. Write down your reasoning style position (logical/intuitive ratio and idealism/relativism score).',
+    forward: 'Chapter 1 argued your PRF was formed through experiences you did not fully choose. The Builder gives you your first precise look at what that formation produced. In Act 2, you will trace how it was built.',
+  },
+  {
+    id: 1, emoji: '🕵️', act: 'Act 2',
+    title: 'Assembly History Detective',
+    subtitle: 'Trace How Your PRF Pattern Emerged from Life Experiences',
+    url: 'https://rmertzman-tech.github.io/PRF-Assembly-History-Detective/',
+    chapter: 'Chapter 3: ABCD and How Context Shapes Moral Cognition',
+    what: 'Three modes: import your E-Twin to explore which life experiences likely built each foundation weight; enter experiences directly to predict the PRF pattern they would produce; or study historical figures to trace how their experiences shaped their moral reasoning.',
+    before: 'Review your journal entry from Act 1. Recall Chapter 3\'s argument that the PRF is an assembly output — not given at birth but built through accumulated experiences that load specific foundations and produce specific ATCF resilience levels. Your PRF is a record of your history.',
+    during: 'If you use the Historical Figures mode, pay attention to how specific biographical events (not broad themes — specific events) map to specific foundation shifts. Notice which of your own foundations has the clearest traceable origin story and which feels most mysterious.',
+    after: 'Bring back one specific life experience the app identifies as a likely high-impact assembly event for your highest-weighted foundation. Write two sentences connecting that experience to Chapter 3\'s account of how stress, security, and cultural context shape the balance between survival-mode and self-expression values.',
+    forward: 'Chapter 4 showed that individual differences, when aggregated, produce emergent collective patterns. You now have a specific individual difference with a traceable origin story. In later simulations, when that foundation is your agent\'s dominant parameter, you will understand why.',
+  },
+  {
+    id: 2, emoji: '⚖️', act: 'Act 3',
+    title: 'Foundation Weights Explorer',
+    subtitle: 'What Your Profile Means Globally',
+    url: 'https://rmertzman-tech.github.io/PRF-Foundation-Weights-Explorer-1/',
+    chapter: 'Chapter 1: PRF and the Haidt Moral Foundations Research',
+    what: 'Visualizes your five foundation weights against global population data from Haidt\'s research team. Shows cross-national distributions, which political and cultural contexts are associated with different foundation profiles, and how your profile compares to population averages across countries and demographic groups.',
+    before: 'Recall Chapter 1\'s argument that PRFs are not idiosyncratic personal quirks but patterned responses shaped by cultural, developmental, and institutional environments. Haidt\'s research collected moral foundations data from dozens of countries. Your weights exist in a distribution of human moral response.',
+    during: 'Notice whether your profile places you closer to what Haidt identifies as individualizing foundations (Care and Fairness — tend to dominate in progressive and highly educated Western samples) or binding foundations (Loyalty, Authority, Purity — weighted more equally in conservative samples and many non-Western populations). Neither profile is more ethical — they represent genuinely different moral grammars.',
+    after: 'Find one population whose foundation profile is most different from yours that surprises you. Write a paragraph about what that comparison implies for the Chapter 5 social contract question: how do people with your foundation profile typically relate to institutions designed by people with a very different profile?',
+    forward: 'Chapters 4 and 5 both argued that moral disagreement is often not disagreement about facts but disagreement between different moral grammars. The Foundation Weights Explorer shows you the grammar distribution. When you encounter moral conflict in the applied chapters, your first question should be: are we speaking different moral languages?',
+  },
+  {
+    id: 3, emoji: '🏛️', act: 'Act 4',
+    title: 'Archetype Matcher',
+    subtitle: 'Your Place in the Moral Landscape',
+    url: 'https://rmertzman-tech.github.io/PRF-Moral-Foundations-Archetype-Matches-/',
+    chapter: 'Chapter 5: Social Contracts and the Challenge of Moral Diversity',
+    what: 'Matches your PRF-22 profile to ethical archetypes based on foundation weight configurations — recognizable moral character types that tend to produce similar ethical judgments across different situations. Also shows how your profile compares with the PRFs of others.',
+    before: 'Recall Chapter 5\'s question: how do we build institutions that function despite moral diversity rather than requiring moral consensus? Rawls\' veil of ignorance was one answer; Nussbaum\'s capabilities approach was another. The Archetype Matcher shows you the landscape of moral types that any social contract must accommodate.',
+    during: 'Notice whether your archetype tends to design well for others like you but poorly for people with very different foundation profiles. This is the PRF blind spot problem: we tend to assume that institutional arrangements that feel fair to us are fair to everyone, when in fact they may only be coherent from within our specific moral grammar.',
+    after: 'Record your archetype and write one paragraph about a real institution — a workplace, a school, a government agency — that you think was designed primarily by people with a similar archetype to yours. What moral needs does it serve well? What does it structurally fail to see?',
+    forward: 'The applied chapters (Ch6+) analyze real institutions. In each case, the question of who designed the institution — whose archetype dominated the design process — is analytically crucial. Your Archetype Matcher result is your baseline for approaching those analyses.',
+  },
+  {
+    id: 4, emoji: '🔭', act: 'Act 5',
+    title: 'Ethical Frameworks Lens',
+    subtitle: 'Your PRF Through the Traditions\' Eyes',
+    url: 'https://rmertzman-tech.github.io/Ethical-Frameworks-Lens/',
+    chapter: 'Chapter 2: SAGE and the Analytical Traditions',
+    what: 'Shows how your specific PRF configuration interacts with each major ethical framework — what Kantian deontology looks like filtered through your foundation profile, how your reasoning style affects consequentialist calculations, where Care Ethics and Virtue Ethics find resonance or friction with your specific weights.',
+    before: 'Recall the SAGE framework from Chapter 2. The Analyzing step requires you to bring multiple frameworks to bear on a situation — not just the one that feels natural. But which framework feels natural depends heavily on your PRF. A high-Care foundation makes Care Ethics feel like common sense. The Ethical Frameworks Lens shows you which frameworks pull with your PRF and which pull against it.',
+    during: 'Notice which framework the app identifies as most in tension with your foundation profile. This is your analytical growth edge — the tradition whose questions are hardest for you to ask naturally. Roger Boisjoly had to work against his high professional-loyalty weight to maintain his commitment to public safety when the two came into conflict. Which conflict is yours?',
+    after: 'Record the framework most natural for you and the one most in tension. In your journal, write a SAGE Analyzing step for the situation from Act 1, deliberately using the framework in tension with your PRF. Notice what additional considerations become visible when you force that perspective.',
+    forward: 'Chapters 6–11 apply these traditions to specific domains. In each chapter, the OS2 Bridge concept will appear: the question of how different ethical traditions and different PRF profiles can coordinate despite their differences. Your Ethical Frameworks Lens result tells you which bridge-building will be hardest for you personally.',
+  },
+  {
+    id: 5, emoji: '👥', act: 'Act 6',
+    title: 'Empathy Practice Simulator',
+    subtitle: 'Learn to Read Others\' PRFs from Behavioral Observation',
+    url: 'https://rmertzman-tech.github.io/PRF-E-Twin-Empathy-Simulator/',
+    chapter: 'Chapters 3–4: Context Shapes Cognition; Emergence from Individual Differences',
+    what: 'Presents behavioral vignettes and trains you to infer the PRF configuration that most likely produced the observed behavior. Three modes: Practice (20 vignettes with feedback), Guided (6-step empathy protocol), Challenge (minimal guidance). Tracks your accuracy as a foundation-reading skill that improves with use.',
+    before: 'Consider what it means to read a PRF in the wild — without the instrument, without the framework made explicit. You observe behavior: what someone prioritizes, what makes them angry, what they consider obvious, what they find incomprehensible. The Empathy Simulator teaches you to work backward from those observations to the foundation configuration that most likely produced them.',
+    during: 'Pay close attention to your error patterns. Most people over-attribute their own dominant foundations to others — a high-Care person reads outrage as Care violation when it may be Loyalty violation; a high-Authority person reads rule-following as Authority weight when it may be Fairness. Your systematic errors reveal the limits of your empathic projection: the foundations you find it hardest to imagine as genuinely primary for someone else.',
+    after: 'Record your accuracy rate and your most common error type. Describe a real person whose moral reactions sometimes seem puzzling. What foundation configuration would make those reactions internally coherent rather than irrational?',
+    forward: 'The Empathy Simulator is the practical precursor to what Chapters 12–14 call cross-worldview coordination capacity — the OS2 Bridge metric in the simulation. High OS2 Bridge values indicate populations that can coordinate with agents whose PRFs differ significantly from their own. Every percentage point of accuracy you build here is coordination capacity the simulation will eventually model.',
+  },
+  {
+    id: 6, emoji: '🌱', act: 'Act 7',
+    title: 'PRF Growth Planner',
+    subtitle: 'Deliberately Develop Your Ethical Foundations',
+    url: 'https://rmertzman-tech.github.io/PRF-Growth-Planner/',
+    chapter: 'All Chapters: Agency, ABCD, and the Forward Arc of the Course',
+    what: 'Imports your E-Twin, identifies growth opportunities based on your foundation profile and the course\'s analytical demands, and generates a 12-week development plan with targeted exercises for a chosen foundation. Exportable as a PDF for the full semester.',
+    before: 'Make two decisions before opening this app. First: which foundation most limits your analytical range in the ethical situations you care about most? This is not necessarily your lowest-weighted — it is the one whose absence most restricts what you can see. Second: what is one context — professional, civic, personal — where you most want to expand your ethical range? These decisions shape which plan is most useful.',
+    during: 'Notice that the Growth Planner does not tell you to maximize every foundation equally. Different roles require different configurations. A palliative care nurse needs a highly developed Care foundation. A constitutional lawyer needs Fairness. A community organizer needs Loyalty. Growth means deliberate expansion toward the configuration that serves your chosen direction — not toward some abstract ideal balance.',
+    after: 'Export your 12-week growth plan. This document is a semester-long commitment. The journal prompts in Chapters 6–14 will periodically ask you to return to it and assess your progress. It is the most personal artifact the course produces.',
+    forward: 'The Growth Planner is where the inside-out reversal of the Interlude completes. You have seen your PRF, traced its origins, understood its meaning, located it in the human landscape, connected it to the analytical traditions, practiced extending it to others, and committed to developing it deliberately. Chapters 6–14 apply everything you have built here to the real institutional and structural terrain where ethical action actually occurs.',
+  },
+];
+
+// ── Render app cards ──────────────────────────────────────────────────────────
+function renderApps() {
+  const grid = document.getElementById('appsGrid');
+  grid.innerHTML = '';
+  APPS.forEach(app => {
+    const visited = getVisited(app.id);
+    const card = document.createElement('div');
+    card.className = 'app-card' + (visited ? ' visited' : '');
+    card.id = `card-${app.id}`;
+    card.innerHTML = `
+      <div class="app-card-header" onclick="toggleCard(${app.id})">
+        <div class="app-card-emoji">${app.emoji}</div>
+        <div class="app-card-meta">
+          <div class="app-card-num">${app.act}</div>
+          <div class="app-card-title">${app.title}</div>
+          <div class="app-card-ch">${app.subtitle}</div>
+        </div>
+        <span class="app-card-badge ${visited ? 'badge-done' : 'badge-new'}">${visited ? '✓ Done' : 'Start'}</span>
+      </div>
+      <div class="app-card-body" id="body-${app.id}">
+        <div style="font-size:.72rem;color:var(--muted);margin-bottom:.5rem;font-style:italic">Connects to: ${app.chapter}</div>
+        <div class="app-detail-grid">
+          <div class="app-detail">
+            <div class="app-detail-label">What it does</div>
+            <div class="app-detail-text">${app.what}</div>
+          </div>
+          <div class="app-detail">
+            <div class="app-detail-label">⏸ Before you open it</div>
+            <div class="app-detail-text">${app.before}</div>
+          </div>
+          <div class="app-detail">
+            <div class="app-detail-label">👁 Inside — watch for</div>
+            <div class="app-detail-text">${app.during}</div>
+          </div>
+          <div class="app-detail">
+            <div class="app-detail-label">📝 Bring back</div>
+            <div class="app-detail-text">${app.after}</div>
+          </div>
+        </div>
+        <div class="app-detail" style="margin-top:.5rem;border-color:rgba(20,184,166,.2)">
+          <div class="app-detail-label" style="color:var(--teal)">→ Forward pointer</div>
+          <div class="app-detail-text">${app.forward}</div>
+        </div>
+        <div style="display:flex;align-items:center;margin-top:.75rem;gap:.5rem">
+          <a class="launch-btn" href="${app.url}" target="_blank" rel="noopener"
+             onclick="markVisited(${app.id})">
+            🚀 Launch ${app.title}
+          </a>
+          <button class="mark-done-btn" onclick="markVisited(${app.id}); return false">
+            ✓ Mark Done
+          </button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ── Progress & visited state ──────────────────────────────────────────────────
+function getVisited(id) {
+  try { return JSON.parse(localStorage.getItem(`ebb_int_v${id}`) || 'false'); } catch { return false; }
+}
+function markVisited(id) {
+  try { localStorage.setItem(`ebb_int_v${id}`, 'true'); } catch {}
+  updateProgress();
+  // Re-render just this card's badge
+  const card = document.getElementById(`card-${id}`);
+  if (card) {
+    card.classList.add('visited');
+    const badge = card.querySelector('.app-card-badge');
+    if (badge) { badge.textContent = '✓ Done'; badge.className = 'app-card-badge badge-done'; }
+  }
+  // Update arc
+  const arcStep = document.getElementById(`arc${id}`);
+  if (arcStep) arcStep.classList.add('done');
+}
+
+function updateProgress() {
+  const done = APPS.filter(a => getVisited(a.id)).length;
+  const pct = Math.round(done / APPS.length * 100);
+  const fill = document.getElementById('progressFill');
+  const count = document.getElementById('progressCount');
+  if (fill) fill.style.width = pct + '%';
+  if (count) count.textContent = `${done} of ${APPS.length} acts completed`;
+  // Update arc
+  APPS.forEach(a => {
+    const arcStep = document.getElementById(`arc${a.id}`);
+    if (arcStep) arcStep.classList.toggle('done', getVisited(a.id));
+  });
+}
+
+// ── Toggle card body ──────────────────────────────────────────────────────────
+function toggleCard(id) {
+  const body = document.getElementById(`body-${id}`);
+  if (body) body.classList.toggle('open');
+}
+
+// ── Toggle sections ───────────────────────────────────────────────────────────
+function toggleSec(hdr) {
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  const tabs = ['overview', 'apps', 'limits', 'journal'];
+  document.querySelectorAll('.tab-btn').forEach((b, i) =>
+    b.classList.toggle('active', tabs[i] === tab));
+  document.querySelectorAll('.tab-pane').forEach(p =>
+    p.classList.toggle('active', p.id === `tab-${tab}`));
+}
+
+// ── Journal persistence ───────────────────────────────────────────────────────
+function saveJ(id) {
+  try { localStorage.setItem(`ebb_int_j_${id}`, document.getElementById(id).value); } catch {}
+}
+function loadJ() {
+  ['iq1','iq2','iq3','iq4','iq5'].forEach(id => {
+    try {
+      const v = localStorage.getItem(`ebb_int_j_${id}`);
+      if (v && document.getElementById(id)) document.getElementById(id).value = v;
+    } catch {}
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderApps();
+  updateProgress();
+  loadJ();
+});
+</script>
+</body>
+</html>
