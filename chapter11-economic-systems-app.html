@@ -2,256 +2,306 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Chapter 11 — What the Economy Does to Coherent Agency</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch11 &middot; Economic Systems &middot; EBB</title>
 <style>
 :root{
-  --teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
-  --amber:#c2850a;--amber-light:#fef9ec;--amber-mid:#f5c842;
-  --red:#dc2626;--red-light:#fee2e2;
-  --green:#16a34a;--green-light:#f0fdf4;
-  --sky:#3b82f6;--sky-light:#dbeafe;
-  --ink:#1f2937;--muted:#4b5563;--border:#e5e7eb;--paper:#f9fafb;
-  --ucp-navy:#1a2744;--ucp-sky:#4a7fb5;--ucp-gold:#c9a84c;
-  --ucp-success:#3a8a5c;--ucp-warn:#c87843;--ucp-danger:#b84444;
-  --success:#16a34a;--warn:#f59e0b;--danger:#dc2626;
-  font-size:18px;
+  --teal-dark:#0d5e57;--teal:#14b8a6;--teal-light:#ccfbf1;
+  --ink:#1f2937;--muted:#4b5563;--bg:#0f1117;--surface:#1a1f2e;
+  --surface2:#222840;--border:rgba(255,255,255,.09);
+  --amber:#f5c842;--amber-dark:#c2850a;--amber-bg:rgba(245,200,66,.07);
+  --red:#f08080;--green:#7fd8a8;--navy:#0a1628;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Georgia',serif;background:#f0fdfa;color:var(--ink);line-height:1.7}
-/* ── Header ── */
-.course-header{background:var(--teal-dark);color:#fff;padding:1.25rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.course-header .chapter-label{font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;opacity:.65}
-.course-header h1{font-size:1.15rem;font-weight:700;line-height:1.3}
-.course-header .subtitle{font-size:.78rem;color:rgba(255,255,255,.6);margin-top:.1rem}
-/* ── Nav tabs ── */
-nav.tab-nav{background:#fff;border-bottom:2px solid var(--teal-mid);padding:.5rem 1.5rem;display:flex;flex-wrap:wrap;gap:.4rem;position:sticky;top:60px;z-index:99}
-.tab-btn{padding:.35rem .85rem;border-radius:.4rem;border:1px solid var(--border);background:var(--paper);color:var(--muted);font-family:'Georgia',serif;font-size:.82rem;cursor:pointer;transition:.15s}
-.tab-btn:hover{border-color:var(--teal-mid);color:var(--teal-dark)}
-.tab-btn.active{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark);font-weight:700}
-/* ── Panes ── */
-.tab-pane{display:none;padding:2rem 1.5rem;max-width:900px;margin:0 auto}
-.tab-pane.active{display:block}
-/* ── Typography ── */
-h2{font-size:1.3rem;color:var(--teal-dark);border-bottom:2px solid var(--teal-mid);padding-bottom:.4rem;margin:2rem 0 .75rem}
-h3{font-size:1.05rem;color:var(--teal-dark);margin:1.5rem 0 .5rem}
-p{margin-bottom:.85rem;font-size:.92rem;line-height:1.75;text-align:justify}
-/* ── Cards ── */
-.card{border-radius:.625rem;padding:1.1rem 1.25rem;margin:.85rem 0}
-.card-teal{background:var(--teal-light);border-left:4px solid var(--teal-mid)}
-.card-amber{background:var(--amber-light);border:2px solid var(--amber-mid);border-radius:.625rem;padding:1.1rem 1.25rem;margin:.85rem 0}
-.card-blue{background:var(--sky-light);border-left:4px solid var(--sky)}
-.card-dark{background:var(--ucp-navy);color:rgba(255,255,255,.82);border-radius:.625rem;padding:1.25rem 1.5rem;margin:.85rem 0}
-.card-dark h3,.card-dark h4{color:var(--teal-mid)}
-.card-dark p{color:rgba(255,255,255,.8);font-size:.88rem}
-/* ── Config stances ── */
-.stance-grid{display:grid;gap:.5rem;margin:.65rem 0 .85rem}
-.stance{border-radius:0 .4rem .4rem 0;padding:.6rem .85rem;font-size:.84rem;line-height:1.55}
-.stance-a{background:var(--red-light);border-left:3px solid var(--red)}
-.stance-b{background:#fef9c3;border-left:3px solid #ca8a04}
-.stance-c{background:var(--green-light);border-left:3px solid var(--green)}
-/* ── Run toggle ── */
-.run-toggle{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
-.run-btn{padding:.5rem 1rem;border-radius:.4rem;border:2px solid var(--border);background:var(--paper);color:var(--muted);font-family:'Georgia',serif;font-size:.85rem;cursor:pointer;transition:.15s;flex:1;min-width:160px;text-align:center}
-.run-btn.active-run{background:var(--teal-dark);color:#fff;border-color:var(--teal-dark);font-weight:700}
-.run-btn.run-a.active-run{background:var(--red);border-color:var(--red)}
-.run-btn.run-b.active-run{background:var(--green);border-color:var(--green)}
-.run-btn.run-c.active-run{background:var(--ucp-gold);border-color:var(--ucp-gold)}
-/* ── UCP panel ── */
-.ucp-panel{background:var(--ucp-navy);color:#fff;border-radius:.875rem;padding:1.5rem;margin:1rem 0}
-.ucp-panel h3{color:#fff;border:none;margin:0 0 .75rem;font-size:1rem}
-.ucp-run-btn{width:100%;padding:.7rem;border:none;border-radius:.5rem;background:var(--teal-mid);color:#fff;font-family:'Georgia',serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;margin:.5rem 0}
-.ucp-run-btn:hover{background:var(--teal-dark)}
-.ucp-run-btn:disabled{opacity:.5;cursor:wait}
-.ucp-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:.5rem;vertical-align:middle}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+.page{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+/* ── HEADER ── */
+.chapter-header{background:linear-gradient(135deg,var(--teal-dark) 0%,#0a2830 100%);border-radius:.75rem;padding:2rem 2rem 1.5rem;margin-bottom:1.5rem}
+.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.chapter-title{font-size:1.6rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.25rem}
+.chapter-subtitle{font-size:1rem;color:rgba(255,255,255,.65);margin-bottom:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:.3rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);padding-bottom:0;overflow-x:auto}
+.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem 1rem;cursor:pointer;font-size:.85rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;border-radius:.3rem .3rem 0 0;white-space:nowrap}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── NARRATIVE PANELS ── */
+.narrative-panel{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:1rem;font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel.red{border-left:4px solid var(--red)}
+.narrative-panel.navy{background:var(--navy);border-left:4px solid var(--teal);color:rgba(255,255,255,.72)}
+.narrative-panel strong{color:#fff}
+.narrative-panel em{font-style:italic;color:rgba(255,255,255,.85)}
+
+/* ── SECTION HEADERS ── */
+.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:.6rem 0;border-bottom:1px solid var(--border);margin-bottom:.8rem}
+.section-header h3{font-size:.95rem;font-weight:700;color:#e2e8f0}
+.section-chevron{color:var(--teal);font-size:.78rem;transition:transform .2s}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+.section-body{display:none}.section-body.open{display:block}
+
+/* ── CARDS (converted from light) ── */
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:.55rem;padding:1.1rem 1.2rem;margin-bottom:.85rem}
+.card h3,.card h4{color:var(--teal);font-size:.9rem;font-weight:700;margin-bottom:.5rem}
+.card p{font-size:.88rem;color:rgba(255,255,255,.75);line-height:1.62;margin-bottom:.5rem}
+.card p:last-child{margin:0}
+.card strong{color:#fff}
+.card-teal{border-left:4px solid var(--teal)}
+.card-amber{border-left:4px solid var(--amber)}
+.card-red{border-left:4px solid var(--red)}
+.card-blue{border-left:4px solid #60a5fa}
+.card-green{border-left:4px solid var(--green)}
+
+/* ── FAIRNESS GRID ── */
+.fairness-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.7rem;margin:.6rem 0}
+.fairness-card{background:var(--surface2);border:1px solid var(--border);border-radius:.45rem;padding:.75rem .9rem}
+.fc-dim{font-family:'Courier New',monospace;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:.3rem}
+.fc-mapping{font-size:.82rem;color:rgba(255,255,255,.72);line-height:1.55}
+.fc-fail{font-size:.78rem;color:var(--red);margin-top:.3rem}
+
+/* ── SIMULATION PANELS (preserved from original) ── */
+.ucp-panel{background:var(--surface);border:1px solid rgba(20,184,166,.2);border-radius:.6rem;padding:1.1rem;margin:.8rem 0}
+.ucp-panel h3{font-size:.9rem;font-weight:700;color:#e2e8f0;margin-bottom:.7rem}
+.ucp-run-btn{display:flex;align-items:center;gap:.5rem;background:var(--teal-dark);border:none;color:#fff;padding:.7rem 1.4rem;border-radius:.4rem;cursor:pointer;font-size:.88rem;font-weight:700;width:100%;justify-content:center;transition:background .15s;margin-bottom:1rem}
+.ucp-run-btn:hover:not(:disabled){background:var(--teal)}
+.ucp-run-btn:disabled{opacity:.5;cursor:not-allowed}
+.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:.6rem;margin-bottom:.9rem}
+.metric-card{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.7rem .8rem;text-align:center}
+.metric-card .m-label{font-size:.68rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem}
+.metric-card .m-val{font-size:1.25rem;font-weight:700;font-family:'Courier New',monospace}
+.ucp-bar-section{margin:.5rem 0}
+.ucp-bar-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem}
+.ucp-bar-label{font-family:'Courier New',monospace;font-size:.68rem;width:120px;flex-shrink:0;color:rgba(255,255,255,.6)}
+.ucp-bar-track{flex:1;background:rgba(255,255,255,.08);border-radius:999px;height:7px;overflow:hidden}
+.ucp-bar-fill{height:100%;border-radius:999px;transition:width .8s ease}
+.ucp-bar-val{font-family:'Courier New',monospace;font-size:.72rem;width:44px;text-align:right;color:rgba(255,255,255,.75)}
+.ucp-narrative{background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;padding:.8rem 1rem;font-size:.86rem;line-height:1.6;color:rgba(255,255,255,.75);margin:.6rem 0}
+.ucp-error{background:rgba(240,128,128,.08);border:1px solid rgba(240,128,128,.25);border-radius:.4rem;padding:.75rem 1rem;font-size:.85rem;color:var(--red)}
+.compare-box{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.9rem 1rem;margin:.8rem 0;display:none}
+.compare-box h4{font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:.5rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.05em}
+.sxs-panel{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.9rem 1rem;margin:.8rem 0;display:none}
+.sxs-label{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.7rem}
+.robustness-panel{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:.9rem 1rem;margin:.8rem 0;display:none}
+.robustness-label{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.5rem}
+.run-toggle{display:flex;gap:.5rem;margin:.8rem 0;flex-wrap:wrap}
+.run-btn{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);border-radius:.45rem;padding:.65rem .75rem;cursor:pointer;text-align:center;font-size:.82rem;font-weight:600;color:rgba(255,255,255,.6);transition:all .18s;line-height:1.3}
+.run-btn:hover{border-color:var(--teal);color:#fff}
+.run-btn.active-run{border-color:var(--teal);background:rgba(20,184,166,.1);color:var(--teal)}
+.run-a.active-run{border-color:var(--red);background:rgba(240,128,128,.08);color:var(--red)}
+.run-b.active-run{border-color:var(--green);background:rgba(127,216,168,.08);color:var(--green)}
+.run-c.active-run{border-color:var(--amber);background:var(--amber-bg);color:var(--amber)}
+.run-btn small{display:block;font-size:.7rem;font-weight:400;opacity:.7;margin-top:.15rem}
+
+/* ── PREDICTION / STANCE ── */
+.stance-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.6rem 0}
+.stance{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:.4rem;padding:.65rem .8rem;font-size:.83rem;color:rgba(255,255,255,.72);line-height:1.55}
+.stance-a{border-left:3px solid var(--red)}
+.stance-c{border-left:3px solid var(--amber)}
+.jta{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;color:#e2e8f0;font-size:.84rem;padding:.65rem .8rem;resize:vertical;min-height:90px;font-family:'Segoe UI',system-ui,sans-serif;line-height:1.5}
+.jta:focus{outline:none;border-color:var(--teal)}
+.save-note{font-family:'Courier New',monospace;font-size:.62rem;color:var(--teal);margin-top:.25rem;height:1rem}
+.journal-label{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.pr-label{font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.25rem}
+.pr-text{font-size:.84rem;color:rgba(255,255,255,.75);line-height:1.55;background:var(--surface2);border:1px solid var(--border);border-radius:.35rem;padding:.6rem .8rem}
+.pred-retrieve{background:rgba(20,184,166,.05);border:1px solid rgba(20,184,166,.2);border-radius:.45rem;padding:.8rem 1rem}
+
+/* ── STEP CHART ── */
+.step-chart-wrap{margin:.8rem 0;overflow:hidden}
+.chart-legend{display:flex;flex-wrap:wrap;gap:.5rem .9rem;margin-bottom:.4rem}
+.legend-item{display:flex;align-items:center;gap:.3rem;font-family:'Courier New',monospace;font-size:.65rem;color:rgba(255,255,255,.55)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ── JOURNAL ── */
+.journal-box{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem}
+.journal-box+.journal-box{border-top:1px solid var(--border)}
+.q5{min-height:130px}
+
+/* ── IPS COMPONENT STYLES ── */
+.ips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:.75rem;margin:.6rem 0}
+.ips-panel{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;overflow:hidden}
+.ips-panel-header{padding:.6rem .85rem;border-bottom:1px solid var(--border)}
+.ips-panel-label{font-size:.78rem;font-weight:700;color:#fff;margin-bottom:.1rem}
+.ips-panel-sublabel{font-family:'Courier New',monospace;font-size:.58rem;color:var(--muted)}
+.ips-panel-body{padding:.65rem .85rem}
+.ips-param{margin-bottom:.45rem}
+.ips-param-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.18rem}
+.ips-param-name{font-family:'Courier New',monospace;font-size:.63rem;color:rgba(255,255,255,.45)}
+.ips-param-val{font-family:'Courier New',monospace;font-size:.68rem;font-weight:700}
+.ips-bar-track{background:rgba(255,255,255,.07);border-radius:999px;height:4px;overflow:hidden}
+.ips-bar-fill{height:100%;border-radius:999px}
+.ips-divider{border:none;border-top:1px solid var(--border);margin:.5rem 0}
+.ips-ceiling-row{display:flex;justify-content:space-between;margin-bottom:.25rem}
+.ips-ceiling-label{font-family:'Courier New',monospace;font-size:.6rem;color:rgba(255,255,255,.4)}
+.ips-ceiling-val{font-family:'Courier New',monospace;font-size:.68rem;font-weight:700;color:var(--teal)}
+.ips-fhri-max{background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.18);border-radius:.3rem;padding:.4rem .6rem;margin:.45rem 0;text-align:center}
+.ips-fhri-max .label{font-family:'Courier New',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.1rem}
+.ips-fhri-max .val{font-size:1.3rem;font-weight:800;line-height:1}
+.ips-fhri-max .of100{font-size:.65rem;color:var(--muted)}
+.ips-verdict{border-radius:.3rem;padding:.35rem .6rem;font-family:'Courier New',monospace;font-size:.62rem;font-weight:700;text-align:center;margin-top:.35rem}
+.ips-verdict.reform{background:rgba(240,128,128,.1);border:1px solid rgba(240,128,128,.3);color:var(--red)}
+.ips-verdict.limited{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.25);color:var(--amber)}
+.ips-verdict.viable{background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.25);color:var(--teal)}
+.meadows-badge{font-family:'Courier New',monospace;font-size:.6rem;color:rgba(255,255,255,.45);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:.25rem;padding:.25rem .5rem;text-align:center;margin:.3rem 0;display:block}
+.traj-table{width:100%;border-collapse:collapse;font-size:.8rem;margin:.6rem 0}
+.traj-table th{font-family:'Courier New',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:.38rem .55rem;border-bottom:1px solid var(--border);text-align:left}
+.traj-table td{padding:.4rem .55rem;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.7);font-family:'Courier New',monospace;font-size:.73rem}
+.traj-table tr.acquisition td{color:var(--red);background:rgba(240,128,128,.04)}
+.traj-table tr.baseline td{background:rgba(20,184,166,.04)}
+.fhri-bar-inline{display:inline-block;width:72px;height:5px;background:rgba(255,255,255,.07);border-radius:999px;vertical-align:middle;margin-left:.35rem;overflow:hidden}
+.fhri-bar-fill{height:100%;border-radius:999px;display:block}
+.section-rule{border:none;border-top:1px solid var(--border);margin:1.4rem 0}
+p.body-text{font-size:.9rem;color:rgba(255,255,255,.78);line-height:1.65;margin-bottom:.75rem}
+h2.section-h2{font-size:1rem;font-weight:700;color:var(--teal);margin:1.5rem 0 .7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+@media(max-width:580px){.ips-grid{grid-template-columns:1fr 1fr}.stance-grid{grid-template-columns:1fr}.tab-btn{padding:.55rem .7rem;font-size:.78rem}}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ucp-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;margin:.75rem 0}
-.ucp-metric{background:rgba(255,255,255,.07);border-radius:.5rem;padding:.65rem .75rem;cursor:pointer;transition:.15s}
-.ucp-metric:hover{background:rgba(255,255,255,.12)}
-.ucp-metric-label{font-size:.65rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.5);margin-bottom:.2rem}
-.ucp-metric-value{font-size:1.2rem;font-weight:700;font-family:'Courier New',monospace}
-.ucp-metric-phrase{font-size:.65rem;color:rgba(255,255,255,.45);margin-top:.15rem}
-.val-great{color:#7fd8a8}
-.val-warn{color:#f5c842}
-.val-bad{color:#f08080}
-.ucp-bar-section{margin:.75rem 0}
-.ucp-gap-label{font-size:.7rem;color:rgba(255,255,255,.4);margin-bottom:.4rem;font-family:'Courier New',monospace}
-.ucp-bar-row{display:flex;align-items:center;gap:.5rem;margin:.3rem 0}
-.ucp-bar-name{font-size:.7rem;font-family:'Courier New',monospace;width:80px;color:rgba(255,255,255,.6)}
-.ucp-bar-track{flex:1;background:rgba(255,255,255,.1);border-radius:3px;height:8px;overflow:hidden}
-.ucp-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
-.fill-raw{background:var(--ucp-gold)}
-.fill-perc{background:var(--teal-mid)}
-.fill-morph{background:#e879f9}
-.ucp-bar-num{font-size:.72rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.6);width:36px;text-align:right}
-.ucp-narrative{font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.6;padding:.6rem .75rem;background:rgba(255,255,255,.05);border-radius:.4rem;margin:.5rem 0}
-.step-chart-wrap{background:rgba(0,0,0,.18);border-radius:.4rem;padding:.65rem .5rem .4rem;margin:.65rem 0;min-height:100px}
-.ucp-error{background:#fee2e2;color:#7f1d1d;padding:.75rem 1rem;border-radius:.4rem;font-size:.84rem;margin:.5rem 0}
-/* ── Comparison ── */
-.compare-box{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.3);border-radius:.75rem;padding:1rem 1.25rem;margin-top:1rem;display:none}
-.compare-box h4{color:var(--ucp-gold);font-size:.85rem;margin-bottom:.5rem}
-.compare-box p{font-size:.82rem;color:rgba(255,255,255,.75);line-height:1.6}
-/* ── SxS panel ── */
-.sxs-panel{background:var(--ucp-navy);border:1px solid rgba(201,168,76,.25);border-radius:.875rem;padding:1.25rem;margin-top:1.5rem}
-.sxs-label{font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.875rem}
-/* ── Robustness panel ── */
-.robustness-panel{background:var(--ucp-navy);border:1px solid rgba(201,168,76,.3);border-radius:.875rem;padding:1.25rem;margin-top:1.25rem;display:none}
-.robustness-label{font-size:.73rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(201,168,76,.65);margin-bottom:.5rem}
-.rerun-btn{padding:.55rem 1.25rem;border:none;border-radius:.4rem;background:var(--ucp-gold);color:#fff;font-family:'Georgia',serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:.2s}
-.rerun-btn:hover{opacity:.85}
-.rerun-btn:disabled{opacity:.5;cursor:wait}
-.robustness-status{font-size:.78rem;color:rgba(255,255,255,.45);font-family:'Courier New',monospace;margin-left:.5rem}
-/* ── Journal ── */
-.journal-box{border:2px solid var(--amber-mid);background:var(--amber-light);border-radius:.625rem;padding:1rem 1.25rem;margin:1rem 0}
-.journal-label{font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--amber);margin-bottom:.6rem}
-.jta{width:100%;min-height:120px;border:1px solid var(--border);border-radius:.4rem;padding:.65rem;font-family:'Georgia',serif;font-size:.9rem;line-height:1.6;resize:vertical;color:var(--ink)}
-.jta.q5{min-height:150px;border-color:var(--amber-mid);border-width:2px}
-.save-note{font-size:.72rem;color:var(--success);font-family:'Courier New',monospace;height:1.1rem;opacity:0;transition:.3s}
-.save-note.show{opacity:1}
-/* ── Pred retrieve ── */
-.pred-retrieve{background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.25);border-radius:.6rem;padding:1rem;margin-bottom:1rem}
-.pr-label{font-family:'Courier New',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal-dark);margin-bottom:.3rem}
-.pr-text{font-size:.88rem;color:var(--ink);font-style:italic;line-height:1.6;border-left:3px solid var(--teal-mid);padding-left:.75rem;margin-top:.3rem}
-/* ── Fairness grid ── */
-.fairness-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.65rem;margin:.75rem 0}
-.fairness-card{border-radius:.5rem;padding:.7rem .85rem;border-left:3px solid}
-.fairness-card .fc-dim{font-size:.75rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem;font-weight:700}
-.fairness-card .fc-mapping{font-size:.8rem;line-height:1.5}
-/* ── Civ stack ── */
-.civ-stack{display:flex;flex-direction:column;gap:.3rem;margin:.75rem 0}
-.civ-level{border-radius:.4rem;padding:.55rem .85rem;font-size:.83rem;display:flex;align-items:center;gap:.6rem}
-.civ-level .cl-label{font-family:'Courier New',monospace;font-size:.72rem;font-weight:700;white-space:nowrap}
-.civ-level .cl-desc{font-size:.82rem;opacity:.85}
-/* ── Footer ── */
-footer{text-align:center;padding:1.5rem;font-size:.75rem;color:var(--muted);border-top:1px solid var(--border);margin-top:3rem}
-/* ── Responsive ── */
-@media(max-width:600px){
-  .ucp-metrics{grid-template-columns:1fr 1fr}
-  .run-toggle{flex-direction:column}
-  .tab-pane{padding:1.25rem 1rem}
-  nav.tab-nav{padding:.4rem .75rem}
-}
+.ucp-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
 </style>
 </head>
 <body>
+<div class="page">
 
-<header class="course-header">
-  <div>
-    <div class="chapter-label">Chapter Eleven · Applied Sequence · Movement 1</div>
-    <h1>What the Economy Does to Coherent Agency</h1>
-    <div class="subtitle">Economic Systems and the Ethics of Institutional Architecture</div>
+<div class="chapter-header">
+  <div class="chapter-label">Chapter Eleven &middot; Applied Sequence &middot; Movement 1</div>
+  <div class="chapter-title">What the Economy Does to Coherent Agency</div>
+  <div class="chapter-subtitle">Economic Systems and the Ethics of Institutional Architecture</div>
+  <div class="chapter-tags">
+    <span class="tag">Agency Conditions</span>
+    <span class="tag">Entropy Export</span>
+    <span class="tag">Suppression Gap</span>
+    <span class="tag">IPS V5.0</span>
+    <span class="tag">FHRI_max</span>
+    <span class="tag">BioBond</span>
+    <span class="tag">Peterson et al. 2025</span>
+    <span class="tag">Temporal Commons</span>
   </div>
-</header>
+</div>
 
-<nav class="tab-nav" role="tablist">
-  <button class="tab-btn active" onclick="showTab('overview',this)">§1–2 Overview</button>
-  <button class="tab-btn" onclick="showTab('fairness',this)">The Nine Dimensions</button>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('overview',this)">&sect;1&ndash;2 Overview</button>
+  <button class="tab-btn" onclick="showTab('fairness',this)">Nine Dimensions</button>
   <button class="tab-btn" onclick="showTab('simulation',this)">UCP Simulation</button>
+  <button class="tab-btn" onclick="showTab('ips',this)">IPS Diagnostic</button>
   <button class="tab-btn" onclick="showTab('temporal',this)">Temporal Commons</button>
   <button class="tab-btn" onclick="showTab('sage',this)">SAGE Walkthrough</button>
   <button class="tab-btn" onclick="showTab('journal',this)">Ethics Journal</button>
-</nav>
+</div>
 
+<!-- ═══════════════════ TAB 1: OVERVIEW ═══════════════════════════════════ -->
 <div class="tab-pane active" id="tab-overview">
-  <h2>§1 — The Suppression Gap at Economic Scale</h2>
+  <h2 class="section-h2">&sect;1 &mdash; The Suppression Gap at Economic Scale</h2>
 
-  <p>The foundational arc built a framework. You practiced that framework on cases drawn from individual lives, ecological movements, political transitions, scientific methodology, and economic modeling. Now the applied sequence asks a harder question: what does the Agency Conditions Principle require of <em>institutions</em> — not of persons under institutional pressure, but of the institutions themselves?</p>
+  <p class="body-text">The foundational arc built a framework. You practiced that framework on cases drawn from individual lives, ecological movements, political transitions, scientific methodology, and economic modeling. Now the applied sequence asks a harder question: what does the Agency Conditions Principle require of <em>institutions</em> &mdash; not of persons under institutional pressure, but of the institutions themselves?</p>
 
-  <p>Chapter 7 showed you what Doyne Farmer found: the representative agent assumption makes certain populations structurally invisible, and that invisibility is not a technical artifact — it is a policy consequence. This chapter asks what that finding means for institutional design.</p>
+  <p class="body-text">Chapter 7 showed you what Doyne Farmer found: the representative agent assumption makes certain populations structurally invisible, and that invisibility is not a technical artifact &mdash; it is a policy consequence. This chapter asks what that finding means for institutional design.</p>
 
   <div class="card card-teal">
     <h3>The Central ACP Question for Economic Systems</h3>
-    <p><strong>Which populations' agency conditions does this economic architecture preserve? Which does it export? And what is it handing forward to the next generation?</strong></p>
-    <p>This is not a question about whether the economy is growing. It is a question about whether growth is being produced by drawing on human capacity or by drawing it down — whether the economy is functioning more like the Green Belt Movement (Chapter 4) or more like the Rust Belt (Chapter 9).</p>
+    <p><strong>Which populations&rsquo; agency conditions does this economic architecture preserve? Which does it export? And what is it handing forward to the next generation?</strong></p>
+    <p>This is not a question about whether the economy grows. It is a question about what kind of agency capacity the growth preserves, depletes, or destroys &mdash; and for whom. GDP measures output. FHRI_max measures the structural ceiling on human flourishing that the institutional architecture permits. These are different numbers, and they can move in opposite directions.</p>
+  </div>
+
+  <div class="narrative-panel amber">
+    <strong>V5.0 extension:</strong> The IPS Diagnostic tab introduces a new analytical layer that the UCP simulation alone cannot show. The three simulation configurations (Entropy-Exporting, Coherence-Preserving, BioBond Transition) model what happens to agents inside different economic architectures. The IPS parameters explain <em>why</em> those configurations produce the outcomes they do &mdash; which ownership structures, incentive systems, and regulatory burdens generate the suppression gap you observe in the simulation. See the IPS Diagnostic tab for the empirical healthcare case study grounded in published research.
+  </div>
+
+  <h2 class="section-h2">&sect;2 &mdash; Two Questions the Simulation Cannot Settle</h2>
+
+  <div class="card card-blue">
+    <h3>What the Simulation Shows</h3>
+    <p>The simulation shows the relationship between structural configuration and coordination capacity. It demonstrates that authority-weighted evidence, high entropy, and negative community block fields produce a suppression gap &mdash; that λ Perceived collapses relative to λ Raw when the institutional architecture routes certain signals around decisions.</p>
+    <p>What the simulation cannot settle: whether the GDP costs of Configuration B outweigh its coordination benefits, and whether Configuration B is structurally stable without international governance coordination that prevents race-to-the-bottom dynamics. These are contested empirical questions that the model cannot answer from within its own architecture.</p>
   </div>
 
   <div class="card card-amber">
-    <p><strong>One structural context before proceeding.</strong> Economic systems sit within a civilizational stack that runs from planetary biophysical limits at the top — the hard thermodynamic ceiling within which all economic activity must ultimately operate — down through international economic governance (trade agreements, capital mobility rules, currency regimes), to national policy, to markets and firms, to individual agents.</p>
-    <div class="civ-stack" style="margin:.5rem 0">
-      <div class="civ-level" style="background:#fee2e2;border-left:3px solid #dc2626"><span class="cl-label" style="color:#dc2626">Planetary</span><span class="cl-desc">Biophysical limits — the hard ceiling on all economic activity</span></div>
-      <div class="civ-level" style="background:#fef3c7;border-left:3px solid #f59e0b"><span class="cl-label" style="color:#ca8a04">International</span><span class="cl-desc">Trade agreements, capital mobility, currency regimes, tax competition</span></div>
-      <div class="civ-level" style="background:#dbeafe;border-left:3px solid #3b82f6"><span class="cl-label" style="color:#1d4ed8">National policy</span><span class="cl-desc">Where Market Humanism's program primarily operates</span></div>
-      <div class="civ-level" style="background:#f0fdf4;border-left:3px solid #16a34a"><span class="cl-label" style="color:#15803d">Markets & firms</span><span class="cl-desc">The institutional architectures this chapter models</span></div>
-      <div class="civ-level" style="background:var(--teal-light);border-left:3px solid var(--teal-mid)"><span class="cl-label" style="color:var(--teal-dark)">Individual agents</span><span class="cl-desc">Where agency conditions are either preserved or destroyed</span></div>
-    </div>
-    <p style="margin-bottom:0;font-size:.84rem"><strong>This chapter examines the institutional level.</strong> What looks like a stable coherence-preserving configuration here may be structurally unstable without corresponding governance at the levels above it. The applied sequence's later chapters will examine what coherence-preserving governance requires at civilizational scale.</p>
-  </div>
-
-  <h3>Two Questions the Simulation Cannot Settle</h3>
-  <p>The simulation models structural tendencies, not specific policy outcomes. It cannot tell you whether a particular minimum wage number produces employment gains or losses — that is a question for economists and the empirical literature.</p>
-  <p>What it can do is model whether an economic architecture preserves or exports the <em>conditions</em> under which coherent agency is possible. A policy can produce acceptable aggregate outcomes while simultaneously destroying the agency conditions of the populations it affects. That second kind of harm — harm to conditions rather than outcomes — is what you are learning to see in this chapter.</p>
-
-  <h2>§2 — What This Chapter Is About</h2>
-  <p>The simulation in this chapter models three economic architectures. Each one represents a structural configuration — a particular combination of evidence weighting, block fields, and environmental conditions — that either preserves or erodes the agency conditions of the populations inhabiting it.</p>
-  <p>Before moving to the nine fairness dimensions, make sure you can answer this question: <em>in the Challenger case, what was the difference between λ Raw and λ Perceived, and what caused it?</em> The economic architecture simulation uses the same structural logic at a different scale.</p>
-
-  <div class="card card-blue">
-    <h4>Learning Objectives</h4>
-    <p>After completing this chapter you should be able to: identify the structural difference between entropy-exporting and coherence-preserving economic architectures; apply the nine fairness dimensions as coherence conditions; run the three simulation configurations and interpret what each suppression gap value means; apply the temporal commons concept to economic design; and use SAGE to develop an ethically grounded response to a specific economic policy scenario.</p>
+    <h3>Two Questions the Simulation Cannot Settle</h3>
+    <p><strong>The cost-benefit question:</strong> Does the coordination gain from Configuration B justify its GDP costs? This requires empirical data on the relationship between coordination capacity and long-run economic output across many institutional contexts &mdash; data that exists but is contested.</p>
+    <p><strong>The stability question:</strong> Is Configuration B stable without international coordination? Mobile capital can exit coherence-preserving national architectures unless international governance prevents it. This is the legitimacy problem the course will address in Chapter 12.</p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════════ TAB 2: NINE DIMENSIONS ═══════════════════════════ -->
 <div class="tab-pane" id="tab-fairness">
-  <h2>The Nine Fairness Dimensions as Coherence Conditions</h2>
+  <h2 class="section-h2">The Nine Fairness Dimensions as Coherence Conditions</h2>
 
-  <p>Eric Beinhocker's framework for fair social contracts proposes nine dimensions of fairness that large-scale human collaboration depends on. These were derived independently from research on what makes social contracts functionally stable. The alignment with the EBB framework is evidence, not coincidence — each dimension is a different way the suppression gap can manifest at economic-institutional scale.</p>
+  <p class="body-text">Eric Beinhocker&rsquo;s framework for fair social contracts proposes nine dimensions of fairness that large-scale human collaboration depends on. These were derived independently from research on what makes social contracts functionally stable. The alignment with the EBB framework is evidence, not coincidence &mdash; each dimension is a different way the suppression gap can manifest at economic-institutional scale.</p>
 
-  <h3>Coherence Preconditions</h3>
-  <div class="fairness-grid">
-    <div class="fairness-card" style="border-color:#14b8a6;background:#f0fdfa">
-      <div class="fc-dim" style="color:#0d5e57">Agency</div>
-      <div class="fc-mapping">Maps to <strong>λ Raw</strong>. Whether agents have genuine capacity to make meaningful choices, or are structurally constrained to react. Chronic high-entropy survival mode — the Sapolsky gate substantially closed — erodes this dimension at the biological level.</div>
-    </div>
-    <div class="fairness-card" style="border-color:#3b82f6;background:#eff6ff">
-      <div class="fc-dim" style="color:#1d4ed8">Inclusion</div>
-      <div class="fc-mapping">Maps to <strong>community block field</strong>. Whether the architecture actually reaches the populations it claims to serve. The representative agent assumption is an inclusion failure at the modeling level.</div>
-    </div>
-    <div class="fairness-card" style="border-color:#8b5cf6;background:#f5f3ff">
-      <div class="fc-dim" style="color:#6d28d9">Dignity</div>
-      <div class="fc-mapping">Maps to <strong>evidence weighting</strong>. A system that weights certain populations' testimony at near-zero produces a suppression gap regardless of what those populations actually know or need.</div>
+  <div class="section-header open" onclick="toggleSec(this)"><h3>Coherence Preconditions</h3><span class="section-chevron">&#9658;</span></div>
+  <div class="section-body open">
+    <div class="fairness-grid">
+      <div class="fairness-card">
+        <div class="fc-dim">Agency</div>
+        <div class="fc-mapping">Maps to <strong>&lambda; Raw</strong>. Whether agents have genuine capacity to make meaningful choices. When economic precarity constrains deliberation to immediate survival, &lambda; Raw collapses regardless of formal freedom.</div>
+        <div class="fc-fail">IPS parameter: &mu; (incentive misalignment) directly erodes agency by restructuring evaluation criteria around compliance rather than genuine choice.</div>
+      </div>
+      <div class="fairness-card">
+        <div class="fc-dim">Security</div>
+        <div class="fc-mapping">Maps to <strong>entropy export floor</strong>. Whether the architecture maintains the biological minimum for coherent agency &mdash; the Sapolsky floor below which glucocorticoid stress degrades prefrontal function.</div>
+        <div class="fc-fail">IPS parameter: &phi; (physical entropy) is the direct measure of security failure &mdash; infrastructure degradation and staffing gaps that generate biological stress.</div>
+      </div>
+      <div class="fairness-card">
+        <div class="fc-dim">Rules</div>
+        <div class="fc-mapping">Maps to <strong>morphic suppression</strong>. Predictable, intelligible rules support planning. Opaque, frequently-changed rules generate learned self-censorship as agents stop investing in understanding systems that may change arbitrarily.</div>
+        <div class="fc-fail">IPS parameter: &sigma; (morphic residue) accumulates when rules are generated by crisis rather than evidence &mdash; each crisis adds a procedural layer that obscures rather than clarifies.</div>
+      </div>
+      <div class="fairness-card">
+        <div class="fc-dim">Voice</div>
+        <div class="fc-mapping">Maps to <strong>routing quality</strong>. Whether agent knowledge and preferences actually reach decisions. High routing quality requires that agent signal passes through institutional filters without systematic attenuation.</div>
+        <div class="fc-fail">IPS parameter: &rho; (regulatory burden) consumes the time and attention needed for meaningful voice participation.</div>
+      </div>
     </div>
   </div>
 
-  <h3>Institutional-Temporal Stabilizers</h3>
-  <div class="fairness-grid">
-    <div class="fairness-card" style="border-color:#f59e0b;background:#fffbeb">
-      <div class="fc-dim" style="color:#b45309">Rules-Based Order</div>
-      <div class="fc-mapping">Maps to <strong>entropy conditions</strong>. Unpredictable, arbitrarily enforced rules create high environmental entropy. High entropy degrades prospective coherence — the ATCF component that enables planning and forward projection.</div>
-    </div>
-    <div class="fairness-card" style="border-color:#10b981;background:#ecfdf5">
-      <div class="fc-dim" style="color:#065f46">Meritocratic Legitimacy</div>
-      <div class="fc-mapping">Maps to <strong>evidence architecture</strong>. Does the institution weight contributions in proportion to their actual quality, or route some contributions around decision processes regardless of quality? The Thiokol teleconference failed this dimension.</div>
-    </div>
-    <div class="fairness-card" style="border-color:#ef4444;background:#fef2f2">
-      <div class="fc-dim" style="color:#991b1b">Security</div>
-      <div class="fc-mapping">Maps to <strong>stress and the Sapolsky gate</strong>. Chronic economic insecurity — housing instability, medical debt, wage volatility — suppresses deliberate agency at the biological level regardless of what policies nominally offer.</div>
-    </div>
-  </div>
-
-  <h3>Forward-Horizon Conditions</h3>
-  <div class="fairness-grid">
-    <div class="fairness-card" style="border-color:#06b6d4;background:#ecfeff">
-      <div class="fc-dim" style="color:#0e7490">Capabilities</div>
-      <div class="fc-mapping">Maps to <strong>prospective coherence / ATCF</strong>. Not what resources people have but what they can actually do and become. Negative community blocks in the presence of high entropy ensure λ Perceived stays low even when λ Raw holds.</div>
-    </div>
-    <div class="fairness-card" style="border-color:#84cc16;background:#f7fee7">
-      <div class="fc-dim" style="color:#3f6212">Reciprocity</div>
-      <div class="fc-mapping">Maps to <strong>entropy-exporting mechanism</strong>. A system that offloads its disorder onto workers and communities while reporting stable aggregate metrics runs an accounting system that makes the extraction invisible.</div>
-    </div>
-    <div class="fairness-card" style="border-color:#f97316;background:#fff7ed">
-      <div class="fc-dim" style="color:#9a3412">Progress</div>
-      <div class="fc-mapping">Maps to <strong>temporal commons</strong>. Is the arc genuinely forward-moving for the populations inhabiting the system? This is the inter-generational question: what agency conditions is this architecture handing to the next generation?</div>
+  <div class="section-header open" onclick="toggleSec(this)"><h3>Institutional-Temporal Stabilizers</h3><span class="section-chevron">&#9658;</span></div>
+  <div class="section-body open">
+    <div class="fairness-grid">
+      <div class="fairness-card">
+        <div class="fc-dim">Opportunities</div>
+        <div class="fc-mapping">Maps to <strong>FHRI_max</strong>. The structural ceiling on what coordination capacity an agent can achieve within this architecture, regardless of their individual effort or talent.</div>
+        <div class="fc-fail">The PE nursing home case: FHRI_max = 13.6 means a structurally committed staff member can achieve at most 13.6 points of coordination capacity &mdash; not because they lack effort but because the architecture absorbs the remainder.</div>
+      </div>
+      <div class="fairness-card">
+        <div class="fc-dim">Reciprocity</div>
+        <div class="fc-mapping">Maps to <strong>OS2 Bridge</strong>. Whether agents&rsquo; coordination investments are matched by institutional response &mdash; whether contribution builds toward something or disappears into the suppression gap.</div>
+        <div class="fc-fail">High OS2 Bridge requires low &mu; &mdash; incentive structures that reward coordination rather than compliance with metrics that extract without reciprocating.</div>
+      </div>
+      <div class="fairness-card">
+        <div class="fc-dim">Common Good</div>
+        <div class="fc-mapping">Maps to <strong>trust vector trajectory</strong>. Whether the economic architecture generates positive-sum coordination outcomes across populations, or zero-sum extraction that depletes collective coordination capacity.</div>
+        <div class="fc-fail">High &epsilon; (extraction rate) is the primary driver of trust vector erosion across institutions &mdash; the mechanism by which private gain becomes public coordination loss.</div>
+      </div>
     </div>
   </div>
 
-  <div class="card card-teal" style="margin-top:1.5rem">
-    <h4>Before Moving to the Simulation</h4>
-    <p>Pick one of the nine dimensions. In one sentence, identify an economic institution you interact with regularly and name which specific block field, evidence weighting, or entropy condition you think is responsible for that dimension's strength or weakness in that institution. Be as specific as the simulation vocabulary allows. You will return to this observation in the journal.</p>
+  <div class="section-header open" onclick="toggleSec(this)"><h3>Forward-Horizon Conditions</h3><span class="section-chevron">&#9658;</span></div>
+  <div class="section-body open">
+    <div class="fairness-grid">
+      <div class="fairness-card">
+        <div class="fc-dim">Proportionality</div>
+        <div class="fc-mapping">Maps to the <strong>RQ ceiling equation</strong>. Whether economic returns are proportional to productive contribution rather than to position in the extraction hierarchy.</div>
+        <div class="fc-fail">The empirical calibration: w&epsilon;=0.45 means extraction rate dominates the ceiling equation &mdash; disproportionate returns to extraction are the primary driver of coordination quality collapse.</div>
+      </div>
+      <div class="fairness-card">
+        <div class="fc-dim">Rights</div>
+        <div class="fc-mapping">Maps to the <strong>EE floor</strong>. The minimum conditions below which rights become formal guarantees with no substantive content &mdash; the biological floor without which autonomy and participation cannot be inhabited.</div>
+        <div class="fc-fail">Non-profit facilities (EE floor = 0.195) can maintain rights in substance. PE-acquired facilities (EE floor = 0.553) cannot &mdash; the structural stress load makes substantive rights inaccessible.</div>
+      </div>
+      <div class="fairness-card">
+        <div class="fc-dim">Legitimacy</div>
+        <div class="fc-mapping">Maps to <strong>procedural vs. substantive legitimacy</strong> &mdash; the central distinction Chapter 12 will develop. Whether the institution&rsquo;s authority rests on following correct procedures or on actually routing knowledge to decisions.</div>
+        <div class="fc-fail">An institution can be procedurally legitimate while structurally delegitimate &mdash; following all the rules while the suppression gap absorbs the agent population&rsquo;s capacity.</div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════════ TAB 3: SIMULATION ════════════════════════════════ -->
 <div class="tab-pane" id="tab-simulation">
   <h2>UCP Simulation — Three Economic Architectures</h2>
 
@@ -351,53 +401,298 @@ footer{text-align:center;padding:1.5rem;font-size:.75rem;color:var(--muted);bord
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
-<div class="tab-pane" id="tab-temporal">
-  <h2>§4 — The Temporal Commons</h2>
+<!-- ══════════════════════
+</div>
 
-  <p>Every chapter in the foundational arc asked about the present: what are the agency conditions right now for the agents inhabiting this structure? The ACP's temporal commons concept asks a different question: what is this architecture handing forward?</p>
+<!-- ═══════════════════ TAB 4: IPS DIAGNOSTIC ════════════════════════════ -->
+<div class="tab-pane" id="tab-ips">
+  <h2 class="section-h2">IPS Economic Diagnostic &mdash; Structural Architecture and FHRI_max</h2>
 
-  <h3>Three Temporal Commons Questions</h3>
-
-  <div class="card card-teal">
-    <h4>The Metabolic Question</h4>
-    <p>Is this economic architecture sustaining human capacity or consuming it? An economy that extracts labor intensity, concentrates gains, and exports the costs onto workers' health, families, and communities is consuming human capacity faster than it is restoring it. The distinction between a healthy metabolism and a depleting one is not visible in GDP statistics. It is visible in FHRI measures, in burnout rates, in population health gradients, and in what the simulation models as morphic suppression accumulating across generations.</p>
+  <div class="narrative-panel navy">
+    <strong>Research foundation: Peterson et al. and the CMS public record.</strong>
+    The healthcare simulations below draw on the published research of
+    <em>Dr. Lindsay Peterson</em> (Associate Professor of Research, University of South Florida
+    School of Aging Studies) and her colleagues at the Florida Policy Exchange Center on Aging.
+    Their 2025 AARP Florida report &mdash; <em>Change of Ownership and Quality in Florida Nursing Homes</em>
+    &mdash; documented how private equity acquisition of 156 Florida facilities between 2019 and 2024
+    produced a 13% decline in direct care staffing, a doubling of one-star quality ratings, and
+    $1,000 higher Medicare costs per resident. The IPS parameter values displayed here are derived
+    directly from these published findings and from publicly accessible federal databases: the
+    Centers for Medicare &amp; Medicaid Services Payroll-Based Journaling staffing dataset,
+    the Provider Information file, the Ownership disclosure file, and the Health Deficiencies
+    citation database.
   </div>
 
-  <div class="card card-teal">
-    <h4>The Generative Question</h4>
-    <p>What kind of agency capacity is the economic architecture handing to the next generation? A stable economy that provides adequate security floors, predictable rules, and genuine inclusion is handing forward structural conditions that enable children to develop the historical continuity, present integration, prospective coherence, and meta-constructor capacity that the ATCF measures. An economy that concentrates economic power while creating permanent precarity for a significant minority is handing forward a bifurcated agency landscape regardless of aggregate performance metrics.</p>
+  <div class="narrative-panel teal">
+    <strong>Why this matters beyond Florida.</strong> Florida&rsquo;s nursing home sector is a
+    leading indicator, not an isolated case. Private equity acquisition of long-term care
+    facilities is accelerating nationally. The structural dynamics documented in Florida &mdash;
+    extraction-driven staffing reduction, billing-metric incentive restructuring, and quality
+    rating decline &mdash; are visible in the federal data wherever ownership has transferred
+    to investment vehicles that prioritize short-term surplus extraction over care coordination.
+    This is SAGE applied to public data: <strong>Seeing</strong> what Peterson&rsquo;s observational
+    study documented, <strong>Analyzing</strong> the structural mechanism through IPS parameters,
+    <strong>Generating</strong> an intervention framework, and <strong>Engaging</strong> with
+    the ethical question of what ownership structures society should permit in settings that
+    govern the final years of vulnerable lives.
   </div>
 
-  <div class="card card-teal">
-    <h4>The Civic Question</h4>
-    <p>Does the economic architecture sustain the deliberative capacity that democratic governance requires? Chapter 9 showed you that World Values Map positions are thermodynamic facts — where populations land on the security/self-expression axis is substantially determined by the material conditions they inhabit. An economy that keeps a significant population in permanent survival mode is not just producing economic harm; it is producing the conditions under which democratic deliberation becomes structurally difficult.</p>
+  <div class="section-header open" onclick="toggleSec(this)">
+    <h3>Four Ownership Archetypes &mdash; Side-by-Side IPS Comparison</h3>
+    <span class="section-chevron">&#9658;</span>
+  </div>
+  <div class="section-body open">
+    <p class="body-text">All four facility types operate under identical regulatory burden
+    (&rho; = 0.700) &mdash; the same CMS documentation and MDS compliance requirements apply
+    regardless of ownership. The differences in FHRI_max are produced entirely by
+    ownership-structure differences in &epsilon;, &phi;, &sigma;, and &mu;. The 41.5-point
+    structural gap between PE-Acquired and Non-Profit facilities is not a gap in staff quality
+    or regulatory environment. It is a gap in structural architecture.</p>
+    <div id="ips-archetypes"></div>
+    <div class="narrative-panel amber" style="margin-top:.9rem">
+      <strong>The falsifiable prediction:</strong> BioBond-equivalent interventions
+      (HPRD improvement, stress reduction, training investment) at a PE-acquired Florida
+      facility will produce approximately 44% of the coordination improvement they produce
+      at a non-profit with equivalent baseline staff quality. Not because the interventions
+      fail &mdash; but because the structural ceiling absorbs the remainder before it reaches
+      care outcomes. This is testable against the public CMS data: if the model is correct,
+      HPRD improvements at PE facilities should show approximately 44 cents of quality-metric
+      improvement per dollar compared to non-profits making equivalent investments.
+    </div>
   </div>
 
-  <div class="card" style="background:#fff0f0;border-left:4px solid #dc2626;margin-top:1rem">
-    <h4 style="color:#dc2626">A Fourth Question — The Civilizational Level</h4>
-    <p>There is a temporal commons question that operates above the national level, and it is the hardest one the ACP raises. Climate change is the largest inter-generational cost externalization in human history: economic systems organized around short-run output have been exporting entropy onto the planetary systems that all future agency conditions depend on.</p>
-    <p>No national wage floor, labor protection, or redistributive policy can address this by itself. The suppression gap here operates between what the scientific community knows about the trajectory of planetary conditions and what reaches the international governance architectures that would need to act on it.</p>
-    <p>The entropy-exporting institution the ACP is ultimately most concerned about is civilization itself, when organized around architectures that cannot account for what they are handing forward. The applied sequence's existential risk chapter will address this directly. But students who have understood the temporal commons concept at the institutional level need to see it applied here, at the level where the stakes are highest and the governance architecture is most underdeveloped.</p>
+  <div class="section-header open" onclick="toggleSec(this)">
+    <h3>PE Acquisition Trajectory &mdash; 2019 to 2024</h3>
+    <span class="section-chevron">&#9658;</span>
+  </div>
+  <div class="section-body open">
+    <p class="body-text">Year-by-year IPS evolution of a facility acquired by private equity
+    in 2020. The pre-acquisition baseline reflects a moderate for-profit profile (FHRI_max = 35.4).
+    The acquisition year shows the &epsilon; jump that occurs when ownership transfers to an
+    investment-vehicle management structure. Subsequent years show &phi; accumulation
+    (no capital reinvestment) and &sigma; ratcheting (deficiency citations generate procedural
+    layering). Note that &rho; remains constant throughout &mdash; the CMS regulatory burden
+    does not change with ownership. The Peterson et al. findings map directly: average star
+    ratings fell from 3.4 (2019) to 2.9 (2024), and one-star facilities doubled from 10% to 21%.</p>
+    <div id="ips-trajectory"></div>
+    <div class="narrative-panel red" style="margin-top:.8rem">
+      <strong>What changed at acquisition, and what did not:</strong> The building was the same.
+      The staff were the same people. The residents were the same population. The regulatory
+      requirements were identical. What changed was a single financial transaction that
+      restructured &epsilon; (surplus distribution away from reinvestment) and &mu; (staff
+      evaluation criteria from care quality to billing metrics). FHRI_max collapsed from
+      35.4 to 19.2 in one year &mdash; a 46% decline in structural coordination capacity
+      from a purely financial event.
+    </div>
   </div>
 
-  <div class="card card-amber" style="margin-top:1.5rem">
-    <h4>The Temporal Commons Test</h4>
-    <p>Apply this test to any economic architecture or policy proposal:</p>
-    <p style="font-style:italic;font-size:.95rem"><strong>Will the people who inhabit this structure for twenty years enter the next twenty years with more or less capacity for coherent agency than they entered the first twenty with?</strong></p>
-    <p>If the honest answer is <em>less</em> — if the architecture systematically consumes human coherence capacity faster than it restores it — then the architecture is entropy-exporting regardless of its output metrics.</p>
+  <div class="section-header" onclick="toggleSec(this)">
+    <h3>BioBond &mdash; The Financial Instrument Response</h3>
+    <span class="section-chevron">&#9658;</span>
   </div>
+  <div class="section-body">
+    <p class="body-text">The IPS analysis identifies the primary policy failure: agent-level
+    wellness investment returns at approximately 44 cents on the dollar at PE-acquired facilities
+    because the structural architecture absorbs the remainder. The obvious question is what
+    financial instrument changes &epsilon; directly rather than working around it.</p>
 
-  <h3>Journal Reflection</h3>
-  <div class="journal-box">
-    <div class="journal-label">Temporal Commons — Your Context</div>
-    <p style="font-size:.85rem;margin-bottom:.5rem">Apply the temporal commons test to one economic institution in your life. Be specific about which of the three questions (metabolic, generative, civic) it performs best on and worst on — and name the specific simulation metric that would capture the failure mode you identify.</p>
-    <textarea class="jta" id="jta-temporal" placeholder="The institution: ...&#10;Metabolic question: ...&#10;Generative question: ...&#10;Civic question: ...&#10;The simulation metric that captures the key failure: ..." oninput="jSave('temporal',this.value)"></textarea>
-    <div class="save-note" id="sn-temporal">✓ Saved</div>
+    <div class="card card-teal">
+      <h3>BioBond: Conditioning Returns on FHRI Improvement</h3>
+      <p>A BioBond is a capital instrument whose investor returns are contingent on measured
+      improvement in the FHRI composite score of the workforce it governs. The mechanism:
+      investors who fund the transition from high-&epsilon; to lower-&epsilon; institutional
+      architecture receive enhanced returns only when FHRI_max improves &mdash; verified through
+      quarterly CMS PBJ staffing data and annual FHRI instrument administration.</p>
+      <p><strong>Why this changes &epsilon; rather than working around it:</strong> Standard
+      workforce wellness programs work within the existing &epsilon; structure, attempting
+      to raise agent FHRI against a ceiling the structure imposes. BioBond instruments change
+      the ceiling itself by making investor returns conditional on &epsilon; reduction. The
+      investment thesis shifts from &ldquo;extract surplus from the care labor margin&rdquo;
+      to &ldquo;generate returns by demonstrating coordination improvement in a sector where
+      coordination quality is measurably low and improving it has computable value.&rdquo;</p>
+    </div>
+
+    <div class="card card-amber">
+      <h3>The Measurement Requirement</h3>
+      <p>BioBond instruments require the measurement infrastructure that makes FHRI_max
+      computable from observable data. The CMS public databases already provide proxies for
+      &epsilon; (surplus distribution from financial filings), &phi; (staffing HPRD from PBJ),
+      &rho; (documentation-to-care ratio from MDS burden literature), &sigma; (deficiency
+      citation rate from Health Citations file), and &mu; (compliance-to-care evaluation ratio
+      from HR documentation). The FHRI survey instrument adds the agent-level measurement
+      that connects structural parameters to staff experience.</p>
+      <p><strong>The Public Benefits Corporation role:</strong> The PBC that administers the
+      FHRI pilot is not only a research organization. It is the measurement infrastructure
+      that makes BioBond financial instruments viable &mdash; the entity that can certify
+      FHRI_max improvement to institutional investors whose returns depend on it.</p>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════════ TAB 5: TEMPORAL C
+</div>
+
+<!-- ═══════════════════ TAB 4: IPS DIAGNOSTIC ════════════════════════════ -->
+<div class="tab-pane" id="tab-ips">
+  <h2 class="section-h2">IPS Economic Diagnostic &mdash; Structural Architecture and FHRI_max</h2>
+
+  <div class="narrative-panel navy">
+    <strong>Research foundation: Peterson et al. and the CMS public record.</strong>
+    The healthcare simulations below draw on the published research of
+    <em>Dr. Lindsay Peterson</em> (Associate Professor of Research, University of South Florida
+    School of Aging Studies) and her colleagues at the Florida Policy Exchange Center on Aging.
+    Their 2025 AARP Florida report &mdash; <em>Change of Ownership and Quality in Florida Nursing Homes</em>
+    &mdash; documented how private equity acquisition of 156 Florida facilities between 2019 and 2024
+    produced a 13% decline in direct care staffing, a doubling of one-star quality ratings, and
+    $1,000 higher Medicare costs per resident. The IPS parameter values displayed here are derived
+    directly from these published findings and from publicly accessible federal databases: the
+    Centers for Medicare &amp; Medicaid Services Payroll-Based Journaling staffing dataset,
+    the Provider Information file, the Ownership disclosure file, and the Health Deficiencies
+    citation database.
+  </div>
+
+  <div class="narrative-panel teal">
+    <strong>Why this matters beyond Florida.</strong> Florida&rsquo;s nursing home sector is a
+    leading indicator, not an isolated case. Private equity acquisition of long-term care
+    facilities is accelerating nationally. The structural dynamics documented in Florida &mdash;
+    extraction-driven staffing reduction, billing-metric incentive restructuring, and quality
+    rating decline &mdash; are visible in the federal data wherever ownership has transferred
+    to investment vehicles that prioritize short-term surplus extraction over care coordination.
+    This is SAGE applied to public data: <strong>Seeing</strong> what Peterson&rsquo;s observational
+    study documented, <strong>Analyzing</strong> the structural mechanism through IPS parameters,
+    <strong>Generating</strong> an intervention framework, and <strong>Engaging</strong> with
+    the ethical question of what ownership structures society should permit in settings that
+    govern the final years of vulnerable lives.
+  </div>
+
+  <div class="section-header open" onclick="toggleSec(this)">
+    <h3>Four Ownership Archetypes &mdash; Side-by-Side IPS Comparison</h3>
+    <span class="section-chevron">&#9658;</span>
+  </div>
+  <div class="section-body open">
+    <p class="body-text">All four facility types operate under identical regulatory burden
+    (&rho; = 0.700) &mdash; the same CMS documentation and MDS compliance requirements apply
+    regardless of ownership. The differences in FHRI_max are produced entirely by
+    ownership-structure differences in &epsilon;, &phi;, &sigma;, and &mu;. The 41.5-point
+    structural gap between PE-Acquired and Non-Profit facilities is not a gap in staff quality
+    or regulatory environment. It is a gap in structural architecture.</p>
+    <div id="ips-archetypes"></div>
+    <div class="narrative-panel amber" style="margin-top:.9rem">
+      <strong>The falsifiable prediction:</strong> BioBond-equivalent interventions
+      (HPRD improvement, stress reduction, training investment) at a PE-acquired Florida
+      facility will produce approximately 44% of the coordination improvement they produce
+      at a non-profit with equivalent baseline staff quality. Not because the interventions
+      fail &mdash; but because the structural ceiling absorbs the remainder before it reaches
+      care outcomes. This is testable against the public CMS data: if the model is correct,
+      HPRD improvements at PE facilities should show approximately 44 cents of quality-metric
+      improvement per dollar compared to non-profits making equivalent investments.
+    </div>
+  </div>
+
+  <div class="section-header open" onclick="toggleSec(this)">
+    <h3>PE Acquisition Trajectory &mdash; 2019 to 2024</h3>
+    <span class="section-chevron">&#9658;</span>
+  </div>
+  <div class="section-body open">
+    <p class="body-text">Year-by-year IPS evolution of a facility acquired by private equity
+    in 2020. The pre-acquisition baseline reflects a moderate for-profit profile (FHRI_max = 35.4).
+    The acquisition year shows the &epsilon; jump that occurs when ownership transfers to an
+    investment-vehicle management structure. Subsequent years show &phi; accumulation
+    (no capital reinvestment) and &sigma; ratcheting (deficiency citations generate procedural
+    layering). Note that &rho; remains constant throughout &mdash; the CMS regulatory burden
+    does not change with ownership. The Peterson et al. findings map directly: average star
+    ratings fell from 3.4 (2019) to 2.9 (2024), and one-star facilities doubled from 10% to 21%.</p>
+    <div id="ips-trajectory"></div>
+    <div class="narrative-panel red" style="margin-top:.8rem">
+      <strong>What changed at acquisition, and what did not:</strong> The building was the same.
+      The staff were the same people. The residents were the same population. The regulatory
+      requirements were identical. What changed was a single financial transaction that
+      restructured &epsilon; (surplus distribution away from reinvestment) and &mu; (staff
+      evaluation criteria from care quality to billing metrics). FHRI_max collapsed from
+      35.4 to 19.2 in one year &mdash; a 46% decline in structural coordination capacity
+      from a purely financial event.
+    </div>
+  </div>
+
+  <div class="section-header" onclick="toggleSec(this)">
+    <h3>BioBond &mdash; The Financial Instrument Response</h3>
+    <span class="section-chevron">&#9658;</span>
+  </div>
+  <div class="section-body">
+    <p class="body-text">The IPS analysis identifies the primary policy failure: agent-level
+    wellness investment returns at approximately 44 cents on the dollar at PE-acquired facilities
+    because the structural architecture absorbs the remainder. The obvious question is what
+    financial instrument changes &epsilon; directly rather than working around it.</p>
+
+    <div class="card card-teal">
+      <h3>BioBond: Conditioning Returns on FHRI Improvement</h3>
+      <p>A BioBond is a capital instrument whose investor returns are contingent on measured
+      improvement in the FHRI composite score of the workforce it governs. The mechanism:
+      investors who fund the transition from high-&epsilon; to lower-&epsilon; institutional
+      architecture receive enhanced returns only when FHRI_max improves &mdash; verified through
+      quarterly CMS PBJ staffing data and annual FHRI instrument administration.</p>
+      <p><strong>Why this changes &epsilon; rather than working around it:</strong> Standard
+      workforce wellness programs work within the existing &epsilon; structure, attempting
+      to raise agent FHRI against a ceiling the structure imposes. BioBond instruments change
+      the ceiling itself by making investor returns conditional on &epsilon; reduction. The
+      investment thesis shifts from &ldquo;extract surplus from the care labor margin&rdquo;
+      to &ldquo;generate returns by demonstrating coordination improvement in a sector where
+      coordination quality is measurably low and improving it has computable value.&rdquo;</p>
+    </div>
+
+    <div class="card card-amber">
+      <h3>The Measurement Requirement</h3>
+      <p>BioBond instruments require the measurement infrastructure that makes FHRI_max
+      computable from observable data. The CMS public databases already provide proxies for
+      &epsilon; (surplus distribution from financial filings), &phi; (staffing HPRD from PBJ),
+      &rho; (documentation-to-care ratio from MDS burden literature), &sigma; (deficiency
+      citation rate from Health Citations file), and &mu; (compliance-to-care evaluation ratio
+      from HR documentation). The FHRI survey instrument adds the agent-level measurement
+      that connects structural parameters to staff experience.</p>
+      <p><strong>The Public Benefits Corporation role:</strong> The PBC that administers the
+      FHRI pilot is not only a research organization. It is the measurement infrastructure
+      that makes BioBond financial instruments viable &mdash; the entity that can certify
+      FHRI_max improvement to institutional investors whose returns depend on it.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 5: TEMPORAL COMMONS ══════════════════════════ -->
+<div class="tab-pane" id="tab-temporal">
+  <h2 class="section-h2">&sect;4 &mdash; The Temporal Commons</h2>
+
+  <p class="body-text">Every chapter in the foundational arc asked about the present: what are the agency conditions right now for the agents inhabiting this structure? The ACP&rsquo;s temporal commons concept asks a different question: what is this architecture handing forward?</p>
+
+  <div class="section-header open" onclick="toggleSec(this)"><h3>Three Temporal Commons Questions</h3><span class="section-chevron">&#9658;</span></div>
+  <div class="section-body open">
+    <div class="card card-teal">
+      <h4>The Metabolic Question</h4>
+      <p>Is this economic architecture sustaining human capacity or consuming it? An economy that extracts labor intensity, concentrates gains, and exports the costs onto workers&rsquo; health, families, and communities is consuming human capacity faster than it is restoring it. The distinction between a healthy metabolism and a depleting one is not visible in GDP statistics. It is visible in FHRI measures, in FHRI_max ceilings, in burnout rates, in population health gradients, and in what the simulation models as morphic suppression accumulating across generations.</p>
+      <p><strong>The structural measure:</strong> An economic architecture&rsquo;s metabolic health can now be given a precise number. The EE floor equation (0.40&phi; + 0.30&sigma; + 0.25&epsilon;) is the rate at which the architecture exports entropy onto its agent population. An EE floor of 0.55 means 55% of the minimum entropy export is structurally imposed regardless of what agents do. This is the biological cost of the institutional architecture &mdash; the mandatory metabolic drain.</p>
+    </div>
+
+    <div class="card card-amber">
+      <h4>The Generative Question</h4>
+      <p>What kind of agency capacity is the economic architecture producing in the next generation? A system that maintains coordination capacity in the current generation but exports &phi; (physical entropy through infrastructure underinvestment) is borrowing against the future. The children who grow up in high-&phi; environments &mdash; degraded schools, deferred maintenance, chronically understaffed care facilities &mdash; begin their adult agency at a lower FHRI_max than those who inherited well-maintained structural conditions.</p>
+      <p>This is the intergenerational dimension of the IPS analysis: &phi; accumulation is a transfer of physical entropy onto future populations who bear costs they did not incur and cannot refuse.</p>
+    </div>
+
+    <div class="card card-red">
+      <h4>The Inheritance Question</h4>
+      <p>What is this economic system handing forward? Not only material wealth, but structural conditions: the FHRI_max ceilings that the next generation will inhabit, the &sigma; (morphic residue) accumulated from decades of crisis-driven procedural layering, the trust vector trajectories between institutions that are either building toward OS2 coordination or eroding toward mutual blocking.</p>
+      <p>The PE acquisition trajectory (2019&rarr;2024: FHRI_max from 35.4 to 15.2) is a temporal commons problem, not only an economic one. The 20-point structural decline is inherited by the next cohort of workers who enter those facilities, and by the next generation of residents who depend on them.</p>
+    </div>
+  </div>
+
+  <div class="section-header" onclick="toggleSec(this)"><h3>Journal Reflection</h3><span class="section-chevron">&#9658;</span></div>
+  <div class="section-body">
+    <div class="card">
+      <p>Identify one economic institution whose temporal commons impact you have directly experienced &mdash; an employer, a school, a healthcare facility, a public agency. Using the three temporal commons questions: what is this institution handing forward metabolically (EE floor equivalent), generatively (what capacity is it producing in participants), and structurally (what &sigma; residue is it accumulating)? Which of the five CPG criteria does it satisfy, and which does it fail &mdash; and for whose children does it fail most severely?</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TAB 6: SAGE ══════════════════════════════════════ -->
 <div class="tab-pane" id="tab-sage">
   <h2>§5 — SAGE Walkthrough: The Minimum Wage Case</h2>
 
@@ -437,7 +732,13 @@ footer{text-align:center;padding:1.5rem;font-size:.75rem;color:var(--muted);bord
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════ -->
+<!-- ══════════════════════
+</div>
+
+<!-- ═══════════════════ TAB 7: JOURNAL ══
+</div>
+
+<!-- ═══════════════════ TAB 7: JOURNAL ═══════════════════════════════════ -->
 <div class="tab-pane" id="tab-journal">
   <h2>Ethics Journal — Chapter 11</h2>
 
@@ -1221,6 +1522,1757 @@ window.addEventListener('load', () => {
   const civPred = document.getElementById('jta-civ-pred');
   if (civPred) civPred.value = jLoad('civ_pred');
 });
+</scr
+</div>
+
+</div><!-- .page -->
+
+<script>
+
+window.IPS = (function() {
+  'use strict';
+  const W={eps:0.45,rho:0.35,mu:0.20},A={phi:0.40,sig:0.30,eps:0.25};
+  function clamp(x){return Math.max(0,Math.min(1,x));}
+  function compute(p){
+    const rq=clamp(1-(W.eps*p.epsilon+W.rho*p.rho+W.mu*p.mu));
+    const ee=clamp(A.phi*p.phi+A.sig*p.sigma+A.eps*p.epsilon);
+    const fm=+(100*(1-ee)*rq).toFixed(1);
+    return{rq_ceiling:+rq.toFixed(4),ee_floor:+ee.toFixed(4),fhri_max:fm};
+  }
+  const COLORS={epsilon:'#f08080',phi:'#c084fc',rho:'#f5c842',sigma:'#60a5fa',mu:'#fb923c'};
+  const LABELS={epsilon:'\u03b5  Extraction Rate',phi:'\u03c6  Physical Entropy',rho:'\u03c1  Regulatory Burden',sigma:'\u03c3  Morphic Residue',mu:'\u03bc  Incentive Misalign'};
+  function verdictClass(fm){
+    if(fm<25)return{cls:'reform',text:'Structural Reform Required First'};
+    if(fm<45)return{cls:'limited',text:'Agent Intervention \u2014 Limited Returns'};
+    return{cls:'viable',text:'Agent Intervention Fully Viable'};
+  }
+  function meadows(p){
+    if(p.epsilon>0.6)return'L5 \u2014 Goals: Extraction dominates system purpose';
+    if(p.mu>0.6)return'L6 \u2014 Rules: Incentive misalignment embedded in rules';
+    if(p.sigma>0.6)return'L6 \u2014 Structure: Morphic residue locked in architecture';
+    if(p.rho>0.6)return'L7 \u2014 Information: Regulatory burden blocks routing';
+    if(p.phi>0.5)return'L9 \u2014 Feedback: Physical entropy degrades coordination';
+    return'L12 \u2014 Parameters: Moderate constraint \u2014 adjustable';
+  }
+  function renderPanel(container,config){
+    const p=config.params,ceil=compute(p),vd=verdictClass(ceil.fhri_max);
+    const fc=ceil.fhri_max>=45?'var(--teal)':ceil.fhri_max>=25?'var(--amber)':'var(--red)';
+    const rows=['epsilon','phi','rho','sigma','mu'].map(k=>`
+      <div class="ips-param">
+        <div class="ips-param-row">
+          <span class="ips-param-name">${LABELS[k]}</span>
+          <span class="ips-param-val" style="color:${COLORS[k]}">${p[k].toFixed(3)}</span>
+        </div>
+        <div class="ips-bar-track"><div class="ips-bar-fill" style="width:${(p[k]*100).toFixed(1)}%;background:${COLORS[k]}"></div></div>
+      </div>`).join('');
+    const div=document.createElement('div');
+    div.className='ips-panel';
+    div.innerHTML=`
+      <div class="ips-panel-header" style="border-bottom:2px solid ${fc}22">
+        <div class="ips-panel-label">${config.label}</div>
+        ${config.sublabel?`<div class="ips-panel-sublabel">${config.sublabel}</div>`:''}
+      </div>
+      <div class="ips-panel-body">
+        ${rows}
+        <div class="ips-divider"></div>
+        <div class="ips-ceiling-row"><span class="ips-ceiling-label">RQ Ceiling</span><span class="ips-ceiling-val">${ceil.rq_ceiling.toFixed(4)}</span></div>
+        <div class="ips-ceiling-row"><span class="ips-ceiling-label">EE Floor</span><span class="ips-ceiling-val">${ceil.ee_floor.toFixed(4)}</span></div>
+        <div class="ips-fhri-max">
+          <div class="label">FHRI Max</div>
+          <div class="val" style="color:${fc}">${ceil.fhri_max}<span class="of100">/100</span></div>
+        </div>
+        <div class="meadows-badge">${meadows(p)}</div>
+        <div class="ips-verdict ${vd.cls}">${vd.text}</div>
+      </div>`;
+    container.appendChild(div);
+  }
+  function renderComparison(container,archetypes){
+    const grid=document.createElement('div');
+    grid.className='ips-grid';
+    container.appendChild(grid);
+    archetypes.forEach(a=>renderPanel(grid,a));
+  }
+  function renderTrajectory(container,steps){
+    const rows=steps.map(s=>{
+      const c=compute(s.params);
+      const pct=(c.fhri_max/60*100).toFixed(1);
+      const bc=c.fhri_max>=30?'#14b8a6':c.fhri_max>=20?'#f5c842':'#f08080';
+      const cls=s.isAcquisition?'acquisition':s.isBaseline?'baseline':'';
+      return`<tr class="${cls}">
+        <td>${s.year}</td><td>${s.params.epsilon.toFixed(3)}</td>
+        <td>${s.params.phi.toFixed(3)}</td><td>${s.params.sigma.toFixed(3)}</td>
+        <td>${s.params.mu.toFixed(3)}</td><td>${c.rq_ceiling.toFixed(4)}</td>
+        <td>${c.fhri_max.toFixed(1)}<span class="fhri-bar-inline"><span class="fhri-bar-fill" style="width:${pct}%;background:${bc}"></span></span></td>
+        <td style="font-size:.65rem;color:rgba(255,255,255,.4)">${s.note||''}</td></tr>`;
+    }).join('');
+    const t=document.createElement('div');
+    t.innerHTML=`<table class="traj-table"><thead><tr><th>Year</th><th>\u03b5</th><th>\u03c6</th><th>\u03c3</th><th>\u03bc</th><th>RQ Ceil</th><th>FHRI_max</th><th>Note</th></tr></thead><tbody>${rows}</tbody></table>`;
+    container.appendChild(t);
+  }
+  return{compute,renderPanel,renderComparison,renderTrajectory};
+})();
+
 </script>
+
+<script>
+'use strict';
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (id === 'ips') initIPS();
+}
+
+function toggleSec(hdr) {
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+
+let _ipsInit = false;
+function initIPS() {
+  if (_ipsInit) return;
+  _ipsInit = true;
+
+  // Four archetypes
+  IPS.renderComparison(document.getElementById('ips-archetypes'), [
+    { label:'PE-Acquired', sublabel:'156 FL facilities post-2019 · Peterson et al. 2025',
+       params:{epsilon:0.636,phi:0.520,rho:0.700,sigma:0.620,mu:0.820} },
+    { label:'For-Profit Chain', sublabel:'~60% of Florida nursing homes',
+       params:{epsilon:0.273,phi:0.450,rho:0.700,sigma:0.480,mu:0.650} },
+    { label:'Non-Profit / Government', sublabel:'~17% of Florida nursing homes',
+       params:{epsilon:0.000,phi:0.300,rho:0.700,sigma:0.250,mu:0.350} },
+    { label:'REIT-Owned', sublabel:'~9% nationally · significant FL presence',
+       params:{epsilon:0.454,phi:0.580,rho:0.700,sigma:0.520,mu:0.720} },
+  ]);
+
+  // PE trajectory
+  IPS.renderTrajectory(document.getElementById('ips-trajectory'), [
+    { year:2019, isBaseline:true,
+       params:{epsilon:0.273,phi:0.350,rho:0.700,sigma:0.380,mu:0.550},
+       note:'Pre-acquisition (moderate for-profit baseline)' },
+    { year:2020, isAcquisition:true,
+       params:{epsilon:0.636,phi:0.381,rho:0.700,sigma:0.430,mu:0.625},
+       note:'▲ ACQUISITION — ε jumps, μ restructured to billing metrics' },
+    { year:2021,
+       params:{epsilon:0.636,phi:0.426,rho:0.700,sigma:0.420,mu:0.645},
+       note:'φ accumulates — no capital reinvestment' },
+    { year:2022,
+       params:{epsilon:0.636,phi:0.472,rho:0.700,sigma:0.470,mu:0.665},
+       note:'σ ratchets — deficiency citations mount' },
+    { year:2023,
+       params:{epsilon:0.636,phi:0.517,rho:0.700,sigma:0.460,mu:0.685},
+       note:'Stars: 2.9 avg (was 3.4 pre-acquisition)' },
+    { year:2024,
+       params:{epsilon:0.636,phi:0.562,rho:0.700,sigma:0.510,mu:0.705},
+       note:'1-star facilities doubled (10%→21%)' },
+  ]);
+}
+
+// ── Preserve existing tab switching for simulation ──────────────────────────
+function showTab_legacy(id, el) {
+  // Legacy tab switcher for simulation internal tabs if needed
+}
+</script>
+
+<script>
+
+'use strict';
+
+// ── Step-by-step trace chart renderer ────────────────────────
+function renderStepChart(timeline, containerId, options) {
+  const el = document.getElementById(containerId);
+  if (!el || !timeline || !timeline.length) return;
+  options = options || {};
+  const W = Math.max(320, el.offsetWidth || 520);
+  const H = options.height || 200;
+  const PAD = {top:32,right:18,bottom:52,left:46};
+  const CW = W - PAD.left - PAD.right;
+  const CH = H - PAD.top - PAD.bottom;
+  const steps = timeline.length;
+  let bbStep = null;
+  for (let i=0; i<timeline.length; i++) {
+    if (timeline[i].biobond_active && (i===0||!timeline[i-1].biobond_active)){bbStep=i;break;}
+  }
+  const xPos = i => PAD.left + (steps>1?i/(steps-1):0)*CW;
+  const yPos = v => PAD.top + CH - Math.max(0,Math.min(1,v))*CH;
+  const TRACES = [
+    ['lambda_raw',         '#c9a84c', '\u03bb Raw'],
+    ['lambda_perceived',   '#14b8a6', '\u03bb Perceived'],
+    ['morphic_suppression','#e879f9', 'Morphic Supp.'],
+    ['os2_synergy_bridge', '#7fd8a8', 'OS2 Bridge'],
+  ];
+  const mkPath = key => timeline.map((s,i)=>
+    `${i===0?'M':'L'}${xPos(i).toFixed(1)},${yPos(s[key]||0).toFixed(1)}`
+  ).join(' ');
+  const title = options.title||'Step-by-Step Trace';
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"
+    role="img" aria-label="${title}: line chart showing simulation metrics across ${steps} steps"
+    style="display:block;overflow:visible">`;
+  svg += `<title>${title}</title>`;
+  // Chart title
+  svg += `<text x="${PAD.left}" y="${PAD.top-12}" font-size="12" font-weight="600"
+    font-family="'Courier New',monospace" fill="rgba(255,255,255,.75)"
+    letter-spacing=".04em">${title}</text>`;
+  // Grid lines and Y-axis labels
+  [0,.25,.5,.75,1].forEach(v=>{
+    const y=yPos(v);
+    svg+=`<line x1="${PAD.left}" y1="${y}" x2="${PAD.left+CW}" y2="${y}"
+      stroke="rgba(255,255,255,.12)" stroke-width="1"/>`;
+    svg+=`<text x="${PAD.left-7}" y="${y+4}" text-anchor="end" font-size="11"
+      font-family="'Courier New',monospace" fill="rgba(255,255,255,.65)"
+      aria-hidden="true">${v.toFixed(2)}</text>`;
+  });
+  // X-axis step labels
+  timeline.forEach((s,i)=>{
+    const show = i===0||i===steps-1||i%Math.max(1,Math.floor(steps/4))===0;
+    if(show){
+      svg+=`<text x="${xPos(i)}" y="${PAD.top+CH+16}" text-anchor="middle" font-size="11"
+        font-family="'Courier New',monospace" fill="rgba(255,255,255,.60)"
+        aria-hidden="true">s${s.step}</text>`;
+    }
+  });
+  // X-axis label
+  svg+=`<text x="${PAD.left+CW/2}" y="${PAD.top+CH+30}" text-anchor="middle" font-size="11"
+    font-family="'Courier New',monospace" fill="rgba(255,255,255,.45)"
+    aria-hidden="true">simulation step</text>`;
+  // BioBond activation marker
+  if(bbStep!==null){
+    const bx=xPos(bbStep);
+    svg+=`<line x1="${bx}" y1="${PAD.top}" x2="${bx}" y2="${PAD.top+CH}"
+      stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3" opacity=".85"/>`;
+    svg+=`<text x="${bx+4}" y="${PAD.top+13}" font-size="11" font-weight="600"
+      font-family="'Courier New',monospace" fill="#c9a84c" opacity=".95"
+      >BioBond</text>`;
+  }
+  // Trace lines
+  TRACES.forEach(([key,color])=>{
+    svg+=`<path d="${mkPath(key)}" fill="none" stroke="${color}"
+      stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity=".92"/>`;
+  });
+  // Endpoint dots
+  TRACES.forEach(([key,color])=>{
+    const v=(timeline[steps-1][key]||0);
+    svg+=`<circle cx="${xPos(steps-1)}" cy="${yPos(v)}" r="3.5"
+      fill="${color}" opacity=".95"/>`;
+  });
+  // Legend — positioned below chart with generous spacing and large text
+  const LEGEND_Y = PAD.top + CH + 44;
+  const legendItems = TRACES.length;
+  const itemW = Math.floor(CW / legendItems);
+  TRACES.forEach(([key,color,label],i)=>{
+    const lx = PAD.left + i * itemW;
+    svg+=`<line x1="${lx}" y1="${LEGEND_Y}" x2="${lx+18}" y2="${LEGEND_Y}"
+      stroke="${color}" stroke-width="3"/>`;
+    svg+=`<circle cx="${lx+9}" cy="${LEGEND_Y}" r="3.5" fill="${color}"/>`;
+    svg+=`<text x="${lx+24}" y="${LEGEND_Y+4}" font-size="12" font-weight="500"
+      font-family="'Courier New',monospace" fill="rgba(255,255,255,.88)"
+      aria-label="${label} trace indicator">${label}</text>`;
+  });
+  svg+='</svg>';
+  el.innerHTML=svg;
+}
+
+const JP = 'ch11_';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ── Storage ──────────────────────────────────────────────────
+function jSave(k, v) {
+  try {
+    localStorage.setItem(JP + k, v);
+    const sn = document.getElementById('sn-' + k) ||
+               document.getElementById('sn-' + k.replace('ch11_',''));
+    if (sn) { sn.classList.add('show'); setTimeout(() => sn.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+function jLoad(k) { try { return localStorage.getItem(JP + k) || ''; } catch(e) { return ''; } }
+
+// ── Tab switching ─────────────────────────────────────────────
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const pane = document.getElementById('tab-' + name);
+  if (pane) pane.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'journal') loadJournalFields();
+  if (name === 'simulation') loadSimFields();
+}
+
+function loadJournalFields() {
+  ['q1','q2','q3','q4','temporal','sage'].forEach(k => {
+    const el = document.getElementById('jta-' + k);
+    if (el) el.value = jLoad(k);
+  });
+  const q5 = document.getElementById('jta-q5');
+  if (q5) q5.value = jLoad('ch11_cq5') || jLoad('cq5') || '';
+  // Retrieve prediction
+  const pred = jLoad('q5_pred');
+  const predEl = document.getElementById('predRetrieveText');
+  const predBox = document.getElementById('predRetrieve');
+  if (pred && pred.trim() && predEl && predBox) {
+    predEl.textContent = pred;
+    predBox.style.display = 'block';
+  }
+  // Ch10 prediction retrieval
+  loadCh10Pred();
+}
+
+function loadSimFields() {
+  const pred = document.getElementById('jta-q5-pred');
+  if (pred) pred.value = jLoad('q5_pred');
+  const civPred = document.getElementById('jta-civ-pred');
+  if (civPred) civPred.value = jLoad('civ_pred');
+  loadCh10Pred();
+}
+
+function loadCh10Pred() {
+  try {
+    const pred = localStorage.getItem('ch10_cq5') || '';
+    if (pred.trim()) {
+      ['ch10PredDisplay','ch10PredJournal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'block';
+      });
+      ['ch10PredText','ch10PredJournalText'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = pred;
+      });
+    }
+  } catch(e) {}
+}
+
+// ── Simulation ────────────────────────────────────────────────
+let _config = 'A';
+let _results = {};
+let _econSeed = 100;
+let _econLog = [];
+let _econCount = 0;
+
+const CONFIG_LABELS = {
+  A: 'Configuration A: Entropy-Exporting',
+  B: 'Configuration B: Coherence-Preserving',
+  C: 'Configuration C: BioBond Transition',
+};
+
+const CONFIG_COLORS = { A: '#f08080', B: '#7fd8a8', C: '#c9a84c' };
+
+const PAYLOADS = {
+  A: {
+    num_agents: 18, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    worldview_distribution: {
+      role_order: 0.45, sacred_boundary: 0.25,
+      liberal_individualist: 0.18, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.62, tradition_weighted: 0.18,
+      empirical_calibrated: 0.12, alternative_facts: 0.08
+    },
+    scenario_physics: {
+      base_entropy: 0.60, base_stress: 0.56,
+      block_fields: { care: -0.30, fairness: -0.55, community: -0.40, boundary: 0.45 }
+    }
+  },
+  B: {
+    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 42,
+    worldview_distribution: {
+      ubuntu_relational: 0.30, liberal_individualist: 0.28,
+      indigenous_custodial: 0.18, role_order: 0.14, sacred_boundary: 0.10
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.55, tradition_weighted: 0.20,
+      authority_weighted: 0.15, alternative_facts: 0.10
+    },
+    scenario_physics: {
+      base_entropy: 0.42, base_stress: 0.38,
+      block_fields: { care: 0.38, fairness: 0.45, community: 0.40, boundary: 0.18 }
+    }
+  },
+  C: {
+    num_agents: 18, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    activate_biobond_at: 4,
+    worldview_distribution: {
+      role_order: 0.45, sacred_boundary: 0.25,
+      liberal_individualist: 0.18, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.62, tradition_weighted: 0.18,
+      empirical_calibrated: 0.12, alternative_facts: 0.08
+    },
+    scenario_physics: {
+      base_entropy: 0.60, base_stress: 0.56,
+      block_fields: { care: -0.30, fairness: -0.55, community: -0.40, boundary: 0.45 }
+    }
+  }
+};
+
+async function fetchWithRetry(url, opts, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
+      if (r.ok) return r;
+      if (i === retries) throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(res => setTimeout(res, 1200 * (i + 1)));
+    }
+  }
+}
+
+function selectConfig(cfg) {
+  _config = cfg;
+  document.getElementById('runLabel').textContent = CONFIG_LABELS[cfg];
+  ['A','B','C'].forEach(c => {
+    document.getElementById('btn'+c).classList.toggle('active-run', c === cfg);
+  });
+  document.getElementById('ucpError').style.display = 'none';
+  if (_results[cfg]) {
+    renderEconResult(_results[cfg]);
+    document.getElementById('ucpRunBtn').textContent = '↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display = 'none';
+    document.getElementById('ucpRunBtn').textContent = '▶ Run Simulation';
+  }
+}
+
+
+// ── V3.3 phased manifest helpers ─────────────────────────────────────────────
+// buildPhasedPayload() enriches the existing PAYLOADS[config] with
+// institution_state_lite, phases, and interventions for /api/simulate/phased_manifest.
+// buildLegacyPayload() extracts the flat payload for the fallback route.
+
+function buildLegacyPayload(base, seed) {
+  const p = { ...base, seed };
+  if (base.scenario_physics) {
+    p.scenario_physics = {
+      ...base.scenario_physics,
+      block_fields: { ...(base.scenario_physics.block_fields || {}) }
+    };
+  }
+  if (base.activate_biobond_at !== undefined)
+    p.activate_biobond_at = base.activate_biobond_at;
+  return p;
+}
+
+function buildPhasedPayload(configKey, seed) {
+  const base = PAYLOADS[configKey];
+  const sp   = base.scenario_physics || {};
+
+  // Common fields passed through unchanged
+  const common = {
+    num_agents:             base.num_agents || 18,
+    scenario_name:          base.scenario_name || 'baseline',
+    steps:                  base.steps || 8,
+    seed,
+    worldview_distribution: { ...(base.worldview_distribution || {}) },
+    evidence_distribution:  { ...(base.evidence_distribution  || {}) },
+    scenario_physics:       { ...sp, block_fields: { ...(sp.block_fields || {}) } },
+  };
+  if (base.activate_biobond_at !== undefined)
+    common.activate_biobond_at = base.activate_biobond_at;
+
+  // Config-specific institution state and phases
+  if (configKey === 'A') {
+    // Entropy-exporting: high rigidity, low legitimacy, minimal repair
+    return {
+      ...common,
+      institution_state_lite: {
+        phase: 'baseline', policy_rigidity: 0.75, legitimacy: 0.38,
+        repair_bandwidth: 0.12, support_reserve: 0.10,
+        entropy_export: 0.68, routing_quality: 0.35, shared_task_strength: 0.25,
+        chapter_variables: {
+          wage_floor: 0.18, labor_voice_access: 0.15, retaliation_risk: 0.82,
+          schedule_volatility: 0.72, security_floor: 0.15, market_power: 0.80
+        }
+      },
+      phases: [],
+      interventions: [],
+    };
+  }
+
+  if (configKey === 'B') {
+    // Coherence-preserving: moderate rigidity, high legitimacy, good repair
+    return {
+      ...common,
+      institution_state_lite: {
+        phase: 'baseline', policy_rigidity: 0.42, legitimacy: 0.68,
+        repair_bandwidth: 0.38, support_reserve: 0.32,
+        entropy_export: 0.35, routing_quality: 0.62, shared_task_strength: 0.58,
+        chapter_variables: {
+          wage_floor: 0.55, labor_voice_access: 0.60, retaliation_risk: 0.22,
+          schedule_volatility: 0.28, security_floor: 0.58, market_power: 0.35
+        }
+      },
+      phases: [],
+      interventions: [],
+    };
+  }
+
+  // Config C — BioBond transition: starts like A, shifts at step 4
+  return {
+    ...common,
+    institution_state_lite: {
+      phase: 'baseline', policy_rigidity: 0.72, legitimacy: 0.40,
+      repair_bandwidth: 0.14, support_reserve: 0.10,
+      entropy_export: 0.65, routing_quality: 0.32, shared_task_strength: 0.22,
+      chapter_variables: {
+        wage_floor: 0.18, labor_voice_access: 0.18, retaliation_risk: 0.80,
+        schedule_volatility: 0.70, security_floor: 0.16, market_power: 0.78
+      }
+    },
+    phases: [
+      {
+        phase_id: 'pre_intervention', start_step: 1, end_step: 3,
+        scenario_override: {
+          base_entropy: sp.base_entropy || 0.60,
+          base_stress:  sp.base_stress  || 0.56,
+          block_fields: { ...(sp.block_fields || {}) }
+        },
+        institution_deltas: {}, intervention_ids: []
+      },
+      {
+        phase_id: 'biobond_active', start_step: 4, end_step: common.steps,
+        scenario_override: {
+          base_entropy: Math.max(0, (sp.base_entropy||0.60) - 0.10),
+          base_stress:  Math.max(0, (sp.base_stress ||0.56) - 0.12),
+          block_fields: {
+            ...(sp.block_fields || {}),
+            care:      ((sp.block_fields?.care      ?? 0) + 0.28),
+            fairness:  ((sp.block_fields?.fairness  ?? 0) + 0.38),
+            community: ((sp.block_fields?.community ?? 0) + 0.32),
+          }
+        },
+        institution_deltas: {
+          repair_bandwidth: 0.36, support_reserve: 0.34,
+          legitimacy: 0.54, entropy_export: 0.38
+        },
+        intervention_ids: ['biobond_support']
+      }
+    ],
+    interventions: [
+      {
+        intervention_id: 'biobond_support', kind: 'support_transfer',
+        start_step: 4, end_step: common.steps,
+        targets: ['institution', 'high_vulnerability'],
+        parameter_deltas: {
+          repair_bandwidth: 0.22, support_reserve: 0.26,
+          'chapter_variables.security_floor':      0.26,
+          'chapter_variables.retaliation_risk':   -0.22,
+          'chapter_variables.labor_voice_access':  0.20,
+        },
+        notes: 'Models wage floor, labor protection, and community investment activation.'
+      }
+    ],
+  };
+}
+
+async function postEconSimulation(payload, seed) {
+  // Prefer phased_manifest; fall back to custom if unavailable
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/phased_manifest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (resp && resp.ok) return resp;
+  } catch (_) { /* fall through */ }
+  // Fallback — preserves all existing behaviour
+  const legacy = buildLegacyPayload(PAYLOADS[_config], seed);
+  return fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(legacy),
+  });
+}
+
+async function runEconSim() {
+  const btn = document.getElementById('ucpRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ucp-spinner"></span>Running…';
+  document.getElementById('ucpResult').style.display = 'none';
+  document.getElementById('ucpError').style.display = 'none';
+
+  try {
+    const phasedPayload = buildPhasedPayload(_config, _econSeed);
+    const resp = await postEconSimulation(phasedPayload, _econSeed);
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics in response');
+
+    _results[_config] = data;
+    renderEconResult(data);
+    // Render step-by-step trace chart
+    if (data.timeline && data.timeline.length) {
+      renderStepChart(data.timeline, 'stepChart', {
+        title: CONFIG_LABELS[_config] + ' — step trace', height: 165
+      });
+    }
+    if (Object.keys(_results).length === 3) renderComparison();
+    // Log to robustness tracker
+    const m = data.metrics;
+    _econCount++;
+    _econLog.push({
+      run: _econCount, cfg: _config,
+      seed: PAYLOADS[_config].seed,
+      lr: m.lambda_raw || 0, lp: m.lambda_perceived || 0,
+      gap: Math.max(0, (m.lambda_raw||0) - (m.lambda_perceived||0)),
+      morph: m.morphic_suppression || 0,
+      os2: m.os2_synergy_bridge || 0,
+    });
+    const rp = document.getElementById('robustnessPanel');
+    if (rp) rp.style.display = 'block';
+    renderRobustnessLog();
+    renderSxS();
+    btn.disabled = false;
+    btn.textContent = '↺ Re-run Simulation';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '▶ Run Simulation';
+    const err = document.getElementById('ucpError');
+    err.textContent = 'Simulation unavailable — ' + e.message + '. Please try again in a moment.';
+    err.style.display = 'block';
+  }
+}
+
+function vc(v, hi = true) {
+  if (hi) return v > 0.55 ? 'val-great' : v > 0.30 ? 'val-warn' : 'val-bad';
+  return v < 0.15 ? 'val-great' : v < 0.35 ? 'val-warn' : 'val-bad';
+}
+
+function renderEconResult(data) {
+  const m = data.metrics || {};
+  const raw = m.lambda_raw || 0, perc = m.lambda_perceived || 0;
+  const fric = m.friction || 0, morph = m.morphic_suppression || 0;
+  const os2 = m.os2_synergy_bridge ?? m.os2_synergy ?? 0;
+  const gap = Math.max(0, raw - perc);
+  const cfg = _config;
+
+  document.getElementById('ucpMetrics').innerHTML = `
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Raw</div>
+      <div class="ucp-metric-value ${vc(raw)}">${raw.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${raw > 0.55 ? 'Capacity intact' : raw > 0.30 ? 'Strained' : 'Collapsed'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Perceived</div>
+      <div class="ucp-metric-value ${vc(perc)}">${perc.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${perc > 0.50 ? 'Voice reaching decisions' : perc > 0.25 ? 'Suppressed' : 'Near-absent'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Suppression Gap</div>
+      <div class="ucp-metric-value ${vc(gap, false)}">${(gap * 100).toFixed(1)}%</div>
+      <div class="ucp-metric-phrase">${gap > 0.35 ? 'Large — ACP concern' : gap > 0.15 ? 'Moderate' : 'Minimal'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Morphic Supp.</div>
+      <div class="ucp-metric-value" style="color:#e879f9">${morph.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${morph > 0.20 ? 'Learned self-censorship building' : morph > 0.08 ? 'Emerging' : 'Low'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">OS2 Bridge</div>
+      <div class="ucp-metric-value ${vc(os2)}">${os2.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${os2 > 0.45 ? 'Cross-framework coordination' : os2 > 0.25 ? 'Partial' : 'Low'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Friction</div>
+      <div class="ucp-metric-value ${vc(fric, false)}">${fric.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">Translation cost</div></div>`;
+
+  const bp = v => `${Math.round(v * 100)}%`;
+  document.getElementById('ucpBars').innerHTML = `
+    <div class="ucp-gap-label">Agency conditions — what is available vs. what reaches decisions</div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Raw</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${bp(raw)}"></div></div>
+      <span class="ucp-bar-num">${raw.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Perceived</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perc" style="width:${bp(perc)}"></div></div>
+      <span class="ucp-bar-num">${perc.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">Morphic</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-morph" style="width:${bp(morph)}"></div></div>
+      <span class="ucp-bar-num">${morph.toFixed(2)}</span></div>`;
+
+  const narratives = {
+    A: `Configuration A — Entropy-Exporting: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. Authority-weighted evidence (62%) combined with negative fairness and community block fields routes labor's signal around decisions. Morphic suppression at ${morph.toFixed(3)} reflects the accumulated learned self-censorship of agents whose contributions consistently fail to reach outcomes. This is the simulation's structural account of what chronic economic precarity does to coordination capacity — not a moral verdict on any individual, but a measurement of what the architecture makes possible.`,
+    B: `Configuration B — Coherence-Preserving: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. Empirically-calibrated evidence (55%) and positive block fields allow more of agents' genuine capability to reach the decision processes that govern them. OS2 Bridge at ${os2.toFixed(3)} reflects the cross-worldview coordination that becomes structurally possible when the evidence architecture does not systematically discount certain frameworks. Compare to Configuration A: same agents, different architecture.`,
+    C: `Configuration C — BioBond Transition: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. The same entropy-exporting conditions as Configuration A, with institutional support activating at step 4. Notice whether morphic suppression (${morph.toFixed(3)}) has declined relative to Configuration A — and whether the decline is immediate or lagged. Accumulated learned self-censorship does not dissolve the moment structural conditions improve. The lag is the simulation's account of why sustained institutional intervention is required, not one-time policy adjustment.`,
+  };
+  document.getElementById('ucpNarrative').textContent = narratives[cfg] || '';
+  document.getElementById('ucpResult').style.display = 'block';
+}
+
+function renderComparison() {
+  const rA = _results.A?.metrics || {}, rB = _results.B?.metrics || {}, rC = _results.C?.metrics || {};
+  const gapA = Math.max(0, (rA.lambda_raw||0) - (rA.lambda_perceived||0));
+  const gapB = Math.max(0, (rB.lambda_raw||0) - (rB.lambda_perceived||0));
+  const gapC = Math.max(0, (rC.lambda_raw||0) - (rC.lambda_perceived||0));
+  const box = document.getElementById('compareBox');
+  const txt = document.getElementById('compareText');
+  txt.innerHTML = `
+    <p><strong>Suppression gap comparison:</strong> Config A = ${(gapA*100).toFixed(1)}%, Config B = ${(gapB*100).toFixed(1)}%, Config C (with BioBond) = ${(gapC*100).toFixed(1)}%. ${gapB < gapA ? `Config B reduced the gap by ${((gapA-gapB)*100).toFixed(1)} percentage points — the structural difference between entropy-exporting and coherence-preserving architecture.` : 'The gap difference between configurations is smaller than expected — run again with different seeds to explore variation.'}</p>
+    <p><strong>Morphic suppression:</strong> Config A = ${(rA.morphic_suppression||0).toFixed(3)}, Config B = ${(rB.morphic_suppression||0).toFixed(3)}, Config C = ${(rC.morphic_suppression||0).toFixed(3)}. ${(rC.morphic_suppression||0) < (rA.morphic_suppression||0) ? `BioBond reduced accumulated learned self-censorship by ${(((rA.morphic_suppression||0)-(rC.morphic_suppression||0))*100).toFixed(1)}pp — confirming that structural support interrupts the accumulation, though the lag means it did not fully close the gap with Config B.` : 'Morphic suppression similar across configurations — the stochastic variation may be masking the structural signal. Try additional seeds using the robustness panel.'}</p>
+    <p><strong>OS2 Bridge:</strong> Config B = ${(rB.os2_synergy_bridge||0).toFixed(3)} vs Config A = ${(rA.os2_synergy_bridge||0).toFixed(3)}. ${(rB.os2_synergy_bridge||0) > (rA.os2_synergy_bridge||0) ? 'Coherence-preserving architecture produces measurably higher cross-worldview coordination — the structural account of why fair economic institutions tend to produce more durable social contracts.' : 'OS2 Bridge values are similar across configurations in this run.'}</p>`;
+  box.style.display = 'block';
+}
+
+function renderSxS() {
+  const CONFIGS = ['A','B','C'];
+  const LABELS = { A: 'Config A', B: 'Config B', C: 'Config C' };
+  const METRICS = [
+    {key:'lambda_raw', label:'λ Raw', hi:true, desc:'Coordination capacity available'},
+    {key:'lambda_perceived', label:'λ Perceived', hi:true, desc:'What reaches decisions'},
+    {key:'os2_synergy_bridge', label:'OS2 Bridge', hi:true, desc:'Cross-worldview coordination'},
+    {key:'friction', label:'Friction', hi:false, desc:'Translation cost'},
+    {key:'morphic_suppression', label:'Morphic Supp.', hi:false, desc:'Learned self-censorship'},
+  ];
+  const gv = (cfg, key) => {
+    const m = _results[cfg]?.metrics || {};
+    return key === 'os2_synergy_bridge' ? (m.os2_synergy_bridge ?? m.os2_synergy ?? 0) : (m[key] || 0);
+  };
+  const done = CONFIGS.filter(c => _results[c]);
+  if (!done.length) return;
+
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">
+    <tr><td style="width:32%;padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Metric</td>`;
+  CONFIGS.forEach(c => {
+    const d = !!_results[c];
+    html += `<td style="width:23%;padding:.4rem .5rem;text-align:center">
+      <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${d ? CONFIG_COLORS[c] : 'rgba(255,255,255,.2)'}">${LABELS[c]}</div></td>`;
+  });
+  html += `</tr>`;
+  METRICS.forEach(metric => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">
+      <td style="padding:.5rem .6rem">
+        <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${metric.label}</div>
+        <div style="font-size:.66rem;color:rgba(255,255,255,.32);margin-top:.1rem">${metric.desc}</div>
+      </td>`;
+    CONFIGS.forEach(c => {
+      const d = !!_results[c];
+      const val = d ? gv(c, metric.key) : null;
+      const nc = d ? (metric.hi ? (val > .55 ? '#7fd8a8' : val > .30 ? '#f5c842' : '#f08080')
+                                 : (val < .12 ? '#7fd8a8' : val < .25 ? '#f5c842' : '#f08080')) : 'rgba(255,255,255,.2)';
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (d) {
+        html += `<div style="font-size:1.1rem;font-weight:700;font-family:'Courier New',monospace;color:${nc}">${val.toFixed(3)}</div>
+          <div style="margin:.25rem auto 0;width:76%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${Math.round(val*100)}%;background:${CONFIG_COLORS[c]};border-radius:3px;transition:width 1s ease"></div></div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table></div>`;
+  document.getElementById('sxsBody').innerHTML = html;
+}
+
+// ── Robustness panel ──────────────────────────────────────────
+async function rerunWithNewSeed() {
+  const btn = document.getElementById('rerunBtn');
+  const status = document.getElementById('rerunStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '…running'; }
+  if (status) status.textContent = `seed ${_econSeed}…`;
+
+  const base = PAYLOADS[_config];
+  const payload = { ...base, seed: _econSeed };
+  payload.scenario_physics = { ...base.scenario_physics,
+    block_fields: { ...base.scenario_physics.block_fields } };
+  if (base.activate_biobond_at !== undefined) payload.activate_biobond_at = base.activate_biobond_at;
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    const m = data.metrics || {};
+    _econCount++;
+    _econLog.push({
+      run: _econCount, cfg: _config, seed: _econSeed,
+      lr: m.lambda_raw || 0, lp: m.lambda_perceived || 0,
+      gap: Math.max(0, (m.lambda_raw||0) - (m.lambda_perceived||0)),
+      morph: m.morphic_suppression || 0,
+      os2: m.os2_synergy_bridge || 0,
+    });
+    _econSeed += 13;
+    renderRobustnessLog();
+    renderEconResult(data);
+  } catch(e) {
+    if (status) status.textContent = 'unavailable — try again';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Try a Different Agent Population'; }
+    if (status) setTimeout(() => { if(status.textContent.includes('seed')) status.textContent = ''; }, 3000);
+  }
+}
+
+function renderRobustnessLog() {
+  const log = _econLog;
+  if (!log.length) return;
+  const logDiv = document.getElementById('robustnessLog');
+  const tbody = document.getElementById('robustnessRows');
+  const sumEl = document.getElementById('robustnessSummary');
+  if (!logDiv || !tbody || !sumEl) return;
+  logDiv.style.display = 'block';
+
+  tbody.innerHTML = [...log].reverse().map((r, i) => {
+    const gapCol = r.gap > 0.40 ? '#f08080' : r.gap > 0.20 ? '#f5c842' : '#7fd8a8';
+    const lpCol = r.lp < 0.25 ? '#f08080' : r.lp < 0.50 ? '#f5c842' : '#7fd8a8';
+    const os2Col = r.os2 > 0.40 ? '#7fd8a8' : r.os2 > 0.22 ? '#f5c842' : '#f08080';
+    const rowStyle = i === 0 ? 'background:rgba(201,168,76,.07);' : '';
+    return `<tr style="border-top:1px solid rgba(255,255,255,.06);${rowStyle}">
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4)">#${r.run}</td>
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:${CONFIG_COLORS[r.cfg]}">${CONFIG_LABELS[r.cfg].split(':')[0]}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7);font-weight:700">${r.lr.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${lpCol};font-weight:700">${r.lp.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${gapCol};font-weight:700">${(r.gap*100).toFixed(1)}%</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.55)">${r.morph.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:${os2Col}">${r.os2.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  if (log.length >= 2) {
+    const byCfg = { A: [], B: [], C: [] };
+    log.forEach(r => { if (byCfg[r.cfg]) byCfg[r.cfg].push(r); });
+    let summary = '';
+    ['A','B','C'].forEach(cfg => {
+      const entries = byCfg[cfg];
+      if (entries.length >= 2) {
+        const gaps = entries.map(r => r.gap);
+        const [mn, mx] = [Math.min(...gaps), Math.max(...gaps)];
+        const range = (mx - mn) * 100;
+        const avgLp = entries.reduce((s,r) => s+r.lp, 0) / entries.length;
+        summary += `${CONFIG_LABELS[cfg].split(':')[0]}: across ${entries.length} populations, suppression gap ranged ${(mn*100).toFixed(1)}%–${(mx*100).toFixed(1)}% (spread: ${range.toFixed(1)}pp), avg λ Perceived = ${avgLp.toFixed(3)}. `;
+        if (range < 10) summary += `Narrow range confirms structural cause. `;
+      }
+    });
+    if (byCfg.A.length >= 1 && byCfg.B.length >= 1) {
+      const avgGapA = byCfg.A.reduce((s,r)=>s+r.gap,0)/byCfg.A.length;
+      const avgGapB = byCfg.B.reduce((s,r)=>s+r.gap,0)/byCfg.B.length;
+      summary += `Average gap: Config A = ${(avgGapA*100).toFixed(1)}%, Config B = ${(avgGapB*100).toFixed(1)}% — a ${((avgGapA-avgGapB)*100).toFixed(1)}pp structural difference across all runs tested.`;
+    }
+    sumEl.textContent = summary;
+  }
+}
+
+// ── Export ────────────────────────────────────────────────────
+function buildExportText() {
+  const date = new Date().toLocaleDateString();
+  let out = `CHAPTER 11: ECONOMIC SYSTEMS — ETHICS JOURNAL\nDate: ${date}\nStudent: [YOUR NAME]\n\n`;
+  out += `Q5 PREDICTION (PRE-SIMULATION)\n${jLoad('q5_pred') || '[not completed]'}\n\n`;
+  out += `CIVILIZATIONAL STACK PREDICTION\n${jLoad('civ_pred') || '[not completed]'}\n\n`;
+  out += `Q1 — STRUCTURAL DIAGNOSIS\n${jLoad('q1') || '[not completed]'}\n\n`;
+  out += `Q2 — SIMULATION INTERPRETATION\n${jLoad('q2') || '[not completed]'}\n\n`;
+  out += `Q3 — TEMPORAL COMMONS\n${jLoad('q3') || '[not completed]'}\n\n`;
+  out += `Q4 — CAPABILITIES-ATCF BRIDGE\n${jLoad('q4') || '[not completed]'}\n\n`;
+  out += `TEMPORAL COMMONS — MY CONTEXT\n${jLoad('temporal') || '[not completed]'}\n\n`;
+  out += `SAGE WALKTHROUGH\n${jLoad('sage') || '[not completed]'}\n\n`;
+  out += `Q5 — PREDICTION FOR CHAPTER 12\n${jLoad('ch11_cq5') || jLoad('cq5') || '[not completed]'}\n`;
+  return out;
+}
+
+function exportJournal() {
+  const txt = buildExportText();
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'Ch11_Economic_Systems_Journal.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function copyJournal() {
+  const txt = buildExportText();
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => fallbackCopy(txt));
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt) {
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+function clearJournal() {
+  if (!confirm('Clear all saved responses? This cannot be undone.')) return;
+  ['q5_pred','civ_pred','q1','q2','q3','q4','temporal','sage','ch11_cq5','cq5'].forEach(k =>
+    localStorage.removeItem(JP + k));
+  location.reload();
+}
+
+// ── On load ───────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadSimFields();
+  // Restore any saved prediction fields
+  const pred = document.getElementById('jta-q5-pred');
+  if (pred) pred.value = jLoad('q5_pred');
+  const civPred = document.getElementById('jta-civ-pred');
+  if (civPred) civPred.value = jLoad('civ_pred');
+});
+
+</scr
+</div>
+
+</div><!-- .page -->
+
+<script>
+
+window.IPS = (function() {
+  'use strict';
+  const W={eps:0.45,rho:0.35,mu:0.20},A={phi:0.40,sig:0.30,eps:0.25};
+  function clamp(x){return Math.max(0,Math.min(1,x));}
+  function compute(p){
+    const rq=clamp(1-(W.eps*p.epsilon+W.rho*p.rho+W.mu*p.mu));
+    const ee=clamp(A.phi*p.phi+A.sig*p.sigma+A.eps*p.epsilon);
+    const fm=+(100*(1-ee)*rq).toFixed(1);
+    return{rq_ceiling:+rq.toFixed(4),ee_floor:+ee.toFixed(4),fhri_max:fm};
+  }
+  const COLORS={epsilon:'#f08080',phi:'#c084fc',rho:'#f5c842',sigma:'#60a5fa',mu:'#fb923c'};
+  const LABELS={epsilon:'\u03b5  Extraction Rate',phi:'\u03c6  Physical Entropy',rho:'\u03c1  Regulatory Burden',sigma:'\u03c3  Morphic Residue',mu:'\u03bc  Incentive Misalign'};
+  function verdictClass(fm){
+    if(fm<25)return{cls:'reform',text:'Structural Reform Required First'};
+    if(fm<45)return{cls:'limited',text:'Agent Intervention \u2014 Limited Returns'};
+    return{cls:'viable',text:'Agent Intervention Fully Viable'};
+  }
+  function meadows(p){
+    if(p.epsilon>0.6)return'L5 \u2014 Goals: Extraction dominates system purpose';
+    if(p.mu>0.6)return'L6 \u2014 Rules: Incentive misalignment embedded in rules';
+    if(p.sigma>0.6)return'L6 \u2014 Structure: Morphic residue locked in architecture';
+    if(p.rho>0.6)return'L7 \u2014 Information: Regulatory burden blocks routing';
+    if(p.phi>0.5)return'L9 \u2014 Feedback: Physical entropy degrades coordination';
+    return'L12 \u2014 Parameters: Moderate constraint \u2014 adjustable';
+  }
+  function renderPanel(container,config){
+    const p=config.params,ceil=compute(p),vd=verdictClass(ceil.fhri_max);
+    const fc=ceil.fhri_max>=45?'var(--teal)':ceil.fhri_max>=25?'var(--amber)':'var(--red)';
+    const rows=['epsilon','phi','rho','sigma','mu'].map(k=>`
+      <div class="ips-param">
+        <div class="ips-param-row">
+          <span class="ips-param-name">${LABELS[k]}</span>
+          <span class="ips-param-val" style="color:${COLORS[k]}">${p[k].toFixed(3)}</span>
+        </div>
+        <div class="ips-bar-track"><div class="ips-bar-fill" style="width:${(p[k]*100).toFixed(1)}%;background:${COLORS[k]}"></div></div>
+      </div>`).join('');
+    const div=document.createElement('div');
+    div.className='ips-panel';
+    div.innerHTML=`
+      <div class="ips-panel-header" style="border-bottom:2px solid ${fc}22">
+        <div class="ips-panel-label">${config.label}</div>
+        ${config.sublabel?`<div class="ips-panel-sublabel">${config.sublabel}</div>`:''}
+      </div>
+      <div class="ips-panel-body">
+        ${rows}
+        <div class="ips-divider"></div>
+        <div class="ips-ceiling-row"><span class="ips-ceiling-label">RQ Ceiling</span><span class="ips-ceiling-val">${ceil.rq_ceiling.toFixed(4)}</span></div>
+        <div class="ips-ceiling-row"><span class="ips-ceiling-label">EE Floor</span><span class="ips-ceiling-val">${ceil.ee_floor.toFixed(4)}</span></div>
+        <div class="ips-fhri-max">
+          <div class="label">FHRI Max</div>
+          <div class="val" style="color:${fc}">${ceil.fhri_max}<span class="of100">/100</span></div>
+        </div>
+        <div class="meadows-badge">${meadows(p)}</div>
+        <div class="ips-verdict ${vd.cls}">${vd.text}</div>
+      </div>`;
+    container.appendChild(div);
+  }
+  function renderComparison(container,archetypes){
+    const grid=document.createElement('div');
+    grid.className='ips-grid';
+    container.appendChild(grid);
+    archetypes.forEach(a=>renderPanel(grid,a));
+  }
+  function renderTrajectory(container,steps){
+    const rows=steps.map(s=>{
+      const c=compute(s.params);
+      const pct=(c.fhri_max/60*100).toFixed(1);
+      const bc=c.fhri_max>=30?'#14b8a6':c.fhri_max>=20?'#f5c842':'#f08080';
+      const cls=s.isAcquisition?'acquisition':s.isBaseline?'baseline':'';
+      return`<tr class="${cls}">
+        <td>${s.year}</td><td>${s.params.epsilon.toFixed(3)}</td>
+        <td>${s.params.phi.toFixed(3)}</td><td>${s.params.sigma.toFixed(3)}</td>
+        <td>${s.params.mu.toFixed(3)}</td><td>${c.rq_ceiling.toFixed(4)}</td>
+        <td>${c.fhri_max.toFixed(1)}<span class="fhri-bar-inline"><span class="fhri-bar-fill" style="width:${pct}%;background:${bc}"></span></span></td>
+        <td style="font-size:.65rem;color:rgba(255,255,255,.4)">${s.note||''}</td></tr>`;
+    }).join('');
+    const t=document.createElement('div');
+    t.innerHTML=`<table class="traj-table"><thead><tr><th>Year</th><th>\u03b5</th><th>\u03c6</th><th>\u03c3</th><th>\u03bc</th><th>RQ Ceil</th><th>FHRI_max</th><th>Note</th></tr></thead><tbody>${rows}</tbody></table>`;
+    container.appendChild(t);
+  }
+  return{compute,renderPanel,renderComparison,renderTrajectory};
+})();
+
+</script>
+
+<script>
+'use strict';
+
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if (id === 'ips') initIPS();
+}
+
+function toggleSec(hdr) {
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+
+let _ipsInit = false;
+function initIPS() {
+  if (_ipsInit) return;
+  _ipsInit = true;
+
+  // Four archetypes
+  IPS.renderComparison(document.getElementById('ips-archetypes'), [
+    { label:'PE-Acquired', sublabel:'156 FL facilities post-2019 · Peterson et al. 2025',
+       params:{epsilon:0.636,phi:0.520,rho:0.700,sigma:0.620,mu:0.820} },
+    { label:'For-Profit Chain', sublabel:'~60% of Florida nursing homes',
+       params:{epsilon:0.273,phi:0.450,rho:0.700,sigma:0.480,mu:0.650} },
+    { label:'Non-Profit / Government', sublabel:'~17% of Florida nursing homes',
+       params:{epsilon:0.000,phi:0.300,rho:0.700,sigma:0.250,mu:0.350} },
+    { label:'REIT-Owned', sublabel:'~9% nationally · significant FL presence',
+       params:{epsilon:0.454,phi:0.580,rho:0.700,sigma:0.520,mu:0.720} },
+  ]);
+
+  // PE trajectory
+  IPS.renderTrajectory(document.getElementById('ips-trajectory'), [
+    { year:2019, isBaseline:true,
+       params:{epsilon:0.273,phi:0.350,rho:0.700,sigma:0.380,mu:0.550},
+       note:'Pre-acquisition (moderate for-profit baseline)' },
+    { year:2020, isAcquisition:true,
+       params:{epsilon:0.636,phi:0.381,rho:0.700,sigma:0.430,mu:0.625},
+       note:'▲ ACQUISITION — ε jumps, μ restructured to billing metrics' },
+    { year:2021,
+       params:{epsilon:0.636,phi:0.426,rho:0.700,sigma:0.420,mu:0.645},
+       note:'φ accumulates — no capital reinvestment' },
+    { year:2022,
+       params:{epsilon:0.636,phi:0.472,rho:0.700,sigma:0.470,mu:0.665},
+       note:'σ ratchets — deficiency citations mount' },
+    { year:2023,
+       params:{epsilon:0.636,phi:0.517,rho:0.700,sigma:0.460,mu:0.685},
+       note:'Stars: 2.9 avg (was 3.4 pre-acquisition)' },
+    { year:2024,
+       params:{epsilon:0.636,phi:0.562,rho:0.700,sigma:0.510,mu:0.705},
+       note:'1-star facilities doubled (10%→21%)' },
+  ]);
+}
+
+// ── Preserve existing tab switching for simulation ──────────────────────────
+function showTab_legacy(id, el) {
+  // Legacy tab switcher for simulation internal tabs if needed
+}
+</script>
+
+<script>
+
+
+'use strict';
+
+// ── Step-by-step trace chart renderer ────────────────────────
+function renderStepChart(timeline, containerId, options) {
+  const el = document.getElementById(containerId);
+  if (!el || !timeline || !timeline.length) return;
+  options = options || {};
+  const W = Math.max(320, el.offsetWidth || 520);
+  const H = options.height || 200;
+  const PAD = {top:32,right:18,bottom:52,left:46};
+  const CW = W - PAD.left - PAD.right;
+  const CH = H - PAD.top - PAD.bottom;
+  const steps = timeline.length;
+  let bbStep = null;
+  for (let i=0; i<timeline.length; i++) {
+    if (timeline[i].biobond_active && (i===0||!timeline[i-1].biobond_active)){bbStep=i;break;}
+  }
+  const xPos = i => PAD.left + (steps>1?i/(steps-1):0)*CW;
+  const yPos = v => PAD.top + CH - Math.max(0,Math.min(1,v))*CH;
+  const TRACES = [
+    ['lambda_raw',         '#c9a84c', '\u03bb Raw'],
+    ['lambda_perceived',   '#14b8a6', '\u03bb Perceived'],
+    ['morphic_suppression','#e879f9', 'Morphic Supp.'],
+    ['os2_synergy_bridge', '#7fd8a8', 'OS2 Bridge'],
+  ];
+  const mkPath = key => timeline.map((s,i)=>
+    `${i===0?'M':'L'}${xPos(i).toFixed(1)},${yPos(s[key]||0).toFixed(1)}`
+  ).join(' ');
+  const title = options.title||'Step-by-Step Trace';
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"
+    role="img" aria-label="${title}: line chart showing simulation metrics across ${steps} steps"
+    style="display:block;overflow:visible">`;
+  svg += `<title>${title}</title>`;
+  // Chart title
+  svg += `<text x="${PAD.left}" y="${PAD.top-12}" font-size="12" font-weight="600"
+    font-family="'Courier New',monospace" fill="rgba(255,255,255,.75)"
+    letter-spacing=".04em">${title}</text>`;
+  // Grid lines and Y-axis labels
+  [0,.25,.5,.75,1].forEach(v=>{
+    const y=yPos(v);
+    svg+=`<line x1="${PAD.left}" y1="${y}" x2="${PAD.left+CW}" y2="${y}"
+      stroke="rgba(255,255,255,.12)" stroke-width="1"/>`;
+    svg+=`<text x="${PAD.left-7}" y="${y+4}" text-anchor="end" font-size="11"
+      font-family="'Courier New',monospace" fill="rgba(255,255,255,.65)"
+      aria-hidden="true">${v.toFixed(2)}</text>`;
+  });
+  // X-axis step labels
+  timeline.forEach((s,i)=>{
+    const show = i===0||i===steps-1||i%Math.max(1,Math.floor(steps/4))===0;
+    if(show){
+      svg+=`<text x="${xPos(i)}" y="${PAD.top+CH+16}" text-anchor="middle" font-size="11"
+        font-family="'Courier New',monospace" fill="rgba(255,255,255,.60)"
+        aria-hidden="true">s${s.step}</text>`;
+    }
+  });
+  // X-axis label
+  svg+=`<text x="${PAD.left+CW/2}" y="${PAD.top+CH+30}" text-anchor="middle" font-size="11"
+    font-family="'Courier New',monospace" fill="rgba(255,255,255,.45)"
+    aria-hidden="true">simulation step</text>`;
+  // BioBond activation marker
+  if(bbStep!==null){
+    const bx=xPos(bbStep);
+    svg+=`<line x1="${bx}" y1="${PAD.top}" x2="${bx}" y2="${PAD.top+CH}"
+      stroke="#c9a84c" stroke-width="2" stroke-dasharray="5,3" opacity=".85"/>`;
+    svg+=`<text x="${bx+4}" y="${PAD.top+13}" font-size="11" font-weight="600"
+      font-family="'Courier New',monospace" fill="#c9a84c" opacity=".95"
+      >BioBond</text>`;
+  }
+  // Trace lines
+  TRACES.forEach(([key,color])=>{
+    svg+=`<path d="${mkPath(key)}" fill="none" stroke="${color}"
+      stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" opacity=".92"/>`;
+  });
+  // Endpoint dots
+  TRACES.forEach(([key,color])=>{
+    const v=(timeline[steps-1][key]||0);
+    svg+=`<circle cx="${xPos(steps-1)}" cy="${yPos(v)}" r="3.5"
+      fill="${color}" opacity=".95"/>`;
+  });
+  // Legend — positioned below chart with generous spacing and large text
+  const LEGEND_Y = PAD.top + CH + 44;
+  const legendItems = TRACES.length;
+  const itemW = Math.floor(CW / legendItems);
+  TRACES.forEach(([key,color,label],i)=>{
+    const lx = PAD.left + i * itemW;
+    svg+=`<line x1="${lx}" y1="${LEGEND_Y}" x2="${lx+18}" y2="${LEGEND_Y}"
+      stroke="${color}" stroke-width="3"/>`;
+    svg+=`<circle cx="${lx+9}" cy="${LEGEND_Y}" r="3.5" fill="${color}"/>`;
+    svg+=`<text x="${lx+24}" y="${LEGEND_Y+4}" font-size="12" font-weight="500"
+      font-family="'Courier New',monospace" fill="rgba(255,255,255,.88)"
+      aria-label="${label} trace indicator">${label}</text>`;
+  });
+  svg+='</svg>';
+  el.innerHTML=svg;
+}
+
+const JP = 'ch11_';
+const BACKEND = 'https://ucp-backend-4dig.onrender.com';
+
+// ── Storage ──────────────────────────────────────────────────
+function jSave(k, v) {
+  try {
+    localStorage.setItem(JP + k, v);
+    const sn = document.getElementById('sn-' + k) ||
+               document.getElementById('sn-' + k.replace('ch11_',''));
+    if (sn) { sn.classList.add('show'); setTimeout(() => sn.classList.remove('show'), 2000); }
+  } catch(e) {}
+}
+function jLoad(k) { try { return localStorage.getItem(JP + k) || ''; } catch(e) { return ''; } }
+
+// ── Tab switching ─────────────────────────────────────────────
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const pane = document.getElementById('tab-' + name);
+  if (pane) pane.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'journal') loadJournalFields();
+  if (name === 'simulation') loadSimFields();
+}
+
+function loadJournalFields() {
+  ['q1','q2','q3','q4','temporal','sage'].forEach(k => {
+    const el = document.getElementById('jta-' + k);
+    if (el) el.value = jLoad(k);
+  });
+  const q5 = document.getElementById('jta-q5');
+  if (q5) q5.value = jLoad('ch11_cq5') || jLoad('cq5') || '';
+  // Retrieve prediction
+  const pred = jLoad('q5_pred');
+  const predEl = document.getElementById('predRetrieveText');
+  const predBox = document.getElementById('predRetrieve');
+  if (pred && pred.trim() && predEl && predBox) {
+    predEl.textContent = pred;
+    predBox.style.display = 'block';
+  }
+  // Ch10 prediction retrieval
+  loadCh10Pred();
+}
+
+function loadSimFields() {
+  const pred = document.getElementById('jta-q5-pred');
+  if (pred) pred.value = jLoad('q5_pred');
+  const civPred = document.getElementById('jta-civ-pred');
+  if (civPred) civPred.value = jLoad('civ_pred');
+  loadCh10Pred();
+}
+
+function loadCh10Pred() {
+  try {
+    const pred = localStorage.getItem('ch10_cq5') || '';
+    if (pred.trim()) {
+      ['ch10PredDisplay','ch10PredJournal'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'block';
+      });
+      ['ch10PredText','ch10PredJournalText'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = pred;
+      });
+    }
+  } catch(e) {}
+}
+
+// ── Simulation ────────────────────────────────────────────────
+let _config = 'A';
+let _results = {};
+let _econSeed = 100;
+let _econLog = [];
+let _econCount = 0;
+
+const CONFIG_LABELS = {
+  A: 'Configuration A: Entropy-Exporting',
+  B: 'Configuration B: Coherence-Preserving',
+  C: 'Configuration C: BioBond Transition',
+};
+
+const CONFIG_COLORS = { A: '#f08080', B: '#7fd8a8', C: '#c9a84c' };
+
+const PAYLOADS = {
+  A: {
+    num_agents: 18, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    worldview_distribution: {
+      role_order: 0.45, sacred_boundary: 0.25,
+      liberal_individualist: 0.18, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.62, tradition_weighted: 0.18,
+      empirical_calibrated: 0.12, alternative_facts: 0.08
+    },
+    scenario_physics: {
+      base_entropy: 0.60, base_stress: 0.56,
+      block_fields: { care: -0.30, fairness: -0.55, community: -0.40, boundary: 0.45 }
+    }
+  },
+  B: {
+    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 42,
+    worldview_distribution: {
+      ubuntu_relational: 0.30, liberal_individualist: 0.28,
+      indigenous_custodial: 0.18, role_order: 0.14, sacred_boundary: 0.10
+    },
+    evidence_distribution: {
+      empirical_calibrated: 0.55, tradition_weighted: 0.20,
+      authority_weighted: 0.15, alternative_facts: 0.10
+    },
+    scenario_physics: {
+      base_entropy: 0.42, base_stress: 0.38,
+      block_fields: { care: 0.38, fairness: 0.45, community: 0.40, boundary: 0.18 }
+    }
+  },
+  C: {
+    num_agents: 18, scenario_name: 'whistleblower', steps: 8, seed: 42,
+    activate_biobond_at: 4,
+    worldview_distribution: {
+      role_order: 0.45, sacred_boundary: 0.25,
+      liberal_individualist: 0.18, ubuntu_relational: 0.08, indigenous_custodial: 0.04
+    },
+    evidence_distribution: {
+      authority_weighted: 0.62, tradition_weighted: 0.18,
+      empirical_calibrated: 0.12, alternative_facts: 0.08
+    },
+    scenario_physics: {
+      base_entropy: 0.60, base_stress: 0.56,
+      block_fields: { care: -0.30, fairness: -0.55, community: -0.40, boundary: 0.45 }
+    }
+  }
+};
+
+async function fetchWithRetry(url, opts, retries = 2) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
+      if (r.ok) return r;
+      if (i === retries) throw new Error(`HTTP ${r.status}`);
+    } catch(e) {
+      if (i === retries) throw e;
+      await new Promise(res => setTimeout(res, 1200 * (i + 1)));
+    }
+  }
+}
+
+function selectConfig(cfg) {
+  _config = cfg;
+  document.getElementById('runLabel').textContent = CONFIG_LABELS[cfg];
+  ['A','B','C'].forEach(c => {
+    document.getElementById('btn'+c).classList.toggle('active-run', c === cfg);
+  });
+  document.getElementById('ucpError').style.display = 'none';
+  if (_results[cfg]) {
+    renderEconResult(_results[cfg]);
+    document.getElementById('ucpRunBtn').textContent = '↺ Re-run Simulation';
+  } else {
+    document.getElementById('ucpResult').style.display = 'none';
+    document.getElementById('ucpRunBtn').textContent = '▶ Run Simulation';
+  }
+}
+
+
+// ── V3.3 phased manifest helpers ─────────────────────────────────────────────
+// buildPhasedPayload() enriches the existing PAYLOADS[config] with
+// institution_state_lite, phases, and interventions for /api/simulate/phased_manifest.
+// buildLegacyPayload() extracts the flat payload for the fallback route.
+
+function buildLegacyPayload(base, seed) {
+  const p = { ...base, seed };
+  if (base.scenario_physics) {
+    p.scenario_physics = {
+      ...base.scenario_physics,
+      block_fields: { ...(base.scenario_physics.block_fields || {}) }
+    };
+  }
+  if (base.activate_biobond_at !== undefined)
+    p.activate_biobond_at = base.activate_biobond_at;
+  return p;
+}
+
+function buildPhasedPayload(configKey, seed) {
+  const base = PAYLOADS[configKey];
+  const sp   = base.scenario_physics || {};
+
+  // Common fields passed through unchanged
+  const common = {
+    num_agents:             base.num_agents || 18,
+    scenario_name:          base.scenario_name || 'baseline',
+    steps:                  base.steps || 8,
+    seed,
+    worldview_distribution: { ...(base.worldview_distribution || {}) },
+    evidence_distribution:  { ...(base.evidence_distribution  || {}) },
+    scenario_physics:       { ...sp, block_fields: { ...(sp.block_fields || {}) } },
+  };
+  if (base.activate_biobond_at !== undefined)
+    common.activate_biobond_at = base.activate_biobond_at;
+
+  // Config-specific institution state and phases
+  if (configKey === 'A') {
+    // Entropy-exporting: high rigidity, low legitimacy, minimal repair
+    return {
+      ...common,
+      institution_state_lite: {
+        phase: 'baseline', policy_rigidity: 0.75, legitimacy: 0.38,
+        repair_bandwidth: 0.12, support_reserve: 0.10,
+        entropy_export: 0.68, routing_quality: 0.35, shared_task_strength: 0.25,
+        chapter_variables: {
+          wage_floor: 0.18, labor_voice_access: 0.15, retaliation_risk: 0.82,
+          schedule_volatility: 0.72, security_floor: 0.15, market_power: 0.80
+        }
+      },
+      phases: [],
+      interventions: [],
+    };
+  }
+
+  if (configKey === 'B') {
+    // Coherence-preserving: moderate rigidity, high legitimacy, good repair
+    return {
+      ...common,
+      institution_state_lite: {
+        phase: 'baseline', policy_rigidity: 0.42, legitimacy: 0.68,
+        repair_bandwidth: 0.38, support_reserve: 0.32,
+        entropy_export: 0.35, routing_quality: 0.62, shared_task_strength: 0.58,
+        chapter_variables: {
+          wage_floor: 0.55, labor_voice_access: 0.60, retaliation_risk: 0.22,
+          schedule_volatility: 0.28, security_floor: 0.58, market_power: 0.35
+        }
+      },
+      phases: [],
+      interventions: [],
+    };
+  }
+
+  // Config C — BioBond transition: starts like A, shifts at step 4
+  return {
+    ...common,
+    institution_state_lite: {
+      phase: 'baseline', policy_rigidity: 0.72, legitimacy: 0.40,
+      repair_bandwidth: 0.14, support_reserve: 0.10,
+      entropy_export: 0.65, routing_quality: 0.32, shared_task_strength: 0.22,
+      chapter_variables: {
+        wage_floor: 0.18, labor_voice_access: 0.18, retaliation_risk: 0.80,
+        schedule_volatility: 0.70, security_floor: 0.16, market_power: 0.78
+      }
+    },
+    phases: [
+      {
+        phase_id: 'pre_intervention', start_step: 1, end_step: 3,
+        scenario_override: {
+          base_entropy: sp.base_entropy || 0.60,
+          base_stress:  sp.base_stress  || 0.56,
+          block_fields: { ...(sp.block_fields || {}) }
+        },
+        institution_deltas: {}, intervention_ids: []
+      },
+      {
+        phase_id: 'biobond_active', start_step: 4, end_step: common.steps,
+        scenario_override: {
+          base_entropy: Math.max(0, (sp.base_entropy||0.60) - 0.10),
+          base_stress:  Math.max(0, (sp.base_stress ||0.56) - 0.12),
+          block_fields: {
+            ...(sp.block_fields || {}),
+            care:      ((sp.block_fields?.care      ?? 0) + 0.28),
+            fairness:  ((sp.block_fields?.fairness  ?? 0) + 0.38),
+            community: ((sp.block_fields?.community ?? 0) + 0.32),
+          }
+        },
+        institution_deltas: {
+          repair_bandwidth: 0.36, support_reserve: 0.34,
+          legitimacy: 0.54, entropy_export: 0.38
+        },
+        intervention_ids: ['biobond_support']
+      }
+    ],
+    interventions: [
+      {
+        intervention_id: 'biobond_support', kind: 'support_transfer',
+        start_step: 4, end_step: common.steps,
+        targets: ['institution', 'high_vulnerability'],
+        parameter_deltas: {
+          repair_bandwidth: 0.22, support_reserve: 0.26,
+          'chapter_variables.security_floor':      0.26,
+          'chapter_variables.retaliation_risk':   -0.22,
+          'chapter_variables.labor_voice_access':  0.20,
+        },
+        notes: 'Models wage floor, labor protection, and community investment activation.'
+      }
+    ],
+  };
+}
+
+async function postEconSimulation(payload, seed) {
+  // Prefer phased_manifest; fall back to custom if unavailable
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/phased_manifest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (resp && resp.ok) return resp;
+  } catch (_) { /* fall through */ }
+  // Fallback — preserves all existing behaviour
+  const legacy = buildLegacyPayload(PAYLOADS[_config], seed);
+  return fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(legacy),
+  });
+}
+
+async function runEconSim() {
+  const btn = document.getElementById('ucpRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ucp-spinner"></span>Running…';
+  document.getElementById('ucpResult').style.display = 'none';
+  document.getElementById('ucpError').style.display = 'none';
+
+  try {
+    const phasedPayload = buildPhasedPayload(_config, _econSeed);
+    const resp = await postEconSimulation(phasedPayload, _econSeed);
+    const data = await resp.json();
+    if (!data.metrics) throw new Error('No metrics in response');
+
+    _results[_config] = data;
+    renderEconResult(data);
+    // Render step-by-step trace chart
+    if (data.timeline && data.timeline.length) {
+      renderStepChart(data.timeline, 'stepChart', {
+        title: CONFIG_LABELS[_config] + ' — step trace', height: 165
+      });
+    }
+    if (Object.keys(_results).length === 3) renderComparison();
+    // Log to robustness tracker
+    const m = data.metrics;
+    _econCount++;
+    _econLog.push({
+      run: _econCount, cfg: _config,
+      seed: PAYLOADS[_config].seed,
+      lr: m.lambda_raw || 0, lp: m.lambda_perceived || 0,
+      gap: Math.max(0, (m.lambda_raw||0) - (m.lambda_perceived||0)),
+      morph: m.morphic_suppression || 0,
+      os2: m.os2_synergy_bridge || 0,
+    });
+    const rp = document.getElementById('robustnessPanel');
+    if (rp) rp.style.display = 'block';
+    renderRobustnessLog();
+    renderSxS();
+    btn.disabled = false;
+    btn.textContent = '↺ Re-run Simulation';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '▶ Run Simulation';
+    const err = document.getElementById('ucpError');
+    err.textContent = 'Simulation unavailable — ' + e.message + '. Please try again in a moment.';
+    err.style.display = 'block';
+  }
+}
+
+function vc(v, hi = true) {
+  if (hi) return v > 0.55 ? 'val-great' : v > 0.30 ? 'val-warn' : 'val-bad';
+  return v < 0.15 ? 'val-great' : v < 0.35 ? 'val-warn' : 'val-bad';
+}
+
+function renderEconResult(data) {
+  const m = data.metrics || {};
+  const raw = m.lambda_raw || 0, perc = m.lambda_perceived || 0;
+  const fric = m.friction || 0, morph = m.morphic_suppression || 0;
+  const os2 = m.os2_synergy_bridge ?? m.os2_synergy ?? 0;
+  const gap = Math.max(0, raw - perc);
+  const cfg = _config;
+
+  document.getElementById('ucpMetrics').innerHTML = `
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Raw</div>
+      <div class="ucp-metric-value ${vc(raw)}">${raw.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${raw > 0.55 ? 'Capacity intact' : raw > 0.30 ? 'Strained' : 'Collapsed'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">λ Perceived</div>
+      <div class="ucp-metric-value ${vc(perc)}">${perc.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${perc > 0.50 ? 'Voice reaching decisions' : perc > 0.25 ? 'Suppressed' : 'Near-absent'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Suppression Gap</div>
+      <div class="ucp-metric-value ${vc(gap, false)}">${(gap * 100).toFixed(1)}%</div>
+      <div class="ucp-metric-phrase">${gap > 0.35 ? 'Large — ACP concern' : gap > 0.15 ? 'Moderate' : 'Minimal'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Morphic Supp.</div>
+      <div class="ucp-metric-value" style="color:#e879f9">${morph.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${morph > 0.20 ? 'Learned self-censorship building' : morph > 0.08 ? 'Emerging' : 'Low'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">OS2 Bridge</div>
+      <div class="ucp-metric-value ${vc(os2)}">${os2.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">${os2 > 0.45 ? 'Cross-framework coordination' : os2 > 0.25 ? 'Partial' : 'Low'}</div></div>
+    <div class="ucp-metric"><div class="ucp-metric-label">Friction</div>
+      <div class="ucp-metric-value ${vc(fric, false)}">${fric.toFixed(3)}</div>
+      <div class="ucp-metric-phrase">Translation cost</div></div>`;
+
+  const bp = v => `${Math.round(v * 100)}%`;
+  document.getElementById('ucpBars').innerHTML = `
+    <div class="ucp-gap-label">Agency conditions — what is available vs. what reaches decisions</div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Raw</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-raw" style="width:${bp(raw)}"></div></div>
+      <span class="ucp-bar-num">${raw.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">λ Perceived</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-perc" style="width:${bp(perc)}"></div></div>
+      <span class="ucp-bar-num">${perc.toFixed(2)}</span></div>
+    <div class="ucp-bar-row"><span class="ucp-bar-name">Morphic</span>
+      <div class="ucp-bar-track"><div class="ucp-bar-fill fill-morph" style="width:${bp(morph)}"></div></div>
+      <span class="ucp-bar-num">${morph.toFixed(2)}</span></div>`;
+
+  const narratives = {
+    A: `Configuration A — Entropy-Exporting: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. Authority-weighted evidence (62%) combined with negative fairness and community block fields routes labor's signal around decisions. Morphic suppression at ${morph.toFixed(3)} reflects the accumulated learned self-censorship of agents whose contributions consistently fail to reach outcomes. This is the simulation's structural account of what chronic economic precarity does to coordination capacity — not a moral verdict on any individual, but a measurement of what the architecture makes possible.`,
+    B: `Configuration B — Coherence-Preserving: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. Empirically-calibrated evidence (55%) and positive block fields allow more of agents' genuine capability to reach the decision processes that govern them. OS2 Bridge at ${os2.toFixed(3)} reflects the cross-worldview coordination that becomes structurally possible when the evidence architecture does not systematically discount certain frameworks. Compare to Configuration A: same agents, different architecture.`,
+    C: `Configuration C — BioBond Transition: λ Raw = ${raw.toFixed(3)}, λ Perceived = ${perc.toFixed(3)}, suppression gap = ${(gap*100).toFixed(1)}%. The same entropy-exporting conditions as Configuration A, with institutional support activating at step 4. Notice whether morphic suppression (${morph.toFixed(3)}) has declined relative to Configuration A — and whether the decline is immediate or lagged. Accumulated learned self-censorship does not dissolve the moment structural conditions improve. The lag is the simulation's account of why sustained institutional intervention is required, not one-time policy adjustment.`,
+  };
+  document.getElementById('ucpNarrative').textContent = narratives[cfg] || '';
+  document.getElementById('ucpResult').style.display = 'block';
+}
+
+function renderComparison() {
+  const rA = _results.A?.metrics || {}, rB = _results.B?.metrics || {}, rC = _results.C?.metrics || {};
+  const gapA = Math.max(0, (rA.lambda_raw||0) - (rA.lambda_perceived||0));
+  const gapB = Math.max(0, (rB.lambda_raw||0) - (rB.lambda_perceived||0));
+  const gapC = Math.max(0, (rC.lambda_raw||0) - (rC.lambda_perceived||0));
+  const box = document.getElementById('compareBox');
+  const txt = document.getElementById('compareText');
+  txt.innerHTML = `
+    <p><strong>Suppression gap comparison:</strong> Config A = ${(gapA*100).toFixed(1)}%, Config B = ${(gapB*100).toFixed(1)}%, Config C (with BioBond) = ${(gapC*100).toFixed(1)}%. ${gapB < gapA ? `Config B reduced the gap by ${((gapA-gapB)*100).toFixed(1)} percentage points — the structural difference between entropy-exporting and coherence-preserving architecture.` : 'The gap difference between configurations is smaller than expected — run again with different seeds to explore variation.'}</p>
+    <p><strong>Morphic suppression:</strong> Config A = ${(rA.morphic_suppression||0).toFixed(3)}, Config B = ${(rB.morphic_suppression||0).toFixed(3)}, Config C = ${(rC.morphic_suppression||0).toFixed(3)}. ${(rC.morphic_suppression||0) < (rA.morphic_suppression||0) ? `BioBond reduced accumulated learned self-censorship by ${(((rA.morphic_suppression||0)-(rC.morphic_suppression||0))*100).toFixed(1)}pp — confirming that structural support interrupts the accumulation, though the lag means it did not fully close the gap with Config B.` : 'Morphic suppression similar across configurations — the stochastic variation may be masking the structural signal. Try additional seeds using the robustness panel.'}</p>
+    <p><strong>OS2 Bridge:</strong> Config B = ${(rB.os2_synergy_bridge||0).toFixed(3)} vs Config A = ${(rA.os2_synergy_bridge||0).toFixed(3)}. ${(rB.os2_synergy_bridge||0) > (rA.os2_synergy_bridge||0) ? 'Coherence-preserving architecture produces measurably higher cross-worldview coordination — the structural account of why fair economic institutions tend to produce more durable social contracts.' : 'OS2 Bridge values are similar across configurations in this run.'}</p>`;
+  box.style.display = 'block';
+}
+
+function renderSxS() {
+  const CONFIGS = ['A','B','C'];
+  const LABELS = { A: 'Config A', B: 'Config B', C: 'Config C' };
+  const METRICS = [
+    {key:'lambda_raw', label:'λ Raw', hi:true, desc:'Coordination capacity available'},
+    {key:'lambda_perceived', label:'λ Perceived', hi:true, desc:'What reaches decisions'},
+    {key:'os2_synergy_bridge', label:'OS2 Bridge', hi:true, desc:'Cross-worldview coordination'},
+    {key:'friction', label:'Friction', hi:false, desc:'Translation cost'},
+    {key:'morphic_suppression', label:'Morphic Supp.', hi:false, desc:'Learned self-censorship'},
+  ];
+  const gv = (cfg, key) => {
+    const m = _results[cfg]?.metrics || {};
+    return key === 'os2_synergy_bridge' ? (m.os2_synergy_bridge ?? m.os2_synergy ?? 0) : (m[key] || 0);
+  };
+  const done = CONFIGS.filter(c => _results[c]);
+  if (!done.length) return;
+
+  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">
+    <tr><td style="width:32%;padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase">Metric</td>`;
+  CONFIGS.forEach(c => {
+    const d = !!_results[c];
+    html += `<td style="width:23%;padding:.4rem .5rem;text-align:center">
+      <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${d ? CONFIG_COLORS[c] : 'rgba(255,255,255,.2)'}">${LABELS[c]}</div></td>`;
+  });
+  html += `</tr>`;
+  METRICS.forEach(metric => {
+    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">
+      <td style="padding:.5rem .6rem">
+        <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${metric.label}</div>
+        <div style="font-size:.66rem;color:rgba(255,255,255,.32);margin-top:.1rem">${metric.desc}</div>
+      </td>`;
+    CONFIGS.forEach(c => {
+      const d = !!_results[c];
+      const val = d ? gv(c, metric.key) : null;
+      const nc = d ? (metric.hi ? (val > .55 ? '#7fd8a8' : val > .30 ? '#f5c842' : '#f08080')
+                                 : (val < .12 ? '#7fd8a8' : val < .25 ? '#f5c842' : '#f08080')) : 'rgba(255,255,255,.2)';
+      html += `<td style="padding:.45rem .5rem;text-align:center">`;
+      if (d) {
+        html += `<div style="font-size:1.1rem;font-weight:700;font-family:'Courier New',monospace;color:${nc}">${val.toFixed(3)}</div>
+          <div style="margin:.25rem auto 0;width:76%;height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${Math.round(val*100)}%;background:${CONFIG_COLORS[c]};border-radius:3px;transition:width 1s ease"></div></div>`;
+      } else {
+        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
+      }
+      html += `</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</table></div>`;
+  document.getElementById('sxsBody').innerHTML = html;
+}
+
+// ── Robustness panel ──────────────────────────────────────────
+async function rerunWithNewSeed() {
+  const btn = document.getElementById('rerunBtn');
+  const status = document.getElementById('rerunStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '…running'; }
+  if (status) status.textContent = `seed ${_econSeed}…`;
+
+  const base = PAYLOADS[_config];
+  const payload = { ...base, seed: _econSeed };
+  payload.scenario_physics = { ...base.scenario_physics,
+    block_fields: { ...base.scenario_physics.block_fields } };
+  if (base.activate_biobond_at !== undefined) payload.activate_biobond_at = base.activate_biobond_at;
+
+  try {
+    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await resp.json();
+    const m = data.metrics || {};
+    _econCount++;
+    _econLog.push({
+      run: _econCount, cfg: _config, seed: _econSeed,
+      lr: m.lambda_raw || 0, lp: m.lambda_perceived || 0,
+      gap: Math.max(0, (m.lambda_raw||0) - (m.lambda_perceived||0)),
+      morph: m.morphic_suppression || 0,
+      os2: m.os2_synergy_bridge || 0,
+    });
+    _econSeed += 13;
+    renderRobustnessLog();
+    renderEconResult(data);
+  } catch(e) {
+    if (status) status.textContent = 'unavailable — try again';
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '↺ Try a Different Agent Population'; }
+    if (status) setTimeout(() => { if(status.textContent.includes('seed')) status.textContent = ''; }, 3000);
+  }
+}
+
+function renderRobustnessLog() {
+  const log = _econLog;
+  if (!log.length) return;
+  const logDiv = document.getElementById('robustnessLog');
+  const tbody = document.getElementById('robustnessRows');
+  const sumEl = document.getElementById('robustnessSummary');
+  if (!logDiv || !tbody || !sumEl) return;
+  logDiv.style.display = 'block';
+
+  tbody.innerHTML = [...log].reverse().map((r, i) => {
+    const gapCol = r.gap > 0.40 ? '#f08080' : r.gap > 0.20 ? '#f5c842' : '#7fd8a8';
+    const lpCol = r.lp < 0.25 ? '#f08080' : r.lp < 0.50 ? '#f5c842' : '#7fd8a8';
+    const os2Col = r.os2 > 0.40 ? '#7fd8a8' : r.os2 > 0.22 ? '#f5c842' : '#f08080';
+    const rowStyle = i === 0 ? 'background:rgba(201,168,76,.07);' : '';
+    return `<tr style="border-top:1px solid rgba(255,255,255,.06);${rowStyle}">
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.4)">#${r.run}</td>
+      <td style="padding:.35rem .5rem;font-size:.75rem;font-family:'Courier New',monospace;color:${CONFIG_COLORS[r.cfg]}">${CONFIG_LABELS[r.cfg].split(':')[0]}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7);font-weight:700">${r.lr.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${lpCol};font-weight:700">${r.lp.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.82rem;font-family:'Courier New',monospace;color:${gapCol};font-weight:700">${(r.gap*100).toFixed(1)}%</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.55)">${r.morph.toFixed(3)}</td>
+      <td style="padding:.35rem .5rem;font-size:.78rem;font-family:'Courier New',monospace;color:${os2Col}">${r.os2.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+
+  if (log.length >= 2) {
+    const byCfg = { A: [], B: [], C: [] };
+    log.forEach(r => { if (byCfg[r.cfg]) byCfg[r.cfg].push(r); });
+    let summary = '';
+    ['A','B','C'].forEach(cfg => {
+      const entries = byCfg[cfg];
+      if (entries.length >= 2) {
+        const gaps = entries.map(r => r.gap);
+        const [mn, mx] = [Math.min(...gaps), Math.max(...gaps)];
+        const range = (mx - mn) * 100;
+        const avgLp = entries.reduce((s,r) => s+r.lp, 0) / entries.length;
+        summary += `${CONFIG_LABELS[cfg].split(':')[0]}: across ${entries.length} populations, suppression gap ranged ${(mn*100).toFixed(1)}%–${(mx*100).toFixed(1)}% (spread: ${range.toFixed(1)}pp), avg λ Perceived = ${avgLp.toFixed(3)}. `;
+        if (range < 10) summary += `Narrow range confirms structural cause. `;
+      }
+    });
+    if (byCfg.A.length >= 1 && byCfg.B.length >= 1) {
+      const avgGapA = byCfg.A.reduce((s,r)=>s+r.gap,0)/byCfg.A.length;
+      const avgGapB = byCfg.B.reduce((s,r)=>s+r.gap,0)/byCfg.B.length;
+      summary += `Average gap: Config A = ${(avgGapA*100).toFixed(1)}%, Config B = ${(avgGapB*100).toFixed(1)}% — a ${((avgGapA-avgGapB)*100).toFixed(1)}pp structural difference across all runs tested.`;
+    }
+    sumEl.textContent = summary;
+  }
+}
+
+// ── Export ────────────────────────────────────────────────────
+function buildExportText() {
+  const date = new Date().toLocaleDateString();
+  let out = `CHAPTER 11: ECONOMIC SYSTEMS — ETHICS JOURNAL\nDate: ${date}\nStudent: [YOUR NAME]\n\n`;
+  out += `Q5 PREDICTION (PRE-SIMULATION)\n${jLoad('q5_pred') || '[not completed]'}\n\n`;
+  out += `CIVILIZATIONAL STACK PREDICTION\n${jLoad('civ_pred') || '[not completed]'}\n\n`;
+  out += `Q1 — STRUCTURAL DIAGNOSIS\n${jLoad('q1') || '[not completed]'}\n\n`;
+  out += `Q2 — SIMULATION INTERPRETATION\n${jLoad('q2') || '[not completed]'}\n\n`;
+  out += `Q3 — TEMPORAL COMMONS\n${jLoad('q3') || '[not completed]'}\n\n`;
+  out += `Q4 — CAPABILITIES-ATCF BRIDGE\n${jLoad('q4') || '[not completed]'}\n\n`;
+  out += `TEMPORAL COMMONS — MY CONTEXT\n${jLoad('temporal') || '[not completed]'}\n\n`;
+  out += `SAGE WALKTHROUGH\n${jLoad('sage') || '[not completed]'}\n\n`;
+  out += `Q5 — PREDICTION FOR CHAPTER 12\n${jLoad('ch11_cq5') || jLoad('cq5') || '[not completed]'}\n`;
+  return out;
+}
+
+function exportJournal() {
+  const txt = buildExportText();
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'Ch11_Economic_Systems_Journal.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function copyJournal() {
+  const txt = buildExportText();
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(() => fallbackCopy(txt));
+  else fallbackCopy(txt);
+}
+function fallbackCopy(txt) {
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+function clearJournal() {
+  if (!confirm('Clear all saved responses? This cannot be undone.')) return;
+  ['q5_pred','civ_pred','q1','q2','q3','q4','temporal','sage','ch11_cq5','cq5'].forEach(k =>
+    localStorage.removeItem(JP + k));
+  location.reload();
+}
+
+// ── On load ───────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadSimFields();
+  // Restore any saved prediction fields
+  const pred = document.getElementById('jta-q5-pred');
+  if (pred) pred.value = jLoad('q5_pred');
+  const civPred = document.getElementById('jta-civ-pred');
+  if (civPred) civPred.value = jLoad('civ_pred');
+});
+
+
+</script>
+
 </body>
 </html>
