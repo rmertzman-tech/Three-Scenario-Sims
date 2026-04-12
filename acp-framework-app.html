@@ -3,564 +3,322 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ethics of the Framework · Interlude</title>
+<title>Interlude · Ethics of the Framework · EBB</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap');
-
-/* ── Tokens ── */
-:root{
-  --ink:#1a1714; --mid:#4a4540; --muted:#7a7268; --border:#e0d9d0;
-  --cream:#faf7f2; --warm:#f5f0e8;
-  --teal:#0d5e57; --teal-b:#14b8a6; --teal-l:#e6f7f5;
-  --gold:#8a6920; --gold-l:#fdf4e3;
-  --navy:#0e1f38; --red:#7f2b2b; --red-l:#fdf0f0;
-  --green:#1e5c3a; --green-l:#eef7f2;
-  --purple:#4e2a7a; --purple-l:#f3eeff;
-  --amber:#9a6200; --amber-l:#fff8e6;
-  --r1:#b94040; /* Socrates */
-  --r2:#8a5a20; /* Aristotle */
-  --r3:#506020; /* Stoics */
-  --r4:#205060; /* Hume */
-  --r5:#203080; /* Kant */
-  --r6:#602060; /* Mill */
-  --r7:#1e6040; /* Care */
-  --r8:#404040; /* Rawls */
-  --r9:#600840; /* Existentialism */
+:root {
+  --teal-dark:#0d5e57; --teal:#14b8a6; --teal-light:#ccfbf1;
+  --ink:#1f2937; --muted:#4b5563; --bg:#0f1117; --surface:#1a1f2e;
+  --surface2:#222840; --border:rgba(255,255,255,.09);
+  --amber:#f5c842; --amber-dark:#c2850a; --amber-bg:rgba(245,200,66,.07);
+  --red:#f08080; --green:#7fd8a8; --purple:#c084fc; --navy:#0a1628;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--cream);color:var(--ink);font-family:'Source Serif 4',Georgia,serif;font-size:17px;line-height:1.7}
-
-/* ── Masthead ── */
-.mast{background:var(--navy);padding:1.1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
-.mast-eyebrow{font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:#aabbd0}
-.mast-title{font-family:'Playfair Display',Georgia,serif;font-size:1.25rem;font-weight:600;color:#fff;margin-top:.1rem}
-.mast-badge{font-family:'JetBrains Mono',monospace;font-size:.65rem;background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);color:var(--teal-b);padding:.25rem .65rem;border-radius:999px}
-
-/* ── Tab bar ── */
-.tab-bar{background:#fff;border-bottom:2px solid var(--border);padding:0 2rem;display:flex;gap:0;overflow-x:auto;position:sticky;top:0;z-index:80}
-.tab-btn{background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;padding:.7rem 1rem;font-family:'Source Serif 4',serif;font-size:.82rem;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s}
-.tab-btn:hover{color:var(--teal)}
-.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal)}
-
-/* ── Content ── */
-.pane{display:none;max-width:780px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
-.pane.active{display:block}
-
-/* ── Typography ── */
-h2{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:700;color:var(--navy);margin:2rem 0 .8rem;line-height:1.25}
-h3{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:600;color:var(--teal);margin:1.6rem 0 .5rem}
-h4{font-family:'Source Serif 4',serif;font-size:.95rem;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;margin:1.2rem 0 .35rem}
-p{margin-bottom:.85rem;color:var(--mid)}
-strong{color:var(--ink);font-weight:600}
-em{color:var(--mid);font-style:italic}
-
-/* ── Intro panel ── */
-.intro-panel{background:var(--navy);border-radius:.5rem;padding:1.6rem 1.8rem;margin-bottom:2rem;color:#c8d8e8}
-.intro-panel .eyebrow{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal-b);margin-bottom:.4rem}
-.intro-panel h2{color:#fff;font-size:1.4rem;margin:0 0 .5rem}
-.intro-panel p{color:#9ab0c8;font-size:.9rem;margin:0}
-
-/* ── Chapter arc items ── */
-.arc-list{display:grid;gap:.7rem;margin:1.2rem 0}
-.arc-item{display:grid;grid-template-columns:2.2rem 1fr;gap:.75rem;align-items:start;padding:.8rem 1rem;border-radius:.4rem;background:var(--warm);border:1px solid var(--border)}
-.arc-num{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:600;color:#fff;background:var(--teal);border-radius:.25rem;width:2rem;height:2rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.05rem}
-.arc-item p{margin:0;font-size:.9rem}
-.arc-item strong{color:var(--teal)}
-
-/* ── ACP statement box ── */
-.acp-box{border:2px solid var(--teal);border-radius:.5rem;padding:1.4rem 1.6rem;margin:1.5rem 0;background:var(--teal-l)}
-.acp-box .acp-label{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:700;margin-bottom:.5rem}
-.acp-box p{color:var(--navy);font-weight:500;font-size:.97rem;margin:0}
-
-/* ── Callout boxes ── */
-.callout{border-radius:.4rem;padding:1rem 1.2rem;margin:1.2rem 0}
-.callout.teal{background:var(--teal-l);border-left:4px solid var(--teal-b)}
-.callout.gold{background:var(--gold-l);border-left:4px solid var(--gold)}
-.callout.red{background:var(--red-l);border-left:4px solid var(--red)}
-.callout .label{font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-bottom:.3rem}
-.callout.teal .label{color:var(--teal)}
-.callout.gold .label{color:var(--gold)}
-.callout.red .label{color:var(--red)}
-.callout p{margin:0;font-size:.89rem;color:var(--mid)}
-
-/* ── Three concepts ── */
-.concept-card{border-radius:.5rem;padding:1.3rem 1.5rem;margin:1.2rem 0;border:1px solid var(--border)}
-.concept-card .c-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.3rem}
-.concept-card h3{margin:0 0 .6rem;font-size:1.05rem}
-.concept-card p{font-size:.9rem;margin-bottom:.5rem}
-.concept-card .diagnostic{background:var(--warm);border-radius:.3rem;padding:.65rem .8rem;margin-top:.6rem;font-size:.84rem;color:var(--mid)}
-.concept-card .diagnostic strong{color:var(--teal)}
-
-/* ── TIMELINE: Nine Traditions ── */
-.timeline{position:relative;padding-left:2.4rem;margin:1.5rem 0}
-.timeline::before{content:'';position:absolute;left:.95rem;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--teal),#4e2a7a)}
-.tradition-entry{position:relative;margin-bottom:2rem}
-.tradition-entry::before{content:'';position:absolute;left:-1.55rem;top:.55rem;width:12px;height:12px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--trad-color, var(--teal));background:var(--trad-color, var(--teal))}
-.trad-header{display:flex;align-items:baseline;gap:.7rem;margin-bottom:.4rem;flex-wrap:wrap}
-.trad-era{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);background:var(--warm);border:1px solid var(--border);padding:.15rem .5rem;border-radius:999px}
-.trad-name{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;color:var(--trad-color, var(--teal))}
-.trad-tag{font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:600;color:var(--trad-color, var(--teal));background:rgba(0,0,0,.05);padding:.12rem .45rem;border-radius:.25rem;border:1px solid currentColor;opacity:.7}
-.trad-body p{font-size:.9rem;color:var(--mid);margin-bottom:.4rem}
-.trad-acp{background:var(--warm);border-left:3px solid var(--trad-color, var(--teal));border-radius:0 .3rem .3rem 0;padding:.6rem .8rem;margin-top:.5rem;font-size:.84rem;color:var(--mid)}
-.trad-acp .acp-link{font-weight:700;color:var(--trad-color, var(--teal))}
-.trad-discovery{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:.3rem;padding:.5rem .7rem;margin-top:.5rem;color:var(--muted)}
-.trad-discovery strong{color:var(--ink)}
-
-/* ── ACP synthesis box at end of traditions ── */
-.synthesis{background:var(--navy);border-radius:.5rem;padding:1.5rem 1.8rem;margin-top:2rem;color:#c8d8e8}
-.synthesis h3{color:var(--teal-b);font-family:'Playfair Display',serif;font-size:1.1rem;margin:0 0 .7rem}
-.synthesis p{color:#9ab0c8;font-size:.9rem;margin-bottom:.5rem}
-.synthesis p:last-child{margin:0}
-
-/* ── Applied sequence ── */
-.q-grid{display:grid;gap:.7rem;margin:1.2rem 0}
-.q-item{display:grid;grid-template-columns:auto 1fr;gap:.75rem;align-items:start;padding:.85rem 1rem;border-radius:.4rem;background:#fff;border:1px solid var(--border)}
-.q-badge{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:700;background:var(--teal);color:#fff;border-radius:.25rem;padding:.2rem .5rem;flex-shrink:0;margin-top:.1rem}
-.q-item p{margin:0;font-size:.89rem}
-.q-item strong{color:var(--navy)}
-
-/* ── Journal ── */
-.journal-prompt{margin-bottom:1rem}
-.journal-prompt label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:.3rem}
-.journal-prompt label strong{color:var(--mid)}
-.journal-prompt textarea{width:100%;background:#fff;border:1px solid var(--border);border-radius:.35rem;font-family:'Source Serif 4',serif;font-size:.88rem;color:var(--ink);padding:.6rem .8rem;resize:vertical;min-height:90px}
-.journal-prompt textarea:focus{outline:none;border-color:var(--teal-b)}
-.save-bar{background:var(--warm);border:1px solid var(--border);border-radius:.4rem;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-top:1rem}
-.save-note{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted)}
-.save-btn{background:var(--teal);border:none;color:#fff;font-family:'Source Serif 4',serif;font-size:.82rem;font-weight:600;padding:.45rem 1rem;border-radius:.3rem;cursor:pointer}
-
-/* ── Divider ── */
-.divider{border:none;border-top:1px solid var(--border);margin:2rem 0}
-@media(max-width:600px){.trad-header{flex-direction:column;gap:.3rem}.mast{padding:.8rem 1rem}.tab-btn{padding:.6rem .7rem;font-size:.75rem}}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+.page{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
+.chapter-header{background:linear-gradient(135deg,var(--teal-dark) 0%,#0a2830 100%);border-radius:.75rem;padding:2rem 2rem 1.5rem;margin-bottom:1.5rem}
+.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.chapter-title{font-size:1.6rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.25rem}
+.chapter-subtitle{font-size:1rem;color:rgba(255,255,255,.65);margin-bottom:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+.narrative-panel{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:1rem;font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel.red{border-left:4px solid var(--red)}
+.narrative-panel.navy{background:var(--navy);border-left:4px solid var(--teal);color:rgba(255,255,255,.72)}
+.narrative-panel strong{color:#fff}
+.tab-bar{display:flex;gap:.3rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);padding-bottom:0;overflow-x:auto}
+.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem 1rem;cursor:pointer;font-size:.85rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;border-radius:.3rem .3rem 0 0;white-space:nowrap}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:.6rem 0;border-bottom:1px solid var(--border);margin-bottom:.8rem}
+.section-header h3{font-size:.95rem;font-weight:700;color:#e2e8f0}
+.section-chevron{color:var(--teal);font-size:.78rem;transition:transform .2s}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+.section-body{display:none}.section-body.open{display:block}
+.arc-grid{display:grid;gap:.7rem;margin:.6rem 0}
+.arc-card{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.85rem 1rem;display:grid;grid-template-columns:2.5rem 1fr;gap:.75rem;align-items:start}
+.arc-num{background:var(--teal-dark);color:#fff;border-radius:.3rem;width:2.2rem;height:2.2rem;display:flex;align-items:center;justify-content:center;font-family:'Courier New',monospace;font-size:.68rem;font-weight:700;flex-shrink:0}
+.arc-card p{font-size:.88rem;color:rgba(255,255,255,.75);line-height:1.6;margin:0}
+.arc-card strong{color:#fff}
+.acp-box{border:2px solid var(--teal);border-radius:.6rem;padding:1.3rem 1.5rem;margin:1.2rem 0;background:rgba(20,184,166,.06)}
+.acp-box-label{font-family:'Courier New',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);font-weight:700;margin-bottom:.5rem}
+.acp-box p{color:rgba(255,255,255,.85);font-size:.92rem;line-height:1.7;margin:0}
+.concept-block{background:var(--surface2);border:1px solid var(--border);border-radius:.55rem;padding:1.1rem 1.2rem;margin-bottom:.85rem}
+.concept-block .c-header{display:flex;align-items:center;gap:.65rem;margin-bottom:.55rem}
+.concept-num{font-family:'Courier New',monospace;font-size:.65rem;font-weight:700;background:var(--teal-dark);color:#fff;padding:.2rem .5rem;border-radius:.25rem}
+.concept-block h4{font-size:.9rem;font-weight:700;color:var(--teal)}
+.concept-block p{font-size:.87rem;color:rgba(255,255,255,.75);line-height:1.62;margin-bottom:.5rem}
+.concept-block p:last-child{margin:0}
+.diagnostic-q{background:rgba(20,184,166,.06);border-left:3px solid var(--teal);border-radius:0 .3rem .3rem 0;padding:.55rem .75rem;margin-top:.6rem;font-size:.82rem;color:rgba(255,255,255,.65)}
+.diagnostic-q strong{color:var(--teal)}
+.trad-intro{font-size:.88rem;color:rgba(255,255,255,.72);line-height:1.65;margin-bottom:1rem}
+.timeline{position:relative;padding-left:2.2rem;margin:.5rem 0}
+.timeline::before{content:'';position:absolute;left:.85rem;top:.5rem;bottom:.5rem;width:2px;background:linear-gradient(to bottom,var(--teal),#7c3aed)}
+.trad-entry{position:relative;margin-bottom:1.6rem}
+.trad-dot{position:absolute;left:-1.48rem;top:.65rem;width:11px;height:11px;border-radius:50%;border:2px solid var(--bg);box-shadow:0 0 0 2px var(--t-color,var(--teal));background:var(--t-color,var(--teal))}
+.trad-card{background:var(--surface2);border:1px solid rgba(255,255,255,.07);border-radius:.5rem;overflow:hidden}
+.trad-header{padding:.7rem .9rem;display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.06)}
+.trad-era{font-family:'Courier New',monospace;font-size:.62rem;color:var(--muted);background:rgba(255,255,255,.05);padding:.12rem .45rem;border-radius:.2rem}
+.trad-name{font-weight:700;color:var(--t-color,var(--teal));font-size:.9rem}
+.trad-tag{font-family:'Courier New',monospace;font-size:.6rem;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.12);padding:.1rem .4rem;border-radius:.2rem}
+.trad-body{padding:.75rem .9rem}
+.trad-body p{font-size:.86rem;color:rgba(255,255,255,.72);line-height:1.62;margin-bottom:.5rem}
+.trad-acp{background:rgba(20,184,166,.07);border-left:3px solid var(--t-color,var(--teal));padding:.6rem .75rem;margin:.5rem 0;border-radius:0 .25rem .25rem 0}
+.trad-acp .acp-label{font-family:'Courier New',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--t-color,var(--teal));font-weight:700;margin-bottom:.25rem}
+.trad-acp p{font-size:.83rem;color:rgba(255,255,255,.68);line-height:1.58;margin:0}
+.trad-discovery{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:.3rem;padding:.5rem .7rem;margin-top:.4rem}
+.disc-label{font-family:'Courier New',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.2rem}
+.trad-discovery p{font-size:.82rem;color:rgba(255,255,255,.6);margin:0;line-height:1.55}
+.trad-discovery strong{color:rgba(255,255,255,.8)}
+.synthesis-block{background:linear-gradient(135deg,#0a1628 0%,#0d2a1a 100%);border:1px solid rgba(20,184,166,.2);border-radius:.6rem;padding:1.3rem 1.5rem;margin-top:1.5rem}
+.synthesis-block h4{color:var(--teal);font-size:.88rem;font-weight:700;margin-bottom:.6rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+.synthesis-block p{font-size:.87rem;color:rgba(255,255,255,.7);line-height:1.65;margin-bottom:.5rem}
+.synthesis-block p:last-child{margin:0}
+.q-grid{display:grid;gap:.6rem;margin:.6rem 0}
+.q-item{background:var(--surface2);border:1px solid var(--border);border-radius:.45rem;padding:.8rem 1rem;display:grid;grid-template-columns:2.2rem 1fr;gap:.65rem;align-items:start}
+.q-num{font-family:'Courier New',monospace;font-size:.7rem;font-weight:700;color:#fff;background:var(--teal-dark);border-radius:.25rem;width:1.9rem;height:1.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.q-item p{font-size:.86rem;color:rgba(255,255,255,.72);line-height:1.6;margin:0}
+.q-item strong{color:#fff}
+.journal-prompt{margin-bottom:.9rem}
+.journal-prompt label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:.3rem}
+.journal-prompt label strong{color:rgba(255,255,255,.7)}
+.journal-prompt textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;color:#e2e8f0;font-size:.84rem;padding:.65rem .8rem;resize:vertical;min-height:95px;font-family:'Segoe UI',system-ui,sans-serif;line-height:1.5}
+.journal-prompt textarea:focus{outline:none;border-color:var(--teal)}
+.journal-bar{background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-top:.75rem}
+.journal-note{font-family:'Courier New',monospace;font-size:.62rem;color:var(--muted)}
+.export-btn{background:var(--teal-dark);border:none;color:#fff;font-size:.8rem;font-weight:700;padding:.45rem 1rem;border-radius:.3rem;cursor:pointer;transition:background .15s}
+.export-btn:hover{background:var(--teal)}
+.spacer{height:.8rem}
+p.body-text{font-size:.9rem;color:rgba(255,255,255,.78);line-height:1.65;margin-bottom:.75rem}
+.section-rule{border:none;border-top:1px solid var(--border);margin:1.4rem 0}
+@media(max-width:580px){.arc-card{grid-template-columns:2rem 1fr}.tab-btn{padding:.55rem .7rem;font-size:.78rem}}
 </style>
 </head>
 <body>
-
-<div class="mast">
-  <div>
-    <div class="mast-eyebrow">Ethics Beyond Boundaries · Chapters 1–5</div>
-    <div class="mast-title">Ethics of the Framework</div>
-  </div>
-  <div class="mast-badge">Interlude Reading</div>
-</div>
-
-<nav class="tab-bar" role="tablist">
-  <button class="tab-btn active" onclick="show('arc')">The Arc</button>
-  <button class="tab-btn" onclick="show('principle')">The Principle</button>
-  <button class="tab-btn" onclick="show('concepts')">Three Concepts</button>
-  <button class="tab-btn" onclick="show('traditions')">Nine Traditions</button>
-  <button class="tab-btn" onclick="show('applied')">Applied Sequence</button>
-  <button class="tab-btn" onclick="show('journal')">Journal</button>
-</nav>
-
-<!-- ══ ARC ══════════════════════════════════════════════════════════════════ -->
-<div class="pane active" id="tab-arc">
-  <div class="intro-panel">
-    <div class="eyebrow">The Foundational Arc · Chapters 1–5</div>
-    <h2>What the First Five Chapters Built</h2>
-    <p>Five chapters. Each one added something the previous ones could not do alone. Together they have been building toward a normative claim that this Interlude now states as a whole.</p>
-  </div>
-
-  <div class="arc-list">
-    <div class="arc-item">
-      <div class="arc-num">1</div>
-      <p><strong>Chapter 1 — The Phenomenological Reference Frame.</strong> Your lens shapes what you can perceive morally. The PRF is not a neutral window but an active filter, formed by biological, biographical, and cultural conditions that make certain moral signals visible and others structurally hard to see. You did not choose your filter — but you can become conscious of it and work deliberately with it.</p>
-    </div>
-    <div class="arc-item">
-      <div class="arc-num">2</div>
-      <p><strong>Chapter 2 — SAGE and the Challenger Disaster.</strong> Systematic ethical analysis is not a replacement for moral perception — it is the tool that allows perception to be held steady under organizational pressure. The Challenger case showed why this matters: Boisjoly had the right perception. What he lacked was an institutional architecture capable of receiving it. SAGE names the steps between seeing and acting.</p>
-    </div>
-    <div class="arc-item">
-      <div class="arc-num">3</div>
-      <p><strong>Chapter 3 — ABCD, Neuroscience, and Identity.</strong> Moral cognition is a biological event. Stress, context, and developmental history determine whether you are operating in Manual Mode — deliberate, reflective, able to override automatic responses — or Automatic Mode, where the PRF runs unexamined and institutional pressure goes unquestioned. The ABCD framework named four dimensions that keep Manual Mode accessible: Agency, Beauty/Awe, Context/Contingency, and Dynamics.</p>
-    </div>
-    <div class="arc-item">
-      <div class="arc-num">4</div>
-      <p><strong>Chapter 4 — Complexity, Emergence, and Institutional Patterns.</strong> Individual moral differences — like those in your PRF — produce emergent collective patterns through agent-based dynamics. Schelling's segregation model showed how mild individual preferences produce large-scale collective outcomes that no one intended. Moral failure at scale is often not the product of individual malice but of distributed PRF asymmetries interacting through structures that amplify rather than correct them.</p>
-    </div>
-    <div class="arc-item">
-      <div class="arc-num">5</div>
-      <p><strong>Chapter 5 — Social Contracts and the Limits of Institutional Design.</strong> Social contract theories — from Hobbes and Locke to Rawls and Nussbaum — are attempts to build institutional frameworks that function <em>despite</em> PRF diversity rather than requiring that everyone share the same moral foundations. Each tradition has characteristic strengths and characteristic blind spots. Each assumes something about the agent population that it cannot guarantee. The question Chapter 5 left open: what must be true about agents for any social contract to work at all?</p>
-    </div>
-  </div>
-
-  <hr class="divider">
-
-  <h3>The Question the Arc Has Been Building Toward</h3>
-  <p>Chapters 1–5 established that your PRF shapes what you can see, that stress degrades your ability to act on what you see, that individual differences produce collective emergent patterns, and that institutions are attempts to coordinate across those differences. But they did not ask the prior question:</p>
-  <div class="callout gold">
-    <div class="label">The Prior Question</div>
-    <p>What structural conditions must be maintained for moral agency to remain possible at all — for the PRF to function, for SAGE to be available, for social contracts to have agents capable of inhabiting them?</p>
-  </div>
-  <p>This Interlude answers that question. The answer is the Agency Conditions Principle. It is not a new topic — it is what Chapters 1–5 were building toward without naming. Once you see it, the entire first arc reappears as preparation for it.</p>
-
-  <div class="callout teal">
-    <div class="label">Before Moving On</div>
-    <p>This chapter has no simulation. It is a standalone philosophical reading — the normative core of everything the course has been building. Read it before the applied sequence begins. Return to it whenever you need to remember what the analysis is for.</p>
+<div class="page">
+<div class="chapter-header">
+  <div class="chapter-label">Ethics Beyond Boundaries &middot; Interlude</div>
+  <div class="chapter-title">Ethics of the Framework</div>
+  <div class="chapter-subtitle">The Agency Conditions Principle &mdash; A Bridge Reading</div>
+  <div class="chapter-tags">
+    <span class="tag">Agency Conditions</span>
+    <span class="tag">Nine Traditions</span>
+    <span class="tag">Boisjoly</span>
+    <span class="tag">Entropy Export</span>
+    <span class="tag">CPG</span>
+    <span class="tag">Temporal Commons</span>
+    <span class="tag">Ch 1&ndash;5 Synthesis</span>
   </div>
 </div>
-
-<!-- ══ PRINCIPLE ════════════════════════════════════════════════════════════ -->
-<div class="pane" id="tab-principle">
-  <h2>The Agency Conditions Principle</h2>
-  <p>The Agency Conditions Principle is not an axiom handed down from above. It is an inference from what Chapters 1–5 showed.</p>
-  <p>If moral life requires coherent agency — the capacity to perceive, deliberate, commit, repair, and act across time — and if coherent agency requires specific structural conditions to be maintained, and if those conditions can be systematically destroyed by institutional decisions, then institutions and actions can be evaluated by whether they preserve or destroy those conditions.</p>
-  <p>This is the minimum normative consequence of taking biology, history, and institutional structure seriously as the terrain on which ethical life actually occurs.</p>
-
-  <div class="acp-box">
-    <div class="acp-label">The Agency Conditions Principle</div>
-    <p>There are strong moral reasons — reasons that hold across contexts and can be outweighed in specific circumstances but are never morally irrelevant — to preserve, repair, and extend the conditions that make coherent agency possible.</p>
-  </div>
-
-  <p>These conditions matter morally because every other good ethics cares about depends on them first. Responsibility requires an agent who can sustain commitments across time. Justice requires agents who can plan and participate. Care requires agents whose relational infrastructure has not been dismantled. Dignity requires agents whose Identity Kernels have not been systematically fragmented by institutional contradiction. When agency conditions collapse, the ethical goods that depend on them become structurally inaccessible regardless of individual intention or effort.</p>
-  <p><strong>This is the normative core of the framework.</strong> It is not the whole of ethics. It is the precondition without which the rest of ethics cannot be inhabited.</p>
-
-  <hr class="divider">
-
-  <h3>Pro Tanto — Strong but Not Absolute</h3>
-  <p>The principle is <em>pro tanto</em> — strong but not absolute. A strong moral reason is one that must always be taken into account, that cannot simply be ignored, and that carries genuine weight in any situation where it applies. But it can be outweighed in specific circumstances.</p>
-  <p>There are situations where disrupting a form of coherence is morally required: to resist an unjust order, to refuse a degrading role, to tell the truth against an institution that enforces comfortable falsity. The ACP clarifies what is at stake in such moments — the fate of coherent life — without pretending that coherence-preservation resolves every moral conflict.</p>
-  <div class="callout red">
-    <div class="label">Critical Limit</div>
-    <p>Coherence that survives only through domination is not the kind of coherence this framework seeks to protect. The ACP is not a defense of the status quo. It is a demand that any structural change leave agents more capable of coherent life, not less.</p>
-  </div>
-
-  <h3>The Boisjoly Connection</h3>
-  <p>Roger Boisjoly held the Agency Conditions Principle without being able to name it. He saw that the institutional architecture of the Challenger decision was destroying the conditions under which safety-critical knowledge could reach the people who needed it. The O-rings were the technical problem. The suppression gap was the ethical problem.</p>
-  <p>The ACP explains both why he was right and why he faced an impossible situation: he was right that the conditions for safe launch had not been met; and he was trapped inside an institutional architecture that had no mechanism for receiving what he knew. The ACP does not resolve the impossible situation. It makes visible what was genuinely at stake.</p>
-
-  <h3>Structural, Not Individualistic</h3>
-  <p>The principle is structural, not individualistic. It evaluates systems, architectures, and forms of institutional life — not only individual acts. The question is not only "did this act harm someone?" but "does this institution maintain the conditions under which the people it governs can remain capable of reasoning, caring, committing, and rebuilding?"</p>
-  <p>This is what makes the ACP the natural normative companion to the simulation engine: both are designed to make structural causes visible, not to distribute blame across individuals already operating under structural constraints they cannot individually overcome.</p>
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('arc',this)">I &mdash; The Arc</button>
+  <button class="tab-btn" onclick="switchTab('principle',this)">II &mdash; The Principle</button>
+  <button class="tab-btn" onclick="switchTab('concepts',this)">III &mdash; Three Concepts</button>
+  <button class="tab-btn" onclick="switchTab('traditions',this)">IV &mdash; Nine Traditions</button>
+  <button class="tab-btn" onclick="switchTab('applied',this)">V &mdash; Applied Sequence</button>
+  <button class="tab-btn" onclick="switchTab('journal',this)">Journal</button>
 </div>
 
-<!-- ══ CONCEPTS ══════════════════════════════════════════════════════════════ -->
-<div class="pane" id="tab-concepts">
-  <h2>Three Concepts the ACP Requires</h2>
-  <p>The Agency Conditions Principle names a moral orientation. Three additional concepts give it analytical traction as a diagnostic tool for the applied work ahead.</p>
-
-  <div class="concept-card" style="background:var(--red-l);border-color:#e0b8b8">
-    <div class="c-num" style="color:var(--red)">Concept 1</div>
-    <h3 style="color:var(--red)">Entropy-Exporting Institutions</h3>
-    <p>An entropy-exporting institution maintains its own internal coherence — stable authority, predictable hierarchy, functioning processes — by systematically displacing contradiction, overload, and uncertainty onto the populations it governs or affects.</p>
-    <p>The institution appears orderly from within while degrading the agency conditions of those who must absorb its exported costs. This is not inefficiency. It is structural. The costs are real, but they flow to those who cannot refuse to bear them.</p>
-    <p>The suppression gap in the simulation makes this visible: the system appears to be functioning while the intelligence of its agents cannot reach the decision. Identifying entropy-exporting architectures is the primary ACP diagnostic in the applied sequence.</p>
-    <div class="diagnostic">
-      <strong>Diagnostic question:</strong> For every system you analyze — not only "does it work?" but "for whom does the cost of its working fall, and can the people who bear that cost refuse to bear it?"
-    </div>
-  </div>
-
-  <div class="concept-card" style="background:var(--teal-l);border-color:#b8ddd8">
-    <div class="c-num" style="color:var(--teal)">Concept 2</div>
-    <h3 style="color:var(--teal)">Coherence-Preserving Governance (CPG)</h3>
-    <p>CPG is the positive ideal that follows from the ACP applied to institutional design. A CPG institution is evaluated not only by efficiency, legality, or output, but by five specific criteria:</p>
-    <p><strong>1.</strong> It maintains a biological and social floor beneath which it becomes unreasonable to expect coherent agency from citizens or participants.<br>
-    <strong>2.</strong> Its procedures are sufficiently predictable and intelligible to support planning, accountability, and participation.<br>
-    <strong>3.</strong> It creates repair pathways rather than treating institutional failure as a private burden.<br>
-    <strong>4.</strong> It maintains an information environment compatible with reality-testing and meaningful disagreement.<br>
-    <strong>5.</strong> It widens rather than narrows future horizons — sustaining long-range orientation rather than forcing permanent defensive survival.</p>
-    <p>CPG is not a blueprint for a single constitutional form. It is a normative orientation: a set of questions you ask of every institution in the applied sequence, and a standard against which to measure each architecture's characteristic failure mode.</p>
-    <div class="diagnostic">
-      <strong>Diagnostic question:</strong> Which of the five CPG criteria does this institution fail — and for whom does it fail most severely?
-    </div>
-  </div>
-
-  <div class="concept-card" style="background:var(--purple-l);border-color:#c8b8e0">
-    <div class="c-num" style="color:var(--purple)">Concept 3</div>
-    <h3 style="color:var(--purple)">The Temporal Commons</h3>
-    <p>The Agency Conditions Principle is not only about the present. Every action has temporal reach. Some acts stabilize environments for others; some poison them. Some build institutional trust; others deplete it for generations.</p>
-    <p>The temporal commons is the shared future-bearing capacity of a society — the collective conditions that make it possible for future agents to inhabit coherent lives. It is a commons in the same sense as clean air or stable currency: no individual owns it, every individual depends on it, and it can be degraded by accumulated present decisions.</p>
-    <p><strong>Legacy, on this account, is not reputation.</strong> It is the coherence-supporting or coherence-damaging inheritance one generation installs into the systems the next must inhabit. The ACP therefore has an intergenerational dimension: we owe future persons not the frozen reproduction of the present, but a world more capable of sustaining coherent life than the one we received.</p>
-    <div class="diagnostic">
-      <strong>Diagnostic question:</strong> What is this system handing forward? What temporal commons is it preserving, depleting, or destroying? Who inherits its legacy, and what will their agency conditions look like?
-    </div>
-  </div>
+<!-- I: ARC -->
+<div class="tab-pane active" id="tab-arc">
+<div class="narrative-panel navy"><strong>What this chapter is.</strong> This chapter has no simulation. It is a standalone philosophical reading &mdash; the normative core of everything the first five chapters have been building. Read it before the applied sequence begins. Return to it whenever you need to remember what the analysis is for.</div>
+<div class="section-header open" onclick="toggleSec(this)"><h3>&sect;I &mdash; What the First Five Chapters Built</h3><span class="section-chevron">&#9658;</span></div>
+<div class="section-body open">
+<p class="body-text">Five chapters. Each one added something the previous ones could not do alone. Together they have been building toward a normative claim that this Interlude now states as a whole.</p>
+<div class="arc-grid">
+<div class="arc-card"><div class="arc-num">Ch 1</div><p><strong>The Phenomenological Reference Frame.</strong> Your lens shapes what you can perceive morally. The PRF is not a neutral window but an active filter, formed by biological, biographical, and cultural conditions that make certain moral signals visible and others structurally hard to see. You did not choose your filter &mdash; but you can become conscious of it, and deliberate work with it is possible.</p></div>
+<div class="arc-card"><div class="arc-num">Ch 2</div><p><strong>SAGE and the Challenger Disaster.</strong> Systematic ethical analysis is not a replacement for moral perception &mdash; it is the tool that holds perception steady under organizational pressure. Boisjoly had the right perception. What he lacked was an institutional architecture capable of receiving it. SAGE names the steps between seeing and acting, and the Challenger case shows what is lost when those steps are structurally blocked.</p></div>
+<div class="arc-card"><div class="arc-num">Ch 3</div><p><strong>ABCD, Neuroscience, and the Biology of Agency.</strong> Moral cognition is a biological event. Stress, context, and developmental history determine whether you are operating in Manual Mode &mdash; deliberate, reflective, capable of overriding automatic responses &mdash; or Automatic Mode, where the PRF runs unexamined and institutional pressure goes unquestioned. The ABCD framework named four dimensions that keep Manual Mode accessible: Agency, Beauty/Awe, Context/Contingency, and Dynamics.</p></div>
+<div class="arc-card"><div class="arc-num">Ch 4</div><p><strong>Complexity, Emergence, and Institutional Patterns.</strong> Individual moral differences produce emergent collective patterns through agent-based dynamics. Schelling&rsquo;s segregation model showed how mild individual preferences produce large-scale collective outcomes that no one intended. Moral failure at scale is often not the product of individual malice but of distributed PRF asymmetries interacting through structures that amplify rather than correct them.</p></div>
+<div class="arc-card"><div class="arc-num">Ch 5</div><p><strong>Social Contracts and the Limits of Institutional Design.</strong> Social contract theories &mdash; from Hobbes and Locke to Rawls and Nussbaum &mdash; are attempts to build institutional frameworks that function despite PRF diversity rather than requiring that everyone share the same moral foundations. Each tradition makes assumptions about the agent population that it cannot guarantee. The question left open: what must be true about agents for any social contract to work at all?</p></div>
+</div>
+</div>
+<div class="spacer"></div>
+<div class="section-header open" onclick="toggleSec(this)"><h3>&sect;II &mdash; The Question the Arc Has Been Building Toward</h3><span class="section-chevron">&#9658;</span></div>
+<div class="section-body open">
+<p class="body-text">Chapters 1&ndash;5 established that your PRF shapes what you can see, that stress degrades your ability to act on what you see, that individual differences produce collective emergent patterns, and that institutions are attempts to coordinate across those differences. But they did not ask the prior question.</p>
+<div class="narrative-panel amber"><strong>The prior question:</strong> What structural conditions must be maintained for moral agency to remain possible at all &mdash; for the PRF to function, for SAGE to be available, for Manual Mode to be accessible, for social contracts to have agents capable of inhabiting them?</div>
+<p class="body-text">This Interlude answers that question. The answer is the Agency Conditions Principle. It is not a new topic &mdash; it is what Chapters 1&ndash;5 were building toward without naming it. Once you see it, the entire first arc reappears as preparation for a claim the course had not yet been in position to state.</p>
+</div>
 </div>
 
-<!-- ══ NINE TRADITIONS ══════════════════════════════════════════════════════ -->
-<div class="pane" id="tab-traditions">
-  <div class="intro-panel">
-    <div class="eyebrow">A Historical Sequence · 2,500 Years</div>
-    <h2>How the Traditions Ground the ACP</h2>
-    <p>The nine major ethical traditions are not competing answers to the same question. They are nine partial perceptions of the same moral real, each made by a thinker responding to the material and institutional conditions of their own world — and each making a discovery that the next tradition extends. Read this as a single argument unfolding across 2,500 years.</p>
-  </div>
-
-  <div class="callout teal" style="margin-bottom:1.5rem">
-    <div class="label">The Central Claim of This Tab</div>
-    <p>The nine traditions do not merely <em>apply to</em> the ACP. They <em>converge upon</em> it. Each one discovered a different piece of what the ACP synthesizes: that coherent agency has structural preconditions, and that ethics must protect those preconditions or become incoherent itself.</p>
-  </div>
-
-  <div class="timeline">
-
-    <!-- SOCRATES -->
-    <div class="tradition-entry" style="--trad-color:var(--r1)">
-      <div class="trad-header">
-        <span class="trad-era">~470–399 BCE</span>
-        <span class="trad-name">Socrates</span>
-        <span class="trad-tag">Examined Life</span>
-      </div>
-      <div class="trad-body">
-        <p>Socrates did not write. He questioned — in public spaces, with anyone who would engage, about whether people actually knew what they claimed to know about justice, piety, and virtue. His method was relational and institutional: it required an agora, a culture tolerant of public inquiry, and an interlocutor willing to stay in the conversation. The examined life was not a private achievement. It was a social practice.</p>
-        <p>His execution by Athens for corrupting the youth and impiety was, from the ACP's perspective, a precise institutional act: Athens destroyed the structural conditions under which examination had been possible. The poison was the mechanism; the real damage was to the commons of public inquiry.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Examination requires institutions where examination is possible. The ACP explains why destroying those institutions — through censorship, through silencing, through the kind of social architecture that makes honest questioning professionally fatal — is a moral wrong, not merely an inconvenience. Every suppression gap in the simulation is a small Athenian hemlock.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> Ethical life is a practice requiring institutional space. Without that space, even the most virtuous individual cannot be virtuous in the full sense.</div>
-      </div>
-    </div>
-
-    <!-- ARISTOTLE -->
-    <div class="tradition-entry" style="--trad-color:var(--r2)">
-      <div class="trad-header">
-        <span class="trad-era">~384–322 BCE</span>
-        <span class="trad-name">Aristotle</span>
-        <span class="trad-tag">Virtue &amp; Flourishing</span>
-      </div>
-      <div class="trad-body">
-        <p>Aristotle argued that virtue is not a list of rules to follow but a set of capacities developed through habituated practice within a social structure — the <em>polis</em>. Courage, practical wisdom, justice — these are not achieved in isolation but through a lifetime of institutional participation: in friendships, in civic offices, in the ongoing practice of deliberating together about common life.</p>
-        <p>The Nicomachean Ethics is ultimately an argument about the conditions under which eudaimonia — flourishing, the full exercise of human capacity — is possible. And those conditions are overwhelmingly structural: you need the material conditions for a certain kind of practice, the social infrastructure for it, and time to develop over a complete life.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Virtue requires habituation infrastructure — a polis that makes virtuous practice possible across time. When institutions systematically prevent the kind of relational and civic participation that virtue requires, they are not merely failing to support flourishing — they are actively producing the conditions under which flourishing becomes impossible. This is the Aristotelian face of entropy export.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> Ethics is not about individual character in isolation. It is about the institutional arrangements that make the development of good character possible across a lifetime.</div>
-      </div>
-    </div>
-
-    <!-- STOICS -->
-    <div class="tradition-entry" style="--trad-color:var(--r3)">
-      <div class="trad-header">
-        <span class="trad-era">~300 BCE – 180 CE</span>
-        <span class="trad-name">The Stoics</span>
-        <span class="trad-tag">Inner Citadel · Universal Reason</span>
-      </div>
-      <div class="trad-body">
-        <p>Zeno, Epictetus, Marcus Aurelius. The Stoics taught that the inner life — reason, judgment, the will — is always within our control even when external conditions are not. Epictetus was a slave; Marcus Aurelius was an emperor. Both practiced the same discipline: distinguish what is up to you (your responses, your judgments, your character) from what is not (your body, your reputation, the actions of others), and invest your identity entirely in the former.</p>
-        <p>This is sometimes read as an argument for passive acceptance of unjust conditions. But Stoics also argued that reason is universal — that all rational beings share the capacity for logos — and that this universality grounds a cosmopolitan ethics: obligations that cross tribal and institutional boundaries.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> The Stoic inner citadel requires a biological substrate capable of maintaining it. When base stress chronically exceeds the glucocorticoid threshold — when L_GC is maxed and C_PFC is degraded — the citadel becomes inaccessible regardless of intention. The Stoics were right that the inner life is what matters. They did not adequately reckon with the fact that access to the inner life has material preconditions that can be systematically destroyed. The ACP names what the Stoics assumed: the biological floor beneath which even the most disciplined practitioner cannot sustain rational agency.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> The universal capacity for reason grounds cross-contextual moral obligations. Every person, regardless of station, possesses the same rational dignity. But that dignity has biological preconditions that cannot be willed away.</div>
-      </div>
-    </div>
-
-    <!-- HUME -->
-    <div class="tradition-entry" style="--trad-color:var(--r4)">
-      <div class="trad-header">
-        <span class="trad-era">1711–1776</span>
-        <span class="trad-name">David Hume</span>
-        <span class="trad-tag">Moral Sentiment · Sympathy</span>
-      </div>
-      <div class="trad-body">
-        <p>Hume broke with the rationalist tradition that had dominated moral philosophy since Plato. He argued that reason alone cannot motivate moral action — "reason is, and ought only to be the slave of the passions." What actually drives moral judgment is sentiment, specifically sympathy: our capacity to feel what others feel, to project ourselves into their situations, and to be moved by the prospect of their suffering or flourishing.</p>
-        <p>Hume also observed that our sympathy is calibrated by proximity — we feel more strongly for those near us, those like us, those whose situations we can readily imagine. This is not a flaw to be overcome by pure reason; it is a structural feature of moral psychology that shapes what we can perceive and feel across social distance.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Moral sentiment requires a calibration range that can reach structural causes. PRF asymmetries explain why sympathy fails across distance: when your formation makes certain suffering invisible — when the people who bear the cost of institutional arrangements are structurally out of your perceptual range — Humean sympathy is blocked not by moral failure but by architectural limitation. The ACP extends the obligation Hume identified: if sympathy is the mechanism and formation limits its range, then we have reasons to deliberately extend its reach.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> Moral motivation is emotional and social, not purely rational. But this means it depends on perceptual infrastructure — the capacity to see and feel the situations of others — that can be narrowed or extended by institutional design.</div>
-      </div>
-    </div>
-
-    <!-- KANT -->
-    <div class="tradition-entry" style="--trad-color:var(--r5)">
-      <div class="trad-header">
-        <span class="trad-era">1724–1804</span>
-        <span class="trad-name">Immanuel Kant</span>
-        <span class="trad-tag">Autonomy · Categorical Imperative</span>
-      </div>
-      <div class="trad-body">
-        <p>Kant argued that the moral worth of an action derives entirely from the intention behind it — specifically, whether the agent acted from duty, on the basis of a principle they could rationally will to be universal. The Categorical Imperative: act only on maxims you could will to be universal law; and always treat persons as ends in themselves, never merely as means.</p>
-        <p>What makes this framework distinctive is its grounding in autonomy: the capacity for rational self-governance, for giving yourself the law rather than merely following external commands. Moral worth, for Kant, requires this capacity. An agent who cannot reason, deliberate, or form principles cannot be a moral agent in the full sense.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Autonomy requires agents capable of rational self-governance. The ACP is the floor below which that capacity becomes structurally inaccessible regardless of formal rights. An institution that formally grants autonomy while systematically maintaining the conditions under which rational self-governance is biologically unavailable is committing a Kantian wrong in addition to the practical harms it causes: it treats persons as means by denying them the conditions for genuine end-setting. Rights without the material conditions for exercising them are formal autonomy in the place of real autonomy.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> The dignity of persons is grounded in their rational autonomy. This means that undermining rational capacity — through stress, through information deprivation, through institutional architectures that prevent deliberation — is a violation of dignity, not merely an inconvenience.</div>
-      </div>
-    </div>
-
-    <!-- MILL -->
-    <div class="tradition-entry" style="--trad-color:var(--r6)">
-      <div class="trad-header">
-        <span class="trad-era">1806–1873</span>
-        <span class="trad-name">John Stuart Mill</span>
-        <span class="trad-tag">Utilitarianism · Higher Pleasures</span>
-      </div>
-      <div class="trad-body">
-        <p>Mill modified Bentham's utilitarianism by distinguishing higher pleasures (those of the intellect, the aesthetic sensibility, the moral feeling) from lower ones (physical sensation), and arguing that any being who has experienced both will prefer the higher. This is not a judgment of class or culture — it is a claim about the full exercise of human capacities. The goal of maximizing welfare must be sensitive to what humans are capable of, not just what they happen to want at any given moment.</p>
-        <p>Mill also wrote <em>On Liberty</em>, arguing that free expression and individual experimentation are preconditions for progress — including moral progress. Silencing dissent does not merely offend the dissenters; it degrades the epistemic commons from which everyone draws.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Welfare depends on agents capable of experiencing, projecting, and comparing outcomes over time. The aggregate welfare metric — total happiness — hides the distributional reality: if some agents are operating under conditions that have collapsed their temporal projection capacity, they cannot experience or prefer the higher pleasures that welfare maximization is supposed to secure. The ACP names this: measuring welfare without measuring the agency conditions under which agents experience it produces systematically misleading policy recommendations.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> The full realization of human potential requires the conditions for exercising higher capacities. Welfare without agency conditions is systematically underestimated — the degraded welfare of agents whose capacities have been suppressed registers as preference, not as loss.</div>
-      </div>
-    </div>
-
-    <!-- CARE ETHICS -->
-    <div class="tradition-entry" style="--trad-color:var(--r7)">
-      <div class="trad-header">
-        <span class="trad-era">1982–present</span>
-        <span class="trad-name">Care Ethics</span>
-        <span class="trad-tag">Noddings · Gilligan · Relations</span>
-      </div>
-      <div class="trad-body">
-        <p>Carol Gilligan's <em>In a Different Voice</em> (1982) challenged Kohlberg's account of moral development — which treated the capacity for abstract rule-following as the highest stage — by showing that many people reason morally through relationships, context, and responsiveness rather than through universal principles. Nel Noddings developed this into Care Ethics: the view that the caring relationship — one-caring and cared-for — is the fundamental unit of moral life, not the individual rational agent.</p>
-        <p>Care Ethics makes visible what principle-based theories structurally exclude: the moral significance of dependency, of vulnerability, of the relational infrastructure through which people sustain each other through periods of incapacity. It is explicitly attentive to the conditions under which care is possible at all.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Relational infrastructure is the medium through which care is possible. The ACP makes this claim structural rather than sentimental: dismantling BioBond structures — the relational and material networks through which people support each other — is a form of harm with measurable consequences. When institutions systematically reduce care-relationship density (through overwork, isolation, geographic displacement, economic precarity), they are destroying agency conditions through a different pathway than extraction alone. The suppression of relational infrastructure is the Care Ethics face of entropy export.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> Moral life is fundamentally relational. The conditions for care — time, proximity, stability, shared context — are not given but depend on institutional arrangements that can sustain or destroy them. Ethics has an obligation to maintain the relational infrastructure that makes care possible.</div>
-      </div>
-    </div>
-
-    <!-- RAWLS -->
-    <div class="tradition-entry" style="--trad-color:var(--r8)">
-      <div class="trad-header">
-        <span class="trad-era">1921–2002</span>
-        <span class="trad-name">John Rawls</span>
-        <span class="trad-tag">Justice as Fairness · Veil of Ignorance</span>
-      </div>
-      <div class="trad-body">
-        <p>Rawls' <em>A Theory of Justice</em> (1971) proposed a thought experiment: design the basic institutional structure of society from behind a "veil of ignorance" — not knowing your place in it, your class, your natural talents, your conception of the good. Rational agents in this original position would choose principles guaranteeing basic liberties and arranging social inequalities so they benefit the least-advantaged members of society.</p>
-        <p>The veil of ignorance is not a demand for perfect impartiality as a psychological fact. It is a design procedure: if you don't know where you'll end up, you design institutions that are acceptable from any position. This makes the situation of the worst-off members the primary test of institutional justice.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Justice requires agents capable of forming and pursuing plans of life. Rawls' difference principle — that inequalities are just only when they benefit the least advantaged — depends on those at the bottom of the distribution actually being capable of benefiting. When agency conditions have collapsed for the least advantaged — when stress, precarity, and institutional exclusion have degraded their temporal projection capacity — Rawlsian justice becomes inaccessible regardless of how good the institutional rules are on paper. The ACP is the precondition for Rawlsian justice to be inhabitable: you cannot form a plan of life if the biological and relational conditions for planning have been destroyed.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> The primary subject of justice is not individual acts but the basic institutional structure of society. This means that maintaining the conditions under which the least advantaged can participate in their own governance is itself a demand of justice — not charity, not benevolence, but justice.</div>
-      </div>
-    </div>
-
-    <!-- EXISTENTIALISM -->
-    <div class="tradition-entry" style="--trad-color:var(--r9)">
-      <div class="trad-header">
-        <span class="trad-era">1940s–present</span>
-        <span class="trad-name">Existentialism</span>
-        <span class="trad-tag">Sartre · Camus · Authenticity</span>
-      </div>
-      <div class="trad-body">
-        <p>Sartre's "existence precedes essence" is a claim about radical freedom and responsibility: there is no human nature that defines you in advance, no role that determines your obligations, no God whose commands provide moral direction. You are what you do, and you are responsible for what you choose — radically, without excuse. Authenticity, for Sartre, means owning this freedom rather than fleeing into bad faith: pretending your choices are not choices, that your role compels you, that the situation left you no alternative.</p>
-        <p>Camus took this in a different direction: the world is absurd — meaningless — and the authentic response is to live in full consciousness of the absurdity rather than fleeing into illusion. Both traditions emphasize that self-deception and institutional conformity are forms of moral failure.</p>
-        <div class="trad-acp"><span class="acp-link">ACP grounding:</span> Authenticity requires metabolic conditions for authentic choice. Radical freedom is a cruel fiction under conditions where automatic-mode processing is the only available cognitive register — where stress has degraded the prefrontal capacity that genuine choice requires. The ACP names what happens when morphic fidelity collapse makes authentic functioning thermodynamically inaccessible: people in those conditions are not failing to exercise their radical freedom; they are operating under conditions that have narrowed the space in which freedom can be exercised at all. Sartre's bad faith can be institutionally induced — this is the existentialist face of entropy export.</div>
-        <div class="trad-discovery"><strong>Discovery:</strong> Authentic moral life requires the capacity to recognize and own one's choices. But that capacity is not infinitely available — it depends on cognitive and relational conditions that can be structurally suppressed. Ethics must account for the institutional production of conditions under which authentic choice becomes unavailable.</div>
-      </div>
-    </div>
-  </div><!-- end timeline -->
-
-  <hr class="divider">
-
-  <div class="synthesis">
-    <h3>The ACP as Synthesis</h3>
-    <p>Read the nine entries above as a single argument. Each tradition discovered a different piece of the same truth:</p>
-    <p>Socrates found that moral inquiry requires institutional space. Aristotle found that virtue requires habituation infrastructure. The Stoics found that reason has a universal reach — but assumed its biological substrate. Hume found that sentiment is the mechanism of moral motivation — and that it is calibrated by the architecture of perception. Kant found that dignity grounds in rational autonomy — which has material preconditions that formal rights cannot guarantee. Mill found that welfare measurement must be sensitive to the exercise of higher capacities. Care Ethics found that relational infrastructure is the medium through which moral life is sustained. Rawls found that justice requires agents capable of forming and pursuing plans. Existentialism found that authenticity requires the metabolic conditions for genuine choice.</p>
-    <p>The Agency Conditions Principle synthesizes these discoveries into a single claim: there are structural preconditions for moral agency — biological, relational, institutional — and ethics has strong reasons to preserve, repair, and extend them. The nine traditions disagree about what ethics requires of already-functional agents. The ACP specifies what ethics requires <em>before that question can even be asked</em>.</p>
-    <p>This is why the ACP is the depth grammar of the nine traditions rather than their replacement. You cannot have virtue without agency conditions. You cannot have autonomy, welfare, care, or justice without agency conditions. The ACP names the precondition. The nine traditions specify what we owe each other once that precondition is met.</p>
-  </div>
+<!-- II: PRINCIPLE -->
+<div class="tab-pane" id="tab-principle">
+<div class="section-header open" onclick="toggleSec(this)"><h3>&sect;I &mdash; The Inference</h3><span class="section-chevron">&#9658;</span></div>
+<div class="section-body open">
+<p class="body-text">The Agency Conditions Principle is not an axiom handed down from above. It is an inference from what the course has shown.</p>
+<p class="body-text">If moral life requires coherent agency &mdash; the capacity to perceive, deliberate, commit, repair, and act across time &mdash; and if coherent agency requires specific structural conditions to be maintained, and if those conditions can be systematically destroyed by institutional decisions, then institutions and actions can be evaluated by whether they preserve or destroy those conditions. This is the minimum normative consequence of taking biology, history, and institutional structure seriously as the terrain on which ethical life actually occurs.</p>
+<div class="acp-box"><div class="acp-box-label">The Agency Conditions Principle</div><p>There are strong moral reasons &mdash; reasons that hold across contexts and can be outweighed in specific circumstances but are never morally irrelevant &mdash; to preserve, repair, and extend the conditions that make coherent agency possible. These conditions matter morally because every other good ethics cares about depends on them first. Responsibility requires an agent who can sustain commitments across time. Justice requires agents who can plan and participate. Care requires agents whose relational infrastructure has not been dismantled. Dignity requires agents whose Identity Kernels have not been systematically fragmented by institutional contradiction. When agency conditions collapse, the ethical goods that depend on them become structurally inaccessible regardless of individual intention or effort. This is the normative core of the framework. It is not the whole of ethics. It is the precondition without which the rest of ethics cannot be inhabited.</p></div>
+</div>
+<div class="section-header open" onclick="toggleSec(this)"><h3>&sect;II &mdash; Pro Tanto: Strong but Not Absolute</h3><span class="section-chevron">&#9658;</span></div>
+<div class="section-body open">
+<p class="body-text">The principle is <em>pro tanto</em> &mdash; strong but not absolute. A strong moral reason is one that must always be taken into account, that cannot simply be ignored, and that carries genuine weight in any situation where it applies. But it can be outweighed in specific circumstances.</p>
+<p class="body-text">There are situations where disrupting a form of coherence is morally required: to resist an unjust order, to refuse a degrading role, to tell the truth against an institution that enforces comfortable falsity. The ACP clarifies what is at stake in such moments without pretending that coherence-preservation resolves every moral conflict.</p>
+<div class="narrative-panel red"><strong>Critical limit:</strong> Coherence that survives only through domination is not the kind of coherence this framework seeks to protect. The ACP is not a defense of the status quo. It is a demand that any structural arrangement leave agents more capable of coherent life, not less.</div>
+</div>
+<div class="section-header open" onclick="toggleSec(this)"><h3>&sect;III &mdash; Structural, Not Individualistic</h3><span class="section-chevron">&#9658;</span></div>
+<div class="section-body open">
+<p class="body-text">The principle is structural, not individualistic. It evaluates systems, architectures, and forms of institutional life &mdash; not only individual acts. The Kantian asks whether an individual act is universalizable. The utilitarian asks whether it maximizes welfare. The ACP asks whether the system within which acts occur is preserving or destroying the conditions under which moral life is possible.</p>
+<p class="body-text">The question is not only &ldquo;did this act harm someone?&rdquo; but &ldquo;does this institution maintain the conditions under which the people it governs can remain capable of reasoning, caring, committing, and rebuilding?&rdquo;</p>
+</div>
+<div class="section-header open" onclick="toggleSec(this)"><h3>&sect;IV &mdash; The Boisjoly Connection</h3><span class="section-chevron">&#9658;</span></div>
+<div class="section-body open">
+<p class="body-text">Roger Boisjoly held the Agency Conditions Principle without being able to name it. He saw that the institutional architecture of the Challenger decision was destroying the conditions under which safety-critical knowledge could reach the people who needed it. The O-rings were the technical problem. The suppression gap was the ethical problem.</p>
+<p class="body-text">The ACP explains both why he was right and why he faced an impossible situation: he was right that the conditions for safe launch had not been met; and he was trapped inside an institutional architecture that had no mechanism for receiving what he knew. The ACP does not resolve the impossible situation. It makes visible what was genuinely at stake.</p>
+<div class="narrative-panel teal"><strong>The suppression gap as ethical concept:</strong> The simulation makes this structural wrong computationally visible. Lambda Raw is the quality of what agents know; Lambda Perceived is what the institutional architecture allows to reach decisions. The gap between them is the measure of how much the agency conditions of the agent population have been violated by the architecture they operate within.</div>
+</div>
 </div>
 
-<!-- ══ APPLIED ═══════════════════════════════════════════════════════════════ -->
-<div class="pane" id="tab-applied">
-  <h2>The Applied Sequence Ahead</h2>
-  <p>Each domain in the applied sequence presents the same analytical structure. The tools are already in your hands. The ACP is the normative thread that holds them together.</p>
-  <p>For every system you analyze, six questions apply. These are not six separate questions — they are one question from six angles.</p>
-
-  <div class="q-grid">
-    <div class="q-item">
-      <span class="q-badge">Q1</span>
-      <p><strong>Architecture.</strong> Which social contract architecture is this system running — Hobbesian, Lockean, Rousseauian, or some hybrid — and where has it been applied beyond its design envelope? Every contract tradition makes assumptions about agents that it cannot guarantee.</p>
-    </div>
-    <div class="q-item">
-      <span class="q-badge">Q2</span>
-      <p><strong>Traditions.</strong> Which of the nine ethical traditions does the system's design embed, and which has it structurally excluded? What signal is the excluded tradition producing that the system cannot hear?</p>
-    </div>
-    <div class="q-item">
-      <span class="q-badge">Q3</span>
-      <p><strong>Map Position.</strong> Where on the World Values Map are the populations this system governs? Is the institutional architecture calibrated for their actual thermodynamic position — or for an idealized agent who does not inhabit their material conditions?</p>
-    </div>
-    <div class="q-item">
-      <span class="q-badge">Q4</span>
-      <p><strong>Entropy Export.</strong> Is the system entropy-exporting? Where does the cost of its functioning fall, and can the people who bear that cost refuse to bear it? Who holds the suppression gap between what agents know and what the system acts on?</p>
-    </div>
-    <div class="q-item">
-      <span class="q-badge">Q5</span>
-      <p><strong>CPG Criteria.</strong> Does the system satisfy the five Coherence-Preserving Governance criteria? Which ones fail — and for whom do they fail most severely?</p>
-    </div>
-    <div class="q-item">
-      <span class="q-badge">Q6</span>
-      <p><strong>Temporal Commons.</strong> What is this system handing forward? What temporal commons is it preserving, depleting, or destroying? Who inherits its legacy, and what will their agency conditions look like?</p>
-    </div>
-  </div>
-
-  <div class="callout teal" style="margin-top:1.5rem">
-    <div class="label">The Single Question</div>
-    <p>Is this system preserving or destroying the conditions under which the people it governs can remain capable of reasoning, caring, committing, and building something worth handing forward? The ACP is the normative thread that makes this a single question rather than a list.</p>
-  </div>
-
-  <hr class="divider">
-  <h3>Connecting to the Simulation</h3>
-  <p>When you use the course simulations in the applied chapters, the six questions above map directly onto measurable simulation outputs. Q4 (entropy export) maps to EE_effective and the suppression gap. Q5 (CPG criteria) maps to routing quality ceiling and FHRI_max. Q6 (temporal commons) maps to the trust vector trajectory and whether institutional trust is building or eroding across simulation steps.</p>
-  <p>The ACP is not only a philosophical reading — it is the normative interpretation of what the simulation is measuring. The suppression gap is a CPG failure. The entropy export floor is an institutionally imposed degradation of agency conditions. The FHRI_max is the structural limit on flourishing the architecture permits. The simulation makes these forces visible. The ACP explains why they matter.</p>
+<!-- III: CONCEPTS -->
+<div class="tab-pane" id="tab-concepts">
+<p class="body-text">The Agency Conditions Principle names a moral orientation. Three additional concepts give it analytical traction as a diagnostic tool for the applied sequence ahead.</p>
+<div class="concept-block">
+<div class="c-header"><span class="concept-num">01</span><h4>Entropy-Exporting Institutions</h4></div>
+<p>An entropy-exporting institution maintains its own internal coherence &mdash; stable authority, predictable hierarchy, functioning processes &mdash; by systematically displacing contradiction, overload, and uncertainty onto the populations it governs or affects.</p>
+<p>The institution appears orderly from within while degrading the agency conditions of those who must absorb its exported costs. This is not inefficiency. It is structural. The costs are real, but they flow to those who cannot refuse them. The suppression gap in the simulation makes this visible: the system appears to be functioning while the intelligence of its agents cannot reach the decision.</p>
+<div class="diagnostic-q"><strong>Diagnostic question:</strong> For every system you analyze &mdash; not only &ldquo;does it work?&rdquo; but &ldquo;for whom does the cost of its working fall, and can the people who bear that cost refuse to bear it?&rdquo;</div>
+</div>
+<div class="concept-block">
+<div class="c-header"><span class="concept-num">02</span><h4>Coherence-Preserving Governance (CPG)</h4></div>
+<p>CPG is the positive ideal that follows from the ACP applied to institutional design. A CPG institution is evaluated not only by efficiency, legality, or output, but by five specific criteria.</p>
+<p><strong>1.</strong> It maintains a biological and social floor beneath which it becomes unreasonable to expect coherent agency.<br><strong>2.</strong> Its procedures are sufficiently predictable and intelligible to support planning, accountability, and participation.<br><strong>3.</strong> It creates repair pathways rather than treating institutional failure as a private burden.<br><strong>4.</strong> It maintains an information environment compatible with reality-testing and meaningful disagreement.<br><strong>5.</strong> It widens rather than narrows future horizons &mdash; sustaining long-range orientation rather than forcing permanent defensive survival.</p>
+<p>CPG is not a blueprint for a single constitutional form. It is a normative orientation: a set of questions you ask of every institution in the applied sequence, and a standard against which to measure each architecture&rsquo;s characteristic failure mode.</p>
+<div class="diagnostic-q"><strong>Diagnostic question:</strong> Which of the five CPG criteria does this institution fail &mdash; and for whom does it fail most severely?</div>
+</div>
+<div class="concept-block">
+<div class="c-header"><span class="concept-num">03</span><h4>The Temporal Commons</h4></div>
+<p>The Agency Conditions Principle is not only about the present. Every action has temporal reach. Some acts stabilize environments for others; some poison them. Some build institutional trust; others deplete it for generations.</p>
+<p>The temporal commons is the shared future-bearing capacity of a society &mdash; the collective conditions that make it possible for future agents to inhabit coherent lives. It is a commons in the same sense as clean air or stable currency: no individual owns it, every individual depends on it, and it can be degraded by accumulated present decisions.</p>
+<p><strong>Legacy, on this account, is not reputation.</strong> It is the coherence-supporting or coherence-damaging inheritance one generation installs into the systems the next must inhabit. We owe future persons not the frozen reproduction of the present, but a world more capable of sustaining coherent life than the one we received.</p>
+<div class="diagnostic-q"><strong>Diagnostic question:</strong> What is this system handing forward? What temporal commons is it preserving, depleting, or destroying? Who inherits its legacy, and what will their agency conditions look like?</div>
+</div>
 </div>
 
-<!-- ══ JOURNAL ════════════════════════════════════════════════════════════════ -->
-<div class="pane" id="tab-journal">
-  <h2>Journal Prompts</h2>
-  <p>Five prompts. Each one bridges the philosophical reading to your own experience and to the applied sequence ahead. Responses save locally in your browser.</p>
+<!-- IV: NINE TRADITIONS -->
+<div class="tab-pane" id="tab-traditions">
+<p class="trad-intro">The Agency Conditions Principle is not a tenth tradition to be placed alongside the nine from Chapter 8. It is what all nine traditions presuppose. Read this tab as a single argument unfolding across 2,500 years &mdash; each tradition making a discovery that the next extends, all of them converging on what the ACP synthesizes.</p>
+<div class="narrative-panel teal"><strong>How to read this sequence:</strong> Each entry shows (a) what the tradition argued and why, (b) how that argument leads to or presupposes the ACP, and (c) the specific discovery that tradition contributed to the convergence. The traditions are in historical order because each one responded to the intellectual gaps its predecessors left open.</div>
+<div class="spacer"></div>
+<div class="timeline">
 
-  <div class="journal-prompt">
-    <label><strong>J1 — Your Own Agency Conditions.</strong><br>Describe a period in your life when your agency conditions were most intact — when you felt most capable of deliberating, committing, and acting coherently across time. What structural conditions made that possible? Now describe a period when those conditions were most degraded. What was different about the institutional or material environment?</label>
-    <textarea id="j1" oninput="save('j1')" placeholder="Your experience of agency conditions..."></textarea>
-  </div>
+<div class="trad-entry" style="--t-color:#e05c5c"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">~470&ndash;399 BCE</span><span class="trad-name">Socrates</span><span class="trad-tag">The Examined Life</span></div>
+<div class="trad-body"><p>Socrates did not write. He questioned &mdash; in public spaces, with anyone who would engage, about whether people actually knew what they claimed to know about justice, piety, and virtue. His method was relational and institutional: it required an agora, a culture tolerant of public inquiry, and an interlocutor willing to stay in the conversation. The examined life was not a private achievement. It was a social practice dependent on institutional conditions.</p>
+<p>His execution by Athens for corrupting the youth and impiety was not merely a judicial error. It was the city&rsquo;s institutional mechanism for destroying the structural conditions under which examination had been possible. The poison was incidental; the damage was to the commons of public inquiry.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Examination requires institutions where examination is possible. The ACP explains why destroying those institutions &mdash; through censorship, through silencing, through social architectures that make honest questioning professionally fatal &mdash; is a moral wrong, not merely an inconvenience. Every suppression gap in the simulation is a small Athenian hemlock: competent analysis that cannot reach the decision because the institutional architecture has no mechanism for receiving it.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>Ethical life is a social practice requiring institutional space.</strong> Without that space, even the most virtuous individual cannot be virtuous in the full sense &mdash; not because they lack character, but because virtue requires the relational conditions for examination and repair.</p></div>
+</div></div></div>
 
-  <div class="journal-prompt">
-    <label><strong>J2 — The Tradition That Speaks to You.</strong><br>Which of the nine traditions in the historical sequence resonates most with how you naturally think about ethics — and which is most in tension with your PRF? Use the Ethical Frameworks Lens app if you have it. Then: what does the tradition in tension with your PRF see that your dominant tradition misses? Write a specific example where that alternative perspective would have changed an ethical judgment you made.</label>
-    <textarea id="j2" oninput="save('j2')" placeholder="Your tradition resonance and tension..."></textarea>
-  </div>
+<div class="trad-entry" style="--t-color:#c28040"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">~384&ndash;322 BCE</span><span class="trad-name">Aristotle</span><span class="trad-tag">Virtue &amp; Flourishing</span></div>
+<div class="trad-body"><p>Aristotle argued that virtue is not a list of rules to follow but a set of capacities developed through habituated practice within a social structure &mdash; the <em>polis</em>. Courage, practical wisdom, justice &mdash; these are not achieved in isolation but through a lifetime of institutional participation. The Nicomachean Ethics is ultimately an argument about the conditions under which <em>eudaimonia</em> &mdash; flourishing, the full exercise of human capacity &mdash; is possible. And those conditions are overwhelmingly structural: you need the material conditions for a certain kind of practice, the social infrastructure for it, and time to develop over a complete life.</p>
+<p>A virtuous person placed into an institution that systematically prevents virtuous practice is not merely inconvenienced. They are placed in conditions under which virtue itself becomes structurally inaccessible &mdash; not through their own failing but through the institution&rsquo;s design.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Virtue requires habituation infrastructure &mdash; a polis that makes virtuous practice possible across time. When institutions systematically prevent the kind of relational and civic participation that character development requires, they are actively producing the conditions under which flourishing becomes impossible. This is the Aristotelian face of entropy export: the institution consumes the conditions for virtue while maintaining the appearance of order.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>Ethics is about the institutional arrangements that make good character possible across a lifetime.</strong> Individual virtue is not a private achievement; it is an institutional product that can be systematically prevented by institutional design.</p></div>
+</div></div></div>
 
-  <div class="journal-prompt">
-    <label><strong>J3 — Entropy Export in Your Experience.</strong><br>Name a real institution you have been inside — a school, a workplace, a healthcare setting, a government agency. Using the diagnostic question from Concept 1: for whom did the cost of its functioning fall, and could those people refuse to bear it? Who held the suppression gap? Was there a Boisjoly in that institution — someone whose accurate knowledge could not reach where it was needed?</label>
-    <textarea id="j3" oninput="save('j3')" placeholder="Your entropy export analysis..."></textarea>
-  </div>
+<div class="trad-entry" style="--t-color:#6a9040"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">~300 BCE &ndash; 180 CE</span><span class="trad-name">The Stoics</span><span class="trad-tag">Inner Citadel &middot; Universal Reason</span></div>
+<div class="trad-body"><p>Zeno, Epictetus, Marcus Aurelius. The Stoics taught that the inner life &mdash; reason, judgment, the will &mdash; is always within our control even when external conditions are not. They also argued that reason is universal &mdash; that all rational beings share the capacity for <em>logos</em> &mdash; grounding a cosmopolitan ethics that crosses tribal and institutional boundaries. Epictetus was a slave; Marcus Aurelius was an emperor. Both practiced the same discipline: distinguish what is up to you from what is not, and invest your identity entirely in the former.</p>
+<p>This is often read as passive acceptance of unjust conditions. But the Stoic insight is more precise: the inner citadel is not infinitely available. The conditions of enslavement test it in ways that comfortable philosophical discourse does not acknowledge.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>The Stoic inner citadel requires a biological substrate capable of maintaining it. When base stress chronically exceeds the glucocorticoid threshold, the citadel becomes inaccessible regardless of intention. The Stoics were right that the inner life is what matters morally. They did not adequately reckon with the fact that access to that inner life has material preconditions that can be systematically destroyed. The ACP names what the Stoics assumed: the biological floor beneath which even the most disciplined practitioner cannot sustain rational agency.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>The universal capacity for reason grounds cross-contextual moral obligations</strong> &mdash; but that universality is conditional on biological and material substrates that are not universally maintained, and whose maintenance is therefore a moral obligation, not a prudential preference.</p></div>
+</div></div></div>
 
-  <div class="journal-prompt">
-    <label><strong>J4 — The Temporal Commons You Are Inheriting.</strong><br>What is one institution — educational, political, environmental, economic — that will significantly shape the agency conditions of your generation and the one after you? What temporal commons is it currently preserving, depleting, or destroying? What would a CPG-compliant version of that institution look like — specifically, which of the five CPG criteria would it need to satisfy that the current version fails?</label>
-    <textarea id="j4" oninput="save('j4')" placeholder="Your temporal commons analysis..."></textarea>
-  </div>
+<div class="trad-entry" style="--t-color:#306878"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">1711&ndash;1776</span><span class="trad-name">David Hume</span><span class="trad-tag">Moral Sentiment &middot; Sympathy</span></div>
+<div class="trad-body"><p>Hume broke with the rationalist tradition that had dominated moral philosophy since Plato. He argued that reason alone cannot motivate moral action &mdash; moral judgment is driven by sentiment, specifically sympathy: our capacity to feel what others feel, to project ourselves into their situations, and to be moved by the prospect of their suffering or flourishing. Our moral perceptions are not the outputs of logical calculation; they are calibrated emotional responses to social information.</p>
+<p>Hume also observed that our sympathy is calibrated by proximity &mdash; we feel more strongly for those near us, those like us, those whose situations we can readily imagine. PRF asymmetries, in Humean terms, are asymmetries in sympathetic range.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Moral sentiment requires a calibration range that can reach structural causes. When your PRF makes certain suffering structurally invisible &mdash; when the people who bear the cost of institutional arrangements are outside your perceptual range &mdash; Humean sympathy is blocked not by moral failure but by architectural limitation. The ACP extends the obligation Hume identified: if sympathy is the mechanism of moral motivation and formation limits its range, we have reasons to deliberately extend our perceptual and relational reach. This is what the World Values Map does analytically &mdash; it maps who is outside whose sympathetic range.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>Moral motivation is emotional and social, not purely rational.</strong> This means it depends on perceptual infrastructure &mdash; the capacity to see and feel the situations of others &mdash; that can be narrowed or extended by institutional design. Ethics has obligations regarding that infrastructure.</p></div>
+</div></div></div>
 
-  <div class="journal-prompt">
-    <label><strong>J5 — The Precondition Question.</strong><br>The ACP claims that agency conditions are the precondition without which the nine ethical traditions cannot be inhabited. Write one paragraph of genuine disagreement with this claim — the strongest objection you can make. Then write one paragraph responding to that objection from the ACP's perspective. Which side do you find more convincing, and why?</label>
-    <textarea id="j5" oninput="save('j5')" placeholder="Your engagement with the ACP claim..."></textarea>
-  </div>
+<div class="trad-entry" style="--t-color:#3050a0"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">1724&ndash;1804</span><span class="trad-name">Immanuel Kant</span><span class="trad-tag">Autonomy &middot; Categorical Imperative</span></div>
+<div class="trad-body"><p>Kant argued that the moral worth of an action derives entirely from the intention behind it &mdash; whether the agent acted from duty, on the basis of a principle they could rationally will to be universal. The Categorical Imperative: act only on maxims you could will to be universal law; and always treat persons as ends in themselves, never merely as means. What makes this distinctive is its grounding in autonomy: the capacity for rational self-governance, for giving yourself the law rather than merely following external commands. The dignity of persons consists in this capacity. Violating it is not merely causing harm; it is attacking the very thing that makes persons morally considerable.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Autonomy requires agents capable of rational self-governance. The ACP is the floor below which that capacity becomes structurally inaccessible regardless of formal rights. An institution that formally grants autonomy while maintaining conditions under which rational self-governance is biologically unavailable commits a Kantian wrong: it treats persons as means by denying them the conditions for genuine end-setting. Rights without the material conditions for exercising them are formal autonomy in the place of real autonomy.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>The dignity of persons is grounded in their rational autonomy</strong> &mdash; which means that undermining rational capacity through stress, information deprivation, or architectures that prevent deliberation is a violation of dignity, not merely an inconvenience to efficiency.</p></div>
+</div></div></div>
 
-  <div class="save-bar">
-    <span class="save-note">All responses save automatically in your browser. Nothing leaves your device.</span>
-    <button class="save-btn" onclick="exportJournal()">Export Journal</button>
-  </div>
+<div class="trad-entry" style="--t-color:#782060"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">1806&ndash;1873</span><span class="trad-name">John Stuart Mill</span><span class="trad-tag">Utilitarianism &middot; Higher Pleasures &middot; Liberty</span></div>
+<div class="trad-body"><p>Mill modified Bentham&rsquo;s utilitarianism by distinguishing higher pleasures &mdash; those of the intellect, the aesthetic sensibility, the moral feeling &mdash; from lower ones, arguing that any being who has experienced both will prefer the higher. The goal of maximizing welfare must be sensitive to what humans are capable of, not just what they happen to want at any given moment. Mill&rsquo;s <em>On Liberty</em> added that free expression and individual experimentation are preconditions for moral progress. Silencing dissent does not merely offend the dissenters; it degrades the epistemic commons from which everyone draws.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Welfare depends on agents capable of experiencing, projecting, and comparing outcomes over time. The aggregate welfare metric hides the distributional reality: if some agents are operating under conditions that have collapsed their temporal projection capacity, they cannot experience or prefer the higher pleasures that welfare maximization is supposed to secure. The ACP names this: measuring welfare without measuring the agency conditions under which agents experience it produces systematically misleading policy recommendations. The degraded welfare of agents whose capacities have been suppressed registers as preference, not as institutional loss.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>Welfare measurement must be sensitive to the exercise of higher capacities.</strong> The aggregate metric cannot be the whole story &mdash; the distribution of agency conditions across the population matters for whether the welfare number is honest or a disguised account of suppression.</p></div>
+</div></div></div>
+
+<div class="trad-entry" style="--t-color:#207848"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">1982&ndash;present</span><span class="trad-name">Care Ethics</span><span class="trad-tag">Noddings &middot; Gilligan &middot; Relational Infrastructure</span></div>
+<div class="trad-body"><p>Carol Gilligan&rsquo;s <em>In a Different Voice</em> challenged Kohlberg&rsquo;s account of moral development by showing that many people reason morally through relationships, context, and responsiveness rather than through universal principles. Nel Noddings developed this into Care Ethics: the view that the caring relationship &mdash; one-caring and cared-for &mdash; is the fundamental unit of moral life, not the individual rational agent. Care Ethics makes visible what principle-based theories structurally exclude: the moral significance of dependency, of vulnerability, of the relational infrastructure through which people sustain each other through periods of incapacity.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Relational infrastructure is the medium through which care is possible. The ACP makes this claim structural rather than sentimental: dismantling the BioBond structures of a community &mdash; the relational and material networks through which people support each other &mdash; is a form of harm with measurable consequences. When institutions systematically reduce care-relationship density through overwork, isolation, geographic displacement, and economic precarity, they are destroying agency conditions through a pathway distinct from extraction alone. The suppression of relational infrastructure is the Care Ethics face of entropy export.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>Moral life is fundamentally relational, and relational infrastructure is morally obligatory to maintain.</strong> The conditions for care &mdash; time, proximity, stability, shared context &mdash; depend on institutional arrangements that can sustain or destroy them. Ethics has an obligation to that infrastructure, not merely to individual acts of caring.</p></div>
+</div></div></div>
+
+<div class="trad-entry" style="--t-color:#505050"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">1921&ndash;2002</span><span class="trad-name">John Rawls</span><span class="trad-tag">Justice as Fairness &middot; Veil of Ignorance</span></div>
+<div class="trad-body"><p>Rawls&rsquo; <em>A Theory of Justice</em> proposed designing the basic institutional structure of society from behind a &ldquo;veil of ignorance&rdquo; &mdash; not knowing your place in it, your class, your natural talents, your conception of the good. Rational agents in this original position would choose principles guaranteeing basic liberties and arranging social inequalities so they benefit the least-advantaged members of society. Rawls understood that the primary subject of justice is not individual acts but the basic institutional structure &mdash; the system of social cooperation that distributes rights, opportunities, and the bases of self-respect.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Justice requires agents capable of forming and pursuing plans of life. The difference principle &mdash; that inequalities are just only when they benefit the least advantaged &mdash; depends on those at the bottom actually being capable of benefiting. When agency conditions have collapsed for the least advantaged &mdash; when stress, precarity, and institutional exclusion have degraded their temporal projection capacity &mdash; Rawlsian justice becomes inaccessible regardless of how fair the rules are on paper. The ACP is the precondition for Rawlsian justice to be inhabitable: you cannot form a plan of life if the biological and relational conditions for planning have been destroyed.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>The primary subject of justice is the basic institutional structure, and maintaining the agency conditions of the least advantaged is a demand of justice, not of charity.</strong> This shifts the moral question from &ldquo;did this individual act fairly?&rdquo; to &ldquo;does this system maintain the conditions under which fair participation is possible for everyone it governs?&rdquo;</p></div>
+</div></div></div>
+
+<div class="trad-entry" style="--t-color:#900840"><div class="trad-dot"></div>
+<div class="trad-card"><div class="trad-header"><span class="trad-era">1940s&ndash;present</span><span class="trad-name">Existentialism</span><span class="trad-tag">Sartre &middot; Camus &middot; Authenticity</span></div>
+<div class="trad-body"><p>Sartre&rsquo;s &ldquo;existence precedes essence&rdquo; is a claim about radical freedom and responsibility: you are what you do, and you are responsible for what you choose &mdash; radically, without excuse. Authenticity means owning this freedom rather than fleeing into bad faith: pretending your choices are not choices, that your role compels you, that the situation left you no alternative. Both Sartre and Camus emphasized that self-deception and institutional conformity are forms of moral failure &mdash; but both presuppose an agent with the cognitive resources to recognize and resist them.</p>
+<div class="trad-acp"><div class="acp-label">ACP Grounding</div><p>Authenticity requires the metabolic conditions for authentic choice. Radical freedom is a cruel fiction under conditions where automatic-mode processing is the only available cognitive register &mdash; where stress has degraded the prefrontal capacity that genuine choice requires. Sartre&rsquo;s bad faith can be institutionally induced: people in those conditions are not failing to exercise their radical freedom; they are operating under conditions that have narrowed the space in which freedom can be exercised at all. This is the existentialist face of entropy export &mdash; the institutional production of conditions under which authentic agency becomes structurally unavailable.</p></div>
+<div class="trad-discovery"><div class="disc-label">Discovery</div><p><strong>Authentic moral life requires the capacity to recognize and own one&rsquo;s choices</strong> &mdash; a capacity that depends on cognitive and relational conditions that can be structurally suppressed. The deepest ethics must account for the institutional production of unfreedom, not merely the content of choices made under its conditions.</p></div>
+</div></div></div>
+
+</div><!-- end timeline -->
+<div class="synthesis-block">
+<h4>The ACP as Synthesis &mdash; What the 2,500 Years Produced</h4>
+<p>Read the nine entries above as a single argument. Socrates found that moral inquiry requires institutional space. Aristotle found that virtue requires habituation infrastructure. The Stoics found that reason is universal but assumed its biological substrate. Hume found that sentiment is the mechanism of moral motivation and that it is calibrated by the architecture of perception. Kant found that dignity grounds in rational autonomy which has material preconditions that formal rights cannot guarantee. Mill found that welfare measurement must be sensitive to the exercise of higher capacities. Care Ethics found that relational infrastructure is the medium through which moral life is sustained. Rawls found that justice requires agents capable of forming and pursuing plans. Existentialism found that authenticity requires the metabolic conditions for genuine choice.</p>
+<p>The Agency Conditions Principle synthesizes these discoveries: there are structural preconditions for moral agency &mdash; biological, relational, institutional &mdash; and ethics has strong reasons to preserve, repair, and extend them. You cannot have virtue without agency conditions. You cannot have autonomy, welfare, care, or justice without agency conditions. The ACP names the precondition. The nine traditions specify what we owe each other once that precondition is met.</p>
+</div>
 </div>
 
+<!-- V: APPLIED -->
+<div class="tab-pane" id="tab-applied">
+<p class="body-text">Each domain in the applied sequence presents the same analytical structure. The tools are already in your hands. The ACP is the normative thread that holds them together. For every system you analyze, six questions apply. These are not six separate questions. They are one question from six angles.</p>
+<div class="q-grid">
+<div class="q-item"><div class="q-num">Q1</div><p><strong>Architecture.</strong> Which social contract architecture is this system running &mdash; Hobbesian, Lockean, Rousseauian, or some hybrid &mdash; and where has it been applied beyond its design envelope? Every contract tradition makes assumptions about agents that it cannot guarantee.</p></div>
+<div class="q-item"><div class="q-num">Q2</div><p><strong>Traditions.</strong> Which of the nine ethical traditions does the system&rsquo;s design embed, and which has it structurally excluded? What signal is the excluded tradition producing that the system cannot hear?</p></div>
+<div class="q-item"><div class="q-num">Q3</div><p><strong>Map Position.</strong> Where on the World Values Map are the populations this system governs? Is the institutional architecture calibrated for their actual thermodynamic position &mdash; or for an idealized agent who does not inhabit their material conditions?</p></div>
+<div class="q-item"><div class="q-num">Q4</div><p><strong>Entropy Export.</strong> Is the system entropy-exporting? Where does the cost of its functioning fall, and can the people who bear that cost refuse to bear it? Who holds the suppression gap between what agents know and what the system acts on?</p></div>
+<div class="q-item"><div class="q-num">Q5</div><p><strong>CPG Criteria.</strong> Does the system satisfy the five Coherence-Preserving Governance criteria? Which ones fail &mdash; and for whom do they fail most severely?</p></div>
+<div class="q-item"><div class="q-num">Q6</div><p><strong>Temporal Commons.</strong> What is this system handing forward? What temporal commons is it preserving, depleting, or destroying? Who inherits its legacy, and what will their agency conditions look like?</p></div>
+</div>
+<div class="narrative-panel teal" style="margin-top:1rem"><strong>The single question:</strong> Is this system preserving or destroying the conditions under which the people it governs can remain capable of reasoning, caring, committing, and building something worth handing forward? The ACP is the normative thread that makes this a single question rather than a list.</div>
+<hr class="section-rule">
+<div class="section-header" onclick="toggleSec(this)"><h3>How the Six Questions Connect to the Simulation</h3><span class="section-chevron">&#9658;</span></div>
+<div class="section-body">
+<p class="body-text">When you use the course simulations in the applied chapters, the six questions map directly onto measurable simulation outputs. Q4 (entropy export) maps to EE_effective and the suppression gap. Q5 (CPG criteria) maps to routing quality ceiling and FHRI_max &mdash; the structural limit on what the institutional architecture permits agents to achieve. Q6 (temporal commons) maps to the trust vector trajectory &mdash; whether institutional trust is building or eroding across simulation steps.</p>
+<p class="body-text">The ACP is not only a philosophical reading. It is the normative interpretation of what the simulation is measuring. The suppression gap is a CPG failure. The entropy export floor is an institutionally imposed degradation of agency conditions. The FHRI_max is the structural limit on flourishing the architecture permits. The simulation makes these forces visible. The ACP explains why they matter morally &mdash; and what would have to change for them to change.</p>
+</div>
+</div>
+
+<!-- JOURNAL -->
+<div class="tab-pane" id="tab-journal">
+<p class="body-text" style="margin-bottom:1rem">Five prompts. Each bridges the philosophical reading to your own experience and to the applied sequence ahead. Responses save locally in your browser &mdash; nothing leaves your device.</p>
+<div class="journal-prompt"><label><strong>J1 &mdash; The Inference in Your Own Words.</strong><br>The chapter argues that the ACP is an inference from what Chapters 1&ndash;5 showed, not an axiom. Reconstruct the inference: what did each chapter contribute to the argument that ends with the ACP? Is there a step in the inference you find weak or contestable? What would you need to see to find it convincing?</label><textarea id="j1" oninput="save('j1')" placeholder="Reconstruct the inference from Ch 1-5 to the ACP..."></textarea></div>
+<div class="journal-prompt"><label><strong>J2 &mdash; A Real Institution, the Six Questions.</strong><br>Identify a specific institution you know well &mdash; an employer, a school, a healthcare system, a government agency. Apply the six questions from the Applied Sequence tab. Which question produces the most surprising or uncomfortable finding? What does that discomfort tell you about which dimension of the ACP your own PRF was not previously calibrated to see?</label><textarea id="j2" oninput="save('j2')" placeholder="Your institutional analysis..."></textarea></div>
+<div class="journal-prompt"><label><strong>J3 &mdash; Pro Tanto: The Case for Disrupting Coherence.</strong><br>The ACP is strong but not absolute. Describe a case where you believe disrupting an existing form of institutional coherence is morally required &mdash; even though it would cause harm and instability in the short term. What makes that disruption morally justified despite the ACP&rsquo;s weight? What does this tell you about the relationship between coherence-preservation and other moral values?</label><textarea id="j3" oninput="save('j3')" placeholder="Your case for justified disruption..."></textarea></div>
+<div class="journal-prompt"><label><strong>J4 &mdash; The Temporal Commons You Are Inheriting.</strong><br>Think about a domain you care about &mdash; climate, technology, education, economic structure, civic culture. What are the agency conditions that future people in that domain will inherit from decisions being made now? Are those conditions being preserved, depleted, or actively destroyed? What would a CPG-compliant approach to that domain require that current approaches do not provide?</label><textarea id="j4" oninput="save('j4')" placeholder="Your temporal commons analysis..."></textarea></div>
+<div class="journal-prompt"><label><strong>J5 &mdash; The Tradition That Grounds Your Ethical Instincts.</strong><br>Which of the nine traditions in the historical sequence connects most directly to how you already think about ethics &mdash; and which is most in tension with your PRF? What does the tradition in tension see that your dominant tradition misses? Write a specific example where that alternative perspective would have changed an ethical judgment you made or witnessed.</label><textarea id="j5" oninput="save('j5')" placeholder="Your tradition resonance and tension..."></textarea></div>
+<div class="journal-bar"><span class="journal-note">Autosaved locally &middot; nothing uploaded</span><button class="export-btn" onclick="exportJ()">Export Journal &#8595;</button></div>
+</div>
+
+</div><!-- .page -->
 <script>
-function show(id) {
-  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  event.target.classList.add('active');
-  window.scrollTo({top: document.querySelector('.tab-bar').offsetTop - 1, behavior: 'smooth'});
-}
-
-const PREFIX = 'ebb_acp_v2_';
-function save(id) {
-  try { localStorage.setItem(PREFIX + id, document.getElementById(id).value); } catch {}
-}
-function load() {
-  ['j1','j2','j3','j4','j5'].forEach(id => {
-    try {
-      const v = localStorage.getItem(PREFIX + id);
-      if (v) document.getElementById(id).value = v;
-    } catch {}
-  });
-}
-function exportJournal() {
-  const lines = ['EBB Interlude — Agency Conditions Principle Journal\n'];
-  const labels = {
-    j1: 'J1 — Your Own Agency Conditions',
-    j2: 'J2 — The Tradition That Speaks to You',
-    j3: 'J3 — Entropy Export in Your Experience',
-    j4: 'J4 — The Temporal Commons You Are Inheriting',
-    j5: 'J5 — The Precondition Question',
-  };
-  Object.entries(labels).forEach(([id, label]) => {
-    const el = document.getElementById(id);
-    lines.push(`\n${label}\n${'─'.repeat(label.length)}\n${el.value || '(not yet completed)'}`);
-  });
-  const blob = new Blob([lines.join('\n')], {type: 'text/plain'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'EBB_ACP_Journal.txt';
-  a.click();
-}
-document.addEventListener('DOMContentLoaded', load);
+'use strict';
+function switchTab(id,btn){document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function toggleSec(hdr){hdr.classList.toggle('open');hdr.nextElementSibling.classList.toggle('open');}
+const PFX='ebb_acp_v3_';
+function save(id){try{localStorage.setItem(PFX+id,document.getElementById(id).value);}catch{}}
+function loadAll(){['j1','j2','j3','j4','j5'].forEach(id=>{try{const v=localStorage.getItem(PFX+id);if(v)document.getElementById(id).value=v;}catch{}});}
+function exportJ(){const p={j1:'J1 - The Inference in Your Own Words',j2:'J2 - A Real Institution, the Six Questions',j3:'J3 - Pro Tanto: The Case for Disrupting Coherence',j4:'J4 - The Temporal Commons You Are Inheriting',j5:'J5 - The Tradition That Grounds Your Ethical Instincts'};let out='EBB Interlude - Agency Conditions Principle\nJournal Responses\n\n';Object.entries(p).forEach(([id,label])=>{const el=document.getElementById(id);out+=label+'\n'+'─'.repeat(label.length)+'\n'+(el.value||'(not yet completed)')+'\n\n';});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'text/plain'}));a.download='EBB_ACP_Journal.txt';a.click();}
+document.addEventListener('DOMContentLoaded',loadAll);
 </script>
 </body>
 </html>
