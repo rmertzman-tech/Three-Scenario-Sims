@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCP IPS Display Component · Session 0 Test</title>
+<style>
+:root{
+  --teal-dark:#0d5e57;--teal:#14b8a6;--teal-light:#ccfbf1;
+  --ink:#1f2937;--muted:#4b5563;--bg:#0f1117;--surface:#1a1f2e;
+  --surface2:#222840;--border:rgba(255,255,255,.09);
+  --amber:#f5c842;--amber-dark:#c2850a;--red:#f08080;--green:#7fd8a8;
+  --purple:#c084fc;--navy:#0a1628;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+.page{max-width:960px;margin:0 auto;padding:1.5rem 1rem 5rem}
+.chapter-header{background:linear-gradient(135deg,var(--teal-dark) 0%,#0a2830 100%);border-radius:.75rem;padding:1.8rem 2rem 1.4rem;margin-bottom:1.5rem}
+.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.35rem}
+.chapter-title{font-size:1.5rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.2rem}
+.chapter-subtitle{font-size:.9rem;color:rgba(255,255,255,.6);margin-bottom:.9rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+.narrative-panel{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:1rem;font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel.navy{background:var(--navy);border-left:4px solid var(--teal)}
+.narrative-panel strong{color:#fff}
+.narrative-panel em{color:var(--teal);font-style:normal}
+.section-rule{border:none;border-top:1px solid var(--border);margin:1.5rem 0}
+h2{font-size:1rem;font-weight:700;color:var(--teal);margin:1.5rem 0 .6rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+h3{font-size:.85rem;font-weight:700;color:rgba(255,255,255,.7);margin:.8rem 0 .4rem}
+p.body{font-size:.9rem;color:rgba(255,255,255,.72);line-height:1.65;margin-bottom:.7rem}
+cite{font-style:italic;color:rgba(255,255,255,.5);font-size:.82rem}
+
+/* ── IPS COMPONENT STYLES ── */
+.ips-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.8rem;margin:.6rem 0}
+.ips-panel{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;overflow:hidden}
+.ips-panel-header{padding:.65rem .9rem;border-bottom:1px solid var(--border)}
+.ips-panel-label{font-size:.78rem;font-weight:700;color:#fff;margin-bottom:.1rem}
+.ips-panel-sublabel{font-family:'Courier New',monospace;font-size:.6rem;color:var(--muted)}
+.ips-panel-body{padding:.7rem .9rem}
+.ips-param{margin-bottom:.5rem}
+.ips-param-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.2rem}
+.ips-param-name{font-family:'Courier New',monospace;font-size:.67rem;color:rgba(255,255,255,.55)}
+.ips-param-val{font-family:'Courier New',monospace;font-size:.72rem;font-weight:700}
+.ips-bar-track{background:rgba(255,255,255,.07);border-radius:999px;height:5px;overflow:hidden}
+.ips-bar-fill{height:100%;border-radius:999px;transition:width .4s}
+.ips-divider{border:none;border-top:1px solid var(--border);margin:.55rem 0}
+.ips-ceiling-row{display:flex;justify-content:space-between;margin-bottom:.3rem}
+.ips-ceiling-label{font-family:'Courier New',monospace;font-size:.62rem;color:rgba(255,255,255,.45)}
+.ips-ceiling-val{font-family:'Courier New',monospace;font-size:.72rem;font-weight:700;color:var(--teal)}
+.ips-fhri-max{background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.2);border-radius:.3rem;padding:.45rem .7rem;margin:.5rem 0;text-align:center}
+.ips-fhri-max .label{font-family:'Courier New',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.15rem}
+.ips-fhri-max .val{font-size:1.4rem;font-weight:800;line-height:1;color:var(--teal)}
+.ips-fhri-max .of100{font-size:.7rem;color:var(--muted);margin-left:.1rem}
+.ips-verdict{border-radius:.3rem;padding:.4rem .65rem;font-family:'Courier New',monospace;font-size:.65rem;font-weight:700;text-align:center;margin-top:.4rem}
+.ips-verdict.reform{background:rgba(240,128,128,.1);border:1px solid rgba(240,128,128,.3);color:#f08080}
+.ips-verdict.limited{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.25);color:var(--amber)}
+.ips-verdict.viable{background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);color:var(--teal)}
+
+/* ── TRAJECTORY ── */
+.traj-table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.6rem 0}
+.traj-table th{font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:.4rem .6rem;border-bottom:1px solid var(--border);text-align:left}
+.traj-table td{padding:.45rem .6rem;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(255,255,255,.72);font-family:'Courier New',monospace;font-size:.75rem}
+.traj-table tr.acquisition{background:rgba(240,128,128,.06)}
+.traj-table tr.acquisition td{color:#f08080}
+.traj-table tr.baseline{background:rgba(20,184,166,.04)}
+.fhri-bar-inline{display:inline-block;width:80px;height:6px;background:rgba(255,255,255,.07);border-radius:999px;vertical-align:middle;margin-left:.4rem;overflow:hidden}
+.fhri-bar-fill{height:100%;border-radius:999px}
+
+/* ── MEADOWS ── */
+.meadows-badge{display:inline-flex;align-items:center;gap:.35rem;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:.3rem;padding:.25rem .55rem;font-family:'Courier New',monospace;font-size:.65rem}
+.meadows-lv{font-weight:700;color:var(--teal)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="chapter-header">
+  <div class="chapter-label">UCP V5.0.2 · Session 0 · Shared Component</div>
+  <div class="chapter-title">Institutional Parasite State Display</div>
+  <div class="chapter-subtitle">Reusable module for Ethics Beyond Boundaries Ch 11–14</div>
+  <div class="chapter-tags">
+    <span class="tag">IPS V5.0.2</span>
+    <span class="tag">FHRI_max</span>
+    <span class="tag">Floor &amp; Ceiling</span>
+    <span class="tag">Peterson et al. 2025</span>
+    <span class="tag">CMS Public Data</span>
+    <span class="tag">Local Computation</span>
+  </div>
+</div>
+
+<!-- ── PETERSON CREDIT ─────────────────────────────────────────────────────── -->
+<div class="narrative-panel navy">
+  <strong>Research foundation: Peterson et al. and the CMS public record.</strong>
+  The healthcare simulations in this module draw on the empirical research of
+  <em>Dr. Lindsay Peterson</em> (Associate Professor of Research, University of South Florida
+  School of Aging Studies) and her colleagues at the Florida Policy Exchange Center on Aging.
+  Their 2025 AARP Florida report — <em>Change of Ownership and Quality in Florida Nursing Homes</em>
+  — documented how private equity acquisition of 156 Florida facilities between 2019 and 2024
+  produced a 13% decline in direct care staffing, a doubling of one-star quality ratings, and
+  $1,000 higher Medicare costs per resident. The IPS parameter values used here are derived
+  directly from these published findings and from publicly accessible federal databases maintained
+  by the Centers for Medicare &amp; Medicaid Services (CMS): the Payroll-Based Journaling
+  staffing dataset, the Provider Information file, the Ownership disclosure file, and the
+  Health Deficiencies citation database.
+</div>
+<div class="narrative-panel teal">
+  <strong>Why this matters beyond Florida.</strong> Florida's nursing home sector is a
+  leading indicator, not an isolated case. Private equity acquisition of long-term care
+  facilities is accelerating nationally — approximately 5% of all U.S. nursing homes are
+  PE-owned, with REIT ownership adding another 9%. The structural dynamics documented
+  in Florida — extraction-driven staffing reduction, billing-metric incentive restructuring,
+  and quality rating decline — are visible in the federal data wherever ownership has
+  transferred to investment vehicles that prioritize short-term surplus extraction over
+  care coordination. What the simulation adds to Peterson's observational research is a
+  causal mechanism: the five IPS parameters show <em>why</em> the outcomes differed across
+  ownership types, not merely <em>that</em> they differed. This is SAGE in action — Seeing
+  what the data documents, Analyzing the structural mechanism, Generating an intervention
+  framework, Engaging with the ethical question of what ownership structures society
+  should permit in settings that govern the final years of vulnerable lives.
+</div>
+
+<hr class="section-rule">
+<h2>Demo 1 — Four Florida Ownership Archetypes</h2>
+<p class="body">Each panel shows the five IPS structural parameters and the computed
+ceiling values for that ownership type. All four facility types operate under identical
+state and federal regulatory burden (ρ = 0.700 — the same CMS documentation and MDS
+compliance requirements apply regardless of ownership). The differences in FHRI_max
+are produced entirely by ownership-structure differences in ε, φ, σ, and μ.</p>
+<div id="demo-archetypes"></div>
+
+<hr class="section-rule">
+<h2>Demo 2 — PE Acquisition Trajectory: 2019 → 2024</h2>
+<p class="body">The year-by-year IPS evolution of a facility that was acquired by private
+equity in 2020. The pre-acquisition baseline (2019) reflects a moderate for-profit profile.
+The acquisition year (2020) shows the ε jump and μ restructuring that occur when ownership
+transitions to investment-vehicle management. Subsequent years show φ accumulation
+(infrastructure underinvestment) and σ ratcheting (deficiency-driven procedural layering)
+as the structural consequences of sustained high extraction compound over time.</p>
+<div id="demo-trajectory"></div>
+
+<hr class="section-rule">
+<h2>Demo 3 — Boisjoly Scenario (T4: High FHRI, High Parasitism)</h2>
+<p class="body">Agent FHRI = 82 (highly competent, committed, high-ATCF professionals).
+IPS structural parameters reflect the NASA / Morton Thiokol institutional architecture
+circa January 1986. The FHRI_max shows how much of that agent capacity the structural
+architecture absorbs before it reaches decisions.</p>
+<div id="demo-boisjoly"></div>
+
+<hr class="section-rule">
+<h2>Demo 4 — Climate Governance Field: Four-Institution Structural Profiles</h2>
+<p class="body">IPS profiles for the four institutions in the Ch14 climate governance
+multi-institutional field simulation. The structural gap between the Scientific Body
+and National Executive Governance explains why trust vector trajectories decline even
+as scientific consensus strengthens.</p>
+<div id="demo-climate"></div>
+
+<hr class="section-rule">
+<div class="narrative-panel amber">
+  <strong>Component usage:</strong> Copy the <code>&lt;script id="ips-component"&gt;</code>
+  block from this page into any chapter app. Then call
+  <code>IPS.renderComparison(container, archetypes)</code> or
+  <code>IPS.renderPanel(container, config)</code> or
+  <code>IPS.renderTrajectory(container, steps)</code>.
+  All computations are local — no backend call required for the IPS display panels.
+</div>
+
+</div><!-- .page -->
+
+<script id="ips-component">
+/**
+ * IPS Display Component — UCP V5.0.2
+ * Philosophy Lab Corporation · Ethics Beyond Boundaries
+ *
+ * Usage:
+ *   IPS.renderPanel(containerEl, config)
+ *   IPS.renderComparison(containerEl, archetypeArray)
+ *   IPS.renderTrajectory(containerEl, stepArray)
+ *
+ * No backend calls required. All ceiling computations are local.
+ * Empirical weights: V5.0.1 calibration from LTC sector literature.
+ */
+window.IPS = (function() {
+  'use strict';
+
+  // V5.0.1 empirical weights
+  const W = { eps: 0.45, rho: 0.35, mu: 0.20 }; // RQ ceiling weights
+  const A = { phi: 0.40, sig: 0.30, eps: 0.25 }; // EE floor coefficients
+
+  function clamp(x) { return Math.max(0, Math.min(1, x)); }
+
+  function compute(p) {
+    const rq = clamp(1 - (W.eps*p.epsilon + W.rho*p.rho + W.mu*p.mu));
+    const ee = clamp(A.phi*p.phi + A.sig*p.sigma + A.eps*p.epsilon);
+    const fm = +(100 * (1 - ee) * rq).toFixed(1);
+    const composite = +((p.epsilon + p.phi + p.rho + p.sigma + p.mu) / 5).toFixed(3);
+    return { rq_ceiling: +rq.toFixed(4), ee_floor: +ee.toFixed(4), fhri_max: fm, composite };
+  }
+
+  function meadows(c) {
+    const p = c.params, ceil = compute(p);
+    const comp = ceil.composite;
+    if (p.epsilon > 0.6)  return { level: 5, label: 'L5 — Goals', desc: 'Extraction dominates system purpose' };
+    if (p.mu > 0.6)       return { level: 6, label: 'L6 — Rules', desc: 'Incentive misalignment embedded in rules' };
+    if (p.sigma > 0.6)    return { level: 6, label: 'L6 — Structure', desc: 'Morphic residue locked in formal architecture' };
+    if (p.rho > 0.6)      return { level: 7, label: 'L7 — Information', desc: 'Regulatory burden blocks information routing' };
+    if (p.phi > 0.5)      return { level: 9, label: 'L9 — Feedback', desc: 'Physical entropy degrades coordination feedback' };
+    return { level: 12, label: 'L12 — Parameters', desc: 'Moderate structural constraint — parameters adjustable' };
+  }
+
+  // Color per parameter
+  const COLORS = {
+    epsilon: '#f08080',  // red — extraction
+    phi:     '#c084fc',  // purple — physical entropy
+    rho:     '#f5c842',  // amber — regulatory burden
+    sigma:   '#60a5fa',  // blue — morphic residue
+    mu:      '#fb923c',  // orange — incentive misalignment
+  };
+
+  const LABELS = {
+    epsilon: 'ε  Extraction Rate',
+    phi:     'φ  Physical Entropy',
+    rho:     'ρ  Regulatory Burden',
+    sigma:   'σ  Morphic Residue',
+    mu:      'μ  Incentive Misalign',
+  };
+
+  function verdictClass(fm) {
+    if (fm < 25)  return { cls: 'reform',  text: 'Structural Reform Required First' };
+    if (fm < 45)  return { cls: 'limited', text: 'Agent Intervention — Limited Returns' };
+    return             { cls: 'viable',  text: 'Agent Intervention Fully Viable' };
+  }
+
+  function renderPanel(container, config) {
+    const p = config.params;
+    const ceil = compute(p);
+    const mv = meadows(config);
+    const vd = verdictClass(ceil.fhri_max);
+    const fhriColor = ceil.fhri_max >= 45 ? 'var(--teal)'
+                    : ceil.fhri_max >= 25 ? 'var(--amber)'
+                    : 'var(--red)';
+
+    const paramRows = ['epsilon','phi','rho','sigma','mu'].map(k => `
+      <div class="ips-param">
+        <div class="ips-param-row">
+          <span class="ips-param-name">${LABELS[k]}</span>
+          <span class="ips-param-val" style="color:${COLORS[k]}">${p[k].toFixed(3)}</span>
+        </div>
+        <div class="ips-bar-track">
+          <div class="ips-bar-fill" style="width:${(p[k]*100).toFixed(1)}%;background:${COLORS[k]}"></div>
+        </div>
+      </div>`).join('');
+
+    container.innerHTML += `
+    <div class="ips-panel">
+      <div class="ips-panel-header" style="border-bottom:2px solid ${fhriColor}22">
+        <div class="ips-panel-label">${config.label}</div>
+        ${config.sublabel ? `<div class="ips-panel-sublabel">${config.sublabel}</div>` : ''}
+      </div>
+      <div class="ips-panel-body">
+        ${paramRows}
+        <div class="ips-divider"></div>
+        <div class="ips-ceiling-row">
+          <span class="ips-ceiling-label">RQ Ceiling</span>
+          <span class="ips-ceiling-val">${ceil.rq_ceiling.toFixed(4)}</span>
+        </div>
+        <div class="ips-ceiling-row">
+          <span class="ips-ceiling-label">EE Floor</span>
+          <span class="ips-ceiling-val">${ceil.ee_floor.toFixed(4)}</span>
+        </div>
+        <div class="ips-fhri-max">
+          <div class="label">FHRI Max</div>
+          <div class="val" style="color:${fhriColor}">${ceil.fhri_max}<span class="of100">/100</span></div>
+        </div>
+        <div class="meadows-badge" style="width:100%;justify-content:center;margin:.3rem 0">
+          <span class="meadows-lv">${mv.label}</span>
+        </div>
+        <div class="ips-verdict ${vd.cls}">${vd.text}</div>
+      </div>
+    </div>`;
+  }
+
+  function renderComparison(container, archetypes) {
+    const grid = document.createElement('div');
+    grid.className = 'ips-grid';
+    container.appendChild(grid);
+    archetypes.forEach(a => renderPanel(grid, a));
+  }
+
+  function renderTrajectory(container, steps) {
+    const maxFM = Math.max(...steps.map(s => compute(s.params).fhri_max));
+    const rows = steps.map(s => {
+      const c = compute(s.params);
+      const pct = (c.fhri_max / 60 * 100).toFixed(1); // scale to 60 max for bar
+      const barColor = c.fhri_max >= 30 ? '#14b8a6' : c.fhri_max >= 20 ? '#f5c842' : '#f08080';
+      const cls = s.isAcquisition ? 'acquisition' : s.isBaseline ? 'baseline' : '';
+      return `<tr class="${cls}">
+        <td>${s.year}</td>
+        <td>${s.params.epsilon.toFixed(3)}</td>
+        <td>${s.params.phi.toFixed(3)}</td>
+        <td>${s.params.sigma.toFixed(3)}</td>
+        <td>${s.params.mu.toFixed(3)}</td>
+        <td>${c.rq_ceiling.toFixed(4)}</td>
+        <td>
+          ${c.fhri_max.toFixed(1)}
+          <span class="fhri-bar-inline">
+            <span class="fhri-bar-fill" style="width:${pct}%;background:${barColor}"></span>
+          </span>
+        </td>
+        ${s.note ? `<td style="color:rgba(255,255,255,.45);font-size:.65rem">${s.note}</td>` : '<td></td>'}
+      </tr>`;
+    }).join('');
+
+    container.innerHTML += `
+    <table class="traj-table">
+      <thead><tr>
+        <th>Year</th><th>ε</th><th>φ</th><th>σ</th><th>μ</th>
+        <th>RQ Ceil</th><th>FHRI_max</th><th>Note</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  return { compute, renderPanel, renderComparison, renderTrajectory };
+})();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ── DEMO 1: Four Florida Archetypes ────────────────────────────────────────
+  IPS.renderComparison(document.getElementById('demo-archetypes'), [
+    { label: 'PE-Acquired',
+      sublabel: '156 FL facilities post-2019 · Peterson et al. 2025',
+      params: { epsilon:0.636, phi:0.520, rho:0.700, sigma:0.620, mu:0.820 } },
+    { label: 'For-Profit Chain',
+      sublabel: '~60% of Florida nursing homes',
+      params: { epsilon:0.273, phi:0.450, rho:0.700, sigma:0.480, mu:0.650 } },
+    { label: 'Non-Profit / Government',
+      sublabel: '~17% of Florida nursing homes',
+      params: { epsilon:0.000, phi:0.300, rho:0.700, sigma:0.250, mu:0.350 } },
+    { label: 'REIT-Owned',
+      sublabel: '~9% nationally · significant FL presence',
+      params: { epsilon:0.454, phi:0.580, rho:0.700, sigma:0.520, mu:0.720 } },
+  ]);
+
+  // ── DEMO 2: PE Trajectory ──────────────────────────────────────────────────
+  IPS.renderTrajectory(document.getElementById('demo-trajectory'), [
+    { year:2019, isBaseline:true,
+      params:{epsilon:0.273,phi:0.350,rho:0.700,sigma:0.380,mu:0.550},
+      note:'Pre-acquisition (for-profit baseline)' },
+    { year:2020, isAcquisition:true,
+      params:{epsilon:0.636,phi:0.381,rho:0.700,sigma:0.430,mu:0.625},
+      note:'▲ ACQUISITION — ε jumps, μ restructured to billing' },
+    { year:2021,
+      params:{epsilon:0.636,phi:0.426,rho:0.700,sigma:0.420,mu:0.645},
+      note:'φ accumulates — no capital reinvestment' },
+    { year:2022,
+      params:{epsilon:0.636,phi:0.472,rho:0.700,sigma:0.470,mu:0.665},
+      note:'σ ratchets — deficiency citations mount' },
+    { year:2023,
+      params:{epsilon:0.636,phi:0.517,rho:0.700,sigma:0.460,mu:0.685},
+      note:'Stars: 2.9 avg (was 3.4 pre-acquisition)' },
+    { year:2024,
+      params:{epsilon:0.636,phi:0.562,rho:0.700,sigma:0.510,mu:0.705},
+      note:'1-star facilities doubled (10%→21%)' },
+  ]);
+
+  // ── DEMO 3: Boisjoly Scenario ──────────────────────────────────────────────
+  const bjContainer = document.getElementById('demo-boisjoly');
+
+  // Show the contrast: agent FHRI vs structural ceiling
+  bjContainer.innerHTML = `
+    <div class="narrative-panel teal" style="margin-bottom:.7rem">
+      <strong>T4 Scenario structure:</strong> Agent population initialized at FHRI = 82.0
+      (Subscales A=0.85, B=0.78, C=0.72, D=0.80 — highly competent, committed, high-ATCF
+      professionals). IPS parameters reflect the NASA / Morton Thiokol institutional
+      architecture: schedule-pressure incentive misalignment (μ=0.70), normalized deviance
+      accumulated over 24 O-ring incident reports (σ=0.65), managerial authority weighting
+      that suppresses dissenting technical evidence (ε=0.72).
+    </div>
+    <div id="bj-panel-container" style="max-width:240px"></div>
+    <div class="narrative-panel red" style="margin-top:.7rem">
+      <strong>The absorbed capacity:</strong> Agent FHRI = 82.0 minus FHRI_max = 14.3
+      equals <strong>67.7 points absorbed</strong> by the institutional architecture before
+      any of Boisjoly's technical knowledge could reach the launch decision.
+      This is not a failure of competence. It is a structural wrong with a computable magnitude.
+    </div>`;
+
+  IPS.renderComparison(document.getElementById('bj-panel-container'), [
+    { label: 'Morton Thiokol / NASA 1986',
+      sublabel: 'T4 Boisjoly Scenario · Agent FHRI = 82.0',
+      params: { epsilon:0.72, phi:0.55, rho:0.52, sigma:0.65, mu:0.70 } },
+  ]);
+
+  // ── DEMO 4: Climate Governance Field ───────────────────────────────────────
+  const note = `
+    <div class="narrative-panel amber" style="margin-bottom:.8rem">
+      <strong>Reading these profiles together:</strong> All four institutions operate in the
+      same international regulatory environment, yet their IPS profiles diverge dramatically.
+      The Scientific Body can achieve FHRI_max ≈ 55 because its incentive architecture
+      aligns with accurate evidence production (low ε, low μ). National Governance is
+      structurally capped at FHRI_max ≈ 16 — not because its agents are incompetent,
+      but because electoral-cycle incentive misalignment (μ) and fossil-fuel extraction
+      dynamics (ε) impose a ceiling below which any agent-level improvement is absorbed.
+      This structural gap — not the gap in scientific knowledge — is why trust vectors
+      between the IPCC and national governments have declined rather than strengthened
+      as climate certainty has increased.
+    </div>`;
+  document.getElementById('demo-climate').innerHTML = note;
+
+  IPS.renderComparison(document.getElementById('demo-climate'), [
+    { label: 'Scientific Body (IPCC)',
+      sublabel: 'Source institution in climate governance field',
+      params: { epsilon:0.00, phi:0.20, rho:0.35, sigma:0.22, mu:0.18 } },
+    { label: 'National Executive Governance',
+      sublabel: 'Target institution — trust vector recipient',
+      params: { epsilon:0.52, phi:0.48, rho:0.42, sigma:0.58, mu:0.72 } },
+    { label: 'Treaty Organization',
+      sublabel: 'Multilateral coordination body',
+      params: { epsilon:0.15, phi:0.35, rho:0.55, sigma:0.42, mu:0.38 } },
+    { label: 'Incumbent Economic Sector',
+      sublabel: 'Fossil fuel industry institutional actor',
+      params: { epsilon:0.82, phi:0.45, rho:0.38, sigma:0.60, mu:0.85 } },
+  ]);
+
+});
+</script>
+</body>
+</html>
