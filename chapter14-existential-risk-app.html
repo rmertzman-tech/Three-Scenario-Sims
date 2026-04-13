@@ -125,6 +125,7 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
 
 <div class="tab-bar">
   <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('ips')">IPS Field Profiles</button>
   <button class="tab-btn" onclick="switchTab('results')">Field Results</button>
   <button class="tab-btn" onclick="switchTab('leverage')">Meadows Leverage</button>
   <button class="tab-btn" onclick="switchTab('epistemology')">What Models Tell Us</button>
@@ -189,11 +190,11 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem">
       <div style="background:rgba(240,128,128,.06);border:1px solid rgba(240,128,128,.2);border-radius:.5rem;padding:.9rem">
         <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:.4rem">The Iron Cage Attractor</div>
-        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The field configuration in which the high trust vector between national governance and the incumbent economic sector (Γ = 0.80 in the simulation) systematically overrides all L6 and L7 interventions. The incumbent sector's routing quality into governance is not accidental — it is actively maintained by structural investment in lobbying, regulatory access, and revolving-door mechanisms. The simulation shows this as a self-reinforcing pattern: the strong adverse trust vector ensures that alternative-facts entropy export reaches governance with high fidelity, degrading the evidence architecture that would otherwise route scientific findings.</p>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>IPS signature: high-σ / high-ρ attractor.</strong> The field configuration in which the high trust vector between national governance and the incumbent economic sector (Γ = 0.80 in the simulation) systematically overrides all L6 and L7 interventions. The incumbent sector's routing quality into governance is not accidental — it is actively maintained by structural investment in lobbying, regulatory access, and revolving-door mechanisms. The simulation shows this as a self-reinforcing pattern: the strong adverse trust vector ensures that alternative-facts entropy export reaches governance with high fidelity, degrading the evidence architecture that would otherwise route scientific findings.</p>
       </div>
       <div style="background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);border-radius:.5rem;padding:.9rem">
         <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);font-weight:700;margin-bottom:.4rem">The Obsolescence Trap</div>
-        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The failure mode when a scientific institution becomes so tightly bounded around physical precision that its output, even when the inter-institutional trust vector improves, cannot be received by the governance institution's deliberative capacity. High legitimacy, high internal coherence, high physical precision — but zero routing quality because the signal is not framed in vocabulary that governance institutions can process. Improving the trust vector alone is insufficient without simultaneously improving the translation capacity at the institutional boundary.</p>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>IPS signature: high-&epsilon; / high-&mu; attractor.</strong> <strong>IPS signature: high-ε / high-μ attractor.</strong> The failure mode when a scientific institution becomes so tightly bounded around physical precision that its output, even when the inter-institutional trust vector improves, cannot be received by the governance institution's deliberative capacity. High legitimacy, high internal coherence, high physical precision — but zero routing quality because the signal is not framed in vocabulary that governance institutions can process. Improving the trust vector alone is insufficient without simultaneously improving the translation capacity at the institutional boundary.</p>
       </div>
     </div>
     <div class="narrative-panel teal">
@@ -223,6 +224,84 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
 </div>
 
 </div><!-- end overview -->
+
+
+<!-- ══ IPS FIELD INITIALIZATION ══════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-ips">
+
+<div class="narrative-panel teal" style="margin-bottom:1rem">
+  <strong>Structural profiles before trust vectors are computed.</strong>
+  The field simulation models how trust vectors between institutions evolve over time. But what determines whether any improvement in those trust vectors can sustain coordination? The answer is the IPS structural profile of each institution — the five parameters that set the ceiling on how much of any inter-institutional signal an institution can actually receive and act on. This tab shows those profiles. The trust vector trajectory in the Field Results tab is the consequence of the structural gap shown here.
+</div>
+
+<!-- Four institution IPS panels -->
+<div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.6rem;font-weight:600">Four-Institution IPS Structural Profiles — Climate Governance Field</div>
+
+<div id="ch14-ips-grid" class="ips-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem;margin-bottom:1.1rem"></div>
+
+<!-- Iron Cage / Obsolescence Trap mapping -->
+<div class="section-wrap" style="margin-top:1rem">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>IPS Signatures of the Two Failure Modes</h3>
+    <span class="section-chevron">&#9658;</span>
+  </div>
+  <div class="section-body open">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem">
+      <div style="background:rgba(240,128,128,.06);border:1px solid rgba(240,128,128,.25);border-left:4px solid var(--red);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:.5rem">Iron Cage &mdash; IPS Signature</div>
+        <div style="font-family:'Courier New',monospace;font-size:.72rem;color:rgba(255,255,255,.6);margin-bottom:.5rem">Primary parameters: &sigma; &uarr; and &rho; &uarr;</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The Iron Cage is a <strong>high-&sigma; / high-&rho;</strong> attractor. Morphic residue (&sigma;) accumulates from decades of inadequate climate policy response — each crisis generates a new procedural layer that normalizes the inadequate response rather than correcting it. Regulatory burden (&rho;) from treaty obligation monitoring, emissions reporting, and audit requirements consumes institutional bandwidth without producing coordination. Together they impose a RQ ceiling that blocks L7 information flow improvement even when trust vectors between institutions temporarily improve. The institution is locked not by malice but by the structural weight of its own procedural history.</p>
+        <div style="background:rgba(240,128,128,.08);border-radius:.3rem;padding:.5rem .7rem;margin-top:.5rem;font-family:'Courier New',monospace;font-size:.68rem;color:rgba(255,255,255,.55)">
+          RQ ceiling = 1 &minus; (0.45&epsilon; + 0.35&rho; + 0.20&mu;)<br>
+          EE floor = 0.40&phi; + 0.30&sigma; + 0.25&epsilon;<br>
+          High &sigma; and &rho; suppress RQ ceiling regardless of agent quality
+        </div>
+      </div>
+      <div style="background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);border-left:4px solid var(--amber);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);font-weight:700;margin-bottom:.5rem">Obsolescence Trap &mdash; IPS Signature</div>
+        <div style="font-family:'Courier New',monospace;font-size:.72rem;color:rgba(255,255,255,.6);margin-bottom:.5rem">Primary parameters: &epsilon; &uarr; and &mu; &uarr;</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The Obsolescence Trap is a <strong>high-&epsilon; / high-&mu;</strong> attractor. Extraction rate (&epsilon;) reflects incumbent economic interests continuously drawing surplus from the fossil fuel infrastructure — making the governance institution structurally dependent on the sector it is supposed to regulate. Incentive misalignment (&mu;) reflects the electoral cycle gap: what gets rewarded (short-term economic metrics) is structurally opposed to what coordination requires (long-horizon transition investment). High &epsilon; and &mu; suppress the RQ ceiling through the same equation, but for different institutional reasons than the Iron Cage.</p>
+        <div style="background:rgba(245,200,66,.06);border-radius:.3rem;padding:.5rem .7rem;margin-top:.5rem;font-family:'Courier New',monospace;font-size:.68rem;color:rgba(255,255,255,.55)">
+          National Governance: &epsilon;=0.52, &mu;=0.72<br>
+          Incumbent Sector: &epsilon;=0.82, &mu;=0.85<br>
+          FHRI_max: 23.9 and 14.3 respectively
+        </div>
+      </div>
+    </div>
+    <div class="narrative-panel amber">
+      <strong>Why the two failure modes compound each other.</strong> The Iron Cage (high-&sigma;/&rho; in treaty and governance institutions) and the Obsolescence Trap (high-&epsilon;/&mu; in the incumbent sector and captured governance) are not independent. In the climate governance field, they are mutually reinforcing: high &epsilon; generates surplus that funds the lobbying that builds &sigma; residue in governance procedures; high &rho; from treaty monitoring consumes the bandwidth that would otherwise be available for &epsilon; reduction. This is why the adverse trust vector (Incumbent Sector &rarr; National Governance, &Gamma; = 0.80) is so structurally durable. It is not a single mechanism — it is two failure modes locked together.
+    </div>
+  </div>
+</div>
+
+<!-- T1/T2 Counterfactuals -->
+<div class="section-wrap" style="margin-top:.8rem">
+  <div class="section-header open" onclick="toggleSection(this)">
+    <h3>T1 vs. T2 Counterfactuals &mdash; What Interventions Can Actually Change</h3>
+    <span class="section-chevron">&#9658;</span>
+  </div>
+  <div class="section-body open">
+    <p style="font-size:.88rem;line-height:1.65;color:rgba(255,255,255,.78);margin-bottom:.8rem">The simulation generates two distinct types of counterfactual. Understanding which type a proposed intervention produces is the most practically important analytical output of this chapter.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem">
+      <div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-left:4px solid var(--teal);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Type 1 &mdash; Structural Ceiling Change</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Interventions that change the IPS parameters directly: reducing &epsilon; through carbon pricing that restructures surplus extraction, reducing &mu; through fiduciary standards that align governance incentives with long-horizon outcomes, reducing &sigma; by replacing crisis-response procedures with evidence-based institutional design. T1 interventions raise the FHRI_max ceiling for the institutions involved. They produce durable trust vector improvement because the structural capacity to receive and act on scientific signals actually increases.</p>
+        <div style="margin-top:.5rem;font-size:.78rem;font-style:italic;color:rgba(255,255,255,.45)">Examples: carbon tax (&epsilon; reduction), fiduciary duty reform (&mu; reduction), institutional design standards (&sigma; reduction)</div>
+      </div>
+      <div style="background:rgba(192,132,252,.05);border:1px solid rgba(192,132,252,.2);border-left:4px solid var(--purple,#c084fc);border-radius:.5rem;padding:.9rem">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#c084fc;font-weight:700;margin-bottom:.4rem">Type 2 &mdash; Agent-Level Improvement</div>
+        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Interventions that improve the agent population within existing structural parameters: better scientific communication, improved political leadership, more committed negotiators at treaty bodies. T2 interventions raise the observed &lambda; Raw within institutions and can temporarily improve trust vector readings. But they cannot exceed the FHRI_max ceiling the IPS parameters impose. When the intervention ends, the system reverts toward its structural attractor — the ceiling that was never raised.</p>
+        <div style="margin-top:.5rem;font-size:.78rem;font-style:italic;color:rgba(255,255,255,.45)">Examples: science communication (&lambda; Raw improvement), leadership change (agent FHRI improvement), negotiating capacity (OS2 Bridge improvement)</div>
+      </div>
+    </div>
+    <div class="narrative-panel teal">
+      <strong>The Paris Agreement as a T2 intervention.</strong> The Paris Agreement improved inter-institutional coordination commitments (trust vector improvement) and scientific communication alignment (OS2 Bridge improvement). These are genuine L6 and L7 gains. But the Agreement did not structurally change &epsilon; (fossil fuel extraction incentives remain dominant in national governance), &mu; (electoral cycle misalignment is unchanged), or &sigma; (the procedural residue of decades of inadequate climate policy remains embedded in governance architecture). The simulation predicts that T2 interventions without T1 structural ceiling change produce temporary trust vector improvement that reverts toward the structural attractor once the agent-level effort is withdrawn or disrupted. This is not a criticism of the Paris Agreement. It is a precise description of what more is required.
+    </div>
+  </div>
+</div>
+
+</div><!-- end tab-ips -->
+
 
 <!-- ══ FIELD RESULTS ══════════════════════════════════════════════════════════ -->
 <div class="tab-pane" id="tab-results">
@@ -451,6 +530,9 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
 <div class="section-wrap">
   <div class="section-header" onclick="toggleSection(this)">
     <h3>What Would Validate or Falsify the Model</h3>
+    <div class="narrative-panel teal" style="margin-bottom:.8rem">
+      <strong>T1 vs. T2 predictions for validation.</strong> The IPS framework generates a specific testable prediction: T1 structural interventions (those that change &epsilon;, &mu;, or &sigma; directly) should produce trust vector improvement that persists across changes in agent population. T2 interventions (agent-level improvements within unchanged structural parameters) should produce temporary improvement that reverts when agent-level effort is withdrawn. If this prediction is correct, the historical record of climate governance should show: periods of strong scientific communication or committed political leadership producing temporary trust vector gains that then erode when those agents are replaced. That pattern &mdash; improvement followed by reversion to structural attractor &mdash; is the primary empirical signature of a T2-only intervention field. See the IPS Field Profiles tab for the structural parameters that set the ceiling this pattern will revert toward.
+    </div>
     <span class="section-chevron">▶</span>
   </div>
   <div class="section-body">
@@ -640,12 +722,124 @@ function renderLeverageSteps() {
 }
 
 // ── UI helpers ─────────────────────────────────────────────────────────────
+// ── IPS Component (V5.0.2) ───────────────────────────────────────────────────
+window.IPS=(function(){
+  'use strict';
+  var W={eps:0.45,rho:0.35,mu:0.20},A={phi:0.40,sig:0.30,eps:0.25};
+  function clamp(x){return Math.max(0,Math.min(1,x));}
+  function compute(p){
+    var rq=clamp(1-(W.eps*p.epsilon+W.rho*p.rho+W.mu*p.mu));
+    var ee=clamp(A.phi*p.phi+A.sig*p.sigma+A.eps*p.epsilon);
+    var fm=+(100*(1-ee)*rq).toFixed(1);
+    return{rq_ceiling:+rq.toFixed(4),ee_floor:+ee.toFixed(4),fhri_max:fm};
+  }
+  var COLORS={epsilon:'#f08080',phi:'#c084fc',rho:'#f5c842',sigma:'#60a5fa',mu:'#fb923c'};
+  var LABELS={epsilon:'\u03b5  Extraction Rate',phi:'\u03c6  Physical Entropy',rho:'\u03c1  Regulatory Burden',sigma:'\u03c3  Morphic Residue',mu:'\u03bc  Incentive Misalign'};
+  function verdictClass(fm){
+    if(fm<25)return{cls:'reform',text:'Structural Reform Required First'};
+    if(fm<45)return{cls:'limited',text:'Agent Intervention \u2014 Limited Returns'};
+    return{cls:'viable',text:'Agent Intervention Fully Viable'};
+  }
+  function renderPanel(container,config){
+    var p=config.params,ceil=compute(p),vd=verdictClass(ceil.fhri_max);
+    var fc=ceil.fhri_max>=45?'var(--teal)':ceil.fhri_max>=25?'var(--amber,#f5c842)':'var(--red,#f08080)';
+    var rows=['epsilon','phi','rho','sigma','mu'].map(function(k){return(
+      '<div class="ips-param">'+
+      '<div class="ips-param-row">'+
+      '<span class="ips-param-name">'+LABELS[k]+'</span>'+
+      '<span class="ips-param-val" style="color:'+COLORS[k]+'">'+p[k].toFixed(3)+'</span>'+
+      '</div>'+
+      '<div class="ips-bar-track"><div class="ips-bar-fill" style="width:'+(p[k]*100).toFixed(1)+'%;background:'+COLORS[k]+'"></div></div>'+
+      '</div>');}).join('');
+    var div=document.createElement('div');
+    div.className='ips-panel';
+    div.innerHTML=
+      '<div class="ips-panel-header" style="border-bottom:2px solid '+fc+'33">'+
+      '<div class="ips-panel-label">'+config.label+'</div>'+
+      (config.sublabel?'<div class="ips-panel-sublabel">'+config.sublabel+'</div>':'')+
+      '</div>'+
+      '<div class="ips-panel-body">'+
+      rows+
+      '<hr class="ips-divider">'+
+      '<div class="ips-ceiling-row"><span class="ips-ceiling-label">RQ Ceiling</span><span class="ips-ceiling-val">'+ceil.rq_ceiling.toFixed(4)+'</span></div>'+
+      '<div class="ips-ceiling-row"><span class="ips-ceiling-label">EE Floor</span><span class="ips-ceiling-val">'+ceil.ee_floor.toFixed(4)+'</span></div>'+
+      '<div class="ips-fhri-max"><div class="label">FHRI Max</div><div class="val" style="color:'+fc+'">'+ceil.fhri_max+'<span class="of100">/100</span></div></div>'+
+      '<div class="ips-verdict '+vd.cls+'">'+vd.text+'</div>'+
+      '</div>';
+    container.appendChild(div);
+  }
+  function renderComparison(container,archetypes){
+    var grid=document.createElement('div');
+    grid.className='ips-grid';
+    grid.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.7rem';
+    container.appendChild(grid);
+    archetypes.forEach(function(a){renderPanel(grid,a);});
+  }
+  return{compute:compute,renderPanel:renderPanel,renderComparison:renderComparison};
+})();
+
+// ── IPS styles (injected once) ────────────────────────────────────────────────
+(function(){
+  if(document.getElementById('ips-styles'))return;
+  var s=document.createElement('style');
+  s.id='ips-styles';
+  s.textContent=
+    '.ips-panel{background:#1a1f2e;border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden}'+
+    '.ips-panel-header{padding:.6rem .85rem;border-bottom:1px solid rgba(255,255,255,.09)}'+
+    '.ips-panel-label{font-size:.78rem;font-weight:700;color:#fff;margin-bottom:.1rem}'+
+    '.ips-panel-sublabel{font-family:monospace;font-size:.58rem;color:#6b7280}'+
+    '.ips-panel-body{padding:.65rem .85rem}'+
+    '.ips-param{margin-bottom:.45rem}'+
+    '.ips-param-row{display:flex;justify-content:space-between;margin-bottom:.18rem}'+
+    '.ips-param-name{font-family:monospace;font-size:.63rem;color:rgba(255,255,255,.45)}'+
+    '.ips-param-val{font-family:monospace;font-size:.68rem;font-weight:700}'+
+    '.ips-bar-track{background:rgba(255,255,255,.07);border-radius:999px;height:4px;overflow:hidden}'+
+    '.ips-bar-fill{height:100%;border-radius:999px}'+
+    '.ips-divider{border:none;border-top:1px solid rgba(255,255,255,.09);margin:.5rem 0}'+
+    '.ips-ceiling-row{display:flex;justify-content:space-between;margin-bottom:.25rem}'+
+    '.ips-ceiling-label{font-family:monospace;font-size:.6rem;color:rgba(255,255,255,.4)}'+
+    '.ips-ceiling-val{font-family:monospace;font-size:.68rem;font-weight:700;color:#14b8a6}'+
+    '.ips-fhri-max{background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.18);border-radius:.3rem;padding:.4rem .6rem;margin:.45rem 0;text-align:center}'+
+    '.ips-fhri-max .label{font-family:monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:#6b7280;margin-bottom:.1rem}'+
+    '.ips-fhri-max .val{font-size:1.3rem;font-weight:800;line-height:1}'+
+    '.ips-fhri-max .of100{font-size:.65rem;color:#6b7280}'+
+    '.ips-verdict{border-radius:.3rem;padding:.35rem .6rem;font-family:monospace;font-size:.62rem;font-weight:700;text-align:center;margin-top:.35rem}'+
+    '.ips-verdict.reform{background:rgba(240,128,128,.1);border:1px solid rgba(240,128,128,.3);color:#f08080}'+
+    '.ips-verdict.limited{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.25);color:#f5c842}'+
+    '.ips-verdict.viable{background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.25);color:#14b8a6}';
+  document.head.appendChild(s);
+})();
+
+// ── Initialize IPS Field Profiles tab ────────────────────────────────────────
+var _ipsInit14 = false;
+function initCh14IPS() {
+  if (_ipsInit14) return;
+  _ipsInit14 = true;
+  var container = document.getElementById('ch14-ips-grid');
+  if (!container) return;
+  IPS.renderComparison(container, [
+    { label:'Scientific Body (IPCC)',
+      sublabel:'Source institution \u00b7 Low extraction, low misalignment',
+      params:{epsilon:0.000,phi:0.200,rho:0.350,sigma:0.220,mu:0.180} },
+    { label:'National Executive Governance',
+      sublabel:'Target institution \u00b7 High \u03b5 + high \u03bc = Obsolescence Trap',
+      params:{epsilon:0.520,phi:0.480,rho:0.420,sigma:0.580,mu:0.720} },
+    { label:'Treaty Organization (UNFCCC)',
+      sublabel:'Multilateral body \u00b7 High \u03c1 = Iron Cage risk',
+      params:{epsilon:0.150,phi:0.350,rho:0.550,sigma:0.420,mu:0.380} },
+    { label:'Incumbent Economic Sector',
+      sublabel:'Adverse trust vector source \u00b7 High \u03b5 + high \u03bc',
+      params:{epsilon:0.820,phi:0.450,rho:0.380,sigma:0.600,mu:0.850} },
+  ]);
+}
+
 function switchTab(tab) {
-  const tabs = ['overview', 'results', 'leverage', 'epistemology', 'journal'];
+  const tabs = ['overview', 'ips', 'results', 'leverage', 'epistemology', 'journal'];
   document.querySelectorAll('.tab-btn').forEach((b, i) =>
     b.classList.toggle('active', tabs[i] === tab));
   document.querySelectorAll('.tab-pane').forEach(p =>
     p.classList.toggle('active', p.id === `tab-${tab}`));
+  if (tab === 'ips') initCh14IPS();
   if (tab === 'results') { renderTVChart(); renderFSGChart(); }
   if (tab === 'leverage') renderLeverageSteps();
 }
