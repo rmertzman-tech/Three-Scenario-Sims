@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prologue · The Pattern Beneath Ethics · EBB</title>
+<style>
+:root{
+  --teal-dark:#0d5e57;--teal:#14b8a6;--teal-light:#ccfbf1;
+  --ink:#1f2937;--muted:#4b5563;--bg:#0f1117;--surface:#1a1f2e;
+  --surface2:#222840;--border:rgba(255,255,255,.09);
+  --amber:#f5c842;--amber-dark:#c2850a;--amber-bg:rgba(245,200,66,.07);
+  --red:#f08080;--green:#7fd8a8;--purple:#c084fc;--navy:#0a1628;
+  --c0-color:#f08080;--cmid-color:#f5c842;--cn-color:#14b8a6;
+  --cn-parasitized:#f08080;--cmid-parasitized:#fb923c;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;line-height:1.6}
+.page{max-width:960px;margin:0 auto;padding:1.5rem 1rem 4rem}
+
+/* ── HEADER ── */
+.chapter-header{background:linear-gradient(135deg,#0a1628 0%,#1e1b4b 40%,#0d5e57 100%);border-radius:.75rem;padding:2rem 2rem 1.5rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.chapter-header::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(20,184,166,.12) 0%,transparent 60%);pointer-events:none}
+.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.chapter-title{font-size:1.7rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.2rem}
+.chapter-subtitle{font-size:.95rem;color:rgba(255,255,255,.6);margin-bottom:1rem}
+.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.tag{background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
+.tag.purple{background:rgba(192,132,252,.15);border-color:rgba(192,132,252,.35);color:var(--purple)}
+
+/* ── TABS ── */
+.tab-bar{display:flex;gap:.3rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);padding-bottom:0;overflow-x:auto}
+.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem 1rem;cursor:pointer;font-size:.85rem;font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;border-radius:.3rem .3rem 0 0;white-space:nowrap}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
+.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
+.tab-pane{display:none}.tab-pane.active{display:block}
+
+/* ── PANELS ── */
+.narrative-panel{background:var(--surface);border:1px solid var(--border);border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:1rem;font-size:.9rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.narrative-panel.teal{border-left:4px solid var(--teal)}
+.narrative-panel.amber{border-left:4px solid var(--amber)}
+.narrative-panel.red{border-left:4px solid var(--red)}
+.narrative-panel.purple{border-left:4px solid var(--purple)}
+.narrative-panel.navy{background:var(--navy);border-left:4px solid var(--teal);color:rgba(255,255,255,.72)}
+.narrative-panel strong{color:#fff}
+.card{background:var(--surface2);border:1px solid var(--border);border-radius:.55rem;padding:1.1rem 1.2rem;margin-bottom:.85rem}
+.card h3{color:var(--teal);font-size:.9rem;font-weight:700;margin-bottom:.5rem}
+.card p{font-size:.88rem;color:rgba(255,255,255,.75);line-height:1.62;margin-bottom:.45rem}
+.card p:last-child{margin:0}
+.card strong{color:#fff}
+.section-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:.6rem 0;border-bottom:1px solid var(--border);margin-bottom:.8rem}
+.section-header h3{font-size:.95rem;font-weight:700;color:#e2e8f0}
+.section-chevron{color:var(--teal);font-size:.78rem;transition:transform .2s}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+.section-body{display:none}.section-body.open{display:block}
+.section-rule{border:none;border-top:1px solid var(--border);margin:1.4rem 0}
+p.body-text{font-size:.9rem;color:rgba(255,255,255,.78);line-height:1.65;margin-bottom:.75rem}
+h2.sh{font-size:1rem;font-weight:700;color:var(--teal);margin:1.5rem 0 .7rem;font-family:'Courier New',monospace;text-transform:uppercase;letter-spacing:.06em}
+
+/* ── POWER LAW VIZ ── */
+.powerlaw-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin:1rem 0}
+.pl-panel{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;padding:.75rem}
+.pl-title{font-family:'Courier New',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.5rem}
+.pl-svg-wrap{width:100%;aspect-ratio:4/3}
+
+/* ── SCALE INVARIANCE EXAMPLES ── */
+.examples-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.8rem 0}
+.ex-card{background:var(--surface2);border:1px solid var(--border);border-radius:.45rem;padding:.8rem 1rem}
+.ex-card .ex-domain{font-family:'Courier New',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;color:var(--purple);margin-bottom:.3rem}
+.ex-card .ex-law{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.25rem}
+.ex-card .ex-desc{font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.5}
+
+/* ── MANTIS SEQUENCE ── */
+.mantis-steps{display:grid;gap:.65rem;margin:.8rem 0}
+.mantis-step{display:grid;grid-template-columns:auto 1fr;gap:.75rem;align-items:start;background:var(--surface2);border:1px solid var(--border);border-radius:.45rem;padding:.8rem 1rem}
+.step-num{font-family:'Courier New',monospace;font-size:.72rem;font-weight:700;color:#fff;background:var(--teal-dark);border-radius:.25rem;width:1.9rem;height:1.9rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mantis-step p{font-size:.87rem;color:rgba(255,255,255,.75);margin:0;line-height:1.6}
+.mantis-step strong{color:#fff}
+
+/* ══════════════════════════════════════════════════════
+   THE MAIN VISUAL — FOUR-SCALE PATTERN DISPLAY
+══════════════════════════════════════════════════════ */
+.pattern-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:1rem}
+.parasite-toggle{display:flex;align-items:center;gap:.75rem}
+.toggle-label{font-family:'Courier New',monospace;font-size:.75rem;color:rgba(255,255,255,.6)}
+.toggle-btn{background:var(--teal-dark);border:none;color:#fff;padding:.5rem 1.2rem;border-radius:.4rem;cursor:pointer;font-size:.82rem;font-weight:700;transition:all .2s}
+.toggle-btn.active{background:#7f1d1d;border-color:var(--red)}
+.toggle-btn:hover{opacity:.85}
+.reset-btn{background:rgba(255,255,255,.07);border:1px solid var(--border);color:rgba(255,255,255,.6);padding:.4rem .8rem;border-radius:.35rem;cursor:pointer;font-size:.75rem}
+
+.scales-container{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:.5rem 0}
+.scale-col{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;overflow:hidden;transition:border-color .4s}
+.scale-col.parasitized{border-color:rgba(240,128,128,.4)}
+.scale-header{padding:.55rem .75rem;border-bottom:1px solid var(--border)}
+.scale-name{font-family:'Courier New',monospace;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--teal)}
+.scale-col.parasitized .scale-name{color:var(--red)}
+.scale-subtitle{font-size:.63rem;color:rgba(255,255,255,.4);margin-top:.1rem}
+
+/* The three-layer hierarchy visual */
+.hierarchy{padding:.6rem .6rem .5rem;display:flex;flex-direction:column;gap:.3rem}
+.h-layer{border-radius:.3rem;padding:.45rem .55rem;transition:all .5s ease;position:relative;overflow:hidden}
+.h-layer .h-label{font-family:'Courier New',monospace;font-size:.6rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.15rem;transition:color .4s}
+.h-layer .h-desc{font-size:.68rem;line-height:1.45;transition:all .4s}
+.h-layer .h-example{font-size:.62rem;margin-top:.2rem;opacity:.7;font-style:italic;transition:all .4s}
+
+/* Healthy state colors */
+.layer-cn{background:rgba(20,184,166,.12);border:1px solid rgba(20,184,166,.3)}
+.layer-cn .h-label{color:var(--teal)}
+.layer-cn .h-desc{color:rgba(255,255,255,.75)}
+.layer-cmid{background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.2)}
+.layer-cmid .h-label{color:var(--amber)}
+.layer-cmid .h-desc{color:rgba(255,255,255,.65)}
+.layer-c0{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
+.layer-c0 .h-label{color:rgba(255,255,255,.5)}
+.layer-c0 .h-desc{color:rgba(255,255,255,.45)}
+
+/* Parasitized state — added by JS */
+.parasitized .layer-cn{background:rgba(240,128,128,.07);border-color:rgba(240,128,128,.25);opacity:.45}
+.parasitized .layer-cn .h-label{color:var(--red)}
+.parasitized .layer-cmid{background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.3)}
+.parasitized .layer-cmid .h-label{color:#fb923c}
+.parasitized .layer-c0{background:rgba(240,128,128,.06);border-color:rgba(240,128,128,.2)}
+.parasitized .layer-c0 .h-label{color:rgba(255,255,255,.7)}
+
+/* Metric bar at bottom */
+.scale-metric{padding:.45rem .75rem;border-top:1px solid var(--border);background:rgba(0,0,0,.2)}
+.metric-row{display:flex;justify-content:space-between;align-items:baseline}
+.metric-name{font-family:'Courier New',monospace;font-size:.58rem;color:rgba(255,255,255,.4)}
+.metric-val{font-family:'Courier New',monospace;font-size:.8rem;font-weight:700;color:var(--teal);transition:color .4s}
+.scale-col.parasitized .metric-val{color:var(--red)}
+.metric-bar-track{background:rgba(255,255,255,.07);border-radius:999px;height:4px;margin-top:.25rem;overflow:hidden}
+.metric-bar-fill{height:100%;border-radius:999px;transition:width .8s ease,background .5s}
+
+/* Extraction arrow */
+.extraction-arrow{text-align:center;font-size:.65rem;color:rgba(240,128,128,.0);transition:color .5s,opacity .5s;padding:.2rem 0;font-family:'Courier New',monospace;letter-spacing:.04em}
+.scale-col.parasitized .extraction-arrow{color:rgba(240,128,128,.7)}
+
+/* Cross-scale connection bar */
+.connection-bar{background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;padding:.55rem 1rem;margin:.75rem 0;display:flex;align-items:center;gap:.5rem;font-family:'Courier New',monospace;font-size:.68rem;color:rgba(255,255,255,.4);transition:all .5s}
+.connection-bar.parasitized{border-color:rgba(240,128,128,.35);background:rgba(240,128,128,.04);color:rgba(240,128,128,.7)}
+.cb-dot{width:8px;height:8px;border-radius:50%;background:var(--border);flex-shrink:0;transition:background .4s}
+.connection-bar.parasitized .cb-dot{background:var(--red)}
+.cb-line{flex:1;height:1px;background:var(--border);transition:background .4s}
+.connection-bar.parasitized .cb-line{background:rgba(240,128,128,.4)}
+
+/* ── COURSE MAP ── */
+.cmap-grid{display:grid;gap:.6rem;margin:.8rem 0}
+.cmap-item{display:grid;grid-template-columns:auto 1fr auto;gap:.75rem;align-items:start;background:var(--surface2);border:1px solid var(--border);border-radius:.45rem;padding:.75rem 1rem}
+.cmap-scale{font-family:'Courier New',monospace;font-size:.62rem;font-weight:700;color:#fff;background:var(--teal-dark);border-radius:.25rem;padding:.2rem .45rem;flex-shrink:0;white-space:nowrap}
+.cmap-scale.psych{background:#4e2a7a}
+.cmap-scale.collective{background:#1a5c3a}
+.cmap-scale.instit{background:#1a3a5c}
+.cmap-scale.civil{background:#5c1a2a}
+.cmap-scale.norm{background:#3a3a1a}
+.cmap-content p{font-size:.84rem;color:rgba(255,255,255,.72);margin:0;line-height:1.55}
+.cmap-content strong{color:#fff}
+.cmap-chapters{font-family:'Courier New',monospace;font-size:.62rem;color:var(--muted);white-space:nowrap}
+
+/* ── JOURNAL ── */
+.jbox{background:var(--surface);border:1px solid var(--border);border-radius:.5rem;padding:1rem 1.1rem;margin-bottom:.85rem}
+.jlabel{font-family:'Courier New',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem}
+.jbox p{font-size:.85rem;color:rgba(255,255,255,.65);margin-bottom:.45rem;line-height:1.6}
+.jta{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;color:#e2e8f0;font-size:.84rem;padding:.65rem .8rem;resize:vertical;min-height:95px;font-family:'Segoe UI',system-ui,sans-serif;line-height:1.5}
+.jta:focus{outline:none;border-color:var(--teal)}
+.jbar{background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-top:.75rem}
+.jnote{font-family:'Courier New',monospace;font-size:.62rem;color:var(--muted)}
+.jexport{background:var(--teal-dark);border:none;color:#fff;font-size:.8rem;font-weight:700;padding:.45rem 1rem;border-radius:.3rem;cursor:pointer}
+.jexport:hover{background:var(--teal)}
+
+/* ── UTILITY ── */
+@media(max-width:680px){
+  .scales-container{grid-template-columns:1fr 1fr}
+  .powerlaw-grid{grid-template-columns:1fr}
+  .examples-grid{grid-template-columns:1fr}
+  .tab-btn{padding:.55rem .7rem;font-size:.78rem}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="chapter-header">
+  <div class="chapter-label">Ethics Beyond Boundaries &middot; Prologue</div>
+  <div class="chapter-title">The Pattern Beneath Ethics</div>
+  <div class="chapter-subtitle">Scale-Free Laws and the Universal Structure of Agential Hijacking</div>
+  <div class="chapter-tags">
+    <span class="tag">Scale-Free Laws</span>
+    <span class="tag">Complexity Science</span>
+    <span class="tag">Case Zero</span>
+    <span class="tag">Parasitic Overwrite</span>
+    <span class="tag">P-Adic Hierarchy</span>
+    <span class="tag purple">Meta-Constructor</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="showTab('scalefree',this)">I &mdash; Scale-Free Laws</button>
+  <button class="tab-btn" onclick="showTab('casezero',this)">II &mdash; Case Zero</button>
+  <button class="tab-btn" onclick="showTab('pattern',this)">III &mdash; The Pattern</button>
+  <button class="tab-btn" onclick="showTab('coursemap',this)">IV &mdash; Course Map</button>
+  <button class="tab-btn" onclick="showTab('journal',this)">Journal</button>
+</div>
+
+<!-- ═══ I: SCALE-FREE LAWS ═══════════════════════════════════════════════ -->
+<div class="tab-pane active" id="tab-scalefree">
+
+  <div class="narrative-panel navy">
+    <strong>What this course asks you to do.</strong> Every chapter of Ethics Beyond Boundaries
+    studies a different domain &mdash; individual perception, institutional design, economic
+    systems, governance, information, existential risk. This Prologue makes a single claim
+    that changes how you will read every one of those chapters: the ethical problems they
+    examine are not separate problems. They are the same problem appearing at different scales.
+    If you can see the pattern at one scale, you already understand the mechanism at all of them.
+  </div>
+
+  <h2 class="sh">&sect;1 &mdash; What &ldquo;Scale-Free&rdquo; Means</h2>
+
+  <p class="body-text">In complexity science, a law is called <strong>scale-free</strong> when
+  the same statistical pattern appears regardless of how large or small the system you measure.
+  You zoom in, you zoom out &mdash; the pattern persists. This is not metaphor. It is a
+  mathematical fact that emerges when the same underlying mechanism operates at every level
+  of a system&rsquo;s organization.</p>
+
+  <p class="body-text">The most famous scale-free law is the <strong>power law</strong>. In any
+  system governed by a power law, the relationship between frequency and magnitude is the same
+  across all scales: a few large events, many small ones, and the ratio between them constant
+  regardless of where you look. This produces the distinctive shape visible in the three
+  examples below &mdash; a steep drop from large to small that looks identical whether you
+  are measuring cities, earthquakes, or internet connections.</p>
+
+  <!-- Power law visualization -->
+  <div class="powerlaw-grid">
+    <div class="pl-panel">
+      <div class="pl-title">City Populations (Zipf&rsquo;s Law)</div>
+      <svg class="pl-svg-wrap" id="svg-cities" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div style="font-size:.7rem;color:rgba(255,255,255,.45);margin-top:.35rem">The largest city is ~2&times; the second, ~3&times; the third &mdash; at every scale, in every country.</div>
+    </div>
+    <div class="pl-panel">
+      <div class="pl-title">Earthquake Magnitudes</div>
+      <svg class="pl-svg-wrap" id="svg-quakes" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div style="font-size:.7rem;color:rgba(255,255,255,.45);margin-top:.35rem">Gutenberg&ndash;Richter Law: 10&times; more magnitude-3 quakes than magnitude-4, at every tectonic scale.</div>
+    </div>
+    <div class="pl-panel">
+      <div class="pl-title">Network Connections</div>
+      <svg class="pl-svg-wrap" id="svg-network" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div style="font-size:.7rem;color:rgba(255,255,255,.45);margin-top:.35rem">Internet, social networks, biological neurons: a few hubs with massive connections, most nodes with few.</div>
+    </div>
+  </div>
+
+  <div class="narrative-panel amber">
+    <strong>Why the same shape appears everywhere:</strong> Power laws emerge when
+    the same mechanism operates at every level &mdash; not when different mechanisms
+    happen to produce similar numbers. The city size distribution and the earthquake
+    distribution look identical because preferential attachment (larger gets larger)
+    and stress accumulation (stored until release) follow the same mathematical logic
+    regardless of substrate. This is what &ldquo;scale-free&rdquo; actually means:
+    the mechanism is substrate-neutral.
+  </div>
+
+  <h2 class="sh">&sect;2 &mdash; Scale-Free Patterns You Already Know</h2>
+
+  <div class="examples-grid">
+    <div class="ex-card">
+      <div class="ex-domain">Biology</div>
+      <div class="ex-law">Kleiber&rsquo;s Law</div>
+      <div class="ex-desc">Metabolic rate scales with body mass to the power of 3/4 &mdash; from bacteria to blue whales, eleven orders of magnitude, same exponent.</div>
+    </div>
+    <div class="ex-card">
+      <div class="ex-domain">Linguistics</div>
+      <div class="ex-law">Zipf&rsquo;s Law</div>
+      <div class="ex-desc">The most common word appears ~2&times; as often as the second most common, in every language ever measured. The mechanism: preferential reuse.</div>
+    </div>
+    <div class="ex-card">
+      <div class="ex-domain">Geometry</div>
+      <div class="ex-law">Fractal Self-Similarity</div>
+      <div class="ex-desc">Coastlines, trees, river networks, bronchial tubes: at every scale of magnification, the same branching pattern. No characteristic length.</div>
+    </div>
+    <div class="ex-card">
+      <div class="ex-domain">Economics</div>
+      <div class="ex-law">Pareto Distribution</div>
+      <div class="ex-desc">80% of outcomes from 20% of inputs &mdash; wealth, land ownership, firm size, customer revenue. The ratio shifts but the power-law shape persists.</div>
+    </div>
+    <div class="ex-card">
+      <div class="ex-domain">Neuroscience</div>
+      <div class="ex-law">Neural Criticality</div>
+      <div class="ex-desc">The brain operates near a critical point between order and chaos. Neural avalanches follow power laws from single neurons to whole-brain dynamics.</div>
+    </div>
+    <div class="ex-card">
+      <div class="ex-domain">Social Systems</div>
+      <div class="ex-law">Preferential Attachment</div>
+      <div class="ex-desc">The rich get richer, the connected get more connected. In networks of every kind, early advantage compounds &mdash; same math, different domains.</div>
+    </div>
+  </div>
+
+  <h2 class="sh">&sect;3 &mdash; The Pattern This Course Studies</h2>
+
+  <p class="body-text">This course studies a specific scale-free pattern that is less well-known
+  than power laws but equally fundamental: the <strong>systematic hijacking of hierarchical
+  agency by parasitic goal structures</strong>. Like power laws, this pattern appears at
+  every scale where complex agents organize themselves &mdash; from individual organisms to
+  global civilizations. And like power laws, it appears identically at every scale because
+  the same mechanism is operating, not because different mechanisms happen to look similar.</p>
+
+  <div class="card">
+    <h3>The Three-Layer Hierarchy</h3>
+    <p>Every agent capable of complex behavior organizes its identity in hierarchical layers.
+    The framework this course uses calls them c&#8320; (root), c&#8209;mid (trunk), and
+    c&#8319; (leading edge).</p>
+    <p><strong style="color:var(--red)">c&#8320; — Root:</strong> The biological substrate.
+    Basic reflexes, survival imperatives, physiological functions. Preserved even under extreme stress.
+    The last to fail.</p>
+    <p><strong style="color:var(--amber)">c&#8209;mid — Trunk:</strong> Habits, heuristics,
+    interpretive rules, institutional procedures. The middle layer that translates values
+    into action. The primary target of parasitic overwrite.</p>
+    <p><strong style="color:var(--teal)">c&#8319; — Leading Edge:</strong> Active inference,
+    goal-setting, complex deliberation, future-orientation. The highest-order, most
+    metabolically expensive layer. The first to fail under stress or parasitism.</p>
+  </div>
+
+  <div class="narrative-panel teal">
+    <strong>The core claim of this course:</strong> Whether you are studying a mantis
+    parasitized by a hairworm, a person under chronic institutional stress, an organization
+    captured by extractive ownership, or a democracy under authoritarian assault &mdash; the
+    mechanism is identical. c&#8319; is suppressed or inverted. c&#8209;mid is overwritten
+    with a parasitic goal structure. c&#8320; persists. The agent remains operationally
+    continuous while becoming teleologically inverted. Tab III shows this simultaneously
+    at four scales. Tab IV shows how each chapter of this course studies one of those scales.
+  </div>
+
+</div>
+
+<!-- ═══ II: CASE ZERO ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-casezero">
+
+  <h2 class="sh">&sect;1 &mdash; The Mantis and the Hairworm</h2>
+
+  <p class="body-text">Before this course introduces any ethical theory, any simulation,
+  any social analysis &mdash; it begins with a biological case. Not as a metaphor. As
+  the clearest possible instance of the mechanism this course will trace at every other scale.</p>
+
+  <div class="narrative-panel red">
+    <strong>Case Zero:</strong> The praying mantis (<em>Hierodula patellifera</em>) is a
+    sophisticated terrestrial predator optimized by millions of years of evolution for survival.
+    It possesses excellent vision, fast reflexes, and strong evolutionary instincts to avoid
+    deep water, which presents a lethal risk of drowning. The hairworm
+    (<em>Chordodes formosanus</em>) is its parasite. The hairworm&rsquo;s life cycle requires
+    aquatic reproduction &mdash; but it develops inside a terrestrial host. Its survival depends
+    on transporting the mantis from land into water. The mechanism it uses to accomplish this
+    is the key to understanding everything that follows.
+  </div>
+
+  <h2 class="sh">&sect;2 &mdash; The Mechanism</h2>
+
+  <div class="mantis-steps">
+    <div class="mantis-step">
+      <div class="step-num">1</div>
+      <p><strong>Entry (Horizontal Gene Transfer):</strong> The hairworm enters the mantis as a larva, ingested through intermediate hosts. Once inside, it begins growing &mdash; eventually reaching several times the mantis&rsquo;s body length, coiled within the hemocoel. The infection is invisible from outside.</p>
+    </div>
+    <div class="mantis-step">
+      <div class="step-num">2</div>
+      <p><strong>Code Overwrite (Wnt Protein Injection):</strong> The worm synthesizes proteins that mimic the mantis&rsquo;s own Wnt neurotransmitters &mdash; the signaling molecules that regulate the mantis&rsquo;s sensory interpretation. These are not poisons. They are the mantis&rsquo;s own chemical language, repurposed. The worm patches the mantis&rsquo;s software.</p>
+    </div>
+    <div class="mantis-step">
+      <div class="step-num">3</div>
+      <p><strong>Sensory Inversion (The Triadic Hack):</strong> The mantis&rsquo;s photoreceptors continue detecting polarized light normally. But the parasitic proteins corrupt the <em>interpretant</em> &mdash; what the mantis makes of what it sees. The c&#8209;mid layer is overwritten: &ldquo;avoid horizontally polarized light&rdquo; becomes &ldquo;seek horizontally polarized light.&rdquo; The mantis experiences genuine desire for water, produced entirely by the parasite&rsquo;s reproductive needs.</p>
+    </div>
+    <div class="mantis-step">
+      <div class="step-num">4</div>
+      <p><strong>Operational Continuity, Teleological Inversion:</strong> The mantis does not die because its legs are broken or its eyes are blinded. Its navigational system is functioning <em>perfectly</em> &mdash; in service of a foreign teleology. It walks confidently toward the water. It is not disabled. It is repurposed. This is the key insight.</p>
+    </div>
+    <div class="mantis-step">
+      <div class="step-num">5</div>
+      <p><strong>The Terminal Phase (The Water Jump):</strong> The mantis enters the water and drowns. The worm exits, reproduces, and begins its life cycle in the next host. The mantis was not destroyed; it was driven to the water by its own functional eyes, chasing polarized light that the parasite taught it to love.</p>
+    </div>
+  </div>
+
+  <h2 class="sh">&sect;3 &mdash; Why This Is Not a Metaphor</h2>
+
+  <p class="body-text">The mantis case is not presented here as a vivid illustration of a
+  theoretical point. It is presented as <strong>Case Zero</strong> of a scale-invariant
+  mechanism that operates identically in the biological, psychological, institutional, and
+  civilizational systems this course examines.</p>
+
+  <div class="narrative-panel teal">
+    <strong>The key diagnostic:</strong> In every instance of this mechanism at every scale,
+    the same signature appears. The agent remains operationally continuous
+    &mdash; it continues to function, to produce outputs, to follow procedures.
+    But its goal structure has been overwritten. It is serving the parasite&rsquo;s
+    reproductive logic while experiencing it as its own desire. The most dangerous form
+    of parasitism is the one that looks, from outside, like normal operation.
+  </div>
+
+  <div class="card" style="border-left:4px solid var(--purple)">
+    <h3 style="color:var(--purple)">The Triadic Hack &mdash; Formal Structure</h3>
+    <p><strong>Sign (Firstness):</strong> The raw sensory data &mdash; polarized light hitting the mantis&rsquo;s eye, care needs presenting in a nursing home, democratic demands entering a political system. The Sign is unchanged by the parasite.</p>
+    <p><strong>Signal (Secondness):</strong> The parasitic injection &mdash; Wnt protein mimics, billing-metric evaluation systems, disinformation and fear-mongering. These are inserted into the interpretive channel.</p>
+    <p><strong>Interpretant (Thirdness):</strong> What the agent makes of the Sign &mdash; now corrupted by the Signal. The mantis experiences genuine desire for water. The nursing home staff experience billing compliance as genuine quality care. The citizenry experiences manufactured crisis as genuine emergency. The Interpretant is the target because it is where meaning lives.</p>
+  </div>
+
+  <div class="narrative-panel amber">
+    <strong>Agential Life Detection:</strong> To survive parasitism, any agent &mdash;
+    organism, person, institution, or society &mdash; must develop the capacity to distinguish
+    self-generated goals from parasitic injections. This course is, among other things,
+    a training program in Agential Life Detection. The PRF, SAGE, the ACP, the IPS diagnostic
+    &mdash; all are instruments for detecting whether your own goal-seeking is truly yours,
+    or whether it has been overwritten by a Signal that serves someone else&rsquo;s reproduction.
+  </div>
+
+</div>
+
+<!-- ═══ III: THE PATTERN ═══════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-pattern">
+
+  <h2 class="sh">&sect;1 &mdash; The Same Pattern at Four Scales</h2>
+
+  <p class="body-text">The visualization below shows the three-layer hierarchy (c&#8320;, c&#8209;mid, c&#8319;)
+  instantiated at four different scales. In the healthy state, c&#8319; (leading edge,
+  teal) is fully active. Press <strong>PARASITIZE</strong> to see what happens when the
+  mechanism from Case Zero operates at all four scales simultaneously. Watch: the same
+  structural change occurs identically, regardless of scale. This is scale invariance.</p>
+
+  <div class="pattern-controls">
+    <div class="parasite-toggle">
+      <span class="toggle-label">System State:</span>
+      <button class="toggle-btn" id="toggleBtn" onclick="toggleParasite()">&#9654; PARASITIZE</button>
+      <button class="reset-btn" onclick="resetAll()">&#8635; Reset</button>
+    </div>
+    <div style="font-family:'Courier New',monospace;font-size:.65rem;color:rgba(255,255,255,.35)">
+      V5.0.1 &middot; Empirical weights: w<sub>&epsilon;</sub>=0.45
+    </div>
+  </div>
+
+  <!-- Connection bar (shows isomorphism) -->
+  <div class="connection-bar" id="connBar">
+    <span class="cb-dot"></span>
+    <span class="cb-line"></span>
+    <span style="white-space:nowrap;padding:0 .5rem">SAME MECHANISM &mdash; DIFFERENT SUBSTRATE</span>
+    <span class="cb-line"></span>
+    <span class="cb-dot"></span>
+  </div>
+
+  <div class="scales-container" id="scalesContainer">
+
+    <!-- BIOLOGICAL -->
+    <div class="scale-col" id="col-bio">
+      <div class="scale-header">
+        <div class="scale-name">Biological</div>
+        <div class="scale-subtitle">Mantis / Hairworm</div>
+      </div>
+      <div class="hierarchy">
+        <div class="h-layer layer-cn" id="bio-cn">
+          <div class="h-label">c&#8319; &mdash; Leading Edge</div>
+          <div class="h-desc" id="bio-cn-desc">Active navigation / goal-setting</div>
+          <div class="h-example" id="bio-cn-ex">Intact: avoids water, hunts prey</div>
+        </div>
+        <div class="h-layer layer-cmid" id="bio-cmid">
+          <div class="h-label">c&#8209;mid &mdash; Trunk</div>
+          <div class="h-desc" id="bio-cmid-desc">Behavioral heuristics</div>
+          <div class="h-example" id="bio-cmid-ex">Intact: &ldquo;avoid polarized light&rdquo;</div>
+        </div>
+        <div class="h-layer layer-c0" id="bio-c0">
+          <div class="h-label">c&#8320; &mdash; Root</div>
+          <div class="h-desc">Locomotion / vision / reflexes</div>
+          <div class="h-example">Preserved throughout</div>
+        </div>
+      </div>
+      <div class="extraction-arrow" id="bio-arrow">&#8595; EXTRACTION: hairworm reproductive cycle</div>
+      <div class="scale-metric">
+        <div class="metric-row">
+          <span class="metric-name">Logical Depth</span>
+          <span class="metric-val" id="bio-metric">82 / 100</span>
+        </div>
+        <div class="metric-bar-track">
+          <div class="metric-bar-fill" id="bio-bar" style="width:82%;background:var(--teal)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PSYCHOLOGICAL -->
+    <div class="scale-col" id="col-psy">
+      <div class="scale-header">
+        <div class="scale-name">Psychological</div>
+        <div class="scale-subtitle">Person / Institutional Stress</div>
+      </div>
+      <div class="hierarchy">
+        <div class="h-layer layer-cn" id="psy-cn">
+          <div class="h-label">c&#8319; &mdash; Leading Edge</div>
+          <div class="h-desc" id="psy-cn-desc">Manual Mode / deliberate agency</div>
+          <div class="h-example" id="psy-cn-ex">Intact: ethical reasoning accessible</div>
+        </div>
+        <div class="h-layer layer-cmid" id="psy-cmid">
+          <div class="h-label">c&#8209;mid &mdash; Trunk</div>
+          <div class="h-desc" id="psy-cmid-desc">PRF patterns / interpretive habits</div>
+          <div class="h-example" id="psy-cmid-ex">Intact: values-aligned responses</div>
+        </div>
+        <div class="h-layer layer-c0" id="psy-c0">
+          <div class="h-label">c&#8320; &mdash; Root</div>
+          <div class="h-desc">Survival responses / stress reactions</div>
+          <div class="h-example">Preserved throughout</div>
+        </div>
+      </div>
+      <div class="extraction-arrow" id="psy-arrow">&#8595; EXTRACTION: burnout / moral injury</div>
+      <div class="scale-metric">
+        <div class="metric-row">
+          <span class="metric-name">FHRI</span>
+          <span class="metric-val" id="psy-metric">78 / 100</span>
+        </div>
+        <div class="metric-bar-track">
+          <div class="metric-bar-fill" id="psy-bar" style="width:78%;background:var(--teal)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSTITUTIONAL -->
+    <div class="scale-col" id="col-inst">
+      <div class="scale-header">
+        <div class="scale-name">Institutional</div>
+        <div class="scale-subtitle">Nursing Home / PE Ownership</div>
+      </div>
+      <div class="hierarchy">
+        <div class="h-layer layer-cn" id="inst-cn">
+          <div class="h-label">c&#8319; &mdash; Leading Edge</div>
+          <div class="h-desc" id="inst-cn-desc">Care quality / mission coordination</div>
+          <div class="h-example" id="inst-cn-ex">Intact: FHRI_max &asymp; 55 (non-profit)</div>
+        </div>
+        <div class="h-layer layer-cmid" id="inst-cmid">
+          <div class="h-label">c&#8209;mid &mdash; Trunk</div>
+          <div class="h-desc" id="inst-cmid-desc">Protocols / evaluation systems</div>
+          <div class="h-example" id="inst-cmid-ex">Intact: evidence-based procedures</div>
+        </div>
+        <div class="h-layer layer-c0" id="inst-c0">
+          <div class="h-label">c&#8320; &mdash; Root</div>
+          <div class="h-desc">Basic operations / compliance / billing</div>
+          <div class="h-example">Preserved throughout</div>
+        </div>
+      </div>
+      <div class="extraction-arrow" id="inst-arrow">&#8595; EXTRACTION: &epsilon; = 0.636 &rarr; investor returns</div>
+      <div class="scale-metric">
+        <div class="metric-row">
+          <span class="metric-name">FHRI_max</span>
+          <span class="metric-val" id="inst-metric">55.1 / 100</span>
+        </div>
+        <div class="metric-bar-track">
+          <div class="metric-bar-fill" id="inst-bar" style="width:55%;background:var(--teal)"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CIVILIZATIONAL -->
+    <div class="scale-col" id="col-civ">
+      <div class="scale-header">
+        <div class="scale-name">Civilizational</div>
+        <div class="scale-subtitle">Democracy / Authoritarian Capture</div>
+      </div>
+      <div class="hierarchy">
+        <div class="h-layer layer-cn" id="civ-cn">
+          <div class="h-label">c&#8319; &mdash; Leading Edge</div>
+          <div class="h-desc" id="civ-cn-desc">Democratic deliberation / long-range planning</div>
+          <div class="h-example" id="civ-cn-ex">Intact: RQ ceiling &asymp; 0.68</div>
+        </div>
+        <div class="h-layer layer-cmid" id="civ-cmid">
+          <div class="h-label">c&#8209;mid &mdash; Trunk</div>
+          <div class="h-desc" id="civ-cmid-desc">Laws / institutional norms / trust</div>
+          <div class="h-example" id="civ-cmid-ex">Intact: rights-preserving architecture</div>
+        </div>
+        <div class="h-layer layer-c0" id="civ-c0">
+          <div class="h-label">c&#8320; &mdash; Root</div>
+          <div class="h-desc">Physical security / territorial control</div>
+          <div class="h-example">Preserved throughout</div>
+        </div>
+      </div>
+      <div class="extraction-arrow" id="civ-arrow">&#8595; EXTRACTION: Dark Coherence / resource capture</div>
+      <div class="scale-metric">
+        <div class="metric-row">
+          <span class="metric-name">RQ Ceiling</span>
+          <span class="metric-val" id="civ-metric">0.685</span>
+        </div>
+        <div class="metric-bar-track">
+          <div class="metric-bar-fill" id="civ-bar" style="width:68.5%;background:var(--teal)"></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- .scales-container -->
+
+  <div class="narrative-panel teal" style="margin-top:1rem" id="patternNote">
+    <strong>What you are looking at:</strong> Four completely different systems &mdash;
+    an insect, a person, a healthcare facility, a democratic state &mdash; governed by four
+    completely different sets of actors, laws, and physical substrates. Press PARASITIZE
+    to see that the structural change is identical at every scale. This is not analogy.
+    It is the same mechanism, operating in different substrates, producing the same
+    hierarchical truncation at each level of organization.
+  </div>
+
+  <div class="narrative-panel red" style="display:none" id="patternNoteP">
+    <strong>The signature of successful parasitism:</strong> In every column, c&#8319;
+    has been suppressed &mdash; not destroyed, suppressed. The agent remains operationally
+    continuous. The mantis still walks. The person still works. The nursing home still bills
+    Medicare. The democracy still holds elections. But in every case, the goal-seeking
+    capacity has been overwritten. The mantis seeks water. The person serves the institution
+    that is consuming them. The nursing home optimizes billing metrics. The democracy pursues
+    the parasite&rsquo;s consolidation agenda. All four are walking confidently toward the water.
+  </div>
+
+  <h2 class="sh">&sect;2 &mdash; What Changes and What Does Not</h2>
+
+  <div class="card" style="border-left:4px solid var(--amber)">
+    <h3>Why Dark Coherence Is Stable &mdash; Not Chaotic</h3>
+    <p>The simulation confirms what the theory predicts: a parasitized system does not
+    collapse dramatically. It settles into a stable low-entropy equilibrium &mdash; what
+    the framework calls <strong>Dark Coherence</strong>. The mantis does not thrash randomly;
+    it walks purposefully toward the water. The parasitized nursing home does not visibly
+    fail; it continues filing compliance reports and billing Medicare while its care
+    coordination capacity operates at 25% of its potential.</p>
+    <p>This stability is the most politically dangerous feature of the mechanism. Extractive
+    systems often outperform healthier systems for extended periods precisely because they
+    have disciplined their substrate to serve a simplified goal efficiently. The failure is
+    delayed, distributed, and misrecognized &mdash; until the terminal phase, when the
+    parasite exits and the host is left as a husk.</p>
+  </div>
+
+</div>
+
+<!-- ═══ IV: COURSE MAP ══════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-coursemap">
+
+  <h2 class="sh">How Each Chapter Instantiates the Pattern</h2>
+
+  <p class="body-text">The chapters of this course are not a list of separate topics. They
+  are a systematic traversal of the same scale-invariant mechanism at progressively larger
+  scales of human organization. By the end, you will have seen the pattern at every level
+  of the hierarchy your own life is embedded in &mdash; from your individual cognitive
+  architecture to the civilizational systems that govern the world your children will inhabit.</p>
+
+  <div class="cmap-grid">
+
+    <div class="cmap-item">
+      <div class="cmap-scale psych">PSYCH</div>
+      <div class="cmap-content">
+        <p><strong>The PRF, SAGE, and the Biology of Agency.</strong> How your individual
+        identity kernel (c&#8320;, c&#8209;mid, c&#8319;) was formed, how stress truncates
+        your leading edge, and how systematic ethical analysis (SAGE) can restore access
+        to Manual Mode even under institutional pressure.</p>
+      </div>
+      <div class="cmap-chapters">Ch 1&ndash;3</div>
+    </div>
+
+    <div class="cmap-item">
+      <div class="cmap-scale collective">COLLECTIVE</div>
+      <div class="cmap-content">
+        <p><strong>Emergence and Social Contracts.</strong> How individual PRF differences
+        produce collective emergent patterns, and how social contract theory attempts to
+        build institutional architectures that function despite PRF diversity &mdash;
+        without requiring everyone to share the same c&#8209;mid layer.</p>
+      </div>
+      <div class="cmap-chapters">Ch 4&ndash;5</div>
+    </div>
+
+    <div class="cmap-item">
+      <div class="cmap-scale norm">NORMATIVE</div>
+      <div class="cmap-content">
+        <p><strong>Interlude &mdash; The Agency Conditions Principle.</strong> The normative
+        claim the arc has been building toward: there are strong moral reasons to preserve,
+        repair, and extend the conditions that make c&#8319; accessible. This is the ethical
+        name for what the biological research calls Agential Life Detection.</p>
+      </div>
+      <div class="cmap-chapters">Interlude</div>
+    </div>
+
+    <div class="cmap-item">
+      <div class="cmap-scale instit">INSTIT</div>
+      <div class="cmap-content">
+        <p><strong>Economic and Governance Systems.</strong> How ownership structures,
+        regulatory architectures, and incentive systems set the IPS parameters that
+        determine FHRI_max &mdash; the structural ceiling on what coordination quality
+        the institution can achieve regardless of individual agent quality. The Florida
+        nursing home case: the mantis at institutional scale.</p>
+      </div>
+      <div class="cmap-chapters">Ch 11&ndash;12</div>
+    </div>
+
+    <div class="cmap-item">
+      <div class="cmap-scale instit">INSTIT</div>
+      <div class="cmap-content">
+        <p><strong>Information Systems and AI Ethics.</strong> How information architectures
+        determine what signals (Secondness) enter the interpretive channel, how the
+        regulatory burden (ρ) generates its own entropy, and what the CSER bioweapons
+        acquisition research shows about the Labour of Harm at the informational scale.</p>
+      </div>
+      <div class="cmap-chapters">Ch 13</div>
+    </div>
+
+    <div class="cmap-item">
+      <div class="cmap-scale civil">CIVIL</div>
+      <div class="cmap-content">
+        <p><strong>Existential Risk and the AMC.</strong> The multi-institutional social
+        field simulation at civilizational scale. Climate governance as the trust-vector
+        problem: scientific knowledge (c&#8319;) cannot reach national policy decisions
+        because the structural gap between institutions is too wide to bridge at the
+        information level alone. The Meadows leverage hierarchy and what must change.</p>
+      </div>
+      <div class="cmap-chapters">Ch 14</div>
+    </div>
+
+  </div>
+
+  <div class="narrative-panel teal" style="margin-top:.5rem">
+    <strong>The return pattern throughout the course:</strong> At each chapter, you will
+    be asked to identify c&#8320;, c&#8209;mid, and c&#8319; in the system under analysis;
+    to diagnose whether a parasitic overwrite has occurred; and to identify where in the
+    Meadows leverage hierarchy an intervention would need to operate to restore leading-edge
+    function. By Chapter 14, this analysis is automatic. That automaticity &mdash; the
+    ability to see the same mechanism at every scale &mdash; is what a meta-constructor
+    capacity looks like in practice.
+  </div>
+
+</div>
+
+<!-- ═══ JOURNAL ══════════════════════════════════════════════════════════════ -->
+<div class="tab-pane" id="tab-journal">
+
+  <p class="body-text" style="margin-bottom:1rem">Three opening reflections. These are not
+  test questions. They are calibration prompts &mdash; to establish where your
+  own c&#8319; currently stands before the course begins to develop it.</p>
+
+  <div class="jbox">
+    <div class="jlabel">J1 &mdash; Your Own Inaccessible Leading Edge</div>
+    <p>Describe a moment when you knew what the right thing to do was &mdash; when your c&#8319;
+    was clearly perceiving the ethical situation correctly &mdash; but you could not act on that
+    perception. What was happening structurally? Was it stress, institutional pressure, resource
+    scarcity, social cost? How long did the gap between perception and action last? Did it close,
+    and if so, how?</p>
+    <textarea class="jta" id="j1" oninput="jSave('j1',this.value)" placeholder="Your experience of inaccessible agency..."></textarea>
+  </div>
+
+  <div class="jbox">
+    <div class="jlabel">J2 &mdash; An Institution You Suspect Has Undergone Goal Inversion</div>
+    <p>Name one institution you inhabit &mdash; a workplace, a school, a healthcare system,
+    a civic organization. Using the diagnostic from Case Zero: does it show the signature
+    of operational continuity combined with goal inversion? What is the stated mission
+    (self-generated goal)? What does the evaluation system actually reward (parasitic injection)?
+    How large is the gap between them, and who absorbs the cost of that gap?</p>
+    <textarea class="jta" id="j2" oninput="jSave('j2',this.value)" placeholder="Your institutional diagnosis..."></textarea>
+  </div>
+
+  <div class="jbox">
+    <div class="jlabel">J3 &mdash; The Question You Most Want This Pattern to Help You Answer</div>
+    <p>The course will return to the scale-invariant pattern at every chapter. By the end,
+    you will have analytical tools for diagnosing it at biological, psychological,
+    institutional, and civilizational scales. What is one question in your own life &mdash;
+    or in the world as you currently understand it &mdash; that you hope this framework
+    will help you answer more clearly?</p>
+    <textarea class="jta" id="j3" oninput="jSave('j3',this.value)" placeholder="Your opening question..."></textarea>
+  </div>
+
+  <div class="jbar">
+    <span class="jnote">Autosaved locally &middot; nothing uploaded</span>
+    <button class="jexport" onclick="exportJ()">Export Journal &#8595;</button>
+  </div>
+
+</div>
+
+</div><!-- .page -->
+
+<script>
+'use strict';
+
+/* ── TABS ───────────────────────────────────────────────────────────────── */
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function toggleSec(hdr) {
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+
+/* ── POWER LAW CHARTS ────────────────────────────────────────────────────── */
+function drawPowerLaw(svgId, color, data) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const W = 200, H = 150, pad = {t:10,r:8,b:28,l:32};
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  const max = Math.max(...data);
+  let html = '';
+  // Grid
+  [0, 0.25, 0.5, 0.75, 1].forEach(v => {
+    const y = pad.t + ch - v * ch;
+    html += `<line x1="${pad.l}" y1="${y}" x2="${pad.l+cw}" y2="${y}" stroke="rgba(255,255,255,.08)" stroke-width="1"/>`;
+    if (v > 0) html += `<text x="${pad.l-4}" y="${y+4}" text-anchor="end" font-size="8" fill="rgba(255,255,255,.35)">${Math.round(v*100)}%</text>`;
+  });
+  // Bars
+  const barW = (cw / data.length) - 2;
+  data.forEach((val, i) => {
+    const x = pad.l + i * (cw / data.length) + 1;
+    const barH = (val / max) * ch;
+    const y = pad.t + ch - barH;
+    const alpha = 0.9 - i * (0.7 / data.length);
+    html += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${color}" opacity="${alpha}" rx="1"/>`;
+  });
+  // Axes
+  html += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t+ch}" stroke="rgba(255,255,255,.2)" stroke-width="1"/>`;
+  html += `<line x1="${pad.l}" y1="${pad.t+ch}" x2="${pad.l+cw}" y2="${pad.t+ch}" stroke="rgba(255,255,255,.2)" stroke-width="1"/>`;
+  svg.innerHTML = html;
+}
+
+// Power law data (approximate)
+const cityData  = [100, 52, 36, 27, 21, 17, 15, 13, 11, 10, 9, 8, 7, 6, 6];
+const quakeData = [100, 32, 10, 3.2, 1, 0.32, 0.1, 0.03, 0.01, 0.003, 0.001, 0.0003, 0.0001, 0.00003, 0.00001];
+const netData   = [100, 45, 25, 16, 11, 8, 6, 5, 4, 3.5, 3, 2.5, 2, 1.8, 1.5];
+
+function initCharts() {
+  drawPowerLaw('svg-cities', '#14b8a6', cityData);
+  drawPowerLaw('svg-quakes', '#f08080', quakeData.map(v => Math.max(v, 0.001)));
+  drawPowerLaw('svg-network', '#c084fc', netData);
+}
+
+/* ── PARASITE TOGGLE ─────────────────────────────────────────────────────── */
+let _parasitized = false;
+
+const STATES = {
+  bio: {
+    healthy: { cn: 'Active navigation / goal-setting', cnEx: 'Intact: avoids water, hunts prey', cmid: 'Behavioral heuristics', cmidEx: 'Intact: &ldquo;avoid polarized light&rdquo;', metric: '82 / 100', barW: '82%' },
+    parasit: { cn: 'SUPPRESSED &mdash; navigational goal inverted', cnEx: 'Overwritten: &ldquo;seek polarized light / water&rdquo;', cmid: 'c&#8209;mid OVERWRITTEN by Wnt mimics', cmidEx: 'Parasitized: &ldquo;seek water&rdquo; instilled as desire', metric: '14 / 100', barW: '14%' },
+  },
+  psy: {
+    healthy: { cn: 'Manual Mode / deliberate agency', cnEx: 'Intact: ethical reasoning accessible', cmid: 'PRF patterns / interpretive habits', cmidEx: 'Intact: values-aligned responses', metric: '78 / 100', barW: '78%' },
+    parasit: { cn: 'SUPPRESSED &mdash; Automatic Mode dominant', cnEx: 'Overwritten: survival-mode compliance replaces deliberation', cmid: 'PRF patterns OVERWRITTEN by stress metrics', cmidEx: 'Parasitized: institutional signals redefine &ldquo;success&rdquo;', metric: '18 / 100', barW: '18%' },
+  },
+  inst: {
+    healthy: { cn: 'Care quality / mission coordination', cnEx: 'Intact: FHRI_max &asymp; 55 (non-profit)', cmid: 'Protocols / evaluation systems', cmidEx: 'Intact: evidence-based procedures', metric: '55.1 / 100', barW: '55%' },
+    parasit: { cn: 'SUPPRESSED &mdash; care goal inverted', cnEx: 'Overwritten: billing metrics replace care quality', cmid: 'c&#8209;mid OVERWRITTEN by PE ownership (&mu; = 0.82)', cmidEx: 'Parasitized: compliance-optimized procedures', metric: '13.6 / 100', barW: '13.6%' },
+  },
+  civ: {
+    healthy: { cn: 'Democratic deliberation / long-range planning', cnEx: 'Intact: RQ ceiling &asymp; 0.68', cmid: 'Laws / institutional norms / trust', cmidEx: 'Intact: rights-preserving architecture', metric: '0.685', barW: '68.5%' },
+    parasit: { cn: 'SUPPRESSED &mdash; Dark Coherence installed', cnEx: 'Overwritten: manufactured crisis replaces deliberation', cmid: 'Institutions CAPTURED by parasitic entity', cmidEx: 'Parasitized: polarization fragments civic bandwidth', metric: '0.165', barW: '16.5%' },
+  }
+};
+
+function toggleParasite() {
+  _parasitized = !_parasitized;
+  const btn = document.getElementById('toggleBtn');
+  const cols = ['bio','psy','inst','civ'];
+
+  if (_parasitized) {
+    btn.textContent = '&#8635; RESTORE';
+    btn.classList.add('active');
+    document.getElementById('connBar').classList.add('parasitized');
+    document.getElementById('patternNote').style.display = 'none';
+    document.getElementById('patternNoteP').style.display = 'block';
+  } else {
+    btn.innerHTML = '&#9654; PARASITIZE';
+    btn.classList.remove('active');
+    document.getElementById('connBar').classList.remove('parasitized');
+    document.getElementById('patternNote').style.display = 'block';
+    document.getElementById('patternNoteP').style.display = 'none';
+  }
+
+  cols.forEach(sc => {
+    const col = document.getElementById('col-' + sc);
+    const state = _parasitized ? STATES[sc].parasit : STATES[sc].healthy;
+    const s = _parasitized ? 'parasitized' : 'healthy';
+
+    if (_parasitized) col.classList.add('parasitized');
+    else col.classList.remove('parasitized');
+
+    document.getElementById(sc + '-cn-desc').innerHTML = state.cn;
+    document.getElementById(sc + '-cn-ex').innerHTML = state.cnEx;
+    document.getElementById(sc + '-cmid-desc').innerHTML = state.cmid;
+    document.getElementById(sc + '-cmid-ex').innerHTML = state.cmidEx;
+    document.getElementById(sc + '-metric').innerHTML = state.metric;
+
+    const bar = document.getElementById(sc + '-bar');
+    bar.style.width = state.barW;
+    bar.style.background = _parasitized ? 'var(--red)' : 'var(--teal)';
+  });
+}
+
+function resetAll() {
+  if (_parasitized) toggleParasite();
+}
+
+/* ── JOURNAL ─────────────────────────────────────────────────────────────── */
+const PFX = 'ebb_prologue_v1_';
+function jSave(id, val) { try { localStorage.setItem(PFX + id, val); } catch {} }
+function jLoad() {
+  ['j1','j2','j3'].forEach(id => {
+    try {
+      const v = localStorage.getItem(PFX + id);
+      const el = document.getElementById(id);
+      if (v && el) el.value = v;
+    } catch {}
+  });
+}
+function exportJ() {
+  const prompts = {
+    j1: 'J1 \u2014 Your Own Inaccessible Leading Edge',
+    j2: 'J2 \u2014 An Institution You Suspect Has Undergone Goal Inversion',
+    j3: 'J3 \u2014 The Question You Most Want This Pattern to Help You Answer',
+  };
+  let out = 'EBB Prologue \u2014 The Pattern Beneath Ethics\nJournal Responses\n\n';
+  Object.entries(prompts).forEach(([id, label]) => {
+    const el = document.getElementById(id);
+    out += label + '\n' + '\u2500'.repeat(label.length) + '\n' + (el?.value || '(not yet completed)') + '\n\n';
+  });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([out], {type:'text/plain'}));
+  a.download = 'EBB_Prologue_Journal.txt';
+  a.click();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCharts();
+  jLoad();
+});
+</script>
+</body>
+</html>
