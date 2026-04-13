@@ -694,6 +694,20 @@ textarea.jta.q5{min-height:140px;border-color:var(--amber);border-width:2px}
     <textarea class="jta q5" id="jta-q5" placeholder="My prediction for the Hanna simulation (Chapter 3):&#10;&#10;λ Raw will: ...&#10;Morphic suppression will: ...&#10;The metric most threatened will be: ...&#10;&#10;How Hanna's case differs structurally from the Challenger teleconference: ...&#10;&#10;What I expect the simulation to show that I cannot yet explain: ..." oninput="jSave('cq5',this.value)"></textarea>
     <div class="save-note" id="sn-cq5">✓ Saved</div>
   </div>
+
+  <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)">
+    <button onclick="downloadJournal()" style="
+      display:flex;align-items:center;gap:.55rem;
+      background:var(--teal-dark,#0d5e57);border:none;color:#fff;
+      padding:.75rem 1.5rem;border-radius:.45rem;cursor:pointer;
+      font-size:.88rem;font-weight:700;font-family:inherit;
+      transition:background .15s;width:100%;justify-content:center;">
+      ⬇ Download Journal as .txt
+    </button>
+    <p style="font-size:.75rem;color:var(--muted,#6b7280);margin-top:.45rem;text-align:center">
+      Exports all reflections and journal entries from every tab as a single text file.
+    </p>
+  </div>
 </div>
 
 </div><!-- end app-wrap -->
@@ -1309,6 +1323,81 @@ async function fetchAndSetPreset(name) {
 window.addEventListener('load', () => {
   sgSetPreset('challenger', document.getElementById('sgBtnA'));
 });
+
+// ── Journal Download ──────────────────────────────────────────────────────────
+function downloadJournal() {
+  const JP = 'ch2_';
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'});
+  const timeStr = now.toLocaleTimeString('en-US', {hour:'2-digit',minute:'2-digit'});
+
+  const sections = [
+    { key:'discovery',      heading:'DISCOVERY — Reflection on Boisjoly\'s Knowledge' },
+    { key:'memo',           heading:'THE MEMO — What Would You Have Done?' },
+    { key:'teleconference', heading:'TELECONFERENCE — Your Decision Under Pressure' },
+    { key:'simulation',     heading:'UCP SIMULATION — Reading Your Results' },
+    { key:'aftermath',      heading:'AFTERMATH — Structural Change' },
+    { key:'identity',       heading:'SYNTHESIS — Core Identity' },
+    { key:'rule',           heading:'SYNTHESIS — Non-Negotiable Rule' },
+    { key:'constructors',   heading:'SYNTHESIS — Alternative Constructors' },
+    { key:'cq1',            heading:'ETHICS JOURNAL Q1 — The Architectural Cause' },
+    { key:'cq2',            heading:'ETHICS JOURNAL Q2 — Theory and Structural Mechanism' },
+    { key:'cq3',            heading:'ETHICS JOURNAL Q3 — An Institution You Know' },
+    { key:'cq4',            heading:'ETHICS JOURNAL Q4 — The Limits of Simulation' },
+    { key:'cq5',            heading:'ETHICS JOURNAL Q5 — Forward Prediction (stored for Ch3)' },
+  ];
+
+  const divider = '─'.repeat(60);
+  const lines = [
+    'ETHICS BEYOND BOUNDARIES — Chapter 2',
+    'The Challenger Case Study: Personal Ethics Journal',
+    divider,
+    `Downloaded: ${dateStr} at ${timeStr}`,
+    divider,
+    '',
+  ];
+
+  let hasAnyContent = false;
+  sections.forEach(function(s) {
+    const val = (localStorage.getItem(JP + s.key) || '').trim();
+    lines.push(s.heading);
+    lines.push('');
+    if (val) {
+      hasAnyContent = true;
+      lines.push(val);
+    } else {
+      lines.push('(no entry)');
+    }
+    lines.push('');
+    lines.push(divider);
+    lines.push('');
+  });
+
+  // Also include the pre-simulation prediction if stored
+  const pred = (localStorage.getItem('ch2_pred') || localStorage.getItem('orient_cq5') || '').trim();
+  if (pred) {
+    lines.push('PRE-SIMULATION PREDICTION');
+    lines.push('');
+    lines.push(pred);
+    lines.push('');
+    lines.push(divider);
+    lines.push('');
+  }
+
+  lines.push('Ethics Beyond Boundaries — Ethics Institute, Saint Petersburg College');
+  lines.push('Chapter 2: The Challenger Disaster and the Architecture of Institutional Failure');
+
+  const text = lines.join('\n');
+  const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'EBB_Ch2_Challenger_Journal.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 </script>
 </body>
