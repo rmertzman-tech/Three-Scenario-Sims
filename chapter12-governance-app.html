@@ -478,7 +478,17 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
     <div class="narrative-panel teal">
       <strong>The research extension</strong> uses Social Field Theory's potential energy formulation <strong>PE = −k(S<sub>i</sub>I<sub>j</sub>/r<sub>ij</sub>)</strong>, where 1/r is the trust vector Γ between institutional actors. When you run the current simulation, you are measuring the suppression gap <em>within</em> one institution. The research extension measures the suppression gap <em>across</em> institutional boundaries — whether what the scientific institution knows can reach the legislative institution's decisions across a trust vector that has been eroding since the first IPCC report. That measurement is what determines whether Tim Palmer's findings can reach the governance decisions that need them. It is the missing instrument identified in the "From Agent to Civilization" framework.
     </div>
-    <p style="margin-top:.75rem;line-height:1.65;color:rgba(255,255,255,.75)">This limitation is not a failure of the current instrument. It is its precise horizon — the point where the current resolution ends and the next instrument begins. Every chapter of this course has taught you to read one level of the same measurement. Chapter 12 shows you the governance institution's suppression gap. The research sequence that follows shows you the inter-institutional field that produces all of them.</p>
+    <p style="margin-top:.75rem;line-height:1.65;color:rgba(255,255,255,.75)">This limitation is not a failure of the current instrument. It is its precise horizon — the point where the current resolution ends and the next instrument begins. Every chapter of this course has taught you to read one level of the same measurement. Chapter 12 shows you the governance institution’s suppression gap. The research sequence that follows shows you the inter-institutional field that produces all of them.</p>
+
+    <div class="narrative-panel amber" style="margin-top:.75rem">
+      <strong>Type 1 vs. Type 2 routing quality failure.</strong> The four simulation configurations reveal two structurally distinct failure modes that produce similar aggregate metrics but require completely different remedies.
+      <br><br>
+      <strong>Type 1 — Agent-level failure:</strong> Routing quality is low because the agent population has poor PRF alignment, low coherence, or inadequate evidence quality. The structural ceiling (FHRI_max) is high enough to permit better outcomes, but the current agent population is not reaching it. Remedy: agent-level intervention. Configuration B shows what this population can produce when structural conditions are right.
+      <br><br>
+      <strong>Type 2 — Structural ceiling failure (IPS):</strong> Routing quality is low because ε, μ, and ρ have imposed a ceiling below which no agent-level improvement can push outcomes. Configuration D makes this visible directly: agent FHRI = 82.0 (highly competent professionals), FHRI_max = 14.3. The 67.7-point gap is absorbed by the structural architecture before any of that competence reaches decisions. Remedy: structural reform. Agent-level intervention is wasted until the ceiling rises.
+      <br><br>
+      <strong>The diagnostic question:</strong> When you observe a governance institution with poor routing quality, which failure type is it? The simulation gives you the tool: run Config D parameters against a real institution’s known agent quality. If the suppression gap exceeds what agent quality explains, you are in a Type 2 failure — and the intervention strategy must change accordingly.
+    </div>
   </div>
 </div>
 
@@ -503,6 +513,11 @@ body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-se
       <div class="cfg-label">Configuration C</div>
       <div class="cfg-name">Reform Transition</div>
       <div class="cfg-desc">Captured → reform at step 4</div>
+    </button>
+    <button class="cfg-btn" id="cfg-D" onclick="selectConfig('D')">
+      <div class="cfg-label">Configuration D</div>
+      <div class="cfg-name">Boisjoly T4</div>
+      <div class="cfg-desc">Agent FHRI 82 · FHRI_max 14.3</div>
     </button>
   </div>
 
@@ -653,14 +668,16 @@ let _runLog = [];
 const GOV_MORPH_PRESETS = {
   'A': [0.07, 0.12, 0.18, 0.24, 0.30, 0.35, 0.39, 0.42],
   'C': [0.07, 0.12, 0.18, 0.24, 0.26, 0.27, 0.27, 0.28],
+  'D': [0.08, 0.14, 0.21, 0.28, 0.35, 0.40, 0.44, 0.47],
 };
-const GOV_MORPH_FINAL = { 'A': 0.42, 'C': 0.28 };
+const GOV_MORPH_FINAL = { 'A': 0.42, 'C': 0.28, 'D': 0.47 };
 
 // ── Config definitions ────────────────────────────────────────────────────
 const CONFIG_LABELS = {
   A: 'Configuration A: Captured Governance',
   B: 'Configuration B: Coherence-Preserving Governance',
   C: 'Configuration C: Reform Transition',
+  D: 'Configuration D: Boisjoly T4 — High Agent / High Parasitism',
 };
 
 const CONFIG_CALLOUTS = {
@@ -718,6 +735,22 @@ const PAYLOADS = {
       block_fields: { care: -0.25, fairness: -0.45, community: -0.35, boundary: 0.40 },
     },
   },
+  D: {
+    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
+    fixed_lambda_raw: 0.72,
+    worldview_distribution: {
+      role_order: 0.38, sacred_boundary: 0.22, liberal_individualist: 0.20,
+      ubuntu_relational: 0.12, indigenous_custodial: 0.08,
+    },
+    evidence_distribution: {
+      authority_weighted: 0.52, alternative_facts: 0.22,
+      tradition_weighted: 0.16, empirical_calibrated: 0.10,
+    },
+    scenario_physics: {
+      base_entropy: 0.55, base_stress: 0.60,
+      block_fields: { care: -0.30, fairness: -0.48, community: -0.38, boundary: 0.45 },
+    },
+  },
 };
 
 // ── Phased payload builder (V3.3 native) ─────────────────────────────────
@@ -770,6 +803,36 @@ function buildPhasedPayload(cfg, seed) {
       chapter_variables: {
         expert_routing: 0.68, citizen_voice: 0.62, capture_index: 0.22,
         procedural_legitimacy: 0.74, substantive_legitimacy: 0.66,
+      },
+    },
+    phases: [], interventions: [],
+  };
+
+  // Config D — Boisjoly T4: high agent FHRI, high structural parasitism
+  if (cfg === 'D') return {
+    ...common,
+    institution_state_lite: {
+      phase: 'baseline', policy_rigidity: 0.82, legitimacy: 0.58,
+      repair_bandwidth: 0.08, support_reserve: 0.06,
+      entropy_export: 0.72, routing_quality: 0.14, shared_task_strength: 0.12,
+      chapter_variables: {
+        expert_routing: 0.10, citizen_voice: 0.12, capture_index: 0.88,
+        procedural_legitimacy: 0.78, substantive_legitimacy: 0.14,
+      },
+    },
+    phases: [], interventions: [],
+  };
+
+  // Config D — Boisjoly T4: high agent FHRI, high structural parasitism
+  if (cfg === 'D') return {
+    ...common,
+    institution_state_lite: {
+      phase: 'baseline', policy_rigidity: 0.85, legitimacy: 0.55,
+      repair_bandwidth: 0.08, support_reserve: 0.06,
+      entropy_export: 0.72, routing_quality: 0.14, shared_task_strength: 0.12,
+      chapter_variables: {
+        expert_routing: 0.10, citizen_voice: 0.12, capture_index: 0.88,
+        procedural_legitimacy: 0.78, substantive_legitimacy: 0.14,
       },
     },
     phases: [], interventions: [],
@@ -1148,7 +1211,7 @@ function renderSxS() {
 
   let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">`;
   html += `<tr><td style="padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em;width:30%">Metric</td>`;
-  ['A','B','C'].forEach(k => {
+  ['A','B','C','D'].forEach(k => {
     html += `<td style="padding:.4rem .5rem;text-align:center;width:23%">
       <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${done.includes(k)?COLORS[k]:'rgba(255,255,255,.2)'}">
         ${done.includes(k) ? LABELS[k] : '—'}
@@ -1161,7 +1224,7 @@ function renderSxS() {
     html += `<td style="padding:.5rem .6rem">
       <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${label}</div>
       <div style="font-size:.66rem;color:rgba(255,255,255,.32)">${desc}</div></td>`;
-    ['A','B','C'].forEach(k => {
+    ['A','B','C','D'].forEach(k => {
       const d = done.includes(k);
       const val = d ? gv(k, key) : null;
       const pct = d ? Math.round(val * 100) : 0;
@@ -1228,7 +1291,7 @@ function renderRobustnessLog() {
 // ── UI helpers ────────────────────────────────────────────────────────────
 function selectConfig(cfg) {
   _config = cfg;
-  ['A','B','C'].forEach(k => {
+  ['A','B','C','D'].forEach(k => {
     document.getElementById(`cfg-${k}`).classList.toggle('active', k === cfg);
   });
   document.getElementById('configCallout').innerHTML = CONFIG_CALLOUTS[cfg];
