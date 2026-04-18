@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ch12 — The 2008 Financial Crisis: Triadic Overwrite at System Scale</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;--orange:#fb923c;--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:1.8rem 1.5rem 1.4rem;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(160deg,#0d1020 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(96,165,250,.1) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--blue);text-transform:uppercase;margin-bottom:.4rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;line-height:1.15;margin-bottom:.3rem}
+.ch-ttl em{color:var(--amber);font-style:italic}
+.ch-sub{font-size:.85rem;color:var(--muted);max-width:620px;margin:0 auto;line-height:1.55}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.6rem 1rem;background:var(--s);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--blue)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.38rem .8rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--blue);color:#000;border-color:var(--blue);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:960px;margin:0 auto}.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--blue);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.92rem;color:rgba(255,255,255,.85);margin:.8rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.72;font-size:.88rem}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel strong{color:var(--text)}
+.ssi-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.75rem 0}
+@media(max-width:580px){.ssi-trio{grid-template-columns:1fr}}
+.ssi-cell{border-radius:.4rem;padding:.8rem;border:1px solid var(--border)}
+.ssi-lbl{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.ssi-status{font-family:'DM Mono',monospace;font-size:.66rem;padding:.13rem .4rem;border-radius:.2rem;margin-bottom:.3rem;display:inline-block}
+.ssi-intact{background:rgba(74,222,128,.12);color:var(--green)}
+.ssi-modified{background:rgba(245,158,11,.12);color:var(--amber)}
+.ssi-replaced{background:rgba(248,113,113,.12);color:var(--red)}
+.sim-layout{display:grid;grid-template-columns:240px 1fr;gap:1rem;margin:.75rem 0}
+@media(max-width:680px){.sim-layout{grid-template-columns:1fr}}
+.sim-sidebar{display:flex;flex-direction:column;gap:.6rem}
+.sim-card{background:var(--s);border:1px solid var(--border);border-radius:.45rem;padding:.85rem}
+.sim-card h4{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.5rem}
+.era-btn{display:block;width:100%;padding:.5rem .75rem;border:1px solid var(--border);background:var(--s2);border-radius:.35rem;cursor:pointer;font-size:.78rem;color:var(--muted);transition:all .2s;text-align:left;margin-bottom:.35rem}
+.era-btn:hover{color:var(--text);border-color:var(--amber)}
+.era-btn.on{border-color:var(--amber);background:rgba(245,158,11,.08);color:var(--text)}
+.era-yr{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber);display:block;margin-bottom:.1rem}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.metric-cell{background:var(--s2);border-radius:.35rem;padding:.55rem;text-align:center}
+.metric-val{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;margin-bottom:.1rem}
+.metric-lbl{font-size:.58rem;color:var(--muted);font-family:'DM Mono',monospace}
+.ctrl-row{display:flex;gap:.5rem;align-items:center;margin:.35rem 0}
+.ctrl-lbl{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted);width:100px;flex-shrink:0}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;outline:none;cursor:pointer;background:rgba(255,255,255,.12)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--blue);cursor:pointer}
+.ctrl-val{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--blue);width:36px;text-align:right}
+.def-wrap{display:flex;align-items:center;gap:.6rem;padding:.55rem;background:var(--s2);border-radius:.35rem;cursor:pointer;border:1px solid transparent}
+.def-wrap.on{border-color:var(--teal);background:rgba(20,184,166,.06)}
+.def-wrap input{accent-color:var(--teal);cursor:pointer}
+.def-wrap label{font-size:.8rem;cursor:pointer;line-height:1.35}
+.fhri-track{height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:.4rem 0}
+.fhri-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.fhri-hi{background:linear-gradient(90deg,var(--green),#86efac)}
+.fhri-mi{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fhri-lo{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.canvas-wrap{background:var(--s);border:1px solid var(--border);border-radius:.5rem;padding:.75rem}
+.canvas-wrap h4{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.5rem;text-align:center}
+canvas{display:block;margin:0 auto;border-radius:.3rem}
+.legend{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin:.4rem 0}
+.legend-item{display:flex;align-items:center;gap:.35rem;font-size:.7rem;color:var(--muted)}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.narr{background:#0a0e1c;border:1px solid var(--border);border-radius:.4rem;padding:.85rem 1rem;margin:.6rem 0;font-size:.83rem;line-height:1.7;min-height:78px;color:rgba(255,255,255,.75)}
+.narr strong{color:var(--text)}
+.rcol-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.75rem 0}
+@media(max-width:580px){.rcol-grid{grid-template-columns:1fr}}
+.rcol{border:1px solid var(--border);border-radius:.45rem;overflow:hidden}
+.rcol-head{padding:.7rem 1rem;font-weight:600;font-size:.85rem;border-bottom:1px solid var(--border)}
+.rcol-body{padding:.85rem 1rem;font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.75)}
+.t1-head .rcol-head{background:rgba(20,184,166,.08);color:var(--teal)}
+.t2-head .rcol-head{background:rgba(96,165,250,.08);color:var(--blue)}
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.87rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--blue);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:86px;background:#0a0e1c;border:none;border-top:1px solid var(--border);padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+button.btn{background:var(--blue);color:#000;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.5rem 1.1rem;border-radius:.35rem;cursor:pointer;margin:.25rem .2rem}
+button.btn.out{background:transparent;color:var(--blue);border:1px solid var(--blue)}
+.bot-nav{max-width:960px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--blue);color:#000;font-weight:600;font-size:.76rem;padding:.4rem .9rem;border-radius:.35rem;display:none;z-index:999}
+.sf.show{display:block}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="ch-lbl">Chapter 12 &middot; Governance &middot; Financial Systems Case Study</div>
+  <h1 class="ch-ttl">The <em>2008 Financial Crisis</em></h1>
+  <p class="ch-sub">Triadic Overwrite at financial system scale &mdash; P-SAGE applied to the 1999&ndash;2010 arc: Glass-Steagall as P-adic access instrument, rating agency capture as &sigma; accumulation, and the T1/T2 distinction in recovery</p>
+</div>
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('psage')">P-SAGE Analysis</button>
+  <button class="tb" onclick="sw('sim')">Live Simulation</button>
+  <button class="tb" onclick="sw('ips')">IPS Profile</button>
+  <button class="tb" onclick="sw('recovery')">Recovery: T1 vs T2</button>
+  <button class="tb" onclick="sw('today')">The System Today</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- PSAGE -->
+<div class="pane active" id="pane-psage">
+  <h2 class="st">P-SAGE: The Formally Derived Structural Finding</h2>
+  <div class="panel blue"><strong>The 2008 financial crash is not primarily an economics story.</strong> It is a Triadic Overwrite story at financial system scale. The Sign remained intact through 2007. The Interpretant had been replaced a decade earlier. The crash was the substrate consequence &mdash; &phi; &mdash; becoming visible all at once.</div>
+  <div class="ssi-trio">
+    <div class="ssi-cell" style="background:rgba(74,222,128,.04)">
+      <div class="ssi-lbl">Sign (Firstness)</div><span class="ssi-status ssi-intact">INTACT through 2007</span>
+      <div style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The financial system operated. Banks lent. CDOs were rated AAA. Homeownership expanded. Returns were positive. Institutions were licensed and regulated. Sign integrity was complete through 2007 &mdash; the diagnostic indicator of successful Triadic Overwrite at system scale.</div>
+    </div>
+    <div class="ssi-cell" style="background:rgba(245,158,11,.04)">
+      <div class="ssi-lbl">Signal (Secondness)</div><span class="ssi-status ssi-modified">ACCESSED &mdash; 1999</span>
+      <div style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">The mortgage origination and credit risk assessment channel. P-adic access achieved through <strong>Glass-Steagall repeal (1999)</strong>: investment banks were permitted inside the credit risk cluster previously occupied only by commercial lenders. The originate-to-distribute model placed Goldman, Lehman, and Bear Stearns inside the channel determining what mortgages meant for investor decisions.</div>
+    </div>
+    <div class="ssi-cell" style="background:rgba(248,113,113,.04)">
+      <div class="ssi-lbl">Interpretant (Thirdness)</div><span class="ssi-status ssi-replaced">REPLACED</span>
+      <div style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>Original:</strong> mortgage lending = assessment of borrower creditworthiness to fund genuine homeownership with manageable risk.<br><strong>Replaced:</strong> mortgage = securitization feedstock with externalized risk. &epsilon; rising from 0.12 (1995) to 0.71 (2007). &mu; = 0.84 by peak crisis.</div>
+    </div>
+  </div>
+  <div class="panel teal">
+    <strong>P-step output &mdash; formally derived responsible party:</strong><br><br>
+    1. <strong>Original Interpretant:</strong> mortgage lending = creditworthiness assessment funding genuine homeownership.<br>
+    2. <strong>Replaced Interpretant:</strong> mortgage = securitization feedstock with externalized risk (&epsilon; = 0.71, FHRI_max = 11.2).<br>
+    3. <strong>Signal channel:</strong> mortgage origination and credit risk assessment at the financial system level.<br>
+    4. <strong>P-adic access mechanism:</strong> Glass-Steagall repeal (1999) permitted investment banks inside the credit risk cluster. Rating agency capture (Moody&rsquo;s, S&amp;P receiving fees from the entities being rated) placed Interpretant-assignment inside the extraction architecture.<br><br>
+    <strong>Formally derived responsible party:</strong> not &ldquo;the market&rdquo; and not &ldquo;human greed.&rdquo; The ownership architecture that achieved P-adic proximity through Glass-Steagall repeal and rating agency capture, and executed Interpretant replacement from creditworthiness-assessment to securitization-vehicle. A specific structural event with a specific formal address and a computable FHRI_max consequence.
+  </div>
+  <h3 class="sub">&sigma; Accumulation: The Challenger Parallel</h3>
+  <p class="bd">The rating agencies rated 44,000 mortgage-backed securities between 2000 and 2007, with 93% receiving AAA ratings. Each rating that did not subsequently trigger a default normalized the model used to produce the next one. By 2007, &sigma; = 0.78. This is the Challenger O-ring normalization at financial system scale: each anomaly that did not produce visible failure made the next anomaly structurally invisible.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0">
+    <div style="background:var(--s);border-left:3px solid var(--amber);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--amber);margin-bottom:.3rem">Challenger &mdash; &sigma; = 0.65</div>
+      <div style="font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.75)">Each O-ring anomaly that did not cause mission failure normalized the next one. By January 1986, the Signal (O-ring data) consistently produced the Interpretant &ldquo;acceptable risk&rdquo; regardless of what engineering data showed. The management review channel was the access mechanism.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--red);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.3rem">2008 Crisis &mdash; &sigma; = 0.78</div>
+      <div style="font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.75)">Each subprime CDO that received a AAA rating without triggering a downgrade normalized the next. By 2007, the Signal (credit risk data) consistently produced the Interpretant &ldquo;investment grade&rdquo; regardless of underlying asset quality. The issuer-pays rating model was the access mechanism.</div>
+    </div>
+  </div>
+  <div class="panel amber"><strong>Who bore the &phi; consequence.</strong> 8.7 million jobs lost. $19.2 trillion in household wealth destroyed. 9.3 million home foreclosures between 2008 and 2012. Communities of color bore a disproportionate share of subprime origination and consequently the foreclosure cascade. The actors who achieved P-adic proximity were made whole by TARP. The populations bearing &phi; were not the populations who accessed the channel. This is the structural wrong made numerically precise.</div>
+</div>
+
+<!-- SIM -->
+<div class="pane" id="pane-sim">
+  <h2 class="st">Live Simulation: The Coherence Map</h2>
+  <div class="panel blue"><strong>Each cell is a node in the financial system</strong> &mdash; a mortgage holder, a pension fund, a municipality, a community bank. Teal/green = coherent coordination capacity. Red = foreclosure ripple (&phi; accumulation). Watch how Interpretant replacement in the financial cluster propagates substrate damage outward to populations who had no role in the transaction.</div>
+  <div class="sim-layout">
+    <div class="sim-sidebar">
+      <div class="sim-card">
+        <h4>Select Era</h4>
+        <button class="era-btn on" id="eb0" onclick="setEra(0,this)"><span class="era-yr">1995&ndash;1998</span>Pre-deregulation stability</button>
+        <button class="era-btn" id="eb1" onclick="setEra(1,this)"><span class="era-yr">1999&ndash;2003</span>Glass-Steagall repealed</button>
+        <button class="era-btn" id="eb2" onclick="setEra(2,this)"><span class="era-yr">2004&ndash;2006</span>Leverage surge &amp; &sigma; build</button>
+        <button class="era-btn" id="eb3" onclick="setEra(3,this)"><span class="era-yr">2007&ndash;2008</span>Crash &mdash; &phi; cascade</button>
+        <button class="era-btn" id="eb4" onclick="setEra(4,this)"><span class="era-yr">2009&ndash;2012</span>T2 response (TARP)</button>
+        <button class="era-btn" id="eb5" onclick="setEra(5,this)"><span class="era-yr">T1 Counterfactual</span>Glass-Steagall equivalent</button>
+      </div>
+      <div class="sim-card">
+        <h4>IPS Parameters</h4>
+        <div class="ctrl-row"><span class="ctrl-lbl">&epsilon; Extraction</span><input type="range" id="sl-eps" min="0" max="100" value="12" oninput="slUp()"><span class="ctrl-val" id="v-eps">0.12</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">&sigma; Morphic residue</span><input type="range" id="sl-sig" min="0" max="100" value="20" oninput="slUp()"><span class="ctrl-val" id="v-sig">0.20</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">&mu; Misalignment</span><input type="range" id="sl-mu" min="0" max="100" value="15" oninput="slUp()"><span class="ctrl-val" id="v-mu">0.15</span></div>
+        <div class="ctrl-row"><span class="ctrl-lbl">&phi; Entropy</span><input type="range" id="sl-phi" min="0" max="100" value="10" oninput="slUp()"><span class="ctrl-val" id="v-phi">0.10</span></div>
+      </div>
+      <div class="sim-card">
+        <h4>Defense</h4>
+        <div class="def-wrap" id="def-wrap" onclick="toggleDef()">
+          <input type="checkbox" id="def-chk">
+          <label>P-adic integrity check<br><span style="font-size:.68rem;color:var(--muted)">T1: blocks cascade above &epsilon; floor</span></label>
+        </div>
+        <div id="def-st" style="font-family:'DM Mono',monospace;font-size:.63rem;color:var(--muted);margin-top:.4rem">Defense: inactive</div>
+      </div>
+      <div class="sim-card">
+        <h4>Live Metrics</h4>
+        <div class="metric-grid">
+          <div class="metric-cell"><div class="metric-val" id="m-coh" style="color:var(--green)">1.000</div><div class="metric-lbl">COHERENCE</div></div>
+          <div class="metric-cell"><div class="metric-val" id="m-phi" style="color:var(--red)">0.00</div><div class="metric-lbl">&phi; LOAD</div></div>
+          <div class="metric-cell"><div class="metric-val" id="m-fhri">100</div><div class="metric-lbl">FHRI_max</div></div>
+          <div class="metric-cell"><div class="metric-val" id="m-fore" style="color:var(--amber)">0</div><div class="metric-lbl">FORECLOSED</div></div>
+        </div>
+        <div class="fhri-track"><div class="fhri-fill fhri-hi" id="fhri-bar" style="width:100%"></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.6rem">
+      <div class="canvas-wrap">
+        <h4>Holographic Coherence Map &nbsp;&middot;&nbsp; Teal=Healthy &nbsp; Amber=Degraded &nbsp; Red=Foreclosed &nbsp; Blue=T1 Recovery</h4>
+        <canvas id="simCanvas" width="540" height="420"></canvas>
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#14b8a6"></div>Full capacity</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Degraded (&epsilon; rising)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>Foreclosed (&phi;)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div>T1 recovery active</div>
+        </div>
+      </div>
+      <div class="narr" id="sim-narr"><strong>1995&ndash;1998:</strong> Pre-deregulation stability. Mortgage origination = creditworthiness assessment. Commercial banks control the credit risk cluster. &epsilon; = 0.12. FHRI_max is high. Millions of households can plan for homeownership with stable long-term expectations.</div>
+    </div>
+  </div>
+</div>
+
+<!-- IPS -->
+<div class="pane" id="pane-ips">
+  <h2 class="st">IPS Profile: The Financial System 1999&ndash;2010</h2>
+  <div class="panel blue"><strong>Each parameter is derived from documented financial data.</strong> The scale-free prediction holds: the five IPS parameters for the 2008 financial system produce FHRI_max = 11.2, within 3 points of PE nursing homes (13.6) and GEO Group correctional facilities (10.9). Different sectors, same formal mechanism, same structural ceiling.</div>
+  <div style="display:grid;gap:.5rem;margin:.75rem 0">
+    <div style="background:var(--s);border-left:3px solid var(--red);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--red);margin-bottom:.3rem">&epsilon; = 0.71 &mdash; EXTRACTION RATE (peak 2007)</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">CDO leverage reached 30&ndash;40x, meaning one dollar of underlying asset supported 30&ndash;40 dollars of instrument value &mdash; extracting yield while externalizing risk. The originate-to-distribute model removed all incentive for creditworthiness assessment: the originating bank sold the mortgage immediately and bore no default risk. &epsilon; measures how completely the goal-function &ldquo;assess creditworthiness&rdquo; was replaced by &ldquo;maximize origination volume.&rdquo;</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--orange);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--orange);margin-bottom:.3rem">&phi; = 0.68 &mdash; PHYSICAL ENTROPY (post-crash communities)</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">9.3 million foreclosed homes created the substrate of &phi; accumulation: abandoned properties degrading neighborhood values, disrupted school enrollment, lost community anchor businesses, public health burden from financial stress-induced morbidity. Research documents each home foreclosure reduces neighboring property values by 0.9&ndash;1.3%. The $19.2 trillion household wealth loss is the &phi; parameter stated in dollars.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--violet);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--violet);margin-bottom:.3rem">&rho; = 0.62 &mdash; REGULATORY BURDEN (compliance theater)</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">Pre-crisis: regulatory architecture produced compliance theater without addressing structural risk. Post-crisis: Dodd-Frank created 2,300 pages of regulations and ~$36B in annual compliance costs &mdash; but did not restore the Glass-Steagall wall. &rho; measures channel congestion that produces compliance activity without structural change: the T2 trap in regulatory form.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--amber);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber);margin-bottom:.3rem">&sigma; = 0.78 &mdash; MORPHIC RESIDUE (rating agency normalization)</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">Moody&rsquo;s and S&amp;P rated 44,000 mortgage-backed securities between 2000 and 2007, with 93% receiving AAA. Each rating that did not trigger a default normalized the model used to produce the next one. FCIC investigators found analyst concerns that were structurally absorbed without response &mdash; formally identical to Boisjoly&rsquo;s 24 O-ring incident reports.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--blue);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--blue);margin-bottom:.3rem">&mu; = 0.84 &mdash; INCENTIVE MISALIGNMENT (originate-to-distribute)</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">Mortgage originators were paid per loan originated, not per loan that performed. CDO managers were paid per instrument structured, not per instrument that delivered its rated return. Rating agencies were paid per rating issued by the entity being rated. At every point in the securitization chain the financial reward was for volume and complexity rather than creditworthiness. &mu; = 0.84 means the incentive architecture was 84% misaligned with genuine financial intermediation.</div>
+    </div>
+  </div>
+  <div style="background:var(--s2);border:1px solid var(--border);border-radius:.5rem;padding:1rem;margin:.75rem 0">
+    <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--blue);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem">FHRI_max computation &mdash; US financial system peak 2007</div>
+    <div style="font-family:'DM Mono',monospace;font-size:.86rem;color:rgba(255,255,255,.75);line-height:2.1">
+      RQ_ceiling = 1 &minus; (0.45&times;0.71 + 0.35&times;0.62 + 0.20&times;0.84) = 1 &minus; 0.703 = <span style="color:var(--red)">0.297</span><br>
+      EE_floor &nbsp;&nbsp;= 0.40&times;0.68 + 0.30&times;0.78 + 0.25&times;0.71 = 0.272 + 0.234 + 0.178 = <span style="color:var(--red)">0.684</span><br>
+      FHRI_max &nbsp;= 100 &times; (1&minus;0.684) &times; 0.297 = 100 &times; 0.316 &times; 0.297 = <strong style="color:var(--red);font-size:1.1rem">11.2</strong>
+    </div>
+  </div>
+  <div class="panel teal"><strong>Scale-free law confirmed at financial system level.</strong> PE nursing home: FHRI_max = 13.6. GEO Group correctional: FHRI_max = 10.9. US financial system 2007: FHRI_max = 11.2. Three completely different sectors, three completely different regulatory frameworks. FHRI_max within 3 points of each other. Same mechanism: ownership architecture achieves P-adic proximity to the mission-critical channel and replaces the Interpretant. The parameters vary by sector. The structural ceiling does not.</div>
+</div>
+
+<!-- RECOVERY -->
+<div class="pane" id="pane-recovery">
+  <h2 class="st">Recovery: T1 vs T2 &mdash; The Structural Difference</h2>
+  <div class="panel blue"><strong>The T1/T2 distinction is formally derivable from the P-SAGE analysis.</strong> T1 interventions address the P-adic access condition &mdash; they change who is inside the cluster controlling the Signal channel or what that cluster is legally permitted to do. T2 interventions operate within the existing Interpretant replacement. The 2008 recovery is the most extensively documented T2 response to a T1 structural failure in modern economic history.</div>
+  <div class="rcol-grid">
+    <div class="rcol t2-head">
+      <div class="rcol-head">T2 Response: What Was Actually Done</div>
+      <div class="rcol-body">
+        <strong>TARP ($700B bailout):</strong> T2. Made the actors who achieved P-adic proximity whole. Did not change the access condition. The ownership architecture that produced FHRI_max = 11.2 continued operating with new capital.<br><br>
+        <strong>Dodd-Frank Act (2010):</strong> T2 with partial T1 elements. 2,300 pages of compliance requirements (&rho; rising further). The Volcker Rule was a genuine T1 attempt &mdash; prohibiting proprietary trading with depositor funds &mdash; but implemented with 388 pages of exceptions that preserved the access condition it nominally addressed.<br><br>
+        <strong>Quantitative Easing:</strong> T2. Restored liquidity within the unchanged ownership architecture. FHRI_max partially restored to ~28 by 2012 &mdash; sufficient for the financial system to resume operation, insufficient to restore the populations bearing &phi;.<br><br>
+        <strong>Result:</strong> Financial system FHRI_max stalled at 28&ndash;32. Household &phi; unaddressed for nearly a decade. Structural conditions for recurrence preserved intact.
+      </div>
+    </div>
+    <div class="rcol t1-head">
+      <div class="rcol-head">T1 Counterfactual: Structural Reform</div>
+      <div class="rcol-body">
+        <strong>Glass-Steagall equivalent:</strong> True T1. Remove investment banks from the P-adic cluster controlling retail mortgage origination and credit risk assessment. Separate entities permitted to originate consumer credit from entities permitted to securitize and trade it. This changes who is inside the channel &mdash; not what the channel produces while the same actors remain inside it.<br><br>
+        <strong>Rating agency restructuring:</strong> True T1. A structure where credit ratings are produced by entities that do not receive payment from the entities being rated changes the P-adic access condition for Interpretant assignment. The issuer-pays model is the specific instrument that placed rating agencies inside the extraction architecture.<br><br>
+        <strong>Originate-to-hold requirements:</strong> True T1. Requiring originators to retain a minimum fraction of originated loans changes &mu; structurally: incentives now include long-term loan performance, not just origination volume.<br><br>
+        <strong>Projected FHRI_max under T1:</strong> 42&ndash;48 within 5 years &mdash; functional state. Structural conditions for recurrence resolved rather than preserved.
+      </div>
+    </div>
+  </div>
+  <div class="panel amber"><strong>The formally predicted consequence of T2-only recovery:</strong> the P-adic access condition is unchanged. The SVB and Signature Bank failures (2023) demonstrate this precisely: the T2 recovery from 2008 preserved the access conditions for a subsequent crisis in a new form. The S&amp;L crisis (1989), LTCM (1998), 2008, SVB (2023) are not separate events. They are recurrence instances of the same formal mechanism operating through successive phases of P-adic access achieved through successive regulatory relaxations.</div>
+  <h3 class="sub">The &phi; Recovery Gap</h3>
+  <p class="bd">By 2013 the S&amp;P 500 had recovered to pre-crisis levels. Bank profits had recovered. Executive compensation had recovered. Household wealth had not. Homeownership rates continued falling through 2016. Communities of color did not recover their pre-crisis homeownership rates by the end of the decade. The entity bearing &phi; is not the entity that achieved P-adic proximity and executed the Interpretant replacement. TARP made the latter whole. Nothing comparable was done for the former. This asymmetry is not incidental &mdash; it is the structural consequence of T2-only recovery from a T1 structural failure.</p>
+</div>
+
+<!-- TODAY -->
+<div class="pane" id="pane-today">
+  <h2 class="st">The System Today: Is the Interpretant Still Replaced?</h2>
+  <div class="panel blue"><strong>P1: Is the Sign intact?</strong> Yes. The financial system operates. Banks lend. Mortgage markets function. Sign integrity is confirmed, which means P2 and P3 are the productive questions.</div>
+  <div class="panel amber"><strong>P2: Has the Signal been manipulated?</strong> Yes, with modifications. The originate-to-distribute model remains dominant for mortgage securitization. Government-Sponsored Enterprises (Fannie Mae, Freddie Mac) now absorb most securitization risk &mdash; the P-adic access condition has shifted from private investment banks to the GSE structure, which has its own Interpretant replacement dynamics. The SVB/Signature failures (2023) showed that the access condition for bank run risk had been recreated: venture capital depositor concentration without adequate oversight, combined with interest rate risk that was not hedged.</div>
+  <div class="panel red"><strong>P3: Has the Interpretant been replaced?</strong> Partially. Dodd-Frank reduced some &mu;. The Volcker Rule reduced some &epsilon;. But the fundamental P-adic access condition was not addressed. Current estimates: &epsilon; = 0.41, &mu; = 0.58, FHRI_max = 28&ndash;34. Above collapse threshold. Below functional state. The conditions for recurrence are present &mdash; dormant rather than resolved.</div>
+  <div style="display:grid;gap:.45rem;margin:.75rem 0">
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem 1rem;display:grid;grid-template-columns:110px 1fr;gap:.75rem;font-size:.85rem;line-height:1.65">
+      <div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--violet)">AMC Response</div>
+      <div>A BioBond instrument for the financial sector would condition capital access on FHRI_max maintenance above 40: originator retention above 5% (&mu; reduction), beneficial ownership disclosure for all mortgage-backed securities (makes P-adic access mechanism visible), CFPB complaint data as &phi; early warning. True Solvency Accounting would require that &phi; imposed on foreclosure-affected communities appear as a liability on the institution&rsquo;s balance sheet &mdash; recognizing that an institution appearing profitable while externalizing $19 trillion in community wealth destruction is extracting value it cannot replace.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem 1rem;display:grid;grid-template-columns:110px 1fr;gap:.75rem;font-size:.85rem;line-height:1.65">
+      <div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--green)">Maathai principle</div>
+      <div>Community Development Financial Institutions (CDFIs) operate at FHRI_max = 58&ndash;65 within the same financial system that produced the crisis. CDFIs maintain originate-to-hold relationships, community accountability, and genuine creditworthiness assessment because their ownership architecture does not permit the P-adic access mechanism. BioBond financing for CDFI scaling would make the low-&epsilon; alternative financially competitive with the high-&epsilon; extractive architecture &mdash; the plant in the boot, scaled.</div>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions connect the formal 2008 financial crisis analysis to your own economic experience and the governance frameworks you are developing.</p>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q1</span>Before this analysis, would you have attributed the 2008 crisis to &ldquo;greed,&rdquo; &ldquo;deregulation,&rdquo; or &ldquo;the market&rdquo;? How does the formally derived responsible party &mdash; the ownership architecture that achieved P-adic proximity through Glass-Steagall repeal &mdash; change where your moral concern settles?</div><textarea class="jq-ta" id="j1" oninput="sv()" placeholder="Where the responsible party is, and whether the formal derivation changes your OS1 intuition..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q2</span>The &sigma; accumulation in the rating agencies is formally identical to the Challenger O-ring normalization. Identify a &sigma; accumulation pattern in an institution you inhabit. What anomaly is being normalized? What would interrupt the normalization before it reaches cascade threshold?</div><textarea class="jq-ta" id="j2" oninput="sv()" placeholder="The anomaly being normalized, and what breaking the chain would require..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q3</span>The T2 recovery made the financial system whole at FHRI_max = 28&ndash;32 while household &phi; went unaddressed for nearly a decade. Who had P-adic proximity to the policy cluster at the moment recovery decisions were made? Why was T2 politically achievable when T1 was not?</div><textarea class="jq-ta" id="j3" oninput="sv()" placeholder="The political economy of T2 recovery and who controlled the policy channel..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q4</span>CDFIs operate at FHRI_max = 58&ndash;65 within the same system that produced the crisis. Design one element of a BioBond instrument for CDFI scaling: what FHRI_max improvement triggers investor returns, what structural change does that require, and how would you verify the Interpretant has not been replaced?</div><textarea class="jq-ta" id="j4" oninput="sv()" placeholder="BioBond design: trigger, structural change required, verification method..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q5 &mdash; Forward Prediction</span>The SVB/Signature failures (2023) demonstrate the T2 trap: T2 recovery from 2008 preserved P-adic access conditions for a subsequent crisis. Using P-SAGE and today&rsquo;s financial architecture, predict: what will the next crisis look like? Which cluster will be accessed, through which instrument, and which Interpretant will be replaced?</div><textarea class="jq-ta" id="j5" oninput="sv()" placeholder="Forward prediction: next crisis, next access mechanism, next Interpretant replacement..."></textarea></div>
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn out" onclick="prev()">&larr;</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &rarr;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['psage','sim','ips','recovery','today','journal'],cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+
+var canvas=document.getElementById('simCanvas'),ctx=canvas.getContext('2d');
+var GW=54,GH=42,CS=10,grid=[],defOn=false;
+
+var ERAS=[
+  {eps:12,sig:20,mu:15,phi:10,narr:'<strong>1995&ndash;1998:</strong> Pre-deregulation stability. Mortgage origination = creditworthiness assessment. Commercial banks control the credit risk cluster. The originate-to-hold model aligns banker incentives with loan performance. &epsilon; = 0.12. FHRI_max is high. Millions of households can plan for homeownership with stable long-term expectations.'},
+  {eps:28,sig:38,mu:45,phi:12,narr:'<strong>1999&ndash;2003: Glass-Steagall repealed &mdash; channel accessed.</strong> The Gramm-Leach-Bliley Act allows commercial and investment banking to merge. Investment banks achieve P-adic proximity to the retail mortgage origination cluster. The originate-to-distribute model begins: banks originate mortgages and immediately sell them, removing default risk from their balance sheets and eliminating the creditworthiness incentive. &sigma; begins accumulating.'},
+  {eps:55,sig:65,mu:72,phi:25,narr:'<strong>2004&ndash;2006: Leverage surge &amp; &sigma; normalization.</strong> CDO leverage reaches 20&ndash;40x. Rating agencies have normalized AAA for instruments they cannot model. Each quarter without defaults reinforces the model. Subprime origination reaches $600B annually. &sigma; = 0.65. The Signal (credit data) now consistently produces &ldquo;investment grade&rdquo; as the Interpretant regardless of underlying asset quality.'},
+  {eps:71,sig:78,mu:84,phi:68,narr:'<strong>2007&ndash;2008: CRASH &mdash; &phi; cascade.</strong> Lehman Brothers files for bankruptcy September 15, 2008. Foreclosure ripples cascade from the financial cluster through every institution holding mortgage-backed securities &mdash; pension funds, municipalities, money market funds, international banks. 9.3 million home foreclosures. $19.2 trillion in household wealth destroyed. The &phi; lands on the populations furthest from the P-adic access mechanism.'},
+  {eps:55,sig:72,mu:65,phi:52,narr:'<strong>2009&ndash;2012: T2 response &mdash; TARP + Dodd-Frank.</strong> $700B TARP makes the financial system whole. Dodd-Frank creates compliance requirements but does not address the P-adic access condition. FHRI_max partially restores to ~28. Household &phi; continues accumulating. The structural conditions for a subsequent crisis are preserved intact. Financial system recovers; communities do not.'},
+  {eps:25,sig:30,mu:28,phi:20,narr:'<strong>T1 Counterfactual: Glass-Steagall equivalent re-enacted.</strong> Investment banks are removed from the P-adic cluster controlling retail mortgage origination. Issuer-pays rating model is prohibited. Originator retention at 10% is required. &mu; falls from 0.84 to 0.28 as originator incentives re-align with loan performance. FHRI_max projects to 42&ndash;48 within 5 years. The structural conditions for the 2008 recurrence pattern are not preserved.'}
+];
+
+function initGrid(eraIdx){
+  var era=ERAS[eraIdx],base=1-(era.eps/100)*0.35;
+  grid=[];
+  for(var y=0;y<GH;y++){grid.push([]);for(var x=0;x<GW;x++){grid[y].push(Math.min(1,Math.max(0,base+(Math.random()-.5)*.12)));}}
+  if(eraIdx===3){for(var i=0;i<20;i++){var rx=Math.floor(Math.random()*GW),ry=Math.floor(Math.random()*GH);grid[ry][rx]=.05+Math.random()*.15;}}
+}
+
+function setEra(idx,btn){
+  document.querySelectorAll('.era-btn').forEach(function(b){b.className='era-btn';});
+  btn.className='era-btn on';
+  var era=ERAS[idx];
+  document.getElementById('sl-eps').value=era.eps;
+  document.getElementById('sl-sig').value=era.sig;
+  document.getElementById('sl-mu').value=era.mu;
+  document.getElementById('sl-phi').value=era.phi;
+  document.getElementById('sim-narr').innerHTML=era.narr;
+  slUp();initGrid(idx);
+}
+
+function slUp(){
+  ['eps','sig','mu','phi'].forEach(function(k){
+    var v=parseInt(document.getElementById('sl-'+k).value);
+    document.getElementById('v-'+k).textContent=(v/100).toFixed(2);
+    document.getElementById('sl-'+k).style.background='linear-gradient(to right,var(--blue) '+v+'%,rgba(255,255,255,.12) '+v+'%)';
+  });
+}
+
+function toggleDef(){
+  defOn=!defOn;
+  document.getElementById('def-chk').checked=defOn;
+  document.getElementById('def-wrap').className=defOn?'def-wrap on':'def-wrap';
+  document.getElementById('def-st').textContent=defOn?'Defense: ACTIVE \u2014 T1 structural check blocking cascade':'Defense: inactive';
+  document.getElementById('def-st').style.color=defOn?'var(--teal)':'var(--muted)';
+}
+
+function drawSim(){
+  var eps=parseInt(document.getElementById('sl-eps').value)/100;
+  var sig=parseInt(document.getElementById('sl-sig').value)/100;
+  var mu=parseInt(document.getElementById('sl-mu').value)/100;
+  var decay=eps*sig*.007*(1+mu*.5);
+  var rec=defOn?.005:0;
+  var next=grid.map(function(r){return r.slice();});
+  var totCoh=0,totPhi=0,fore=0;
+  for(var y=0;y<GH;y++){for(var x=0;x<GW;x++){
+    var v=grid[y][x];
+    if(v<.88&&v>.01){
+      [[0,1],[0,-1],[1,0],[-1,0]].forEach(function(d){
+        var nx=x+d[0],ny=y+d[1];
+        if(nx>=0&&nx<GW&&ny>=0&&ny<GH){defOn?next[ny][nx]+=rec*(1-next[ny][nx]):next[ny][nx]-=decay*(1-v)*.5;}
+      });
+      defOn?next[y][x]+=rec:next[y][x]-=decay*(1-v);
+    }
+    next[y][x]=Math.min(1,Math.max(0,next[y][x]));
+  }}
+  grid=next;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(var y=0;y<GH;y++){for(var x=0;x<GW;x++){
+    var v=grid[y][x];totCoh+=v;
+    var r,g,b;
+    if(defOn&&v>.55){r=Math.round(v*40);g=Math.round(v*130);b=Math.round(v*250);}
+    else if(v>.65){r=Math.round((1-v)*60);g=Math.round(v*184);b=Math.round(v*166);}
+    else if(v>.35){r=Math.round(180+v*75);g=Math.round(v*130);b=Math.round(v*11);}
+    else{totPhi+=(1-v);fore++;r=Math.round(140+(1-v)*115);g=Math.round(v*25);b=Math.round(v*25);}
+    ctx.fillStyle='rgb('+r+','+g+','+b+')';
+    ctx.fillRect(x*CS,y*CS,CS-1,CS-1);
+  }}
+  var avgC=totCoh/(GW*GH);
+  var fhri=Math.max(0,Math.min(100,Math.round(avgC*100*(1-eps*.4)*(1-sig*.3))));
+  var fc=fhri>=55?'fhri-hi':fhri>=30?'fhri-mi':'fhri-lo';
+  document.getElementById('m-coh').textContent=avgC.toFixed(3);
+  document.getElementById('m-coh').style.color=avgC>.7?'var(--green)':avgC>.4?'var(--amber)':'var(--red)';
+  document.getElementById('m-phi').textContent=(totPhi/100).toFixed(2);
+  document.getElementById('m-fhri').textContent=fhri;
+  document.getElementById('m-fhri').style.color=fhri>=55?'var(--green)':fhri>=30?'var(--amber)':'var(--red)';
+  document.getElementById('m-fore').textContent=fore;
+  document.getElementById('fhri-bar').style.width=fhri+'%';
+  document.getElementById('fhri-bar').className='fhri-fill '+fc;
+  requestAnimationFrame(drawSim);
+}
+
+var JK=['fin_j1','fin_j2','fin_j3','fin_j4','fin_j5'];
+function sv(){JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)localStorage.setItem(k,e.value);}catch(x){}});var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){var t='EBB Ch12 \u2014 2008 Financial Crisis Journal\n'+'='.repeat(60)+'\n\n';
+['Q1: OS1 intuition vs. formally derived responsible party.','Q2: Sigma accumulation in your institution.','Q3: Political economy of T2 recovery.','Q4: BioBond design for CDFIs.','Q5: Forward prediction of next crisis.'].forEach(function(q,i){var v=document.getElementById('j'+(i+1));t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';});
+try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_Ch12_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)e.value=localStorage.getItem(k)||'';}catch(x){}});
+slUp();initGrid(0);drawSim();
+</script>
+</body>
+</html>

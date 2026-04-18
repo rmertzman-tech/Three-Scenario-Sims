@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Interlude — The Parasite Hinge</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080f;--sur:#0f1020;--sur2:#181830;--bdr:rgba(255,255,255,.07);
+--ac:#14b8a6;--ac2:#14b8a622;--ac3:#14b8a644;
+--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;
+--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{background:linear-gradient(155deg,#0a0a20,var(--bg));padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--bdr);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,var(--ac2),transparent 70%);pointer-events:none}
+.hdr-label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--ac);text-transform:uppercase;margin-bottom:.5rem}
+.hdr-title{font-family:'DM Serif Display',serif;font-size:2.2rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.hdr-title em{color:var(--ac);font-style:italic}
+.hdr-sub{font-size:.87rem;color:var(--muted);max-width:600px;margin:0 auto .4rem;line-height:1.6}
+.hdr-move{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ac);opacity:.5;letter-spacing:.1em}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem .9rem;background:var(--sur);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--ac)}
+.tab-btn{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.4rem .8rem;border-radius:.3rem;border:1px solid var(--bdr);background:transparent;color:var(--muted);cursor:pointer;transition:all .17s;white-space:nowrap}
+.tab-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+.tab-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.tab-pane{display:none;padding:1.4rem;max-width:860px;margin:0 auto}
+.tab-pane.active{display:block;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.89rem;color:rgba(255,255,255,.76);margin-bottom:.85rem;line-height:1.76}
+.pnl{border-radius:.5rem;padding:.95rem 1.15rem;margin:.7rem 0;line-height:1.7;font-size:.87rem}
+.pnl.ac{background:var(--ac2);border-left:3px solid var(--ac)}
+.pnl.am{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.pnl.re{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.pnl.gr{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.pnl.vi{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.pnl.bl{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.pnl strong{color:var(--text)}
+.sec-wrap{margin-bottom:1rem;border-radius:.5rem;overflow:hidden;border:1px solid var(--bdr)}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;cursor:pointer;background:var(--sur);transition:background .14s}
+.sec-hdr:hover{background:var(--sur2)}
+.sec-hdr h3{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--ac)}
+.sec-chev{font-size:.75rem;color:var(--muted);transition:transform .2s}
+.sec-body{padding:1rem 1.2rem;background:#080813;display:none}
+.sec-body.open{display:block}
+.sec-hdr.open .sec-chev{transform:rotate(90deg)}
+.ips-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:.7rem 0}
+@media(max-width:460px){.ips-grid{grid-template-columns:repeat(3,1fr)}}
+.ips-cell{border:1px solid var(--bdr);border-radius:.38rem;padding:.6rem .38rem;text-align:center;background:var(--sur)}
+.ips-cell .sym{font-family:'DM Mono',monospace;font-size:.9rem;font-weight:600;color:var(--ac)}
+.ips-cell .val{font-family:'DM Mono',monospace;font-size:.8rem;margin:.12rem 0}
+.ips-cell .nm{font-size:.6rem;color:var(--muted);line-height:1.3}
+.fbar-wrap{margin:.7rem 0}
+.fbar-lbl{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.28rem}
+.fbar{height:9px;background:var(--sur2);border-radius:5px;overflow:hidden}
+.fbar-fill{height:100%;border-radius:5px;transition:width 1.1s cubic-bezier(.34,1.56,.64,1)}
+.fbar-fill.lo{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fbar-fill.md{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fbar-fill.hi{background:linear-gradient(90deg,var(--green),#86efac)}
+.fbar-fill.ac{background:linear-gradient(90deg,var(--ac),var(--ac)88)}
+.fhri-row{display:flex;align-items:center;gap:.7rem;background:var(--sur2);border-radius:.42rem;padding:.75rem .95rem;margin:.5rem 0;border:1px solid var(--bdr)}
+.fhri-num{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;flex-shrink:0}
+.fhri-num.lo{color:var(--red)}.fhri-num.md{color:var(--amber)}.fhri-num.hi{color:var(--green)}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin:.7rem 0}
+@media(max-width:480px){.choice-grid{grid-template-columns:1fr}}
+.choice-card{border:1px solid var(--bdr);border-radius:.42rem;padding:.8rem;cursor:pointer;transition:all .16s;background:var(--sur)}
+.choice-card:hover{border-color:rgba(255,255,255,.22)}
+.choice-card.sel{border-color:var(--ac);background:var(--ac2)}
+.choice-card .ct{font-weight:600;font-size:.85rem;margin-bottom:.22rem}
+.choice-card .cs{font-size:.76rem;color:var(--muted);line-height:1.5}
+.result-box{margin-top:.9rem;padding:.95rem 1.05rem;border-radius:.42rem;border:1px solid;font-size:.86rem;line-height:1.68;display:none}
+.result-box.show{display:block}
+.timeline .tl-item{display:flex;gap:.8rem;margin-bottom:.7rem}
+.tl-time{font-family:'DM Mono',monospace;font-size:.67rem;color:var(--ac);width:65px;flex-shrink:0;padding-top:.1rem;text-align:right}
+.tl-dot{width:9px;height:9px;border-radius:50%;background:var(--ac);margin-top:.33rem;flex-shrink:0}
+.tl-content .tl-t{font-weight:600;font-size:.86rem;margin-bottom:.18rem}
+.tl-content .tl-b{font-size:.8rem;color:rgba(255,255,255,.66);line-height:1.58}
+.badge{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:.15rem .42rem;border-radius:.22rem;margin-left:.32rem;vertical-align:middle}
+.badge.t1{background:rgba(248,113,113,.15);color:var(--red)}
+.badge.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+.jta{width:100%;min-height:92px;background:#080813;border:none;border-top:1px solid var(--bdr);padding:.85rem .95rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.58}
+.jta:focus{outline:none}
+.j-wrap{border:1px solid var(--bdr);border-radius:.48rem;margin:.7rem 0;overflow:hidden}
+.j-hdr{padding:.75rem 1rem;background:var(--sur);font-weight:600;font-size:.87rem;display:flex;gap:.55rem;align-items:center}
+.j-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ac);flex-shrink:0}
+.j-bar{padding:.48rem .95rem;background:var(--sur);border-top:1px solid var(--bdr);display:flex;justify-content:flex-end}
+button.btn{background:var(--ac);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.52rem 1.15rem;border-radius:.38rem;cursor:pointer;transition:background .14s;margin:.28rem .18rem}
+button.btn:hover{filter:brightness(1.15)}
+button.btn.out{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.bot-nav{max-width:860px;margin:0 auto;padding:.65rem 1.4rem;display:flex;justify-content:space-between;border-top:1px solid var(--bdr)}
+.sf{position:fixed;bottom:1.1rem;right:1.1rem;background:var(--ac);color:#fff;font-weight:600;font-size:.76rem;padding:.42rem .95rem;border-radius:.38rem;display:none;z-index:999}
+.sf.show{display:block;animation:su .18s ease}
+@keyframes su{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+</style></head><body>
+<div class="hdr">
+  <div class="hdr-label">Ethics Beyond Boundaries · Interlude</div>
+  <h1 class="hdr-title">The Interlude &mdash; The Parasite Hinge</h1>
+  <p class="hdr-sub">The bridge between individual ethics and structural ethics — and the name of what you have been studying without knowing it</p>
+  <div class="hdr-move">Between Chapter 10 and Chapter 11 · The Hinge of the Course</div>
+</div>
+<div class="tab-bar"><button class="tab-btn active" onclick="switchTab('bridge')">The Bridge</button>
+  <button class="tab-btn" onclick="switchTab('hairworm')">The Hairworm</button>
+  <button class="tab-btn" onclick="switchTab('walle')">Wall-E</button>
+  <button class="tab-btn" onclick="switchTab('naming')">Naming the Parasite</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button></div>
+<div class="tab-pane active" id="tab-bridge"><div class="pnl ac"><strong>Something has changed.</strong> In Chapters 1 through 10 you learned to analyze individual ethical situations &mdash; your PRF, your SAGE toolkit, the biological grounding of your moral reasoning. Starting now, you will analyze structural configurations that determine what individual ethical action can accomplish. This Interlude is the bridge between those two worlds.</div>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Gear Change</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">Here is the question that the next five chapters will answer: what happens when the ethical agents you have been developing encounter institutions designed to absorb their capacity before it reaches decisions?</p>
+<p class="bd">Roger Boisjoly had FHRI = 82.0. He knew exactly what was wrong. He said it 24 times. The structure absorbed his knowledge. The Challenger crew died. This is not a story about one engineer's failure. It is a story about a structural configuration that made failure predictable &mdash; and the engineers who filed reports were not the responsible party.</p>
+<div class="pnl am"><strong>The responsible party has a name.</strong> It is not "the system" &mdash; that is too vague to act on. It is not "NASA management" &mdash; that is too individual to address structurally. It is the parasitic configuration: the specific combination of structural parameters that reduced FHRI_max to 14.3 while Boisjoly's capacity was 82.0. The suppression gap of 67.7 points is what killed the crew. That gap is computable. It is attributable. And it has a name.</div></div></div></div>
+<div class="tab-pane" id="tab-hairworm"><p class="bd"><em>Chordodes formosanus</em> is a hairworm &mdash; a parasite that lives inside a cricket or mantis. To complete its life cycle, it must reach water. Its host cannot survive water. So the hairworm rewires the host's neurology to make water look like safety. The mantis walks to its own drowning, believing it is seeking shelter.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Mechanism</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">The hairworm does not destroy the mantis's ability to see. The mantis's vision is intact. It does not destroy the mantis's ability to process light. The Signal is accurate. What it changes is what the Signal <em>means</em> to the mantis &mdash; the Interpretant. Water now means safety. The mantis is not malfunctioning. It is operating correctly inside a corrupted meaning architecture.</p>
+<div class="pnl re"><strong>This is the Triadic Hack.</strong> Sign intact. Signal intact. Interpretant replaced. The mantis walks to the water believing it is acting on its own goals. It is executing the hairworm's reproductive imperative through its own agency. The operational machinery of the host continues functioning. The goals it serves have been replaced.</div>
+<div class="pnl am"><strong>The institutional version.</strong> The nursing home continues operating. The staff still documents. The quality metrics are still measured. The regulatory program still produces reports. But what these activities are <em>for</em> &mdash; what they mean for the people in the beds &mdash; has been replaced by what they mean for the extraction architecture. The institution walks to the water.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — Why This Matters for Ethics</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">Traditional ethics asks: what did the agent choose? The hairworm analysis asks: what did the structural architecture make the agent capable of choosing? These are different questions and they have different answers.</p>
+<p class="bd">The OS1 urge &mdash; to find the person responsible, to assign blame, to name the culprit &mdash; is real and it is biologically grounded. The IPS framework does not suppress that urge. It directs it accurately. The responsible party for the harm is the parasitic structural configuration. The responsible actors are the ones who designed it, implemented it, and profited from it while externalizing the costs onto the populations who couldn't resist.</p>
+<div class="pnl gr"><strong>This is not a counsel of despair.</strong> The hairworm does not die because the mantis can see it. But visibility is the precondition for immunity. The immune system of an institution &mdash; the capacity to detect and resist parasitic overwrite &mdash; begins with accurate structural perception. That is what the next five chapters are training.</div></div></div></div>
+<div class="tab-pane" id="tab-walle"><p class="bd">Pixar's 2008 film <em>Wall-E</em> is set 700 years in the future. Earth has been abandoned. The Buy-N-Large corporation convinced humanity that leaving was easier than cleaning up. The humans now live on the Axiom, a luxury spacecraft, sustained by the corporation's infrastructure, consuming its products, unable to stand, unable to look away from their screens.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — Buy-N-Large as Extraction Architecture</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">Buy-N-Large is not evil in the individual sense. Its executives did not decide to destroy Earth. They made a sequence of structurally incentivized decisions: extraction was more profitable than remediation. Departure was a better product than cleanup. The result, accumulated across decades, is a planet that cannot sustain life.</p>
+<div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--red)">0.98</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.97</div><div class="nm">Phys entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.32</div><div class="nm">Rule burden</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--amber)">0.62</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--red)">0.75</div><div class="nm">Incentive align</div></div>
+  </div>
+<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max for humanity on the Axiom</div><div class="fbar"><div class="fbar-fill lo" style="width:2.1%"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem"><span>0</span><span>2.1 / 100</span></div></div>
+<div class="pnl re"><strong>This is &epsilon; at civilizational scale.</strong> The extraction rate approaches 1.0 &mdash; almost all resources flow toward the corporation's production, almost nothing is reinvested in the physical substrate of human or planetary life. &phi; (physical entropy) is the catastrophic outcome: the substrate has been consumed to the point where it cannot sustain life without artificial replacement.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — The Axiom Passengers: Dark Coherence</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">The humans on the Axiom are not unhappy. They are entertained, fed, cared for, comfortable. By every individual wellbeing metric, their FHRI is adequate. By every structural metric, FHRI_max is near zero: they cannot coordinate toward goals that differ from the system's reproduction. They don't know what they're missing because the system that provides what they have also shapes what they can want.</p>
+<div class="pnl vi"><strong>This is Dark Coherence.</strong> A stable, operationally functional system that serves parasitic goals while maintaining all external signs of legitimate function. The humans are not prisoners. They are hosted. The distinction matters because it means they experience no constraint &mdash; only the seamless delivery of what they have been shaped to need.</div>
+<p class="bd">Wall-E himself &mdash; tending the ruins, preserving what is worth keeping, maintaining care and attention and memory in the space the extraction architecture abandoned &mdash; is the Maathai principle made visible. He does not fight Buy-N-Large. He builds the alternative reality in the ruins. The institution eventually has to respond to what exists.</p></div></div></div>
+<div class="tab-pane" id="tab-naming"><p class="bd">You have now seen the mechanism (hairworm), the civilizational scale (Wall-E), and the individual scale (Boisjoly). The same five-parameter architecture describes all of them. Now we name it formally, so you have the vocabulary for what the next five chapters will show you empirically.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Five Parameters</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open">
+<div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--text)">ε</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val">φ</div><div class="nm">Phys entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val">ρ</div><div class="nm">Rule burden</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--text)">σ</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--text)">μ</div><div class="nm">Incentive align</div></div>
+  </div>
+<p class="bd" style="margin-top:.7rem">These five parameters combine to produce FHRI_max &mdash; the structural ceiling below which no amount of individual effort, professional commitment, or good intention can push institutional outcomes.</p>
+<div class="pnl ac"><strong>&epsilon; (Extraction Rate):</strong> What fraction of the institution's resources flow toward ownership returns rather than mission-serving investment? The hairworm's extraction of the mantis's energy. Buy-N-Large's extraction of the planetary substrate. The PE management fee's extraction of the nursing home budget.</div>
+<div class="pnl am"><strong>&phi; (Physical Entropy):</strong> The degree of degradation in the physical infrastructure through which agents do their work. Empty Rust Belt factories. Understaffed care facilities. Earth's uninhabitable surface. The floor of what coordination can achieve.</div>
+<div class="pnl re"><strong>&rho; (Regulatory Burden):</strong> The fraction of institutional bandwidth consumed by compliance, documentation, and procedural requirements rather than actual coordination. Not all regulatory burden is parasitic &mdash; some is necessary. The IPS framework measures when it has become the primary consumer of capacity.</div>
+<div class="pnl vi"><strong>&sigma; (Morphic Residue):</strong> The accumulated weight of past crisis-response procedures that have normalized deviance. Every decision made under pressure that slightly lowered the standard, accumulated until the lower standard is the standard. This is how Challenger happened across 24 incident reports.</div>
+<div class="pnl gr"><strong>&mu; (Incentive Misalignment):</strong> The gap between what the institution's architecture rewards and what coordination actually requires. Herbie telling people what they want to hear. The VBP program adjusting payment by $1,500/year for care failures that cost lives.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — The Responsible Party</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">Here is the insight that the OS1 frameworks have been waiting for without knowing it. The impulse to find who is responsible for the pressure ulcer, the Challenger explosion, the Rust Belt collapse, the child left unattended in an understaffed daycare &mdash; that impulse is correct. Something wrong was done. Someone is responsible.</p>
+<div class="pnl ac"><strong>The responsible party is the parasitic structural configuration.</strong> Not "the system" &mdash; that is too vague. The specific combination of &epsilon;, &phi;, &rho;, &sigma;, and &mu; that produced a predictable, computable structural ceiling below which care, safety, and flourishing became impossible. That configuration was designed, implemented, and profited from by identifiable actors. The harm is attributable. It has a name. The parasite is responsible.</div>
+<p class="bd">This does not mean everyone who works within the parasitic configuration is personally culpable. It means that the structural choices made by those who design, fund, and govern the configuration &mdash; especially with the IPS measurement now available &mdash; are choices whose consequences are known and attributable. The parasite has always been there. Now it is visible.</p></div></div></div>
+<div class="tab-pane" id="tab-journal"><p class="bd">These five questions mark the transition from individual ethics to structural ethics. Save your responses &mdash; they will carry forward across Chapters 11 through 15.</p>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q1</span>Before this Interlude, if someone asked you who was responsible for a nursing home resident's pressure ulcer, what would you have said? After the hairworm analysis and the IPS framework introduction, what do you say now?</div><textarea class="jta" id="ij1" oninput="saveJ('i')" placeholder="The shift from agent-blame to structural attribution is the Interlude's core learning..."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('i')">Save</button></div></div>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q2</span>Wall-E's humans on the Axiom are comfortable and content. Their FHRI is adequate. But their FHRI_max is near zero. Is a life with high FHRI and near-zero FHRI_max a good life? What does your answer imply about what ethics is ultimately protecting?</div><textarea class="jta" id="ij2" oninput="saveJ('i')" placeholder="This question cuts to the core distinction between comfort and flourishing..."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('i')">Save</button></div></div>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q3</span>Name the highest-&sigma; institution you have personally inhabited &mdash; the one where past procedures have accumulated most thoroughly into normalized deviance. What was the "incident report" that was logged but not acted on?</div><textarea class="jta" id="ij3" oninput="saveJ('i')" placeholder="Specific and personal. The morphic residue you have lived inside..."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('i')">Save</button></div></div>
+<button class="btn" onclick="exportJ_i()" style="margin-top:.5rem">&#11015; Download Journal</button></div>
+<div class="bot-nav">
+  <button class="btn out" onclick="prevTab()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ti">1 / 5</span>
+  <button class="btn" onclick="nextTab()">Next &#8594;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+<script>
+const TABS=["bridge","hairworm","walle","naming","journal"];
+let cur=0;
+function switchTab(n){TABS.forEach((t,i)=>{document.getElementById('tab-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tab-btn')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ti').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nextTab(){if(cur<TABS.length-1)switchTab(TABS[cur+1]);}
+function prevTab(){if(cur>0)switchTab(TABS[cur-1]);}
+function toggleSec(h){const b=h.nextElementSibling;b.classList.toggle('open');h.classList.toggle('open');}
+function selChoice(card,key,results){card.closest('.choice-grid').querySelectorAll('.choice-card').forEach(c=>c.classList.remove('sel'));card.classList.add('sel');const r=card.closest('.sec-body')||card.closest('.tab-pane');const rb=r.querySelector('.result-box');if(rb&&results[key]){const d=results[key];rb.style.borderColor=d.c;rb.style.background=d.bg;rb.innerHTML=d.t;rb.classList.add('show');}}
+function animateBars(){document.querySelectorAll('.fbar-fill').forEach(el=>{const w=el.style.width;el.style.width='0';requestAnimationFrame(()=>setTimeout(()=>el.style.width=w,60));});}
+setTimeout(animateBars,400);
+function saveJ(prefix){const keys=[];document.querySelectorAll('[id^="'+prefix+'j"]').forEach(el=>{try{localStorage.setItem(el.id,el.value);}catch(e){}});const sf=document.getElementById('sf');sf.classList.add('show');setTimeout(()=>sf.classList.remove('show'),1700);}
+function loadJ(prefix){document.querySelectorAll('[id^="'+prefix+'j"]').forEach(el=>{try{el.value=localStorage.getItem(el.id)||'';}catch(e){}});}
+
+function exportJ_i(){let t='EBB Interlude Journal\n'+'='.repeat(50)+'\n\n';
+['ij1','ij2','ij3'].forEach((k,i)=>{const e=document.getElementById(k);t+='Q'+(i+1)+':\n\n'+(e?e.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(50)+'\n\n';});
+try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_Interlude_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+window.addEventListener('DOMContentLoaded',()=>loadJ('i'));
+</script></body></html>

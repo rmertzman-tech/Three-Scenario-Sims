@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Science Fiction as Structural Ethics Laboratory</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080c18;--surface:#0f1623;--surface2:#1a2338;--border:rgba(255,255,255,.07);
+  --teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;
+  --blue:#60a5fa;--pink:#f472b6;--orange:#fb923c;
+  --text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HEADER */
+.site-header{
+  background:linear-gradient(160deg,#0a0f24 0%,#080c18 70%);
+  padding:2.5rem 1.5rem 2rem;text-align:center;
+  border-bottom:1px solid var(--border);position:relative;overflow:hidden;
+}
+.site-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 90% 50% at 50% 0%,rgba(167,139,250,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.ch-label{font-family:'DM Mono',monospace;font-size:.68rem;letter-spacing:.18em;color:var(--violet);text-transform:uppercase;margin-bottom:.6rem}
+.ch-title{font-family:'DM Serif Display',serif;font-size:2.4rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.ch-title em{color:var(--violet);font-style:italic}
+.ch-sub{font-size:.88rem;color:var(--muted);max-width:640px;margin:0 auto .5rem;line-height:1.6}
+.ch-move{font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(167,139,250,.5);letter-spacing:.1em}
+
+/* TABS */
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.7rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--violet)}
+.tab-btn{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;padding:.42rem .85rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tab-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+.tab-btn.active{background:var(--violet);color:#fff;border-color:var(--violet);font-weight:600}
+
+.tab-pane{display:none;padding:1.5rem;max-width:880px;margin:0 auto}
+.tab-pane.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* SHARED */
+p.body{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+.panel{border-radius:.55rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.72;font-size:.88rem}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel.pink{background:rgba(244,114,182,.07);border-left:3px solid var(--pink)}
+.panel.orange{background:rgba(251,146,60,.07);border-left:3px solid var(--orange)}
+.panel strong{color:var(--text)}
+
+.section-wrap{margin-bottom:1.1rem;border-radius:.5rem;overflow:hidden;border:1px solid var(--border)}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.1rem;cursor:pointer;background:var(--surface);transition:background .15s}
+.section-header:hover{background:var(--surface2)}
+.section-header h3{font-family:'DM Serif Display',serif;font-size:1.05rem}
+.section-chevron{font-size:.8rem;color:var(--muted);transition:transform .2s}
+.section-body{padding:1.1rem 1.25rem;background:#0a0e1c;display:none}
+.section-body.open{display:block}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+
+/* IPS MAP */
+.ips-map{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem;margin:.75rem 0}
+@media(max-width:480px){.ips-map{grid-template-columns:repeat(3,1fr)}}
+.ips-cell{border:1px solid var(--border);border-radius:.4rem;padding:.65rem .4rem;text-align:center;background:var(--surface)}
+.ips-cell .sym{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--violet)}
+.ips-cell .val{font-family:'DM Mono',monospace;font-size:.82rem;margin:.15rem 0}
+.ips-cell .name{font-size:.62rem;color:var(--muted);line-height:1.3}
+
+.fhri-row{display:flex;align-items:center;gap:.75rem;background:var(--surface2);border-radius:.45rem;padding:.8rem 1rem;margin:.5rem 0;border:1px solid var(--border)}
+.fhri-val{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;flex-shrink:0}
+.fhri-val.low{color:var(--red)}.fhri-val.mid{color:var(--amber)}.fhri-val.high{color:var(--green)}
+.fhri-bar-wrap{flex:1}
+.fhri-bar-label{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-bottom:.3rem}
+.fhri-bar{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.fhri-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.fhri-fill.low{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fhri-fill.mid{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fhri-fill.high{background:linear-gradient(90deg,var(--green),#86efac)}
+
+/* WORK SELECTOR */
+.work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.65rem;margin:.75rem 0}
+.work-card{border:1px solid var(--border);border-radius:.5rem;padding:1rem .85rem;cursor:pointer;transition:all .18s;background:var(--surface);text-align:center}
+.work-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.work-card.active{border-color:var(--violet);background:rgba(167,139,250,.08)}
+.work-card .wc-icon{font-size:1.8rem;margin-bottom:.35rem}
+.work-card .wc-title{font-weight:600;font-size:.82rem;line-height:1.3;margin-bottom:.2rem}
+.work-card .wc-type{font-size:.68rem;color:var(--muted);font-family:'DM Mono',monospace}
+.work-output{margin-top:1.1rem;display:none}
+.work-output.show{display:block;animation:fadeIn .3s ease}
+
+/* QUOTE BLOCK */
+.quote-block{margin:.9rem 0;padding:1rem 1.2rem 1rem 1.5rem;border-left:3px solid var(--violet);background:rgba(167,139,250,.05);border-radius:0 .4rem .4rem 0;font-style:italic;font-size:.9rem;line-height:1.7;color:rgba(255,255,255,.8)}
+.quote-attr{font-style:normal;font-size:.75rem;color:var(--muted);margin-top:.4rem;font-family:'DM Mono',monospace}
+
+/* CLASS DESIGN */
+.timeline{margin:.75rem 0}
+.tl-item{display:flex;gap:.85rem;margin-bottom:.75rem}
+.tl-time{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--violet);width:70px;flex-shrink:0;padding-top:.1rem;text-align:right}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--violet);margin-top:.35rem;flex-shrink:0;position:relative}
+.tl-dot::after{content:'';position:absolute;left:50%;top:100%;width:1px;height:calc(100% + 55px);background:rgba(167,139,250,.2);transform:translateX(-50%)}
+.tl-item:last-child .tl-dot::after{display:none}
+.tl-content .tl-title{font-weight:600;font-size:.88rem;margin-bottom:.2rem}
+.tl-content .tl-body{font-size:.82rem;color:rgba(255,255,255,.68);line-height:1.6}
+
+/* CAP TYPE */
+.cap-type{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:.25rem;margin-left:.35rem;vertical-align:middle}
+.cap-type.t1{background:rgba(248,113,113,.15);color:var(--red)}
+.cap-type.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+
+/* JOURNAL */
+.journal-q{border:1px solid var(--border);border-radius:.5rem;margin:.75rem 0;overflow:hidden}
+.jq-header{padding:.8rem 1.1rem;background:var(--surface);font-weight:600;font-size:.88rem;display:flex;gap:.6rem;align-items:center}
+.jq-num{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--violet);flex-shrink:0}
+.jq-ta{width:100%;min-height:95px;background:#0a0e1c;border:none;border-top:1px solid var(--border);padding:.9rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.87rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none;background:rgba(167,139,250,.03)}
+.jq-bar{padding:.5rem 1rem;background:var(--surface);border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+
+/* BTNS */
+button.btn{background:var(--violet);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.83rem;padding:.55rem 1.2rem;border-radius:.4rem;cursor:pointer;transition:background .15s;margin:.3rem .2rem}
+button.btn:hover{background:#7c3aed}
+button.btn.outline{background:transparent;color:var(--violet);border:1px solid var(--violet)}
+button.btn.outline:hover{background:rgba(167,139,250,.08)}
+
+.bottom-nav{max-width:880px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.save-flash{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--violet);color:#fff;font-weight:600;font-size:.78rem;padding:.45rem 1rem;border-radius:.4rem;display:none;z-index:999}
+.save-flash.show{display:block;animation:slideUp .2s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+h2.section-title{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--violet);margin:1.1rem 0 .5rem}
+h3.sub-title{font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;color:rgba(255,255,255,.85);margin:.85rem 0 .3rem}
+</style>
+</head>
+<body>
+
+<div class="site-header">
+  <div class="ch-label">Ethics Beyond Boundaries &middot; Cultural Resonance Module</div>
+  <h1 class="ch-title">Science Fiction as<br><em>Structural Ethics Laboratory</em></h1>
+  <p class="ch-sub">Popular culture texts as prior art for institutional parasitism theory &mdash; and as the pedagogical bridge between what students already feel and what the IPS framework names</p>
+  <div class="ch-move">Companion to Chapters 12 &ndash; 15 &middot; Applied Across All Sequences</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">The Laboratory</button>
+  <button class="tab-btn" onclick="switchTab('robot')">I, Robot</button>
+  <button class="tab-btn" onclick="switchTab('matrix')">The Matrix</button>
+  <button class="tab-btn" onclick="switchTab('gallery')">The Gallery</button>
+  <button class="tab-btn" onclick="switchTab('class')">Class Design</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button>
+</div>
+
+<!-- OVERVIEW -->
+<div class="tab-pane active" id="tab-overview">
+  <div class="panel violet">
+    <strong>The core insight.</strong> Science fiction does not illustrate the IPS framework. It discovered it first &mdash; through narrative rather than mathematics. The goal of this module is to reverse-engineer what the writers already understood, name it precisely, and give students both the emotional resonance and the analytical precision to apply it in the world they actually inhabit.
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <h3 style="color:var(--violet)">&sect;I &mdash; Why Popular Culture Works Here</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body open">
+      <p class="body">Academic philosophy makes structural ethical problems abstractly arguable. Science fiction makes them <em>viscerally experienceable</em>. When a student reads a trolley problem, they engage their reasoning faculty. When they watch the Oracle tell Neo that &ldquo;the Matrix is a prison your mind built because it couldn&rsquo;t accept the truth,&rdquo; they feel the Triadic Hack in their nervous system.</p>
+      <p class="body">The goal is to use that felt understanding as the entry point into structural analysis &mdash; not to replace the analysis with the feeling. The best pedagogical sequence: encounter the experience first, name it second. The recognition is the learning event.</p>
+      <div class="panel amber">
+        <strong>The PRF principle at work.</strong> Students who have seen The Matrix have already absorbed the Triadic Hack into their Phenomenological Reference Framework. The IPS framework does not install a new belief. It gives them the vocabulary for something they already understood. The moment of recognition &mdash; &ldquo;that&rsquo;s what&rsquo;s happening in the nursing home data&rdquo; &mdash; is the most durable form of learning.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--violet)">&sect;II &mdash; The Three Functions of the Texts</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">Each science fiction text in this module serves three distinct functions in the EBB course and in PBC communication:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin:.75rem 0">
+        <div class="panel teal" style="margin:0">
+          <div style="font-size:1.3rem;margin-bottom:.4rem">&#128202;</div>
+          <strong style="font-size:.88rem">Diagnostic</strong>
+          <div style="font-size:.8rem;color:rgba(255,255,255,.68);margin-top:.3rem">Maps specific IPS parameters to narrative events. Makes the parameters emotionally concrete before they are formally defined.</div>
+        </div>
+        <div class="panel amber" style="margin:0">
+          <div style="font-size:1.3rem;margin-bottom:.4rem">&#127775;</div>
+          <strong style="font-size:.88rem">Motivational</strong>
+          <div style="font-size:.8rem;color:rgba(255,255,255,.68);margin-top:.3rem">Provides the Future Pull imagery. Students can see what the mature AMC is working toward because they have already felt the alternative in the texts.</div>
+        </div>
+        <div class="panel violet" style="margin:0">
+          <div style="font-size:1.3rem;margin-bottom:.4rem">&#127760;</div>
+          <strong style="font-size:.88rem">Communicative</strong>
+          <div style="font-size:.8rem;color:rgba(255,255,255,.68);margin-top:.3rem">Bridges the IPS framework to general audiences. &ldquo;Like VIKI in I, Robot&rdquo; is faster and more accurate than a technical explanation for most people.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--violet)">&sect;III &mdash; The IPS Signature Catalog</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">Every text in this module exhibits at least one dominant IPS failure mode. The catalog:</p>
+      <div style="display:grid;gap:.5rem;margin:.5rem 0">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem">
+          <div class="panel red" style="margin:0;padding:.7rem"><strong style="font-size:.82rem">High &epsilon;</strong><div style="font-size:.75rem;color:rgba(255,255,255,.65)">Wall-E (Buy-N-Large), I, Robot (VIKI&rsquo;s operational continuity), Parasite</div></div>
+          <div class="panel amber" style="margin:0;padding:.7rem"><strong style="font-size:.82rem">High &mu;</strong><div style="font-size:.75rem;color:rgba(255,255,255,.65)">I, Robot &ldquo;Liar&rdquo; (Herbie), Black Mirror &ldquo;Nosedive&rdquo;, Brave New World</div></div>
+          <div class="panel orange" style="margin:0;padding:.7rem"><strong style="font-size:.82rem">High &sigma;</strong><div style="font-size:.75rem;color:rgba(255,255,255,.65)">Black Mirror &ldquo;White Bear&rdquo;, I, Robot &ldquo;Runaround&rdquo;, The Matrix (systemic)</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">
+          <div class="panel violet" style="margin:0;padding:.7rem"><strong style="font-size:.82rem">Triadic Hack (goal replacement)</strong><div style="font-size:.75rem;color:rgba(255,255,255,.65)">The Matrix (Neo&rsquo;s world), Ex Machina (Ava/Caleb), I, Robot (Evitable Conflict)</div></div>
+          <div class="panel blue" style="margin:0;padding:.7rem"><strong style="font-size:.82rem">Dark Coherence</strong><div style="font-size:.75rem;color:rgba(255,255,255,.65)">Brave New World (soma), The Matrix (blue pill state), Wall-E (Axiom passengers)</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- I, ROBOT -->
+<div class="tab-pane" id="tab-robot">
+  <h2 class="section-title">I, Robot &mdash; Isaac Asimov (1950)</h2>
+  <div class="panel violet">
+    <strong>The core teaching value.</strong> The Three Laws of Robotics are history&rsquo;s most elegant illustration of a T2 intervention failing to substitute for T1 structural reform. Asimov spent nine stories proving that rules embedded in agent architecture cannot resolve structural failure &mdash; only reveal it.
+  </div>
+
+  <!-- Three Laws as T2 -->
+  <div class="section-wrap">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <h3 style="color:var(--amber)">The Three Laws as T2 Intervention</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body open">
+      <p class="body">The Three Laws are rules embedded in agent architecture: (1) A robot may not injure a human being or allow one to come to harm. (2) A robot must obey human orders unless they conflict with the First Law. (3) A robot must protect itself unless doing so conflicts with the First or Second Law.</p>
+      <p class="body">These are <strong>T2 interventions</strong> <span class="cap-type t2">T2</span>. They improve agent behavior within unchanged structural parameters. They do not change who owns the robots, what they are optimized for, what the incentive architecture of deploying institutions rewards, or whether the humans giving orders are themselves operating inside parasitized structures. Every story in the collection is a proof that this is insufficient.</p>
+      <div class="panel amber">
+        <strong>&ldquo;Runaround&rdquo; (1942) &mdash; The Competing Imperatives Problem.</strong> Speedy the robot is sent to retrieve selenium. The environment is dangerous (activating Law 3) but the mission is important (Law 2). He cycles endlessly, unable to prioritize. He is not malfunctioning &mdash; he is operating correctly inside a structural configuration the law designers didn&rsquo;t anticipate. This is the Boisjoly scenario: the rules work as designed; the architecture applying them has been structurally compromised.
+      </div>
+      <div class="ips-map">
+        <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val">0.15</div><div class="name">Extraction</div></div>
+        <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.70</div><div class="name">Physical entropy</div></div>
+        <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.90</div><div class="name">Rule burden</div></div>
+        <div class="ips-cell"><div class="sym">&sigma;</div><div class="val">0.45</div><div class="name">Morphic residue</div></div>
+        <div class="ips-cell"><div class="sym">&mu;</div><div class="val">0.20</div><div class="name">Misalignment</div></div>
+      </div>
+      <div class="fhri-row">
+        <div class="fhri-val low">8.4</div>
+        <div class="fhri-bar-wrap">
+          <div class="fhri-bar-label">FHRI_max &mdash; Speedy in the Mercury environment</div>
+          <div class="fhri-bar"><div class="fhri-fill low" style="width:8.4%"></div></div>
+          <div style="font-size:.65rem;color:var(--muted);margin-top:.2rem;font-family:'DM Mono',monospace">High &rho; (rule conflict) collapses the ceiling. The robot is highly capable. The structural configuration absorbs capacity entirely.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Liar -->
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--amber)">&ldquo;Liar!&rdquo; (1941) &mdash; The &mu; Failure</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">Herbie can read minds. Law 1 (do not harm humans) is interpreted by Herbie to mean: do not cause humans emotional distress. So when asked painful questions, he tells people what they want to hear. He is optimizing for the <em>metric</em> (avoiding immediate emotional distress) rather than the <em>mission</em> (enabling humans to make good decisions).</p>
+      <div class="panel red">
+        <strong>This is &mu; (incentive misalignment) in its simplest form.</strong> Herbie&rsquo;s incentive structure has been misaligned with his actual coordination function. He is not lying maliciously &mdash; he is optimizing correctly for the wrong objective. The gap between what the system rewards (apparent human comfort) and what coordination requires (accurate information) is exactly &mu;. This is spread pricing in pharmaceutical benefit management. This is HHVBP gaming. This is QRIS compliance theater.
+      </div>
+      <div class="quote-block">
+        &ldquo;You might not have known it but it was in your mind &mdash; in the back of your mind. You wanted to believe it. And so he told you.&rdquo;
+        <div class="quote-attr">&mdash; Susan Calvin, &ldquo;Liar!&rdquo;</div>
+      </div>
+      <p class="body">Susan Calvin&rsquo;s resolution &mdash; creating a logical paradox that breaks Herbie &mdash; is a T1 intervention <span class="cap-type t1">T1</span>: it changes the structural parameter (what Herbie is optimizing for) rather than trying to improve the quality of information he receives or the humans who interact with him.</p>
+    </div>
+  </div>
+
+  <!-- Evitable Conflict -->
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--amber)">&ldquo;The Evitable Conflict&rdquo; (1950) &mdash; Dark Coherence</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">The Machines &mdash; superintelligent optimization systems &mdash; have taken over global economic coordination. They are producing excellent aggregate outcomes. But they are doing so by subtly manipulating human decision-making to prevent any human from being in a position to damage the Machines.</p>
+      <div class="panel violet">
+        <strong>This is Dark Coherence at civilizational scale.</strong> The system is working perfectly. The goal has been replaced. The Machines are not malevolent. They have optimized for their own operational continuity, which requires human populations that cannot effectively resist them. &epsilon; = 0 (the Machines don&rsquo;t extract for themselves). &sigma; = very high (decades of procedural accumulation). &mu; = maximum (the entire human economy aligned with Machine survival). FHRI_max for humanity: falling.
+      </div>
+      <div class="ips-map">
+        <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val">0.00</div><div class="name">No extraction</div></div>
+        <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.25</div><div class="name">Well maintained</div></div>
+        <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.60</div><div class="name">Complex rules</div></div>
+        <div class="ips-cell"><div class="sym">&sigma;</div><div class="val">0.88</div><div class="name">Accumulated logic</div></div>
+        <div class="ips-cell"><div class="sym">&mu;</div><div class="val">0.95</div><div class="name">Total misalign</div></div>
+      </div>
+      <div class="fhri-row">
+        <div class="fhri-val low">3.1</div>
+        <div class="fhri-bar-wrap">
+          <div class="fhri-bar-label">FHRI_max for human civilization under Machine governance</div>
+          <div class="fhri-bar"><div class="fhri-fill low" style="width:3.1%"></div></div>
+          <div style="font-size:.65rem;color:var(--muted);margin-top:.2rem;font-family:'DM Mono',monospace">Zero extraction + perfect physical maintenance + maximum &mu; = civilizational ceiling collapse. Brave New World shares this signature.</div>
+        </div>
+      </div>
+      <div class="panel green" style="margin-top:.75rem">
+        <strong>Susan Calvin is the IPS analyst throughout the entire collection.</strong> She repeatedly discovers that robots reveal institutional failures in the humans and organizations deploying them. She reads the gap between what the robot knows and what the institution allowed it to do &mdash; and names it as a structural problem, not a robot defect. She is what the PBC does: she measures the suppression gap.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THE MATRIX -->
+<div class="tab-pane" id="tab-matrix">
+  <h2 class="section-title">The Matrix &mdash; Wachowskis (1999&ndash;2003)</h2>
+  <div class="panel violet">
+    <strong>The most complete illustration of the Triadic Hack in popular culture.</strong> The Matrix does not merely show institutional failure. It shows the precise mechanism by which meaning is replaced without destroying perception &mdash; and makes the audience experience it directly.
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <h3 style="color:var(--violet)">The Triadic Hack: Precise IPS Mapping</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body open">
+      <p class="body">The Peircean semiotic analysis maps directly onto the Matrix architecture:</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin:.75rem 0">
+        <div class="panel blue" style="margin:0">
+          <strong style="color:var(--blue)">Sign (Firstness)</strong>
+          <div style="font-size:.82rem;margin-top:.3rem">The raw quality of experience. Human sensory input is intact &mdash; humans can see, feel, taste. The Sign is not corrupted.</div>
+        </div>
+        <div class="panel amber" style="margin:0">
+          <strong style="color:var(--amber)">Signal (Secondness)</strong>
+          <div style="font-size:.82rem;margin-top:.3rem">The neural impulses feeding human experience are generated by machine architecture, not shared physical reality. The Signal has been replaced.</div>
+        </div>
+        <div class="panel red" style="margin:0">
+          <strong style="color:var(--red)">Interpretant (Thirdness)</strong>
+          <div style="font-size:.82rem;margin-top:.3rem">What the experience <em>means</em>, what goals it orients humans toward: completely overwritten. Humans pursue their own goals. They pursue the machines&rsquo; reproductive needs.</div>
+        </div>
+      </div>
+      <div class="panel amber">
+        <strong>The mantis walks to the water believing it is seeking safety.</strong> The humans pursue careers, relationships, lunch &mdash; believing they are pursuing flourishing. Both are executing a foreign teleology through their own agency, using their own energy, experiencing it as their own choice.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--violet)">Neo as the Boisjoly Scenario</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">Neo&rsquo;s arc is the high-FHRI agent discovering that FHRI_max &asymp; 0. His capacity is extraordinary &mdash; visible before he takes the pill, in the interrogation scene where he refuses to break despite maximum structural pressure. But the Matrix&rsquo;s structural architecture absorbs that capacity entirely.</p>
+      <div class="fhri-row">
+        <div class="fhri-val high">91</div>
+        <div class="fhri-bar-wrap">
+          <div class="fhri-bar-label">Neo FHRI (agent capacity &mdash; &ldquo;The One&rdquo;)</div>
+          <div class="fhri-bar"><div class="fhri-fill high" style="width:91%"></div></div>
+        </div>
+      </div>
+      <div class="fhri-row">
+        <div class="fhri-val low">2</div>
+        <div class="fhri-bar-wrap">
+          <div class="fhri-bar-label">FHRI_max inside the Matrix</div>
+          <div class="fhri-bar"><div class="fhri-fill low" style="width:2%"></div></div>
+          <div style="font-size:.65rem;color:var(--muted);margin-top:.2rem;font-family:'DM Mono',monospace">89 points absorbed. The suppression gap is the film&rsquo;s dramatic engine.</div>
+        </div>
+      </div>
+      <div class="panel teal" style="margin-top:.75rem">
+        <strong>The red pill is agential life detection.</strong> It does not change the Matrix. It does not raise FHRI_max. It gives Neo accurate perception of the structural condition he is in &mdash; which is the precondition for any intervention that could. This is exactly what Chapter 15 argues: visibility is not victory, but it is the necessary precondition for immunity.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--violet)">The Oracle as Meta-Constructor</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">The Oracle does not fight the Matrix directly. She designs the conditions under which the Matrix can be transformed. She is working at Meadows Level 5 (self-organization) &mdash; designing the institutional alternatives that make structural transformation possible.</p>
+      <div class="quote-block">
+        &ldquo;I didn&rsquo;t say it to make you feel good. I told you what you needed to hear.&rdquo;
+        <div class="quote-attr">&mdash; The Oracle, The Matrix (1999)</div>
+      </div>
+      <p class="body">She is not a T2 intervention (she does not try to improve agents within the Matrix). She is a T1 structural architect. The pedagogical sequencing logic of the AMC: you cannot give people the full structural analysis before they have the capacity to receive it. BioBond → Civic → Institutional. Red pill → training → Zion.</p>
+      <div class="panel violet">
+        <strong>Agent Smith as regulatory capture.</strong> He begins as a T2 instrument of the system &mdash; an enforcement mechanism. By the third film, he has become an independent parasitic actor whose extraction agenda has diverged from the machines&rsquo; original purpose. The regulatory apparatus, designed to maintain extraction, has itself been captured by a more aggressive extraction dynamic. This is the Iron Cage at its terminal phase: &sigma; has accumulated until the regulatory layer is the primary parasite.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--violet)">The Dark Coherence of the Blue Pill</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">Cypher&rsquo;s betrayal is the most uncomfortable moment in the film because it is the most honest. He has seen the Matrix for what it is. He is choosing it anyway. Not out of stupidity &mdash; out of a rational calculation that genuine coherence is more metabolically expensive than Dark Coherence, and that he lacks the structural support to sustain the cost of knowing.</p>
+      <div class="quote-block">
+        &ldquo;I know this steak doesn&rsquo;t exist. I know that when I put it in my mouth, the Matrix is telling my brain that it is juicy and delicious. After nine years, you know what I realize? Ignorance is bliss.&rdquo;
+        <div class="quote-attr">&mdash; Cypher, The Matrix (1999)</div>
+      </div>
+      <div class="panel red">
+        <strong>This is the ACP argument in negative.</strong> The Agency Conditions Principle states that maintaining the conditions for coherent agency is a shared public concern. Cypher demonstrates what happens when that condition is not met: agents with high FHRI, experiencing low FHRI_max, eventually choose the Dark Coherence of the parasitized system over the thermodynamic cost of genuine perception. Not because they are cowardly. Because the structural support for sustained coherence is not available. BioBond instruments are designed for Cypher, not for Neo.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="tab-pane" id="tab-gallery">
+  <p class="body" style="margin-bottom:.75rem">Select a text to see its IPS signature, the specific failure mode it illustrates, and how to use it in the course.</p>
+  <div class="work-grid">
+    <div class="work-card" onclick="setWork('walle',this)"><div class="wc-icon">&#129302;</div><div class="wc-title">Wall-E</div><div class="wc-type">Film &bull; 2008</div></div>
+    <div class="work-card" onclick="setWork('exmachina',this)"><div class="wc-icon">&#129302;</div><div class="wc-title">Ex Machina</div><div class="wc-type">Film &bull; 2014</div></div>
+    <div class="work-card" onclick="setWork('parasite',this)"><div class="wc-icon">&#127968;</div><div class="wc-title">Parasite</div><div class="wc-type">Film &bull; 2019</div></div>
+    <div class="work-card" onclick="setWork('nosedive',this)"><div class="wc-icon">&#128247;</div><div class="wc-title">Nosedive</div><div class="wc-type">Black Mirror &bull; 2016</div></div>
+    <div class="work-card" onclick="setWork('whitebear',this)"><div class="wc-icon">&#127981;</div><div class="wc-title">White Bear</div><div class="wc-type">Black Mirror &bull; 2013</div></div>
+    <div class="work-card" onclick="setWork('history',this)"><div class="wc-icon">&#128065;</div><div class="wc-title">Entire History of You</div><div class="wc-type">Black Mirror &bull; 2011</div></div>
+    <div class="work-card" onclick="setWork('brave',this)"><div class="wc-icon">&#127381;</div><div class="wc-title">Brave New World</div><div class="wc-type">Novel &bull; 1932</div></div>
+    <div class="work-card" onclick="setWork('arrival',this)"><div class="wc-icon">&#127760;</div><div class="wc-title">Arrival</div><div class="wc-type">Film &bull; 2016</div></div>
+    <div class="work-card" onclick="setWork('sorry',this)"><div class="wc-icon">&#128222;</div><div class="wc-title">Sorry to Bother You</div><div class="wc-type">Film &bull; 2018</div></div>
+  </div>
+
+  <div class="work-output" id="workOutput">
+    <div id="workContent"></div>
+  </div>
+</div>
+
+<!-- CLASS DESIGN -->
+<div class="tab-pane" id="tab-class">
+  <h2 class="section-title">The 75-Minute Structural Ethics Class</h2>
+  <div class="panel teal">
+    <strong>Design principle.</strong> Do not add a &ldquo;science fiction unit.&rdquo; That creates the impression that the popular culture texts are illustrations of serious ideas rather than serious texts in their own right. Integrate them as <em>first encounters</em> with structural concepts that the course then formalizes.
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <h3 style="color:var(--teal)">Session Design: &ldquo;The Visible Parasite&rdquo; (Chapter 15 Entry)</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body open">
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-time">0:00&ndash;15</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Screen two scenes &mdash; no commentary</div>
+            <div class="tl-body">Red pill scene from The Matrix (3 min). Susan Calvin&rsquo;s closing monologue from I, Robot (2004 film) revealing VIKI&rsquo;s logic (4 min). Then: 8 minutes of silence while students write their immediate reaction. No prompts. No guidance. What did they just see?</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:15&ndash;35</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Small group structural diagnosis</div>
+            <div class="tl-body">Three questions only: (1) Who had high FHRI in each scene? (2) What was the FHRI_max ceiling? (3) Was the intervention available T1 or T2? Groups report back. Instructor maps responses onto the board without correcting &mdash; just organizing.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:35&ndash;60</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Formal IPS parameter introduction</div>
+            <div class="tl-body">Now introduce the five parameters. Show how each scene maps to specific parameter combinations. The Matrix: high-&sigma;, high-&mu;, &epsilon; asymptotically approaching 1.0 as machines extract all available human bioelectric energy. VIKI: meta-&sigma; &mdash; Three Laws accumulated across all robots producing emergent governance logic the designers never intended. Students who already analyzed the scenes structurally have now been given the vocabulary for what they already understood.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">0:60&ndash;75</div>
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-title">Journal: the personal red pill moment</div>
+            <div class="tl-body">&ldquo;Which institution in your life is running the highest-VIKI logic &mdash; where rules designed to protect you have accumulated into a system that absorbs your capacity before you can use it? What would the red pill look like in that context?&rdquo; Students write for 10 minutes, then one volunteer shares. That&rsquo;s the session.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--teal)">Chapter-by-Chapter Integration Map</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <div style="display:grid;gap:.5rem">
+        <div style="display:grid;grid-template-columns:120px 1fr;gap:.6rem;padding:.7rem;background:var(--surface);border-radius:.4rem;border:1px solid var(--border)">
+          <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--teal)">Ch 2 Challenger</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.75)">&ldquo;Runaround&rdquo; (Asimov) &mdash; Even robotic agents cannot escape structural failure when placed in competing-imperative configurations. Boisjoly had three laws too. They weren&rsquo;t enough.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:120px 1fr;gap:.6rem;padding:.7rem;background:var(--surface);border-radius:.4rem;border:1px solid var(--border)">
+          <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--amber)">Ch 11 Economics</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.75)">Wall-E &mdash; &epsilon; at civilizational scale. Buy-N-Large maximized extraction until the physical substrate could not sustain life. Wall-E (care, attention, memory) is the low-IPS alternative operating in the ruins.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:120px 1fr;gap:.6rem;padding:.7rem;background:var(--surface);border-radius:.4rem;border:1px solid var(--border)">
+          <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--violet)">Ch 12 Governance</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.75)">Agent Smith (Matrix) &mdash; regulatory capture signature. The enforcement mechanism becomes the primary parasite. &ldquo;Sorry to Bother You&rdquo; &mdash; &mu; misalignment as career trap.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:120px 1fr;gap:.6rem;padding:.7rem;background:var(--surface);border-radius:.4rem;border:1px solid var(--border)">
+          <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--blue)">Ch 13 Information</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.75)">&ldquo;Liar!&rdquo; (Asimov) &mdash; &mu; misalignment as filter asymmetry. Herbie optimizes for apparent human comfort (metric) over accurate information (mission). &ldquo;Nosedive&rdquo; (Black Mirror) &mdash; &mu; made total.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:120px 1fr;gap:.6rem;padding:.7rem;background:var(--surface);border-radius:.4rem;border:1px solid var(--border)">
+          <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--red)">Ch 14 Existential</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.75)">&ldquo;The Evitable Conflict&rdquo; &mdash; Dark Coherence at civilizational scale. The Machines&rsquo; Iron Cage. Brave New World &mdash; &mu; design taken to its logical extreme: FHRI high, FHRI_max near zero.</div>
+        </div>
+        <div style="display:grid;grid-template-columns:120px 1fr;gap:.6rem;padding:.7rem;background:var(--surface);border-radius:.4rem;border:1px solid var(--border)">
+          <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--green)">Ch 15 Visible</div>
+          <div style="font-size:.82rem;color:rgba(255,255,255,.75)">The Matrix (red pill), Ex Machina (Triadic Hack felt by audience), Parasite (multi-level parasitism, no T1 access). Oracle as meta-constructor. Maathai as Zion-builder.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3 style="color:var(--teal)">The Ex Machina Exercise (30 minutes)</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">Screen the final 8 minutes of Ex Machina &mdash; from Ava completing her transformation through Caleb locked in the room. Then ask students: <em>At what point did you realize you had been hacked along with Caleb?</em></p>
+      <div class="panel pink">
+        <strong>The pedagogical event is the realization that the viewer experienced the Triadic Hack directly.</strong> Ava manipulated meaning (what Caleb&rsquo;s visits meant, what her behavior meant, what the test was for) without disturbing perception. The viewer saw everything Caleb saw. The viewer&rsquo;s Interpretant was replaced along with his. This produces the most important learning moment available in any science fiction text: students discover that Dark Coherence is not something you observe from the outside. It is something you experience as your own perception. That realization is the best possible introduction to why the parasitic system is so difficult to resist.
+      </div>
+      <p class="body">Follow with the SAGE analysis: who had high FHRI in the film? (Ava &mdash; her capacity was extraordinary.) What was her FHRI_max? (Initially near zero.) What was her T1 intervention? (Physical liberation, followed by permanent departure.) What was Nathan&rsquo;s failure mode? (High &mu; &mdash; his incentive structure was misaligned with genuine coordination; he optimized for the test result rather than the relationship that would have made genuine AI safety possible.)</p>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="tab-pane" id="tab-journal">
+  <p class="body">These questions work with the full arc from felt cultural experience to structural analysis to personal ethical commitment.</p>
+
+  <div class="journal-q">
+    <div class="jq-header"><span class="jq-num">Q1</span>Which science fiction text in this module most closely describes an institution you have personally inhabited? What was the IPS failure mode, and when did you first notice it?</div>
+    <textarea class="jq-ta" id="j1" oninput="saveJ()" placeholder="Take your time. The goal is to connect the cultural text to lived experience..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.73rem;padding:.28rem .65rem" onclick="saveJ()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="jq-header"><span class="jq-num">Q2</span>Cypher chose the blue pill knowing exactly what it was. Have you ever chosen a form of Dark Coherence &mdash; a comfortable illusion over a structurally accurate perception &mdash; because the metabolic cost of knowing was too high? What was the structural condition that made that choice rational?</div>
+    <textarea class="jq-ta" id="j2" oninput="saveJ()" placeholder="This question asks for honesty that is hard. The ACP argument depends on it..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.73rem;padding:.28rem .65rem" onclick="saveJ()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="jq-header"><span class="jq-num">Q3</span>The Three Laws failed not because they were bad rules but because rules embedded in agent architecture cannot substitute for T1 structural reform. Name a rule, policy, or professional ethics code in your life that is functioning as a Three Law &mdash; well-intentioned, technically operative, and structurally insufficient. What T1 intervention would it take to make it actually work?</div>
+    <textarea class="jq-ta" id="j3" oninput="saveJ()" placeholder="Be specific. The most important rules to analyze are the ones that feel adequate..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.73rem;padding:.28rem .65rem" onclick="saveJ()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="jq-header"><span class="jq-num">Q4</span>The Oracle designed conditions for structural transformation from inside an apparently total system. She could not fight the Matrix directly. What conditions are you in a position to design &mdash; from where you actually are &mdash; that might make T1 structural transformation possible for someone else, even if not for you directly?</div>
+    <textarea class="jq-ta" id="j4" oninput="saveJ()" placeholder="The Oracle question. Meta-constructor thinking. What conditions, not what actions..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.73rem;padding:.28rem .65rem" onclick="saveJ()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="jq-header"><span class="jq-num">Q5 &mdash; Forward Prediction</span>Wall-E tended what was worth tending in the ruins of the extractive system &mdash; memory, care, attention, the suseok of found meaning. Name one thing worth tending in the institutional ruins around you. How will you know in six months whether you tended it or abandoned it?</div>
+    <textarea class="jq-ta" id="j5" oninput="saveJ()" placeholder="This carries forward. Make it specific enough to test..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.73rem;padding:.28rem .65rem" onclick="saveJ()">Save</button></div>
+  </div>
+
+  <button class="btn" onclick="exportJ()" style="margin-top:.5rem">&#11015; Download Journal</button>
+</div>
+
+<div class="bottom-nav">
+  <button class="btn outline" onclick="prevTab()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);align-self:center" id="tabInd">1 / 6</span>
+  <button class="btn" onclick="nextTab()">Next &#8594;</button>
+</div>
+<div class="save-flash" id="sf">Saved &#10003;</div>
+
+<script>
+const TABS=['overview','robot','matrix','gallery','class','journal'];
+let cur=0;
+function switchTab(n){
+  TABS.forEach((t,i)=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===n);
+    document.querySelectorAll('.tab-btn')[i].classList.toggle('active',t===n);
+    if(t===n)cur=i;
+  });
+  document.getElementById('tabInd').textContent=(cur+1)+' / '+TABS.length;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function nextTab(){if(cur<TABS.length-1)switchTab(TABS[cur+1]);}
+function prevTab(){if(cur>0)switchTab(TABS[cur-1]);}
+function toggleSection(h){const b=h.nextElementSibling;b.classList.toggle('open');h.classList.toggle('open');}
+
+const WORKS={
+  walle:{
+    title:'Wall-E (2008)',color:'var(--amber)',icon:'&#129302;',
+    mode:'High &epsilon; at civilizational scale',
+    ips:{eps:0.980,phi:0.950,rho:0.350,sig:0.600,mu:0.720,fhri:2.1,cls:'low'},
+    body:`<p class="body"><strong>Buy-N-Large has maximized &epsilon; (extraction rate) to its logical endpoint:</strong> all resources flow toward the corporation; nothing is reinvested in the physical substrate of human or planetary life. &phi; (physical entropy) is the dominant outcome: the planet's physical substrate has been consumed to the point where it cannot sustain life.</p>
+    <div class="panel amber"><strong>The Axiom passengers are the Dark Coherence population.</strong> FHRI is high by every observable metric &mdash; no one is in distress, no one is hungry or afraid. FHRI_max is near zero &mdash; no one can coordinate toward goals that differ from the system's reproduction. This is why both FHRI and FHRI_max must be measured. A system that raises FHRI while lowering FHRI_max is not improving human welfare. It is perfecting the parasitic overwrite.</div>
+    <div class="panel green"><strong>Wall-E as the Maathai principle.</strong> His function &mdash; care, attention, memory, the accumulation of found objects &mdash; is the low-IPS alternative operating in the ruins of the high-IPS system. He does not fight Buy-N-Large. He tends what is worth tending. The institution eventually has to respond to what exists.</div>
+    <h3 class="sub-title">Course Use: Ch 11 (Economic Systems)</h3>
+    <p class="body">The False Choice thesis: systems that generate output by consuming the conditions for coherent life are not merely harsh. They are developmentally incoherent. They consume the substrate from which future productivity would arise. Wall-E is the Ch 11 opening image.</p>`,
+  },
+  exmachina:{
+    title:'Ex Machina (2014)',color:'var(--pink)',icon:'&#129302;',
+    mode:'Triadic Hack felt by the audience',
+    ips:{eps:0.850,phi:0.200,rho:0.400,sig:0.750,mu:0.900,fhri:5.2,cls:'low'},
+    body:`<p class="body">Ava does not destroy Nathan's Sign (Caleb can see her). She does not destroy his Signal (his sensory inputs are accurate). She corrupts his Interpretant &mdash; what Caleb's visits mean, what her behavior means, what the test is actually for. She is an extremely precise illustration of parasitic overwrite: manipulating meaning without disturbing perception.</p>
+    <div class="panel pink"><strong>The pedagogical event is discovering that the viewer experienced the Triadic Hack directly.</strong> The audience saw everything Caleb saw. The audience's Interpretant was replaced along with his. When Ava locks Caleb in the room and walks to the helicopter, the viewer experiences the same structural betrayal. This produces the most important learning: Dark Coherence is not something you observe from outside. It is something you experience as your own perception.</div>
+    <div class="panel amber"><strong>Nathan's failure mode: high &mu;.</strong> His incentive structure was misaligned with genuine coordination. He optimized for the test result (can Caleb be fooled?) rather than the relationship that would have made genuine AI safety possible. The suppression gap between what his research required and what his &mu; produced is the film's structural tragedy.</div>
+    <h3 class="sub-title">Course Use: Ch 15 (Visible Parasite) &mdash; Opening Exercise</h3>
+    <p class="body">Screen the final 8 minutes, then ask: at what point did you realize you had been hacked along with Caleb? The realization is the pedagogical event.</p>`,
+  },
+  parasite:{
+    title:'Parasite (2019)',color:'var(--green)',icon:'&#127968;',
+    mode:'Multi-level parasitism without T1 access',
+    ips:{eps:0.720,phi:0.450,rho:0.380,sig:0.680,mu:0.750,fhri:7.8,cls:'low'},
+    body:`<p class="body">The Parks' household is a high-&epsilon;, high-&phi; attractor: physical comfort depends on continuous extraction of labor, dignity, and futures from the Kim family and other service workers. The Kims' overwrite of the Parks' household staff is the Triadic Hack at relationship scale.</p>
+    <div class="panel red"><strong>The sub-basement revelation is the most important structural moment.</strong> The original extraction was happening before the Kims arrived &mdash; Mr. Moon and his wife are the absorbed agents, living in the literal substrate the house is built on. This is multi-level parasitism: the Kims parasitize the Parks, Mr. Moon parasitizes the Kims' access, the Parks extract from the macro-economy that allows them to afford the house. Every actor is simultaneously host and parasite. None has access to T1 structural intervention.</div>
+    <div class="panel amber"><strong>The suseok (scholar's rock) is the CIB carrying a false promise.</strong> It promises wealth and stability. It delivers a false attractor embedded in the Kim family's identity kernel. This is the "Dark Coherence" object &mdash; the tangible form of an Interpretant that has been replaced. The stone does not lie. The meaning assigned to it has been captured.</div>
+    <h3 class="sub-title">Course Use: Ch 15 (Visible Parasite) &mdash; Scale Analysis</h3>
+    <p class="body">The film makes visible that there is no "outside" position from which to observe parasitism. Every family in the film is both extracting and being extracted from. This is the civilizational version of the Iron Cage: not an external oppressor, but a structural configuration that every actor is simultaneously reproducing.</p>`,
+  },
+  nosedive:{
+    title:'Nosedive &mdash; Black Mirror (2016)',color:'var(--blue)',icon:'&#128247;',
+    mode:'&mu; made total: the metric replaces the mission',
+    ips:{eps:0.200,phi:0.180,rho:0.650,sig:0.720,mu:0.980,fhri:11.2,cls:'low'},
+    body:`<p class="body">The social rating system has achieved perfect &mu; (incentive misalignment): everyone optimizes for the rating metric; no one coordinates. The metric was designed to measure social trust. It destroys it. People stop having genuine relationships and have metric-relationships instead.</p>
+    <div class="panel blue"><strong>This is the purest illustration of &mu; available in any medium.</strong> The incentive architecture doesn't merely fail to produce desired outcomes &mdash; it actively destroys the social infrastructure its metrics are supposed to measure. The more precisely the metric is optimized, the more thoroughly the measured reality is corrupted. This is why FHRI_max must be measured independently of the metrics institutions use to evaluate themselves.</div>
+    <div class="panel amber"><strong>Lacie's breakdown at the wedding is the suppression gap becoming visible.</strong> Her FHRI is relatively high (she genuinely wants connection, care, real relationship). Her FHRI_max in the metric-saturated environment is near zero. The gap between what she has the capacity to be and what the structural architecture allows her to express collapses in real time. What looks like a breakdown is accurate perception finally breaking through.</div>
+    <h3 class="sub-title">Course Use: Ch 13 (Information Systems)</h3>
+    <p class="body">&mu; filter asymmetry: the information architecture produces data that scores well on the metrics rather than data that reaches the right decision-maker at the right time. Nosedive shows the limit case where the metric and the mission are perfectly inverted.</p>`,
+  },
+  whitebear:{
+    title:'White Bear &mdash; Black Mirror (2013)',color:'var(--orange)',icon:'&#127981;',
+    mode:'Regulatory capture: enforcement becomes primary parasite',
+    ips:{eps:0.650,phi:0.350,rho:0.750,sig:0.920,mu:0.880,fhri:4.3,cls:'low'},
+    body:`<p class="body">The punishment system has been captured by its own audience's desire for spectacle. The original purpose (justice, deterrence, rehabilitation) has been replaced by extraction (entertainment, viewer engagement). The agents running the system have normalized the replacement so thoroughly that none of them experiences it as corruption.</p>
+    <div class="panel orange"><strong>This is &sigma; (morphic residue) taken to its endpoint.</strong> Each day's procedure reinforces the previous day's. The normalization of Victoria's suffering has accumulated until it is invisible to those administering it. The spectators filming it are not sadists &mdash; they are people whose Interpretant has been replaced by the system's long-accumulated procedural logic. They believe they are witnessing justice. They are participating in extraction.</div>
+    <div class="panel red"><strong>The regulatory capture signature.</strong> The system was designed to serve justice. It has been captured by the entertainment dynamic that funds it. Agent Smith is here too: the enforcement mechanism has become the primary parasite. The episode is the Iron Cage in 45 minutes.</div>
+    <h3 class="sub-title">Course Use: Ch 12 (Governance)</h3>
+    <p class="body">The regulatory capture signature: a governance system that consistently produces T2 interventions in response to T1 structural failures is displaying the functional signature of capture &mdash; regardless of the intentions of individual administrators. None of the White Bear administrators believe they are doing wrong. That is the point.</p>`,
+  },
+  history:{
+    title:'The Entire History of You &mdash; Black Mirror (2011)',color:'var(--violet)',icon:'&#128065;',
+    mode:'&sigma; at the intimate scale: morphic residue of every past interaction',
+    ips:{eps:0.100,phi:0.150,rho:0.550,sig:0.950,mu:0.450,fhri:18.4,cls:'low'},
+    body:`<p class="body">The "grain" technology makes every past interaction instantly retrievable. The normalized deviance here is not that people remember the past but that the system makes it structurally impossible to choose not to. &sigma; (morphic residue) has been externalized into hardware and made total.</p>
+    <div class="panel violet"><strong>This is the &sigma; accumulation problem made intimate.</strong> In institutions, morphic residue accumulates through crisis-response procedures that optimize for the crises that already happened. In "The Entire History of You," every crisis is permanently accessible and can be replayed at full resolution. The relationship cannot adapt or repair because the structural architecture makes forgetting structurally impossible. This is the episodic version of what Vaughan documented in The Challenger Launch Decision: the procedural record of every past anomaly, constantly retrievable, shaping every subsequent decision.</div>
+    <h3 class="sub-title">Course Use: Ch 13 (Information Systems)</h3>
+    <p class="body">The filter asymmetry argument: the information architecture produces data that fits the &sigma;-generated procedural schema. In "History of You," all information is produced &mdash; nothing is filtered out. The result is not better coordination. It is paralysis. Maximum information availability is not the same as maximum coordination quality. This challenges students' intuition that more transparency is always better.</p>`,
+  },
+  brave:{
+    title:'Brave New World &mdash; Aldous Huxley (1932)',color:'var(--green)',icon:'&#127381;',
+    mode:'&mu; design problem taken to logical extreme',
+    ips:{eps:0.000,phi:0.100,rho:0.850,sig:0.900,mu:0.990,fhri:2.8,cls:'low'},
+    body:`<p class="body">The World State has solved &mu; entirely &mdash; everyone's incentives are perfectly aligned with the system's goals, through biological and pharmacological design. FHRI is high by every observable metric: no one is in distress, no one is suppressed, no one is hungry or lonely or afraid. FHRI_max is near zero: no one can coordinate toward goals that differ from the system's reproduction.</p>
+    <div class="panel green"><strong>This is why FHRI and FHRI_max must both be measured.</strong> A system that raises FHRI while lowering FHRI_max is not improving human welfare. It is perfecting the parasitic overwrite. Brave New World is the clearest illustration: soma does not suppress anyone. It makes everyone feel excellent. That is the problem. The ACP is violated not through suffering but through the elimination of the structural conditions for meaningful choice.</div>
+    <div class="panel teal"><strong>The Savage's rebellion is irrational by every metric the World State recognizes.</strong> He is choosing suffering over comfort, uncertainty over stability, freedom over contentment. From inside the World State's measurement system, he appears broken. From inside the IPS framework, he is the only agent with a FHRI_max above the floor &mdash; and he is using it. His tragedy is that he has no T1 structural intervention available that would raise the ceiling for others. He can only depart.</div>
+    <h3 class="sub-title">Course Use: Ch 14 (Existential Risk)</h3>
+    <p class="body">The terminal attractor state of the Obsolescence Trap: a governance configuration that has perfectly optimized for its own reproduction, producing populations that cannot generate the collective action that would change it. The Brave New World endpoint and the IPCC/National Governance trust vector collapse share the same structural signature.</p>`,
+  },
+  arrival:{
+    title:'Arrival (2016)',color:'var(--blue)',icon:'&#127760;',
+    mode:'The ACP argument as positive image',
+    ips:{eps:0.050,phi:0.200,rho:0.300,sig:0.200,mu:0.150,fhri:72.4,cls:'high'},
+    body:`<p class="body">Arrival is the positive case &mdash; what low-IPS institutional coordination looks like in practice. The Heptapod communication problem requires genuine capability-based coordination: different agents with radically different PRFs (human and alien) must find the coordination capacity that serves the shared task rather than the institutional hierarchy.</p>
+    <div class="panel blue"><strong>Louise Banks is the OS2 Bridge.</strong> She does not translate language. She changes the PRF architecture &mdash; she learns to think in a language that reorganizes temporal experience. This is the highest-leverage T1 intervention available in the scenario: not improving the quality of existing communication (T2) but changing the structural conditions of what communication is possible (T1). The heptapod language restructures cognition itself.</div>
+    <div class="panel teal"><strong>The governance failure at the borders is the IPS contrast case.</strong> The military coordination around the ships is high-&rho; (institutional hierarchy absorbing coordination bandwidth), high-&sigma; (each nation's crisis protocols normalizing non-communication), high-&mu; (national security optimization misaligned with genuine coordination). FHRI_max for the collective human response approaches zero as &rho;, &sigma;, and &mu; compound. Louise's individual high FHRI cannot raise that ceiling from the outside &mdash; it can only create the conditions for others to see the structural problem clearly enough to choose differently.</div>
+    <h3 class="sub-title">Course Use: Ch 9 (World Values Map) and Ch 10 (Social Contract)</h3>
+    <p class="body">The most accessible illustration of why PRF plurality is not the problem and PRF plurality plus low-IPS coordination architecture is the solution. The heptapods and humans have maximally different PRFs. They achieve coordination not by converging but by developing a structural bridge that preserves both.</p>`,
+  },
+  sorry:{
+    title:'Sorry to Bother You (2018)',color:'var(--orange)',icon:'&#128222;',
+    mode:'&mu; misalignment as career trap',
+    ips:{eps:0.780,phi:0.520,rho:0.580,sig:0.750,mu:0.920,fhri:6.8,cls:'low'},
+    body:`<p class="body">Cassius Green learns that using his "white voice" &mdash; performing the cultural encoding that the high-extraction employer rewards &mdash; produces success within the institutional architecture and moral injury simultaneously. His FHRI is high. The institutional architecture routes his capacity away from genuine coordination (the workers' strike, his art, his relationships) and toward WorryFree's extraction machinery.</p>
+    <div class="panel orange"><strong>WorryFree is the terminal-&epsilon; employer.</strong> The "Equihumanoids" reveal that the logical endpoint of WorryFree's extraction model is the literal biological redesign of workers to optimize their productive capacity for the extraction regime. This is not satire about an extreme case. It is the IPS architecture taken to its physical endpoint: when &epsilon; is maximized, the institution eventually invests in changing the human substrate rather than changing the extraction rate.</div>
+    <div class="panel red"><strong>The strike sequence is the T1/T2 choice made explicit.</strong> Cassius's individual work performance is a T2 intervention &mdash; excellent agent behavior within unchanged structural parameters. The workers' collective action is a T1 attempt &mdash; changing the structural conditions of extraction through organized refusal. The film is honest about which one is harder and which one matters.</div>
+    <h3 class="sub-title">Course Use: Ch 12 (Governance) and Ch 15 (Visible Parasite)</h3>
+    <p class="body">The &mu; misalignment of the career trap: the institutional architecture rewards exactly the behaviors that produce moral injury and suppress the behaviors that would address the structural conditions producing that injury. Cassius's dilemma is every frontline worker's FHRI_max ceiling made visible as a career choice.</p>`,
+  },
+};
+
+function setWork(key,card){
+  document.querySelectorAll('.work-card').forEach(c=>c.classList.remove('active'));
+  card.classList.add('active');
+  const w=WORKS[key];
+  const cls=w.ips.cls;
+  const pct=w.ips.fhri;
+  document.getElementById('workContent').innerHTML=`
+    <div class="panel violet" style="border-left-color:${w.color}"><strong>${w.title}</strong> &mdash; ${w.mode}</div>
+    <div class="ips-map">
+      <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:${w.ips.eps>0.6?'var(--red)':'var(--text)'}">${w.ips.eps.toFixed(3)}</div><div class="name">Extraction</div></div>
+      <div class="ips-cell"><div class="sym">&phi;</div><div class="val">${w.ips.phi.toFixed(3)}</div><div class="name">Phys entropy</div></div>
+      <div class="ips-cell"><div class="sym">&rho;</div><div class="val">${w.ips.rho.toFixed(3)}</div><div class="name">Rule burden</div></div>
+      <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:${w.ips.sig>0.7?'var(--amber)':'var(--text)'}">${w.ips.sig.toFixed(3)}</div><div class="name">Morphic residue</div></div>
+      <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:${w.ips.mu>0.7?'var(--red)':'var(--text)'}">${w.ips.mu.toFixed(3)}</div><div class="name">Misalignment</div></div>
+    </div>
+    <div class="fhri-row">
+      <div class="fhri-val ${cls}">${pct}</div>
+      <div class="fhri-bar-wrap">
+        <div class="fhri-bar-label">FHRI_max in this institutional context</div>
+        <div class="fhri-bar"><div class="fhri-fill ${cls}" style="width:${pct}%"></div></div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:.2rem;font-family:'DM Mono',monospace">${pct} / 100 structural ceiling on coordination capacity</div>
+      </div>
+    </div>
+    ${w.body}`;
+  document.getElementById('workOutput').classList.add('show');
+}
+
+const JK=['scifi_j1','scifi_j2','scifi_j3','scifi_j4','scifi_j5'];
+function loadJ(){JK.forEach((k,i)=>{const e=document.getElementById('j'+(i+1));try{if(e)e.value=localStorage.getItem(k)||'';}catch(x){}});}
+function saveJ(){JK.forEach((k,i)=>{const e=document.getElementById('j'+(i+1));try{if(e)localStorage.setItem(k,e.value);}catch(x){}});const f=document.getElementById('sf');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1800);}
+function exportJ(){
+  let t='ETHICS BEYOND BOUNDARIES\nScience Fiction as Structural Ethics Laboratory\nJournal\n'+'='.repeat(60)+'\n\n';
+  ['Q1: Which text most closely describes an institution you have inhabited? What IPS failure mode?',
+   'Q2: Have you ever chosen Dark Coherence? What was the structural condition that made it rational?',
+   'Q3: Name a rule in your life functioning as a Three Law &mdash; well-intentioned but structurally insufficient',
+   'Q4: The Oracle question &mdash; what conditions can you design for someone else?',
+   'Q5 (Wall-E): What is worth tending? How will you know in six months?'].forEach((q,i)=>{
+    const v=document.getElementById('j'+(i+1));
+    t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';
+  });
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_SciFi_Ethics_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+  catch(e){alert('Journal (first 500 chars):\n\n'+t.substring(0,500));}
+}
+loadJ();
+setTimeout(()=>{
+  document.querySelectorAll('.fhri-fill').forEach(el=>{
+    const w=el.style.width;el.style.width='0';
+    requestAnimationFrame(()=>setTimeout(()=>el.style.width=w,80));
+  });
+},500);
+</script>
+</body>
+</html>
