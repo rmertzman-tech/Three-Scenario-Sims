@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Rust Belt — Triadic Overwrite at Regional Scale</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;--orange:#fb923c;--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(160deg,#100808 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(251,146,60,.09) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.18em;color:var(--orange);text-transform:uppercase;margin-bottom:.5rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2.4rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.ch-ttl em{color:var(--amber);font-style:italic}
+.ch-sub{font-size:.88rem;color:var(--muted);max-width:620px;margin:0 auto;line-height:1.6}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem 1rem;background:var(--s);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--orange)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;padding:.4rem .85rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--orange);color:#000;border-color:var(--orange);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:880px;margin:0 auto}.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--orange);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.95rem;color:rgba(255,255,255,.85);margin:.9rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.72;font-size:.88rem}
+.panel.orange{background:rgba(251,146,60,.07);border-left:3px solid var(--orange)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel strong{color:var(--text)}
+/* ERA TIMELINE */
+.era-nav{display:flex;gap:.4rem;margin:.75rem 0;flex-wrap:wrap}
+.era-btn{flex:1;min-width:120px;border:1px solid var(--border);border-radius:.45rem;padding:.75rem;cursor:pointer;background:var(--s);text-align:center;transition:all .18s}
+.era-btn:hover{background:var(--s2)}.era-btn.active{border-color:var(--orange)}
+.era-btn[data-era="1"].active{border-color:var(--green);background:rgba(74,222,128,.07)}
+.era-btn[data-era="2"].active{border-color:var(--amber);background:rgba(245,158,11,.07)}
+.era-btn[data-era="3"].active{border-color:var(--red);background:rgba(248,113,113,.07)}
+.era-btn[data-era="4"].active{border-color:var(--teal);background:rgba(20,184,166,.07)}
+.era-btn .eb-years{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--muted);margin-bottom:.2rem}
+.era-btn .eb-name{font-weight:600;font-size:.85rem}
+.era-btn .eb-fhri{font-family:'DM Mono',monospace;font-size:.75rem;margin-top:.2rem}
+.era-panel{display:none}.era-panel.active{display:block;animation:fi .2s ease}
+/* SSI */
+.ssi-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin:.75rem 0}
+@media(max-width:520px){.ssi-trio{grid-template-columns:1fr}}
+.ssi-cell{border-radius:.4rem;padding:.85rem;border:1px solid var(--border)}
+.ssi-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.ssi-status{font-family:'DM Mono',monospace;font-size:.68rem;padding:.15rem .45rem;border-radius:.25rem;margin-bottom:.35rem;display:inline-block}
+.ssi-intact{background:rgba(74,222,128,.12);color:var(--green)}
+.ssi-modified{background:rgba(245,158,11,.12);color:var(--amber)}
+.ssi-replaced{background:rgba(248,113,113,.12);color:var(--red)}
+/* FHRI bars */
+.fhri-compare{display:flex;flex-direction:column;gap:.4rem;margin:.75rem 0}
+.fhri-row-sm{display:flex;align-items:center;gap:.75rem}
+.fhri-label{font-size:.8rem;width:180px;flex-shrink:0;color:rgba(255,255,255,.75)}
+.fbar-sm{flex:1;height:9px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.fbar-fill-sm{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.fbar-fill-sm.high{background:linear-gradient(90deg,var(--green),#86efac)}
+.fbar-fill-sm.mid{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fbar-fill-sm.low{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fbar-val{font-family:'DM Mono',monospace;font-size:.72rem;width:35px;text-align:right;flex-shrink:0}
+/* IPS mini */
+.ips-mini{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:.6rem 0}
+@media(max-width:480px){.ips-mini{grid-template-columns:repeat(3,1fr)}}
+.im-cell{border:1px solid var(--border);border-radius:.35rem;padding:.55rem .35rem;text-align:center;background:var(--s)}
+.im-sym{font-family:'DM Mono',monospace;font-size:.85rem;font-weight:600;color:var(--orange)}
+.im-val{font-family:'DM Mono',monospace;font-size:.75rem;margin:.1rem 0}
+.im-nm{font-size:.58rem;color:var(--muted)}
+/* city cards */
+.city-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin:.75rem 0}
+.city-card{border:1px solid var(--border);border-radius:.5rem;padding:1rem;background:var(--s);cursor:pointer;transition:all .18s}
+.city-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.city-card.selected{border-color:var(--teal);background:rgba(20,184,166,.06)}
+.city-icon{font-size:1.5rem;margin-bottom:.4rem}
+.city-name{font-weight:600;font-size:.88rem;margin-bottom:.15rem}
+.city-status{font-size:.72rem;color:var(--muted);line-height:1.3}
+.city-output{margin-top:.75rem;display:none}.city-output.show{display:block;animation:fi .3s ease}
+/* action rows */
+.action-row{display:flex;gap:.6rem;margin:.5rem 0;padding:.8rem;background:var(--s);border-radius:.4rem;border:1px solid var(--border)}
+.ar-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
+.ar-body .ar-title{font-weight:600;font-size:.85rem;margin-bottom:.2rem}
+.ar-body .ar-text{font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.6}
+.tag{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .45rem;border-radius:.25rem;margin-left:.35rem;vertical-align:middle}
+.tag.t1{background:rgba(248,113,113,.15);color:var(--red)}.tag.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+/* journal */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.88rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--orange);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:88px;background:#0a0e1c;border:none;border-top:1px solid var(--border);padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.87rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+button.btn{background:var(--orange);color:#000;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.83rem;padding:.55rem 1.2rem;border-radius:.4rem;cursor:pointer;margin:.3rem .2rem}
+button.btn.outline{background:transparent;color:var(--orange);border:1px solid var(--orange)}
+.bot-nav{max-width:880px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--orange);color:#000;font-weight:600;font-size:.78rem;padding:.45rem 1rem;border-radius:.4rem;display:none;z-index:999}
+.sf.show{display:block}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="ch-lbl">Ethics Beyond Boundaries &middot; Chapter 11 &middot; Case Study</div>
+  <h1 class="ch-ttl">The <em>Rust Belt</em></h1>
+  <p class="ch-sub">Triadic Overwrite at regional economic scale &mdash; P-SAGE applied to 50 years of Interpretant replacement in the steel, auto, and manufacturing heartland</p>
+</div>
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('overview')">P-SAGE Overview</button>
+  <button class="tb" onclick="sw('eras')">Four Eras</button>
+  <button class="tb" onclick="sw('cities')">City Responses</button>
+  <button class="tb" onclick="sw('responsible')">Responsible Party</button>
+  <button class="tb" onclick="sw('maathai')">Maathai Response</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- P-SAGE OVERVIEW -->
+<div class="pane active" id="pane-overview">
+  <h2 class="st">P-SAGE Applied: The Rust Belt as Triadic Overwrite</h2>
+  <div class="panel orange"><strong>The Rust Belt is not primarily an economics story. It is a Triadic Overwrite story at regional scale.</strong> The most important thing P-SAGE reveals: the Sign remained intact for decades into the extraction process. Workers experienced operational continuity as evidence that the economy was functioning. The Interpretant had already been replaced. This is why the harm was invisible until it was irreversible.</div>
+
+  <div class="ssi-trio">
+    <div class="ssi-cell" style="background:rgba(74,222,128,.05)">
+      <div class="ssi-lbl">Sign (intact throughout)</div>
+      <span class="ssi-status ssi-intact">INTACT</span>
+      <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Factories operated. Goods were produced. Employment continued. Communities existed. The operational continuity of the manufacturing economy was preserved through most of the extraction process. Workers experienced this as evidence the system was working.</div>
+    </div>
+    <div class="ssi-cell" style="background:rgba(245,158,11,.05)">
+      <div class="ssi-lbl">Signal (accessed 1975+)</div>
+      <span class="ssi-status ssi-modified">ACCESSED</span>
+      <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Budget allocation and capital investment decisions at the facility level. The LBO acquisition mechanism placed financial ownership inside the cluster controlling every capital decision. The Signal channel was accessed through the acquisition instrument.</div>
+    </div>
+    <div class="ssi-cell" style="background:rgba(248,113,113,.05)">
+      <div class="ssi-lbl">Interpretant (replaced 1975&ndash;2005)</div>
+      <span class="ssi-status ssi-replaced">REPLACED</span>
+      <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>Original:</strong> manufacturing capital = productive investment sustaining employment and community.<br><strong>Replaced:</strong> manufacturing capital = financial instrument for servicing acquisition debt and maximizing investor return. &epsilon; rising 0.12 &rarr; 0.78.</div>
+    </div>
+  </div>
+
+  <div class="panel teal">
+    <strong>P-step output (formally derived responsible party):</strong><br><br>
+    1. Original Interpretant: manufacturing capital = investment sustaining employment and community.<br>
+    2. Replaced Interpretant: manufacturing capital = financial instrument for acquisition debt service and investor return.<br>
+    3. Signal channel: capital allocation decisions at the facility level.<br>
+    4. P-adic access mechanism: LBO acquisition places financial ownership inside the capital allocation cluster. The route differs from PE nursing home acquisition only in the specific instrument (junk bond financing vs. management company structure) &mdash; the formal mechanism is identical.<br><br>
+    <strong>This is not &ldquo;economic change.&rdquo;</strong> This is a specific structural event: Interpretant replacement executed through a specific access mechanism producing a computable FHRI_max trajectory (52 &rarr; 11 over 45 years). The responsible party is formally identifiable.
+  </div>
+
+  <h3 class="sub">The Scale-Free Signature Confirmed</h3>
+  <p class="bd">The same five IPS parameters describe the Rust Belt deindustrialization and the PE nursing home acquisition. The mechanism is formally identical. What differs is only the empirical route to P-adic proximity (junk bond LBO vs. management company acquisition) and the sector-specific substrate on which the mechanism operates.</p>
+  <div class="ips-mini">
+    <div class="im-cell"><div class="im-sym">&epsilon;</div><div class="im-val" style="color:var(--amber)">0.12&rarr;0.78</div><div class="im-nm">Extraction arc</div></div>
+    <div class="im-cell"><div class="im-sym">&phi;</div><div class="im-val" style="color:var(--red)">0.28&rarr;0.82</div><div class="im-nm">Substrate decay</div></div>
+    <div class="im-cell"><div class="im-sym">&rho;</div><div class="im-val">0.55&rarr;0.65</div><div class="im-nm">Regulatory</div></div>
+    <div class="im-cell"><div class="im-sym">&sigma;</div><div class="im-val" style="color:var(--amber)">0.30&rarr;0.88</div><div class="im-nm">Normalization</div></div>
+    <div class="im-cell"><div class="im-sym">&mu;</div><div class="im-val" style="color:var(--red)">0.25&rarr;0.85</div><div class="im-nm">Misalignment</div></div>
+  </div>
+</div>
+
+<!-- FOUR ERAS -->
+<div class="pane" id="pane-eras">
+  <h2 class="st">Four Eras: The SSI Arc</h2>
+  <p class="bd">The Rust Belt story told through Sign-Signal-Interpretant analysis. The FHRI_max trajectory is the consequence of the Interpretant replacement; the SSI arc is the replacement itself. Select an era.</p>
+
+  <div class="era-nav">
+    <div class="era-btn active" data-era="1" onclick="setEra('1',this)"><div class="eb-years">1950&ndash;1975</div><div class="eb-name">Industrial Peak</div><div class="eb-fhri" style="color:var(--green)">FHRI_max &asymp; 52</div></div>
+    <div class="era-btn" data-era="2" onclick="setEra('2',this)"><div class="eb-years">1975&ndash;1995</div><div class="eb-name">Acquisition Wave</div><div class="eb-fhri" style="color:var(--amber)">FHRI_max &asymp; 28</div></div>
+    <div class="era-btn" data-era="3" onclick="setEra('3',this)"><div class="eb-years">1995&ndash;2010</div><div class="eb-name">Post-Extraction</div><div class="eb-fhri" style="color:var(--red)">FHRI_max &asymp; 11</div></div>
+    <div class="era-btn" data-era="4" onclick="setEra('4',this)"><div class="eb-years">2010&ndash;present</div><div class="eb-name">Differential Recovery</div><div class="eb-fhri" style="color:var(--teal)">11&ndash;32 by city</div></div>
+  </div>
+
+  <div class="era-panel active" id="era-1">
+    <div class="ssi-trio">
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)"><div class="ssi-lbl">Sign</div><span class="ssi-status ssi-intact">INTACT</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Steel mills, auto plants, glass factories operate at peak capacity. Full employment in manufacturing corridors. Communities with adequate municipal tax base, funded school districts, and maintained public infrastructure.</div></div>
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)"><div class="ssi-lbl">Signal</div><span class="ssi-status ssi-intact">INTACT</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Capital allocation by operational owners &mdash; engineers and managers whose careers depend on production quality and workforce stability. The Signal channel produces investment decisions aligned with productive capacity maintenance.</div></div>
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)"><div class="ssi-lbl">Interpretant</div><span class="ssi-status ssi-intact">INTACT</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Capital = investment in productive capacity and worker compensation. Goal-function: sustain manufacturing excellence and community economic stability. Pension obligations funded. Infrastructure maintained.</div></div>
+    </div>
+    <div class="fhri-compare">
+      <div class="fhri-row-sm"><div class="fhri-label">Community FHRI_max</div><div class="fbar-sm"><div class="fbar-fill-sm high" style="width:52%"></div></div><div class="fbar-val" style="color:var(--green)">52</div></div>
+    </div>
+    <div class="panel green"><strong>What FHRI_max = 52 feels like:</strong> Multi-generational planning is possible. Union contracts distribute productivity gains. The school has a music program funded by the industrial tax base. You can organize collectively because you can afford the short-term risk. Moral injury is possible &mdash; you can see the gap between what should be and what is &mdash; because the ceiling is high enough for the gap to matter. The Interpretant is intact: this community exists to sustain human flourishing.</div>
+    <div class="ips-mini">
+      <div class="im-cell"><div class="im-sym">&epsilon;</div><div class="im-val">0.12</div><div class="im-nm">Low extraction</div></div>
+      <div class="im-cell"><div class="im-sym">&phi;</div><div class="im-val">0.28</div><div class="im-nm">Maintained</div></div>
+      <div class="im-cell"><div class="im-sym">&rho;</div><div class="im-val">0.55</div><div class="im-nm">Union contracts</div></div>
+      <div class="im-cell"><div class="im-sym">&sigma;</div><div class="im-val">0.30</div><div class="im-nm">Low residue</div></div>
+      <div class="im-cell"><div class="im-sym">&mu;</div><div class="im-val">0.25</div><div class="im-nm">Aligned</div></div>
+    </div>
+  </div>
+
+  <div class="era-panel" id="era-2">
+    <div class="ssi-trio">
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)"><div class="ssi-lbl">Sign</div><span class="ssi-status ssi-intact">INTACT</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Factories still operate. Goods are produced. Employment continues, though declining. The Sign of industrial operation is preserved &mdash; this is what makes the overwrite invisible to workers and communities experiencing it from inside.</div></div>
+      <div class="ssi-cell" style="background:rgba(245,158,11,.05)"><div class="ssi-lbl">Signal</div><span class="ssi-status ssi-modified">BEING ACCESSED</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">LBO acquisition places financial ownership inside the capital allocation cluster. Junk bond financing, leveraged buyout structures, and asset-stripping instruments give the acquiring financial actors P-adic proximity to every capital decision. The Signal channel is being shifted.</div></div>
+      <div class="ssi-cell" style="background:rgba(245,158,11,.05)"><div class="ssi-lbl">Interpretant</div><span class="ssi-status ssi-modified">BEING REPLACED</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Replacing: capital = service acquisition debt, extract management fees, return capital to investors. Each plant closure, each pension restructuring normalizes the next (&sigma; accumulating). Communities believe these are &ldquo;temporary adjustments.&rdquo; They are &sigma; accumulation &mdash; each normalization event makes the replacement more stable.</div></div>
+    </div>
+    <div class="fhri-compare">
+      <div class="fhri-row-sm"><div class="fhri-label">1975 (pre-acquisition)</div><div class="fbar-sm"><div class="fbar-fill-sm high" style="width:52%"></div></div><div class="fbar-val" style="color:var(--green)">52</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">1985 (mid-acquisition)</div><div class="fbar-sm"><div class="fbar-fill-sm mid" style="width:35%"></div></div><div class="fbar-val" style="color:var(--amber)">35</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">1995 (late acquisition)</div><div class="fbar-sm"><div class="fbar-fill-sm mid" style="width:28%"></div></div><div class="fbar-val" style="color:var(--amber)">28</div></div>
+    </div>
+    <div class="panel amber"><strong>The P1 lesson applied to an entire regional economy:</strong> Sign intact does not mean Interpretant intact. For most of this era, workers and communities experienced the Sign (factories operating) as evidence the economy was still working. The Interpretant had already been replaced. Each round of layoffs was attributed to &ldquo;economic forces&rdquo; rather than identified as the behavioral consequence of the replaced Interpretant. This is the community-scale version of the nurse who attributes the staffing shortage to &ldquo;how things are&rdquo; rather than to the management fee extracting 8% of revenue before wages are set.</div>
+    <div class="ips-mini">
+      <div class="im-cell"><div class="im-sym">&epsilon;</div><div class="im-val" style="color:var(--amber)">0.52</div><div class="im-nm">Rising fast</div></div>
+      <div class="im-cell"><div class="im-sym">&phi;</div><div class="im-val" style="color:var(--amber)">0.58</div><div class="im-nm">Deferred maint</div></div>
+      <div class="im-cell"><div class="im-sym">&rho;</div><div class="im-val">0.60</div><div class="im-nm">Restructuring</div></div>
+      <div class="im-cell"><div class="im-sym">&sigma;</div><div class="im-val" style="color:var(--amber)">0.65</div><div class="im-nm">Normalizing loss</div></div>
+      <div class="im-cell"><div class="im-sym">&mu;</div><div class="im-val" style="color:var(--amber)">0.72</div><div class="im-nm">Misaligned</div></div>
+    </div>
+  </div>
+
+  <div class="era-panel" id="era-3">
+    <div class="ssi-trio">
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)"><div class="ssi-lbl">Sign</div><span class="ssi-status ssi-intact">STILL INTACT</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Communities still nominally function. Some employment exists. Stores remain open. The physical infrastructure of community life &mdash; roads, buildings, institutions &mdash; continues, increasingly degraded. The Sign of community existence is preserved even as everything else collapses.</div></div>
+      <div class="ssi-cell" style="background:rgba(248,113,113,.05)"><div class="ssi-lbl">Signal</div><span class="ssi-status ssi-replaced">FULLY REPLACED</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">The extracting owners have departed. The capital allocation channel now produces no investment signal at all &mdash; the extraction is complete, the financial owners have moved on, and the channel that once distributed investment decisions is now controlled by underfunded municipal governments with no capital to allocate.</div></div>
+      <div class="ssi-cell" style="background:rgba(248,113,113,.05)"><div class="ssi-lbl">Interpretant</div><span class="ssi-status ssi-replaced">FULLY REPLACED</span><div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">What remains of the regional economy exists to service financial obligations (debt, pension deficits, infrastructure maintenance backlogs) rather than to sustain human flourishing. The community&rsquo;s organizational identity has been consumed by &sigma;: normalized loss is the dominant experience. &sigma; = 0.88.</div></div>
+    </div>
+    <div class="fhri-compare">
+      <div class="fhri-row-sm"><div class="fhri-label">Youngstown 2005</div><div class="fbar-sm"><div class="fbar-fill-sm low" style="width:9%"></div></div><div class="fbar-val" style="color:var(--red)">9</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">Flint 2005</div><div class="fbar-sm"><div class="fbar-fill-sm low" style="width:8%"></div></div><div class="fbar-val" style="color:var(--red)">8</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">Pittsburgh 2005</div><div class="fbar-sm"><div class="fbar-fill-sm low" style="width:15%"></div></div><div class="fbar-val" style="color:var(--red)">15</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">Cleveland 2005</div><div class="fbar-sm"><div class="fbar-fill-sm low" style="width:12%"></div></div><div class="fbar-val" style="color:var(--red)">12</div></div>
+    </div>
+    <div class="panel red"><strong>What FHRI_max = 11 feels like:</strong> You cannot plan for your children. The school cut its programs because the tax base collapsed with industrial employment. The hospital closed. Organizing collectively requires time horizons and resources the structural condition has eliminated. Survival values dominate the WVM position of the community &mdash; not because people are different, but because the structural conditions for self-expression values have been consumed. The opioid epidemic is &phi; (physical entropy) as substrate consequence: chronic stress physiology expressing as addiction across the workforce whose bodies were the raw material of the extraction.</div>
+    <div class="ips-mini">
+      <div class="im-cell"><div class="im-sym">&epsilon;</div><div class="im-val" style="color:var(--red)">0.78</div><div class="im-nm">Post-extraction</div></div>
+      <div class="im-cell"><div class="im-sym">&phi;</div><div class="im-val" style="color:var(--red)">0.82</div><div class="im-nm">Collapsed</div></div>
+      <div class="im-cell"><div class="im-sym">&rho;</div><div class="im-val">0.65</div><div class="im-nm">Bureaucratic</div></div>
+      <div class="im-cell"><div class="im-sym">&sigma;</div><div class="im-val" style="color:var(--red)">0.88</div><div class="im-nm">Normalized loss</div></div>
+      <div class="im-cell"><div class="im-sym">&mu;</div><div class="im-val" style="color:var(--red)">0.85</div><div class="im-nm">Total misalign</div></div>
+    </div>
+  </div>
+
+  <div class="era-panel" id="era-4">
+    <div class="panel teal"><strong>Era 4 reveals what the P-SAGE analysis predicts:</strong> T2 responses produce temporary FHRI_max improvement that reverts when the structural parameters remain unchanged. T1 responses that build new low-epsilon institutional architectures produce durable FHRI_max recovery. The divergence between Pittsburgh and Youngstown is formally explicable.</div>
+    <div class="fhri-compare" style="margin-top:.75rem">
+      <div class="fhri-row-sm"><div class="fhri-label">Pittsburgh 2020 (T1 + T2)</div><div class="fbar-sm"><div class="fbar-fill-sm mid" style="width:29%"></div></div><div class="fbar-val" style="color:var(--amber)">29</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">Cleveland 2020 (T1 coop)</div><div class="fbar-sm"><div class="fbar-fill-sm mid" style="width:24%"></div></div><div class="fbar-val" style="color:var(--amber)">24</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">Youngstown 2020 (T2 only)</div><div class="fbar-sm"><div class="fbar-fill-sm low" style="width:15%"></div></div><div class="fbar-val" style="color:var(--red)">15</div></div>
+      <div class="fhri-row-sm"><div class="fhri-label">Flint 2020 (T2 only)</div><div class="fbar-sm"><div class="fbar-fill-sm low" style="width:11%"></div></div><div class="fbar-val" style="color:var(--red)">11</div></div>
+    </div>
+    <p class="bd" style="margin-top:.75rem">Pittsburgh: medical/education/technology sector development anchored by low-epsilon institutions (university and hospital systems with &epsilon; near zero). Community land trusts preserving affordable housing. The new sector does not repeat the old ownership pattern &mdash; it builds low-epsilon alternatives. T1 partial recovery.</p>
+    <p class="bd">Cleveland Evergreen Cooperatives: worker-owned businesses anchored by institutional purchasing commitments from Cleveland Clinic and Case Western. &epsilon; near zero by design. &mu; = 0.10 (worker ownership aligns incentive with mission). This is a BioBond-eligible institutional configuration in all but name. T1 structural recovery.</p>
+    <p class="bd">Youngstown: attempted T2 response &mdash; attracting new industrial employers into the same high-epsilon ownership architecture. FHRI_max recovered to 15 by 2010, then fell again when the new employers restructured. <strong>This is the formally predicted T2 outcome:</strong> you cannot use T2 (attract new extraction-architecture employers) to address a T1 (Interpretant replacement) failure. The P-adic access condition is unchanged. The Interpretant is replaced again.</p>
+  </div>
+</div>
+
+<!-- CITY RESPONSES -->
+<div class="pane" id="pane-cities">
+  <h2 class="st">City Response Profiles</h2>
+  <p class="bd">Select a city to see its Interpretant replacement history, its recovery trajectory, and the formal T1/T2 classification of its response.</p>
+  <div class="city-grid">
+    <div class="city-card" onclick="setCity('pittsburgh',this)"><div class="city-icon">&#127961;</div><div class="city-name">Pittsburgh, PA</div><div class="city-status">T1 partial recovery: 9 &rarr; 29</div></div>
+    <div class="city-card" onclick="setCity('cleveland',this)"><div class="city-icon">&#127968;</div><div class="city-name">Cleveland, OH</div><div class="city-status">T1 cooperative: 12 &rarr; 24</div></div>
+    <div class="city-card" onclick="setCity('youngstown',this)"><div class="city-icon">&#127981;</div><div class="city-name">Youngstown, OH</div><div class="city-status">T2 only: 9 &rarr; 15 &rarr; stalled</div></div>
+    <div class="city-card" onclick="setCity('flint',this)"><div class="city-icon">&#128167;</div><div class="city-name">Flint, MI</div><div class="city-status">T2 + governance failure: 8 &rarr; 11</div></div>
+  </div>
+  <div class="city-output" id="city-output"></div>
+</div>
+
+<!-- RESPONSIBLE PARTY -->
+<div class="pane" id="pane-responsible">
+  <h2 class="st">The Formally Derived Responsible Party</h2>
+  <div class="panel orange"><strong>P-SAGE changes what &ldquo;responsible party&rdquo; means.</strong> Standard analysis: &ldquo;global competition and technological change made manufacturing uneconomic.&rdquo; P-SAGE analysis: &ldquo;specific actors achieved P-adic proximity to the capital allocation channel through the LBO instrument and executed Interpretant replacement from productive investment to extraction vehicle.&rdquo; These are different descriptions with different implications for what justice requires.</div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0">
+    <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--blue);margin-bottom:.35rem">NOT THE RESPONSIBLE PARTY</div>
+      <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+        Plant managers implementing layoffs<br>
+        Workers who could not save their jobs<br>
+        Municipal governments that lost the tax base<br>
+        Global competition as an abstract force<br>
+        Technological change as inevitable progress<br>
+        Chinese manufacturing as a sufficient explanation
+      </div>
+    </div>
+    <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.35rem">IS THE RESPONSIBLE PARTY</div>
+      <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+        The ownership architectures that executed Interpretant replacement (LBO structures, junk bond financing, asset-stripping instruments)<br><br>
+        The financial actors who achieved P-adic proximity to the capital allocation channel through acquisition<br><br>
+        The regulatory framework that permitted pension obligation defaults, environmental remediation abandonment, and LLC-mediated accountability separation
+      </div>
+    </div>
+  </div>
+
+  <div class="panel violet"><strong>Structural responsibility vs. individual culpability.</strong> The PE partner who structured the LBO may not have understood the FHRI_max implications for the community. Before the IPS measurement existed, structural responsibility existed without full individual culpability. After the IPS measurement exists and FHRI_max trajectories are citable, any ownership architecture that imposes an FHRI_max trajectory from 52 to 11 on a community is making a choice whose consequences are known. That is individual culpability layered on structural responsibility. The measurement changes the moral equation.</div>
+
+  <div class="panel amber"><strong>The political danger and why the framing is necessary anyway.</strong> &ldquo;The extraction architecture&rdquo; risks being too abstract to motivate action. &ldquo;The LBO financiers destroyed our community&rdquo; risks producing witch-hunts rather than structural reform. The P-SAGE path: name the mechanism (P-adic proximity + Interpretant replacement), name the instrument that achieved it (LBO acquisition), name the structural actors who deployed it, and direct the moral outrage toward the structural change that would prevent it from recurring &mdash; not toward punishment of historical actors but toward T1 reform of the regulatory conditions that made it possible and still permit analogous structures today.</div>
+
+  <h3 class="sub">What T1 Reform Would Have Required</h3>
+  <div style="display:grid;gap:.45rem;margin:.6rem 0">
+    <div class="action-row"><div class="ar-icon">&#128203;</div><div class="ar-body"><div class="ar-title">Pension obligation protection <span class="tag t1">T1</span></div><div class="ar-text">Prohibiting LBO structures that place pension obligations junior to acquisition debt in bankruptcy proceedings. This addresses the P-adic access condition directly: it changes what the acquiring financial actor is legally permitted to do with the capital allocation channel. Currently, pension default is a standard LBO instrument. This is a legal design choice, not an economic necessity.</div></div></div>
+    <div class="action-row"><div class="ar-icon">&#128202;</div><div class="ar-body"><div class="ar-title">Ownership disclosure and FHRI_max floor <span class="tag t1">T1</span></div><div class="ar-text">Requiring beneficial ownership disclosure for firms above a threshold employment level makes the P-adic access mechanism visible. Requiring FHRI_max maintenance above a floor as a condition of operating in publicly supported markets (Medicare, Medicaid, federal contracts, public pension investment) changes what the channel is permitted to produce.</div></div></div>
+    <div class="action-row"><div class="ar-icon">&#128184;</div><div class="ar-body"><div class="ar-title">Patient capital incentives <span class="tag t1">T1</span></div><div class="ar-text">Tax structures favoring long-horizon productive capital over short-horizon financial engineering change the P-adic access condition at the market level: they make extraction-oriented LBO structures less profitable relative to productive investment structures. This is a tax policy choice that has been repeatedly available and repeatedly not made. It is not an economic necessity that short-horizon capital dominates.</div></div></div>
+  </div>
+</div>
+
+<!-- MAATHAI RESPONSE -->
+<div class="pane" id="pane-maathai">
+  <h2 class="st">The Maathai Response: Building in the Ruins</h2>
+  <div class="panel green"><strong>Maathai did not wait for governments to recognize the value of trees.</strong> She built the alternative reality until it became impossible for governance to ignore. The formally grounded version: she created low-epsilon institutional alternatives with P-adic proximity to the reforestation channel, replacing the replaced Interpretant (&ldquo;trees = economic growth obstacle&rdquo;) with the original one (&ldquo;trees = ecological and community foundation&rdquo;). The Rust Belt communities that have made the most structural progress did the same thing.</div>
+
+  <h3 class="sub">What Works and Why (Formal Analysis)</h3>
+  <div style="display:grid;gap:.5rem;margin:.75rem 0">
+    <div style="background:var(--s);border:1px solid var(--border);border-radius:.45rem;padding:.9rem;display:grid;grid-template-columns:100px 1fr;gap:.75rem">
+      <div><div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--teal);margin-bottom:.2rem">Pittsburgh</div><div class="fbar-sm" style="margin-top:.3rem"><div class="fbar-fill-sm mid" style="width:29%"></div></div><div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--amber);margin-top:.15rem">29</div></div>
+      <div style="font-size:.85rem;line-height:1.65">Medical and university sector development: low-epsilon ownership (&epsilon; near zero for hospitals and universities). These institutions do not repeat the LBO Interpretant replacement. They anchor new P-adic clusters with original Interpretants intact. Community land trusts preserving affordable housing in neighborhoods the industrial economy abandoned: T1 structural alternatives to the extraction architecture in the housing market. <strong>Formally T1:</strong> these interventions change the ownership architecture of the replacement sector, not just attract new investment in the same high-epsilon ownership structure.</div>
+    </div>
+    <div style="background:var(--s);border:1px solid var(--border);border-radius:.45rem;padding:.9rem;display:grid;grid-template-columns:100px 1fr;gap:.75rem">
+      <div><div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--teal);margin-bottom:.2rem">Cleveland</div><div class="fbar-sm" style="margin-top:.3rem"><div class="fbar-fill-sm mid" style="width:24%"></div></div><div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--amber);margin-top:.15rem">24</div></div>
+      <div style="font-size:.85rem;line-height:1.65">Evergreen Cooperatives: worker-owned, anchored by institutional purchasing commitments from Cleveland Clinic and Case Western. &epsilon; near zero by governance design. &mu; = 0.10 by ownership structure. This is the most formally T1 response in the Rust Belt: it changes the P-adic access condition itself &mdash; workers are inside the capital allocation cluster as owners, making extraction structurally impossible rather than merely regulated. <strong>BioBond-eligible:</strong> the ownership structure already produces FHRI_max above 55.</div>
+    </div>
+    <div style="background:var(--s);border:1px solid var(--border);border-radius:.45rem;padding:.9rem;display:grid;grid-template-columns:100px 1fr;gap:.75mm">
+      <div><div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--red);margin-bottom:.2rem">Youngstown</div><div class="fbar-sm" style="margin-top:.3rem"><div class="fbar-fill-sm low" style="width:15%"></div></div><div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--red);margin-top:.15rem">15</div></div>
+      <div style="font-size:.85rem;line-height:1.65">Attracted new industrial employers into the same high-epsilon ownership architecture: T2 response to a T1 structural failure. <strong>Formally predicted outcome:</strong> the P-adic access condition is unchanged. A new financial ownership enters the capital allocation cluster. The Interpretant is replaced again. FHRI_max recovers temporarily then falls again. This is not bad luck. It is the structural consequence of addressing a T1 failure with a T2 response. The lesson is formal, not empirical.</div>
+    </div>
+  </div>
+
+  <div class="panel teal"><strong>The AMC connection to the Rust Belt.</strong> BioBond instruments conditioned on FHRI_max improvement above 40 would have been deployable in Pittsburgh and Cleveland in the 2010s. They would have been structurally ineligible in Youngstown because the T2 response maintained the high-epsilon ownership architecture. The BioBond is not a reward for good behavior. It is a financial instrument that makes T1 structural alternatives economically scalable &mdash; that gives the plant in the boot the capital to grow into the institution that cannot be ignored.</div>
+</div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions connect the formal Rust Belt analysis to personal economic experience and forward commitment.</p>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q1</span>The Rust Belt P-SAGE analysis shows that Sign integrity concealed Interpretant replacement for decades. Identify an economic situation in your community, family, or personal history where the Sign (things appear to function) concealed an Interpretant replacement that only became visible in retrospect. What was the replaced Interpretant?</div>
+  <textarea class="jq-ta" id="j1" oninput="sv()" placeholder="Sign intact does not mean Interpretant intact. What looked like &lsquo;economic change&rsquo; from inside may have been Triadic Overwrite from outside..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q2</span>The opioid epidemic in Rust Belt communities is &phi; (physical entropy) as substrate consequence &mdash; chronic stress physiology from the structural condition expressing as addiction across the workforce. Using Sapolsky&rsquo;s glucocorticoid research and the IPS framework: explain why &ldquo;personal responsibility&rdquo; is an insufficient ethical diagnosis for this health crisis and what the formally correct structural analysis is.</div>
+  <textarea class="jq-ta" id="j2" oninput="sv()" placeholder="This is the biological constraint argument applied to a public health crisis that is often framed as individual failure..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q3</span>Youngstown attracted new industrial employers and watched FHRI_max recover then fall again. This is the T2 trap formally demonstrated: you cannot address a T1 (Interpretant replacement) failure with a T2 (attract investment within unchanged ownership architecture) response. Identify a T2 response to an economic problem in your community that is producing the Youngstown trajectory. What would the T1 equivalent require?</div>
+  <textarea class="jq-ta" id="j3" oninput="sv()" placeholder="The Youngstown lesson is not that industrial recovery is impossible. It is that the ownership architecture of the recovery determines whether FHRI_max recovery is durable or temporary..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q4</span>The Cleveland Evergreen Cooperatives achieve &epsilon; near zero and &mu; = 0.10 by making workers inside the capital allocation cluster as owners. This is T1: it changes the P-adic access condition rather than regulating what the existing ownership structure is permitted to extract. Design one element of an Evergreen-equivalent structure for a sector you know: what ownership change would put workers or community members inside the cluster controlling the Signal channel?</div>
+  <textarea class="jq-ta" id="j4" oninput="sv()" placeholder="Not a wage increase (T2). Not a regulatory requirement (T2). A change in who is in the cluster controlling the capital allocation channel (T1)..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q5 &mdash; Forward</span>Wall-E tends what is worth tending in the ruins of the extractive system. In the economic community you know best (your city, your neighborhood, your family&rsquo;s economic history): what plant is in the boot? What low-epsilon institutional alternative already exists, partially formed, worth tending? What would you do in the next six months to tend it, and how would you know in a year whether you did?</div>
+  <textarea class="jq-ta" id="j5" oninput="sv()" placeholder="Specific. Low-epsilon. Yours. This prediction carries forward..."></textarea></div>
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn outline" onclick="prev()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &#8594;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['overview','eras','cities','responsible','maathai','journal'];
+var cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+function setEra(k,btn){document.querySelectorAll('.era-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');document.querySelectorAll('.era-panel').forEach(function(p){p.classList.remove('active');});document.getElementById('era-'+k).classList.add('active');setTimeout(function(){document.querySelectorAll('.fbar-fill-sm').forEach(function(el){var w=el.style.width;el.style.width='0';requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},60);});});},50);}
+
+var CITIES={
+  pittsburgh:{name:'Pittsburgh, PA',icon:'&#127961;',
+    fhri_arc:'9 (2000) &rarr; 18 (2010) &rarr; 29 (2020)',
+    interp:'The Pittsburgh response built new low-epsilon institutional anchors in the space the steel industry abandoned. University of Pittsburgh, Carnegie Mellon, UPMC healthcare system &mdash; all non-profit or university ownership with &epsilon; near zero &mdash; became the anchor institutions for the medical/technology sector. This is formally T1: the new sector does not repeat the Interpretant replacement. The capital allocation clusters in the new economy have original Interpretants intact.',
+    t1:'Community land trusts (change ownership architecture of housing). Non-profit hospital anchor institution development (low-epsilon ownership by design). University research corridor development (original Interpretant: knowledge creation serving community, not extraction).',
+    t2:'Tax incentives for employer location (attract investment without changing ownership architecture). Workforce retraining programs (improve agent FHRI within unchanged structural parameters). Federal distressed community designations (T2 funding flows into unchanged extraction architecture).',
+    lesson:'Pittsburgh shows that T1 + T2 combination produces durable partial recovery. FHRI_max = 29 is not a full recovery from 52. It is the maximum achievable through building new low-epsilon alternatives without T1 regulatory reform of the conditions that permitted the original extraction.'},
+  cleveland:{name:'Cleveland, OH',icon:'&#127968;',
+    fhri_arc:'12 (2000) &rarr; 16 (2010) &rarr; 24 (2020)',
+    interp:'The Evergreen Cooperative model is the most formally T1 response in the Rust Belt. Worker-owned businesses anchored by long-term purchasing commitments from Cleveland Clinic and Case Western eliminate the P-adic access condition for extraction: workers are inside the capital allocation cluster as owners, making Interpretant replacement structurally impossible rather than merely regulated.',
+    t1:'Evergreen Cooperatives: worker ownership (&epsilon; = 0.00, &mu; = 0.10 by structural design). Institutional anchor purchasing commitments: create demand from low-epsilon institutions that protects cooperative sector from competition with high-epsilon alternatives. Community land trust housing (non-profit ownership preserving affordability).',
+    t2:'Downtown commercial development (T2 investment in unchanged ownership architecture). Federal community development block grants (T2 funding flows). Standard employer attraction incentives.',
+    lesson:'Cleveland shows that the worker cooperative model produces durable FHRI_max improvement beyond what Pittsburgh\'s anchor institution model achieves, because it addresses the P-adic access condition directly. The Evergreen structure is BioBond-eligible now: FHRI_max above 55 by ownership design.'},
+  youngstown:{name:'Youngstown, OH',icon:'&#127981;',
+    fhri_arc:'9 (2000) &rarr; 15 (2010) &rarr; 15 (2020, stalled)',
+    interp:'Youngstown attracted new industrial employers into the same high-epsilon ownership architecture that extracted value from the steel industry. The P-adic access condition (financial ownership inside the capital allocation cluster) is unchanged. A new Interpretant replacement cycle begins. FHRI_max recovers temporarily then stalls when the new employers restructure or depart.',
+    t1:'Very limited. Some community development financial institution activity. No significant worker ownership development.',
+    t2:'Industrial employer attraction (standard incentives). Workforce development programs. Downtown revitalization investment. Federal distressed area designations. All T2: address agent-level or process-level conditions within unchanged extraction-architecture ownership.',
+    lesson:'Youngstown is the formally predicted outcome of T2-only response to a T1 failure. This is not bad luck or insufficient effort. It is the structural consequence of leaving the P-adic access condition unchanged. The lesson is not that Youngstown failed. The lesson is that the T2 strategy cannot produce durable FHRI_max recovery from a T1 Interpretant replacement. This is now provable, not just observable.'},
+  flint:{name:'Flint, MI',icon:'&#128167;',
+    fhri_arc:'8 (2000) &rarr; 7 (2014 water crisis) &rarr; 11 (2020)',
+    interp:'Flint adds a second Interpretant replacement on top of the industrial one: the water crisis was the consequence of a governance Interpretant replacement. The emergency manager system (state takeover of municipal governance) replaced the local governance Interpretant (infrastructure serves residents) with a financial optimization Interpretant (minimize expenditure to service municipal debt). The decision to switch water sources without corrosion control was the behavioral consequence of the replaced governance Interpretant, not negligence in the conventional sense.',
+    t1:'Federal infrastructure investment (partially T1: changes the &phi; parameter). Legal accountability for the governance Interpretant replacement (partially T1: creates consequences for future access mechanisms). Very limited ownership architecture change.',
+    t2:'Water infrastructure replacement (critical but T2: addresses &phi; consequence without changing the governance Interpretant). Federal emergency funding. Workforce development.',
+    lesson:'Flint demonstrates compounding Interpretant replacements: the industrial replacement produced the financial crisis; the financial crisis enabled the governance replacement; the governance replacement produced the water crisis. Each layer of Triadic Overwrite creates the structural conditions for the next. This is the civilizational-scale trajectory compressed into one mid-sized city. The AMC is designed to interrupt the compounding at the earliest detectable layer.'}
+};
+function setCity(k,card){
+  document.querySelectorAll('.city-card').forEach(function(c){c.classList.remove('selected');});
+  card.classList.add('selected');
+  var d=CITIES[k];
+  document.getElementById('city-output').innerHTML=
+    '<div class="panel orange"><strong>'+d.icon+' '+d.name+'</strong> &mdash; FHRI_max arc: '+d.fhri_arc+'</div>'+
+    '<div style="display:grid;gap:.5rem;margin:.5rem 0">'+
+    '<div style="background:var(--s);border-left:3px solid var(--violet);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem"><div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--violet);margin-bottom:.25rem">INTERPRETANT ANALYSIS</div><div style="font-size:.85rem;line-height:1.7">'+d.interp+'</div></div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'+
+    '<div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.85rem"><div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--red);margin-bottom:.3rem">T1 RESPONSES (structural)</div><div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">'+d.t1+'</div></div>'+
+    '<div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:.4rem;padding:.85rem"><div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--blue);margin-bottom:.3rem">T2 RESPONSES (process)</div><div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">'+d.t2+'</div></div></div>'+
+    '<div class="panel teal" style="margin:0"><strong>The P-SAGE lesson:</strong> '+d.lesson+'</div></div>';
+  document.getElementById('city-output').classList.add('show');
+}
+
+var JK=['rb_j1','rb_j2','rb_j3','rb_j4','rb_j5'];
+function sv(){JK.forEach(function(k,i){var el=document.getElementById('j'+(i+1));try{if(el)localStorage.setItem(k,el.value);}catch(x){}});var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){var t='EBB Rust Belt Case Study\nJournal\n'+'='.repeat(60)+'\n\n';
+['Q1: Triadic Overwrite in your economic history.','Q2: Opioid epidemic as phi &mdash; structural vs. individual diagnosis.','Q3: The Youngstown trajectory in your community.','Q4: Evergreen-equivalent structure for your sector.','Q5: The plant in the boot.'].forEach(function(q,i){var v=document.getElementById('j'+(i+1));t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';});
+try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_RustBelt_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+JK.forEach(function(k,i){var el=document.getElementById('j'+(i+1));try{if(el)el.value=localStorage.getItem(k)||'';}catch(x){}});
+setTimeout(function(){document.querySelectorAll('.fbar-fill-sm').forEach(function(el){var w=el.style.width;el.style.width='0';requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},80);});});},500);
+</script>
+</body>
+</html>

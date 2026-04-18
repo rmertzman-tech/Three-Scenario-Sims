@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Structural Lens — ACP Diagnostic Instrument</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#04070e;--s:#0a0f1c;--s2:#111827;--border:rgba(255,255,255,.07);--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;--orange:#fb923c;--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);--care:#4A90A4;--fair:#6B8E4E;--loyal:#D4A574;--auth:#8B7BA8;--sanct:#C17B7B}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:2rem 1.5rem 1.6rem;text-align:center;border-bottom:1px solid var(--border);
+  background:linear-gradient(160deg,#02040a 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(20,184,166,.08) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--teal);text-transform:uppercase;margin-bottom:.4rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2.2rem;color:#fff;line-height:1.15;margin-bottom:.3rem}
+.ch-ttl em{color:var(--teal);font-style:italic}
+.ch-sub{font-size:.85rem;color:var(--muted);max-width:580px;margin:0 auto;line-height:1.55}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.6rem 1rem;background:var(--s);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--teal)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;
+  padding:.38rem .8rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:920px;margin:0 auto}.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--teal);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.92rem;color:rgba(255,255,255,.85);margin:.8rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.75;font-size:.88rem}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel strong{color:var(--text)}
+.pullq{border-top:2px solid var(--teal);border-bottom:2px solid var(--teal);padding:1.1rem 2rem;
+  margin:1.4rem 0;text-align:center;font-family:'DM Serif Display',serif;font-size:1.15rem;
+  color:var(--teal);line-height:1.6;font-style:italic}
+/* PRF SELECTOR */
+.prf-selector{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:.75rem 0}
+@media(max-width:560px){.prf-selector{grid-template-columns:repeat(2,1fr)}}
+.prf-btn{padding:.65rem .5rem;border-radius:.4rem;border:2px solid transparent;
+  cursor:pointer;background:var(--s2);text-align:center;transition:all .2s}
+.prf-btn:hover{border-color:rgba(255,255,255,.25)}
+.prf-btn.active{border-width:2px}
+.prf-icon{font-size:1.4rem;margin-bottom:.25rem}
+.prf-name{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.15rem}
+.prf-desc{font-size:.72rem;color:var(--muted);line-height:1.35}
+.care-btn{--pc:var(--care)}.fair-btn{--pc:var(--fair)}.loyal-btn{--pc:var(--loyal)}.auth-btn{--pc:var(--auth)}.sanct-btn{--pc:var(--sanct)}
+.prf-btn.active{border-color:var(--pc);background:rgba(var(--pc),0.08)}
+/* OS1/OS2 REVEAL */
+.os-reveal{background:var(--s);border:1px solid var(--border);border-radius:.5rem;overflow:hidden;margin:.75rem 0}
+.os-head{padding:.75rem 1rem;background:var(--s2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.os-lbl{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase}
+.os-body{padding:1rem 1.1rem;font-size:.88rem;line-height:1.7;display:none;animation:fi .2s ease}
+.os-body.show{display:block}
+.os1-prf-output{padding:1rem 1.1rem;border-bottom:1px solid var(--border);display:none;animation:fi .2s ease}
+.os1-prf-output.show{display:block}
+.prf-tag{font-family:'DM Mono',monospace;font-size:.62rem;padding:.12rem .4rem;border-radius:.2rem;margin-bottom:.4rem;display:inline-block}
+.os2-reveal-btn{display:block;width:100%;padding:.7rem;background:rgba(20,184,166,.06);
+  border:1px dashed rgba(20,184,166,.3);border-radius:.35rem;cursor:pointer;
+  font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);letter-spacing:.08em;
+  text-transform:uppercase;text-align:center;transition:all .2s;margin:.5rem 0}
+.os2-reveal-btn:hover{background:rgba(20,184,166,.12)}
+/* SECTOR CARDS */
+.sector-metric{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.45rem;margin:.7rem 0}
+.sm-cell{background:var(--s2);border:1px solid var(--border);border-radius:.4rem;padding:.65rem;text-align:center}
+.sm-val{font-family:'DM Mono',monospace;font-size:1rem;font-weight:600;margin-bottom:.15rem}
+.sm-lbl{font-size:.68rem;color:var(--muted);line-height:1.3}
+/* FHRI BAR */
+.fhri-track{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;margin:.3rem 0}
+.fhri-fill{height:100%;border-radius:4px;transition:width 1.2s ease}
+/* SPECTRUM */
+.spec-row{display:flex;align-items:center;gap:.6rem;margin:.3rem 0;cursor:pointer;
+  padding:.25rem .4rem;border-radius:.3rem;transition:background .15s}
+.spec-row:hover{background:rgba(255,255,255,.04)}
+.spec-row.hi{background:rgba(20,184,166,.05);border:1px solid rgba(20,184,166,.15)}
+.spec-lbl{font-size:.78rem;width:195px;flex-shrink:0;line-height:1.3;color:rgba(255,255,255,.8)}
+.spec-type{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted);display:block}
+.spec-bar{flex:1;height:20px;border-radius:3px;display:flex;align-items:center;
+  padding-left:.4rem;font-family:'DM Mono',monospace;font-size:.65rem;font-weight:600;
+  color:rgba(0,0,0,.7);white-space:nowrap;transition:width 1s ease;min-width:4px}
+.spec-num{font-family:'DM Mono',monospace;font-size:.7rem;width:36px;text-align:right;flex-shrink:0}
+.spec-src{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--muted);width:42px;flex-shrink:0;text-align:center}
+.tier-div{height:1px;background:rgba(255,255,255,.08);margin:.5rem 0;position:relative}
+.tier-lbl{position:absolute;right:0;top:-8px;font-family:'DM Mono',monospace;font-size:.58rem;
+  color:var(--muted);background:var(--bg);padding:0 .35rem}
+/* JOURNAL */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.87rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--teal);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:86px;background:#020408;border:none;border-top:1px solid var(--border);
+  padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+button.btn{background:var(--teal);color:#000;border:none;font-family:'DM Sans',sans-serif;font-weight:600;
+  font-size:.82rem;padding:.5rem 1.1rem;border-radius:.35rem;cursor:pointer;margin:.25rem .2rem}
+button.btn.out{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.bot-nav{max-width:920px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--teal);color:#000;font-weight:600;
+  font-size:.76rem;padding:.4rem .9rem;border-radius:.35rem;display:none;z-index:999}
+.sf.show{display:block}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="ch-lbl">ACP Diagnostic Instrument &middot; App 1 of 2</div>
+  <h1 class="ch-ttl">The <em>Structural Lens</em></h1>
+  <p class="ch-sub">Turning the telescope on four sectors &mdash; what OS2 analysis reveals about the enabling conditions for ethical life that OS1 perception cannot fully reach</p>
+</div>
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('os')">OS1 vs OS2</button>
+  <button class="tb" onclick="sw('health')">Healthcare</button>
+  <button class="tb" onclick="sw('correct')">Corrections</button>
+  <button class="tb" onclick="sw('finance')">Finance</button>
+  <button class="tb" onclick="sw('edu')">Higher Ed</button>
+  <button class="tb" onclick="sw('synth')">Synthesis</button>
+</div>
+
+<!-- OS1 vs OS2 -->
+<div class="pane active" id="pane-os">
+  <h2 class="st">OS1 and OS2: Why the Distinction Changes Everything</h2>
+  <div class="panel teal"><strong>The same institutional harm looks completely different depending on which operating system you use to perceive it.</strong> OS1 analysis produces genuine moral insight &mdash; it is not wrong. But it is constitutively perspectival: it produces conclusions that are fully coherent from within a particular PRF cluster and that look entirely different from within a different PRF cluster. OS2 analysis identifies the structural layer beneath all OS1 perceptions &mdash; the layer that none of the OS1 accounts, alone, can fully reach.</div>
+
+  <h3 class="sub">See it for yourself: select a PRF cluster</h3>
+  <p class="bd" style="margin-bottom:.5rem">Choose the moral framework closest to your own values. See how your OS1 perceives the 2008 financial crisis &mdash; then see what OS2 analysis adds below it.</p>
+
+  <div class="prf-selector">
+    <div class="prf-btn care-btn" onclick="setPRF('care',this)" style="--pc:#4A90A4">
+      <div class="prf-icon">&#129309;</div>
+      <div class="prf-name" style="color:#4A90A4">Care / Fairness</div>
+      <div class="prf-desc">Justice, equity, protecting the vulnerable</div>
+    </div>
+    <div class="prf-btn" onclick="setPRF('liberty',this)" style="--pc:#6B8E4E">
+      <div class="prf-icon">&#9878;</div>
+      <div class="prf-name" style="color:#6B8E4E">Liberty / Markets</div>
+      <div class="prf-desc">Freedom, competition, individual responsibility</div>
+    </div>
+    <div class="prf-btn" onclick="setPRF('auth',this)" style="--pc:#8B7BA8">
+      <div class="prf-icon">&#127981;</div>
+      <div class="prf-name" style="color:#8B7BA8">Authority / Loyalty</div>
+      <div class="prf-desc">Order, institutions, community bonds</div>
+    </div>
+    <div class="prf-btn" onclick="setPRF('sanct',this)" style="--pc:#C17B7B">
+      <div class="prf-icon">&#10024;</div>
+      <div class="prf-name" style="color:#C17B7B">Sanctity / Community</div>
+      <div class="prf-desc">Dignity, vocation, the sacred obligations of care</div>
+    </div>
+  </div>
+
+  <div class="os-reveal">
+    <div class="os-head">
+      <span class="os-lbl" style="color:var(--amber)">Your OS1 Perception</span>
+      <span style="font-size:.78rem;color:var(--muted)">Select a PRF cluster above</span>
+    </div>
+    <div class="os1-prf-output" id="os1out">
+      <div id="os1-tag" class="prf-tag"></div>
+      <div id="os1-perception" style="font-size:.9rem;line-height:1.75;color:rgba(255,255,255,.82)"></div>
+      <div style="margin-top:.6rem;font-size:.84rem;color:var(--muted);font-style:italic" id="os1-prescription"></div>
+    </div>
+    <button class="os2-reveal-btn" id="os2btn" onclick="revealOS2()" style="display:none">&darr; Reveal OS2 structural analysis</button>
+    <div class="os-body" id="os2body">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem">OS2 Structural Finding &mdash; accessible from ALL PRF clusters</div>
+      <p style="font-size:.9rem;line-height:1.75;margin-bottom:.75rem;color:rgba(255,255,255,.82)"><strong>P-adic access mechanism:</strong> Glass-Steagall repeal (1999) permitted investment banks inside the credit risk cluster previously restricted to commercial lenders. This is the specific regulatory instrument that changed who was inside the channel.</p>
+      <p style="font-size:.9rem;line-height:1.75;margin-bottom:.75rem;color:rgba(255,255,255,.82)"><strong>Interpretant replacement:</strong> Original &mdash; mortgage = creditworthiness assessment. Replaced &mdash; mortgage = securitization feedstock with externalized risk. &epsilon; rose from 0.12 (1995) to 0.71 (2007).</p>
+      <p style="font-size:.9rem;line-height:1.75;margin-bottom:.75rem;color:rgba(255,255,255,.82)"><strong>Computed result:</strong> FHRI_max = 11.2 at peak 2007. 88.8% of the financial system&rsquo;s coordination capacity structurally absorbed before reaching the mission it nominally served. $19.2 trillion in household wealth destroyed. 9.3 million foreclosures. The &phi; fell on populations furthest from the P-adic access mechanism.</p>
+      <div id="os2-your-prf" style="margin-top:.6rem;padding:.75rem;background:rgba(20,184,166,.06);border-radius:.35rem;border-left:3px solid var(--teal);font-size:.86rem;line-height:1.68"></div>
+    </div>
+  </div>
+
+  <div class="panel violet"><strong>The key insight:</strong> Each OS1 perception above contains genuine moral content. The care/fairness perspective correctly identifies the &phi; asymmetry. The liberty/markets perspective correctly identifies the role of perverse incentives. The authority/loyalty perspective correctly identifies professional obligation failure. The sanctity perspective correctly identifies the dignity violation. None of them, alone, identifies the specific structural address where T1 intervention is possible. The OS2 analysis is not the fifth perspective &mdash; it is the structural layer that all four perspectives were describing from different angles.</div>
+</div>
+
+<!-- HEALTHCARE -->
+<div class="pane" id="pane-health">
+  <h2 class="st">Healthcare: PE-Acquired Nursing Homes</h2>
+  <div class="panel red"><strong>FHRI_max = 13.6</strong> &mdash; PE-acquired Florida nursing homes, calibrated against Peterson 2025 data. 86.4% of professional coordination capacity absorbed before it reaches patients. This is not a description of bad nursing. It is a description of the structural ceiling imposed on every nurse, every aide, every administrator who works inside this ownership architecture.</div>
+
+  <div class="sector-metric">
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">13.6</div><div class="sm-lbl">FHRI_max<br>PE-acquired</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--green)">62.9</div><div class="sm-lbl">FHRI_max<br>Non-profit</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">0.636</div><div class="sm-lbl">&epsilon; extraction<br>rate</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--amber)">33 min</div><div class="sm-lbl">Daily RN time<br>per resident</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">49-pt</div><div class="sm-lbl">FHRI_max gap<br>PE vs non-profit</div></div>
+  </div>
+
+  <h3 class="sub">The Boisjoly Parallel</h3>
+  <p class="bd">The nurse who files 24 incident reports about unsafe staffing ratios and watches each one be absorbed without response is experiencing the same &sigma; accumulation dynamic as Roger Boisjoly filing O-ring reports before the Challenger launch. The professional code says: advocate for your patient. The structural ceiling says: 86.4% of your coordination capacity is absorbed before it reaches that advocacy. The gap is moral injury &mdash; and it is produced by the structural ceiling, not by the nurse&rsquo;s individual failure.</p>
+
+  <h3 class="sub" style="margin-top:1rem">Select your PRF cluster to see how your OS1 perceives this &mdash; and what OS2 adds</h3>
+  <div class="prf-selector" id="health-prf-sel">
+    <div class="prf-btn" onclick="setSectorPRF('health','care',this)" style="--pc:#4A90A4"><div class="prf-icon">&#129309;</div><div class="prf-name" style="color:#4A90A4">Care / Fairness</div><div class="prf-desc">Protection of the vulnerable</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('health','liberty',this)" style="--pc:#6B8E4E"><div class="prf-icon">&#9878;</div><div class="prf-name" style="color:#6B8E4E">Liberty / Markets</div><div class="prf-desc">Competition and consumer choice</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('health','auth',this)" style="--pc:#8B7BA8"><div class="prf-icon">&#127981;</div><div class="prf-name" style="color:#8B7BA8">Authority / Loyalty</div><div class="prf-desc">Family responsibility, community bonds</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('health','sanct',this)" style="--pc:#C17B7B"><div class="prf-icon">&#10024;</div><div class="prf-name" style="color:#C17B7B">Sanctity</div><div class="prf-desc">Sacred duty of care for the elderly</div></div>
+  </div>
+  <div class="os-reveal" id="health-reveal" style="display:none">
+    <div class="os-head"><span class="os-lbl" style="color:var(--amber)">OS1 Perception</span><span class="os-lbl" style="color:var(--teal)" id="health-prf-lbl"></span></div>
+    <div style="padding:.9rem 1.1rem;font-size:.88rem;line-height:1.72;border-bottom:1px solid var(--border)" id="health-os1"></div>
+    <div style="padding:.7rem 1.1rem;font-size:.84rem;color:var(--muted);font-style:italic;border-bottom:1px solid var(--border)" id="health-prescription"></div>
+    <div style="padding:.9rem 1.1rem;background:rgba(20,184,166,.04);font-size:.88rem;line-height:1.72" id="health-os2"></div>
+  </div>
+
+  <div class="panel amber" style="margin-top:.75rem"><strong>The ACP violation stated precisely:</strong> The ownership architecture that achieved P-adic proximity to the clinical budget channel systematically destroyed the structural conditions under which the nursing professional ethics code is achievable. The professional code is addressed to the practitioner operating inside a 13.6% structural ceiling. That is not a professional ethics problem. That is an Agency Conditions violation by the ownership architecture.</div>
+</div>
+
+<!-- CORRECTIONS -->
+<div class="pane" id="pane-correct">
+  <h2 class="st">Corrections: GEO Group Florida</h2>
+  <div class="panel red"><strong>FHRI_max = 10.9</strong> &mdash; the lowest of the four sector analyses. The REIT structure (2013&ndash;2021) formalized the Interpretant replacement as a legal mandate: 90% taxable income distribution as dividends legally replaced productive reinvestment with shareholder extraction. The ACP violation is <em>bidirectional</em>: it simultaneously erodes the correctional officer&rsquo;s capacity for professional performance and the incarcerated person&rsquo;s capacity for rehabilitation.</div>
+
+  <div class="sector-metric">
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">10.9</div><div class="sm-lbl">FHRI_max<br>GEO Group FL</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--amber)">49.7</div><div class="sm-lbl">FHRI_max<br>FL DOC public</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">43%</div><div class="sm-lbl">Annual staff<br>turnover</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">3x</div><div class="sm-lbl">Assault rate<br>vs public</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">+8.6%</div><div class="sm-lbl">Recidivism<br>increase 6&ndash;9yr</div></div>
+  </div>
+
+  <h3 class="sub">The Democratic Legitimacy Problem</h3>
+  <p class="bd">A democracy that incarcerates people for public safety and rehabilitation, then contracts those functions to an ownership architecture with FHRI_max = 10.9, is systematically failing to achieve the purposes that justify incarceration. The democratic compact &mdash; we limit your freedom in exchange for rehabilitation &mdash; is being broken not by any individual&rsquo;s bad faith, but by the structural condition that makes rehabilitation at FHRI_max = 10.9 structurally impossible.</p>
+
+  <h3 class="sub" style="margin-top:1rem">Select your PRF cluster</h3>
+  <div class="prf-selector" id="correct-prf-sel">
+    <div class="prf-btn" onclick="setSectorPRF('correct','care',this)" style="--pc:#4A90A4"><div class="prf-icon">&#129309;</div><div class="prf-name" style="color:#4A90A4">Care / Fairness</div><div class="prf-desc">Reform and dignity of incarcerated people</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('correct','auth',this)" style="--pc:#8B7BA8"><div class="prf-icon">&#127981;</div><div class="prf-name" style="color:#8B7BA8">Authority / Order</div><div class="prf-desc">Public safety, deterrence, accountability</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('correct','liberty',this)" style="--pc:#6B8E4E"><div class="prf-icon">&#9878;</div><div class="prf-name" style="color:#6B8E4E">Liberty / Markets</div><div class="prf-desc">Performance-based contracts, competition</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('correct','sanct',this)" style="--pc:#C17B7B"><div class="prf-icon">&#10024;</div><div class="prf-name" style="color:#C17B7B">Sanctity</div><div class="prf-desc">Human dignity, restoration, spiritual obligation</div></div>
+  </div>
+  <div class="os-reveal" id="correct-reveal" style="display:none">
+    <div class="os-head"><span class="os-lbl" style="color:var(--amber)">OS1 Perception</span><span class="os-lbl" style="color:var(--teal)" id="correct-prf-lbl"></span></div>
+    <div style="padding:.9rem 1.1rem;font-size:.88rem;line-height:1.72;border-bottom:1px solid var(--border)" id="correct-os1"></div>
+    <div style="padding:.7rem 1.1rem;font-size:.84rem;color:var(--muted);font-style:italic;border-bottom:1px solid var(--border)" id="correct-prescription"></div>
+    <div style="padding:.9rem 1.1rem;background:rgba(20,184,166,.04);font-size:.88rem;line-height:1.72" id="correct-os2"></div>
+  </div>
+</div>
+
+<!-- FINANCE -->
+<div class="pane" id="pane-finance">
+  <h2 class="st">Finance: The 2008 Financial Crisis</h2>
+  <div class="panel red"><strong>FHRI_max = 11.2</strong> at peak 2007. P-adic access mechanism: Glass-Steagall repeal (1999). Signal manipulation: originate-to-distribute model. &sigma; accumulation: rating agency issuer-pays model normalized AAA ratings for 44,000 instruments agencies could not model. The responsible party is not &ldquo;the market&rdquo; and not &ldquo;human greed.&rdquo; It is the ownership architecture with a specific structural address.</div>
+
+  <div class="sector-metric">
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">11.2</div><div class="sm-lbl">FHRI_max<br>peak 2007</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">0.71</div><div class="sm-lbl">&epsilon; extraction<br>rate</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">$19.2T</div><div class="sm-lbl">Household<br>wealth lost</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">9.3M</div><div class="sm-lbl">Home<br>foreclosures</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--amber)">28&ndash;32</div><div class="sm-lbl">FHRI_max<br>post-T2 recovery</div></div>
+  </div>
+
+  <h3 class="sub">Professional ethics inside &mu; = 0.84</h3>
+  <p class="bd">Every major professional ethics code in the financial sector was violated in 2004&ndash;2008. The ACP reframes this account without exonerating individual practitioners: professional ethics failures were real, but they occurred within a structural context where &mu; = 0.84 made ethical compliance structurally costly and unethical compliance structurally rewarded at every level of the securitization chain. The mortgage broker who refused to originate questionable loans was fired. The ACP question is not &ldquo;why did these individuals fail?&rdquo; but &ldquo;what structural conditions produced an environment where professional ethics compliance was structurally selected against?&rdquo;</p>
+
+  <h3 class="sub" style="margin-top:1rem">Select your PRF cluster</h3>
+  <div class="prf-selector" id="finance-prf-sel">
+    <div class="prf-btn" onclick="setSectorPRF('finance','care',this)" style="--pc:#4A90A4"><div class="prf-icon">&#129309;</div><div class="prf-name" style="color:#4A90A4">Care / Fairness</div><div class="prf-desc">Working families paid; Wall Street bailed out</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('finance','liberty',this)" style="--pc:#6B8E4E"><div class="prf-icon">&#9878;</div><div class="prf-name" style="color:#6B8E4E">Liberty / Markets</div><div class="prf-desc">Government distortion caused the crisis</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('finance','auth',this)" style="--pc:#8B7BA8"><div class="prf-icon">&#127981;</div><div class="prf-name" style="color:#8B7BA8">Authority / Institutions</div><div class="prf-desc">Professional responsibility failure</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('finance','community',this)" style="--pc:#C17B7B"><div class="prf-icon">&#127968;</div><div class="prf-name" style="color:#C17B7B">Community</div><div class="prf-desc">Predatory targeting of vulnerable neighborhoods</div></div>
+  </div>
+  <div class="os-reveal" id="finance-reveal" style="display:none">
+    <div class="os-head"><span class="os-lbl" style="color:var(--amber)">OS1 Perception</span><span class="os-lbl" style="color:var(--teal)" id="finance-prf-lbl"></span></div>
+    <div style="padding:.9rem 1.1rem;font-size:.88rem;line-height:1.72;border-bottom:1px solid var(--border)" id="finance-os1"></div>
+    <div style="padding:.7rem 1.1rem;font-size:.84rem;color:var(--muted);font-style:italic;border-bottom:1px solid var(--border)" id="finance-prescription"></div>
+    <div style="padding:.9rem 1.1rem;background:rgba(20,184,166,.04);font-size:.88rem;line-height:1.72" id="finance-os2"></div>
+  </div>
+</div>
+
+<!-- HIGHER ED -->
+<div class="pane" id="pane-edu">
+  <h2 class="st">Higher Education: The Bifurcated Professional Environment</h2>
+  <div class="panel teal"><strong>Higher education is the only sector where the same formal mechanism produces dramatically different outcomes within the same sector.</strong> SPC FHRI_max 58.6. University of Phoenix FHRI_max 26.9. Same regulatory environment. Overlapping student populations. Nominally similar products. 31.7-point structural gap. The gap is produced entirely by institutional architecture, not by mission, demographics, or funding.</div>
+
+  <div class="sector-metric">
+    <div class="sm-cell"><div class="sm-val" style="color:var(--teal)">58.6</div><div class="sm-lbl">SPC<br>FHRI_max</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">26.9</div><div class="sm-lbl">U. Phoenix<br>FHRI_max</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--amber)">31.7</div><div class="sm-lbl">Structural<br>gap (points)</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--red)">$42K</div><div class="sm-lbl">Phoenix median<br>debt</div></div>
+    <div class="sm-cell"><div class="sm-val" style="color:var(--teal)">$8.5K</div><div class="sm-lbl">SPC median<br>debt</div></div>
+  </div>
+
+  <h3 class="sub">The exit-option modulator: a new ethical variable</h3>
+  <p class="bd">High-extraction for-profits cluster at FHRI_max 27&ndash;33 rather than the captive-population floor of 11&ndash;14. The 17-point gap between tiers is produced by the exit option: students can leave extractive institutions, albeit at high personal cost. This reveals a novel ethical principle: <strong>institutions that serve captive populations bear a special ACP obligation precisely because the exit option &mdash; the only self-correcting mechanism available without governance intervention &mdash; is unavailable to those populations.</strong></p>
+
+  <h3 class="sub" style="margin-top:1rem">Select your PRF cluster</h3>
+  <div class="prf-selector" id="edu-prf-sel">
+    <div class="prf-btn" onclick="setSectorPRF('edu','care',this)" style="--pc:#4A90A4"><div class="prf-icon">&#129309;</div><div class="prf-name" style="color:#4A90A4">Care / Fairness</div><div class="prf-desc">Predatory debt targeting first-gen students</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('edu','liberty',this)" style="--pc:#6B8E4E"><div class="prf-icon">&#9878;</div><div class="prf-name" style="color:#6B8E4E">Liberty / Markets</div><div class="prf-desc">Consumer choice and information asymmetry</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('edu','excellence',this)" style="--pc:#8B7BA8"><div class="prf-icon">&#127979;</div><div class="prf-name" style="color:#8B7BA8">Achievement</div><div class="prf-desc">Declining standards, credential inflation</div></div>
+    <div class="prf-btn" onclick="setSectorPRF('edu','tradition',this)" style="--pc:#C17B7B"><div class="prf-icon">&#127968;</div><div class="prf-name" style="color:#C17B7B">Tradition</div><div class="prf-desc">Education as formation, not just credential</div></div>
+  </div>
+  <div class="os-reveal" id="edu-reveal" style="display:none">
+    <div class="os-head"><span class="os-lbl" style="color:var(--amber)">OS1 Perception</span><span class="os-lbl" style="color:var(--teal)" id="edu-prf-lbl"></span></div>
+    <div style="padding:.9rem 1.1rem;font-size:.88rem;line-height:1.72;border-bottom:1px solid var(--border)" id="edu-os1"></div>
+    <div style="padding:.7rem 1.1rem;font-size:.84rem;color:var(--muted);font-style:italic;border-bottom:1px solid var(--border)" id="edu-prescription"></div>
+    <div style="padding:.9rem 1.1rem;background:rgba(20,184,166,.04);font-size:.88rem;line-height:1.72" id="edu-os2"></div>
+  </div>
+</div>
+
+<!-- SYNTHESIS -->
+<div class="pane" id="pane-synth">
+  <h2 class="st">Synthesis: Four Cross-Sector Findings</h2>
+  <div class="panel teal"><strong>These four findings emerge from the sector analyses together</strong> &mdash; none is visible from any single sector analysis alone.</div>
+
+  <h3 class="sub">Finding 1: The Scale-Free Law Confirmed</h3>
+  <p class="bd">The same five-parameter IPS formula, applied to four sectors using independent data sources, produces high-extraction FHRI_max values within a 22-point range regardless of sector content. The ACP implication: the enabling conditions for moral agency are suppressed to approximately the same degree by extraction architectures in the 11&ndash;33 FHRI_max range regardless of whether those architectures operate in nursing homes, prisons, financial systems, or universities.</p>
+
+  <div style="margin:.75rem 0">
+    <div style="display:flex;align-items:center;gap:.5rem;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-bottom:.4rem;padding-left:190px"><span>0</span><span style="margin-left:auto">100</span></div>
+    <div id="synth-spectrum"></div>
+  </div>
+
+  <h3 class="sub">Finding 2: Exit-Option Modulator</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.5rem 0">
+    <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:.4rem;padding:.85rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--amber);margin-bottom:.3rem">EXIT-ENABLED (avg 29.5)</div>
+      <div style="font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.75)">High-extraction higher education institutions cluster at FHRI_max 27&ndash;33. Students can leave &mdash; at enormous personal cost in debt already incurred, but they can leave.</div>
+    </div>
+    <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.85rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.3rem">CAPTIVE POPULATION (avg 11.9)</div>
+      <div style="font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.75)">Nursing homes, prisons, 2008 mortgage holders cluster at FHRI_max 11&ndash;14. The populations bearing &phi; cannot exit. The extraction architecture faces no competitive pressure from population exit.</div>
+    </div>
+  </div>
+
+  <h3 class="sub">Finding 3: &phi; Distribution Asymmetry is Systematic</h3>
+  <p class="bd">In all four sectors, the entity bearing &phi; is not the entity that achieved P-adic proximity and executed the Interpretant replacement. PE firms are not the nursing home residents. GEO Group shareholders are not the correctional officers experiencing 43% turnover. Investment banks are not the homeowners in foreclosure. For-profit universities are not the students bearing $42K in debt against $35K earnings. This is not coincidental. Extraction architectures specifically route &phi; to populations furthest from the P-adic access mechanism &mdash; and therefore least capable of addressing it through normal market or political channels.</p>
+
+  <h3 class="sub">Finding 4: OS1 Limits Are Real and Consistent</h3>
+  <p class="bd">Every OS1 prescription reviewed in this analysis was T2 when T1 was required &mdash; not because the prescriptions were wrong, but because they operated within the existing access condition rather than addressing it. Stricter nursing home regulations (T2). Better financial regulations (T2). Performance-based prison contracts (T2). Student outcome disclosure (T2). All are genuine improvements within the existing Interpretant replacement. None changes who is inside the channel controlling the Interpretant assignment.</p>
+
+  <div class="pullq">The OS2 analysis does not replace your OS1 moral perception.<br>It finds the structural layer beneath it<br>where the most important ethical action is available.</div>
+
+  <div class="jq"><div class="jq-h"><span class="jq-n">Reflect</span>Across all four sectors, which finding is most personally significant for your own professional future? How does the &phi; distribution asymmetry change where your moral concern lands?</div><textarea class="jq-ta" id="synth-j" oninput="sv()" placeholder="The finding that changes something for you, and why..."></textarea></div>
+  <button class="btn" onclick="ex()">&#11015; Download Notes</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn out" onclick="prev()">&larr;</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &rarr;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['os','health','correct','finance','edu','synth'],cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+
+// OS1 data
+var OS1_DATA={
+  care:{name:'Care / Fairness',color:'#4A90A4',
+    perception:'Wall Street caused the 2008 crisis through deregulation and greed. Working families lost their homes and savings while the same banks that caused the collapse were bailed out with public money. The damage fell heaviest on communities of color targeted by predatory subprime origination.',
+    prescription:'Re-regulate the financial sector. Prosecute fraudulent actors. Provide principal relief to affected homeowners. Strengthen the Community Reinvestment Act.',
+    os2add:'This OS1 perception correctly identifies the &phi; asymmetry: the people who bore the damage were not the people who caused it. OS2 analysis confirms this and gives it a structural address: the &phi; asymmetry is a formal consequence of the Interpretant replacement. The T1 implication your OS1 reaches for &mdash; change who controls the channel &mdash; is correct. Glass-Steagall equivalent is T1. Principal relief is T2. Both matter, but only T1 addresses the access condition.'},
+  liberty:{name:'Liberty / Markets',color:'#6B8E4E',
+    perception:'Government distortion drove the crisis. The Community Reinvestment Act pushed banks into risky lending. Fannie Mae and Freddie Mac created moral hazard. When the government guarantees losses, private actors take excessive risks. The bailout prevented necessary market clearing that would have restored discipline.',
+    prescription:'Eliminate government mortgage guarantees. Require institutions to bear their losses. Let market discipline work without political interference.',
+    os2add:'This OS1 perception correctly identifies perverse incentives (&mu; = 0.84). OS2 analysis confirms this and locates it structurally: the originate-to-distribute model &mdash; a private sector innovation, not a government mandate &mdash; was the specific mechanism producing &mu; = 0.84. Glass-Steagall repeal (a deregulation event, not a regulatory overreach) was the P-adic access mechanism. The market mechanism was corrupted from inside the private sector, not imposed by government. The OS2 finding supports market discipline but identifies that the first failure was in the access architecture, not the regulatory level.'},
+  auth:{name:'Authority / Institutions',color:'#8B7BA8',
+    perception:'The crisis revealed a catastrophic failure of professional responsibility across every institution involved. Bankers, regulators, and rating agencies all abandoned their institutional obligations. The solution is restoring professional integrity and strengthening regulatory independence.',
+    prescription:'Strengthen professional codes. Increase regulator independence. Restore institutional norms. Hold individuals accountable.',
+    os2add:'This OS1 perception correctly identifies the professional obligation failure. OS2 analysis adds: professional and institutional norm restoration is T2 if the P-adic access condition remains unchanged. The same actors with stronger norms inside the same structural incentive architecture (&mu; = 0.84) will tend toward the same outcomes. The ACP shows why: at &mu; = 0.84, ethical compliance is structurally selected against. Norm restoration addresses the symptom without addressing the incentive architecture that produces the norm violation.'},
+  community:{name:'Community / Fairness',color:'#C17B7B',
+    perception:'Predatory lending specifically and deliberately targeted Black and Latino communities. The crisis was not random &mdash; it was a directed extraction from the communities most vulnerable to subprime origination. The racial wealth gap widened catastrophically and has not recovered.',
+    prescription:'Address the racial wealth gap directly. Target relief to most-affected communities. Strengthen CRA. Reform mortgage lending to prevent discriminatory targeting.',
+    os2add:'This OS1 perception correctly identifies the &phi; distribution within the already-identified &phi; asymmetry. OS2 analysis confirms: the originate-to-distribute model specifically targeted communities with the highest response rates to subprime marketing and the least access to the political mechanisms that would have addressed the structural condition. The T1 intervention must include governance of the access condition AND a mechanism for returning &phi; to the bearing communities. True Solvency Accounting would require that the &phi; imposed on communities of color appear as a liability on the balance sheets of the institutions that imposed it.'},
+};
+
+function setPRF(key, btn){
+  document.querySelectorAll('#pane-os .prf-btn').forEach(function(b){b.style.borderColor='transparent';});
+  var d=OS1_DATA[key];
+  btn.style.borderColor=d.color;
+  var out=document.getElementById('os1out');
+  out.classList.add('show');
+  document.getElementById('os1-tag').textContent=d.name;
+  document.getElementById('os1-tag').style.background=d.color+'22';
+  document.getElementById('os1-tag').style.color=d.color;
+  document.getElementById('os1-perception').innerHTML=d.perception;
+  document.getElementById('os1-prescription').textContent='OS1 prescription: '+d.prescription;
+  document.getElementById('os2btn').style.display='block';
+  document.getElementById('os2btn').setAttribute('data-key',key);
+  document.getElementById('os2body').classList.remove('show');
+  document.getElementById('os2-your-prf').innerHTML='';
+}
+
+function revealOS2(){
+  var key=document.getElementById('os2btn').getAttribute('data-key');
+  var d=OS1_DATA[key];
+  document.getElementById('os2-your-prf').innerHTML='<strong style="color:'+d.color+'">What OS2 adds to your '+d.name+' perspective:</strong><br>'+d.os2add;
+  document.getElementById('os2body').classList.add('show');
+}
+
+// Sector PRF data
+var SECTOR_DATA={
+  health:{
+    care:{name:'Care / Fairness',os1:'The nursing home scandal is about corporate greed exploiting the most vulnerable. Residents are being neglected and families deceived. We need stronger regulation, mandatory staffing ratios, and real enforcement with meaningful penalties.',prescription:'Stricter CMS standards, more inspectors, higher fines, mandatory staffing ratios enforced with real consequences.',os2:'OS2 confirms the structural harm and identifies the responsible party more precisely: not "corporate greed" as a character trait, but the ownership architecture\'s P-adic access to the budget channel (achieved through acquisition and leveraged debt structure). T1: change who controls the clinical budget channel. T2: stronger regulation within unchanged ownership architecture. Your OS1 prescription is T2. A T1 companion is required: beneficial ownership disclosure, PBC conversion requirements, BioBond financing that makes FHRI_max improvement financially rational.'},
+    liberty:{name:'Liberty / Markets',os1:'Better transparency and consumer choice will drive quality improvements. If families could clearly compare outcomes across facilities, good facilities would attract residents and bad ones would lose them. Market competition is the most effective quality driver.',prescription:'Require outcome disclosure, enable consumer comparison, reduce barriers to new entrants, let market competition select for quality.',os2:'OS2 finding: &mu; = 0.82 and &phi; = 0.52. The population bearing &phi; is cognitively impaired or family-dependent, cannot meaningfully evaluate quality signals, and has no exit option once placed. Consumer choice cannot function where the consumer cannot leave and cannot assess quality. The exit option that makes market mechanisms work is structurally unavailable in the captive-population nursing home sector.'},
+    auth:{name:'Authority / Loyalty',os1:'Families have abandoned their obligation to care for their own elderly. We have outsourced sacred family duties to institutions. The real problem is that society has lost the cultural commitment to intergenerational family care.',prescription:'Restore family responsibility for elder care. Reduce institutional dependency. Strengthen community bonds. Revive the cultural expectation of home-based family care.',os2:'OS2 finding adds: the structural conditions that would make home-based family care achievable are also degraded by the high-&epsilon; economy that produces extraction architectures in nursing homes. A society in which wages are suppressed and working hours are extended has fewer resources for family care. The ACP applies at multiple levels simultaneously: the family care OS1 values are structurally prevented by the same economic architecture that produces the nursing home IPS.'},
+    sanct:{name:'Sanctity',os1:'Care for the elderly is a sacred duty. Every person, regardless of cognitive capacity or physical condition, possesses inherent dignity that demands respectful care. The abandonment of the elderly to extractive institutions is a spiritual failure of our society.',prescription:'Return to faith-based care. Increase charitable provision. Re-moralize the healthcare sector through renewed spiritual commitment to elder dignity.',os2:'OS2 confirms the spiritual intuition structurally: the sacred duty of care has been made structurally inaccessible by the ownership architecture that replaced the Interpretant of elder care from "ministry of dignity" to "extraction vehicle." The faith community\'s institutions (non-profit nursing homes) produce FHRI_max = 62.9 versus the PE-acquired FHRI_max = 13.6. The OS2 finding supports the sanctity value\'s institutional form: non-profit, mission-aligned ownership architecture is the structural condition for the sacred duty to be achievable.'},
+  },
+  correct:{
+    care:{name:'Care / Fairness',os1:'Prison privatization is exploitation. Incarcerated people are being treated as profit centers. The evidence is clear: private prisons produce worse outcomes at comparable or higher costs while generating returns for shareholders who have no stake in rehabilitation outcomes.',prescription:'End private corrections contracting. Restore full public operation of all correctional facilities. Eliminate the profit motive from incarceration.',os2:'OS2 confirms the structural harm: FHRI_max = 10.9 vs public FHRI_max = 49.7. The mechanism is the REIT structure (2013-2021) and the P-adic access condition, not private ownership per se. The OS2 finding supports your conclusion through a stronger argument: the responsible party is specifically identified, the structural ceiling is computed, and the T1 intervention (change the access condition; PBC conversion; FHRI_max floor standards in DOC contracting) is derivable from the diagnosis.'},
+    auth:{name:'Authority / Order',os1:'Public safety requires institutional order. The problem is not conditions inside prisons but the choices that led people there. Rehabilitation is secondary to deterrence and accountability. The focus should be on maintaining order, not on prisoner comfort.',prescription:'Focus on deterrence, maintain order, prioritize victim rights, hold individuals accountable for their choices.',os2:'OS2 finding: FHRI_max = 10.9 produces 43% staff turnover, 3x assault rates, and documented staffing of 8-officer units with 3 officers. The OS1 emphasis on order is undermined by the structural conditions of the institution. Order cannot be maintained inside an institution whose coordination capacity is 89.1% absorbed. Elevated assault rates and violence are a consequence of the structural ceiling, not of insufficient deterrence focus.'},
+    liberty:{name:'Liberty / Markets',os1:'Competitive contracting produces efficiency. Private operators who underperform should lose contracts to better performers. The solution is performance-based contracts with robust recidivism penalties that align contractor incentives with public safety outcomes.',prescription:'Require performance-based contracts with recidivism bonuses. Publish outcome data. Let competition select for quality operators.',os2:'OS2 finding: &mu; = 0.84, recidivism bonus = ~1% of per-diem vs. bed occupancy = 100% of per-diem. The recidivism bonus is insufficient by a factor of 300+ to change the programming investment calculation. The incentive misalignment is not at the margin &mdash; it is structural. The market mechanism cannot function when the incentive misalignment is this total. T1 required: change who is inside the access mechanism, not what bonus they receive for outcomes within the unchanged architecture.'},
+    sanct:{name:'Sanctity',os1:'Every person has inherent dignity, including those who have committed serious offenses. Prisons should serve restoration and redemption, not merely punishment. We are failing our obligation as a society to restore those who have harmed and create conditions for genuine change.',prescription:'Restorative justice models. Faith-based prison ministry. Community reintegration programs. Redemptive framing of incarceration.',os2:'OS2 confirms the structural impediment to restoration: FHRI_max = 10.9 makes genuine restorative programming structurally inaccessible. The 6.5-8.6% recidivism increase from private facilities is the measured magnitude of structural prevention of the restoration your OS1 values. The plant in the boot: Unchained Industries (FHRI_max ≈ 71) demonstrates that restorative employment IS achievable when the ownership architecture does not impose the REIT-level extraction. The Maathai principle applies directly.'},
+  },
+  finance:{
+    care:{name:'Care / Fairness',os1:'Wall Street caused the crisis through deregulation and greed. Communities of color were specifically targeted by predatory subprime origination. The bailout made the wealthy whole while working families lost their homes. TARP was a transfer of public wealth to the actors who caused the harm.',prescription:'Re-regulate. Prosecute fraud. Provide principal relief. Target recovery to most-affected communities. Address the racial wealth gap.',os2:'Your OS1 correctly identifies the &phi; asymmetry and the racial targeting. OS2 adds structural precision: the racial &phi; concentration is a formal consequence of the originate-to-distribute model\'s routing of subprime origination toward communities with highest response rates and least access to political remedy. T1 companion: True Solvency Accounting requires the racial &phi; to appear as a liability; beneficial ownership disclosure makes the routing mechanism visible; originate-to-hold requirements change the &mu; that made the targeting profitable.'},
+    liberty:{name:'Liberty / Markets',os1:'Government guarantees (Fannie, Freddie, CRA) created moral hazard. Private actors took risks they would not have taken without implicit government backstops. Market discipline, not more regulation, is the solution. Let failing institutions fail.',prescription:'Eliminate GSE mortgage guarantees. Require institutions to bear full losses. Remove political distortion from credit markets.',os2:'OS2 finding: &mu; = 0.84 was produced by the originate-to-distribute model &mdash; a private sector innovation. Glass-Steagall repeal (a deregulation event) was the P-adic access mechanism. The CRA argument is not supported by the data: CRA-covered loans defaulted at lower rates than non-CRA subprime origination. Your OS1 instinct about moral hazard is correct &mdash; but the moral hazard was inside the private sector securitization chain, not imposed by government mandate.'},
+    auth:{name:'Authority / Institutions',os1:'The crisis was a catastrophic failure of professional responsibility. Every institution involved &mdash; banks, rating agencies, regulators &mdash; failed its institutional obligations. Individuals and institutions must be held accountable.',prescription:'Strengthen professional codes. Increase regulator independence. Criminal prosecution of fraud. Restore institutional norms.',os2:'OS2 adds: institutional norm restoration is T2 if the P-adic access condition remains unchanged. The same actors with stronger norms inside &mu; = 0.84 will face the same structural incentives. The ACP shows why individual accountability matters AND is insufficient: at &mu; = 0.84, ethical compliance is structurally selected against across the entire chain. Norm restoration addresses the symptom without addressing the incentive architecture that produces the norm violation.'},
+    community:{name:'Community',os1:'The foreclosure crisis was a community destruction event. Schools lost students, local businesses lost customers, neighborhood property values collapsed in cascading ripples from each foreclosure. The damage to community fabric exceeded the individual financial losses.',prescription:'Target recovery to community-level damage. CDFI expansion. Neighborhood stabilization programs. Long-term community investment.',os2:'OS2 confirms the community-level &phi; accumulation: research documents each foreclosure reduces neighboring property values by 0.9-1.3%, creating the cascade your OS1 identifies. The Maathai principle: CDFIs operating at FHRI_max ≈ 61 are the plant in the boot &mdash; low-epsilon lending institutions whose ownership architecture does not permit the P-adic access mechanism. BioBond financing for CDFI scaling is the T1-adjacent intervention that makes the low-epsilon alternative financially competitive.'},
+  },
+  edu:{
+    care:{name:'Care / Fairness',os1:'For-profit colleges specifically targeted first-generation students, veterans, and communities of color with deceptive recruitment, inflated credentials, and predatory debt loading. The student debt crisis is a social justice issue requiring direct action.',prescription:'Cancel or restructure predatory student debt. Strengthen Gainful Employment rules. Close bad-actor institutions. Expand Pell grants for public institutions.',os2:'OS2 confirms the structural harm (&mu; = 0.50, &phi; = 0.305 at Phoenix). Your prescription addresses the symptom. T1 companion: the 1992 HEA access mechanism (which placed for-profit entities inside the federal loan channel) is the P-adic access instrument analogous to Glass-Steagall repeal. Gainful Employment is T2. Removing Title IV eligibility from institutions below FHRI_max 40 would be T1: it changes who is inside the federal loan channel, not what they are required to produce while inside it.'},
+    liberty:{name:'Liberty / Markets',os1:'Students choose their institutions. Market competition should drive quality improvements. The problem is information asymmetry, not predation. Better outcome disclosure would enable informed consumer choices that discipline poor performers.',prescription:'Improve outcome disclosure. Require income-share agreements. Let informed students choose. Reduce regulatory barriers to new entrants.',os2:'OS2 finding: the exit cost for a student mid-degree with $20K in non-transferable debt is not a free market choice. &mu; = 0.50 means the enrollment incentive architecture is misaligned with completion by structural design. Consumer information addresses the information asymmetry but not the &mu; misalignment inside the institution. The student who makes an "informed choice" to attend Phoenix and discovers FHRI_max = 26.9 cannot access the exit they were promised without bearing the full debt already incurred.'},
+    excellence:{name:'Achievement',os1:'The problem is declining standards. Institutions that graduate students without adequate knowledge and skills devalue all credentials. The focus on enrollment growth has systematically displaced the emphasis on genuine learning outcomes.',prescription:'Restore academic standards. Limit federal loans for non-rigorous programs. Re-emphasize liberal arts and genuine formation over credential production.',os2:'OS2 finding confirms: structural constraints on instructional investment (&epsilon; = 0.732 at Phoenix, 0.275 at SPC) directly limit the academic rigor that can be delivered. The OS1 prescription (restore standards) is T2: it demands higher quality output from an institution whose structural ceiling limits quality input to 26.9% of coordination capacity. T1: change the &epsilon; through ownership architecture reform. Standards follow structural conditions, not the reverse.'},
+    tradition:{name:'Tradition',os1:'Higher education has lost its essential mission of forming whole persons. The credential inflation focus has displaced genuine intellectual, moral, and civic formation. Education should develop character and wisdom, not merely certify employability.',prescription:'Reform general education requirements. Restore the humanities. Connect college to community and faith. Emphasize formation over certification.',os2:'OS2 finding: SPC (FHRI_max = 58.6) is structurally closer to enabling genuine formation than Phoenix (26.9) precisely because SPC\'s &epsilon; = 0.275 leaves 72.5% of per-student resources available for the instructional mission that formation requires. The traditional educational values your OS1 holds are most achievable in low-&epsilon; institutional contexts. AMC structurally supports your OS1 values by making the conditions for genuine formation more widely accessible.'},
+  },
+};
+
+function setSectorPRF(sector, prf, btn){
+  document.querySelectorAll('#'+sector+'-prf-sel .prf-btn').forEach(function(b){b.style.borderColor='transparent';});
+  btn.style.borderColor=btn.style.getPropertyValue('--pc')||'#14b8a6';
+  var d=SECTOR_DATA[sector][prf];
+  if(!d)return;
+  document.getElementById(sector+'-prf-lbl').textContent=d.name;
+  document.getElementById(sector+'-os1').innerHTML=d.os1;
+  document.getElementById(sector+'-prescription').textContent='OS1 prescription: '+d.prescription;
+  document.getElementById(sector+'-os2').innerHTML='<strong style="color:var(--teal)">What OS2 adds:</strong><br>'+d.os2;
+  document.getElementById(sector+'-reveal').style.display='block';
+}
+
+// Synthesis spectrum
+var SPEC=[
+  {n:'Worker Co-op (CHCA)',f:74.2,t:'Healthcare',col:'#4ade80',src:'prior'},
+  {n:'Non-profit Home Health',f:62.9,t:'Healthcare',col:'#4ade80',src:'prior'},
+  {n:'Valencia College',f:60.2,t:'Higher Ed',col:'#14b8a6',src:'LIVE'},
+  {n:'SPC ◄',f:58.6,t:'Higher Ed',col:'#2dd4bf',src:'LIVE',hi:true},
+  {n:'University of Florida',f:59.0,t:'Higher Ed',col:'#14b8a6',src:'LIVE'},
+  {n:'Miami Dade College',f:50.5,t:'Higher Ed',col:'#f59e0b',src:'LIVE'},
+  {n:'Keiser University',f:38.9,t:'Higher Ed',col:'#f59e0b',src:'emb'},
+  {n:'Full Sail University',f:32.5,t:'Higher Ed',col:'#fb923c',src:'LIVE'},
+  {n:'So. New Hampshire U.',f:30.2,t:'Higher Ed',col:'#fb923c',src:'LIVE'},
+  {n:'Grand Canyon Univ.',f:28.4,t:'Higher Ed',col:'#f87171',src:'LIVE'},
+  {n:'Univ. of Phoenix',f:26.9,t:'Higher Ed',col:'#f87171',src:'LIVE'},
+  {n:'PE Nursing Home (FL)',f:13.6,t:'Healthcare',col:'#ef4444',src:'prior'},
+  {n:'2008 Fin. System',f:11.2,t:'Finance',col:'#ef4444',src:'prior'},
+  {n:'GEO Group FL',f:10.9,t:'Corrections',col:'#ef4444',src:'prior'},
+];
+function buildSpec(){
+  var c=document.getElementById('synth-spectrum');c.innerHTML='';
+  var prev=100;
+  SPEC.forEach(function(d){
+    if(prev>=50&&d.f<50){var dv=document.createElement('div');dv.className='tier-div';dv.innerHTML='<span class="tier-lbl">Stress zone</span>';c.appendChild(dv);}
+    if(prev>=14&&d.f<14){var dv2=document.createElement('div');dv2.className='tier-div';dv2.innerHTML='<span class="tier-lbl" style="color:var(--red)">Captive-population tier</span>';c.appendChild(dv2);}
+    prev=d.f;
+    var row=document.createElement('div');row.className='spec-row'+(d.hi?' hi':'');
+    var pct=(d.f/85)*100;
+    row.innerHTML='<div class="spec-lbl"><span>'+(d.hi?'<strong>'+d.n+'</strong>':d.n)+'</span><span class="spec-type">'+d.t+'</span></div>'+
+      '<div style="flex:1"><div class="spec-bar" style="width:'+pct+'%;background:'+d.col+'30;border:1px solid '+d.col+'50;color:'+d.col+'">'+d.f+'</div></div>'+
+      '<div class="spec-src">'+d.src+'</div>';
+    c.appendChild(row);
+  });
+}
+buildSpec();
+
+var JK=['sl_synth'];
+function sv(){try{localStorage.setItem('sl_synth',document.getElementById('synth-j').value);}catch(e){}var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){var t='The Structural Lens \u2014 Notes\n'+'='.repeat(60)+'\n\n';var v=document.getElementById('synth-j');t+=(v?v.value||'(no response)':'(no response)')+'\n';try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='StructuralLens_Notes.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+try{var sv=localStorage.getItem('sl_synth');if(sv)document.getElementById('synth-j').value=sv;}catch(e){}
+</script>
+</body>
+</html>

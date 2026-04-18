@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ethics Beyond Boundaries — Course App Suite</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#0f766e;--teal-dark:#0d5e57;--teal-mid:#14b8a6;--teal-light:#ccfbf1;
+  --amber:#f59e0b;--amber-dark:#92400e;--amber-light:#fef3c7;
+  --navy:#1a2744;--ink:#1f2937;--muted:#6b7280;
+  --border:#e5e7eb;--paper:#f9fafb;
+  --sky:#1e3a8a;--sky-light:#dbeafe;
+  --green:#166534;--green-light:#dcfce7;
+  --red:#dc2626;--red-light:#fee2e2;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Cormorant Garamond','Georgia',serif;background:linear-gradient(135deg,#0a1628 0%,#112240 50%,#0a1628 100%);min-height:100vh;color:var(--ink)}
+.wrap{max-width:1000px;margin:0 auto;padding:1rem 1rem 3rem}
+
+/* HEADER */
+.site-header{text-align:center;padding:2.5rem 1rem 2rem;color:white}
+.site-header .label{font-family:'JetBrains Mono',monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:rgba(20,184,166,.75);margin-bottom:.5rem}
+.site-header h1{font-size:2.2rem;font-weight:700;color:white;margin-bottom:.4rem;line-height:1.15}
+.site-header .sub{font-size:1rem;color:rgba(255,255,255,.48);font-style:italic;margin-bottom:1rem}
+.site-header .desc{max-width:640px;margin:0 auto;font-size:.9rem;color:rgba(255,255,255,.55);line-height:1.7}
+
+/* CHAPTER GROUPS */
+.chapter-group{margin-bottom:2rem}
+.group-label{font-family:'JetBrains Mono',monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(20,184,166,.65);margin-bottom:.6rem;padding-left:.1rem}
+.app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+
+/* APP CARDS */
+.app-card{background:white;border-radius:.75rem;overflow:hidden;text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.app-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.app-card-head{padding:.9rem 1.1rem .7rem;display:flex;align-items:flex-start;gap:.7rem}
+.app-card-icon{font-size:1.5rem;line-height:1;flex-shrink:0;margin-top:.1rem}
+.app-card-title{font-size:1rem;font-weight:700;color:var(--navy);line-height:1.25;margin-bottom:.15rem}
+.app-card-type{font-family:'JetBrains Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.app-card-body{padding:0 1.1rem .9rem;flex:1}
+.app-card-desc{font-size:.82rem;color:var(--muted);line-height:1.6}
+.app-card-footer{padding:.55rem 1.1rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.app-card-tag{font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;padding:.18rem .5rem;border-radius:.25rem}
+.tag-case{background:var(--teal-light);color:var(--teal-dark)}
+.tag-companion{background:var(--sky-light);color:var(--sky)}
+.tag-simulation{background:var(--amber-light);color:var(--amber-dark)}
+.tag-reference{background:var(--paper);color:var(--muted);border:1px solid var(--border)}
+.tag-orientation{background:var(--green-light);color:var(--green)}
+.app-card-arrow{font-size:.9rem;color:var(--teal-mid)}
+
+/* ACCENT BORDERS BY CHAPTER */
+.ch-orient .app-card-head{border-top:3px solid #0284c7}
+.ch-1 .app-card-head{border-top:3px solid #7c3aed}
+.ch-2 .app-card-head{border-top:3px solid #dc2626}
+.ch-3 .app-card-head{border-top:3px solid #0f766e}
+.ch-4 .app-card-head{border-top:3px solid #ca8a04}
+.ch-5 .app-card-head{border-top:3px solid #166534}
+.ch-6 .app-card-head{border-top:3px solid #0369a1}
+.ch-7 .app-card-head{border-top:3px solid #9333ea}
+.ch-8 .app-card-head{border-top:3px solid #92400e}
+.ch-9 .app-card-head{border-top:3px solid #0891b2}
+.ch-10 .app-card-head{border-top:3px solid #4f46e5}
+.ch-interlude .app-card-head{border-top:3px solid #0d5e57}
+.ch-rustbelt .app-card-head{border-top:3px solid #b45309}
+.ch-prologue .app-card-head{border-top:3px solid #6d28d9}
+.ch-11 .app-card-head{border-top:3px solid #0f766e}
+.ch-12 .app-card-head{border-top:3px solid #dc2626}
+.ch-13 .app-card-head{border-top:3px solid #1d4ed8}
+.ch-14 .app-card-head{border-top:3px solid #7c3aed}
+.ch-tools .app-card-head{border-top:3px solid #374151}
+
+/* DIVIDER */
+.divider{height:1px;background:rgba(255,255,255,.07);margin:1.5rem 0}
+
+/* PREDICTION CHAIN */
+.chain-bar{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.65rem;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.chain-bar h3{font-size:.75rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:rgba(20,184,166,.65);margin-bottom:.65rem}
+.chain-row{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.chain-node{font-family:'JetBrains Mono',monospace;font-size:.65rem;background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);padding:.22rem .55rem;border-radius:.3rem;white-space:nowrap}
+.chain-arrow{color:rgba(20,184,166,.5);font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="site-header">
+  <div class="label">Saint Petersburg College &middot; Ethics Institute</div>
+  <h1>Ethics Beyond Boundaries</h1>
+  <div class="sub">Interactive App Suite &middot; Dr. Robert Mertzman</div>
+  <div class="desc">A complete set of simulation apps, case explorers, and companion reading tools for the EBB course. Each app connects to the UCP simulation engine and stores journal predictions for the next chapter.</div>
+</div>
+
+<!-- PREDICTION CHAIN -->
+<div class="chain-bar">
+  <h3>Prediction Chain &mdash; Journal Q5 flows chapter to chapter</h3>
+  <div class="chain-row">
+    <span class="chain-node">Orientation → orient_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Ch2 → ch2_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Ch3 → ch3_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Ch4 → ch4_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Ch5 → ch5_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Ch6 → ch6_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Ch7 → ch7_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Ch8 → ch8_cq5</span>
+    <span class="chain-arrow">→</span>
+    <span class="chain-node">Rust Belt → rust_belt_cq5</span>
+  </div>
+</div>
+
+<!-- ORIENTATION -->
+<div class="chapter-group ch-orient">
+  <div class="group-label">Orientation</div>
+  <div class="app-grid">
+    <a class="app-card" href="ebb-orientation-app.html">
+      <div class="app-card-head"><div class="app-card-icon">🗺️</div><div><div class="app-card-title">Course Orientation</div><div class="app-card-type">Interactive Map</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The watershed model, PRF Peak Calculator, course arc, and Journal Q4 prediction for Chapter 2. Start here before Chapter 1.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-orientation">Orientation</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="day1-orientation.html">
+      <div class="app-card-head"><div class="app-card-icon">📋</div><div><div class="app-card-title">Day 1 Orientation</div><div class="app-card-type">First Class</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">First-day introduction to the course framework, PRF concept, and OS1/OS2 distinction.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-orientation">Day 1</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 1 -->
+<div class="chapter-group ch-1">
+  <div class="group-label">Chapter 1 &mdash; The PRF</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter1-lens-app.html">
+      <div class="app-card-head"><div class="app-card-icon">🔭</div><div><div class="app-card-title">Your Interpretive Lens</div><div class="app-card-type">Companion App</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Build your Phenomenological Reference Framework. How your PRF formed, what it makes visible, and what it makes hard to see.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Companion</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 2 -->
+<div class="chapter-group ch-2">
+  <div class="group-label">Chapter 2 &mdash; The Challenger Disaster</div>
+  <div class="app-grid">
+    <a class="app-card" href="challenger-case-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">🚀</div><div><div class="app-card-title">Challenger Case Explorer</div><div class="app-card-type">Case Explorer + Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Roger Boisjoly and the suppression gap. Eight tabs: Discovery through Aftermath. UCP Simulation: Config A (Thiokol) vs. Config B (protected channel). Clickable metric explanations.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Explorer</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="chapter2-telescope-app.html">
+      <div class="app-card-head"><div class="app-card-icon">📡</div><div><div class="app-card-title">Chapter 2 Companion</div><div class="app-card-type">Companion App</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The suppression gap concept, institutional architecture, and the ethics of speaking truth to power.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Companion</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 3 -->
+<div class="chapter-group ch-3">
+  <div class="group-label">Chapter 3 &mdash; Father Hanna</div>
+  <div class="app-grid">
+    <a class="app-card" href="hanna-case-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">⛪</div><div><div class="app-card-title">Hanna Case Explorer</div><div class="app-card-type">Case Explorer + Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Father Saad Sirop Hanna — maintaining identity under maximum institutional entropy. Identity Kernel, BioBond, and the limits of individual courage.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Explorer</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="chapter3-commonwealth-app.html">
+      <div class="app-card-head"><div class="app-card-icon">🏛️</div><div><div class="app-card-title">Chapter 3 Companion</div><div class="app-card-type">Companion App</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Building commonwealth across difference. The conditions for ethical functioning under extreme constraint.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Companion</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 4 -->
+<div class="chapter-group ch-4">
+  <div class="group-label">Chapter 4 &mdash; Wangari Maathai</div>
+  <div class="app-grid">
+    <a class="app-card" href="maathai-case-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">🌳</div><div><div class="app-card-title">Maathai Case Explorer</div><div class="app-card-type">Case Explorer + Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Wangari Maathai and the Green Belt Movement. Coordination architecture, OS2 Bridge, and building institutions that outlast their founders.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Explorer</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="chapter4-maathai-app.html">
+      <div class="app-card-head"><div class="app-card-icon">🌿</div><div><div class="app-card-title">Chapter 4 Companion</div><div class="app-card-type">Companion App</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Institutional design, capability-based coordination, and the ethics of building structures that distribute agency.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Companion</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 5 -->
+<div class="chapter-group ch-5">
+  <div class="group-label">Chapter 5 &mdash; Nelson Mandela</div>
+  <div class="app-grid">
+    <a class="app-card" href="mandela-case-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">⚖️</div><div><div class="app-card-title">Mandela Case Explorer</div><div class="app-card-type">Case Explorer + Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Nelson Mandela and the TRC. Three simulation runs: the TRC design, the fragmentation counterfactual, and the vulnerable population test.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Explorer</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="chapter5-mandela-app.html">
+      <div class="app-card-head"><div class="app-card-icon">🕊️</div><div><div class="app-card-title">Chapter 5 Companion</div><div class="app-card-type">Companion App</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Truth, reconciliation, and institutional design across radical difference. The TRC as a coordination architecture problem.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Companion</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 6 -->
+<div class="chapter-group ch-6">
+  <div class="group-label">Chapter 6 &mdash; Tim Palmer</div>
+  <div class="app-grid">
+    <a class="app-card" href="palmer-case-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">🌀</div><div><div class="app-card-title">Palmer Case Explorer</div><div class="app-card-type">Case Explorer + Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Tim Palmer and ensemble forecasting. Single-model vs. ensemble architecture. The moral argument for honest uncertainty. Three simulation runs.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Explorer</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="chapter6-companion.html">
+      <div class="app-card-head"><div class="app-card-icon">📊</div><div><div class="app-card-title">Chapter 6 Companion</div><div class="app-card-type">Companion App</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The primacy of doubt. Chaos, uncertainty, and the ethics of what forecasting institutions owe the people who depend on them.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Companion</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 7 -->
+<div class="chapter-group ch-7">
+  <div class="group-label">Chapter 7 &mdash; Doyne Farmer</div>
+  <div class="app-grid">
+    <a class="app-card" href="farmer-case-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">🏭</div><div><div class="app-card-title">Farmer Case Explorer</div><div class="app-card-type">Case Explorer + Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Doyne Farmer and agent-based economics. Three runs: Representative Agent, Heterogeneous Agents, Rawlsian Test. The COVID prediction and what standard models missed.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Explorer</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="chapter7-farmer-app.html">
+      <div class="app-card-head"><div class="app-card-icon">🔬</div><div><div class="app-card-title">Chapter 7 Companion</div><div class="app-card-type">Companion App</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The invisible people. Representative agent error, heterogeneous modeling, social block fields, and the Rawlsian test. Your field map exercise.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Companion</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 8 -->
+<div class="chapter-group ch-8">
+  <div class="group-label">Chapter 8 &mdash; The Simulated History of Ethics</div>
+  <div class="app-grid">
+    <a class="app-card" href="ethical-theories-app.html">
+      <div class="app-card-head"><div class="app-card-icon">🏛️</div><div><div class="app-card-title">Ethical Theories App</div><div class="app-card-type">Nine Stations + Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">What were the traditions actually measuring? Nine stations from Socrates to Existentialism. Conditions Cascade visualization. Composite Run with all nine conditions. The Complex PRF.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Simulation</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 9 -->
+<div class="chapter-group ch-9">
+  <div class="group-label">Chapter 9 &mdash; The World Values Map</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter9-wvm-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127758;</div><div><div class="app-card-title">Where Are You Standing?</div><div class="app-card-type">Cultural PRF &middot; Cross-Cultural Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The World Values Map applied to the simulation. Two axes, five worldview categories, the thermodynamic logic of why values shift with conditions, IPS-WVM connection, and AMC forward pointer.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Simulation</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CHAPTER 10 -->
+<div class="chapter-group ch-10">
+  <div class="group-label">Chapter 10 &mdash; The Social Contract</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter10-social-contract-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#x2696;&#xFE0F;</div><div><div class="app-card-title">Who Gave Them the Right?</div><div class="app-card-type">Three Architectures &middot; IPS Profiles &middot; Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Hobbes, Locke, and Rousseau as institutional architectures mapped to IPS parameters. Characteristic failure mode per architecture. CPG five criteria as IPS requirements. The Hybrid Citizen framework.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Simulation</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- INTERLUDE -->
+<div class="chapter-group ch-interlude">
+  <div class="group-label">Interlude &mdash; Ethics of the Framework</div>
+  <div class="app-grid">
+    <a class="app-card" href="interlude-ethics-framework-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#9651;</div><div><div class="app-card-title">Ethics of the Framework</div><div class="app-card-type">Agency Conditions Principle &middot; Bridge Reading</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The normative core stated in full: ACP, entropy-exporting institutions, Coherence-Preserving Governance, temporal commons, and the six-question diagnostic for the applied sequence ahead.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Reading</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- RUST BELT -->
+<div class="chapter-group ch-rustbelt">
+  <div class="group-label">Rust Belt Case Study &mdash; Nine Lenses Applied</div>
+  <div class="app-grid">
+    <a class="app-card" href="rust-belt-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127981;</div><div><div class="app-card-title">Rust Belt &mdash; Nine Ethical Lenses</div><div class="app-card-type">Case Study + Three-Part Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The Rust Belt collapse examined through all nine ethical traditions simultaneously. Pre-collapse, collapse, and current state metrics. The synthesis tab shows what no single lens can see alone.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Study</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- APPLIED SEQUENCE -->
+<div class="chapter-group ch-prologue">
+  <div class="group-label">Prologue &mdash; The Pattern Beneath Ethics</div>
+  <div class="app-grid">
+    <a class="app-card" href="prologue-pattern-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127381;</div><div><div class="app-card-title">The Pattern Beneath Ethics</div><div class="app-card-type">Scale-Free Laws &middot; Agential Hijacking &middot; Course Map</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The scale-invariant mechanism underlying every chapter: parasitic overwrite operating identically at biological, psychological, institutional, and civilizational scales. The mantis case. Course architecture revealed.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-companion">Prologue</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group ch-11">
+  <div class="group-label">Chapter 11 &mdash; Economic Systems (Applied Sequence &middot; Movement 1)</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter11-economic-systems-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127970;</div><div><div class="app-card-title">What the Economy Does to Coherent Agency</div><div class="app-card-type">IPS Diagnostic &middot; BioBond &middot; Peterson et al. 2025</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The False Choice thesis. Nine fairness dimensions as IPS parameters. Florida nursing home ownership archetypes (Peterson/AARP 2025 &amp; CMS data). PE acquisition trajectory 2019&ndash;2024. BioBond instruments. True Solvency Accounting. Three economic architecture simulation configs.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Simulation + IPS</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group ch-12">
+  <div class="group-label">Chapter 12 &mdash; Governance Systems (Applied Sequence &middot; Movement 2)</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter12-governance-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127981;</div><div><div class="app-card-title">Governance Systems and the Routing Quality Gap</div><div class="app-card-type">Four Configs &middot; Boisjoly T4 &middot; Type 1/Type 2 Failure</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Procedural vs. substantive legitimacy. Config A (Captured), B (Coherence-Preserving), C (Reform Transition), D (Boisjoly T4: agent FHRI 82, absorbed 67.7 pts). Type 1 vs. Type 2 routing quality failure distinction.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Simulation</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group ch-13">
+  <div class="group-label">Chapter 13 &mdash; Information Systems (Applied Sequence &middot; Movement 3)</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter13-infosystems-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128225;</div><div><div class="app-card-title">Information Systems and the Second Filter</div><div class="app-card-type">Web of Acquisition &middot; &sigma;/&mu; Filter Asymmetry &middot; AI Ethics</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The filter upstream of governance. CSER Cambridge web of acquisition framework. IPS mechanism of filter asymmetry: &sigma; (morphic residue) and &mu; (incentive misalignment). Why 80% structural improvement is the honest result. Three simulation configs with IPS profiles.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Simulation</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group ch-14">
+  <div class="group-label">Chapter 14 &mdash; Existential Risk (Applied Sequence &middot; Movement 4)</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter14-existential-risk-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127759;</div><div><div class="app-card-title">Existential Risk, Leverage, and the AMC</div><div class="app-card-type">IPS Field Profiles &middot; Iron Cage &middot; T1/T2 Counterfactuals</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Meadows leverage hierarchy. Iron Cage (high-&sigma;/&rho;) and Obsolescence Trap (high-&epsilon;/&mu;) failure modes. Four-institution IPS field profiles. Trust vector trajectory. T1 vs. T2 intervention types. Paris Agreement analysis. AMC as field architecture.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Multi-Institutional Field</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- INTERLUDE PARASITE -->
+<div class="chapter-group" style="border-left:3px solid #f87171">
+  <div class="group-label" style="color:#f87171">Interlude &mdash; The Parasite Revealed (Bridge: Ch10 &rarr; Ch11)</div>
+  <div class="app-grid">
+    <a class="app-card" href="interlude-parasite-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128027;</div><div><div class="app-card-title">The Parasite Revealed</div><div class="app-card-type">Hairworm Biology &middot; The Mechanism &middot; Five Parameters &middot; Wall-E &middot; The Bridge</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The hinge between individual ethics and systems ethics. Hairworm/mantis mechanism. Intercept, consume, replace. Five IPS parameters introduced through what students already see. Wall-E as civilizational-scale &epsilon;. The moral outrage has a target now.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Bridge Module</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CH11 ECONOMICS RUST BELT -->
+<div class="chapter-group" style="border-left:3px solid #4ade80">
+  <div class="group-label" style="color:#4ade80">Chapter 11 &mdash; Economics, the Rust Belt &amp; the Parasite</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter11-economics-rustbelt-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127981;</div><div><div class="app-card-title">Economics &amp; the Rust Belt</div><div class="app-card-type">Three-Era FHRI_max Trajectory &middot; Wall-E &middot; Sorry to Bother You &middot; Maathai Response</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Computable structural event: 1960/1985/2010 FHRI_max trajectory for Rust Belt communities. The acquisition wave as the named responsible party. Wall-E as civilizational-scale economics. Sorry to Bother You as the career-trap version. The Evergreen Cooperatives as the plant in the boot.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Economics</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CH12 GOVERNANCE -->
+<div class="chapter-group" style="border-left:3px solid #a78bfa">
+  <div class="group-label" style="color:#a78bfa">Chapter 12 &mdash; Governance &amp; the Three Failure Modes</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter12-governance-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#9939;</div><div><div class="app-card-title">Governance &amp; the Three Failure Modes</div><div class="app-card-type">Iron Cage &middot; Obsolescence Trap &middot; Regulatory Capture &middot; Governance Classifier</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Three structural failure modes with science fiction prior art: Agent Smith (Capture), White Bear (Capture with spectacle), The Evitable Conflict (Obsolescence + Iron Cage). Interactive governance classifier for real regulatory programs. Oracle obligation framing.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Governance</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- CH13 INFORMATION -->
+<div class="chapter-group" style="border-left:3px solid #60a5fa">
+  <div class="group-label" style="color:#60a5fa">Chapter 13 &mdash; Information Systems &amp; The Filter</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter13-information-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128202;</div><div><div class="app-card-title">Information Systems &amp; The Filter</div><div class="app-card-type">Filter Simulator &middot; Triadic Hack &middot; Nosedive &middot; Entire History of You &middot; Boisjoly Test</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Interactive filter asymmetry simulator: tune &sigma;/&mu;/&rho; and watch the signal get absorbed. Boisjoly Preset shows the Challenger configuration. Triadic Hack mapped across HHVBP, Nosedive, Herbie, and Challenger. The second filter problem made computable.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Information</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group" style="border-left:3px solid #a78bfa">
+  <div class="group-label" style="color:#a78bfa">Cultural Resonance Module &mdash; Science Fiction as Structural Ethics Laboratory</div>
+  <div class="app-grid">
+    <a class="app-card" href="scifi-ethics-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127916;</div><div><div class="app-card-title">Science Fiction Ethics Lab</div><div class="app-card-type">I, Robot &middot; The Matrix &middot; Wall-E &middot; Ex Machina &middot; Parasite &middot; Black Mirror</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Popular culture texts as prior art for institutional parasitism theory. IPS parameter mapping across nine works. The Three Laws as T2 intervention. The Triadic Hack and Dark Coherence across the canon. 75-minute class design. Five journal prompts connecting narrative to lived structural experience.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Cultural Bridge</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group ch-14">
+  <div class="group-label">Chapter 15 &mdash; The Visible Parasite (Applied Sequence &middot; Synthesis)</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter15-visible-parasite-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128302;</div><div><div class="app-card-title">The Visible Parasite</div><div class="app-card-type">SAGE Analysis &middot; Capability Tool &middot; T1/T2 Classifier</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">What 12,239 agencies confirmed about institutional parasitism. Scale explorer from individual to civilization. SAGE applied to the nursing home structural scenario. Capability-based ethics tool: what you can actually do from where you are. T1/T2 classifier for any proposed action.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Synthesis</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PSAGE DEEP DIVE -->
+<div class="chapter-group" style="border-left:3px solid #14b8a6">
+  <div class="group-label" style="color:#14b8a6">P-SAGE &mdash; Professional Ethical Analysis Protocol (Deep Dive)</div>
+  <div class="app-grid">
+    <a class="app-card" href="psage-deep-dive-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128302;</div><div><div class="app-card-title">P-SAGE Deep Dive</div><div class="app-card-type">Perception + SAGE &middot; Semiotic Rosetta Stone &middot; Three Teaching Depths</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The UCP V5 telescope. Adds formal Perception step to SAGE: Is the Sign intact? Has the Signal been manipulated? Has the Interpretant been replaced? Six-level Rosetta Stone from molecular to civilizational. Three depth options: vocabulary (15 min), diagnostic (45 min), formal derivation. Full walkthrough on Home Health, Challenger, and HHVBP.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag" style="background:rgba(20,184,166,.15);color:#14b8a6">Deep Dive</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- REFERENCE TOOLS -->
+<div class="chapter-group ch-tools">
+  <div class="group-label">Reference Tools &amp; Labs</div>
+  <div class="app-grid">
+    <a class="app-card" href="ucp-metrics-reference.html">
+      <div class="app-card-head"><div class="app-card-icon">📐</div><div><div class="app-card-title">UCP Metrics Reference</div><div class="app-card-type">Technical Reference</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Complete technical documentation for every simulation metric: formulas, ranges, research grounding, and parameter interactions.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Reference</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="ucp-student-guide.html">
+      <div class="app-card-head"><div class="app-card-icon">📖</div><div><div class="app-card-title">Student Guide</div><div class="app-card-type">How to Use the Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Plain-language guide to running simulations, reading metrics, and connecting results to the course concepts.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Guide</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="metrics-calibration-lab.html">
+      <div class="app-card-head"><div class="app-card-icon">🧪</div><div><div class="app-card-title">Metrics Calibration Lab</div><div class="app-card-type">Interactive Lab</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Hands-on parameter exploration. Adjust worldview distributions and evidence architectures and watch metrics respond in real time.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Lab</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="worldview-comparison.html">
+      <div class="app-card-head"><div class="app-card-icon">🌐</div><div><div class="app-card-title">Worldview Comparison</div><div class="app-card-type">Reference Tool</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Side-by-side comparison of the five worldview frameworks. What each sees, what each misses, and how they interact in the simulation.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Reference</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="trans-temporal-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">⏳</div><div><div class="app-card-title">Trans-Temporal Explorer</div><div class="app-card-type">Research Tool</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Generational transmission of coordination capacity. How institutional patterns propagate across time and what degrades or improves them.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Research</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="cte-challenge.html">
+      <div class="app-card-head"><div class="app-card-icon">🏈</div><div><div class="app-card-title">CTE Challenge</div><div class="app-card-type">Case Study</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The NFL's CTE crisis as a coordination failure case. Capability-based coordination in practice.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Study</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+
+
+<!-- NEW APPS FROM SESSION APRIL 2026 -->
+<div class="chapter-group" style="border-color:rgba(20,184,166,.25);background:rgba(20,184,166,.03)">
+  <div class="group-label" style="color:#14b8a6">Applied Sequence Ch11&ndash;Ch12 &middot; Economics, Governance &amp; Finance</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter11-economics-v3.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128200;</div><div><div class="app-card-title">Economic Systems V3 (P-SAGE)</div><div class="app-card-type">Ch 11 &middot; Full P-SAGE Integration &middot; Rust Belt Case Study</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Economic systems analysis with full P-SAGE framework and Rust Belt community case study. Current recommended version for Ch 11.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Simulation</span><span class="app-card-tag tag-case">Case Study</span></div>
+    </a>
+    <a class="app-card" href="he-ips-analysis-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127979;</div><div><div class="app-card-title">Higher Education IPS Analysis</div><div class="app-card-type">Ch 11 &middot; Live College Scorecard Data &middot; Scale-Free Law Validation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">SPC FHRI_max = 58.6 (validated 3 API runs). Full spectrum from Valencia 60.2 to Phoenix 26.9. Exit-option modulator finding. Cross-sector comparison vs PE nursing homes and GEO Group.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Study</span><span class="app-card-tag tag-empirical">Live Data</span></div>
+    </a>
+    <a class="app-card" href="interlude-telescope-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128301;</div><div><div class="app-card-title">Interlude: Telescope Turned Inward</div><div class="app-card-type">Ch 11&ndash;12 Bridge &middot; Smith to UCP &middot; &Delta;FHRI_max Classifier</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Adam Smith&rsquo;s two books to mathematical economics to UCP. Interactive &Delta;FHRI_max calculator distinguishes productive disruption from extractive parasitism. Six cases: Netflix, iPhone, Amazon, Uber, PE nursing home, 2008.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-theory">Theory</span><span class="app-card-tag tag-simulation">Interactive</span></div>
+    </a>
+    <a class="app-card" href="chapter12-2008-financial-crisis-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127963;</div><div><div class="app-card-title">2008 Financial Crisis</div><div class="app-card-type">Ch 12 &middot; Triadic Overwrite at System Scale &middot; FHRI_max = 11.2</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Glass-Steagall as P-adic access mechanism. Rating agency &sigma; accumulation as Challenger parallel. Live simulation with 6 era buttons. T1 vs T2 recovery analysis. Scale-free law: same 11.2 as GEO Group and PE nursing homes.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Study</span><span class="app-card-tag tag-simulation">Simulation</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group" style="border-color:rgba(167,139,250,.25);background:rgba(167,139,250,.03)">
+  <div class="group-label" style="color:#a78bfa">Agency Conditions Principle &middot; ACP &amp; AMC</div>
+  <div class="app-grid">
+    <a class="app-card" href="acp-structural-lens-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128269;</div><div><div class="app-card-title">The Structural Lens</div><div class="app-card-type">ACP App 1 &middot; OS1 vs OS2 &middot; PRF Selectors Across 4 Sectors</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Interactive diagnostic instrument. Select your PRF cluster &mdash; see your OS1 perception of each sector harm, then the OS2 structural finding underneath it. Healthcare, corrections, finance, and higher education. Full cross-sector spectrum.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-theory">Theory</span><span class="app-card-tag tag-simulation">Interactive</span></div>
+    </a>
+    <a class="app-card" href="acp-constructive-response-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127757;</div><div><div class="app-card-title">The Constructive Response</div><div class="app-card-type">ACP App 2 &middot; AMC Architecture &middot; Profession Selector &middot; Commitment Builder</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">AMC design instrument. Three ACP professional obligations personalized by profession. BioBond rate schedule and 4-sector instruments. Cross-PRF commons showing how every OS1 framework endorses the AMC. Personal commitment builder.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-practice">Practice</span><span class="app-card-tag tag-theory">Design</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group" style="border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.03)">
+  <div class="group-label" style="color:#f87171">IPS Empirical Studies &middot; Sector Audits</div>
+  <div class="app-grid">
+    <a class="app-card" href="geo-florida-prison-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#127981;</div><div><div class="app-card-title">GEO Group Florida IPS Audit</div><div class="app-card-type">IPS Case Study &middot; FHRI_max = 10.9 &middot; BioBond Design</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">P-SAGE audit of Florida&rsquo;s largest private prison operator. REIT structure as formal Interpretant replacement mechanism. BioBond instrument spec. Maathai pathway: Unchained Industries as the plant in the boot.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Study</span><span class="app-card-tag tag-empirical">Real Data</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="chapter-group" style="border-color:rgba(96,165,250,.25);background:rgba(96,165,250,.03)">
+  <div class="group-label" style="color:#60a5fa">Personal Reflection &amp; Identity</div>
+  <div class="app-grid">
+    <a class="app-card" href="metaconstructor-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#129504;</div><div><div class="app-card-title">Meta-Constructor Personal Reflection</div><div class="app-card-type">Personal Reflection &middot; FHRI Sliders &middot; Claude AI Dialogue</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Seven-tab personal reflection tool. FHRI sliders, PRF mapping, Identity Kernel, Institutional Mirror (personal P-SAGE), and a live Claude AI dialogue with full course context. Where you are now &rarr; where you aim.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-practice">Practice</span><span class="app-card-tag tag-ai">AI-Powered</span></div>
+    </a>
+  </div>
+</div>
+
+<div style="text-align:center;padding:2rem 0 1rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.2)">
+  Ethics Beyond Boundaries &middot; Saint Petersburg College &middot; Ethics Institute &middot; &copy; 2026
+</div>
+
+</div>
+</body>
+</html> &mdash; The Visible Parasite (Applied Sequence &middot; Synthesis)</div>
+  <div class="app-grid">
+    <a class="app-card" href="chapter15-visible-parasite-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128302;</div><div><div class="app-card-title">The Visible Parasite</div><div class="app-card-type">SAGE Analysis &middot; Capability Tool &middot; T1/T2 Classifier</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">What 12,239 agencies confirmed about institutional parasitism. Scale explorer from individual to civilization. SAGE applied to the nursing home structural scenario. Capability-based ethics tool: what you can actually do from where you are. T1/T2 classifier for any proposed action.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Synthesis</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PSAGE DEEP DIVE -->
+<div class="chapter-group" style="border-left:3px solid #14b8a6">
+  <div class="group-label" style="color:#14b8a6">P-SAGE &mdash; Professional Ethical Analysis Protocol (Deep Dive)</div>
+  <div class="app-grid">
+    <a class="app-card" href="psage-deep-dive-app.html">
+      <div class="app-card-head"><div class="app-card-icon">&#128302;</div><div><div class="app-card-title">P-SAGE Deep Dive</div><div class="app-card-type">Perception + SAGE &middot; Semiotic Rosetta Stone &middot; Three Teaching Depths</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The UCP V5 telescope. Adds formal Perception step to SAGE: Is the Sign intact? Has the Signal been manipulated? Has the Interpretant been replaced? Six-level Rosetta Stone from molecular to civilizational. Three depth options: vocabulary (15 min), diagnostic (45 min), formal derivation. Full walkthrough on Home Health, Challenger, and HHVBP.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag" style="background:rgba(20,184,166,.15);color:#14b8a6">Deep Dive</span><span class="app-card-arrow">&#8594;</span></div>
+    </a>
+  </div>
+</div>
+
+<!-- REFERENCE TOOLS -->
+<div class="chapter-group ch-tools">
+  <div class="group-label">Reference Tools &amp; Labs</div>
+  <div class="app-grid">
+    <a class="app-card" href="ucp-metrics-reference.html">
+      <div class="app-card-head"><div class="app-card-icon">📐</div><div><div class="app-card-title">UCP Metrics Reference</div><div class="app-card-type">Technical Reference</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Complete technical documentation for every simulation metric: formulas, ranges, research grounding, and parameter interactions.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Reference</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="ucp-student-guide.html">
+      <div class="app-card-head"><div class="app-card-icon">📖</div><div><div class="app-card-title">Student Guide</div><div class="app-card-type">How to Use the Simulation</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Plain-language guide to running simulations, reading metrics, and connecting results to the course concepts.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Guide</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="metrics-calibration-lab.html">
+      <div class="app-card-head"><div class="app-card-icon">🧪</div><div><div class="app-card-title">Metrics Calibration Lab</div><div class="app-card-type">Interactive Lab</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Hands-on parameter exploration. Adjust worldview distributions and evidence architectures and watch metrics respond in real time.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-simulation">Lab</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="worldview-comparison.html">
+      <div class="app-card-head"><div class="app-card-icon">🌐</div><div><div class="app-card-title">Worldview Comparison</div><div class="app-card-type">Reference Tool</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Side-by-side comparison of the five worldview frameworks. What each sees, what each misses, and how they interact in the simulation.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Reference</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="trans-temporal-explorer.html">
+      <div class="app-card-head"><div class="app-card-icon">⏳</div><div><div class="app-card-title">Trans-Temporal Explorer</div><div class="app-card-type">Research Tool</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">Generational transmission of coordination capacity. How institutional patterns propagate across time and what degrades or improves them.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-reference">Research</span><span class="app-card-arrow">→</span></div>
+    </a>
+    <a class="app-card" href="cte-challenge.html">
+      <div class="app-card-head"><div class="app-card-icon">🏈</div><div><div class="app-card-title">CTE Challenge</div><div class="app-card-type">Case Study</div></div></div>
+      <div class="app-card-body"><div class="app-card-desc">The NFL's CTE crisis as a coordination failure case. Capability-based coordination in practice.</div></div>
+      <div class="app-card-footer"><span class="app-card-tag tag-case">Case Study</span><span class="app-card-arrow">→</span></div>
+    </a>
+  </div>
+</div>
+
+<div style="text-align:center;padding:2rem 0 1rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.2)">
+  Ethics Beyond Boundaries &middot; Saint Petersburg College &middot; Ethics Institute &middot; &copy; 2026
+</div>
+
+</div>
+</body>
+</html>

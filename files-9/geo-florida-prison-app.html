@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>From Parasite to Commonwealth — GEO Group Florida</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;--orange:#fb923c;--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(160deg,#0c0610 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(248,113,113,.1) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.18em;color:var(--red);text-transform:uppercase;margin-bottom:.5rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2.4rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.ch-ttl em{color:var(--amber);font-style:italic}
+.ch-sub{font-size:.88rem;color:var(--muted);max-width:640px;margin:0 auto;line-height:1.6}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem 1rem;background:var(--s);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--red)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;padding:.4rem .85rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--red);color:#fff;border-color:var(--red);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:880px;margin:0 auto}.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--red);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.95rem;color:rgba(255,255,255,.85);margin:.9rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.72;font-size:.88rem}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel strong{color:var(--text)}
+.ssi-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin:.75rem 0}
+@media(max-width:520px){.ssi-trio{grid-template-columns:1fr}}
+.ssi-cell{border-radius:.4rem;padding:.85rem;border:1px solid var(--border)}
+.ssi-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.ssi-status{font-family:'DM Mono',monospace;font-size:.68rem;padding:.15rem .45rem;border-radius:.25rem;margin-bottom:.35rem;display:inline-block}
+.ssi-intact{background:rgba(74,222,128,.12);color:var(--green)}
+.ssi-modified{background:rgba(245,158,11,.12);color:var(--amber)}
+.ssi-replaced{background:rgba(248,113,113,.12);color:var(--red)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.55rem;margin:.75rem 0}
+.stat-card{background:var(--s);border:1px solid var(--border);border-radius:.45rem;padding:.85rem;text-align:center}
+.stat-num{font-family:'DM Mono',monospace;font-size:1.3rem;font-weight:600;margin-bottom:.2rem}
+.stat-lbl{font-size:.72rem;color:var(--muted);line-height:1.35}
+.ips-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:.75rem 0}
+@media(max-width:500px){.ips-grid{grid-template-columns:repeat(3,1fr)}}
+.ips-cell{border:1px solid var(--border);border-radius:.4rem;padding:.7rem .4rem;text-align:center;background:var(--s)}
+.ips-cell .sym{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--red)}
+.ips-cell .val{font-family:'DM Mono',monospace;font-size:.8rem;margin:.15rem 0}
+.ips-cell .nm{font-size:.6rem;color:var(--muted);line-height:1.3}
+.fhri-row{display:flex;align-items:center;gap:.75rem;background:var(--s2);border-radius:.45rem;padding:.85rem 1rem;margin:.5rem 0;border:1px solid var(--border)}
+.fhri-num{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;flex-shrink:0}
+.fhri-num.low{color:var(--red)}.fhri-num.mid{color:var(--amber)}.fhri-num.high{color:var(--green)}
+.fbar-wrap{flex:1}.fbar-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-bottom:.28rem}
+.fbar{height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.fbar-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.fbar-fill.low{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fbar-fill.mid{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fbar-fill.high{background:linear-gradient(90deg,var(--green),#86efac)}
+.compare-row{display:flex;align-items:center;gap:.75rem;margin:.4rem 0}
+.compare-label{font-size:.8rem;width:220px;flex-shrink:0;color:rgba(255,255,255,.75)}
+.cbar{flex:1;height:9px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.cbar-fill{height:100%;border-radius:5px;transition:width 1.2s ease}
+.cbar-val{font-family:'DM Mono',monospace;font-size:.72rem;width:38px;text-align:right;flex-shrink:0}
+/* ratchet table */
+.ratchet-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.85rem}
+.ratchet-table th{padding:.6rem .8rem;text-align:left;font-family:'DM Mono',monospace;font-size:.65rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.ratchet-table td{padding:.65rem .8rem;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top;line-height:1.55}
+.ratchet-table tr:last-child td{border-bottom:none}
+.ratchet-table tr.current{background:rgba(248,113,113,.05)}
+/* org cards */
+.org-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin:.75rem 0}
+.org-card{border:1px solid var(--border);border-radius:.5rem;padding:1rem;background:var(--s);cursor:pointer;transition:all .18s}
+.org-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.org-card.selected{border-color:var(--teal);background:rgba(20,184,166,.06)}
+.org-icon{font-size:1.5rem;margin-bottom:.4rem}
+.org-name{font-weight:600;font-size:.88rem;margin-bottom:.15rem}
+.org-fhri{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--teal)}
+.org-output{margin-top:.75rem;display:none}.org-output.show{display:block;animation:fi .3s ease}
+/* phase timeline */
+.phase-steps{display:flex;gap:.4rem;margin:.75rem 0}
+.phase-btn{flex:1;text-align:center;padding:.6rem .3rem;border-radius:.4rem;border:1px solid var(--border);background:var(--s);cursor:pointer;transition:all .18s;font-size:.82rem;font-weight:600}
+.phase-btn:hover{background:var(--s2)}.phase-btn.active{border-color:var(--teal);background:rgba(20,184,166,.08);color:var(--teal)}
+.phase-body{background:#0a0e1c;border:1px solid var(--border);border-radius:.5rem;padding:1.1rem 1.25rem;display:none}
+.phase-body.active{display:block;animation:fi .2s ease}
+/* journal */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.88rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--red);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:88px;background:#0a0e1c;border:none;border-top:1px solid var(--border);padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.87rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+button.btn{background:var(--red);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.83rem;padding:.55rem 1.2rem;border-radius:.4rem;cursor:pointer;margin:.3rem .2rem}
+button.btn.outline{background:transparent;color:var(--red);border:1px solid var(--red)}
+.bot-nav{max-width:880px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--teal);color:#000;font-weight:600;font-size:.78rem;padding:.45rem 1rem;border-radius:.4rem;display:none;z-index:999}.sf.show{display:block}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="ch-lbl">EBB &middot; IPS Audit &middot; Cross-Sector Case Study</div>
+  <h1 class="ch-ttl">From <em>Parasite</em> to Commonwealth</h1>
+  <p class="ch-sub">GEO Group&rsquo;s Florida correctional facilities &mdash; P-SAGE analysis, IPS audit, BioBond transition design, and the Maathai bottom-up pathway to the Adaptive Moral Commonwealth</p>
+</div>
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('psage')">P-SAGE Audit</button>
+  <button class="tb" onclick="sw('ips')">IPS Profile</button>
+  <button class="tb" onclick="sw('biobond')">BioBond Design</button>
+  <button class="tb" onclick="sw('maathai')">Maathai Pathway</button>
+  <button class="tb" onclick="sw('compare')">Scale-Free Proof</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- P-SAGE AUDIT -->
+<div class="pane active" id="pane-psage">
+  <h2 class="st">P-SAGE Audit: GEO Group Florida DOC Facilities</h2>
+  <div class="panel red"><strong>GEO Group (NYSE: GEO), headquartered in Boca Raton, Florida</strong> &mdash; largest US private prison operator, 80,000 beds across 99 facilities. Operated as a REIT 2013&ndash;2021, requiring 90% taxable income distribution as dividends. Converted to C-corporation in 2021 to manage $1.9B inherited debt. Florida DOC awarded three new managed-only contracts to GEO in September 2025. This is a real company making real structural choices with computable FHRI_max consequences.</div>
+
+  <div class="ssi-trio">
+    <div class="ssi-cell" style="background:rgba(74,222,128,.05)">
+      <div class="ssi-lbl">Sign (Firstness)</div><span class="ssi-status ssi-intact">INTACT</span>
+      <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">GEO facilities operate. Inmates are housed. Staff are employed. DOC contracts are fulfilled. GEO&rsquo;s marketing describes &ldquo;World Class Healthcare&rdquo; and &ldquo;Evidence-Based Rehabilitation.&rdquo; The ACA accredited Moore Haven CRF at 100% in 2023. The Sign of correctional operation is completely intact &mdash; diagnostic of successful Triadic Overwrite.</div>
+    </div>
+    <div class="ssi-cell" style="background:rgba(245,158,11,.05)">
+      <div class="ssi-lbl">Signal (Secondness)</div><span class="ssi-status ssi-modified">ACCESSED</span>
+      <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Programming budget allocation is the Signal. GEO invested $5.3M in Florida programming over 5 years across 6+ facilities &mdash; ~$125,000/facility/year, ~$342/day. A 1,000-bed facility generates $55,000+/day in per-diem. Programming = 0.6% of revenue. Debt service + management = ~65%. The Signal has been accessed through REIT structure, then debt inheritance.</div>
+    </div>
+    <div class="ssi-cell" style="background:rgba(248,113,113,.05)">
+      <div class="ssi-lbl">Interpretant (Thirdness)</div><span class="ssi-status ssi-replaced">REPLACED</span>
+      <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>Original:</strong> per-diem = public investment in rehabilitation producing public safety through reduced recidivism.<br><strong>Replaced:</strong> per-diem = contracted revenue for debt service and shareholder return. Recidivism bonus = 1% of per-diem &mdash; insufficient by factor of 300+ to change programming investment ratio. &mu; = 0.84.</div>
+    </div>
+  </div>
+
+  <div class="panel teal">
+    <strong>P-step output:</strong> The responsible party is the ownership architecture that achieved P-adic proximity to the programming budget channel through the REIT instrument (2013&ndash;2021) and the C-corp debt inheritance (2021&ndash;present), executing Interpretant replacement from rehabilitation-mission to extraction-vehicle. Not the correctional officer with 43% annual turnover probability. Not the program counselor with 4.5 hours of documentation per 1 hour of programming. Not the incarcerated individual whose recidivism risk is elevated 6.5&ndash;8.6% by the structural condition. The structural address is: GEO Group ownership architecture, &epsilon; = 0.650, FHRI_max = 10.9.
+  </div>
+
+  <h3 class="sub">The Key Data Points</h3>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">10.9</div><div class="stat-lbl">FHRI_max: structural ceiling on rehabilitation capacity</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">43%</div><div class="stat-lbl">Annual staff turnover (vs. ~15% public facilities)</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">0.6%</div><div class="stat-lbl">Revenue reaching programming vs. 65% to extraction</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">3x</div><div class="stat-lbl">Higher assault rates vs. public facilities (Bloomberg)</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--amber)">+8.6%</div><div class="stat-lbl">Recidivism increase at 6&ndash;9 years post-private (Mukherjee 2016)</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">$1.9B</div><div class="stat-lbl">GEO long-term debt (REIT-era inheritance, 2023)</div></div>
+  </div>
+
+  <div class="panel amber"><strong>Why the ACA 100% score is consistent with FHRI_max = 10.9.</strong> The American Correctional Association accreditation measures Sign-level compliance: are policies documented? are procedures followed? is the facility nominally operating to standard? A facility can achieve ACA 100% while the Interpretant has been completely replaced &mdash; because ACA accreditation measures the Sign, not the Interpretant. This is the regulatory capture failure mode operating at the sector level: the measurement correctly identifies procedural compliance and produces a score that means &ldquo;this facility meets standards&rdquo; rather than &ldquo;this facility is structurally capable of rehabilitation.&rdquo;</div>
+</div>
+
+<!-- IPS PROFILE -->
+<div class="pane" id="pane-ips">
+  <h2 class="st">IPS Parameter Profile</h2>
+  <div class="panel red"><strong>These parameters are derived from real public data sources.</strong> GEO Group 10-K filings (SEC). Florida DOC inspection reports. OSHA findings. AFSC Investigate database. Bloomberg private prison violence analysis. Mukherjee (2016) recidivism study. In the Public Interest research briefs.</div>
+
+  <div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--red)">0.650</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val" style="color:var(--red)">0.720</div><div class="nm">Physical entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val" style="color:var(--amber)">0.550</div><div class="nm">Regulatory</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--red)">0.780</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--red)">0.840</div><div class="nm">Misalignment</div></div>
+  </div>
+  <div class="fhri-row">
+    <div class="fhri-num low">10.9</div>
+    <div class="fbar-wrap">
+      <div class="fbar-lbl">FHRI_max &mdash; structural ceiling on rehabilitation capacity</div>
+      <div class="fbar"><div class="fbar-fill low" id="main-fbar" style="width:10.9%"></div></div>
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem">89.1% of available professional capacity absorbed before reaching programming decisions</div>
+    </div>
+  </div>
+
+  <h3 class="sub" style="margin-top:1rem">Parameter Deep Dive</h3>
+  <div style="display:grid;gap:.5rem;margin:.75rem 0">
+    <div style="background:var(--s);border-left:3px solid var(--red);padding:.85rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;line-height:1.68">
+      <strong style="color:var(--red)">&epsilon; = 0.650 &mdash; Extraction Rate (Semiotic: Interpretant replacement magnitude)</strong><br>
+      ~$390M annual debt service on $2.36B revenue = 16.5% dedicated to debt service. Management fees, overhead, and return on equity consume ~48.5% additional. Programming investment = ~0.6% of revenue. The REIT-era 90% dividend distribution requirement was the P-adic access instrument that formalized this replacement. Post-REIT, the debt structure inherited from the REIT period performs the same function without the legal mandate.
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--orange);padding:.85rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;line-height:1.68">
+      <strong style="color:var(--orange)">&phi; = 0.720 &mdash; Physical Entropy (Semiotic: substrate consequence of replacement)</strong><br>
+      43% annual staff turnover (3x public rate). OSHA documented a housing unit requiring 8 officers staffed by only 3. Assault rates 3x higher than public benchmarks. Inmate-on-staff violence 49% higher. The &phi; value in private prisons is higher than PE nursing homes (&phi; = 0.52) because the violence-mediated biological substrate damage operates through a different and more acute pathway: not chronic understaffing-induced neglect but direct physical trauma experienced by staff in violent incidents.
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--amber);padding:.85rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;line-height:1.68">
+      <strong style="color:var(--amber)">&sigma; = 0.780 &mdash; Morphic Residue (Semiotic: accumulated Signal drift)</strong><br>
+      Documented normalization of violence: assault patterns absorbed as operational baseline. The 43% annual turnover paradoxically worsens &sigma; recovery: each new staff cohort enters a high-&sigma; environment without the institutional memory to recognize its abnormality. ACA 100% accreditation normalizes the Sign-level operation as adequate: the measurement system itself becomes part of the &sigma; accumulation, encoding &ldquo;this is normal operation&rdquo; for facilities with FHRI_max = 10.9.
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--violet);padding:.85rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;line-height:1.68">
+      <strong style="color:var(--violet)">&mu; = 0.840 &mdash; Incentive Misalignment (Semiotic: inter-Interpretant distance)</strong><br>
+      Recidivism reduction bonus = ~1% of per-diem. Bed occupancy generates 100% of per-diem. The incentive architecture rewards filling beds regardless of outcome. Research confirms: private prisons increase state recidivism rate by 6.5% over 3 years and 8.6% over 6&ndash;9 years (Mukherjee 2016). The &mu; is 0.840 because the recidivism bonus is insufficient by a factor of 300+ to change the programming investment calculation &mdash; it is not misalignment at the margin. It is structural anti-alignment.
+    </div>
+  </div>
+
+  <h3 class="sub">Neurobiological Impact</h3>
+  <p class="bd">Sapolsky&rsquo;s glucocorticoid research establishes the mechanism: chronic high-stress environments produce sustained cortisol elevation leading to hippocampal atrophy (reduced capacity for complex case integration), PFC decoherence (loss of inhibitory control over threat-response, producing elevated violence), and identity fragmentation (moral injury identical to Roger Boisjoly). For correctional staff at GEO Group facilities, this biological substrate damage produces exactly the 43% annual turnover rate observed: the structural condition exceeds the biological floor required for sustained professional function.</p>
+  <div class="panel violet"><strong>The Boisjoly parallel:</strong> The correctional officer at a GEO Group Florida facility who files an incident report about an unsafe housing unit staffing level and watches it be absorbed without response is experiencing the same structural dynamic as Roger Boisjoly filing his 24th O-ring incident report. The &sigma; is different (violence normalization vs. technical normalization), the sector is different, the scale is different. The formal mechanism is identical: the Signal (incident report) is routed through a channel controlled by actors whose replaced Interpretant renders safety signals as operational noise rather than action triggers.</div>
+</div>
+
+<!-- BIOBOND DESIGN -->
+<div class="pane" id="pane-biobond">
+  <h2 class="st">BioBond Transition Instrument</h2>
+  <div class="panel teal"><strong>The BioBond is formally T1.</strong> It addresses the P-adic access condition: it changes what the ownership architecture is permitted to do with the programming budget allocation channel by conditioning capital access on FHRI_max maintenance. T2 performance contracts (recidivism bonuses) operate within the existing Interpretant replacement. The BioBond changes the Interpretant of capital itself.</div>
+
+  <h3 class="sub">Mechanism 1: FHRI_max-Indexed Margin Ratchets</h3>
+  <table class="ratchet-table">
+    <thead><tr><th>FHRI_max Range</th><th>Interest Rate</th><th>Operational Meaning</th><th>Current GEO Status</th></tr></thead>
+    <tbody>
+      <tr class="current"><td style="color:var(--red);font-family:'DM Mono',monospace;font-size:.8rem">&lt; 15</td><td style="color:var(--red)">Base + 3.0%</td><td>Extraction exceeds mission capacity. Coordination collapse state.</td><td style="color:var(--red)">&#9654; GEO FL facilities at 10.9</td></tr>
+      <tr><td style="font-family:'DM Mono',monospace;font-size:.8rem">15&ndash;29</td><td style="color:var(--amber)">Base + 1.5%</td><td>Improving but below functional threshold. Hysteresis Recovery underway.</td><td></td></tr>
+      <tr><td style="font-family:'DM Mono',monospace;font-size:.8rem">30&ndash;44</td><td>Base (neutral)</td><td>Approaching functional state. Rehabilitation beginning to be structurally possible.</td><td></td></tr>
+      <tr><td style="font-family:'DM Mono',monospace;font-size:.8rem">45&ndash;59</td><td style="color:var(--teal)">Base &minus; 1.0%</td><td>Functional state. Recidivism reduction programs structurally viable.</td><td></td></tr>
+      <tr><td style="font-family:'DM Mono',monospace;font-size:.8rem">60+</td><td style="color:var(--green)">Base &minus; 2.5%</td><td>Mission-aligned. Florida DOC public facility range. Full BioBond return unlocked.</td><td></td></tr>
+    </tbody>
+  </table>
+  <p class="bd">The margin ratchet reverses the thermodynamic logic of the parasitic structure: extraction generates compounding harm (&phi; rises, &sigma; accumulates, FHRI_max falls, outcomes worsen, recidivism rises, more incarceration required). The ratchet makes investment generate compounding capacity: FHRI_max improvement reduces interest burden, freeing capital for programming, which produces further FHRI_max improvement. This is not philanthropy. It is accurate accounting of what rehabilitation capacity is worth in avoided incarceration costs &mdash; approximately $26,000 per avoided re-incarceration per year in Florida DOC costs alone.</p>
+
+  <h3 class="sub">Mechanism 2: Hysteresis Recovery Tranche</h3>
+  <div class="panel violet"><strong>Why standard capital cannot produce FHRI_max improvement at 10.9.</strong> The biological floor has been degraded below the threshold at which new resources can be effectively used. Staff experiencing 43% annual turnover, sustained cortisol elevation, and PFC decoherence cannot effectively deploy new programming funds. The resources arrive in a substrate too damaged to use them. The Hysteresis Recovery Tranche addresses the sequencing problem: structural floor restoration must precede programming investment for coordination gains to hold.</div>
+  <div style="display:grid;gap:.45rem;margin:.75rem 0">
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem;border:1px solid var(--border);display:grid;grid-template-columns:24px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--teal);font-weight:600">1.</div><div><strong>Staff trauma processing</strong> &mdash; peer support programs, mandatory deescalation training replacing punitive response protocols. Down-regulates glucocorticoid load producing PFC decoherence. Funded as first tranche release (30% of Hysteresis Recovery capital).</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem;border:1px solid var(--border);display:grid;grid-template-columns:24px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--teal);font-weight:600">2.</div><div><strong>Mandatory intake moratorium</strong> &mdash; 30&ndash;90 days of stable population, preventing new trauma transmission while the existing population stabilizes. BioBond terms require state DOC cooperation. Creates the stable substrate in which Hysteresis Recovery capital can be effective.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem;border:1px solid var(--border);display:grid;grid-template-columns:24px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--teal);font-weight:600">3.</div><div><strong>Frontline staff compensation improvement</strong> &mdash; immediate wage floor increase funded by interest savings from FHRI_max improvement trajectory. Reduces economic stress biology contributing to staff turnover and &phi; accumulation.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem;border:1px solid var(--border);display:grid;grid-template-columns:24px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--teal);font-weight:600">4.</div><div><strong>Subsequent tranches</strong> &mdash; released upon verified &phi; reduction: assault rate decline, staff sick day usage reduction, incident report volume decrease. These are the proxies for biological floor restoration. No proxy improvement = no subsequent tranche release.</div>
+    </div>
+  </div>
+
+  <h3 class="sub">Mechanism 3: PBC Identity Kernel</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0">
+    <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--blue);margin-bottom:.3rem">STANDARD C-CORP (CURRENT)</div>
+      <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+        Success metric: bed occupancy / daily rate<br>
+        Capital goal: maximize extraction (&epsilon;)<br>
+        Interest rate: fixed or market-indexed<br>
+        Risk bearer: taxpayers / incarcerated / staff<br>
+        Legal frame: operational entity (C-corp)<br>
+        Fiduciary duty: shareholder return
+      </div>
+    </div>
+    <div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--teal);margin-bottom:.3rem">BIOBOND + PBC MODEL</div>
+      <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+        Success metric: FHRI_max / recidivism reduction<br>
+        Capital goal: maximize coordination capacity<br>
+        Interest rate: FHRI_max-indexed margin ratchet<br>
+        Risk bearer: investors (outcome risk transfer)<br>
+        Legal frame: Public Benefit Corporation (FL 2014)<br>
+        Fiduciary duty: FHRI_max above 40 + profit
+      </div>
+    </div>
+  </div>
+  <div class="panel teal"><strong>Florida PBC enabling statute (enacted 2014)</strong> permits incorporation with a mission specification legally superior to profit maximization. The BioBond requires PBC structure as a condition of the interest rate reduction. PBC board composition for the correctional BioBond: mandatory representation from formerly incarcerated community members (who experience the Interpretant replacement directly), correctional staff union representatives (who bear the &phi; consequences), public safety researchers (who measure the &mu; gap). This changes the P-adic access condition at the governance level: the cluster controlling the programming budget allocation channel now includes actors whose goal-function is aligned with the original Interpretant.</div>
+</div>
+
+<!-- MAATHAI PATHWAY -->
+<div class="pane" id="pane-maathai">
+  <h2 class="st">The Maathai Bottom-Up Pathway</h2>
+  <div class="panel green"><strong>Maathai did not fight the government that deforested Kenya. She planted 50 million trees with 900,000 women until the alternative reality was too large to ignore.</strong> In Florida, the low-epsilon reentry ecosystem already exists. These organizations operate at FHRI_max = 55&ndash;75 within a system at FHRI_max = 10.9. They are the plant in the boot. BioBond financing would make them scalable enough to exert market pressure on the GEO Group contract structure.</div>
+
+  <h3 class="sub">Low-Epsilon Alternatives Already Operating</h3>
+  <div class="org-grid">
+    <div class="org-card" onclick="setOrg('unchained',this)"><div class="org-icon">&#127981;</div><div class="org-name">Unchained Industries</div><div style="font-size:.72rem;color:var(--muted);margin:.15rem 0">Tampa, FL</div><div class="org-fhri">FHRI_max &asymp; 71</div></div>
+    <div class="org-card" onclick="setOrg('force',this)"><div class="org-icon">&#128483;</div><div class="org-name">FORCE Florida</div><div style="font-size:.72rem;color:var(--muted);margin:.15rem 0">Statewide</div><div class="org-fhri">FHRI_max &asymp; 62</div></div>
+    <div class="org-card" onclick="setOrg('perc',this)"><div class="org-icon">&#127942;</div><div class="org-name">PERC Pinellas</div><div style="font-size:.72rem;color:var(--muted);margin:.15rem 0">Pinellas County</div><div class="org-fhri">FHRI_max &asymp; 58</div></div>
+    <div class="org-card" onclick="setOrg('churches',this)"><div class="org-icon">&#10024;</div><div class="org-name">FL Council of Churches</div><div style="font-size:.72rem;color:var(--muted);margin:.15rem 0">Statewide network</div><div class="org-fhri">FHRI_max &asymp; 55</div></div>
+  </div>
+  <div class="org-output" id="org-output"></div>
+
+  <h3 class="sub" style="margin-top:1.2rem">The Three-Phase Scaling Pathway</h3>
+  <div class="phase-steps">
+    <button class="phase-btn active" onclick="setPhase('1',this)">Phase 1<br><span style="font-size:.7rem;font-weight:400;color:var(--muted)">Yrs 1&ndash;3</span></button>
+    <button class="phase-btn" onclick="setPhase('2',this)">Phase 2<br><span style="font-size:.7rem;font-weight:400;color:var(--muted)">Yrs 3&ndash;6</span></button>
+    <button class="phase-btn" onclick="setPhase('3',this)">Phase 3<br><span style="font-size:.7rem;font-weight:400;color:var(--muted)">Yrs 6&ndash;12</span></button>
+  </div>
+  <div class="phase-body active" id="phase-1">
+    <h3 class="sub" style="color:var(--teal)">Phase 1: Measurement Infrastructure + ACP Support</h3>
+    <p class="bd">The PBC establishes baseline IPS profiles for all Florida DOC contract facilities using public data &mdash; GEO 10-K filings, DOC inspection reports, ACLU investigations, OSHA findings. Creates the FHRI_max measurement the BioBond requires. Without measurement, there is no instrument.</p>
+    <p class="bd">Simultaneously, ACP support functions: FHRI_max lookup tool for families and advocates, navigation connecting system-impacted families to low-epsilon reentry organizations, regulatory comments supporting beneficial ownership disclosure requirements for DOC contractors (the most immediately achievable T1 regulatory instrument).</p>
+    <div class="panel teal"><strong>The measurement is the first product.</strong> Making FHRI_max = 10.9 for GEO Group Florida facilities publicly citable is the agential life detection function at the sector level. It makes the Interpretant replacement visible to families, advocates, legislators, and investors who otherwise see only the Sign (GEO facilities operating with ACA accreditation). Visibility is the first form of community immune response.</div>
+  </div>
+  <div class="phase-body" id="phase-2">
+    <h3 class="sub" style="color:var(--teal)">Phase 2: Pilot BioBond for Low-Epsilon Alternatives</h3>
+    <p class="bd">A first BioBond is issued to capitalize the scaling of Unchained Industries. Target: expand from 50 formerly incarcerated employees to 500, covering 10 Florida counties with documented reentry services and verified recidivism data.</p>
+    <div style="display:grid;gap:.45rem;margin:.75rem 0">
+      <div style="background:var(--s);padding:.8rem;border-radius:.4rem;border:1px solid var(--border);font-size:.85rem;line-height:1.65"><strong style="color:var(--teal)">BioBond terms:</strong> 4% investor return at FHRI_max 55+ maintained for 3 consecutive annual measurements. Hysteresis Recovery Tranche providing initial organizational infrastructure capital. PBC structure required.</div>
+      <div style="background:var(--s);padding:.8rem;border-radius:.4rem;border:1px solid var(--border);font-size:.85rem;line-height:1.65"><strong style="color:var(--amber)">Financial logic:</strong> Unchained Industries documents 40&ndash;60% lower recidivism than state average. At $26,000/avoided re-incarceration, 100 avoided annual re-incarcerations = $2.6M state savings. BioBond investor return from shared savings (40% to investors) = $1.04M annually. Return on investment: positive at scale achievable within 3&ndash;4 years.</div>
+      <div style="background:var(--s);padding:.8rem;border-radius:.4rem;border:1px solid var(--border);font-size:.85rem;line-height:1.65"><strong style="color:var(--violet)">Why this is T1:</strong> The BioBond does not attempt to convert GEO Group directly. It capitalizes the alternative that already exists at higher FHRI_max, making it financially scalable and operationally credible enough to compete for the state reentry programming dollar that currently flows through GEO Group contracts.</div>
+    </div>
+  </div>
+  <div class="phase-body" id="phase-3">
+    <h3 class="sub" style="color:var(--teal)">Phase 3: Market Pressure and Contract Renegotiation</h3>
+    <p class="bd">As BioBond-financed alternatives capture 15&ndash;20% of Florida reentry population with documented FHRI_max above 55 and measurably lower recidivism, the state has an evidence base for contract renegotiation with GEO Group.</p>
+    <p class="bd">The comparison is no longer theoretical. The Florida legislature has a citable structural measurement (FHRI_max = 10.9 vs. 55+) and a citable outcome differential (6.5&ndash;8.6% higher recidivism at GEO facilities, documented in Mukherjee 2016 and confirmed by Florida-specific BioBond pilot data). This is the political foundation for requiring FHRI_max floor standards in DOC contracting &mdash; not because legislators became more ethical, but because the measurement infrastructure makes the structural comparison impossible to ignore.</p>
+    <div class="panel green"><strong>The Evergreen Cooperatives parallel.</strong> Evergreen did not replace GEO Group in Cleveland the way GEO Group acquired private facilities. It built the worker-owned alternative at the scale where Cleveland Clinic and Case Western&rsquo;s institutional purchasing commitments made it viable. When 20% of the institutional purchasing budget flows to the low-epsilon alternative, the high-epsilon incumbent faces structural pressure to improve or lose the contract. The BioBond is the financing instrument that enables the Maathai principle at institutional scale: tend the plant until the institution cannot ignore what exists.</div>
+  </div>
+</div>
+
+<!-- SCALE-FREE PROOF -->
+<div class="pane" id="pane-compare">
+  <h2 class="st">The Scale-Free Validation</h2>
+  <div class="panel violet"><strong>The IPS scale-free law predicts:</strong> the same five-parameter mechanism produces the same FHRI_max ceiling in any sector where ownership architecture achieves P-adic proximity to the mission-critical budget allocation channel and replaces the Interpretant. GEO Group Florida (correctional sector) and PE-acquired nursing homes (healthcare sector) are in completely different industries with completely different regulatory frameworks and completely different nominal missions. The FHRI_max ceilings are within 2.7 points of each other.</div>
+
+  <h3 class="sub">FHRI_max Comparison Across Institutional Types</h3>
+  <div style="margin:.75rem 0">
+    <div class="compare-row"><div class="compare-label">GEO Group FL DOC (10.9)</div><div class="cbar"><div class="cbar-fill" style="width:10.9%;background:linear-gradient(90deg,var(--red),#fca5a5)"></div></div><div class="cbar-val" style="color:var(--red)">10.9</div></div>
+    <div class="compare-row"><div class="compare-label">PE-Acquired Nursing Home (13.6)</div><div class="cbar"><div class="cbar-fill" style="width:13.6%;background:linear-gradient(90deg,var(--red),#fca5a5)"></div></div><div class="cbar-val" style="color:var(--red)">13.6</div></div>
+    <div class="compare-row"><div class="compare-label">Proprietary Home Health (37.3)</div><div class="cbar"><div class="cbar-fill" style="width:37.3%;background:linear-gradient(90deg,var(--amber),#fcd34d)"></div></div><div class="cbar-val" style="color:var(--amber)">37.3</div></div>
+    <div class="compare-row"><div class="compare-label">FL DOC Public Facility (49.7)</div><div class="cbar"><div class="cbar-fill" style="width:49.7%;background:linear-gradient(90deg,var(--amber),#fcd34d)"></div></div><div class="cbar-val" style="color:var(--amber)">49.7</div></div>
+    <div class="compare-row"><div class="compare-label">Non-Profit Home Health (62.9)</div><div class="cbar"><div class="cbar-fill" style="width:62.9%;background:linear-gradient(90deg,var(--green),#86efac)"></div></div><div class="cbar-val" style="color:var(--green)">62.9</div></div>
+    <div class="compare-row"><div class="compare-label">Unchained Industries (71.0)</div><div class="cbar"><div class="cbar-fill" style="width:71%;background:linear-gradient(90deg,var(--green),#86efac)"></div></div><div class="cbar-val" style="color:var(--green)">71.0</div></div>
+  </div>
+
+  <div class="panel amber"><strong>What the 2.7-point difference between GEO Group (10.9) and PE nursing home (13.6) means formally.</strong> It means the correctional and healthcare extraction architectures have achieved nearly identical levels of Interpretant replacement, producing nearly identical structural ceilings on coordination capacity &mdash; despite operating in completely different sectors, serving completely different populations, under completely different regulatory frameworks, with completely different nominal missions. The mechanism is scale-free. The parameter values vary modestly by sector. The structural ceiling is nearly identical. This is not a coincidence. It is the formal prediction of the scale-free law confirmed by cross-sector data.</div>
+
+  <h3 class="sub">What Differs and Why</h3>
+  <div style="display:grid;gap:.45rem;margin:.75rem 0">
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem;border:1px solid var(--border);display:grid;grid-template-columns:80px 1fr;gap:.75rem;font-size:.85rem;line-height:1.65">
+      <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--orange)">&phi; higher<br>in prisons</div>
+      <div>Physical entropy is higher in GEO Group facilities (0.72 vs 0.52 for PE nursing homes) because the violence-mediated biological substrate damage pathway is more acute. Staff in correctional facilities face direct physical assault risk producing traumatic stress biology rather than the chronic-stress-through-understaffing pathway dominant in nursing homes. Different substrate mechanism, same &phi; function: degradation of the biological capacity required for coordination.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem;border:1px solid var(--border);display:grid;grid-template-columns:80px 1fr;gap:.75rem;font-size:.85rem;line-height:1.65">
+      <div style="font-family:'DM Mono',monospace;font-size:.7rem;color:var(--teal)">&rho; lower<br>in prisons</div>
+      <div>Regulatory burden is lower (0.55 vs 0.70 for PE nursing homes) because correctional documentation requirements, while substantial, are less medically complex than healthcare record-keeping. The ACA accreditation framework generates compliance theater (&sigma; accumulation) but less raw documentation bandwidth than CMS quality reporting. Lower &rho; in prisons is partially offset by higher &sigma;: the normalization of violence is more total than the normalization of care inadequacy in nursing homes.</div>
+    </div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions apply the GEO Group analysis to your own ethical understanding and action design.</p>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q1</span>The correctional officer at a GEO Group Florida facility with 43% annual turnover probability experiences the same Boisjoly dynamic as Roger Boisjoly at NASA: structural absorption of anomaly reports without structural response. Where does your moral sympathy instinctively go in this case &mdash; and does the P-SAGE analysis change who you identify as the responsible party?</div>
+  <textarea class="jq-ta" id="j1" oninput="sv()" placeholder="The responsible party is formally derivable. Does your OS1 moral intuition land in the same place as the formal analysis?"></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q2</span>The ACA 100% accreditation score for Moore Haven CRF is consistent with FHRI_max = 10.9 because ACA measures the Sign, not the Interpretant. Identify another measurement system in an institution you inhabit that produces high scores on Sign-level metrics while the Interpretant has been replaced. What would the P-SAGE measurement reveal that the current measurement conceals?</div>
+  <textarea class="jq-ta" id="j2" oninput="sv()" placeholder="GPA, patient satisfaction scores, employee engagement surveys, performance reviews &mdash; where is ACA 100% masking FHRI_max 10.9?"></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q3</span>The BioBond margin ratchet makes FHRI_max improvement financially rational. Design one element of a BioBond for an institution or sector you know &mdash; not a prison or nursing home. What is the FHRI_max improvement trigger? What structural change does that require? What is the financial return mechanism?</div>
+  <textarea class="jq-ta" id="j3" oninput="sv()" placeholder="The BioBond logic applies wherever capital allocation has replaced the original Interpretant. Where do you see it?"></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q4</span>Maathai planted trees. Unchained Industries employs formerly incarcerated workers at living wages. These are radically different actions by people with radically different structural positions. In your current structural position, what is the equivalent action &mdash; the lowest-epsilon alternative you can build, tend, or scale from where you actually are?</div>
+  <textarea class="jq-ta" id="j4" oninput="sv()" placeholder="Not the most aspirationally satisfying. The most structurally effective from your actual position..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q5 &mdash; Forward Prediction</span>The scale-free law says the IPS mechanism is formally identical across sectors. Name a sector you plan to enter professionally (healthcare, education, technology, law, finance, public service, social work). What is the most likely P-adic access mechanism through which extraction architecture achieves Interpretant replacement in that sector? What would a BioBond for that sector look like?</div>
+  <textarea class="jq-ta" id="j5" oninput="sv()" placeholder="The parasite follows you. Knowing the mechanism before you enter the sector is the protection the course has been building toward..."></textarea></div>
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn outline" onclick="prev()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &#8594;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['psage','ips','biobond','maathai','compare','journal'];
+var cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+
+var ORGS={
+  unchained:{name:'Unchained Industries (Tampa)',fhri:70.9,
+    eps:0.000,phi:0.250,rho:0.400,sig:0.200,mu:0.080,
+    desc:'Worker-owned social enterprise employing formerly incarcerated individuals in manufacturing, cleaning, landscaping, and assembly. Documented recidivism rate 40-60% below state average. Worker-ownership model aligns incentive structure with mission: workers have direct economic stake in the organization\'s rehabilitation outcomes. \u03b5 = 0.000 because no extraction actor is inside the capital allocation cluster. \u03bc = 0.08 because the worker-ownership model aligns financial return with rehabilitation quality.',
+    biobond:'BioBond-eligible by FHRI_max profile. Phase 2 pilot target: expand from 50 to 500 formerly incarcerated employees across 10 Florida counties. BioBond terms: 4% return at FHRI_max 55+ for 3 consecutive annual measurements. Financial case: 100 avoided re-incarcerations/year at $26K/each = $2.6M state savings; 40% to investors = $1.04M annual return on BioBond capital.',
+    t1:'Worker ownership changes the P-adic access condition: workers are inside the capital allocation cluster. The original Interpretant (organization exists to produce rehabilitation and employment) is structurally protected by governance design, not dependent on individual goodwill.'
+  },
+  force:{name:'FORCE Florida (Formerly Incarcerated Network)',fhri:62.1,
+    eps:0.000,phi:0.300,rho:0.420,sig:0.280,mu:0.120,
+    desc:'Statewide advocacy and organizing network led by formerly incarcerated Floridians. Creates the political pressure that makes T1 regulatory reform achievable. Provides community accountability for reentry outcomes that private facilities are structurally unable to provide because their incentive structure rewards recidivism through high bed occupancy.',
+    biobond:'Not a primary BioBond target but an essential enabling condition: FORCE advocacy for beneficial ownership disclosure requirements and FHRI_max floor standards in DOC contracting creates the regulatory environment in which BioBond instruments become enforceable.',
+    t1:'Creates the political conditions for T1 regulatory reform by making the measurement visible to legislators and the public. Beneficial ownership disclosure, FHRI_max floor standards, and recidivism-aligned contract structures are all T1 interventions that FORCE advocacy makes politically achievable.'
+  },
+  perc:{name:'Pinellas Ex-Offender Reentry Coalition (PERC)',fhri:58.3,
+    eps:0.000,phi:0.320,rho:0.480,sig:0.320,mu:0.180,
+    desc:'Multi-agency coordination for reentry services in Pinellas County. Documents the gap between what GEO facilities provide and what reentry coordination requires. Provides the local-level data that makes the FHRI_max comparison concrete for Florida legislators representing Pinellas County districts.',
+    biobond:'BioBond-eligible at FHRI_max 58. Potential Phase 2 target for county-level reentry BioBond. Financial case: Pinellas County savings from reduced recidivism available to service BioBond investor returns through county budget shared-savings structure.',
+    t1:'Creates the county-level community accountability infrastructure that private facilities cannot produce. Relational continuity with returning community members that the 43% staff turnover in GEO facilities structurally prevents.'
+  },
+  churches:{name:'Florida Council of Churches Prison Ministry',fhri:55.2,
+    eps:0.000,phi:0.350,rho:0.400,sig:0.380,mu:0.220,
+    desc:'Statewide chaplaincy network maintaining relational continuity across the high-turnover correctional officer environment. Operates inside the extraction architecture at dramatically higher FHRI_max than the surrounding institution. The chaplaincy relationship persists across staff turnover because it is not part of the GEO Group employment structure. This is the Wall-E function: tending what is worth tending in the space the extraction architecture has abandoned as economically inefficient.',
+    biobond:'Not primarily a BioBond target but an illustration of how low-epsilon mission-aligned activities can operate within high-\u03b5 institutional environments. The chaplaincy network demonstrates that FHRI_max above 55 is achievable even within GEO Group facilities by actors who are not subject to the GEO Group budget allocation channel.',
+    t1:'Demonstrates that the Interpretant replacement is not total: spaces exist within the extraction architecture where the original Interpretant is maintained. These spaces are the Maathai principle operating at the smallest scale: one relationship, one consistent presence, one maintained commitment that the structural ceiling cannot fully absorb.'
+  }
+};
+function setOrg(k,card){
+  document.querySelectorAll('.org-card').forEach(function(c){c.classList.remove('selected');});
+  card.classList.add('selected');
+  var d=ORGS[k];
+  var fhri=d.fhri;
+  var cls=fhri>55?'high':fhri>35?'mid':'low';
+  document.getElementById('org-output').innerHTML=
+    '<div class="panel teal"><strong>'+d.name+'</strong></div>'+
+    '<div class="ips-grid">' +
+    [['&epsilon;',d.eps,'Extraction'],['&phi;',d.phi,'Entropy'],['&rho;',d.rho,'Regulatory'],['&sigma;',d.sig,'Morphic'],['&mu;',d.mu,'Misalign']].map(function(x){
+      return '<div class="ips-cell"><div class="sym">'+x[0]+'</div><div class="val" style="color:'+(x[1]>0.5?'var(--amber)':'var(--green)')+'">'+x[1].toFixed(3)+'</div><div class="nm">'+x[2]+'</div></div>';
+    }).join('')+'</div>'+
+    '<div class="fhri-row"><div class="fhri-num '+cls+'">'+fhri.toFixed(1)+'</div>'+
+    '<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max vs. GEO Group FL (10.9)</div>'+
+    '<div class="fbar"><div class="fbar-fill '+cls+'" style="width:'+fhri+'%"></div></div></div></div>'+
+    '<div style="display:grid;gap:.5rem;margin-top:.6rem">'+
+    '<div class="panel green" style="margin:0"><strong>Organization description:</strong> '+d.desc+'</div>'+
+    '<div class="panel teal" style="margin:0"><strong>BioBond role:</strong> '+d.biobond+'</div>'+
+    '<div class="panel violet" style="margin:0"><strong>T1 classification:</strong> '+d.t1+'</div></div>';
+  document.getElementById('org-output').classList.add('show');
+  setTimeout(function(){document.querySelectorAll('.fbar-fill').forEach(function(el){var w=el.style.width;el.style.width='0';requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},60);});});},50);
+}
+function setPhase(k,btn){
+  document.querySelectorAll('.phase-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.phase-body').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('phase-'+k).classList.add('active');
+}
+
+var JK=['geo_j1','geo_j2','geo_j3','geo_j4','geo_j5'];
+function sv(){JK.forEach(function(k,i){var el=document.getElementById('j'+(i+1));try{if(el)localStorage.setItem(k,el.value);}catch(x){}});var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){var t='From Parasite to Commonwealth: GEO Group Florida\nJournal\n'+'='.repeat(60)+'\n\n';
+['Q1: Where does your moral sympathy go? Does P-SAGE change your responsible party?','Q2: Where is ACA 100% masking FHRI_max 10.9 in your life?','Q3: BioBond design for a sector you know.','Q4: Your Maathai action from your actual position.','Q5: The scale-free law and your professional future.'].forEach(function(q,i){var v=document.getElementById('j'+(i+1));t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';});
+try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='GEO_Florida_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+JK.forEach(function(k,i){var el=document.getElementById('j'+(i+1));try{if(el)el.value=localStorage.getItem(k)||'';}catch(x){}});
+setTimeout(function(){
+  document.querySelectorAll('.fbar-fill,.cbar-fill').forEach(function(el){var w=el.style.width;el.style.width='0';requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},80);});});
+},500);
+</script>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Meta-Constructor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
+:root{--ink:#0f0e0b;--paper:#f5f0e8;--cream:#ede8dc;--teal:#1a6b60;--teal2:#2a8a7d;--tealp:#d4ede9;--amber:#8b5e2a;--amberp:#f2e8d5;--violet:#4a2d7a;--violetp:#e8e0f0;--muted:#7a7268;--border:rgba(15,14,11,.12)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Cormorant Garamond',serif;background:var(--paper);color:var(--ink);font-size:17px;line-height:1.7}
+#cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:3rem 2rem;background:var(--ink);color:var(--paper);position:relative;overflow:hidden}
+#cover::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 30% 20%,rgba(26,107,96,.35),transparent 60%),radial-gradient(ellipse 50% 30% at 80% 80%,rgba(139,94,42,.2),transparent 55%);pointer-events:none}
+.clbl{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.2em;color:var(--teal2);text-transform:uppercase;margin-bottom:2rem;position:relative}
+.ctitle{font-size:clamp(2.6rem,7vw,4.5rem);font-weight:300;line-height:1.1;letter-spacing:-.02em;position:relative;margin-bottom:.4rem}
+.ctitle em{font-style:italic;color:var(--teal2)}
+.csub{font-size:1rem;font-weight:300;color:rgba(245,240,232,.6);max-width:420px;margin:1rem auto 3rem;line-height:1.65;position:relative}
+#bbtn{position:relative;padding:.75rem 2.5rem;border:1px solid rgba(245,240,232,.35);color:var(--paper);font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;background:transparent;transition:all .3s}
+#bbtn:hover{background:rgba(245,240,232,.08);border-color:rgba(245,240,232,.6)}
+.cnote{position:absolute;bottom:1.5rem;font-family:'DM Mono',monospace;font-size:.6rem;color:rgba(245,240,232,.25);letter-spacing:.06em}
+#app{display:none;min-height:100vh}
+.topbar{background:var(--ink);position:sticky;top:0;z-index:100;border-bottom:2px solid rgba(26,107,96,.4)}
+.tabs{display:flex;overflow-x:auto;gap:0}
+.tabs::-webkit-scrollbar{height:3px}.tabs::-webkit-scrollbar-thumb{background:var(--teal2)}
+.tab{flex-shrink:0;padding:.7rem 1rem;font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,240,232,.4);cursor:pointer;border:none;background:transparent;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;margin-bottom:-2px}
+.tab:hover{color:rgba(245,240,232,.75)}.tab.on{color:var(--paper);border-bottom-color:var(--teal2)}
+.pbar{height:3px;background:rgba(245,240,232,.08)}.pfill{height:100%;background:var(--teal2);transition:width .5s ease;width:0}
+.wrap{max-width:680px;margin:0 auto;padding:2.5rem 2rem 5rem}
+.sec{display:none}.sec.on{display:block;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.ey{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal);margin-bottom:.5rem;display:block}
+.stitle{font-size:2rem;font-weight:300;line-height:1.2;letter-spacing:-.02em;margin-bottom:.3rem}
+.stitle em{font-style:italic;color:var(--teal)}
+.slead{font-size:1rem;color:var(--muted);margin-bottom:1.8rem;font-weight:300;line-height:1.65}
+.div{width:40px;height:2px;background:var(--teal);margin:1.2rem 0}
+p.b{font-size:1rem;line-height:1.75;margin-bottom:.9rem;color:#2a2822}
+p.b strong{font-weight:500}
+.bx{border-left:3px solid var(--teal);background:var(--tealp);padding:1rem 1.2rem;margin:1.2rem 0;font-size:.97rem;line-height:1.7}
+.bx.am{border-color:var(--amber);background:var(--amberp)}.bx.vi{border-color:var(--violet);background:var(--violetp)}
+.bxlbl{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.35rem}
+.bx.am .bxlbl{color:var(--amber)}.bx.vi .bxlbl{color:var(--violet)}
+.card{background:white;border:1px solid var(--border);border-radius:.45rem;margin:1.1rem 0;overflow:hidden;box-shadow:0 1px 12px rgba(15,14,11,.06)}
+.ch{padding:.8rem 1rem;background:var(--cream);border-bottom:1px solid var(--border);display:flex;gap:.7rem;align-items:flex-start}
+.pn{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.06em;color:var(--teal);background:var(--tealp);padding:.18rem .45rem;border-radius:2rem;flex-shrink:0;margin-top:.2rem}
+.pq{font-size:.97rem;font-weight:400;line-height:1.5}
+.ph{font-size:.85rem;color:var(--muted);font-weight:300;margin-top:.2rem;font-style:italic}
+textarea{width:100%;min-height:96px;padding:.9rem 1rem;border:none;background:white;font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.65;color:var(--ink);resize:vertical}
+textarea:focus{outline:none;background:#fefcf8}
+textarea::placeholder{color:var(--muted);font-style:italic;opacity:.6}
+.sc{background:white;border:1px solid var(--border);border-radius:.45rem;padding:1.1rem 1.2rem;margin:1rem 0;box-shadow:0 1px 12px rgba(15,14,11,.06)}
+.sq{font-size:.97rem;font-weight:400;margin-bottom:.25rem;line-height:1.5}.ss{font-size:.84rem;color:var(--muted);font-weight:300;margin-bottom:.85rem}
+.sr{display:flex;align-items:center;gap:.8rem}.sp{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);width:88px;flex-shrink:0;line-height:1.3}.sp.r{text-align:right}
+input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;outline:none;cursor:pointer;background:linear-gradient(to right,var(--teal) 50%,var(--cream) 50%)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:white;border:2px solid var(--teal);cursor:pointer;box-shadow:0 1px 5px rgba(26,107,96,.2)}
+.sv{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--teal);width:1.5rem;text-align:center}
+.fbox{background:var(--ink);color:var(--paper);border-radius:.5rem;padding:1.8rem;margin:1.5rem 0;text-align:center;position:relative;overflow:hidden}
+.fbox::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(26,107,96,.3),transparent 65%);pointer-events:none}
+.fn{font-size:4rem;font-weight:300;line-height:1;position:relative}
+.fl{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:var(--teal2);display:block;margin-top:.25rem;position:relative}
+.fb{height:5px;background:rgba(245,240,232,.12);border-radius:3px;overflow:hidden;margin:.9rem 0 .5rem;position:relative}
+.ff{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal2),#4ecdb4);transition:width 1.2s ease;width:50%}
+.fd{font-size:.9rem;color:rgba(245,240,232,.65);font-weight:300;line-height:1.6;position:relative}
+.vlim{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.06em;color:var(--muted);margin-bottom:.7rem;display:block}
+.vg{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:.5rem}
+.vc{padding:.38rem .85rem;border:1px solid var(--border);border-radius:2rem;font-size:.9rem;cursor:pointer;background:var(--cream);color:var(--muted);transition:all .2s;font-weight:300}
+.vc:hover{border-color:var(--teal);color:var(--teal)}.vc.on{background:var(--teal);border-color:var(--teal);color:white}
+.dlg{background:white;border:1px solid var(--border);border-radius:.5rem;overflow:hidden;margin:1.3rem 0;box-shadow:0 1px 12px rgba(15,14,11,.06)}
+.dm{min-height:160px;max-height:360px;overflow-y:auto;padding:1.3rem;display:flex;flex-direction:column;gap:1rem}
+.msg{display:flex;gap:.75rem;animation:fi .3s ease}
+.msg.you{flex-direction:row-reverse}
+.av{width:30px;height:30px;border-radius:50%;background:var(--teal);color:white;font-family:'DM Mono',monospace;font-size:.58rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:.2rem}
+.msg.you .av{background:var(--amber)}
+.bub{max-width:88%;padding:.8rem .95rem;border-radius:.45rem;font-size:.95rem;line-height:1.65;background:var(--cream)}
+.msg.you .bub{background:var(--tealp)}
+.df{border-top:1px solid var(--border);padding:.9rem;display:flex;gap:.65rem;align-items:flex-end}
+.di{flex:1;resize:none;border:1px solid var(--border);border-radius:.35rem;padding:.6rem .9rem;font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.5;color:var(--ink);background:var(--paper);min-height:46px;max-height:110px}
+.di:focus{outline:none;border-color:var(--teal);background:white}
+.ds{padding:.55rem 1.1rem;background:var(--teal);color:white;border:none;border-radius:.35rem;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;flex-shrink:0;transition:background .2s}
+.ds:hover{background:var(--teal2)}.ds:disabled{opacity:.5;cursor:default}
+.dots span{animation:blink 1.4s infinite;opacity:0}.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:0}40%{opacity:1}}
+.syn{background:var(--ink);color:var(--paper);padding:1.8rem;border-radius:.5rem;margin:1.3rem 0;position:relative;overflow:hidden}
+.syn::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 20% 0%,rgba(26,107,96,.3),transparent 60%);pointer-events:none}
+.syn h3{font-size:1.2rem;font-weight:300;margin-bottom:.85rem;color:var(--paper);position:relative}
+.si{border:1px solid rgba(26,107,96,.3);border-radius:.4rem;padding:1rem 1.1rem;background:rgba(26,107,96,.06);margin:.75rem 0;position:relative}
+.sil{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal2);display:block;margin-bottom:.3rem}
+.siv{font-size:.95rem;color:rgba(245,240,232,.8);line-height:1.6;font-weight:300}
+.nr{display:flex;gap:.7rem;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);align-items:center;flex-wrap:wrap}
+.bp{padding:.7rem 1.8rem;background:var(--teal);color:white;border:none;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:.3rem;transition:background .2s}
+.bp:hover{background:var(--teal2)}
+.bs{padding:.7rem 1.3rem;background:transparent;color:var(--muted);border:1px solid var(--border);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:.3rem;transition:all .2s}
+.bs:hover{color:var(--ink);border-color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div id="cover">
+  <div class="clbl">Ethics Beyond Boundaries &nbsp;&middot;&nbsp; Personal Reflection Instrument</div>
+  <h1 class="ctitle">The <em>Meta-Constructor</em></h1>
+  <p class="csub">A guided practice in examining the model that runs you &mdash; and choosing, consciously, what it becomes.</p>
+  <button id="bbtn" onclick="begin()">Begin the reflection</button>
+  <div class="cnote">Your responses are saved only in your own browser. Nothing leaves this page.</div>
+</div>
+
+<div id="app">
+  <div class="topbar">
+    <div class="tabs" id="tabs">
+      <button class="tab on" onclick="go(0)">Where You Are</button>
+      <button class="tab" onclick="go(1)">Your FHRI</button>
+      <button class="tab" onclick="go(2)">Your PRF</button>
+      <button class="tab" onclick="go(3)">Identity Kernel</button>
+      <button class="tab" onclick="go(4)">Institutional Mirror</button>
+      <button class="tab" onclick="go(5)">Meta-Constructor</button>
+      <button class="tab" onclick="go(6)">Where You Aim</button>
+    </div>
+    <div class="pbar"><div class="pfill" id="pf"></div></div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="sec on" id="s0">
+      <span class="ey">Your Situation &middot; 1 of 7</span>
+      <h1 class="stitle">Where You Are <em>Now</em></h1>
+      <p class="slead">Before any analysis, describe the territory. Your honest account of your life right now is the raw material this practice works with.</p>
+      <div class="div"></div>
+      <p class="b">You inhabit several institutions simultaneously. Each one either supports or absorbs your capacity for coherent, meaningful action. Name the territory before judging it.</p>
+      <div class="card">
+        <div class="ch"><span class="pn">01</span><div><div class="pq">Describe the main institutional context you inhabit right now &mdash; a job, school, family situation, community. Name it concretely.</div><div class="ph">Not "my workplace" &mdash; what kind of place, what it does, what your role is.</div></div></div>
+        <textarea id="q0a" oninput="sv()" placeholder="Be specific. This is your starting point..."></textarea>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="pn">02</span><div><div class="pq">In the past month, has the future felt larger or smaller to you? Can you plan for next year, or are you managing the next week?</div><div class="ph">About the actual horizon of your planning, not your optimism.</div></div></div>
+        <textarea id="q0b" oninput="sv()" placeholder="Larger or smaller, and why..."></textarea>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="pn">03</span><div><div class="pq">Name one thing you believe you should be doing that you are not doing. What stops you?</div><div class="ph">The gap between knowing and doing is often the most revealing thing about our structural situation.</div></div></div>
+        <textarea id="q0c" oninput="sv()" placeholder="The thing you know but have not done, and what the obstacle actually is..."></textarea>
+      </div>
+      <div class="nr"><button class="bp" onclick="go(1)">Continue &rarr;</button></div>
+    </div>
+
+    <div class="sec" id="s1">
+      <span class="ey">Your Situation &middot; 2 of 7</span>
+      <h1 class="stitle">Your <em>FHRI</em></h1>
+      <p class="slead">The Functional Health Resilience Index measures how much of your coordination capacity is actually reaching your decisions and actions.</p>
+      <div class="div"></div>
+      <p class="b">Rate each dimension honestly. These are instruments for self-examination, not verdicts.</p>
+      <div class="sc"><div class="sq">Historical continuity: I can connect who I am now to who I have been and who I want to become.</div><div class="ss">When you look at your past, does it feel like a coherent story, or a series of disconnected events?</div><div class="sr"><div class="sp">Disconnected &mdash; past feels foreign</div><input type="range" id="r1" min="0" max="10" value="5" oninput="su(this,'v1');cf()"><div class="sv" id="v1">5</div><div class="sp r">Clear &mdash; I know my arc</div></div></div>
+      <div class="sc"><div class="sq">Present integration: I can give sustained attention to what I am doing.</div><div class="ss">Can you focus, or are you constantly fragmented?</div><div class="sr"><div class="sp">Constant fragmentation</div><input type="range" id="r2" min="0" max="10" value="5" oninput="su(this,'v2');cf()"><div class="sv" id="v2">5</div><div class="sp r">I can sustain focus</div></div></div>
+      <div class="sc"><div class="sq">Prospective coherence: I can hold meaningful intentions and act on them over time.</div><div class="ss">Do plans translate into actions, or evaporate under daily pressure?</div><div class="sr"><div class="sp">Plans collapse &mdash; survival mode</div><input type="range" id="r3" min="0" max="10" value="5" oninput="su(this,'v3');cf()"><div class="sv" id="v3">5</div><div class="sp r">Plans hold &mdash; I can build</div></div></div>
+      <div class="sc"><div class="sq">Meta-constructor engagement: I can step back and examine my own assumptions.</div><div class="ss">When did you last sincerely ask: "Is this pattern serving me?"</div><div class="sr"><div class="sp">Reactive &mdash; no room to reflect</div><input type="range" id="r4" min="0" max="10" value="5" oninput="su(this,'v4');cf()"><div class="sv" id="v4">5</div><div class="sp r">Reflective &mdash; I examine my model</div></div></div>
+      <div class="fbox"><div class="fn" id="fnum">50</div><span class="fl">Your Current FHRI Estimate</span><div class="fb"><div class="ff" id="ff" style="width:50%"></div></div><div class="fd" id="fdesc">Moderate coherence. You have real coordination capacity and real structural pressure. This practice helps you see where the pressure is coming from.</div></div>
+      <div class="bx"><span class="bxlbl">Important distinction</span>Your FHRI measures <strong>your current coordination capacity.</strong> FHRI_max is the structural ceiling imposed by the institutions you inhabit. If you feel you have more in you than gets through, that gap is the FHRI_max problem. Section 4 examines it.</div>
+      <div class="nr"><button class="bs" onclick="go(0)">&larr;</button><button class="bp" onclick="go(2)">Continue &rarr;</button></div>
+    </div>
+
+    <div class="sec" id="s2">
+      <span class="ey">Your Identity &middot; 3 of 7</span>
+      <h1 class="stitle">Your <em>PRF</em></h1>
+      <p class="slead">The Phenomenological Reference Framework is the lens through which you perceive everything. You did not choose it consciously. But you can examine it.</p>
+      <div class="div"></div>
+      <div class="card"><div class="ch"><span class="pn">04</span><div><div class="pq">Finish this sentence: "The way I was raised taught me that people who struggle financially do so because ______."</div><div class="ph">The automatic answer that comes first &mdash; not what you believe on reflection.</div></div></div><textarea id="q2a" oninput="sv()" placeholder="The automatic answer, before reflection..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">05</span><div><div class="pq">Name one belief about yourself that you have held for a long time and are no longer sure is true.</div><div class="ph">The beliefs we are most certain about are often the ones most worth examining.</div></div></div><textarea id="q2b" oninput="sv()" placeholder="A belief you inherited that may no longer fit..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">06</span><div><div class="pq">Where does your emotional reaction to a situation most often not match what you actually think about it on reflection?</div><div class="ph">This gap between automatic response and considered judgment is the PRF made visible.</div></div></div><textarea id="q2c" oninput="sv()" placeholder="Where your automatic reaction and your considered view diverge..."></textarea></div>
+      <div class="bx am"><span class="bxlbl">The PRF and the parasite</span>Institutions can rewrite your PRF without your knowledge. If you have worked in a high-extraction environment, its assumptions about what is normal may have been absorbed into your PRF. The course calls this <strong>Dark Coherence:</strong> a functioning self whose goal-function has been replaced without awareness.</div>
+      <div class="nr"><button class="bs" onclick="go(1)">&larr;</button><button class="bp" onclick="go(3)">Continue &rarr;</button></div>
+    </div>
+
+    <div class="sec" id="s3">
+      <span class="ey">Your Identity &middot; 4 of 7</span>
+      <h1 class="stitle">Your Identity <em>Kernel</em></h1>
+      <p class="slead">The deep core of who you are trying to become &mdash; the commitments that shape what feels authentic and what feels like betrayal.</p>
+      <div class="div"></div>
+      <p class="b">Select the values that feel most genuinely yours. Not what you think you should have &mdash; the ones that, when you act against them, produce the specific feeling of having betrayed yourself. Choose up to five.</p>
+      <span class="vlim" id="vlim">Select up to 5 values &nbsp;&middot;&nbsp; 0 selected</span>
+      <div class="vg">
+        <div class="vc" onclick="tv(this)">Care for others</div><div class="vc" onclick="tv(this)">Honesty</div><div class="vc" onclick="tv(this)">Fairness</div><div class="vc" onclick="tv(this)">Courage</div><div class="vc" onclick="tv(this)">Loyalty</div><div class="vc" onclick="tv(this)">Learning</div><div class="vc" onclick="tv(this)">Justice</div><div class="vc" onclick="tv(this)">Creativity</div><div class="vc" onclick="tv(this)">Independence</div><div class="vc" onclick="tv(this)">Community</div><div class="vc" onclick="tv(this)">Excellence</div><div class="vc" onclick="tv(this)">Dignity</div><div class="vc" onclick="tv(this)">Sustainability</div><div class="vc" onclick="tv(this)">Service</div><div class="vc" onclick="tv(this)">Family</div><div class="vc" onclick="tv(this)">Integrity</div><div class="vc" onclick="tv(this)">Freedom</div><div class="vc" onclick="tv(this)">Beauty</div><div class="vc" onclick="tv(this)">Accountability</div><div class="vc" onclick="tv(this)">Spirituality</div>
+      </div>
+      <div class="card" style="margin-top:1.2rem"><div class="ch"><span class="pn">07</span><div><div class="pq">Describe a moment in the past year when you acted in full alignment with your Identity Kernel. What did that feel like?</div><div class="ph">Not a heroic act. A moment of genuine coherence &mdash; even small, even private.</div></div></div><textarea id="q3a" oninput="sv()" placeholder="The moment you were most fully yourself..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">08</span><div><div class="pq">Describe a moment when you acted against your Identity Kernel &mdash; a real betrayal of what you know yourself to be. What made it possible?</div><div class="ph">The answer to "what made it possible" is almost always structural, not characterological.</div></div></div><textarea id="q3b" oninput="sv()" placeholder="The moment, and what the structural conditions were..."></textarea></div>
+      <div class="nr"><button class="bs" onclick="go(2)">&larr;</button><button class="bp" onclick="go(4)">Continue &rarr;</button></div>
+    </div>
+
+    <div class="sec" id="s4">
+      <span class="ey">The Practice &middot; 5 of 7</span>
+      <h1 class="stitle">The Institutional <em>Mirror</em></h1>
+      <p class="slead">Apply P-SAGE to the institution from Section 1. The three Perception questions show what the institution is doing to your coordination capacity.</p>
+      <div class="div"></div>
+      <div class="bx"><span class="bxlbl">P-SAGE: The Three Questions</span><strong>P1 &mdash;</strong> Is the Sign intact? Does the institution appear to function normally?<br><strong>P2 &mdash;</strong> Has the Signal been manipulated? What channel carries resources to decisions &mdash; and who controls it?<br><strong>P3 &mdash;</strong> Has the Interpretant been replaced? What does the institution actually optimize for, versus what it says?</div>
+      <div class="card"><div class="ch"><span class="pn">P1</span><div><div class="pq">Does your institution appear to function normally? Does it seem to serve its stated purpose from the outside?</div><div class="ph">Sign integrity is consistent with Triadic Overwrite, not evidence against it.</div></div></div><textarea id="q4a" oninput="sv()" placeholder="Yes or no, and what it looks like from the outside..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">P2</span><div><div class="pq">What is the actual channel through which resources, recognition, and opportunities flow in your institution? Who controls that channel?</div><div class="ph">Follow the money, the attention, the approval. Where do they actually go?</div></div></div><textarea id="q4b" oninput="sv()" placeholder="The real channel, and who controls it..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">P3</span><div><div class="pq">What does your institution actually optimize for in its daily decisions? Is that the same as its stated mission? State both Interpretants: original and replaced.</div><div class="ph">Original: what it says it does. Replaced: what it actually optimizes for.</div></div></div><textarea id="q4c" oninput="sv()" placeholder="Original Interpretant: _____. Replaced Interpretant: _____. The gap: _____..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">P&#10003;</span><div><div class="pq">What is this institution doing to your FHRI? Is it adding to your coordination capacity or absorbing it? State this as a structural finding.</div><div class="ph">This institution is doing _____ to my capacity by _____ mechanism.</div></div></div><textarea id="q4d" oninput="sv()" placeholder="The structural finding..."></textarea></div>
+      <div class="nr"><button class="bs" onclick="go(3)">&larr;</button><button class="bp" onclick="go(5)">Continue &rarr;</button></div>
+    </div>
+
+    <div class="sec" id="s5">
+      <span class="ey">The Practice &middot; 6 of 7</span>
+      <h1 class="stitle">The <em>Meta-Constructor</em> Session</h1>
+      <p class="slead">Work with a reflective partner to examine the model that is running you &mdash; and begin revising it toward greater coherence with your Identity Kernel.</p>
+      <div class="div"></div>
+      <p class="b">The Meta-Constructor Capacity is your ability to examine the framework through which you perceive your situation. You cannot escape your biology. But you are a system complex enough to include yourself as an object of your own attention &mdash; and to act differently as a result.</p>
+      <div class="bx vi"><span class="bxlbl">How this works</span>Describe your situation to the reflective partner. It has read everything you have written throughout this practice. It will ask you questions that help you see your own model more clearly. Be honest &mdash; the quality of the reflection depends entirely on what you bring.</div>
+      <div class="dlg">
+        <div class="dm" id="msgs">
+          <div class="msg"><div class="av">MC</div><div class="bub">Welcome. I have read what you have written throughout this practice.<br><br>Before we begin: <em>what is the thing you most want to understand about your situation right now?</em> Not what you think you should understand &mdash; the thing that actually keeps you up at night, or that you avoid thinking about because it is too uncomfortable.</div></div>
+        </div>
+        <div class="df">
+          <textarea class="di" id="din" placeholder="Write here. There is no correct answer..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();snd()}"></textarea>
+          <button class="ds" id="sbtn" onclick="snd()">Send</button>
+        </div>
+      </div>
+      <div class="nr"><button class="bs" onclick="go(4)">&larr;</button><button class="bp" onclick="go(6)">Continue &rarr;</button></div>
+    </div>
+
+    <div class="sec" id="s6">
+      <span class="ey">Forward &middot; 7 of 7</span>
+      <h1 class="stitle">Where You Are <em>Aiming</em></h1>
+      <p class="slead">Constructor Ethics does not end with diagnosis. It ends with direction.</p>
+      <div class="div"></div>
+      <p class="b">Wangari Maathai did not fight the government. She planted trees. The Meta-Constructor principle is not about escaping your structural situation through heroism. It is about identifying, with precision, what you can build from exactly where you are.</p>
+      <div class="bx"><span class="bxlbl">The three levels</span><strong>Perception:</strong> See clearly what is structurally happening.<br><strong>Protection:</strong> Recognize when an institution is consuming your coherence before you are too depleted to act.<br><strong>Purpose:</strong> Identify something worth building toward &mdash; a genuine commitment, a forward trajectory that is yours.</div>
+      <div class="card"><div class="ch"><span class="pn">09</span><div><div class="pq">From your P-SAGE analysis: what is the most structurally effective action available from your actual position? Is it T1 (changes who controls the channel) or T2 (improves outcomes within the existing structure)?</div></div></div><textarea id="q6a" oninput="sv();bsyn()" placeholder="The action structurally available from where I actually am..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">10</span><div><div class="pq">Name the plant in the boot. What is already worth tending in your life that the structural architecture has not yet consumed?</div><div class="ph">Specific. Present. Yours.</div></div></div><textarea id="q6b" oninput="sv();bsyn()" placeholder="The thing worth tending that still exists..."></textarea></div>
+      <div class="card"><div class="ch"><span class="pn">11</span><div><div class="pq">In one year, if I am living in alignment with my Identity Kernel, I will be &mdash;</div><div class="ph">Name what you will be doing, who you will be doing it with, and what will have changed.</div></div></div><textarea id="q6c" oninput="sv();bsyn()" style="min-height:110px" placeholder="In one year, if I am living in alignment with my Identity Kernel, I will be..."></textarea></div>
+      <div class="syn" id="syn">
+        <h3>Your Constructor Ethics Statement</h3>
+        <div class="si"><span class="sil">My Identity Kernel</span><div class="siv" id="sv1">Complete Section 4 to see your values here.</div></div>
+        <div class="si"><span class="sil">What the institution is doing to my capacity</span><div class="siv" id="sv2">Complete the Institutional Mirror section.</div></div>
+        <div class="si"><span class="sil">The action I am committing to</span><div class="siv" id="sv3">Complete your forward commitment above.</div></div>
+        <div class="si"><span class="sil">Where I am aiming in one year</span><div class="siv" id="sv4">Complete the forward prediction above.</div></div>
+      </div>
+      <div class="nr">
+        <button class="bs" onclick="go(5)">&larr;</button>
+        <button class="bp" onclick="dl()">&#11015; Download Reflection</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+var cur=0, vals=[], hist=[], N=7;
+
+function begin(){
+  document.getElementById('cover').style.display='none';
+  document.getElementById('app').style.display='block';
+  load(); initSl(); cf();
+}
+
+function go(n){
+  document.getElementById('s'+cur).className='sec';
+  document.querySelectorAll('.tab')[cur].className='tab';
+  cur=n;
+  document.getElementById('s'+cur).className='sec on';
+  document.querySelectorAll('.tab')[cur].className='tab on';
+  document.getElementById('pf').style.width=Math.round(cur/(N-1)*100)+'%';
+  window.scrollTo(0,0);
+  if(n===6)bsyn();
+}
+
+function initSl(){
+  [1,2,3,4].forEach(function(i){var e=document.getElementById('r'+i);if(e)su(e,'v'+i);});
+}
+
+function su(el,vid){
+  var v=parseInt(el.value),p=(v/10)*100;
+  el.style.background='linear-gradient(to right,var(--teal) '+p+'%,var(--cream) '+p+'%)';
+  document.getElementById(vid).textContent=v;
+  sv();
+}
+
+function cf(){
+  var a=[1,2,3,4].map(function(i){var e=document.getElementById('r'+i);return e?parseInt(e.value):5;});
+  var f=Math.round((a[0]+a[1]+a[2]+a[3])/4*10);
+  document.getElementById('fnum').textContent=f;
+  document.getElementById('ff').style.width=f+'%';
+  document.getElementById('fdesc').textContent=
+    f>=75?'Strong coherence. Your coordination capacity is genuinely available to your decisions. The structural conditions of your life are supporting your agency.':
+    f>=55?'Moderate to good coherence. You have real capacity and some structural support. This practice helps identify where friction is structural.':
+    f>=35?'Moderate pressure. Meaningful portions of your coordination capacity are being absorbed before reaching decisions. This is a structural diagnosis, not a personal failure.':
+    f>=20?'Significant pressure. Survival mode may be dominant. The question is: what is producing the absorption?':
+    'High structural pressure. Recognizing this as structural, not personal, is the first step.';
+  try{localStorage.setItem('mc_f',f);}catch(e){}
+}
+
+function tv(c){
+  var v=c.textContent.trim(),i=vals.indexOf(v);
+  if(i>=0){vals.splice(i,1);c.className='vc';}
+  else{if(vals.length>=5)return;vals.push(v);c.className='vc on';}
+  document.getElementById('vlim').textContent='Select up to 5 values \u00b7 '+vals.length+' selected';
+  try{localStorage.setItem('mc_vals',JSON.stringify(vals));}catch(e){}
+}
+
+var QS=['q0a','q0b','q0c','q2a','q2b','q2c','q3a','q3b','q4a','q4b','q4c','q4d','q6a','q6b','q6c'];
+
+function sv(){
+  QS.forEach(function(k){var e=document.getElementById(k);if(e)try{localStorage.setItem('mc_'+k,e.value);}catch(e){}});
+}
+
+function load(){
+  QS.forEach(function(k){var e=document.getElementById(k);if(e)try{var v=localStorage.getItem('mc_'+k);if(v)e.value=v;}catch(e){}});
+  [1,2,3,4].forEach(function(i){try{var v=localStorage.getItem('mc_r'+i);if(v){var e=document.getElementById('r'+i);if(e){e.value=v;su(e,'v'+i);}}}catch(e){}});
+  try{var sv=localStorage.getItem('mc_vals');if(sv){vals=JSON.parse(sv);document.querySelectorAll('.vc').forEach(function(c){if(vals.indexOf(c.textContent.trim())>=0)c.className='vc on';});document.getElementById('vlim').textContent='Select up to 5 values \u00b7 '+vals.length+' selected';}}catch(e){}
+}
+
+function bsyn(){
+  document.getElementById('sv1').textContent=vals.length>0?vals.join(' \u00b7 '):'Complete Section 4 to see your values here.';
+  var e=document.getElementById('q4d');document.getElementById('sv2').textContent=(e&&e.value.trim())||'Complete the Institutional Mirror section.';
+  var f=document.getElementById('q6a');document.getElementById('sv3').textContent=(f&&f.value.trim())||'Complete your forward commitment above.';
+  var g=document.getElementById('q6c');document.getElementById('sv4').textContent=(g&&g.value.trim())||'Complete the forward prediction above.';
+}
+
+function ctx(){
+  var p=[],g=function(id){var e=document.getElementById(id);return e?e.value.trim():'';};
+  var fhri=document.getElementById('fnum')?document.getElementById('fnum').textContent:'?';
+  if(g('q0a'))p.push('INSTITUTIONAL SITUATION: '+g('q0a'));
+  if(g('q0b'))p.push('TEMPORAL HORIZON: '+g('q0b'));
+  if(g('q0c'))p.push('GAP BETWEEN KNOWING AND DOING: '+g('q0c'));
+  if(g('q2a'))p.push('PRF AUTOMATIC BELIEF: '+g('q2a'));
+  if(g('q2b'))p.push('BELIEF NO LONGER SURE IS TRUE: '+g('q2b'));
+  if(g('q2c'))p.push('WHERE REACTION AND REFLECTION DIVERGE: '+g('q2c'));
+  if(vals.length>0)p.push('IDENTITY KERNEL VALUES: '+vals.join(', '));
+  if(g('q3a'))p.push('MOMENT OF FULL ALIGNMENT: '+g('q3a'));
+  if(g('q3b'))p.push('MOMENT OF BETRAYAL: '+g('q3b'));
+  if(g('q4c'))p.push('INTERPRETANT ANALYSIS: '+g('q4c'));
+  if(g('q4d'))p.push('STRUCTURAL FINDING: '+g('q4d'));
+  p.push('FHRI: '+fhri+'/100');
+  return p.join('\n\n');
+}
+
+function addm(role,text,tid){
+  var msgs=document.getElementById('msgs'),id=tid||('m'+Date.now()),isYou=role==='user';
+  var d=document.createElement('div');d.className='msg'+(isYou?' you':'');d.id=id;
+  var safe=isYou?text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'):text;
+  d.innerHTML='<div class="av">'+(isYou?'You':'MC')+'</div><div class="bub">'+safe+'</div>';
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;return id;
+}
+
+async function snd(){
+  var inp=document.getElementById('din'),text=inp.value.trim();
+  if(!text)return;
+  addm('user',text);hist.push({role:'user',content:text});inp.value='';
+  var btn=document.getElementById('sbtn');btn.disabled=true;
+  var tid=addm('assistant','<span class="dots"><span>.</span><span>.</span><span>.</span></span>');
+  var sys='You are the Meta-Constructor reflective partner: a compassionate, precise instrument for serious self-examination grounded in Constructor Ethics.\n\nContext from this person\'s reflection:\n\n'+ctx()+'\n\nPRINCIPLES: Ask one precise question at a time. Never give a list of questions. Reflect accurately what they have said before asking. Help them distinguish structural conditions from personal character. Never minimize structural harm by converting it into personal growth. Help them find the gap between Identity Kernel and current behavior. Connect to course frameworks (PRF, FHRI, Identity Kernel, P-SAGE, T1/T2) when natural. Speak in warm plain prose. No bullet lists. You are a structured thinking partner, not a therapist. The goal: help them answer where will I aim with greater precision.';
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:hist})});
+    var data=await resp.json();
+    var reply=(data.content&&data.content[0]&&data.content[0].text)?data.content[0].text:'The connection is unavailable. Continue your reflection in the writing prompts.';
+    var tEl=document.getElementById(tid);if(tEl)tEl.parentElement.remove();
+    addm('assistant',reply.replace(/\n/g,'<br>'));hist.push({role:'assistant',content:reply});
+  }catch(e){
+    var tEl=document.getElementById(tid);if(tEl)tEl.parentElement.remove();
+    addm('assistant','The connection is not available right now. Continue writing in the prompts and return to this dialogue when online.');
+  }
+  btn.disabled=false;
+}
+
+function dl(){
+  bsyn();
+  var t='THE META-CONSTRUCTOR\nPersonal Reflection\n'+'='.repeat(60)+'\n\n';
+  var g=function(id){var e=document.getElementById(id);return e?e.value.trim():'';};
+  var fhri=document.getElementById('fnum')?document.getElementById('fnum').textContent:'?';
+  t+='WHERE YOU ARE NOW\n'+'-'.repeat(40)+'\n'+g('q0a')+'\n\n'+g('q0b')+'\n\n'+g('q0c')+'\n\n';
+  t+='YOUR FHRI: '+fhri+'/100\n\n';
+  t+='YOUR PRF\n'+'-'.repeat(40)+'\n'+g('q2a')+'\n\n'+g('q2b')+'\n\n'+g('q2c')+'\n\n';
+  t+='YOUR IDENTITY KERNEL\n'+'-'.repeat(40)+'\nCore values: '+vals.join(', ')+'\n\n'+g('q3a')+'\n\n'+g('q3b')+'\n\n';
+  t+='THE INSTITUTIONAL MIRROR\n'+'-'.repeat(40)+'\n'+g('q4a')+'\n\n'+g('q4b')+'\n\n'+g('q4c')+'\n\n'+g('q4d')+'\n\n';
+  t+='WHERE YOU ARE AIMING\n'+'-'.repeat(40)+'\n'+g('q6a')+'\n\n'+g('q6b')+'\n\n'+g('q6c')+'\n\n';
+  if(hist.length>0){t+='META-CONSTRUCTOR DIALOGUE\n'+'-'.repeat(40)+'\n';hist.forEach(function(m){t+=(m.role==='user'?'You: ':'Reflection partner: ')+m.content+'\n\n';});}
+  try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='MetaConstructor.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){alert('Your responses are saved in the browser.');}
+}
+</script>
+</body>
+</html>

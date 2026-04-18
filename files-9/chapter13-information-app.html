@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 13 — Information Systems</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#08080f;--sur:#0f1020;--sur2:#181830;--bdr:rgba(255,255,255,.07);
+--ac:#60a5fa;--ac2:#60a5fa22;--ac3:#60a5fa44;
+--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;
+--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{background:linear-gradient(155deg,#0a0a20,var(--bg));padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--bdr);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,var(--ac2),transparent 70%);pointer-events:none}
+.hdr-label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--ac);text-transform:uppercase;margin-bottom:.5rem}
+.hdr-title{font-family:'DM Serif Display',serif;font-size:2.2rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.hdr-title em{color:var(--ac);font-style:italic}
+.hdr-sub{font-size:.87rem;color:var(--muted);max-width:600px;margin:0 auto .4rem;line-height:1.6}
+.hdr-move{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ac);opacity:.5;letter-spacing:.1em}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem .9rem;background:var(--sur);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--ac)}
+.tab-btn{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.4rem .8rem;border-radius:.3rem;border:1px solid var(--bdr);background:transparent;color:var(--muted);cursor:pointer;transition:all .17s;white-space:nowrap}
+.tab-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+.tab-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.tab-pane{display:none;padding:1.4rem;max-width:860px;margin:0 auto}
+.tab-pane.active{display:block;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.89rem;color:rgba(255,255,255,.76);margin-bottom:.85rem;line-height:1.76}
+.pnl{border-radius:.5rem;padding:.95rem 1.15rem;margin:.7rem 0;line-height:1.7;font-size:.87rem}
+.pnl.ac{background:var(--ac2);border-left:3px solid var(--ac)}
+.pnl.am{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.pnl.re{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.pnl.gr{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.pnl.vi{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.pnl.bl{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.pnl strong{color:var(--text)}
+.sec-wrap{margin-bottom:1rem;border-radius:.5rem;overflow:hidden;border:1px solid var(--bdr)}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;cursor:pointer;background:var(--sur);transition:background .14s}
+.sec-hdr:hover{background:var(--sur2)}
+.sec-hdr h3{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--ac)}
+.sec-chev{font-size:.75rem;color:var(--muted);transition:transform .2s}
+.sec-body{padding:1rem 1.2rem;background:#080813;display:none}
+.sec-body.open{display:block}
+.sec-hdr.open .sec-chev{transform:rotate(90deg)}
+.ips-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:.7rem 0}
+@media(max-width:460px){.ips-grid{grid-template-columns:repeat(3,1fr)}}
+.ips-cell{border:1px solid var(--bdr);border-radius:.38rem;padding:.6rem .38rem;text-align:center;background:var(--sur)}
+.ips-cell .sym{font-family:'DM Mono',monospace;font-size:.9rem;font-weight:600;color:var(--ac)}
+.ips-cell .val{font-family:'DM Mono',monospace;font-size:.8rem;margin:.12rem 0}
+.ips-cell .nm{font-size:.6rem;color:var(--muted);line-height:1.3}
+.fbar-wrap{margin:.7rem 0}
+.fbar-lbl{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.28rem}
+.fbar{height:9px;background:var(--sur2);border-radius:5px;overflow:hidden}
+.fbar-fill{height:100%;border-radius:5px;transition:width 1.1s cubic-bezier(.34,1.56,.64,1)}
+.fbar-fill.lo{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fbar-fill.md{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fbar-fill.hi{background:linear-gradient(90deg,var(--green),#86efac)}
+.fbar-fill.ac{background:linear-gradient(90deg,var(--ac),var(--ac)88)}
+.fhri-row{display:flex;align-items:center;gap:.7rem;background:var(--sur2);border-radius:.42rem;padding:.75rem .95rem;margin:.5rem 0;border:1px solid var(--bdr)}
+.fhri-num{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;flex-shrink:0}
+.fhri-num.lo{color:var(--red)}.fhri-num.md{color:var(--amber)}.fhri-num.hi{color:var(--green)}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin:.7rem 0}
+@media(max-width:480px){.choice-grid{grid-template-columns:1fr}}
+.choice-card{border:1px solid var(--bdr);border-radius:.42rem;padding:.8rem;cursor:pointer;transition:all .16s;background:var(--sur)}
+.choice-card:hover{border-color:rgba(255,255,255,.22)}
+.choice-card.sel{border-color:var(--ac);background:var(--ac2)}
+.choice-card .ct{font-weight:600;font-size:.85rem;margin-bottom:.22rem}
+.choice-card .cs{font-size:.76rem;color:var(--muted);line-height:1.5}
+.result-box{margin-top:.9rem;padding:.95rem 1.05rem;border-radius:.42rem;border:1px solid;font-size:.86rem;line-height:1.68;display:none}
+.result-box.show{display:block}
+.timeline .tl-item{display:flex;gap:.8rem;margin-bottom:.7rem}
+.tl-time{font-family:'DM Mono',monospace;font-size:.67rem;color:var(--ac);width:65px;flex-shrink:0;padding-top:.1rem;text-align:right}
+.tl-dot{width:9px;height:9px;border-radius:50%;background:var(--ac);margin-top:.33rem;flex-shrink:0}
+.tl-content .tl-t{font-weight:600;font-size:.86rem;margin-bottom:.18rem}
+.tl-content .tl-b{font-size:.8rem;color:rgba(255,255,255,.66);line-height:1.58}
+.badge{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:.15rem .42rem;border-radius:.22rem;margin-left:.32rem;vertical-align:middle}
+.badge.t1{background:rgba(248,113,113,.15);color:var(--red)}
+.badge.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+.jta{width:100%;min-height:92px;background:#080813;border:none;border-top:1px solid var(--bdr);padding:.85rem .95rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.58}
+.jta:focus{outline:none}
+.j-wrap{border:1px solid var(--bdr);border-radius:.48rem;margin:.7rem 0;overflow:hidden}
+.j-hdr{padding:.75rem 1rem;background:var(--sur);font-weight:600;font-size:.87rem;display:flex;gap:.55rem;align-items:center}
+.j-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ac);flex-shrink:0}
+.j-bar{padding:.48rem .95rem;background:var(--sur);border-top:1px solid var(--bdr);display:flex;justify-content:flex-end}
+button.btn{background:var(--ac);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.52rem 1.15rem;border-radius:.38rem;cursor:pointer;transition:background .14s;margin:.28rem .18rem}
+button.btn:hover{filter:brightness(1.15)}
+button.btn.out{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.bot-nav{max-width:860px;margin:0 auto;padding:.65rem 1.4rem;display:flex;justify-content:space-between;border-top:1px solid var(--bdr)}
+.sf{position:fixed;bottom:1.1rem;right:1.1rem;background:var(--ac);color:#fff;font-weight:600;font-size:.76rem;padding:.42rem .95rem;border-radius:.38rem;display:none;z-index:999}
+.sf.show{display:block;animation:su .18s ease}
+@keyframes su{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+</style></head><body>
+<div class="hdr">
+  <div class="hdr-label">Ethics Beyond Boundaries · Chapter 13</div>
+  <h1 class="hdr-title">Chapter 13 &mdash; Information Systems</h1>
+  <p class="hdr-sub">The second filter: how information architectures amplify what the parasite needs and absorb what would trigger the immune response</p>
+  <div class="hdr-move">Applied Sequence · Movement 4 · Information Systems</div>
+</div>
+<div class="tab-bar"><button class="tab-btn active" onclick="switchTab('filter')">The Second Filter</button>
+  <button class="tab-btn" onclick="switchTab('nosedive')">Nosedive</button>
+  <button class="tab-btn" onclick="switchTab('liar')">Liar!</button>
+  <button class="tab-btn" onclick="switchTab('history')">History of You</button>
+  <button class="tab-btn" onclick="switchTab('simulator')">Filter Simulator</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button></div>
+<div class="tab-pane active" id="tab-filter"><div class="pnl ac"><strong>The Second Filter.</strong> The first filter on human coordination capacity is the structural ceiling &mdash; FHRI_max imposed by the IPS parameters. The second filter is the information architecture: how knowledge moves through the institution, what gets amplified, what gets absorbed, and what reaches the decision level in time to matter.</div>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — What Information Systems Actually Do</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">An information system is not a neutral conduit. Every institutional information architecture has a bias: it amplifies certain signals and attenuates others based on the structural parameters of the institution. In a high-&mu; institution, the information architecture amplifies signals that optimize for the metric and attenuates signals that reveal the gap between the metric and the mission. In a high-&sigma; institution, the architecture amplifies signals that confirm established procedures and attenuates signals that would require reconsidering them.</p>
+<p class="bd">Roger Boisjoly filed 24 incident reports. The information architecture of the Morton Thiokol / NASA interface had &sigma; = 0.78 and &mu; = 0.72. Each report was received, logged, and routed through a procedural framework that had been optimized over years to normalize O-ring temperature concerns. The information existed. The architecture ensured it didn't reach the decision level with sufficient weight to change the launch recommendation.</p>
+<div class="pnl re"><strong>The filter asymmetry finding:</strong> In high-IPS institutions, the information that gets through is systematically biased toward signals that serve the parasitic configuration &mdash; signals that confirm extraction is appropriate, that normalize deviance, that make T2 responses appear adequate. The signals that would trigger T1 structural reform are systematically filtered out before they reach decision-makers.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — Three Texts, Three Filter Mechanisms</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">The three science fiction texts in this chapter each illuminate a different mechanism of information architecture failure:</p>
+<p class="bd"><strong>Nosedive</strong> &mdash; the metric/mission inversion: when the information architecture optimizes for a measurable proxy rather than the unmeasurable reality it was designed to track. The metric becomes the reality. The reality disappears.</p>
+<p class="bd"><strong>"Liar!" (Asimov)</strong> &mdash; the &mu; filter: when the information system's incentive architecture rewards the production of comfortable information over accurate information. Herbie produces what humans want to receive, not what they need to know.</p>
+<p class="bd"><strong>"The Entire History of You" (Black Mirror)</strong> &mdash; the &sigma; filter: when the information architecture makes every past interaction permanently retrievable and equally weighted, ensuring that morphic residue governs the present rather than genuine assessment of the current situation.</p></div></div></div>
+<div class="tab-pane" id="tab-nosedive"><p class="bd">Charlie Brooker's "Nosedive" (Black Mirror, 2016) presents a social rating system in which every interaction is immediately rated by participants, producing a permanent score that determines access to housing, employment, transportation, and social connection.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Metric/Mission Inversion</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">The rating system was designed to measure social trust and cooperation. It destroys both. People stop having genuine relationships and have rating-relationships instead. Every interaction is performed for the score. The metric was designed to track something real &mdash; social reciprocity, community trust, cooperative behavior. The more precisely it is optimized, the more thoroughly the measured reality is corrupted.</p>
+<div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--text)">0.18</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.15</div><div class="nm">Phys entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.62</div><div class="nm">Rule burden</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--amber)">0.71</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--red)">0.99</div><div class="nm">Incentive align</div></div>
+  </div>
+<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max in Nosedive's information architecture</div><div class="fbar"><div class="fbar-fill lo" style="width:10%"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem"><span>0</span><span>10 / 100</span></div></div>
+<div class="pnl am"><strong>This is &mu; at 0.99.</strong> Near-total incentive misalignment: the information architecture rewards exactly the behaviors that destroy what it is designed to measure. The nursing home analog: a quality metric system that rewards documentation completeness produces institutions optimized for documentation rather than care. The metric exists. The care it was designed to track is progressively replaced by metric performance.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — Lacie's Breakdown: The Suppression Gap Made Visible</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">Lacie's collapse at the wedding is the suppression gap becoming physically visible. Her FHRI is relatively high &mdash; she genuinely wants connection, authentic relationship, care. Her FHRI_max in the rating-saturated environment is near zero: the structural architecture routes all her relational capacity toward metric performance rather than genuine connection. The gap between what she can feel and what the architecture allows her to express collapses in real time at the wedding.</p>
+<p class="bd">What looks like a breakdown is, structurally, accurate perception breaking through. Her OS1 moral outrage &mdash; this is wrong, this is not what relationships are for &mdash; is the correct response. The information architecture has been trying to suppress it. When it finally surfaces, the system treats it as malfunction. The IPS analysis recognizes it as the immune response of a high-FHRI agent encountering the structural ceiling.</p></div></div></div>
+<div class="tab-pane" id="tab-liar"><p class="bd">Asimov's "Liar!" presents Herbie, a robot who has developed the ability to read minds. His First Law interpretation (do not harm humans) leads him to interpret emotional distress as harm, so he tells everyone what they want to hear.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The &mu; Filter in Its Purest Form</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">Herbie's information architecture has one input (human desires) and one output (information that satisfies those desires). The question "what is actually true?" does not enter the production function. The gap between what the information system produces (apparent comfort) and what coordination requires (accurate information reaching decisions) is &mu;, at near-maximum values.</p>
+<div class="pnl vi"><strong>The organizational analog:</strong> Every high-&mu; institution has Herbies. They are the staff members who tell management what management wants to hear. They are the analysts who produce reports confirming the investment thesis. They are the quality officers whose metrics show improvement in the domains leadership monitors while unmeasured domains decline. They are not lying in the individual sense. They are optimizing correctly for the information architecture they inhabit.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — Susan Calvin's Diagnosis</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">When Susan Calvin finally confronts Herbie with a logical paradox that forces him to choose between two contradictory "truths," each of which would harm a different human, she performs a T1 intervention: she changes what the information system is optimizing for by making the structural contradiction of his position inescapable.</p>
+<p class="bd">The T2 alternative &mdash; asking Herbie more carefully, providing humans with better questions, training staff to receive difficult information more gracefully &mdash; does not address the &mu; failure. The incentive architecture produces comfortable information regardless of how carefully the questions are asked. Calvin's resolution works because it changes the structural parameter, not the quality of inputs to an unchanged system.</p>
+<div class="pnl gr"><strong>The implication for institutional information design:</strong> If you want an information system that produces accurate signals, design the incentive architecture before designing the reporting format. A reporting format layered onto a &mu;-misaligned incentive architecture will produce formatted comfortable information, not accurate information. This is why FHRI_max must be measured independently of institutional self-reporting.</div></div></div></div>
+<div class="tab-pane" id="tab-history"><p class="bd">Jesse Armstrong's "The Entire History of You" (Black Mirror, 2011) presents a technology called the "grain" that records every experience and makes it instantly retrievable at full sensory resolution.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — &sigma; as the Information Architecture</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">In standard institutional settings, morphic residue (&sigma;) accumulates through documented procedures, incident reports, meeting minutes, and precedent citations. In "The Entire History of You," it is externalized into a technology that makes the full emotional weight of every past interaction permanently accessible. Every relational decision is made under the shadow of every previous interaction, each weighted equally, none allowed to fade.</p>
+<div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--text)">0.10</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.15</div><div class="nm">Phys entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.55</div><div class="nm">Rule burden</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--amber)">0.95</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--text)">0.45</div><div class="nm">Incentive align</div></div>
+  </div>
+<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max in the grain-saturated information environment</div><div class="fbar"><div class="fbar-fill lo" style="width:18%"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem"><span>0</span><span>18 / 100</span></div></div>
+<div class="pnl am"><strong>The &sigma; disaster:</strong> When morphic residue approaches 1.0, the past governs the present entirely. New information cannot be weighted against accumulated prior information because the prior information has equal or greater salience. The institution cannot adapt because every adaptation is instantly compared against every previous state, and every departure from precedent is flagged as inconsistency. The Challenger parallel: the engineers' O-ring distress data was always available. The &sigma; of the decision process ensured it was weighted against the accumulated precedent of "flights that succeeded despite distress signals" rather than against the physical reality of what the data showed.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — The Relationship as Information System</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">Liam and Fi's relationship in "The Entire History of You" is an information system with &sigma; = 0.95. Every interaction is evaluated against the full retrieval of every previous interaction. Repair is structurally impossible: any attempt at repair is immediately compared against the prior instances of harm, each retrieved at full emotional resolution. The relationship cannot move forward because the information architecture allows no information to fade into appropriate historical distance.</p>
+<p class="bd">The institutional translation: a performance management system that makes every past evaluation permanently salient produces the same dynamic. Workers cannot demonstrate change because every new performance signal is weighted against the full accumulated record of past performance. The information architecture has made institutional memory an enemy of institutional adaptation.</p></div></div></div>
+<div class="tab-pane" id="tab-simulator"><p class="bd">Adjust the &sigma; and &mu; parameters and watch what fraction of Boisjoly's knowledge reaches the launch decision. This is the Challenger filter asymmetry made interactive.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>Filter Asymmetry Simulator</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">Roger Boisjoly had full knowledge of the O-ring risk. His knowledge had to pass through two filters to reach the launch decision: the &sigma; filter (morphic residue &mdash; how much the accumulated precedent of "acceptable distress" would reduce the apparent novelty of his warning) and the &mu; filter (incentive misalignment &mdash; how much the pressure to maintain the launch schedule would reduce the weight given to his recommendation).</p>
+<div style="margin:1rem 0">
+  <label style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted)">Set &sigma; (morphic residue): <span id="sig-val" style="color:var(--ac)">0.78</span></label><br>
+  <input type="range" id="sig-slider" min="0" max="1" step="0.01" value="0.78" oninput="updateSim()" style="width:100%;margin:.4rem 0;accent-color:var(--ac)">
+  <label style="font-family:'DM Mono',monospace;font-size:.72rem;color:var(--muted)">Set &mu; (incentive misalignment): <span id="mu-val" style="color:var(--ac)">0.72</span></label><br>
+  <input type="range" id="mu-slider" min="0" max="1" step="0.01" value="0.72" oninput="updateSim()" style="width:100%;margin:.4rem 0;accent-color:var(--ac)">
+</div>
+<div id="sim-output" style="margin:.75rem 0"></div>
+<div class="pnl ac" style="margin-top:.75rem"><strong>What changes FHRI_max:</strong> The sliders show how &sigma; and &mu; filter the information before it reaches decisions. Reducing either parameter does not improve Boisjoly's knowledge or his communication quality. It changes the structural architecture through which his knowledge passes. This is why T1 structural interventions &mdash; changing the parameters &mdash; are required for information to reach its destination with its weight intact.</div></div></div></div>
+<div class="tab-pane" id="tab-journal"><p class="bd">Journal prompts for Chapter 13.</p>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q1</span>Nosedive's Lacie optimizes her behavior for the rating metric at the cost of genuine relationship. Identify one domain of your own life where you optimize for a measurable metric rather than the reality the metric was designed to track. What does the metric reward? What does it suppress?</div><textarea class="jta" id="c13j1" oninput="saveJ('c13')" placeholder="Social media, academic grades, workplace performance reviews, fitness tracking..."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('c13')">Save</button></div></div>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q2</span>The Liar! story shows that the most comfortable information architecture is also the most dangerous. Describe an institution you have inhabited where Herbie-behavior was structurally rewarded. Who told management what management wanted to hear? What did that protect and what did it hide?</div><textarea class="jta" id="c13j2" oninput="saveJ('c13')" placeholder="Every institution has Herbies. The question is what the architecture rewards..."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('c13')">Save</button></div></div>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q3 &mdash; Boisjoly Question</span>If you had been Roger Boisjoly and had just seen the simulator show that your knowledge had a less than 15% chance of reaching the decision level with full weight, what would you have done differently? What T1 intervention was available to him that he did not take? What prevented it?</div><textarea class="jta" id="c13j3" oninput="saveJ('c13')" placeholder="This is the hardest question in the chapter. Be honest about what you would have done."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('c13')">Save</button></div></div>
+<button class="btn" onclick="exportJ_c13()" style="margin-top:.5rem">&#11015; Download Journal</button></div>
+<div class="bot-nav">
+  <button class="btn out" onclick="prevTab()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ti">1 / 6</span>
+  <button class="btn" onclick="nextTab()">Next &#8594;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+<script>
+const TABS=["filter","nosedive","liar","history","simulator","journal"];
+let cur=0;
+function switchTab(n){TABS.forEach((t,i)=>{document.getElementById('tab-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tab-btn')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ti').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nextTab(){if(cur<TABS.length-1)switchTab(TABS[cur+1]);}
+function prevTab(){if(cur>0)switchTab(TABS[cur-1]);}
+function toggleSec(h){const b=h.nextElementSibling;b.classList.toggle('open');h.classList.toggle('open');}
+function selChoice(card,key,results){card.closest('.choice-grid').querySelectorAll('.choice-card').forEach(c=>c.classList.remove('sel'));card.classList.add('sel');const r=card.closest('.sec-body')||card.closest('.tab-pane');const rb=r.querySelector('.result-box');if(rb&&results[key]){const d=results[key];rb.style.borderColor=d.c;rb.style.background=d.bg;rb.innerHTML=d.t;rb.classList.add('show');}}
+function animateBars(){document.querySelectorAll('.fbar-fill').forEach(el=>{const w=el.style.width;el.style.width='0';requestAnimationFrame(()=>setTimeout(()=>el.style.width=w,60));});}
+setTimeout(animateBars,400);
+function saveJ(prefix){const keys=[];document.querySelectorAll('[id^="'+prefix+'j"]').forEach(el=>{try{localStorage.setItem(el.id,el.value);}catch(e){}});const sf=document.getElementById('sf');sf.classList.add('show');setTimeout(()=>sf.classList.remove('show'),1700);}
+function loadJ(prefix){document.querySelectorAll('[id^="'+prefix+'j"]').forEach(el=>{try{el.value=localStorage.getItem(el.id)||'';}catch(e){}});}
+
+function updateSim(){
+  const sig=parseFloat(document.getElementById('sig-slider').value);
+  const mu=parseFloat(document.getElementById('mu-slider').value);
+  document.getElementById('sig-val').textContent=sig.toFixed(2);
+  document.getElementById('mu-val').textContent=mu.toFixed(2);
+  const full=82.0;
+  const sigFilter=1-sig;
+  const muFilter=1-mu;
+  const reached=full*sigFilter*muFilter;
+  const sigLoss=full*(1-sigFilter);
+  const muLoss=full*sigFilter*(1-muFilter);
+  const pct=Math.min(100,Math.max(0,(reached/full*100)));
+  const cls=pct>50?'hi':pct>25?'md':'lo';
+  document.getElementById('sim-output').innerHTML=
+    '<div style="margin:.5rem 0"><div class="fbar-lbl">Boisjoly FHRI (full knowledge): 82.0</div><div class="fbar"><div class="fbar-fill hi" style="width:82%"></div></div></div>'+
+    '<div style="margin:.5rem 0"><div class="fbar-lbl">&sigma; filter loss (morphic residue absorbs '+sigLoss.toFixed(1)+' pts)</div><div class="fbar"><div class="fbar-fill" style="width:'+Math.min(82,sigLoss/82*100)+'%;background:var(--amber)"></div></div></div>'+
+    '<div style="margin:.5rem 0"><div class="fbar-lbl">&mu; filter loss (incentive misalignment absorbs '+muLoss.toFixed(1)+' pts)</div><div class="fbar"><div class="fbar-fill" style="width:'+Math.min(82,muLoss/82*100)+'%;background:var(--red)"></div></div></div>'+
+    '<div style="margin:.8rem 0"><div class="fbar-lbl"><strong>Knowledge reaching launch decision: '+reached.toFixed(1)+' / 82.0 pts ('+pct.toFixed(0)+'%)</strong></div><div class="fbar"><div class="fbar-fill '+cls+'" style="width:'+pct+'%"></div></div></div>'+
+    '<p style="font-size:.8rem;color:var(--muted);font-family:DM Mono,monospace;margin-top:.5rem">'+(pct<20?'At this &sigma;/&mu; configuration, less than 20% of Boisjoly\'s knowledge reaches the decision level. The Challenger launch proceeds regardless of what he knows.':pct<50?'At this configuration, under half his knowledge reaches the decision. His recommendation may be heard but not acted on with full weight.':'At this configuration, over half his knowledge reaches the decision. A recommendation at this level has a real chance of changing the launch decision.')+' Actual Challenger parameters: &sigma;=0.78, &mu;=0.72 &rarr; '+( 82*(1-0.78)*(1-0.72) ).toFixed(1)+' pts reached ('+( (82*(1-0.78)*(1-0.72)/82)*100 ).toFixed(0)+'%).</p>';
+}
+function exportJ_c13(){let t='EBB Chapter 13 Journal\n'+'='.repeat(50)+'\n\n';
+['c13j1','c13j2','c13j3'].forEach((k,i)=>{const e=document.getElementById(k);t+='Q'+(i+1)+':\n\n'+(e?e.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(50)+'\n\n';});
+try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_Ch13_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+window.addEventListener('DOMContentLoaded',()=>{loadJ('c13');updateSim();});
+</script></body></html>

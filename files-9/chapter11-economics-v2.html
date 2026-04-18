@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ch11 — Economics, Extraction &amp; Ethical Response</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);
+  --teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;
+  --green:#4ade80;--blue:#60a5fa;--orange:#fb923c;
+  --text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HEADER */
+.hdr{padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--border);
+  background:linear-gradient(160deg,#0a1a0c 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(74,222,128,.09) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.18em;color:var(--green);text-transform:uppercase;margin-bottom:.5rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2.4rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.ch-ttl em{color:var(--orange);font-style:italic}
+.ch-sub{font-size:.88rem;color:var(--muted);max-width:620px;margin:0 auto;line-height:1.6}
+
+/* TABS */
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem 1rem;background:var(--s);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--green)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;
+  text-transform:uppercase;padding:.4rem .85rem;border-radius:.3rem;
+  border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--green);color:#000;border-color:var(--green);font-weight:600}
+
+.pane{display:none;padding:1.5rem;max-width:880px;margin:0 auto}
+.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* TEXT */
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--orange);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.95rem;color:rgba(255,255,255,.85);margin:.9rem 0 .3rem}
+
+/* PANELS */
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.72;font-size:.88rem}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel.orange{background:rgba(251,146,60,.07);border-left:3px solid var(--orange)}
+.panel strong{color:var(--text)}
+
+/* CASE CARDS */
+.case-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.case-btn{font-size:.8rem;padding:.4rem .9rem;border-radius:2rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;color:var(--muted);transition:all .15s}
+.case-btn:hover{color:var(--text)}.case-btn.active{background:var(--s2);color:var(--text);border-color:var(--orange)}
+.case-panel{display:none}.case-panel.active{display:block;animation:fi .2s ease}
+
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.55rem;margin:.75rem 0}
+.stat-card{background:var(--s);border:1px solid var(--border);border-radius:.45rem;padding:.85rem;text-align:center}
+.stat-num{font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:600;margin-bottom:.2rem}
+.stat-lbl{font-size:.73rem;color:var(--muted);line-height:1.35}
+
+/* SAGE STEPPER */
+.sage-steps{display:flex;gap:.4rem;margin:.75rem 0}
+.sage-step-btn{flex:1;text-align:center;padding:.55rem .3rem;border-radius:.4rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;transition:all .18s}
+.sage-step-btn:hover{background:var(--s2)}
+.sage-step-btn.active{border-color:var(--orange);background:rgba(251,146,60,.08)}
+.sage-step-btn .ss-letter{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:600;color:var(--orange)}
+.sage-step-btn .ss-word{font-size:.65rem;color:var(--muted);display:block;margin-top:.1rem}
+.sage-content{background:#0a0e1c;border:1px solid var(--border);border-radius:.5rem;padding:1.1rem 1.25rem;display:none}
+.sage-content.active{display:block;animation:fi .2s ease}
+
+/* PERSPECTIVE TABS */
+.persp-row{display:flex;gap:.4rem;flex-wrap:wrap;margin:.75rem 0}
+.persp-btn{font-size:.75rem;padding:.32rem .75rem;border-radius:2rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;color:var(--muted);transition:all .15s}
+.persp-btn:hover{color:var(--text)}.persp-btn.active{border-color:var(--teal);color:var(--teal);background:rgba(20,184,166,.06)}
+.persp-panel{display:none}.persp-panel.active{display:block;animation:fi .2s ease}
+
+/* IPS DISPLAY */
+.ips-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:.75rem 0}
+@media(max-width:500px){.ips-grid{grid-template-columns:repeat(3,1fr)}}
+.ips-cell{border:1px solid var(--border);border-radius:.4rem;padding:.7rem .4rem;text-align:center;background:var(--s)}
+.ips-cell .sym{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--orange)}
+.ips-cell .val{font-family:'DM Mono',monospace;font-size:.8rem;margin:.15rem 0}
+.ips-cell .nm{font-size:.6rem;color:var(--muted);line-height:1.3}
+.fhri-row{display:flex;align-items:center;gap:.75rem;background:var(--s2);border-radius:.45rem;
+  padding:.85rem 1rem;margin:.5rem 0;border:1px solid var(--border)}
+.fhri-num{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;flex-shrink:0}
+.fhri-num.low{color:var(--red)}.fhri-num.mid{color:var(--amber)}.fhri-num.high{color:var(--green)}
+.fhri-bar-wrap{flex:1}
+.fhri-bar-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-bottom:.28rem}
+.fhri-bar{height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.fhri-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.fhri-fill.low{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fhri-fill.mid{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fhri-fill.high{background:linear-gradient(90deg,var(--green),#86efac)}
+
+/* AMC PATHWAY */
+.pathway-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.65rem;margin:.75rem 0}
+.pathway-card{border:1px solid var(--border);border-radius:.5rem;padding:1rem;background:var(--s);cursor:pointer;transition:all .18s}
+.pathway-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.pathway-card.active{border-color:var(--teal);background:rgba(20,184,166,.06)}
+.pathway-icon{font-size:1.5rem;margin-bottom:.4rem}
+.pathway-name{font-weight:600;font-size:.88rem;margin-bottom:.2rem}
+.pathway-tag{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted)}
+.pathway-detail{margin-top:.75rem;display:none}.pathway-detail.show{display:block;animation:fi .25s ease}
+
+/* POSITION CARDS */
+.pos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.55rem;margin:.75rem 0}
+.pos-card{border:1px solid var(--border);border-radius:.45rem;padding:.85rem .75rem;
+  cursor:pointer;background:var(--s);text-align:center;transition:all .18s}
+.pos-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.pos-card.selected{border-color:var(--orange);background:rgba(251,146,60,.07)}
+.pos-card .pc-icon{font-size:1.5rem;margin-bottom:.3rem}
+.pos-card .pc-name{font-weight:600;font-size:.82rem;margin-bottom:.15rem}
+.pos-card .pc-desc{font-size:.7rem;color:var(--muted);line-height:1.3}
+.pos-output{margin-top:.9rem;display:none}.pos-output.show{display:block;animation:fi .3s ease}
+.action-row{display:flex;gap:.6rem;margin:.5rem 0;padding:.8rem;background:var(--s);border-radius:.4rem;border:1px solid var(--border)}
+.ar-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
+.ar-body .ar-title{font-weight:600;font-size:.85rem;margin-bottom:.2rem}
+.ar-body .ar-text{font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.6}
+.tag{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:.15rem .45rem;border-radius:.25rem;margin-left:.35rem;vertical-align:middle}
+.tag.t1{background:rgba(248,113,113,.15);color:var(--red)}
+.tag.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+
+/* JOURNAL */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.88rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--orange);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:95px;background:#0a0e1c;border:none;
+  border-top:1px solid var(--border);padding:.9rem;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:.87rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none;background:rgba(251,146,60,.03)}
+.jq-bar{padding:.5rem 1rem;background:var(--s);border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+
+button.btn{background:var(--orange);color:#000;border:none;font-family:'DM Sans',sans-serif;
+  font-weight:600;font-size:.83rem;padding:.55rem 1.2rem;border-radius:.4rem;cursor:pointer;margin:.3rem .2rem;transition:background .15s}
+button.btn:hover{background:var(--amber)}
+button.btn.outline{background:transparent;color:var(--orange);border:1px solid var(--orange)}
+button.btn.outline:hover{background:rgba(251,146,60,.07)}
+
+.bot-nav{max-width:880px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--green);color:#000;font-weight:600;font-size:.78rem;padding:.45rem 1rem;border-radius:.4rem;display:none;z-index:999}
+.sf.show{display:block;animation:slu .2s ease}
+@keyframes slu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="ch-lbl">Ethics Beyond Boundaries &middot; Chapter 11</div>
+  <h1 class="ch-ttl">Economics, <em>Extraction</em> &amp; Ethical Response</h1>
+  <p class="ch-sub">Three real cases, SAGE analysis, IPS structural diagnosis, AMC response pathways, and what you can actually do from where you are</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('cases')">Real Cases</button>
+  <button class="tb" onclick="sw('sage')">SAGE Analysis</button>
+  <button class="tb" onclick="sw('ips')">IPS Simulation</button>
+  <button class="tb" onclick="sw('amc')">AMC Pathways</button>
+  <button class="tb" onclick="sw('culture')">Cultural Resonance</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- ================================================================
+     TAB 1: REAL CASES
+================================================================ -->
+<div class="pane active" id="pane-cases">
+  <div class="panel orange">
+    <strong>These cases are real, named, current, and happening right now.</strong> Each one involves a real institution making structural choices that impose measurable FHRI_max ceilings on real people. Select a case to examine what is happening, who is affected, and what the extraction architecture looks like when you trace it carefully.
+  </div>
+
+  <div class="case-nav">
+    <button class="case-btn active" onclick="setCase('homehealth',this)">&#127968; Home Health Labor</button>
+    <button class="case-btn" onclick="setCase('gig',this)">&#128661; Gig Economy</button>
+    <button class="case-btn" onclick="setCase('reit',this)">&#127970; Single-Family REITs</button>
+  </div>
+
+  <!-- CASE 1: HOME HEALTH -->
+  <div class="case-panel active" id="case-homehealth">
+    <h2 class="st">Case 1: The Home Health Labor Extraction Gap</h2>
+    <p class="bd">A Medicare-certified home health agency in Florida bills the federal government $85 per hour for skilled nursing visits. The registered nurse performing that visit earns $22 per hour. The home health aide performing personal care visits is billed at $42 per hour; she earns $13. The difference &mdash; the spread between what Medicare pays and what the worker receives &mdash; flows through a layered ownership structure: the operating company, a management company collecting an 8% fee, and in many cases a REIT holding the office facilities.</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">$13</div><div class="stat-lbl">Home health aide hourly wage (Florida median, 2024)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">$42</div><div class="stat-lbl">Medicare reimbursement rate per aide hour</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">$29</div><div class="stat-lbl">Extraction gap per hour worked</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">69%</div><div class="stat-lbl">Of Medicare payment extracted before reaching the worker</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--violet)">1.8M</div><div class="stat-lbl">Home health aides in the US (BLS 2024)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--orange)">2040</div><div class="stat-lbl">Year demand doubles as population ages</div></div>
+    </div>
+    <div class="panel red">
+      <strong>The gap is not wages minus profit.</strong> It is wages minus the entire extraction architecture: management fees, LLC layers, REIT rent, debt service on acquisition leverage, and administrative overhead generated by compliance requirements that do not improve care. The Medicare program is publicly funded. The extraction flows to private financial actors. The care workers and the patients bear the consequences of what is extracted.
+    </div>
+    <h3 class="sub">Who is affected and how</h3>
+    <div style="display:grid;gap:.5rem;margin:.6rem 0">
+      <div class="action-row"><div class="ar-icon">&#128105;&#8205;&#9877;</div><div class="ar-body"><div class="ar-title">Maria, Home Health Aide, Tampa FL</div><div class="ar-text">Earns $13/hour, no health insurance through employer, no paid sick leave. Works two jobs (68 hours/week) to cover rent and childcare. Below the Sapolsky threshold for planning beyond the next two weeks. FHRI estimated at 28 &mdash; high enough to be a skilled, caring worker; too low to organize, advocate, or plan structural change from her position.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#128118;</div><div class="ar-body"><div class="ar-title">Mrs. Chen, 84, Home Health Patient, Pinellas County</div><div class="ar-text">Receives 4 hours of aide visits per week &mdash; the maximum her Medicare plan authorizes. Her aide turns over every 4 months on average (national rate for proprietary agencies). Each turnover resets the relationship, the care knowledge, and the fall-prevention protocol. The continuity of care that prevents hospitalization requires an aide who knows her. The extraction architecture makes that continuity economically irrational.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#128106;</div><div class="ar-body"><div class="ar-title">Mrs. Chen&rsquo;s daughter, informal caregiver</div><div class="ar-text">Works reduced hours to supplement the 4 formal aide hours with 20+ hours of informal care per week. Estimated national informal care value: $470 billion/year (AARP 2023). This unpaid labor is the structural subsidy that makes the extraction arithmetic work. The extraction architecture externalizes care costs onto family members, predominantly women.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#128184;</div><div class="ar-body"><div class="ar-title">The extraction architecture</div><div class="ar-text">A private equity-backed management company collecting 8% of revenue. A real estate investment trust holding the office and billing infrastructure. An LLC operating company carrying the employer-of-record liability. None of these entities appears in the Medicare billing relationship. The entity receiving public funds and the entity determining the wage are legally separated by design.</div></div></div>
+    </div>
+    <div class="panel teal">
+      <strong>Why this case connects to our data.</strong> Our IPS calibration used CMS HHVBP data from 12,239 home health agencies. The mean Adjusted Payment Percentage across all agencies was +0.30% &mdash; approximately $1,500/year. The extraction architecture produces a $29/hour gap per aide. The VBP incentive is structurally insufficient to change the wage by design: it operates at a different leverage level than the ownership structure that determines wages. This is the T2/T1 distinction made concrete and personal.
+    </div>
+  </div>
+
+  <!-- CASE 2: GIG ECONOMY -->
+  <div class="case-panel" id="case-gig">
+    <h2 class="st">Case 2: Gig Economy Misclassification &mdash; Uber &amp; Lyft in Florida</h2>
+    <p class="bd">Uber and Lyft classify their drivers as independent contractors rather than employees. This classification is not a neutral description of the employment relationship &mdash; it is a structural choice that determines which Nussbaum capabilities workers can access. Independent contractor status removes the employer&rsquo;s obligation to provide minimum wage guarantees, overtime pay, unemployment insurance, workers&rsquo; compensation, and the right to organize under the National Labor Relations Act.</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">$10.89</div><div class="stat-lbl">Uber driver median hourly earnings after expenses (Economic Policy Institute 2023)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">$39.61</div><div class="stat-lbl">Uber gross revenue per driver-hour (company filings)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">72%</div><div class="stat-lbl">Of revenue retained by platform before driver expenses</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">0</div><div class="stat-lbl">Uber contributions to Social Security, Medicare, or unemployment insurance per driver</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--violet)">$1.3B</div><div class="stat-lbl">Uber and Lyft spent opposing California Prop 22 to preserve contractor classification</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--orange)">38%</div><div class="stat-lbl">Of gig workers report food insecurity (Pew Research 2021)</div></div>
+    </div>
+    <div class="panel amber">
+      <strong>The &ldquo;flexibility&rdquo; argument is the Triadic Hack applied to labor.</strong> Uber&rsquo;s marketing tells drivers they are &ldquo;entrepreneurs&rdquo; with &ldquo;freedom&rdquo; and &ldquo;flexibility.&rdquo; The Sign is intact (drivers can choose their hours). The Signal is intact (the app accurately shows earnings per trip). The Interpretant has been replaced: &ldquo;flexibility&rdquo; has been substituted for &ldquo;employment security,&rdquo; and the driver experiences this substitution as a feature of their own autonomous choice rather than as a structural design that transfers risk from the corporation to the worker.
+    </div>
+    <h3 class="sub">The Nussbaum Capabilities Audit</h3>
+    <p class="bd">Martha Nussbaum argues that a just society ensures each person has access to ten central capabilities. The gig misclassification architecture systematically eliminates access to several:</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.6rem 0">
+      <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.8rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.35rem">CAPABILITIES ELIMINATED</div>
+        <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+          <strong>Bodily Health</strong> &mdash; No employer health insurance<br>
+          <strong>Bodily Integrity</strong> &mdash; No workers&rsquo; compensation<br>
+          <strong>Practical Reason</strong> &mdash; Income volatility prevents planning<br>
+          <strong>Affiliation</strong> &mdash; No right to collective organizing<br>
+          <strong>Control over Environment</strong> &mdash; No unemployment insurance
+        </div>
+      </div>
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:.4rem;padding:.8rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--green);margin-bottom:.35rem">WHAT IS PRESERVED</div>
+        <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+          <strong>Senses/Thought</strong> &mdash; No change<br>
+          <strong>Emotions</strong> &mdash; No change<br>
+          <strong>Other Species/Play</strong> &mdash; No change<br>
+          <br>
+          The capabilities preserved are those that require nothing from the employer. The capabilities eliminated are precisely those that require employer investment.
+        </div>
+      </div>
+    </div>
+    <div class="panel green">
+      <strong>The IPS reading: &mu; = 0.91.</strong> Uber&rsquo;s incentive architecture is nearly perfectly misaligned with driver welfare. The platform&rsquo;s optimization target (minimizing per-ride cost to maximize market share) is directly opposed to the driver&rsquo;s coordination need (stable income sufficient to maintain Nussbaum&rsquo;s capability floor). The platform measures and rewards driver throughput. The workers&rsquo; wellbeing is not a variable in the optimization function.
+    </div>
+  </div>
+
+  <!-- CASE 3: REIT -->
+  <div class="case-panel" id="case-reit">
+    <h2 class="st">Case 3: Single-Family REIT Housing Extraction &mdash; Invitation Homes</h2>
+    <p class="bd">Invitation Homes is the largest single-family rental REIT in the United States, owning approximately 80,000 homes across 16 markets. It was created through a post-2008 financial crisis strategy of bulk-purchasing foreclosed homes at distressed prices with private equity backing (Blackstone), then converting them to rental properties and taking the company public as a REIT in 2017. The REIT structure requires distributing 90% of taxable income as dividends, which creates a structural preference for revenue extraction over property maintenance investment.</p>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">80K</div><div class="stat-lbl">Single-family homes owned by Invitation Homes across 16 markets</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">27%</div><div class="stat-lbl">Rent increase imposed by Invitation Homes in 2021&ndash;2022 (ACCE Institute)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">5x</div><div class="stat-lbl">More likely to file eviction notices than small landlords (Princeton Eviction Lab)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--violet)">2%</div><div class="stat-lbl">Decline in neighboring property values when REIT-owned rental enters a block</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--orange)">$25M</div><div class="stat-lbl">FTC fine for illegal fees and deceptive practices (2024)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">$550M</div><div class="stat-lbl">Invitation Homes annual dividends to shareholders (2023)</div></div>
+    </div>
+    <div class="panel red">
+      <strong>The maintenance trap is structural, not individual.</strong> When a REIT must distribute 90% of taxable income, property renovation is disadvantaged: capital expenditure on renovation reduces current taxable income, lowering the dividend that the REIT structure requires. Deferred maintenance preserves the dividend. The $25M FTC fine for illegal fees represents approximately 4.5% of one year&rsquo;s dividends &mdash; economically rational to absorb as a cost of doing business. This is the T2 regulatory response to a T1 structural failure, in real time, confirmed by the numbers.
+    </div>
+    <h3 class="sub">What housing extraction does to community FHRI_max</h3>
+    <p class="bd">The home is not just a financial asset. It is the physical substrate of the capability floor Nussbaum identifies as essential to human agency. When housing becomes a vehicle for extraction rather than a stable platform for family and community development, the FHRI_max of the community falls &mdash; not metaphorically but structurally:</p>
+    <div style="display:grid;gap:.45rem;margin:.6rem 0">
+      <div class="action-row"><div class="ar-icon">&#128171;</div><div class="ar-body"><div class="ar-title">Residential instability suppresses long-horizon planning</div><div class="ar-text">Sapolsky&rsquo;s research establishes that chronic housing insecurity produces glucocorticoid loads that suppress prefrontal cortex function &mdash; the biological substrate of future planning, delayed gratification, and complex ethical reasoning. Housing extraction is not an economic harm that exists separately from individual agency. It degrades the biological conditions for agency directly.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#127978;</div><div class="ar-body"><div class="ar-title">REIT ownership destabilizes school enrollment</div><div class="ar-text">Eviction rates 5x higher than small landlords means higher student mobility rates in affected school districts. Research (Grigg 2012) shows each school move costs students approximately 0.36 standard deviations in academic achievement. The extraction architecture imposes educational costs on children who had no role in the transaction.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#127774;</div><div class="ar-body"><div class="ar-title">Deferred maintenance produces neighborhood &phi; increase</div><div class="ar-text">Physical entropy (&phi;) in our IPS framework measures substrate degradation. When 80,000 homes defer maintenance simultaneously, the physical quality of the surrounding neighborhood degrades. The 2% neighboring property value decline documented in the research is the external measurement of &phi; accumulation being externalized by the extraction architecture onto adjacent property owners who made no financial transaction with Invitation Homes.</div></div></div>
+    </div>
+    <div class="panel teal"><strong>The FTC fine demonstrates the T2 trap precisely.</strong> The regulatory response (T2: fine the operator for illegal fees) does not address the structural configuration (T1: the REIT dividend distribution requirement that makes maintenance economically irrational). After the fine, Invitation Homes continues operating with the same structural parameters. The fine is absorbed as a cost of the extraction architecture. Nothing structural has changed.</div>
+  </div>
+</div>
+
+<!-- ================================================================
+     TAB 2: SAGE ANALYSIS
+================================================================ -->
+<div class="pane" id="pane-sage">
+  <h2 class="st">SAGE Applied: The Home Health Case</h2>
+  <div class="panel orange">
+    <strong>SAGE is a tool, not a ritual.</strong> The four steps &mdash; Situation, Affected, Grounds, Evaluate &mdash; are meant to prevent the most common ethical reasoning errors: stopping at the visible agent instead of the structural architecture, applying only one ethical tradition instead of four, and jumping to action without understanding what leverage level your action reaches.
+  </div>
+
+  <div class="sage-steps">
+    <button class="sage-step-btn active" onclick="setSage('s')"><span class="ss-letter">S</span><span class="ss-word">Situation</span></button>
+    <button class="sage-step-btn" onclick="setSage('a')"><span class="ss-letter">A</span><span class="ss-word">Affected</span></button>
+    <button class="sage-step-btn" onclick="setSage('g')"><span class="ss-letter">G</span><span class="ss-word">Grounds</span></button>
+    <button class="sage-step-btn" onclick="setSage('e')"><span class="ss-letter">E</span><span class="ss-word">Evaluate</span></button>
+  </div>
+
+  <!-- S -->
+  <div class="sage-content active" id="sage-s">
+    <h3 class="sub">Situation: What is structurally happening?</h3>
+    <p class="bd">Before asking &ldquo;what should be done,&rdquo; SAGE requires accurate structural description. The most common error in economic ethics is naming the visible agent (the low-wage employer) when the causal structure extends to the ownership architecture, the regulatory framework, and the financial incentive system that determines the employer&rsquo;s options.</p>
+    <p class="bd">The home health situation has four distinct structural layers, each with its own ethical claim:</p>
+    <div style="display:grid;gap:.5rem;margin:.6rem 0">
+      <div style="background:var(--s);border-left:3px solid var(--red);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--red);margin-bottom:.3rem">LAYER 1 &mdash; FINANCIAL EXTRACTION (&epsilon; = 0.32&ndash;0.64 by ownership type)</div>
+        <div style="font-size:.85rem;line-height:1.7">Management fees, REIT rents, PE debt service, and LLC structural separation extract 29&ndash;69% of Medicare revenue before it reaches the worker. This is the structural cause. No amount of individual employer goodwill changes the arithmetic of this architecture.</div>
+      </div>
+      <div style="background:var(--s);border-left:3px solid var(--amber);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber);margin-bottom:.3rem">LAYER 2 &mdash; REGULATORY DESIGN (&rho; and &mu;)</div>
+        <div style="font-size:.85rem;line-height:1.7">The VBP program produces +$1,500/year average incentive. The worker classification framework permits contractor misclassification. The ownership disclosure requirements are insufficient to make &epsilon; visible to regulators or families. These are policy choices, not natural conditions.</div>
+      </div>
+      <div style="background:var(--s);border-left:3px solid var(--violet);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--violet);margin-bottom:.3rem">LAYER 3 &mdash; LABOR MARKET STRUCTURE (monopsony)</div>
+        <div style="font-size:.85rem;line-height:1.7">In many Florida counties, 3&ndash;5 large home health chains control 70%+ of aide employment. This is a monopsony condition &mdash; workers face a limited number of buyers for their labor, suppressing wages below competitive market rates independent of any individual employer decision.</div>
+      </div>
+      <div style="background:var(--s);border-left:3px solid var(--teal);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);margin-bottom:.3rem">LAYER 4 &mdash; EXTERNALIZED COSTS</div>
+        <div style="font-size:.85rem;line-height:1.7">The extraction architecture externalizes its costs onto: the public Medicaid system (aide poverty drives Medicaid enrollment), informal family caregivers (predominantly women, $470B/year unpaid), the patients who receive less continuous care (higher hospitalization rates), and communities with degraded care workforce capacity.</div>
+      </div>
+    </div>
+    <div class="panel amber"><strong>The structural diagnosis:</strong> The situation is not &ldquo;employers pay low wages.&rdquo; The situation is &ldquo;a financial architecture extracts 69% of public Medicare funding before it reaches the care worker, while a regulatory framework produces incentive adjustments of $1,500/year that cannot change this extraction rate.&rdquo; These two descriptions lead to radically different ethical evaluations and different action strategies.</div>
+  </div>
+
+  <!-- A -->
+  <div class="sage-content" id="sage-a">
+    <h3 class="sub">Affected: Who bears the consequences?</h3>
+    <p class="bd">SAGE requires mapping the full web of impact &mdash; not just the immediately visible parties. In economic structural analysis, the most important affected parties are often those farthest from the visible transaction.</p>
+
+    <div style="display:grid;gap:.5rem;margin:.6rem 0">
+      <div class="action-row"><div class="ar-icon">&#128105;&#8205;&#9877;</div><div class="ar-body">
+        <div class="ar-title">1.8 million home health aides (US)</div>
+        <div class="ar-text"><strong>Immediate harm:</strong> median wage $13&ndash;$16/hour, no employer health insurance, no paid sick leave, high injury rates (top 5 most injured occupations), 35% annual turnover. <strong>Downstream harm:</strong> retirement insecurity (no employer pension contribution), accumulated occupational health costs, intergenerational poverty transmission. <strong>Structural harm:</strong> skills and knowledge not compensated &mdash; the relational expertise that prevents hospitalizations is treated as worthless by the extraction architecture.</div>
+      </div></div>
+      <div class="action-row"><div class="ar-icon">&#128118;</div><div class="ar-body">
+        <div class="ar-title">Patients dependent on home health (8M+ annually)</div>
+        <div class="ar-text"><strong>Immediate harm:</strong> care quality constrained by FHRI_max ceiling. High aide turnover means care plans reset repeatedly. Continuity of care &mdash; the primary mechanism preventing hospitalization &mdash; is structurally undervalued. <strong>Downstream harm:</strong> increased hospitalization rates in high-extraction facilities (11% in nursing home PE analog). <strong>For Mrs. Chen specifically:</strong> her independence, dignity, and safety depend on a care relationship that the extraction architecture makes economically irrational to sustain.</div>
+      </div></div>
+      <div class="action-row"><div class="ar-icon">&#127981;</div><div class="ar-body">
+        <div class="ar-title">Medicare and Medicaid (public payers, ultimately taxpayers)</div>
+        <div class="ar-text"><strong>Immediate harm:</strong> public funds flow through the extraction architecture and reach the care worker at 31 cents on the dollar. <strong>Systemic harm:</strong> the extraction architecture is publicly subsidized. Medicare reimburses the billed rate regardless of how much flows to care vs. extraction. The public is paying for extraction.</div>
+      </div></div>
+      <div class="action-row"><div class="ar-icon">&#128106;</div><div class="ar-body">
+        <div class="ar-title">Informal family caregivers (predominantly women)</div>
+        <div class="ar-text"><strong>Immediate harm:</strong> fill the gap between formal care (limited by extraction-determined staffing) and patient need. $470B/year in unpaid labor (AARP). <strong>Career harm:</strong> reduced labor force participation, lower lifetime earnings, lower Social Security benefits, higher poverty rates in retirement. <strong>The hidden subsidy:</strong> the extraction architecture works precisely because this unpaid labor absorbs the consequences of its insufficiency.</div>
+      </div></div>
+      <div class="action-row"><div class="ar-icon">&#127968;</div><div class="ar-body">
+        <div class="ar-title">Communities with degraded care workforce</div>
+        <div class="ar-text"><strong>Structural harm:</strong> communities where care work is poorly compensated develop workforce shortages (people leave the sector). The shortage worsens the extraction opportunity (scarcity drives demand). This is the self-reinforcing loop of the care economy: extraction produces shortage, shortage justifies billing rates, billing rates fund further extraction, shortage persists. The community&rsquo;s capacity to care for its aging population is structurally consumed.</div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- G -->
+  <div class="sage-content" id="sage-g">
+    <h3 class="sub">Grounds: What the ethical traditions say</h3>
+    <p class="bd">Different ethical traditions illuminate different aspects of the same structural situation. No single tradition is sufficient. The IPS framework connects them by identifying what each tradition is tracking in the structural configuration.</p>
+
+    <div class="persp-row">
+      <button class="persp-btn active" onclick="setPersp('care',this)">Care Ethics</button>
+      <button class="persp-btn" onclick="setPersp('fairness',this)">Fairness / Justice</button>
+      <button class="persp-btn" onclick="setPersp('consequentialism',this)">Consequentialism</button>
+      <button class="persp-btn" onclick="setPersp('virtue',this)">Virtue / Duty</button>
+      <button class="persp-btn" onclick="setPersp('nussbaum',this)">Capabilities</button>
+    </div>
+
+    <div class="persp-panel active" id="persp-care">
+      <div class="panel" style="border-left:3px solid #4A90A4;background:rgba(74,144,164,.07)">
+        <strong style="color:#4A90A4">Care Ethics (Gilligan, Noddings, Held)</strong><br><br>
+        Care Ethics begins with the web of relationships of dependency and asks: who is most vulnerable? What do those relationships of care require? The home health situation reveals a structural violation of care: Maria&rsquo;s relationship to Mrs. Chen is one of genuine care &mdash; she knows her patient&rsquo;s preferences, her fall risks, her family dynamics. This relational knowledge is the actual source of the safety that prevents hospitalization.<br><br>
+        The extraction architecture treats this relational knowledge as having zero economic value. The billing rate reflects the hour, not the relationship. High turnover destroys the relationship and resets the care knowledge to zero &mdash; exactly the moment when the patient is most vulnerable. Care Ethics identifies this as not merely unjust but as a category error: the economic system has failed to recognize what care actually is.<br><br>
+        <strong>Care Ethics verdict on the extraction architecture:</strong> It violates the fundamental obligation of institutions that engage in relationships of care dependency to maintain the conditions that make genuine care possible. FHRI_max = 14 in a care institution is an institutional commitment to providing the appearance of care while structurally preventing its substance.
+      </div>
+    </div>
+    <div class="persp-panel" id="persp-fairness">
+      <div class="panel" style="border-left:3px solid #6B8E4E;background:rgba(107,142,78,.07)">
+        <strong style="color:#6B8E4E">Fairness &amp; Justice (Rawls, Nozick, Walzer)</strong><br><br>
+        <strong>Rawls behind the veil of ignorance:</strong> Would you design the home health labor architecture if you didn&rsquo;t know whether you&rsquo;d be the PE investor, the agency operator, the aide, Mrs. Chen, or Mrs. Chen&rsquo;s daughter? The answer is unambiguously no. The veil of ignorance test fails: no one would rationally choose a system that extracts 69% of public care funding before it reaches the worker, if they faced equal probability of being that worker.<br><br>
+        <strong>Nozick&rsquo;s entitlement theory:</strong> Even on libertarian grounds, the extraction architecture has a problem. Medicare reimbursement is a public contract for the delivery of care. The public pays for care services. The extraction architecture diverts public funds from care services to financial extraction. This is not a free market transaction &mdash; it is a contractual violation of the terms under which the public funds were allocated.<br><br>
+        <strong>Walzer on spheres of justice:</strong> The care economy is a sphere in which money should not be the dominant good. Transforming care relationships into financial extraction vehicles violates the principle that different spheres of social life have their own appropriate distributive logic. The home health extraction architecture colonizes the sphere of care with the logic of financial extraction.
+      </div>
+    </div>
+    <div class="persp-panel" id="persp-consequentialism">
+      <div class="panel" style="border-left:3px solid #8B7BA8;background:rgba(139,123,168,.07)">
+        <strong style="color:#8B7BA8">Consequentialism (Mill, Singer, Effective Altruism)</strong><br><br>
+        Consequentialism is strongest here because we now have quantified outcomes. The comparison is not between one ethical system and another &mdash; it is between two ownership structures with measured outcome differences:<br><br>
+        Non-profit home health agencies (FHRI_max = 62.9): DTC rate 74.9%, lower hospitalization rates, lower turnover (22% vs 35%), better care continuity scores.<br><br>
+        Proprietary agencies (FHRI_max = 37.3): DTC rate 72.1%, higher hospitalization rates, higher turnover, lower care continuity.<br><br>
+        The 25.6-point FHRI_max gap produces measurable patient outcome differences. The aggregate consequence of the extraction architecture, applied across 12,239 home health agencies and 8 million patients annually, is quantifiable in hospitalizations prevented, falls avoided, and quality-adjusted life years maintained or lost.<br><br>
+        <strong>Consequentialist verdict:</strong> The extraction architecture produces worse aggregate outcomes than the structural alternative (non-profit ownership) at every measured point. Maximizing aggregate welfare requires T1 structural reform of ownership architecture, not T2 optimization within the existing extraction structure.
+      </div>
+    </div>
+    <div class="persp-panel" id="persp-virtue">
+      <div class="panel" style="border-left:3px solid #C17B7B;background:rgba(193,123,123,.07)">
+        <strong style="color:#C17B7B">Virtue Ethics &amp; Duty (Aristotle, Kant, MacIntyre)</strong><br><br>
+        <strong>Aristotle on the telos of institutions:</strong> Every institution has a proper function (telos) &mdash; the purpose that defines what excellence (arete) looks like for it. A home health agency&rsquo;s telos is the provision of quality care enabling patient independence and dignity. An agency structurally configured to maximize financial extraction at the expense of care quality has corrupted its own telos. MacIntyre would say it has substituted &ldquo;external goods&rdquo; (financial return) for the &ldquo;internal goods&rdquo; (excellence in care) that define the practice.<br><br>
+        <strong>Kant&rsquo;s categorical imperative:</strong> Could we universalize the extraction architecture? If every institution of care were configured as PE-acquired nursing homes are, with FHRI_max = 14, the practice of care would cease to exist as a meaningful category. Universalization fails: the extraction architecture is parasitic on the existence of genuine care institutions that it is systematically destroying.<br><br>
+        <strong>Duty of Maria:</strong> Maria has a genuine professional duty to her patients. The extraction architecture is not a reason to abandon that duty &mdash; it is a reason to recognize that the duty extends beyond individual care to include the obligation to name the structural condition accurately and refuse to normalize it. Filing incident reports, supporting union organizing, speaking to regulatory agencies: these are duty-fulfilling acts, not supererogatory heroism.
+      </div>
+    </div>
+    <div class="persp-panel" id="persp-nussbaum">
+      <div class="panel" style="border-left:3px solid var(--teal);background:rgba(20,184,166,.07)">
+        <strong style="color:var(--teal)">Capabilities Approach (Nussbaum, Sen)</strong><br><br>
+        Nussbaum asks not &ldquo;how much do people earn?&rdquo; but &ldquo;what are people actually able to DO and BE?&rdquo; The capability framework maps directly onto FHRI: the Functional Health Resilience Index measures how much of an agent&rsquo;s capacity to coordinate coherent action is structurally available in their institutional context.<br><br>
+        Maria earns $13/hour. Below the capability threshold for:<br>
+        &bull; <strong>Bodily health</strong>: no employer health insurance, high injury rates in top-5 most-injured occupation<br>
+        &bull; <strong>Practical reason</strong>: below Sapolsky threshold for planning beyond 2 weeks<br>
+        &bull; <strong>Control over environment</strong>: no union rights as misclassified contractor in many agency structures<br>
+        &bull; <strong>Affiliation</strong>: 35% annual turnover destroys the ongoing relationships that constitute meaningful work<br><br>
+        <strong>The crucial Nussbaum insight:</strong> Maria has the &ldquo;formal freedom&rdquo; to choose her employer. She lacks the &ldquo;substantive freedom&rdquo; to choose a structurally different work relationship, because the extraction architecture defines the terms of employment across most of the sector. Formal freedom inside structural extraction is not freedom. It is the appearance of freedom with the substance removed &mdash; the Triadic Hack applied to labor markets.
+      </div>
+    </div>
+  </div>
+
+  <!-- E -->
+  <div class="sage-content" id="sage-e">
+    <h3 class="sub">Evaluate: What action is indicated at each leverage level?</h3>
+    <p class="bd">SAGE&rsquo;s evaluative step matches the ethical response to the structural level at which it can be effective. Different actors have access to different leverage levels. The evaluation must be honest about this &mdash; prescribing T1 interventions to actors who only have T2 access is ethically irresponsible, not aspirationally inspiring.</p>
+    <div class="pos-grid">
+      <div class="pos-card" onclick="setEvalPos('student',this)"><div class="pc-icon">&#128218;</div><div class="pc-name">Student / Citizen</div><div class="pc-desc">Community college student, first job, no institutional leverage</div></div>
+      <div class="pos-card" onclick="setEvalPos('worker',this)"><div class="pc-icon">&#128105;&#8205;&#9877;</div><div class="pc-name">Care Worker</div><div class="pc-desc">Inside the extraction architecture, no formal power</div></div>
+      <div class="pos-card" onclick="setEvalPos('family',this)"><div class="pc-icon">&#128106;</div><div class="pc-name">Patient Family</div><div class="pc-desc">Making care decisions, information asymmetry</div></div>
+      <div class="pos-card" onclick="setEvalPos('manager',this)"><div class="pc-icon">&#128193;</div><div class="pc-name">Agency Manager</div><div class="pc-desc">Institutional leverage, constrained by ownership</div></div>
+      <div class="pos-card" onclick="setEvalPos('policy',this)"><div class="pc-icon">&#127979;</div><div class="pc-name">Policy / Advocacy</div><div class="pc-desc">Regulatory reach, political access</div></div>
+      <div class="pos-card" onclick="setEvalPos('investor',this)"><div class="pc-icon">&#128201;</div><div class="pc-name">Impact Investor</div><div class="pc-desc">Capital allocation, can condition returns on FHRI_max</div></div>
+    </div>
+    <div class="pos-output" id="eval-output"></div>
+  </div>
+</div>
+
+<!-- ================================================================
+     TAB 3: IPS SIMULATION
+================================================================ -->
+<div class="pane" id="pane-ips">
+  <h2 class="st">IPS Structural Profile: Home Health &amp; Care Economy</h2>
+  <div class="panel orange"><strong>These are real data, not hypotheticals.</strong> The IPS profiles below are derived from CMS HHVBP 2024 data (12,239 agencies), Peterson et al. 2025 nursing home data, and BLS occupational wage statistics. Select an ownership type to see its structural profile and what FHRI_max means for the workers and patients inside it.</div>
+
+  <div class="case-nav">
+    <button class="case-btn active" onclick="setIps('pe',this)">PE-Acquired NH</button>
+    <button class="case-btn" onclick="setIps('prop_hh',this)">Proprietary HH</button>
+    <button class="case-btn" onclick="setIps('np',this)">Non-Profit/Gov</button>
+    <button class="case-btn" onclick="setIps('worker_coop',this)">Worker Cooperative</button>
+  </div>
+  <div id="ips-display"></div>
+
+  <div class="panel teal" style="margin-top:1rem">
+    <strong>What FHRI_max means for ethics.</strong> Every ethical tradition examined in Tab 2 &mdash; Care Ethics, Fairness, Consequentialism, Virtue, Capabilities &mdash; is measuring the same underlying structural fact from a different vantage point. FHRI_max is the common structural ground beneath all of them. When Care Ethics says the care relationship has been violated, it is observing the consequence of FHRI_max = 14. When Nussbaum says capabilities have been removed, she is observing the population living inside FHRI_max = 14. The IPS framework does not replace these traditions. It gives them a shared measurement.
+  </div>
+</div>
+
+<!-- ================================================================
+     TAB 4: AMC RESPONSE PATHWAYS
+================================================================ -->
+<div class="pane" id="pane-amc">
+  <h2 class="st">AMC Response Pathways</h2>
+  <div class="panel teal">
+    <strong>The Adaptive Moral Commonwealth is not a utopian vision.</strong> It is a specific set of institutional instruments &mdash; BioBond, True Solvency Accounting, ACP support, FHRI_max measurement infrastructure &mdash; designed to address the structural failures identified in the SAGE analysis. Select each instrument to see how it applies to the care economy extraction problem.
+  </div>
+
+  <div class="pathway-grid">
+    <div class="pathway-card" onclick="setPathway('acp',this)"><div class="pathway-icon">&#128101;</div><div class="pathway-name">ACP: Agent Support</div><div class="pathway-tag">Bottom-Up &bull; Immediate</div></div>
+    <div class="pathway-card" onclick="setPathway('biobond',this)"><div class="pathway-icon">&#128200;</div><div class="pathway-name">BioBond Instrument</div><div class="pathway-tag">Capital &bull; T1 Structural</div></div>
+    <div class="pathway-card" onclick="setPathway('tsa',this)"><div class="pathway-icon">&#128202;</div><div class="pathway-name">True Solvency Accounting</div><div class="pathway-tag">Regulatory &bull; Long-Horizon</div></div>
+    <div class="pathway-card" onclick="setPathway('measurement',this)"><div class="pathway-icon">&#128302;</div><div class="pathway-name">FHRI_max Measurement</div><div class="pathway-tag">Research &bull; Enabling</div></div>
+    <div class="pathway-card" onclick="setPathway('t1policy',this)"><div class="pathway-icon">&#127979;</div><div class="pathway-name">T1 Policy Instruments</div><div class="pathway-tag">Governance &bull; Structural</div></div>
+    <div class="pathway-card" onclick="setPathway('maathai',this)"><div class="pathway-icon">&#127795;</div><div class="pathway-name">Low-&epsilon; Alternatives</div><div class="pathway-tag">Community &bull; Structural</div></div>
+  </div>
+
+  <div class="pathway-detail" id="pathway-detail"></div>
+
+  <div class="panel amber" style="margin-top:1rem">
+    <strong>What has been tried (T2) and why it was insufficient.</strong> The following T2 interventions have been implemented and have not closed the structural gap: HHVBP VBP (+$1,500/year average, structurally insufficient); DOL wage theft enforcement (addresses individual violations, not structural extraction); state minimum wage increases (improve the floor within unchanged extraction architecture, cannot change &epsilon;); quality rating systems (measure outcomes of structural failure, cannot change structural parameters). The pattern is consistent: T2 interventions measure the problem accurately and produce consequences insufficient to change the structural parameters causing it.
+  </div>
+</div>
+
+<!-- ================================================================
+     TAB 5: CULTURAL RESONANCE
+================================================================ -->
+<div class="pane" id="pane-culture">
+  <h2 class="st">Cultural Resonance: Two Prior Art Texts</h2>
+  <div class="panel orange">
+    <strong>Science fiction does not illustrate the economics chapter.</strong> It discovered the structural dynamics before the data existed to prove them. These two texts are &ldquo;prior art&rdquo; &mdash; genuine intellectual precursors to the IPS framework that make the abstract parameters emotionally accessible. They occupy one tab, proportionate to their role: the entry point, not the primary content.
+  </div>
+
+  <div class="case-nav">
+    <button class="case-btn active" onclick="setCulture('walle',this)">Wall-E (2008)</button>
+    <button class="case-btn" onclick="setCulture('stby',this)">Sorry to Bother You (2018)</button>
+  </div>
+
+  <div class="case-panel active" id="cult-walle">
+    <h3 class="sub">Wall-E as prior art for &epsilon; at civilizational scale</h3>
+    <p class="bd">Buy-N-Large&rsquo;s economic logic is identical to the PE-acquired nursing home&rsquo;s: extract maximum resource flow, defer the costs onto the substrate (the Earth, the bodies of care workers, the communities dependent on care), maintain operational continuity while replacing the goal. The film&rsquo;s achievement is compressing a 50-year extraction arc into 90 minutes with a robot as its conscience.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0">
+      <div class="panel orange" style="margin:0"><strong>Wall-E&rsquo;s economics</strong><div style="font-size:.82rem;margin-top:.3rem;line-height:1.6">Buy-N-Large extracts all productive value from Earth&rsquo;s ecosystem. &epsilon; approaches 1.0. &phi; (physical entropy) collapses the biological substrate. The Axiom passengers are the care economy&rsquo;s patients: maintained in comfort (FHRI high), incapable of self-direction (FHRI_max near zero).</div></div>
+      <div class="panel green" style="margin:0"><strong>The Maathai principle in the ruins</strong><div style="font-size:.82rem;margin-top:.3rem;line-height:1.6">Wall-E&rsquo;s function &mdash; care, attention, memory &mdash; is the low-&epsilon; alternative. He does not fight Buy-N-Large. He tends the plant. The Cleveland Evergreen Cooperatives tend the plant. The community land trust tends the plant. The non-profit home health agency with FHRI_max = 62 tends the plant.</div></div>
+    </div>
+    <div class="panel teal"><strong>The IPS parameters of Buy-N-Large civilization:</strong> &epsilon; = 0.97 (near-total extraction), &phi; = 0.95 (Earth substrate destroyed), &mu; = 0.85 (corporate optimization aligned with shareholder return, not human flourishing), &sigma; = 0.70 (700 years of accumulated operational procedure), &rho; = 0.20 (minimal regulatory burden &mdash; regulation itself has been captured). FHRI_max for Axiom passengers: approximately 2. This is where the home health extraction trajectory leads if unaddressed.</div>
+  </div>
+
+  <div class="case-panel" id="cult-stby">
+    <h3 class="sub">Sorry to Bother You as prior art for &mu; as career trap</h3>
+    <p class="bd">Cassius Green&rsquo;s &ldquo;white voice&rdquo; is the career-level version of the same structural dynamic operating in home health. He learns that optimizing for the institutional metric (the performance Regalview rewards) produces institutional success and moral injury simultaneously. The information architecture passes the white voice. It suppresses the genuine voice. This is the information filter the VBP system runs: it passes compliance metrics; it suppresses the signal that care quality is collapsing under extraction pressure.</p>
+    <div class="panel amber"><strong>The WorryFree endpoint.</strong> The film&rsquo;s satirical leap &mdash; a corporation that offers lifetime housing and food in exchange for labor servitude, then biologically modifies workers to optimize their productive capacity &mdash; is not as distant from the home health case as it appears. The extraction architecture already modifies workers: chronic low wages produce the specific stress physiology Sapolsky documents, suppressing prefrontal cortex function and locking workers in short-horizon survival cognition. The biological modification is already happening. WorryFree makes it explicit.</div>
+    <div class="panel green"><strong>The strike sequence is the T1/T2 choice made visible.</strong> Cassius&rsquo;s individual work performance (T2): excellent agent behavior within unchanged extraction parameters. The RegalView workers&rsquo; collective action (T1 attempt): organizing to change the structural conditions of extraction. The film is honest that T1 is harder and that individual agents face real costs for pursuing it. This is not cynicism. It is accurate structural analysis that the course validates with data.</div>
+  </div>
+</div>
+
+<!-- ================================================================
+     TAB 6: JOURNAL
+================================================================ -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions move from structural analysis to personal ethical commitment. They are designed to be uncomfortable in a productive direction &mdash; toward action that is structurally honest about its leverage level.</p>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q1</span>Before this chapter, when you thought about low-wage work, where did your moral framing go? Individual choices? Luck? The economy in general? Having now traced the extraction architecture through four structural layers, does the location of your moral concern shift? Where does it settle?</div>
+    <textarea class="jq-ta" id="j1" oninput="sv()" placeholder="Be specific about what changed and what did not..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div>
+  </div>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q2</span>Apply the Nussbaum capabilities audit to your own situation. Which of the ten capabilities do you have genuine substantive access to (not just formal access)? Where is the gap between your formal freedom and your substantive freedom? What structural condition produces that gap?</div>
+    <textarea class="jq-ta" id="j2" oninput="sv()" placeholder="Life, Bodily Health, Bodily Integrity, Senses/Thought, Emotions, Practical Reason, Affiliation, Other Species, Play, Control over Environment..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div>
+  </div>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q3</span>The SAGE evaluation (Tab 2) gave you actions matched to your structural position. Select the position that most closely matches your actual situation and describe the most structurally effective action available to you right now. Not the most aspirationally satisfying &mdash; the most structurally effective from where you actually are.</div>
+    <textarea class="jq-ta" id="j3" oninput="sv()" placeholder="What leverage level can you actually reach? What would T1 look like if it were achievable from your position?"></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div>
+  </div>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q4</span>The BioBond instrument conditions investor returns on FHRI_max improvement. If you were designing the FHRI_max improvement target for a home health BioBond, what would the trigger be? What structural change &mdash; in &epsilon;, &mu;, or &phi; &mdash; would you require to release investor returns? How would you verify it?</div>
+    <textarea class="jq-ta" id="j4" oninput="sv()" placeholder="Design the instrument. What parameter, what threshold, what verification method?"></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div>
+  </div>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q5 &mdash; Forward Prediction</span>Wall-E tends the plant in the boot. Name one specific thing in your economic life &mdash; a relationship, an institution, a practice, a community &mdash; that is worth tending despite the extraction architecture around it. What will you do in the next three months to tend it? How will you know in six months whether you did?</div>
+    <textarea class="jq-ta" id="j5" oninput="sv()" placeholder="Specific. Measurable. Yours. This prediction carries forward to Chapter 15..."></textarea>
+    <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div>
+  </div>
+
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn outline" onclick="prev()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &#8594;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+// ── NAVIGATION ──────────────────────────────────────────────────────────────
+const TABS = ['cases','sage','ips','amc','culture','journal'];
+let cur = 0;
+function sw(n) {
+  TABS.forEach(function(t,i){
+    document.getElementById('pane-'+t).classList.toggle('active', t===n);
+    document.querySelectorAll('.tb')[i].classList.toggle('active', t===n);
+    if(t===n) cur = i;
+  });
+  document.getElementById('ind').textContent = (cur+1) + ' / ' + TABS.length;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function nxt() { if(cur < TABS.length-1) sw(TABS[cur+1]); }
+function prev() { if(cur > 0) sw(TABS[cur-1]); }
+
+// ── CASE SELECTOR ────────────────────────────────────────────────────────────
+function setCase(key, btn) {
+  document.querySelectorAll('.case-nav .case-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('#pane-cases .case-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('case-'+key).classList.add('active');
+}
+
+// ── SAGE STEPS ───────────────────────────────────────────────────────────────
+function setSage(key) {
+  document.querySelectorAll('.sage-step-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.sage-content').forEach(function(c){ c.classList.remove('active'); });
+  event.currentTarget.classList.add('active');
+  document.getElementById('sage-'+key).classList.add('active');
+}
+
+// ── PERSPECTIVES ─────────────────────────────────────────────────────────────
+function setPersp(key, btn) {
+  document.querySelectorAll('.persp-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.persp-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('persp-'+key).classList.add('active');
+}
+
+// ── IPS PROFILES ─────────────────────────────────────────────────────────────
+var IPS_DATA = {
+  pe: {
+    label: 'PE-Acquired Nursing Home',
+    eps: 0.636, phi: 0.520, rho: 0.700, sig: 0.620, mu: 0.820,
+    fhri: 13.6, cls: 'low',
+    context: 'Private equity acquisition typically loads 60-80% leverage on acquisition price, requiring management fees of 8-12% of revenue and dividend distributions that constrain staffing investment. The 41.5-point FHRI_max gap between PE and non-profit nursing homes is empirically validated across the Florida Peterson dataset and consistent with national CMS quality data.',
+    worker: 'CNAs at PE-acquired facilities earn median $14.50/hour vs $16.20 at non-profits. Turnover rate 48% vs 28%. The $1.70/hour wage gap produces a $3,536/year income difference for a full-time aide &mdash; 12% of median income at this wage level. Staffing ratios are the primary quality mechanism, and they are the first budget variable the extraction architecture constrains.',
+    patient: 'FHRI_max = 13.6 means 86% of professional capacity is absorbed before reaching care decisions. Residents receive 33 fewer minutes of direct care daily. Pressure ulcer rates are measurably higher. Hospitalization rates are 11% elevated. These are the population-level consequences of the 41.5-point structural gap.'
+  },
+  prop_hh: {
+    label: 'Proprietary Home Health Agency',
+    eps: 0.320, phi: 0.420, rho: 0.580, sig: 0.480, mu: 0.620,
+    fhri: 37.3, cls: 'mid',
+    context: 'Standard for-profit home health has lower extraction than PE nursing homes because acquisition leverage is typically lower and the LLC structure is less complex. However, the $29/hour gap between Medicare billing and aide wages is present across most proprietary ownership types. The VBP mean APP of +0.30% confirms the T2 incentive is structurally insufficient.',
+    worker: 'Aides earn $13-16/hour, no employer health insurance in most proprietary settings, 35% annual turnover. The extraction is less aggressive than PE nursing homes but still produces a structural ceiling that prevents continuity of care &mdash; the primary mechanism through which home health prevents hospitalization.',
+    patient: 'FHRI_max = 37.3 is better than PE nursing homes but still limits coordination capacity. The DTC rate differential (72.1% proprietary vs 74.9% non-profit) represents thousands of additional hospitalizations annually at the sector scale. Each hospitalization costs Medicare approximately $13,000 &mdash; far exceeding the cost of the structural wage improvement that would prevent it.'
+  },
+  np: {
+    label: 'Non-Profit / Government Home Health',
+    eps: 0.000, phi: 0.300, rho: 0.580, sig: 0.250, mu: 0.280,
+    fhri: 62.9, cls: 'high',
+    context: 'Non-profit and government home health agencies have epsilon near zero: no management fee extraction, no PE debt service, no shareholder dividend. Revenue is reinvested in mission. The FHRI_max differential (62.9 vs 37.3 for proprietary) represents 25.6 additional points of coordination capacity &mdash; capacity that reaches care decisions.',
+    worker: 'Aides at non-profit agencies earn $15.80-18.50/hour median, with higher rates of employer health insurance contribution, lower turnover (22% vs 35%), and higher care continuity. The 25.6-point FHRI_max gap shows up first in wages and staffing ratios, then in quality outcomes.',
+    patient: 'DTC rate 74.9% vs 72.1% proprietary. Lower hospitalization rates. Lower aide turnover producing better care continuity. The patient experience of a non-profit agency is structurally different &mdash; not because non-profit employees are better people, but because the ownership architecture does not impose a structural ceiling on their capacity to provide the care they know how to provide.'
+  },
+  worker_coop: {
+    label: 'Worker-Owned Cooperative (Hypothetical)',
+    eps: 0.000, phi: 0.250, rho: 0.450, sig: 0.180, mu: 0.100,
+    fhri: 74.2, cls: 'high',
+    context: 'No currently scaled US worker-owned home health agency exists at sufficient size to validate this profile empirically. However, Cooperative Home Care Associates (CHCA) in the Bronx &mdash; the closest US example, serving 2,000+ clients with worker-owner aides &mdash; has documented wage rates 40% above proprietary sector and turnover rates below 15%. The theoretical FHRI_max estimate is extrapolated from CHCA data and worker cooperative research.',
+    worker: 'Aides in worker cooperatives are owners. Wages are set by worker vote, not extraction architecture. CHCA aides have earned $18-22/hour with full benefits since 2015. Turnover below 15% means care relationships last years, not months. The mu parameter approaches zero: the incentive architecture aligns worker income with agency success, which requires patient outcomes that prevent hospitalization.',
+    patient: 'Care continuity at CHCA is structurally supported by the ownership architecture. Aides have direct economic stake in quality outcomes. The organizational research documents better care quality metrics than the proprietary sector. This is the BioBond target: an ownership structure that produces FHRI_max above 70 and demonstrates that the 55-point gap between PE and worker-cooperative care is not a natural condition but a structural choice.'
+  }
+};
+function setIps(key, btn) {
+  document.querySelectorAll('#pane-ips .case-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  var d = IPS_DATA[key];
+  var cls = d.cls;
+  document.getElementById('ips-display').innerHTML =
+    '<div class="panel orange"><strong>' + d.label + '</strong></div>' +
+    '<div class="ips-grid">' +
+    '<div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:'+(d.eps>0.5?'var(--red)':'var(--text)')+'">'+d.eps.toFixed(3)+'</div><div class="nm">Extraction</div></div>' +
+    '<div class="ips-cell"><div class="sym">&phi;</div><div class="val">'+d.phi.toFixed(3)+'</div><div class="nm">Phys entropy</div></div>' +
+    '<div class="ips-cell"><div class="sym">&rho;</div><div class="val">'+d.rho.toFixed(3)+'</div><div class="nm">Regulatory</div></div>' +
+    '<div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:'+(d.sig>0.5?'var(--amber)':'var(--text)')+'">'+d.sig.toFixed(3)+'</div><div class="nm">Morphic</div></div>' +
+    '<div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:'+(d.mu>0.6?'var(--red)':'var(--text)')+'">'+d.mu.toFixed(3)+'</div><div class="nm">Misalign</div></div>' +
+    '</div>' +
+    '<div class="fhri-row"><div class="fhri-num '+cls+'">'+d.fhri+'</div>' +
+    '<div class="fhri-bar-wrap"><div class="fhri-bar-lbl">FHRI_max &mdash; structural ceiling on coordination capacity</div>' +
+    '<div class="fhri-bar"><div class="fhri-fill '+cls+'" style="width:'+d.fhri+'%"></div></div>' +
+    '<div style="font-size:.65rem;color:var(--muted);margin-top:.2rem;font-family:\'DM Mono\',monospace">'+(100-d.fhri).toFixed(1)+'% of available capacity structurally absorbed before reaching decisions</div>' +
+    '</div></div>' +
+    '<div style="display:grid;gap:.5rem;margin-top:.75rem">' +
+    '<div class="panel teal" style="margin:0"><strong>Structural context:</strong> ' + d.context + '</div>' +
+    '<div class="panel amber" style="margin:0"><strong>For workers:</strong> ' + d.worker + '</div>' +
+    '<div class="panel violet" style="margin:0"><strong>For patients:</strong> ' + d.patient + '</div>' +
+    '</div>';
+  setTimeout(function(){
+    document.querySelectorAll('.fhri-fill').forEach(function(el){
+      var w = el.style.width; el.style.width='0';
+      requestAnimationFrame(function(){ setTimeout(function(){ el.style.width=w; }, 60); });
+    });
+  }, 50);
+}
+
+// ── EVALUATE POSITIONS ────────────────────────────────────────────────────────
+var EVAL_DATA = {
+  student: {
+    label: 'Student / Citizen',
+    icon: '&#128218;',
+    leverage: 35,
+    cls: 'mid',
+    actions: [
+      {icon:'&#128065;', title:'Agential life detection', tag:'t2', text:'Learn to read CMS Care Compare before your family needs to choose a home health agency or nursing home. The FHRI_max of a facility is derivable from star rating trajectory, ownership change history, and staffing HPRD. The decision to choose without examining it is no longer ethically neutral now that the data exists.'},
+      {icon:'&#128483;', title:'Consumer market pressure', tag:'t1', text:'Choosing non-profit care providers when quality is comparable is a T1 market intervention: it reduces occupancy at high-extraction facilities. At individual scale the effect is small. At community scale &mdash; families in a neighborhood all choosing the non-profit agency &mdash; it is the market signal that changes the extraction calculation.'},
+      {icon:'&#9997;', title:'Regulatory comment and political contact', tag:'t2', text:'CMS accepts public comments on proposed rules. State health departments accept complaints. Elected officials track constituent contact volume. None of these is individually decisive. Together they constitute the political pressure that determines whether T1 regulatory reform is attempted at all. The filing of a comment is not symbolic. It is a unit of political input.'},
+      {icon:'&#127795;', title:'Build the alternative', tag:'t1', text:'The student position is the most structurally free position in the course: fewer institutional constraints, more time horizon, more capacity to choose what to build toward. If your vocational or academic trajectory touches the care economy, the health sector, housing, or any of the three cases examined in this chapter, the question is: what low-epsilon structure are you building toward? The Evergreen Cooperatives were built by people who were once students.'}
+    ]
+  },
+  worker: {
+    label: 'Care Worker',
+    icon: '&#128105;&#8205;&#9877;',
+    leverage: 28,
+    cls: 'low',
+    actions: [
+      {icon:'&#128737;', title:'Refuse to raise sigma', tag:'t2', text:'Every incident report filed, every care protocol followed when cutting corners was easier, every refusal to normalize inadequate conditions &mdash; these hold sigma from rising further. You cannot raise FHRI_max from inside the institution. You can prevent it from falling. This is not a small thing: sigma accumulation is the mechanism by which structural deviance becomes invisible.'},
+      {icon:'&#128483;', title:'External regulatory reporting', tag:'t2', text:'State health departments, OSHA, the Joint Commission, and CMS all accept frontline reports. This operates at higher leverage than internal reporting and is protected by whistleblower provisions in most jurisdictions. Three incident reports filed and unacted on (the Boisjoly scenario) should become one regulatory complaint.'},
+      {icon:'&#127978;', title:'Union organizing and collective action', tag:'t1', text:'Individual worker wages cannot change the extraction architecture. Collective bargaining can. The Service Employees International Union (SEIU) and the National Domestic Workers Alliance have both organized home health workers with documented wage improvements. Collective action is T1 from the worker position: it changes the structural parameter (the wage-setting mechanism) rather than optimizing within it.'},
+      {icon:'&#127795;', title:'Know the alternatives', tag:'t1', text:'Identify the non-profit and worker-cooperative agencies in your area. Know their FHRI_max. This serves two purposes: you can refer patients and families to structurally better options, and when your T2 options are exhausted, you have a structural alternative to move toward. Departure to a lower-epsilon institution is itself a T1 act: it reduces the high-extraction facility\'s workforce and increases the low-extraction facility\'s.'}
+    ]
+  },
+  family: {
+    label: 'Patient Family',
+    icon: '&#128106;',
+    leverage: 40,
+    cls: 'mid',
+    actions: [
+      {icon:'&#128202;', title:'Read the structural parameters', tag:'t2', text:'CMS Care Compare data is public. Before choosing a home health agency, check: ownership type, star rating trajectory (did the rating fall after an ownership change?), staffing HPRD, and deficiency citation history. The 25.6-point FHRI_max gap between non-profit and proprietary agencies is visible in this data for every CMS-certified agency in the country.'},
+      {icon:'&#10067;', title:'Ask the ownership question directly', tag:'t2', text:'Ask the intake coordinator: who owns this agency? Is it part of a private equity portfolio? Is there a separate management company? The legal structure is not always voluntarily disclosed. Asking forces some transparency and signals to the agency that its ownership structure is visible to the families it serves.'},
+      {icon:'&#128483;', title:'Exercise market choice as structural lever', tag:'t1', text:'Choosing a non-profit agency when quality is comparable directly reduces occupancy at high-extraction agencies. Individual family choices aggregate into market pressure. The 1,108 Florida home health agencies include non-profit options in most counties. Choosing them over proprietary alternatives is not mere preference &mdash; it is a structural intervention at the market level.'},
+      {icon:'&#128170;', title:'Advocate for informal caregivers', tag:'t2', text:'The $470B/year informal care subsidy is invisible in economic accounting. Supporting state and federal paid family leave, caregiver tax credits, and respite care funding reduces the extraction architecture\'s ability to externalize care costs onto unpaid family labor. This is the policy lever most directly available to family caregivers.'}
+    ]
+  },
+  manager: {
+    label: 'Agency Manager / Director',
+    icon: '&#128193;',
+    leverage: 58,
+    cls: 'mid',
+    actions: [
+      {icon:'&#128302;', title:'Measure your agency\'s IPS profile', tag:'t1', text:'You have access to operational data that frontline workers and families cannot see. Compute FHRI_max from observable proxies: management fee as percentage of revenue (epsilon), staffing HPRD and turnover rate (phi), documentation hours as percentage of staff time (rho), deficiency trajectory (sigma), quality metric alignment with care quality (mu). Know the number before you can change it.'},
+      {icon:'&#128203;', title:'Internal T1 advocacy', tag:'t1', text:'You have structural position to propose changes to compensation design (mu reduction), staffing investment (phi improvement), documentation burden (rho reduction). Present these as FHRI_max improvement proposals with quantified patient outcome projections. Frame the business case: lower turnover costs, better quality ratings, reduced regulatory risk. The institutional response reveals whether you are in an Iron Cage.'},
+      {icon:'&#127795;', title:'Facilitate low-epsilon transition', tag:'t1', text:'If you are in a high-extraction agency, you are in the strongest position to facilitate its transition: non-profit conversion, community ownership models, worker cooperative restructuring, mission-aligned acquisition by a non-profit system. These T1 interventions are not available below your position. They require your structural access to be attempted.'},
+      {icon:'&#128737;', title:'Protect staff from sigma accumulation', tag:'t2', text:'Create genuine reporting cultures. Investigate incident reports rather than logging them. Refuse to normalize practices that cut corners. Staff who feel their reports are heard and acted on have lower turnover and higher care quality scores. This is T2 ethical action that matters within the FHRI_max ceiling you operate in.'}
+    ]
+  },
+  policy: {
+    label: 'Policy / Advocacy',
+    icon: '&#127979;',
+    leverage: 68,
+    cls: 'high',
+    actions: [
+      {icon:'&#128203;', title:'Beneficial ownership disclosure', tag:'t1', text:'Mandatory public disclosure of all beneficial owners &mdash; including PE funds, REITs, and management companies &mdash; for Medicare-participating agencies. This makes epsilon computable by revealing the entity holding debt obligation and determining wages. Without it, regulatory agencies cannot measure what they nominally regulate. The FTC has proposed rules; state-level equivalents are achievable.'},
+      {icon:'&#128208;', title:'FHRI_max floor standards', tag:'t1', text:'Rather than specifying individual staffing ratios and documentation requirements independently, regulation could specify minimum FHRI_max and hold agencies accountable for maintaining it through whatever structural combination achieves that standard. This shifts regulation from compliance-theater to outcome-accountability and creates market pressure for low-epsilon ownership structures.'},
+      {icon:'&#128184;', title:'BioBond enabling infrastructure', tag:'t1', text:'The legal frameworks within which BioBond instruments can operate &mdash; Public Benefits Corporation certification, FHRI_max measurement standards, mission-driven capital access programs &mdash; are governance products no private actor can substitute for. State-level PBC statutes with FHRI_max specifications create the enabling conditions for the capital market transition.'},
+      {icon:'&#128202;', title:'Expand and protect CMS data infrastructure', tag:'t2', text:'CMS public datasets make FHRI_max computation possible. Ownership disclosure expansion, staffing data granularity improvements, and state-level equivalent datasets are governance obligations that create the information commons for all other actors. Protecting this infrastructure from defunding is the T2 intervention most critical to the entire research and policy program.'}
+    ]
+  },
+  investor: {
+    label: 'Impact Investor',
+    icon: '&#128201;',
+    leverage: 72,
+    cls: 'high',
+    actions: [
+      {icon:'&#127959;', title:'Structural design of investment terms', tag:'t1', text:'The epsilon parameter is determined at the investment origination stage: leverage load, management fee structure, return timeline, and exit horizon. Designing investment structures that constrain epsilon below the FHRI_max collapse threshold is a T1 intervention available at your position that no downstream actor can substitute for. A nursing home acquired with 40% leverage and a 2% management fee cap has structurally different FHRI_max than one acquired with 70% leverage and 8% fees.'},
+      {icon:'&#128201;', title:'BioBond instrument design', tag:'t1', text:'BioBond conditions returns on FHRI_max improvement trajectory rather than extraction maximization. The financial logic: institutions maintaining FHRI_max above 40 have lower regulatory risk (fewer citations, fewer enforcement actions), lower workforce turnover cost ($4,200 average cost per home health aide turnover), and lower long-term asset degradation than extraction-optimized alternatives. This is not philanthropy. It is a different risk model.'},
+      {icon:'&#127979;', title:'PBC structure as mission defense', tag:'t1', text:'Public Benefits Corporation legal structure creates a mission specification &mdash; FHRI_max above a specified threshold as a legally required organizational purpose &mdash; that future ownership changes cannot easily overwrite. Not dependent on the goodwill of current occupants. The PBC structure is the institutional equivalent of the BioBond: it changes what the ownership architecture is legally permitted to optimize for.'},
+      {icon:'&#128202;', title:'True Solvency Accounting in due diligence', tag:'t1', text:'Require FHRI_max degradation to appear as a liability in acquisition due diligence and ongoing financial reporting. An agency that appears profitable while systematically reducing FHRI_max is extracting value that should appear as a liability &mdash; the accumulated care deficit, the workforce health cost, the community capacity depletion. Building this accounting into investment evaluation changes what capital measures as success.'}
+    ]
+  }
+};
+function setEvalPos(key, card) {
+  document.querySelectorAll('.pos-card').forEach(function(c){ c.classList.remove('selected'); });
+  card.classList.add('selected');
+  var d = EVAL_DATA[key];
+  var out = document.getElementById('eval-output');
+  out.innerHTML =
+    '<div class="panel orange" style="border-left-color:var(--teal)"><strong>' + d.icon + ' ' + d.label + ' &mdash; Leverage Profile</strong></div>' +
+    '<div class="fhri-row"><div class="fhri-num '+d.cls+'">' + d.leverage + '</div>' +
+    '<div class="fhri-bar-wrap"><div class="fhri-bar-lbl">Structural leverage capacity at this position</div>' +
+    '<div class="fhri-bar"><div class="fhri-fill '+d.cls+'" style="width:'+d.leverage+'%"></div></div></div></div>' +
+    '<h3 class="sub">Actions matched to your leverage level</h3>' +
+    d.actions.map(function(a){
+      return '<div class="action-row"><div class="ar-icon">'+a.icon+'</div>' +
+        '<div class="ar-body"><div class="ar-title">'+a.title+' <span class="tag '+a.tag+'">'+a.tag.toUpperCase()+'</span></div>' +
+        '<div class="ar-text">'+a.text+'</div></div></div>';
+    }).join('');
+  out.classList.add('show');
+  setTimeout(function(){
+    document.querySelectorAll('.fhri-fill').forEach(function(el){
+      var w = el.style.width; el.style.width='0';
+      requestAnimationFrame(function(){ setTimeout(function(){ el.style.width=w; }, 60); });
+    });
+  }, 50);
+}
+
+// ── IPS INITIAL ──────────────────────────────────────────────────────────────
+setIps('pe', document.querySelector('#pane-ips .case-btn'));
+
+// ── AMC PATHWAYS ─────────────────────────────────────────────────────────────
+var PATHWAY_DATA = {
+  acp: {
+    name: 'Agency Conditions Principle: Bottom-Up Agent Support',
+    color: 'var(--teal)',
+    text: 'The ACP holds that maintaining the conditions for coherent agency is a shared public concern, not an invisible private burden. In the care economy, this means three concrete instruments: <strong>Informational</strong> &mdash; making FHRI_max profiles for all CMS-certified agencies publicly accessible in a format families and workers can use (the PBC\'s first public product). <strong>Navigational</strong> &mdash; connecting workers in high-extraction agencies to non-profit and cooperative alternatives where wages and conditions are structurally better. <strong>Advocacy</strong> &mdash; representing care worker and patient interests in regulatory and legislative processes, filing comments on ownership disclosure requirements, supporting whistleblower protection for frontline care reporters.',
+    status: 'Phase 1 of PBC development. ACP informational tools are the first public-facing product. The CMS dataset analysis already provides the measurement foundation.'
+  },
+  biobond: {
+    name: 'BioBond: Conditioning Capital on FHRI_max Improvement',
+    color: 'var(--green)',
+    text: 'The BioBond is a financial instrument that conditions investor returns on FHRI_max improvement trajectory rather than extraction maximization. In the care economy application: a non-profit or worker-cooperative home health agency seeking capital to expand issues a BioBond with FHRI_max improvement thresholds as the performance trigger. Investors receive returns when the agency maintains FHRI_max above 55 (non-profit level) for three consecutive measurement periods. The financial logic: lower turnover costs ($4,200/aide), better quality ratings (reduced regulatory risk), lower hospitalization rates (Medicare performance bonuses), and reduced citation exposure produce a measurable financial improvement that can support the return structure. The BioBond does not require altruism. It requires accurate accounting of what high-epsilon ownership actually costs.',
+    status: 'Phase 2 of PBC development. First BioBond instrument design requires the Legal Architect and Capital Architect board members. The Cooperative Home Care Associates model provides the proof of concept.'
+  },
+  tsa: {
+    name: 'True Solvency Accounting: Making Extraction Visible on Balance Sheets',
+    color: 'var(--violet)',
+    text: 'True Solvency Accounting proposes that institutions record FHRI_max degradation as a liability. For the home health case: a proprietary agency with FHRI_max = 37 (vs non-profit FHRI_max = 63) has imposed a 25.6-point coordination capacity deficit on its patients and workforce. The accumulated care deficit &mdash; hospitalizations that would not have occurred at FHRI_max = 63, workforce health costs from occupational stress and injury, community capacity depletion from 35% annual turnover &mdash; should appear as a liability on the balance sheet. An agency that appears profitable while systematically reducing FHRI_max is extracting value that belongs on the liability side. True Solvency Accounting makes this extraction visible to lenders, regulators, and the public.',
+    status: 'Phase 4 of PBC development (Year 7-15). Requires FASB engagement, accounting firm piloting, and regulatory adoption. The research program builds the empirical case that precedes regulatory adoption.'
+  },
+  measurement: {
+    name: 'FHRI_max Measurement Infrastructure',
+    color: 'var(--orange)',
+    text: 'The most immediately available PBC contribution is the measurement infrastructure itself. The UCP V5.0.2 platform already computes FHRI_max from five observable parameters for any institution. The research program has validated it against 12,239 home health agencies and 15,000 nursing home facilities. The next steps: (1) Build the public-facing lookup tool that allows families to enter a CMS certification number and receive an FHRI_max profile. (2) Publish the NY cross-state replication paper, establishing the measurement as academically citable. (3) Establish FHRI_max as a standard variable in the Peterson USF collaboration and subsequent publications. Each paper, each citation, each media mention of FHRI_max builds the measurement toward the regulatory standard it must become for True Solvency Accounting to be enforceable.',
+    status: 'Phase 1-2 of PBC development. The measurement infrastructure is live. The public tool is the next deliverable. The research publication pipeline is the credibility pathway.'
+  },
+  t1policy: {
+    name: 'T1 Policy Instruments: What Governance Can Actually Do',
+    color: 'var(--blue)',
+    text: 'The three T1 policy interventions with the clearest pathway in the current political environment: <strong>Beneficial ownership disclosure</strong> &mdash; requiring all Medicare-participating agencies to publicly disclose full beneficial ownership structure (the entity holding the debt obligation, the management company, the REIT). Without this, epsilon is not computable. This is achievable through CMS rulemaking without Congressional action. <strong>Minimum staffing ratios as FHRI_max proxies</strong> &mdash; the Biden administration\'s 2024 nursing home minimum staffing rule was a T1 intervention that directly addresses phi (physical entropy through staffing). Its legal challenge by the nursing home industry is the Iron Cage failure mode in real time. <strong>Worker classification reform</strong> &mdash; extending employee protections to misclassified gig workers in home health. California\'s AB5 and its partial reversal by Prop 22 is the live T1/T2 battle over who bears the cost of the extraction architecture.',
+    status: 'Active policy landscape. The PBC\'s regulatory comment function is the immediate contribution. Beneficial ownership disclosure is the highest-leverage near-term target.'
+  },
+  maathai: {
+    name: 'Low-Epsilon Alternatives: Building the Plant in the Boot',
+    color: 'var(--amber)',
+    text: 'The most structurally durable response to the extraction architecture is not reforming high-epsilon institutions but building and scaling low-epsilon alternatives. Three models already operating: <strong>Cooperative Home Care Associates (CHCA, Bronx NY)</strong> &mdash; 2,000+ clients, worker-owner aides earning $18-22/hour, turnover below 15%, care quality metrics above proprietary sector. This is the worker cooperative model at real scale. <strong>Evergreen Cooperatives (Cleveland OH)</strong> &mdash; worker-owned businesses anchored by institutional purchasing commitments from Cleveland Clinic and Case Western. <strong>Community land trust home care</strong> &mdash; community-owned agencies with mission-specified care standards, operating in several urban markets. The BioBond instrument is designed precisely to make these low-epsilon alternatives financially scalable. They cannot compete with PE acquisition capital on the current financing playing field. BioBond changes the financing playing field.',
+    status: 'Phase 1-3 of PBC development. Identifying the first BioBond pilot institution is a Phase 2 task. The CHCA model provides the empirical proof of concept for the instrument.'
+  }
+};
+function setPathway(key, card) {
+  document.querySelectorAll('.pathway-card').forEach(function(c){ c.classList.remove('active'); });
+  card.classList.add('active');
+  var d = PATHWAY_DATA[key];
+  var det = document.getElementById('pathway-detail');
+  det.innerHTML =
+    '<div style="border:1px solid var(--border);border-radius:.5rem;overflow:hidden;margin-top:.5rem">' +
+    '<div style="padding:.85rem 1.1rem;background:var(--s);border-bottom:1px solid var(--border)">' +
+    '<div style="font-family:\'DM Serif Display\',serif;font-size:1.15rem;color:'+d.color+'">'+d.name+'</div></div>' +
+    '<div style="padding:1rem 1.2rem;background:#0a0e1c">' +
+    '<p style="font-size:.88rem;line-height:1.75;margin-bottom:.75rem">'+d.text+'</p>' +
+    '<div style="background:var(--s);border-radius:.4rem;padding:.75rem;border:1px solid var(--border)">' +
+    '<div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:'+d.color+';text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem">CURRENT STATUS</div>' +
+    '<div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.7)">'+d.status+'</div>' +
+    '</div></div></div>';
+  det.classList.add('show');
+}
+
+// ── CULTURE SELECTOR ─────────────────────────────────────────────────────────
+function setCulture(key, btn) {
+  document.querySelectorAll('#pane-culture .case-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('#pane-culture .case-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('cult-'+key).classList.add('active');
+}
+
+// ── JOURNAL ──────────────────────────────────────────────────────────────────
+var JK = ['ch11v2_j1','ch11v2_j2','ch11v2_j3','ch11v2_j4','ch11v2_j5'];
+function sv() {
+  JK.forEach(function(k,i){
+    var el = document.getElementById('j'+(i+1));
+    try { if(el) localStorage.setItem(k, el.value); } catch(x) {}
+  });
+  var f = document.getElementById('sf');
+  f.classList.add('show');
+  setTimeout(function(){ f.classList.remove('show'); }, 1800);
+}
+function ex() {
+  var t = 'ETHICS BEYOND BOUNDARIES\nChapter 11: Economics, Extraction & Ethical Response\nJournal\n' + '='.repeat(60) + '\n\n';
+  var qs = [
+    'Q1: Where does your moral concern settle after tracing the four structural layers?',
+    'Q2: Your Nussbaum capabilities audit &mdash; where is the gap between formal and substantive freedom?',
+    'Q3: The most structurally effective action from your actual position',
+    'Q4: BioBond design &mdash; what FHRI_max improvement triggers returns?',
+    'Q5 (Forward Prediction): The plant in the boot &mdash; what is worth tending?'
+  ];
+  qs.forEach(function(q,i){
+    var v = document.getElementById('j'+(i+1));
+    t += q + '\n\n' + (v ? v.value || '(no response)' : '(no response)') + '\n\n' + '-'.repeat(60) + '\n\n';
+  });
+  try {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([t], {type:'text/plain'}));
+    a.download = 'EBB_Ch11_Journal.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(e) {
+    alert('Journal saved. Copy from below:\n\n' + t.substring(0,400));
+  }
+}
+
+// ── LOAD JOURNAL ─────────────────────────────────────────────────────────────
+JK.forEach(function(k,i){
+  var el = document.getElementById('j'+(i+1));
+  try { if(el) el.value = localStorage.getItem(k) || ''; } catch(x) {}
+});
+
+// ── ANIMATE BARS ON LOAD ─────────────────────────────────────────────────────
+setTimeout(function(){
+  document.querySelectorAll('.fhri-fill').forEach(function(el){
+    var w = el.style.width;
+    el.style.width = '0';
+    requestAnimationFrame(function(){
+      setTimeout(function(){ el.style.width = w; }, 80);
+    });
+  });
+}, 500);
+</script>
+</body>
+</html>
