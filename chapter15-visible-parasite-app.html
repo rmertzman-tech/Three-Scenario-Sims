@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 15 — The Visible Parasite</title>
+<!-- fonts loaded inline -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#0a0f1a;--surface:#111827;--surface2:#1c2639;--border:rgba(255,255,255,.08);
+  --teal:#14b8a6;--teal-d:#0d9488;--teal-faint:rgba(20,184,166,.07);
+  --amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;
+  --text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.45);
+  --care:#4A90A4;--fairness:#6B8E4E;--authority:#8B7BA8;--sanctity:#C17B7B;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+
+.chapter-header{background:linear-gradient(160deg,#0f1f3d 0%,#0a0f1a 60%);border-bottom:1px solid var(--border);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden}
+.chapter-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(20,184,166,.15) 0%,transparent 70%);pointer-events:none}
+.ch-label{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.18em;color:var(--teal);text-transform:uppercase;margin-bottom:.6rem}
+.ch-title{font-family:'DM Serif Display',serif;font-size:2.6rem;color:#fff;margin-bottom:.5rem;line-height:1.15}
+.ch-title em{color:var(--teal);font-style:italic}
+.ch-sub{font-size:.9rem;color:var(--muted);max-width:600px;margin:0 auto .5rem}
+.ch-move{font-family:'DM Mono',monospace;font-size:.65rem;color:rgba(20,184,166,.5);letter-spacing:.1em;margin-top:.75rem}
+
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.75rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--teal)}
+.tab-btn{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;padding:.45rem .9rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tab-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+.tab-btn.active{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
+
+.tab-pane{display:none;padding:1.5rem;max-width:860px;margin:0 auto}
+.tab-pane.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.section-wrap{margin-bottom:1.2rem;border-radius:.55rem;overflow:hidden;border:1px solid var(--border)}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.1rem;cursor:pointer;background:var(--surface);transition:background .15s}
+.section-header:hover{background:var(--surface2)}
+.section-header h3{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--teal)}
+.section-chevron{font-size:.8rem;color:var(--muted);transition:transform .2s}
+.section-body{padding:1.1rem 1.25rem;background:#0d1524;line-height:1.7;display:none}
+.section-body.open{display:block}
+.section-header.open .section-chevron{transform:rotate(90deg)}
+
+p.body{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.85rem;line-height:1.75}
+.panel{border-radius:.55rem;padding:1rem 1.2rem;margin:.8rem 0;line-height:1.7;font-size:.88rem}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel strong{color:var(--text)}
+
+.metric-badge{display:inline-flex;align-items:center;gap:.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;padding:.3rem .75rem;font-family:'DM Mono',monospace;font-size:.75rem;margin:.2rem}
+.metric-badge .val{color:var(--teal);font-weight:600;font-size:.9rem}
+.metric-badge.red .val{color:var(--red)}.metric-badge.amber .val{color:var(--amber)}.metric-badge.green .val{color:var(--green)}
+
+button.action-btn{background:var(--teal);color:#000;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;padding:.6rem 1.3rem;border-radius:.4rem;cursor:pointer;transition:background .15s;margin:.3rem .2rem}
+button.action-btn:hover{background:var(--teal-d)}
+button.action-btn.outline{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+button.action-btn.outline:hover{background:var(--teal-faint)}
+
+.scale-nav{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1rem}
+.scale-btn{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;padding:.4rem .85rem;border-radius:2rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s}
+.scale-btn:hover{color:var(--text)}
+.scale-btn.active{color:#000;font-weight:600}
+.scale-btn[data-scale="individual"].active{background:var(--teal);border-color:var(--teal)}
+.scale-btn[data-scale="family"].active{background:var(--blue);border-color:var(--blue)}
+.scale-btn[data-scale="community"].active{background:var(--green);border-color:var(--green)}
+.scale-btn[data-scale="economic"].active{background:var(--amber);border-color:var(--amber)}
+.scale-btn[data-scale="governance"].active{background:var(--violet);border-color:var(--violet)}
+.scale-btn[data-scale="civilizational"].active{background:var(--red);border-color:var(--red)}
+.scale-panel{display:none}.scale-panel.active{display:block;animation:fadeIn .2s ease}
+
+.fhri-bar-wrap{margin:1rem 0}
+.fhri-label-sm{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--muted);margin-bottom:.3rem}
+.fhri-bar{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden}
+.fhri-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.fhri-fill.high{background:linear-gradient(90deg,var(--green),#86efac)}
+.fhri-fill.mid{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fhri-fill.low{background:linear-gradient(90deg,var(--red),#fca5a5)}
+
+.fhri-display{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:.5rem;padding:1rem 1.25rem;margin:.75rem 0;border:1px solid var(--border)}
+.fhri-number{font-family:'DM Serif Display',serif;font-size:2.5rem;line-height:1}
+.fhri-number.low{color:var(--red)}.fhri-number.mid{color:var(--amber)}.fhri-number.high{color:var(--green)}
+.fhri-label-block .fhri-top{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.fhri-label-block .fhri-desc{font-size:.82rem;color:rgba(255,255,255,.7);margin-top:.25rem;max-width:280px;line-height:1.5}
+.absorbed-pill{font-family:'DM Mono',monospace;font-size:.75rem;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.3);color:var(--red);border-radius:2rem;padding:.3rem .8rem}
+
+.ips-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:.75rem 0}
+@media(max-width:480px){.ips-grid{grid-template-columns:repeat(3,1fr)}}
+.ips-param{border:1px solid var(--border);border-radius:.4rem;padding:.7rem .5rem;text-align:center;background:var(--surface)}
+.ips-param .param-sym{font-family:'DM Mono',monospace;font-size:1rem;font-weight:600;color:var(--teal)}
+.ips-param .param-val{font-family:'DM Mono',monospace;font-size:.85rem;margin:.2rem 0}
+.ips-param .param-name{font-size:.65rem;color:var(--muted);line-height:1.3}
+
+.sage-step{border:1px solid var(--border);border-radius:.55rem;margin:.75rem 0;overflow:hidden}
+.sage-header{display:flex;align-items:center;gap:.75rem;padding:.85rem 1.1rem;background:var(--surface);cursor:pointer}
+.sage-icon{width:2rem;height:2rem;border-radius:.35rem;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:.75rem;font-weight:600;flex-shrink:0}
+.sage-title{font-weight:600;font-size:.9rem}
+.sage-body{padding:1rem 1.25rem;background:#0d1524;display:none}
+.sage-body.open{display:block}
+
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+@media(max-width:500px){.choice-grid{grid-template-columns:1fr}}
+.choice-card{border:1px solid var(--border);border-radius:.45rem;padding:.85rem;cursor:pointer;transition:all .18s;background:var(--surface)}
+.choice-card:hover{border-color:rgba(255,255,255,.25)}
+.choice-card.selected{border-color:var(--teal);background:rgba(20,184,166,.08)}
+.choice-card .choice-title{font-weight:600;font-size:.88rem;margin-bottom:.25rem}
+.choice-card .choice-sub{font-size:.78rem;color:var(--muted);line-height:1.5}
+.sage-result{margin-top:1rem;padding:1rem 1.1rem;border-radius:.45rem;border:1px solid;font-size:.88rem;line-height:1.7;display:none}
+.sage-result.show{display:block}
+
+.position-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin:.75rem 0}
+.position-card{border:1px solid var(--border);border-radius:.5rem;padding:1rem;cursor:pointer;transition:all .18s;background:var(--surface);text-align:center}
+.position-card:hover{border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
+.position-card.selected{border-color:var(--teal);background:rgba(20,184,166,.08)}
+.position-card .pos-icon{font-size:1.8rem;margin-bottom:.4rem}
+.position-card .pos-name{font-weight:600;font-size:.85rem;margin-bottom:.2rem}
+.position-card .pos-desc{font-size:.73rem;color:var(--muted)}
+.capability-output{margin-top:1.2rem;display:none}
+.capability-output.show{display:block;animation:fadeIn .3s ease}
+.cap-row{display:flex;align-items:flex-start;gap:.75rem;margin:.6rem 0;padding:.8rem;background:var(--surface);border-radius:.4rem;border:1px solid var(--border)}
+.cap-icon{font-size:1.1rem;flex-shrink:0;margin-top:.1rem}
+.cap-content .cap-title{font-weight:600;font-size:.85rem;margin-bottom:.2rem}
+.cap-content .cap-body{font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.6}
+.cap-type{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;padding:.18rem .5rem;border-radius:.25rem;margin-left:.4rem;vertical-align:middle}
+.cap-type.t1{background:rgba(248,113,113,.15);color:var(--red)}
+.cap-type.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+
+.scenario-row{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.scenario-chip{font-size:.78rem;padding:.35rem .8rem;border-radius:2rem;border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;color:var(--muted)}
+.scenario-chip:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+.scenario-chip.active{background:var(--surface2);color:var(--text);border-color:var(--teal)}
+
+.classifier-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:.4rem;padding:.8rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;resize:vertical;min-height:80px}
+.classifier-input:focus{outline:none;border-color:var(--teal)}
+.classifier-result{margin-top:1rem;display:none}
+.classifier-result.show{display:block;animation:fadeIn .3s ease}
+.t1-t2-compare{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:1rem}
+@media(max-width:480px){.t1-t2-compare{grid-template-columns:1fr}}
+.compare-card{border-radius:.5rem;padding:1rem;border:1px solid}
+.compare-card.t1{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05)}
+.compare-card.t2{border-color:rgba(96,165,250,.3);background:rgba(96,165,250,.05)}
+.compare-card .cc-title{font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.compare-card.t1 .cc-title{color:var(--red)}.compare-card.t2 .cc-title{color:var(--blue)}
+.compare-card p{font-size:.85rem;line-height:1.65;color:rgba(255,255,255,.78)}
+
+.journal-q{border:1px solid var(--border);border-radius:.5rem;margin:.75rem 0;overflow:hidden}
+.journal-q-header{padding:.85rem 1.1rem;background:var(--surface);font-weight:600;font-size:.9rem;display:flex;align-items:center;gap:.6rem}
+.journal-q-num{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--teal);flex-shrink:0}
+.journal-textarea{width:100%;min-height:100px;background:#0d1524;border:none;border-top:1px solid var(--border);padding:1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.88rem;resize:vertical;line-height:1.6}
+.journal-textarea:focus{outline:none;background:rgba(20,184,166,.03)}
+.journal-toolbar{padding:.6rem 1rem;background:var(--surface);border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+
+.pred-box{border:1px solid rgba(245,158,11,.25);border-radius:.5rem;background:rgba(245,158,11,.04);padding:1rem 1.2rem;margin-bottom:1.2rem}
+.pred-label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:.5rem}
+
+.bottom-nav{max-width:860px;margin:0 auto;padding:.75rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.save-flash{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--teal);color:#000;font-weight:600;font-size:.8rem;padding:.5rem 1.1rem;border-radius:.4rem;display:none;z-index:999}
+.save-flash.show{display:block;animation:slideUp .2s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="chapter-header">
+  <div class="ch-label">Ethics Beyond Boundaries &middot; Chapter 15</div>
+  <h1 class="ch-title">The <em>Visible</em> Parasite</h1>
+  <p class="ch-sub">What the data shows across every scale of human life &mdash; and what ethics requires in response</p>
+  <div class="ch-move">Applied Sequence &middot; Movement 5 &middot; Synthesis &amp; Action</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" onclick="switchTab('scales')">The Scales</button>
+  <button class="tab-btn" onclick="switchTab('sage')">SAGE Analysis</button>
+  <button class="tab-btn" onclick="switchTab('capability')">Your Position</button>
+  <button class="tab-btn" onclick="switchTab('classifier')">T1 vs T2</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button>
+</div>
+
+<!-- OVERVIEW -->
+<div class="tab-pane active" id="tab-overview">
+  <div class="panel teal">
+    <strong>What changed.</strong> For most of human history, institutional parasitism operated invisibly. The nursing home resident who received 33 fewer minutes of daily care after a private equity acquisition didn&rsquo;t know the cause was a debt-service obligation placed between the staffing budget and the care floor years earlier. Now, for the first time, that structural ceiling has a number &mdash; and a name.
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <h3>&sect;I &mdash; The Measurement That Changes Everything</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body open">
+      <p class="body">Five parameters combine to produce a single number: <strong>FHRI_max</strong>. This is the structural ceiling below which no amount of individual effort or professional commitment can push outcomes.</p>
+      <div class="ips-grid">
+        <div class="ips-param"><div class="param-sym">&epsilon;</div><div class="param-val" style="color:var(--red)">0.636</div><div class="param-name">Extraction rate</div></div>
+        <div class="ips-param"><div class="param-sym">&phi;</div><div class="param-val">0.520</div><div class="param-name">Physical entropy</div></div>
+        <div class="ips-param"><div class="param-sym">&rho;</div><div class="param-val">0.700</div><div class="param-name">Regulatory burden</div></div>
+        <div class="ips-param"><div class="param-sym">&sigma;</div><div class="param-val">0.620</div><div class="param-name">Morphic residue</div></div>
+        <div class="ips-param"><div class="param-sym">&mu;</div><div class="param-val" style="color:var(--red)">0.820</div><div class="param-name">Incentive misalign</div></div>
+      </div>
+      <div class="fhri-display">
+        <div class="fhri-label-block">
+          <div class="fhri-top">Boisjoly T4 Configuration</div>
+          <div class="fhri-desc">Agent capacity: 82.0 &mdash; highly competent, committed professionals. But the structure absorbs most of it.</div>
+        </div>
+        <div style="text-align:right">
+          <div class="fhri-number low">14.3</div>
+          <div style="font-size:.72rem;color:var(--muted);font-family:'DM Mono',monospace">FHRI_max</div>
+          <div class="absorbed-pill" style="margin-top:.4rem">67.7 pts absorbed</div>
+        </div>
+      </div>
+      <p class="body">Roger Boisjoly knew the O-rings would fail. He documented it 24 times. The structural ceiling absorbed his knowledge before it reached the launch decision. <strong>This is not a failure of competence. It is a measurement of structural wrong.</strong></p>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3>&sect;II &mdash; The Scale-Free Signature</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">The same five-parameter architecture describes institutional parasitism at every scale we have examined. The mechanism is identical across twelve orders of magnitude:</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.75rem 0">
+        <div class="panel teal" style="margin:0;text-align:center;padding:.85rem .7rem">
+          <div style="font-size:1.5rem">&#128302;</div>
+          <div style="font-weight:600;font-size:.82rem;margin:.3rem 0">Molecular</div>
+          <div style="font-size:.75rem;color:var(--muted)">Wnt protein mimicry hijacks the mantis</div>
+        </div>
+        <div class="panel amber" style="margin:0;text-align:center;padding:.85rem .7rem">
+          <div style="font-size:1.5rem">&#127973;</div>
+          <div style="font-weight:600;font-size:.82rem;margin:.3rem 0">Institutional</div>
+          <div style="font-size:.75rem;color:var(--muted)">PE debt-loading in nursing homes</div>
+        </div>
+        <div class="panel violet" style="margin:0;text-align:center;padding:.85rem .7rem">
+          <div style="font-size:1.5rem">&#127758;</div>
+          <div style="font-weight:600;font-size:.82rem;margin:.3rem 0">Civilizational</div>
+          <div style="font-size:.75rem;color:var(--muted)">Iron Cage in climate governance</div>
+        </div>
+      </div>
+      <div class="panel amber">
+        <strong>Intercept the channel. Consume the flow. Preserve operational continuity while replacing the goal.</strong> The mantis still walks. The nurse still documents. The regulatory program still measures quality. But what these activities are <em>for</em> has been replaced. This is the Triadic Hack &mdash; the definitive signature of successful institutional parasitism.
+      </div>
+    </div>
+  </div>
+
+  <div class="section-wrap">
+    <div class="section-header" onclick="toggleSection(this)">
+      <h3>&sect;III &mdash; What 12,239 Agencies Confirmed</h3>
+      <span class="section-chevron">&#9654;</span>
+    </div>
+    <div class="section-body">
+      <p class="body">The HHVBP program was the most ambitious quality incentive reform in home health. It correctly measures which agencies perform below standard. Then it adjusts their payment by an average of $1,500 per year.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin:.75rem 0">
+        <span class="metric-badge"><span class="val">+0.30%</span> avg payment adjustment</span>
+        <span class="metric-badge red"><span class="val">27.7%</span> agencies penalized</span>
+        <span class="metric-badge amber"><span class="val">44%</span> in penalty zone</span>
+        <span class="metric-badge green"><span class="val">7%</span> at full benchmark</span>
+      </div>
+      <p class="body">A +0.30% payment adjustment equals about $1,500/year on typical revenue &mdash; less than the cost of one quality improvement hire. The system <em>measures</em> coordination quality accurately. It <em>fails</em> to translate that measurement into consequences large enough to change structural behavior. This is &mu; (incentive misalignment) confirmed across 12,239 data points.</p>
+      <div class="panel red"><strong>The T2 trap.</strong> This is what a T2 intervention looks like operating inside an unchanged structural ceiling. The measurement is real. The incentive is proportionally irrelevant. The structural parameters &mdash; who owns the institution, how debt is structured, what the management fee extracts &mdash; remain beyond the program&rsquo;s reach.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCALES -->
+<div class="tab-pane" id="tab-scales">
+  <p class="body" style="margin-bottom:1rem">Institutional parasitism operates at every scale simultaneously and interdependently. Select a scale to see the ethical obligations that arise there.</p>
+  <div class="scale-nav">
+    <button class="scale-btn active" data-scale="individual" onclick="setScale('individual')">Individual</button>
+    <button class="scale-btn" data-scale="family" onclick="setScale('family')">Family</button>
+    <button class="scale-btn" data-scale="community" onclick="setScale('community')">Community</button>
+    <button class="scale-btn" data-scale="economic" onclick="setScale('economic')">Economic Entities</button>
+    <button class="scale-btn" data-scale="governance" onclick="setScale('governance')">Governance</button>
+    <button class="scale-btn" data-scale="civilizational" onclick="setScale('civilizational')">Civilization</button>
+  </div>
+
+  <div class="scale-panel active" id="scale-individual">
+    <div class="panel teal"><strong>The Individual&rsquo;s Structural Condition.</strong> You may be highly competent, deeply committed. FHRI_max determines what that capacity can reach. Moral injury is not guilt or failure &mdash; it is the experience of a high-FHRI agent encountering a low-FHRI_max ceiling.</div>
+    <div class="fhri-bar-wrap"><div class="fhri-label-sm">FHRI_max in a PE-acquired nursing home</div><div class="fhri-bar"><div class="fhri-fill low" style="width:13.6%"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.25rem"><span>0</span><span>13.6 / 100</span></div></div>
+    <div class="cap-row"><div class="cap-icon">&#128065;</div><div class="cap-content"><div class="cap-title">Accurate perception <span class="cap-type t2">personal</span></div><div class="cap-body">Recognize that what you experience is not personal failure but a structural ceiling. Naming this correctly is the first ethical act &mdash; it resists the Dark Coherence that makes you internalize structural failure as personal fault.</div></div></div>
+    <div class="cap-row"><div class="cap-icon">&#128737;</div><div class="cap-content"><div class="cap-title">Refuse to lower the ceiling further <span class="cap-type t2">personal</span></div><div class="cap-body">You cannot raise FHRI_max from inside the institution. You can decline to participate in the normalization of deviance that raises &sigma;. Every protocol followed when cutting corners was easier holds the ceiling where it is.</div></div></div>
+    <div class="cap-row"><div class="cap-icon">&#128682;</div><div class="cap-content"><div class="cap-title">Voice and departure decisions <span class="cap-type t1">structural</span></div><div class="cap-body">The most structurally important individual decision in a high-IPS environment: remain and resist, remain and comply, or leave. There is no formula. There is an obligation to understand the structural condition clearly before deciding.</div></div></div>
+  </div>
+
+  <div class="scale-panel" id="scale-family">
+    <div class="panel blue"><strong>The Family&rsquo;s Structural Disadvantage.</strong> Families see decline &mdash; less mobility, a pressure ulcer, withdrawn parent. They may attribute this to aging. The parasitic system depends on this attribution. The camouflage works because the visible outcome looks exactly like what decline always looks like.</div>
+    <div class="panel red"><strong>Ownership opacity is camouflage, not complexity.</strong> LLC chains and REIT separations are legal instruments for making the entity that extracts resources invisible to families bearing the consequences. The family signing an admission agreement is contracting with an operational shell that may have no legal relationship to the entity determining staffing ratios.</div>
+    <div class="cap-row"><div class="cap-icon">&#128202;</div><div class="cap-content"><div class="cap-title">Read the structural parameters <span class="cap-type t2">personal</span></div><div class="cap-body">CMS data is public. Star rating trajectory before and after ownership change, staffing HPRD, deficiency citation count. The 41.5-point FHRI_max gap between PE and non-profit facilities is visible in this data. The decision to choose without examining it is no longer ethically neutral.</div></div></div>
+    <div class="cap-row"><div class="cap-icon">&#128483;</div><div class="cap-content"><div class="cap-title">Exercise market choice as structural lever <span class="cap-type t1">structural</span></div><div class="cap-body">Choosing a non-profit facility when quality is comparable directly reduces occupancy at high-extraction facilities. Individual family choices aggregate into market pressure. This is the mechanism through which consumer decisions become structural interventions.</div></div></div>
+  </div>
+
+  <div class="scale-panel" id="scale-community">
+    <div class="panel green"><strong>The Community&rsquo;s Self-Reinforcing Trap.</strong> High-IPS institutional ecologies produce populations with reduced capacity for collective action &mdash; shorter time horizons, lower trust, higher cognitive load. These are the precise conditions that make it harder to organize the community response that would improve the institutions that produced them.</div>
+    <div class="fhri-bar-wrap">
+      <div class="fhri-label-sm">Community FHRI_max gradient</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;margin:.5rem 0">
+        <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>PE-acquired facilities in community</span><span style="font-family:'DM Mono',monospace;color:var(--red)">13.6</span></div><div class="fhri-bar"><div class="fhri-fill low" style="width:13.6%"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>Non-profit alternatives</span><span style="font-family:'DM Mono',monospace;color:var(--green)">55.1</span></div><div class="fhri-bar"><div class="fhri-fill high" style="width:55.1%"></div></div></div>
+      </div>
+    </div>
+    <div class="cap-row"><div class="cap-icon">&#128269;</div><div class="cap-content"><div class="cap-title">Agential life detection <span class="cap-type t1">structural</span></div><div class="cap-body">Create the information systems that make parasitic overwrite visible. Community organizations tracking FHRI_max across local institutions, publishing accessible data, training families to read it &mdash; these are the community immune response. The parasite depends on invisibility. Visibility is the vaccine.</div></div></div>
+    <div class="cap-row"><div class="cap-icon">&#127795;</div><div class="cap-content"><div class="cap-title">Build low-IPS alternatives <span class="cap-type t1">structural</span></div><div class="cap-body">Community land trusts, worker cooperatives, non-profit alternatives &mdash; these are structural self-defense. The Maathai principle: build the alternative reality first. The institution eventually responds to what exists, not to what is advocated for in the abstract.</div></div></div>
+    <div class="cap-row"><div class="cap-icon">&#129309;</div><div class="cap-content"><div class="cap-title">Coalition across PRF difference <span class="cap-type t2">personal</span></div><div class="cap-body">IPS offers a shared structural description that doesn&rsquo;t require PRF convergence. You don&rsquo;t need to agree about markets to agree that FHRI_max = 14 means 86% of care capacity is absorbed before reaching your neighbor. That agreement is the coalition foundation.</div></div></div>
+  </div>
+
+  <div class="scale-panel" id="scale-economic">
+    <div class="panel amber"><strong>Structural Architects, Not Individual Actors.</strong> Private economic entities don&rsquo;t primarily make ethical decisions in the individual PRF sense. They set structural parameters. The ethical wrong is not any particular decision &mdash; it is the architecture that produces FHRI_max = 13.6 as a predictable structural consequence of ownership.</div>
+    <div class="ips-grid">
+      <div class="ips-param"><div class="param-sym">&epsilon;</div><div class="param-val" style="color:var(--red)">0.636</div><div class="param-name">Extraction (PE)</div></div>
+      <div class="ips-param"><div class="param-sym">&phi;</div><div class="param-val">0.520</div><div class="param-name">Physical entropy</div></div>
+      <div class="ips-param"><div class="param-sym">&rho;</div><div class="param-val">0.700</div><div class="param-name">Regulatory burden</div></div>
+      <div class="ips-param"><div class="param-sym">&sigma;</div><div class="param-val">0.620</div><div class="param-name">Morphic residue</div></div>
+      <div class="ips-param"><div class="param-sym">&mu;</div><div class="param-val" style="color:var(--red)">0.820</div><div class="param-name">Incentive misalign</div></div>
+    </div>
+    <div class="panel red"><strong>The computable corporate ethical obligation.</strong> A private economic entity in a sector with human welfare consequences has an obligation to maintain FHRI_max above the threshold required for the institution&rsquo;s stated mission to be achievable. A nursing home with FHRI_max = 14 cannot achieve quality care. This is a structural measurement &mdash; and a legally specifiable standard.</div>
+    <div class="cap-row"><div class="cap-icon">&#128200;</div><div class="cap-content"><div class="cap-title">True Solvency Accounting <span class="cap-type t1">structural</span></div><div class="cap-body">Genuine financial solvency requires assets to exceed full liabilities &mdash; including FHRI_max degradation imposed on served populations. An institution that appears profitable while reducing FHRI_max is extracting value that should appear as a liability on a balance sheet.</div></div></div>
+  </div>
+
+  <div class="scale-panel" id="scale-governance">
+    <div class="panel violet"><strong>The Regulatory Capture Signature.</strong> A regulatory system that consistently produces T2 interventions in response to T1 structural failures is displaying the functional signature of capture &mdash; regardless of individual regulators&rsquo; intentions. The capture is not of people. It is of the intervention type.</div>
+    <div class="panel amber">HHVBP correctly identifies which agencies perform below standard. It then adjusts their payment by $1,500/year. The entity determining staffing ratios and capital allocation is unaffected. The regulatory intervention has been successfully routed around the structural parameter it nominally targets. The Sign (measurement) is accurate. The Interpretant (what it means for action) has been replaced.</div>
+    <div class="cap-row"><div class="cap-icon">&#128203;</div><div class="cap-content"><div class="cap-title">T1 regulatory instruments <span class="cap-type t1">structural</span></div><div class="cap-body">Ownership disclosure that makes &epsilon; computable. Staffing mandates that establish FHRI_max floors. Compensation structure requirements that reduce &mu;. These address structural parameters directly, not the measurement of their consequences.</div></div></div>
+    <div class="cap-row"><div class="cap-icon">&#128202;</div><div class="cap-content"><div class="cap-title">Data infrastructure as governance obligation <span class="cap-type t2">personal</span></div><div class="cap-body">CMS public datasets make FHRI_max computation possible. No other actor can maintain this infrastructure. Ownership disclosure expansion and outcome tracking are uniquely governmental obligations &mdash; they create the commons for all other actors.</div></div></div>
+  </div>
+
+  <div class="scale-panel" id="scale-civilizational">
+    <div class="panel red"><strong>The Self-Reinforcing Dynamic.</strong> High-extraction institutional ecologies produce Survival-values populations who lack the metabolic and cognitive resources to demand the reform that would improve the institutions that produced them. This is the scale-free property at its most consequential.</div>
+    <div class="fhri-bar-wrap">
+      <div class="fhri-label-sm">IPS Field Profiles: Climate Governance</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;margin:.5rem 0">
+        <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>Scientific Body (IPCC)</span><span style="font-family:'DM Mono',monospace;color:var(--green)">71.9</span></div><div class="fhri-bar"><div class="fhri-fill high" style="width:71.9%"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>Treaty Organization (UNFCCC)</span><span style="font-family:'DM Mono',monospace;color:var(--amber)">46.2</span></div><div class="fhri-bar"><div class="fhri-fill mid" style="width:46.2%"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>National Governance</span><span style="font-family:'DM Mono',monospace;color:var(--red)">23.9</span></div><div class="fhri-bar"><div class="fhri-fill low" style="width:23.9%"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-bottom:.2rem"><span>Incumbent Sector</span><span style="font-family:'DM Mono',monospace;color:var(--red)">14.3</span></div><div class="fhri-bar"><div class="fhri-fill low" style="width:14.3%"></div></div></div>
+      </div>
+    </div>
+    <p class="body" style="font-size:.85rem">The 48-point gap between what scientists know (71.9) and what national governance can translate into policy (23.9) is the civilizational suppression gap. The Paris Agreement improved coordination within this gap &mdash; a genuine T2 gain. It did not change &epsilon;, &mu;, or &sigma; in national governance institutions. It did not raise the ceiling.</p>
+  </div>
+</div>
+
+<!-- SAGE -->
+<div class="tab-pane" id="tab-sage">
+  <p class="body">SAGE is the systematic ethical analysis method. Apply it to a real structural scenario derived from CMS data. Work through each step to understand what the data requires from ethics.</p>
+  <div class="scenario-row">
+    <button class="scenario-chip active" onclick="setScenario('nurse',this)">The Exhausted Nurse</button>
+    <button class="scenario-chip" onclick="setScenario('family',this)">The Choosing Family</button>
+    <button class="scenario-chip" onclick="setScenario('director',this)">The Nursing Director</button>
+    <button class="scenario-chip" onclick="setScenario('regulator',this)">The Regulator</button>
+  </div>
+  <div class="pred-box"><div class="pred-label">Scenario</div><div id="sageScenarioText" style="font-size:.88rem;line-height:1.7"><strong>Maria, RN, works at a PE-acquired nursing home in Florida.</strong> She has 14 residents on her shift. The facility&rsquo;s FHRI_max is 13.6. She knows Mrs. Rodriguez needs 30 more minutes of mobility work to prevent a pressure ulcer. She has 8 minutes. She has filed three incident reports about staffing ratios. They were logged but not acted on. Tonight she finds a small pressure ulcer forming on Mrs. Rodriguez&rsquo;s heel.</div></div>
+
+  <div class="sage-step">
+    <div class="sage-header" onclick="toggleSage(this)">
+      <div class="sage-icon" style="background:rgba(20,184,166,.15);color:var(--teal)">S</div>
+      <div><div class="sage-title">Situation &mdash; What is structurally happening?</div><div style="font-size:.75rem;color:var(--muted)">Map the IPS parameters before asking what to do</div></div>
+    </div>
+    <div class="sage-body">
+      <p class="body">SAGE begins with the structural situation, not the emotional reaction. Before asking &ldquo;what should Maria do,&rdquo; ask: what is the full structural architecture producing this moment?</p>
+      <div class="choice-grid">
+        <div class="choice-card" onclick="selectChoice(this,'s1')"><div class="choice-title">Agent-level failure</div><div class="choice-sub">Maria is overwhelmed &mdash; the problem is inadequate scheduling that could be fixed with better shift coverage.</div></div>
+        <div class="choice-card" onclick="selectChoice(this,'s2')"><div class="choice-title">Structural ceiling failure (T1)</div><div class="choice-sub">FHRI_max = 13.6 means no scheduling fix within this ownership structure can close the 67.7-point absorbed gap.</div></div>
+        <div class="choice-card" onclick="selectChoice(this,'s3')"><div class="choice-title">Both, independently</div><div class="choice-sub">Maria&rsquo;s shift is understaffed AND the ownership structure ensures it will remain understaffed regardless of scheduling.</div></div>
+        <div class="choice-card" onclick="selectChoice(this,'s4')"><div class="choice-title">Regulatory failure</div><div class="choice-sub">The facility isn&rsquo;t meeting staffing standards &mdash; this is a compliance problem that citation and enforcement can address.</div></div>
+      </div>
+      <div class="sage-result" id="result-s" style="border-color:rgba(20,184,166,.3);background:rgba(20,184,166,.06)"></div>
+    </div>
+  </div>
+
+  <div class="sage-step">
+    <div class="sage-header" onclick="toggleSage(this)">
+      <div class="sage-icon" style="background:rgba(245,158,11,.15);color:var(--amber)">A</div>
+      <div><div class="sage-title">Affected &mdash; Who bears the consequences?</div><div style="font-size:.75rem;color:var(--muted)">Map the full web of impact across scales</div></div>
+    </div>
+    <div class="sage-body">
+      <p class="body">SAGE asks us to identify everyone affected, not just the immediately visible parties. In structural analysis, the web of impact extends across scales.</p>
+      <div class="cap-row"><div class="cap-icon">&#128118;</div><div class="cap-content"><div class="cap-title">Mrs. Rodriguez</div><div class="cap-body">Immediate biological harm &mdash; pressure ulcer forming. Downstream: hospitalization risk, pain, loss of mobility, psychological harm from feeling uncared for in a facility whose stated purpose is care.</div></div></div>
+      <div class="cap-row"><div class="cap-icon">&#128105;&#8205;&#9877;</div><div class="cap-content"><div class="cap-title">Maria</div><div class="cap-body">Moral injury &mdash; sustained dissonance between professional commitment and structural inability. Three unacted-on incident reports are not her failure. They are evidence of high &sigma; &mdash; normalized deviance &mdash; absorbed by the institutional architecture.</div></div></div>
+      <div class="cap-row"><div class="cap-icon">&#128106;</div><div class="cap-content"><div class="cap-title">Mrs. Rodriguez&rsquo;s family</div><div class="cap-body">Uninformed about the structural cause. The ownership architecture producing this outcome is deliberately opaque. The information asymmetry is structural, not incidental.</div></div></div>
+      <div class="cap-row"><div class="cap-icon">&#128184;</div><div class="cap-content"><div class="cap-title">The extraction architecture</div><div class="cap-body">The PE firm, REIT, and management company &mdash; none appears in Maria&rsquo;s employment contract. None bears legal accountability for the pressure ulcer. The harm is real and externalized onto those least able to absorb it.</div></div></div>
+    </div>
+  </div>
+
+  <div class="sage-step">
+    <div class="sage-header" onclick="toggleSage(this)">
+      <div class="sage-icon" style="background:rgba(167,139,250,.15);color:var(--violet)">G</div>
+      <div><div class="sage-title">Grounds &mdash; What do the ethical traditions say?</div><div style="font-size:.75rem;color:var(--muted)">Apply multiple frameworks to the structural situation</div></div>
+    </div>
+    <div class="sage-body">
+      <p class="body">Different ethical traditions illuminate different aspects. None is sufficient alone. The structural analysis connects them.</p>
+      <div style="display:grid;gap:.6rem">
+        <div class="panel" style="border-left:3px solid var(--care);background:rgba(74,144,164,.08)"><strong style="color:var(--care)">Care Ethics</strong> &mdash; The web of care relationships is violated not by Maria&rsquo;s failure but by the structural architecture that absorbs her care capacity before it reaches Mrs. Rodriguez. Care Ethics demands attention to who bears harm in relationships of dependency. The structural answer: the harm is computable, traceable to ownership parameters, and legally externalized onto those least able to absorb it.</div>
+        <div class="panel" style="border-left:3px solid var(--fairness);background:rgba(107,142,78,.08)"><strong style="color:var(--fairness)">Fairness / Justice</strong> &mdash; Rawls behind the veil of ignorance: would you design an institutional architecture producing FHRI_max = 13.6 if you didn&rsquo;t know whether you&rsquo;d be the PE investor, the nurse, Mrs. Rodriguez, or her family? The answer structures the justice claim. The CPG five criteria &mdash; biological floor, predictable procedures, repair pathways &mdash; are not met at FHRI_max = 14.</div>
+        <div class="panel" style="border-left:3px solid var(--authority);background:rgba(139,123,168,.08)"><strong style="color:var(--authority)">Consequentialism</strong> &mdash; 11% increased mortality, 33 fewer minutes of daily care per resident, accelerated staff burnout. These are the measured consequences of PE acquisition in nursing homes across 15 years of national data. Consequentialism provides the strongest grounds for structural reform because the outcomes are now quantified at scale.</div>
+        <div class="panel" style="border-left:3px solid var(--sanctity);background:rgba(193,123,123,.08)"><strong style="color:var(--sanctity)">Virtue / Deontology</strong> &mdash; What is Maria&rsquo;s duty? Kant: could she universalize declining to file another incident report? No &mdash; universal silence makes the structural condition invisible. Her duty to speak is categorical, even when speaking has been made costly. The virtue of courage is not the absence of cost. It is action despite cost.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sage-step">
+    <div class="sage-header" onclick="toggleSage(this)">
+      <div class="sage-icon" style="background:rgba(74,222,128,.15);color:var(--green)">E</div>
+      <div><div class="sage-title">Evaluate &mdash; What action is indicated at each level?</div><div style="font-size:.75rem;color:var(--muted)">Match the ethical response to the structural leverage level</div></div>
+    </div>
+    <div class="sage-body">
+      <p class="body">SAGE&rsquo;s evaluative step matches the ethical response to the structural level at which it can be effective. T2 responses are appropriate for T2 failures. T1 structural failures require T1 responses &mdash; which may not be available to the actor at Maria&rsquo;s position.</p>
+      <div class="choice-grid">
+        <div class="choice-card" onclick="selectChoice(this,'e1')"><div class="choice-title">Document everything, file again</div><div class="choice-sub">File a fourth incident report. Create a written record. Notify the Director of Nursing.</div></div>
+        <div class="choice-card" onclick="selectChoice(this,'e2')"><div class="choice-title">Contact state regulatory agency</div><div class="choice-sub">Report the staffing condition and pressure ulcer to the state health department for inspection.</div></div>
+        <div class="choice-card" onclick="selectChoice(this,'e3')"><div class="choice-title">Help family understand the structure</div><div class="choice-sub">Help Mrs. Rodriguez&rsquo;s family understand the ownership architecture and their right to request transfer to a non-profit facility.</div></div>
+        <div class="choice-card" onclick="selectChoice(this,'e4')"><div class="choice-title">All three &mdash; different leverage levels</div><div class="choice-sub">Each response operates at a different structural level. None alone is sufficient. Together they address the situation at every leverage point available from Maria&rsquo;s position.</div></div>
+      </div>
+      <div class="sage-result" id="result-e" style="border-color:rgba(74,222,128,.3);background:rgba(74,222,128,.05)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CAPABILITY -->
+<div class="tab-pane" id="tab-capability">
+  <p class="body">Capability-based ethics asks: what can you actually do from where you actually are? Ethical obligation is not uniform across structural positions. Select your position to see your specific capabilities, limitations, and obligations.</p>
+  <div class="position-grid">
+    <div class="position-card" onclick="setPosition('student',this)"><div class="pos-icon">&#128218;</div><div class="pos-name">Student</div><div class="pos-desc">Inside an educational institution</div></div>
+    <div class="position-card" onclick="setPosition('worker',this)"><div class="pos-icon">&#128188;</div><div class="pos-name">Frontline Worker</div><div class="pos-desc">Inside a care or service institution</div></div>
+    <div class="position-card" onclick="setPosition('family',this)"><div class="pos-icon">&#128106;</div><div class="pos-name">Family Member</div><div class="pos-desc">Making care decisions for others</div></div>
+    <div class="position-card" onclick="setPosition('manager',this)"><div class="pos-icon">&#128193;</div><div class="pos-name">Manager / Director</div><div class="pos-desc">Institutional leadership position</div></div>
+    <div class="position-card" onclick="setPosition('policymaker',this)"><div class="pos-icon">&#127979;</div><div class="pos-name">Policy / Advocacy</div><div class="pos-desc">Governance or advocacy role</div></div>
+    <div class="position-card" onclick="setPosition('investor',this)"><div class="pos-icon">&#128201;</div><div class="pos-name">Investor / Entrepreneur</div><div class="pos-desc">Capital allocation decisions</div></div>
+  </div>
+  <div class="capability-output" id="capOutput"><div id="capContent"></div></div>
+</div>
+
+<!-- CLASSIFIER -->
+<div class="tab-pane" id="tab-classifier">
+  <p class="body">The T1/T2 distinction is the most practically important tool in this chapter. Understanding which type an action is determines whether it can close the coordination gap.</p>
+  <div class="t1-t2-compare">
+    <div class="compare-card t1"><div class="cc-title">Type 1 &mdash; Structural</div><p>Changes &epsilon;, &phi;, &rho;, &sigma;, or &mu; directly. Raises FHRI_max ceiling. Durable because structural capacity to coordinate actually changes. Examples: ownership type change, staffing mandate, ownership disclosure requirement, BioBond instrument.</p></div>
+    <div class="compare-card t2"><div class="cc-title">Type 2 &mdash; Agent/Process</div><p>Improves agents, incentives, or processes within unchanged structural parameters. Cannot exceed FHRI_max. May produce temporary improvement. Examples: VBP payment adjustments, training programs, professional ethics codes, internal advocacy within existing institutional rules.</p></div>
+  </div>
+  <div class="panel amber" style="margin:1rem 0"><strong>The trap.</strong> T2 interventions matter within the ceiling they operate in. The trap is substituting T2 for T1 when the ceiling itself is the problem. HHVBP is a T2 intervention producing +0.30% average adjustment where &epsilon; = 0.636 requires T1 structural change.</div>
+
+  <h3 style="font-family:'DM Serif Display',serif;color:var(--teal);margin:1rem 0 .6rem">Classify an Intervention</h3>
+  <p class="body" style="font-size:.85rem">Describe an ethical action, policy proposal, or personal decision. Press Classify to see its T1/T2 status and what that means for its effectiveness.</p>
+  <textarea class="classifier-input" id="classifierInput" placeholder="Example: 'Filing another incident report about staffing ratios' or 'Requiring full beneficial ownership disclosure for nursing homes receiving Medicare funding' or 'Working harder to care for more patients per shift'..."></textarea>
+  <button class="action-btn" onclick="classifyIntervention()">Classify</button>
+  <button class="action-btn outline" onclick="document.getElementById('classifierInput').value='Requiring all Medicare-participating nursing homes to disclose full beneficial ownership structure and maintain minimum staffing regardless of management fee obligations';classifyIntervention()">Show Example</button>
+  <div class="classifier-result" id="classifierResult"></div>
+
+  <h3 style="font-family:'DM Serif Display',serif;color:var(--teal);margin:1.5rem 0 .75rem">Known Classification Examples</h3>
+  <div class="cap-row"><div class="cap-icon" style="color:var(--blue)">T2</div><div class="cap-content"><div class="cap-title">HHVBP payment adjustment <span class="cap-type t2">T2</span></div><div class="cap-body">+0.30% average APP. Correct measurement. Financial signal insufficient to change ownership-determined staffing ratios. The instrument reaches L7 (information flows) but not L5 (structural parameters).</div></div></div>
+  <div class="cap-row"><div class="cap-icon" style="color:var(--blue)">T2</div><div class="cap-content"><div class="cap-title">Professional ethics training <span class="cap-type t2">T2</span></div><div class="cap-body">Raises agent FHRI. Cannot raise FHRI_max ceiling imposed by &epsilon; and &mu;. Valuable within the ceiling. Cannot substitute for raising it.</div></div></div>
+  <div class="cap-row"><div class="cap-icon" style="color:var(--red)">T1</div><div class="cap-content"><div class="cap-title">Ownership type change (For-Profit &rarr; Non-Profit) <span class="cap-type t1">T1</span></div><div class="cap-body">Changes &epsilon; directly from 0.636 to 0.000. Raises FHRI_max from 13.6 to 55.1. 41.5-point structural gain. Durable because structural capacity to coordinate actually changes.</div></div></div>
+  <div class="cap-row"><div class="cap-icon" style="color:var(--red)">T1</div><div class="cap-content"><div class="cap-title">BioBond financial instrument <span class="cap-type t1">T1</span></div><div class="cap-body">Conditions capital cost on FHRI_max improvement trajectory. Creates financial signal proportionate to structural change required &mdash; unlike VBP&rsquo;s &plusmn;2% adjustment vs. the &epsilon; = 0.636 structural parameter it attempts to address.</div></div></div>
+  <div class="cap-row"><div class="cap-icon" style="color:var(--red)">T1</div><div class="cap-content"><div class="cap-title">Beneficial ownership disclosure mandate <span class="cap-type t1">T1</span></div><div class="cap-body">Makes &epsilon; computable by revealing the entity holding debt obligation and determining the budget. Without it, regulatory agencies cannot measure what they nominally regulate.</div></div></div>
+</div>
+
+<!-- JOURNAL -->
+<div class="tab-pane" id="tab-journal">
+  <div class="pred-box" id="predPanel" style="display:none">
+    <div class="pred-label">Your earlier prediction (retrieved from prior chapter)</div>
+    <div id="predText" style="font-size:.85rem;font-style:italic;color:rgba(255,255,255,.7)"></div>
+  </div>
+  <p class="body">These journal questions move from structural analysis to personal ethical commitment. Your responses are stored locally on your device.</p>
+
+  <div class="journal-q">
+    <div class="journal-q-header"><span class="journal-q-num">Q1</span>Describe a real institution in your life. Without using technical language yet &mdash; what does it feel like to operate inside it? Where do you feel the structural ceiling?</div>
+    <textarea class="journal-textarea" id="j1" oninput="saveJournal()" placeholder="Take your time. This is your own structural diagnosis of a real institution you know..."></textarea>
+    <div class="journal-toolbar"><button class="action-btn outline" style="font-size:.75rem;padding:.3rem .7rem" onclick="saveJournal()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="journal-q-header"><span class="journal-q-num">Q2</span>Apply the IPS lens. Which parameter do you think is highest in that institution &mdash; &epsilon; (extraction), &phi; (physical entropy), &rho; (regulatory burden), &sigma; (normalized deviance), or &mu; (incentive misalignment)? What evidence in your experience points to it?</div>
+    <textarea class="journal-textarea" id="j2" oninput="saveJournal()" placeholder="You don't need exact numbers. Describe what you observe that maps onto the parameter..."></textarea>
+    <div class="journal-toolbar"><button class="action-btn outline" style="font-size:.75rem;padding:.3rem .7rem" onclick="saveJournal()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="journal-q-header"><span class="journal-q-num">Q3</span>Boisjoly filed 24 incident reports. He knew. He spoke. The structure absorbed it. Have you ever been in a situation where you knew something important, said it clearly, and the institution absorbed it without acting? What happened?</div>
+    <textarea class="journal-textarea" id="j3" oninput="saveJournal()" placeholder="This question asks for honesty about personal experience with institutional suppression..."></textarea>
+    <div class="journal-toolbar"><button class="action-btn outline" style="font-size:.75rem;padding:.3rem .7rem" onclick="saveJournal()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="journal-q-header"><span class="journal-q-num">Q4</span>Given your current structural position &mdash; where you actually are right now &mdash; which leverage levels can you actually reach? What is your honest T1/T2 inventory?</div>
+    <textarea class="journal-textarea" id="j4" oninput="saveJournal()" placeholder="Be specific about your position. What can you actually do from where you actually are?"></textarea>
+    <div class="journal-toolbar"><button class="action-btn outline" style="font-size:.75rem;padding:.3rem .7rem" onclick="saveJournal()">Save</button></div>
+  </div>
+
+  <div class="journal-q">
+    <div class="journal-q-header"><span class="journal-q-num">Q5 &mdash; Forward Prediction</span>&ldquo;The parasite is visible. Visibility is not victory. But visibility is the precondition for immunity.&rdquo; Name one specific structural action &mdash; T1 if possible &mdash; you could take in the next 6 months. What would change, and how would you know?</div>
+    <textarea class="journal-textarea" id="j5" oninput="saveJournal()" placeholder="Make it as specific and measurable as you can. This prediction carries forward."></textarea>
+    <div class="journal-toolbar"><button class="action-btn outline" style="font-size:.75rem;padding:.3rem .7rem" onclick="saveJournal()">Save</button></div>
+  </div>
+
+  <button class="action-btn" onclick="exportJournal()" style="margin-top:.5rem">&#11015; Download Journal</button>
+</div>
+
+<div class="bottom-nav">
+  <button class="action-btn outline" onclick="prevTab()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);align-self:center" id="tabIndicator">1 / 6</span>
+  <button class="action-btn" onclick="nextTab()">Next &#8594;</button>
+</div>
+<div class="save-flash" id="saveFlash">Saved &#10003;</div>
+
+<script>
+const TABS=['overview','scales','sage','capability','classifier','journal'];
+let cur=0;
+function switchTab(name){
+  TABS.forEach((t,i)=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===name);
+    document.querySelectorAll('.tab-btn')[i].classList.toggle('active',t===name);
+    if(t===name)cur=i;
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('tabIndicator').textContent=(cur+1)+' / '+TABS.length;
+}
+function nextTab(){if(cur<TABS.length-1)switchTab(TABS[cur+1]);}
+function prevTab(){if(cur>0)switchTab(TABS[cur-1]);}
+function toggleSection(h){const b=h.nextElementSibling;b.classList.toggle('open');h.classList.toggle('open');}
+function toggleSage(h){h.nextElementSibling.classList.toggle('open');}
+function setScale(s){
+  document.querySelectorAll('.scale-btn').forEach(b=>b.classList.toggle('active',b.dataset.scale===s));
+  document.querySelectorAll('.scale-panel').forEach(p=>p.classList.toggle('active',p.id==='scale-'+s));
+}
+
+const SCENARIOS={
+  nurse:'<strong>Maria, RN, works at a PE-acquired nursing home in Florida.</strong> She has 14 residents on her shift. The facility&rsquo;s FHRI_max is 13.6. She knows Mrs. Rodriguez needs 30 more minutes of mobility work to prevent a pressure ulcer. She has 8 minutes. She has filed three incident reports about staffing ratios. They were logged but not acted on. Tonight she finds a small pressure ulcer forming on Mrs. Rodriguez&rsquo;s heel.',
+  family:'<strong>David and his sister are choosing a nursing home for their mother.</strong> They have toured three facilities. One is modern and friendly &mdash; acquired by a PE firm 18 months ago, star rating fallen from 4 to 2.5. The second is older, run by a Catholic healthcare system: FHRI_max = 54.3. The third is government-operated, 3-star. David found the CMS data. His sister prefers the modern one. They disagree about how to use the structural information.',
+  director:'<strong>James is Director of Nursing at a PE-acquired facility.</strong> He knows FHRI_max = 14.3. He persuaded management to add two CNAs per wing. The management company reversed the decision after quarterly review because it reduced the management fee return. He is considering contacting the state health department, knowing a citation may accelerate sale to another extraction-oriented buyer. His professional license and his staff&rsquo;s livelihoods are at stake.',
+  regulator:'<strong>A state health department surveyor has completed an inspection.</strong> She found 12 deficiencies &mdash; above average. The ownership structure includes three LLC layers, a REIT holding the building, and a management company collecting 8% of revenue. She cannot cite the ownership structure itself &mdash; only operational deficiencies. She knows the facility will likely pay the fine and reset. She has authority to recommend Special Focus Status. The facility serves 120 Medicaid residents with nowhere else to go.'
+};
+function setScenario(key,btn){
+  document.querySelectorAll('.scenario-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sageScenarioText').innerHTML=SCENARIOS[key];
+}
+
+const SAGE_RESULTS={
+  s1:{c:'rgba(96,165,250,.3)',bg:'rgba(96,165,250,.05)',t:'<strong>Partially correct &mdash; but incomplete.</strong> More nurses would help within the existing ceiling. But FHRI_max = 13.6 means &epsilon; = 0.636 has already determined what staffing the budget can sustain. Scheduling fixes are T2 responses to what is primarily a T1 structural failure.'},
+  s2:{c:'rgba(20,184,166,.3)',bg:'rgba(20,184,166,.06)',t:'<strong>Structurally accurate.</strong> This is the Type 2 failure diagnosis: the structural ceiling makes agent-level improvement insufficient. The ownership architecture &mdash; not scheduling decisions &mdash; is the primary causal variable. This recognition is required before any effective intervention strategy can be designed.'},
+  s3:{c:'rgba(20,184,166,.3)',bg:'rgba(20,184,166,.06)',t:'<strong>Most complete analysis.</strong> Maria&rsquo;s shift is understaffed AND the ownership structure ensures this is structural. Both T2 (scheduling) and T1 (ownership) interventions are relevant but cannot substitute for each other. Effective action requires knowing which is which.'},
+  s4:{c:'rgba(245,158,11,.3)',bg:'rgba(245,158,11,.05)',t:'<strong>Partially correct &mdash; but wrong level.</strong> Regulatory citation addresses &rho;-level compliance. But if the structural cause is &epsilon; determined by ownership, citation may produce temporary compliance without structural change. The management company&rsquo;s fee structure remains unchanged.'},
+  e1:{c:'rgba(96,165,250,.3)',bg:'rgba(96,165,250,.05)',t:'<strong>T2 &mdash; necessary but insufficient.</strong> Documentation creates a legal record. It does not change &epsilon;. Three previous reports were absorbed without action &mdash; consistent with high &sigma;. Filing again is the minimum ethical duty (refuse normalization) but cannot close the structural gap alone.'},
+  e2:{c:'rgba(167,139,250,.3)',bg:'rgba(167,139,250,.06)',t:'<strong>T2 &mdash; higher leverage than internal reporting.</strong> State regulatory action operates at a higher level. However, if the structural cause is &epsilon; determined by ownership, enforcement produces compliance adjustments without changing the extraction rate. The staffing budget constraint is unchanged.'},
+  e3:{c:'rgba(74,222,128,.3)',bg:'rgba(74,222,128,.06)',t:'<strong>T1-adjacent &mdash; market mechanism.</strong> Helping families understand and exercise ownership choice activates the market mechanism that directly affects &epsilon;: reduced occupancy at high-extraction facilities creates financial pressure on the ownership structure itself. This is the Maathai approach at the individual level.'},
+  e4:{c:'rgba(20,184,166,.3)',bg:'rgba(20,184,166,.06)',t:'<strong>Most complete &mdash; matched to leverage levels.</strong> Documentation (L12), regulatory contact (L7/L8), family education (L5). Together they address the situation at every leverage point available from Maria&rsquo;s position. None is sufficient alone. All three are the full ethical response accessible from where she stands.'}
+};
+function selectChoice(card,key){
+  card.closest('.sage-body').querySelectorAll('.choice-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  const r=card.closest('.sage-body').querySelector('.sage-result');
+  const d=SAGE_RESULTS[key];
+  if(d&&r){r.style.borderColor=d.c;r.style.background=d.bg;r.innerHTML=d.t;r.classList.add('show');}
+}
+
+const POSITIONS={
+  student:{title:'Student',color:'var(--teal)',pct:42,actions:[
+    {icon:'&#128065;',title:'Accurate perception',type:'t2',body:'Learn to read the IPS parameters of your educational institution. Is the FHRI_max constrained by &rho; (administrative burden), &sigma; (credentialing procedures), or &mu; (metric-driven systems that don&rsquo;t align with learning)? Naming this accurately is the first ethical act.'},
+    {icon:'&#128483;',title:'Voice within institutional procedures',type:'t2',body:'Student governance, faculty-student committees, formal feedback &mdash; T2 levers. They cannot change ownership structure, but they can reduce &sigma; by refusing to normalize inadequate conditions silently.'},
+    {icon:'&#127795;',title:'Build the low-IPS alternative',type:'t1',body:'Study groups, peer tutoring, community learning networks &mdash; low-IPS alternatives you can create. The Maathai principle: build the alternative reality. The institution responds to what exists.'},
+    {icon:'&#128302;',title:'Use this course as agential life detection',type:'t2',body:'Every case study is practice for reading real institutional structural conditions. The ethical obligation of a student in this course is to apply the analysis in the institutions you actually inhabit.'},
+  ]},
+  worker:{title:'Frontline Worker',color:'var(--amber)',pct:28,actions:[
+    {icon:'&#128737;',title:'Refuse to raise &sigma; &mdash; document every deviation',type:'t2',body:'Every incident report filed, every protocol followed when cutting corners was easier &mdash; these hold &sigma; from rising further. You cannot raise FHRI_max from inside. You can prevent it from falling.'},
+    {icon:'&#128065;',title:'Accurate perception without self-blame',type:'t2',body:'The gap between what you know is needed and what the institution allows is not your inadequacy. It is FHRI_max. Naming this correctly protects your own coherence.'},
+    {icon:'&#128483;',title:'External regulatory reporting',type:'t2',body:'State health departments and professional licensing boards receive frontline reports. This operates at higher leverage than internal reporting and is protected by whistleblower provisions in most jurisdictions.'},
+    {icon:'&#127795;',title:'Know the alternative institutions',type:'t1',body:'Identify non-profit alternatives in your sector. This knowledge has two uses: referring patients and families, and knowing where to go when your T2 options are exhausted. Departure to a low-IPS institution is itself a structural act.'},
+  ]},
+  family:{title:'Family Member',color:'var(--blue)',pct:38,actions:[
+    {icon:'&#128202;',title:'Read the structural parameters',type:'t2',body:'CMS Care Compare data is public. Check star rating trajectory before and after ownership change, staffing HPRD, deficiency citation count. The 41.5-point FHRI_max gap between PE and non-profit facilities is visible. The decision to choose without examining it is no longer ethically neutral.'},
+    {icon:'&#10067;',title:'Ask the ownership question directly',type:'t2',body:'Ask admissions: &ldquo;Who owns this facility? Is it part of a PE portfolio? Is the real estate owned separately?&rdquo; The legal structure is not always voluntarily disclosed. Asking forces some transparency.'},
+    {icon:'&#128483;',title:'Exercise market choice as structural lever',type:'t1',body:'Choosing a non-profit facility when quality is comparable is a T1 market intervention &mdash; it directly reduces occupancy at high-extraction facilities. Individual choices aggregate into structural market pressure.'},
+    {icon:'&#128483;',title:'Advocate for disclosure requirements',type:'t1',body:'Contact elected representatives about beneficial ownership disclosure for Medicare-participating facilities. This T1 policy action can only come from outside the institution &mdash; from people exactly like you.'},
+  ]},
+  manager:{title:'Manager / Director',color:'var(--violet)',pct:55,actions:[
+    {icon:'&#128302;',title:'Measure your institution&rsquo;s IPS profile',type:'t1',body:'You have access to operational data that frontline workers and families cannot see. Compute FHRI_max from observable proxies: staffing HPRD (&phi;), management fee as % of revenue (&epsilon;), documentation hours as % of staff time (&rho;), deficiency trajectory (&sigma;). Know the number before you can change it.'},
+    {icon:'&#128203;',title:'Internal T1 advocacy',type:'t1',body:'You have structural position to propose changes to compensation design (&mu; reduction), staffing investment (&phi; improvement), documentation burden (&rho; reduction). The institutional response reveals whether you are in an Iron Cage.'},
+    {icon:'&#127795;',title:'Facilitate low-IPS transition',type:'t1',body:'If you are in a high-IPS institution, you are in the strongest structural position to facilitate its transition &mdash; non-profit conversion, mission-aligned capital, community trust models. These T1 interventions are not available below your level.'},
+    {icon:'&#128737;',title:'Protect staff from &sigma; accumulation',type:'t2',body:'Create genuine reporting cultures, investigate incident reports rather than logging them, refuse to tolerate practices that cut corners. T2 ethical actions that matter within the FHRI_max ceiling you operate in.'},
+  ]},
+  policymaker:{title:'Policy / Advocacy',color:'var(--green)',pct:65,actions:[
+    {icon:'&#128203;',title:'Beneficial ownership disclosure',type:'t1',body:'Mandatory public disclosure of all beneficial owners for Medicare-participating facilities. Makes &epsilon; computable and the structural cause of quality failure visible to families, researchers, and regulators.'},
+    {icon:'&#128208;',title:'FHRI_max floor standards',type:'t1',body:'Rather than specifying individual staffing ratios independently, regulation could specify minimum FHRI_max and hold institutions responsible for maintaining it. This shifts regulation from compliance-theater to outcome-accountability.'},
+    {icon:'&#128184;',title:'Enable BioBond infrastructure',type:'t1',body:'The legal frameworks within which BioBond instruments can operate &mdash; PBC certification, FHRI_max measurement standards, mission-driven capital access &mdash; are governance products no private actor can substitute for.'},
+    {icon:'&#128202;',title:'Protect and expand data infrastructure',type:'t2',body:'CMS public datasets make FHRI_max computation possible. No other actor can maintain this. Ownership disclosure expansion and state-level equivalents create the information commons for all other actors.'},
+  ]},
+  investor:{title:'Investor / Entrepreneur',color:'var(--red)',pct:70,actions:[
+    {icon:'&#127959;',title:'Structural design of investment terms',type:'t1',body:'The &epsilon; parameter is determined at the investment origination stage &mdash; debt load, management fee structure, return timeline. Designing investment structures that constrain &epsilon; below the FHRI_max collapse threshold is a T1 intervention available at your structural position that no downstream actor can substitute for.'},
+    {icon:'&#128201;',title:'BioBond as investment instrument',type:'t1',body:'BioBond conditions returns on FHRI_max improvement trajectory rather than extraction maximization. This is not philanthropy &mdash; it is a different risk model: institutions maintaining FHRI_max &gt; 40 have lower regulatory risk, lower workforce turnover cost, and lower long-term asset degradation than extraction-optimized alternatives.'},
+    {icon:'&#127979;',title:'PBC structure as mission defense',type:'t1',body:'Public Benefits Corporation legal structure creates a mission specification that future ownership changes cannot easily overwrite. Not dependent on the goodwill of current occupants &mdash; it is structural.'},
+    {icon:'&#128202;',title:'True Solvency Accounting',type:'t1',body:'Genuine financial solvency requires assets to exceed full liabilities &mdash; including FHRI_max degradation imposed on served populations. Building this accounting into investment evaluation is T1 structural reform of what capital measures as success.'},
+  ]}
+};
+function setPosition(key,card){
+  document.querySelectorAll('.position-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  const pos=POSITIONS[key];
+  const pct=pos.pct;
+  const fc=pct<35?'low':pct<55?'mid':'high';
+  document.getElementById('capContent').innerHTML=`
+    <div class="panel teal" style="border-left-color:${pos.color}"><strong>${pos.title} &mdash; Your Leverage Profile</strong></div>
+    <div class="fhri-bar-wrap"><div class="fhri-label-sm">Structural leverage ceiling at this position</div>
+    <div class="fhri-bar"><div class="fhri-fill ${fc}" style="width:${pct}%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.25rem"><span>0</span><span>${pct} / 100 leverage capacity</span></div></div>
+    <h3 style="font-family:'DM Serif Display',serif;color:${pos.color};margin:.9rem 0 .5rem">What You Can Actually Do</h3>
+    ${pos.actions.map(a=>`<div class="cap-row"><div class="cap-icon">${a.icon}</div><div class="cap-content"><div class="cap-title">${a.title} <span class="cap-type ${a.type}">${a.type.toUpperCase()}</span></div><div class="cap-body">${a.body}</div></div></div>`).join('')}`;
+  document.getElementById('capOutput').classList.add('show');
+}
+
+const T1_KW=['ownership','beneficial','disclose','mandate','require','floor','standard','structure','reit','pe ','private equity','biobond','pbc','non-profit','nonprofit','convert','transfer','eliminate','prohibit','ban','cap extraction','staffing minimum'];
+const T2_KW=['train','report','file','document','monitor','measure','incentive','bonus','fine','penalize','educate','advocate','communicate','survey','audit','compliance','adjust payment','vbp','workshop','encourage'];
+function classifyIntervention(){
+  const text=document.getElementById('classifierInput').value.trim();
+  if(!text){alert('Please describe an intervention first.');return;}
+  const lower=text.toLowerCase();
+  const t1=T1_KW.filter(k=>lower.includes(k)).length;
+  const t2=T2_KW.filter(k=>lower.includes(k)).length;
+  let type,col,bg,expl;
+  if(t1>t2){type='T1 &mdash; Structural Intervention';col='rgba(74,222,128,.3)';bg='rgba(74,222,128,.05)';expl='This intervention appears to address structural parameters directly. T1 interventions raise FHRI_max by changing &epsilon;, &phi;, &rho;, &sigma;, or &mu;. Key question: does this change who owns the institution, how debt is structured, or what the incentive architecture rewards? If yes, it is T1. Durable change is possible.';}
+  else if(t2>t1||t1===0){type='T2 &mdash; Agent/Process Intervention';col='rgba(96,165,250,.3)';bg='rgba(96,165,250,.05)';expl='This intervention appears to operate within unchanged structural parameters. T2 interventions improve agents or incentives without changing FHRI_max. They matter within the ceiling they operate in. Key question: if this succeeds completely, does the ownership architecture or management fee model change? If no, it is T2. Valuable but ceiling-constrained.';}
+  else{type='Mixed &mdash; T1 and T2 elements';col='rgba(245,158,11,.3)';bg='rgba(245,158,11,.05)';expl='This intervention has both T1 and T2 elements. Structural reform usually requires both changing structural parameters and improving agent capacity to use the expanded ceiling. The key is knowing which element does which work, so you don&rsquo;t mistake T2 success for T1 progress.';}
+  const r=document.getElementById('classifierResult');
+  r.style.borderColor=col;r.style.background=bg;
+  r.innerHTML=`<div style="font-family:'DM Mono',monospace;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem;color:${col.includes('74,222')?'#4ade80':col.includes('245,158')?'#f59e0b':'#60a5fa'}">${type}</div><p style="font-size:.88rem;line-height:1.7;color:rgba(255,255,255,.8)">${expl}</p>`;
+  r.classList.add('show');
+}
+
+const JKEYS=['ch15_j1','ch15_j2','ch15_j3','ch15_j4','ch15_j5'];
+function loadJournal(){
+  JKEYS.forEach((k,i)=>{const el=document.getElementById('j'+(i+1));if(el)try{el.value=localStorage.getItem(k)||'';}catch(e){}});
+  const pred='';
+  if(pred){document.getElementById('predPanel').style.display='block';document.getElementById('predText').textContent=pred;}
+}
+function saveJournal(){
+  JKEYS.forEach((k,i)=>{const el=document.getElementById('j'+(i+1));if(el)try{localStorage.setItem(k,el.value);}catch(e){}});
+  const f=document.getElementById('saveFlash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),1800);
+}
+function exportJournal(){
+  let t='ETHICS BEYOND BOUNDARIES\nChapter 15: The Visible Parasite\nJournal\n'+'='.repeat(60)+'\n\n';
+  ['Q1: Describe a real institution. Where do you feel the structural ceiling?',
+   'Q2: Apply the IPS lens. Which parameter is highest? What evidence?',
+   'Q3: Have you filed a "Boisjoly report"? What happened?',
+   'Q4: Your honest T1/T2 inventory from your actual position',
+   'Q5 (Forward Prediction): One specific structural action in 6 months'].forEach((q,i)=>{
+    const v=document.getElementById('j'+(i+1));
+    t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';
+  });
+  const blob=new Blob([t],{type:'text/plain'});
+  try{
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='EBB_Ch15_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }catch(e){alert('Journal content:\n\n'+t.substring(0,500)+'...');}
+}
+loadJournal();
+// Animate bars on load
+setTimeout(()=>{
+  document.querySelectorAll('.fhri-fill').forEach(el=>{
+    const w=el.style.width;el.style.width='0';
+    requestAnimationFrame(()=>setTimeout(()=>el.style.width=w,60));
+  });
+},400);
+</script>
+</body>
+</html>

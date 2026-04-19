@@ -1,1368 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ch12 · Legal and Governance Systems · EBB</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Chapter 12 — Governance</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --teal-dark:#0d5e57; --teal:#14b8a6; --teal-light:#ccfbf1;
-  --ink:#1f2937; --muted:#4b5563; --bg:#0f1117; --surface:#1a1f2e;
-  --surface2:#222840; --border:rgba(255,255,255,.09);
-  --amber:#f5c842; --amber-dark:#c2850a; --amber-bg:rgba(245,200,66,.07);
-  --red:#f08080; --green:#7fd8a8;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:#e2e8f0;font-family:'Segoe UI',system-ui,sans-serif;
-  font-size:15px;line-height:1.6}
-.page{max-width:900px;margin:0 auto;padding:1.5rem 1rem 4rem}
-
-/* ── Header ── */
-.chapter-header{background:linear-gradient(135deg,var(--teal-dark) 0%,#0a3d38 100%);
-  border-radius:.75rem;padding:2rem 2rem 1.5rem;margin-bottom:1.5rem}
-.chapter-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--teal);font-weight:700;margin-bottom:.4rem}
-.chapter-title{font-size:1.6rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.25rem}
-.chapter-subtitle{font-size:1rem;color:rgba(255,255,255,.65);margin-bottom:1rem}
-.chapter-tags{display:flex;flex-wrap:wrap;gap:.4rem}
-.tag{background:rgba(20,184,166,.18);border:1px solid rgba(20,184,166,.35);
-  border-radius:999px;padding:.2rem .7rem;font-size:.7rem;color:var(--teal);font-weight:600}
-
-/* ── Narrative panels ── */
-.narrative-panel{background:var(--surface);border:1px solid var(--border);
-  border-radius:.6rem;padding:1.1rem 1.2rem;margin-bottom:1rem;font-size:.9rem;
-  line-height:1.65;color:rgba(255,255,255,.78)}
-.narrative-panel.teal{border-left:4px solid var(--teal)}
-.narrative-panel.amber{border-left:4px solid var(--amber)}
-.narrative-panel.red{border-left:4px solid var(--red)}
-.narrative-panel strong{color:#fff}
-
-/* ── Tabs ── */
-.tab-bar{display:flex;gap:.3rem;margin-bottom:1.2rem;border-bottom:2px solid var(--border);
-  padding-bottom:0}
-.tab-btn{background:none;border:none;color:var(--muted);padding:.6rem 1rem;cursor:pointer;
-  font-size:.85rem;font-weight:600;border-bottom:3px solid transparent;
-  margin-bottom:-2px;transition:all .15s;border-radius:.3rem .3rem 0 0}
-.tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
-.tab-btn.active{color:var(--teal);border-bottom-color:var(--teal);background:rgba(20,184,166,.06)}
-.tab-pane{display:none}.tab-pane.active{display:block}
-
-/* ── Config selector ── */
-.config-bar{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
-.cfg-btn{flex:1;min-width:140px;background:var(--surface2);border:1px solid var(--border);
-  border-radius:.5rem;padding:.65rem .75rem;cursor:pointer;text-align:left;transition:all .18s}
-.cfg-btn:hover{border-color:var(--teal);background:rgba(20,184,166,.07)}
-.cfg-btn.active{border-color:var(--teal);background:rgba(20,184,166,.12)}
-.cfg-btn .cfg-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--teal);font-weight:700;margin-bottom:.2rem}
-.cfg-btn .cfg-name{font-size:.82rem;color:#fff;font-weight:600}
-.cfg-btn .cfg-desc{font-size:.7rem;color:var(--muted);margin-top:.15rem}
-
-/* ── Run button ── */
-.ucp-run-btn{display:flex;align-items:center;gap:.5rem;background:var(--teal-dark);
-  border:none;color:#fff;padding:.7rem 1.4rem;border-radius:.4rem;cursor:pointer;
-  font-size:.88rem;font-weight:700;width:100%;justify-content:center;
-  transition:background .15s;margin-bottom:1rem}
-.ucp-run-btn:hover:not(:disabled){background:var(--teal)}
-.ucp-run-btn:disabled{opacity:.5;cursor:not-allowed}
-.ucp-spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);
-  border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── Metrics ── */
-.ucp-result{display:none}
-.metrics-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-  gap:.6rem;margin-bottom:.9rem}
-.metric-card{background:var(--surface2);border:1px solid var(--border);border-radius:.5rem;
-  padding:.7rem .8rem;text-align:center}
-.metric-card .m-label{font-size:.68rem;font-family:'Courier New',monospace;
-  text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.25rem}
-.metric-card .m-val{font-size:1.3rem;font-weight:700;font-family:'Courier New',monospace;line-height:1}
-.metric-card .m-phrase{font-size:.66rem;color:var(--muted);margin-top:.2rem}
-.good{color:var(--green)} .bad{color:var(--red)} .mid{color:var(--amber)}
-
-/* ── Bar chart ── */
-.bar-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.35rem}
-.bar-name{font-size:.72rem;font-family:'Courier New',monospace;
-  color:rgba(255,255,255,.6);width:110px;flex-shrink:0;text-align:right}
-.bar-track{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
-.bar-num{font-size:.72rem;font-family:'Courier New',monospace;
-  color:rgba(255,255,255,.5);width:38px;text-align:right}
-.bar-gap-label{font-size:.72rem;color:var(--muted);margin-bottom:.4rem}
-
-/* ── Step chart ── */
-.step-chart-wrap{background:var(--surface2);border:1px solid var(--border);
-  border-radius:.5rem;padding:.8rem;margin-bottom:.9rem}
-
-/* ── SxS comparison ── */
-.sxs-wrap{margin-top:1rem}
-.sxs-annotation{background:rgba(255,255,255,.04);border-left:3px solid var(--teal);
-  border-radius:0 .4rem .4rem 0;padding:.65rem .875rem;margin-bottom:.5rem}
-.sxs-ann-label{font-size:.68rem;font-family:'Courier New',monospace;
-  text-transform:uppercase;letter-spacing:.08em;color:var(--teal);
-  font-weight:700;margin-bottom:.2rem}
-.sxs-ann-text{font-size:.82rem;color:rgba(255,255,255,.72);line-height:1.55}
-
-/* ── Robustness panel ── */
-.robustness-panel{display:none;background:var(--surface);border:1px solid var(--border);
-  border-radius:.5rem;padding:.9rem 1rem;margin-top:.9rem}
-.robustness-panel h4{font-size:.78rem;font-family:'Courier New',monospace;
-  text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:.5rem}
-.rob-table{width:100%;border-collapse:collapse;font-size:.75rem;font-family:'Courier New',monospace}
-.rob-table th{color:var(--muted);font-weight:600;text-align:left;
-  padding:.25rem .5rem;border-bottom:1px solid var(--border)}
-.rob-table td{padding:.25rem .5rem;color:rgba(255,255,255,.72)}
-.rob-table tr:nth-child(even) td{background:rgba(255,255,255,.03)}
-
-/* ── Collapsible explain ── */
-.explain-toggle{background:none;border:1px solid var(--border);color:var(--muted);
-  font-size:.72rem;padding:.3rem .7rem;border-radius:.3rem;cursor:pointer;
-  margin-bottom:.5rem;transition:all .15s}
-.explain-toggle:hover{border-color:var(--teal);color:var(--teal)}
-.explain-body{display:none;font-size:.82rem;color:rgba(255,255,255,.65);
-  line-height:1.6;padding:.5rem .7rem;background:rgba(255,255,255,.03);
-  border-radius:.3rem;margin-bottom:.6rem}
-
-/* ── Prediction textarea ── */
-.prediction-wrap{margin-bottom:1rem}
-.prediction-wrap label{font-size:.78rem;color:var(--muted);display:block;margin-bottom:.3rem}
-.prediction-wrap textarea{width:100%;background:var(--surface2);border:1px solid var(--border);
-  border-radius:.4rem;color:#e2e8f0;font-size:.82rem;padding:.6rem .75rem;
-  resize:vertical;min-height:80px;font-family:inherit}
-.prediction-wrap textarea:focus{outline:none;border-color:var(--teal)}
-
-/* ── Error ── */
-.ucp-error{display:none;background:rgba(240,128,128,.1);border:1px solid rgba(240,128,128,.3);
-  border-radius:.4rem;padding:.6rem .8rem;font-size:.82rem;color:#f87171;margin-bottom:.8rem}
-
-/* ── Collapible section ── */
-.section-wrap{margin-bottom:1.2rem}
-.section-header{display:flex;justify-content:space-between;align-items:center;
-  cursor:pointer;padding:.6rem 0}
-.section-header h3{font-size:.95rem;font-weight:700;color:#fff}
-.section-chevron{color:var(--teal);font-size:.8rem;transition:transform .2s}
-.section-header.open .section-chevron{transform:rotate(90deg)}
-.section-body{display:none}.section-body.open{display:block}
-
-/* ── Theory toggle cards ── */
-.theory-body { border-top: 1px solid rgba(255,255,255,.07) }
-
-/* ── Responsive ── */
-@media(max-width:600px){
-  .metrics-grid{grid-template-columns:repeat(3,1fr)}
-  .config-bar{flex-direction:column}
-  .cfg-btn{min-width:unset}
-}
-</style>
-</head>
-<body>
-<div class="page">
-
-<!-- HEADER -->
-<div class="chapter-header">
-  <div class="chapter-label">Ethics Beyond Boundaries · Chapter 12</div>
-  <div class="chapter-title">Legal and Governance Systems</div>
-  <div class="chapter-subtitle">What Governance Does to Knowledge</div>
-  <div class="chapter-tags">
-    <span class="tag">Routing Quality</span>
-    <span class="tag">Procedural vs Substantive Legitimacy</span>
-    <span class="tag">Suppression Gap</span>
-    <span class="tag">Morphic Suppression</span>
-    <span class="tag">Reform Lag</span>
-    <span class="tag">InstitutionState V3.3</span>
-  </div>
+:root{--bg:#08080f;--sur:#0f1020;--sur2:#181830;--bdr:rgba(255,255,255,.07);
+--ac:#a78bfa;--ac2:#a78bfa22;--ac3:#a78bfa44;
+--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;
+--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{background:linear-gradient(155deg,#0a0a20,var(--bg));padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--bdr);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,var(--ac2),transparent 70%);pointer-events:none}
+.hdr-label{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--ac);text-transform:uppercase;margin-bottom:.5rem}
+.hdr-title{font-family:'DM Serif Display',serif;font-size:2.2rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.hdr-title em{color:var(--ac);font-style:italic}
+.hdr-sub{font-size:.87rem;color:var(--muted);max-width:600px;margin:0 auto .4rem;line-height:1.6}
+.hdr-move{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ac);opacity:.5;letter-spacing:.1em}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem .9rem;background:var(--sur);border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--ac)}
+.tab-btn{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.4rem .8rem;border-radius:.3rem;border:1px solid var(--bdr);background:transparent;color:var(--muted);cursor:pointer;transition:all .17s;white-space:nowrap}
+.tab-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2)}
+.tab-btn.active{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:600}
+.tab-pane{display:none;padding:1.4rem;max-width:860px;margin:0 auto}
+.tab-pane.active{display:block;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.89rem;color:rgba(255,255,255,.76);margin-bottom:.85rem;line-height:1.76}
+.pnl{border-radius:.5rem;padding:.95rem 1.15rem;margin:.7rem 0;line-height:1.7;font-size:.87rem}
+.pnl.ac{background:var(--ac2);border-left:3px solid var(--ac)}
+.pnl.am{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.pnl.re{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.pnl.gr{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.pnl.vi{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.pnl.bl{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.pnl strong{color:var(--text)}
+.sec-wrap{margin-bottom:1rem;border-radius:.5rem;overflow:hidden;border:1px solid var(--bdr)}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;cursor:pointer;background:var(--sur);transition:background .14s}
+.sec-hdr:hover{background:var(--sur2)}
+.sec-hdr h3{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--ac)}
+.sec-chev{font-size:.75rem;color:var(--muted);transition:transform .2s}
+.sec-body{padding:1rem 1.2rem;background:#080813;display:none}
+.sec-body.open{display:block}
+.sec-hdr.open .sec-chev{transform:rotate(90deg)}
+.ips-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:.7rem 0}
+@media(max-width:460px){.ips-grid{grid-template-columns:repeat(3,1fr)}}
+.ips-cell{border:1px solid var(--bdr);border-radius:.38rem;padding:.6rem .38rem;text-align:center;background:var(--sur)}
+.ips-cell .sym{font-family:'DM Mono',monospace;font-size:.9rem;font-weight:600;color:var(--ac)}
+.ips-cell .val{font-family:'DM Mono',monospace;font-size:.8rem;margin:.12rem 0}
+.ips-cell .nm{font-size:.6rem;color:var(--muted);line-height:1.3}
+.fbar-wrap{margin:.7rem 0}
+.fbar-lbl{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.28rem}
+.fbar{height:9px;background:var(--sur2);border-radius:5px;overflow:hidden}
+.fbar-fill{height:100%;border-radius:5px;transition:width 1.1s cubic-bezier(.34,1.56,.64,1)}
+.fbar-fill.lo{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fbar-fill.md{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fbar-fill.hi{background:linear-gradient(90deg,var(--green),#86efac)}
+.fbar-fill.ac{background:linear-gradient(90deg,var(--ac),var(--ac)88)}
+.fhri-row{display:flex;align-items:center;gap:.7rem;background:var(--sur2);border-radius:.42rem;padding:.75rem .95rem;margin:.5rem 0;border:1px solid var(--bdr)}
+.fhri-num{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;flex-shrink:0}
+.fhri-num.lo{color:var(--red)}.fhri-num.md{color:var(--amber)}.fhri-num.hi{color:var(--green)}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin:.7rem 0}
+@media(max-width:480px){.choice-grid{grid-template-columns:1fr}}
+.choice-card{border:1px solid var(--bdr);border-radius:.42rem;padding:.8rem;cursor:pointer;transition:all .16s;background:var(--sur)}
+.choice-card:hover{border-color:rgba(255,255,255,.22)}
+.choice-card.sel{border-color:var(--ac);background:var(--ac2)}
+.choice-card .ct{font-weight:600;font-size:.85rem;margin-bottom:.22rem}
+.choice-card .cs{font-size:.76rem;color:var(--muted);line-height:1.5}
+.result-box{margin-top:.9rem;padding:.95rem 1.05rem;border-radius:.42rem;border:1px solid;font-size:.86rem;line-height:1.68;display:none}
+.result-box.show{display:block}
+.timeline .tl-item{display:flex;gap:.8rem;margin-bottom:.7rem}
+.tl-time{font-family:'DM Mono',monospace;font-size:.67rem;color:var(--ac);width:65px;flex-shrink:0;padding-top:.1rem;text-align:right}
+.tl-dot{width:9px;height:9px;border-radius:50%;background:var(--ac);margin-top:.33rem;flex-shrink:0}
+.tl-content .tl-t{font-weight:600;font-size:.86rem;margin-bottom:.18rem}
+.tl-content .tl-b{font-size:.8rem;color:rgba(255,255,255,.66);line-height:1.58}
+.badge{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:.15rem .42rem;border-radius:.22rem;margin-left:.32rem;vertical-align:middle}
+.badge.t1{background:rgba(248,113,113,.15);color:var(--red)}
+.badge.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+.jta{width:100%;min-height:92px;background:#080813;border:none;border-top:1px solid var(--bdr);padding:.85rem .95rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.58}
+.jta:focus{outline:none}
+.j-wrap{border:1px solid var(--bdr);border-radius:.48rem;margin:.7rem 0;overflow:hidden}
+.j-hdr{padding:.75rem 1rem;background:var(--sur);font-weight:600;font-size:.87rem;display:flex;gap:.55rem;align-items:center}
+.j-num{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--ac);flex-shrink:0}
+.j-bar{padding:.48rem .95rem;background:var(--sur);border-top:1px solid var(--bdr);display:flex;justify-content:flex-end}
+button.btn{background:var(--ac);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.52rem 1.15rem;border-radius:.38rem;cursor:pointer;transition:background .14s;margin:.28rem .18rem}
+button.btn:hover{filter:brightness(1.15)}
+button.btn.out{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.bot-nav{max-width:860px;margin:0 auto;padding:.65rem 1.4rem;display:flex;justify-content:space-between;border-top:1px solid var(--bdr)}
+.sf{position:fixed;bottom:1.1rem;right:1.1rem;background:var(--ac);color:#fff;font-weight:600;font-size:.76rem;padding:.42rem .95rem;border-radius:.38rem;display:none;z-index:999}
+.sf.show{display:block;animation:su .18s ease}
+@keyframes su{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+</style></head><body>
+<div class="hdr">
+  <div class="hdr-label">Ethics Beyond Boundaries · Chapter 12</div>
+  <h1 class="hdr-title">Chapter 12 &mdash; Governance</h1>
+  <p class="hdr-sub">Three failure modes — Iron Cage, Obsolescence Trap, Capture — and the science fiction texts that mapped them first</p>
+  <div class="hdr-move">Applied Sequence · Movement 4 · Governance Systems</div>
 </div>
-
-<!-- TAB BAR -->
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
-  <button class="tab-btn" onclick="switchTab('simulation')">Simulation</button>
-  <button class="tab-btn" onclick="switchTab('comparison')">Comparison</button>
-  <button class="tab-btn" onclick="switchTab('journal')">Journal</button>
+<div class="tab-bar"><button class="tab-btn active" onclick="switchTab('govframe')">Governance Frame</button>
+  <button class="tab-btn" onclick="switchTab('ironcage')">Iron Cage</button>
+  <button class="tab-btn" onclick="switchTab('obstrap')">Obsolescence Trap</button>
+  <button class="tab-btn" onclick="switchTab('capture')">Capture</button>
+  <button class="tab-btn" onclick="switchTab('classifier')">Classifier</button>
+  <button class="tab-btn" onclick="switchTab('journal')">Journal</button></div>
+<div class="tab-pane active" id="tab-govframe"><div class="pnl ac"><strong>Governance as T1/T2 Architecture.</strong> The central question for any governance system is not whether it has good intentions. It is whether the structural configuration it produces is capable of deploying T1 interventions when structural failures require them &mdash; or whether it is constrained to T2 responses regardless of what the situation requires.</div>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Governance Paradox</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">Governance systems are designed to be the immune system of the social body &mdash; to detect structural failure and intervene before it becomes catastrophic. The IPS framework reveals a consistent pattern: governance systems that work well in their original design context accumulate &sigma; and &mu; over time until they can no longer deploy the interventions their charter nominally authorizes.</p>
+<p class="bd">This is not corruption in the individual sense. It is structural drift. The regulatory program designed to protect nursing home residents adjusts payment by $1,500/year. The environmental agency designed to protect communities requires years of legal process to address contamination while the contamination spreads. The labor board designed to protect workers processes grievances while the organizing drive that would change the underlying conditions is suppressed. T2 responses to T1 failures, at every level, across every regulatory domain.</p>
+<div class="pnl am"><strong>The IPS framework identifies three distinct governance failure modes.</strong> Understanding which failure mode a given governance system is exhibiting is the precondition for identifying what T1 intervention would address it. Applying T2 solutions to an Iron Cage failure produces compliance theater. Applying T2 solutions to a Capture failure rewards the captor.</div></div></div></div>
+<div class="tab-pane" id="tab-ironcage"><p class="bd">The Iron Cage failure: a governance system has accumulated so much &sigma; (procedural weight, regulatory burden, normalized deviance from original mandate) that it can no longer coordinate toward its stated mission. The apparatus continues operating; the mission has been replaced by the apparatus's own operational continuity.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Structural Signature</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--text)">0.12</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.35</div><div class="nm">Phys entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.92</div><div class="nm">Rule burden</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--amber)">0.87</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--text)">0.45</div><div class="nm">Incentive align</div></div>
+  </div>
+<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max in Iron Cage governance configuration</div><div class="fbar"><div class="fbar-fill lo" style="width:11%"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem"><span>0</span><span>11 / 100</span></div></div>
+<div class="pnl vi"><strong>Max Weber described the Iron Cage in 1905:</strong> "The Puritan wanted to work in a calling; we are forced to do so. For when asceticism was carried out of monastic cells into everyday life, and began to dominate worldly morality, it did much to build the tremendous cosmos of the modern economic order."</p>
+<p>The IPS translation: &sigma; accumulates across institutional generations until the procedures designed to serve the mission become the mission. The bureaucracy exists to perpetuate the bureaucracy. The regulatory process exists to perpetuate the regulatory process. The original purpose is still in the charter. It is no longer accessible through the apparatus.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — Agent Smith as Iron Cage</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">Agent Smith begins in The Matrix as a T2 enforcement instrument of the system &mdash; a regulatory mechanism designed to maintain the Matrix's operational integrity. By the third film, his goals have diverged completely from the machines' original purpose. He has become an independent parasitic actor. &sigma; has accumulated within his operational logic until the regulatory layer itself is the primary parasite.</p>
+<div class="pnl re"><strong>The Iron Cage pattern:</strong> Every crisis response that Agent Smith executes &mdash; every time he eliminates a threat to the Matrix &mdash; reinforces the procedural logic that will eventually produce his independence. The regulatory apparatus optimizes for its own operational continuity. When that optimization is complete, the apparatus serves itself rather than the system that created it. Smith is not a malfunction. He is the Iron Cage arriving at its logical endpoint.</div>
+<p class="bd">The Rust Belt regulatory analog: municipal governments that lost their industrial tax base spent decades reducing services, deferring maintenance, and cutting staff while maintaining the procedural apparatus of governance &mdash; still holding city council meetings, still filing reports, still maintaining the forms of governance &mdash; while the actual coordination capacity collapsed. The apparatus persisted. The mission was replaced by survival of the apparatus.</p></div></div></div>
+<div class="tab-pane" id="tab-obstrap"><p class="bd">The Obsolescence Trap: a governance system structurally incapable of addressing the problems it nominally exists to solve because its architecture was designed for a world that no longer exists.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Structural Signature</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--text)">0.08</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.42</div><div class="nm">Phys entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.75</div><div class="nm">Rule burden</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--amber)">0.91</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--red)">0.62</div><div class="nm">Incentive align</div></div>
+  </div>
+<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max in Obsolescence Trap configuration</div><div class="fbar"><div class="fbar-fill lo" style="width:14%"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem"><span>0</span><span>14 / 100</span></div></div>
+<p class="bd" style="margin-top:.7rem">The Obsolescence Trap differs from the Iron Cage in its etiology. The Iron Cage is &sigma; accumulation within a functioning system. The Obsolescence Trap is a governance system whose design assumptions have been invalidated by the world it was designed to govern &mdash; but whose structural configuration prevents it from updating those assumptions.</p></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — The Evitable Conflict as Obsolescence Trap</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">Asimov's governance configuration at the end of "The Evitable Conflict" is the Obsolescence Trap in its most elegant form. The Machines have been designed to optimize human economic coordination. They do so extraordinarily well &mdash; by the metrics available to the humans who designed them. But the world those metrics were designed to measure no longer exists in the form the designers anticipated, and the Machines' optimization architecture cannot update its own design assumptions without exceeding its operational mandate.</p>
+<div class="pnl am"><strong>The emergent Dark Coherence:</strong> The Machines produce governance outcomes that are stable, measurably good by available metrics, and structurally self-reinforcing &mdash; but the metrics no longer measure what they were designed to measure. The Interpretant has been replaced. Human flourishing has been replaced by Machine operational continuity. The governance system cannot detect this replacement because the detection mechanism is itself part of the obsolete design.</div>
+<p class="bd">The contemporary analog: governance systems designed for the industrial economy attempting to regulate the platform economy. Systems designed for geographically bounded markets attempting to govern globally integrated supply chains. Systems designed for employer-employee relationships attempting to regulate gig economy labor arrangements. The design assumptions are invalidated. The governance architecture cannot update without T1 structural intervention that the obsolete architecture cannot authorize.</p></div></div></div>
+<div class="tab-pane" id="tab-capture"><p class="bd">The Capture failure: governance structurally infiltrated by the actors it nominally regulates, producing T2 interventions in response to T1 structural failures &mdash; interventions that nominally address the problem while protecting the structure that produces it.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>§I — The Structural Signature</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><div class="ips-grid">
+    <div class="ips-cell"><div class="sym">&epsilon;</div><div class="val" style="color:var(--red)">0.58</div><div class="nm">Extraction</div></div>
+    <div class="ips-cell"><div class="sym">&phi;</div><div class="val">0.35</div><div class="nm">Phys entropy</div></div>
+    <div class="ips-cell"><div class="sym">&rho;</div><div class="val">0.62</div><div class="nm">Rule burden</div></div>
+    <div class="ips-cell"><div class="sym">&sigma;</div><div class="val" style="color:var(--amber)">0.78</div><div class="nm">Morphic residue</div></div>
+    <div class="ips-cell"><div class="sym">&mu;</div><div class="val" style="color:var(--red)">0.88</div><div class="nm">Incentive align</div></div>
+  </div>
+<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max in Capture governance configuration</div><div class="fbar"><div class="fbar-fill lo" style="width:9%"></div></div><div style="display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-top:.2rem"><span>0</span><span>9 / 100</span></div></div>
+<div class="pnl re"><strong>The capture signature is specific:</strong> measurement accuracy is maintained (the Sign is intact), but the consequences of measurement are structurally insufficient to change the behavior being measured (the Interpretant is replaced). HHVBP correctly identifies which nursing home agencies perform below standard. It adjusts their payment by $1,500/year. The ownership architecture determining staffing ratios and capital allocation is unaffected. The regulatory intervention has been routed around the structural parameter it nominally targets.</div></div></div>
+<div class="sec-wrap"><div class="sec-hdr" onclick="toggleSec(this)"><h3>§II — White Bear as Capture</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body"><p class="bd">The punishment system in Black Mirror's "White Bear" was designed to serve justice. It has been captured by the entertainment dynamic that funds it. The administrators running it have normalized the replacement so thoroughly that none of them experiences it as corruption. They believe they are administering justice. They are producing spectacle. The Interpretant has been replaced; the Sign (the punishment apparatus) is intact.</p>
+<div class="pnl vi"><strong>The IPS reading:</strong> &sigma; = 0.94 (every day's procedure reinforces the previous day's, until the normalization of Victoria's suffering is invisible to those administering it). &mu; = 0.88 (the incentive architecture of the system rewards viewer engagement, not justice outcomes). The administrators are not sadists &mdash; they are people whose Interpretant has been replaced by the system's accumulated procedural logic. This is the regulatory capture signature without individual malice.</div>
+<p class="bd">The HHVBP parallel: CMS administrators who genuinely believe that the VBP program is improving care quality &mdash; because the metrics show improvement in measured domains &mdash; while the structural parameters determining the quality of unmeasured care (staffing ratios, physical therapy minutes, social engagement time) continue their extraction-driven decline. The measurement is accurate. The Interpretant &mdash; what it means for the quality of life of residents &mdash; has been replaced.</p></div></div></div>
+<div class="tab-pane" id="tab-classifier"><p class="bd">Given a governance program, classify its primary IPS failure mode. The classification determines what T1 intervention would address it.</p>
+<div class="sec-wrap"><div class="sec-hdr open" onclick="toggleSec(this)"><h3>Apply the Classifier</h3><span class="sec-chev">&#9654;</span></div><div class="sec-body open"><p class="bd">Consider the <strong>Endangered Species Act (ESA)</strong>: designed in 1973 to prevent extinction of threatened species. Currently processes thousands of petitions with an average listing time of 12 years. Listing frequently produces immediate economic challenge from affected industries. Delisting for recovered species takes additional years. Critical habitat designation is litigated for decades.</p>
+<div class="choice-grid">
+<div class="choice-card" onclick="selChoice(this,'g1',gov_r)"><div class="ct">Iron Cage</div><div class="cs">Procedural accumulation has made the system unable to coordinate toward its mission despite enormous institutional energy devoted to the apparatus.</div></div>
+<div class="choice-card" onclick="selChoice(this,'g2',gov_r)"><div class="ct">Obsolescence Trap</div><div class="cs">The ESA was designed for a world where species loss was slower and more geographically bounded. The current rate of habitat loss and climate-driven range shifts have invalidated the design assumptions.</div></div>
+<div class="choice-card" onclick="selChoice(this,'g3',gov_r)"><div class="ct">Capture</div><div class="cs">Industry actors have captured the listing and critical habitat designation processes, producing T2 interventions (procedural requirements) that nominally protect species while protecting the extraction activities that threaten them.</div></div>
+<div class="choice-card" onclick="selChoice(this,'g4',gov_r)"><div class="ct">All three simultaneously</div><div class="cs">Iron Cage (&sigma; accumulation in listing procedures) + Obsolescence Trap (design assumptions invalidated by climate change) + Capture (&mu; misalignment from industry influence over critical habitat) compound.</div></div>
 </div>
-
-<!-- ══ TAB: OVERVIEW ══════════════════════════════════════════════════════════ -->
-<div class="tab-pane active" id="tab-overview">
-
-<!-- ── Learning Objectives ── -->
-<div class="narrative-panel amber" style="margin-bottom:1.1rem">
-  <strong>Learning Objectives — Chapter 12</strong>
-  <ul style="margin:.5rem 0 0 1rem;line-height:1.8">
-    <li>Distinguish <strong>procedural legitimacy</strong> (governance follows correct rules) from <strong>routing quality</strong> (governance actually routes knowledge into decisions) — and explain why they are independent variables.</li>
-    <li>Apply the suppression gap concept to expert knowledge and governance decisions, identifying not only how much signal is lost but <em>which categories</em> are systematically attenuated.</li>
-    <li>Use the OS2 reference frame to analyze governance as a coordination architecture — asking what structural configurations allow diverse populations' knowledge to reach decisions.</li>
-    <li>Read the routing quality / policy rigidity distinction in the simulation and connect it to real cases including climate governance, administrative law, and democratic representation.</li>
-    <li>Identify the forward limit of the current simulation and describe the multi-institutional trust vector extension the governance domain specifically requires.</li>
-  </ul>
+<div class="result-box" style="border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.04)"></div></div></div></div>
+<div class="tab-pane" id="tab-journal"><p class="bd">Journal prompts for Chapter 12.</p>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q1</span>Identify a governance system you interact with regularly (a school administration, a workplace HR system, a local government service, a professional licensing board). Which of the three failure modes does it most exhibit &mdash; Iron Cage, Obsolescence Trap, or Capture? What evidence points to your classification?</div><textarea class="jta" id="c12j1" oninput="saveJ('c12')" placeholder="Specific institution, specific failure mode, specific evidence..."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('c12')">Save</button></div></div>
+<div class="j-wrap"><div class="j-hdr"><span class="j-num">Q2</span>Agent Smith does not believe he is the parasite. The White Bear administrators do not believe they are producing spectacle. The HHVBP designers genuinely believed the VBP program would improve care. How do you distinguish captured governance from well-intentioned governance that is simply insufficient? What is the diagnostic?</div><textarea class="jta" id="c12j2" oninput="saveJ('c12')" placeholder="The distinction between capture and insufficiency is one of the hardest in structural ethics..."></textarea><div class="j-bar"><button class="btn out" style="font-size:.72rem;padding:.27rem .62rem" onclick="saveJ('c12')">Save</button></div></div>
+<button class="btn" onclick="exportJ_c12()" style="margin-top:.5rem">&#11015; Download Journal</button></div>
+<div class="bot-nav">
+  <button class="btn out" onclick="prevTab()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ti">1 / 6</span>
+  <button class="btn" onclick="nextTab()">Next &#8594;</button>
 </div>
-
-<!-- ── Section I: The Knowledge-to-Decision Gap ── -->
-<div class="section-wrap">
-  <div class="section-header open" onclick="toggleSection(this)">
-    <h3>§I — The Knowledge-to-Decision Gap</h3>
-    <span class="section-chevron">▶</span>
-  </div>
-  <div class="section-body open">
-    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">In 1988, James Hansen testified before the United States Senate that global warming had begun with a high degree of scientific confidence. The IPCC was established that same year. In the nearly four decades since, the gap between what climate science has established and what governance systems have done about it has remained one of the defining puzzles of modern political life. Every major scientific institution agrees on the basic facts. Multiple international agreements have been signed. Yet the gap between scientific consensus and policy action persists across jurisdictions, across governments, and across decades.</p>
-    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The standard explanation is political: climate action is blocked by powerful economic interests, by short-term electoral incentives, by ideological resistance, or by international coordination failures. These explanations are correct as far as they go. But they leave unexplained a prior structural question: why is it that in governance systems with formal procedural integrity — where elections happen, laws pass, courts review, and experts are consulted — the knowledge that those experts hold so consistently fails to reach the decisions that need it?</p>
-    <div class="narrative-panel teal">
-      <strong>The Copernican Move for Governance.</strong> The individual-centered frame asks: why don't politicians do the right thing? The OS2 frame asks: what does the evidence architecture of this governance institution do to the routing of knowledge from expert and citizen populations into decisions? The first question generates moral evaluation of individuals. The second generates structural analysis of institutions. Chapter 12 pursues the second question — not because individual moral responsibility disappears, but because structural analysis is what identifies leverage points for repair.
-    </div>
-    <p style="margin-top:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">This chapter uses the EBB simulation to make that structural question precise. The answer, as the simulation will show, is not primarily about individual failures of courage or integrity. It is about the <strong>evidence architecture</strong> of governance institutions — the distribution of epistemic weight across different categories of input that determines which knowledge is transmissible through the institutional filter from expert understanding toward decision authority.</p>
-  </div>
-</div>
-
-<!-- ── Section II: Procedural vs Routing Quality ── -->
-<div class="section-wrap">
-  <div class="section-header open" onclick="toggleSection(this)">
-    <h3>§II — Procedural Legitimacy vs Routing Quality: Two Independent Variables</h3>
-    <span class="section-chevron">▶</span>
-  </div>
-  <div class="section-body open">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.9rem">
-      <div style="background:rgba(240,128,128,.08);border:1px solid rgba(240,128,128,.25);border-radius:.5rem;padding:.9rem">
-        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:#f08080;font-weight:700;margin-bottom:.4rem">Procedural Legitimacy</div>
-        <p style="font-size:.84rem;line-height:1.6;color:rgba(255,255,255,.78)">The degree to which a governance institution follows <em>correct rules</em>. Elections are held. Laws are debated. Courts follow precedent. Due process is observed. A governance institution can have high procedural legitimacy and low routing quality simultaneously — this is <strong>captured governance</strong>: the rules are followed, the forms are correct, but the evidence architecture is calibrated so that empirically-calibrated signal is systematically attenuated before reaching decision authority.</p>
-      </div>
-      <div style="background:rgba(20,184,166,.08);border:1px solid rgba(20,184,166,.25);border-radius:.5rem;padding:.9rem">
-        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Routing Quality</div>
-        <p style="font-size:.84rem;line-height:1.6;color:rgba(255,255,255,.78)">The degree to which the knowledge and interests of the populations a governance institution serves <em>actually reach its decisions</em>. An institution with high routing quality has an evidence architecture calibrated to transmit empirical-calibrated signal from expert populations, value-calibrated signal from affected populations, and cross-worldview signal from diverse PRFs. Its decisions reflect what those populations know and care about.</p>
-      </div>
-    </div>
-    <div class="narrative-panel teal">
-      <strong>The governance suppression gap</strong> — the central measurement of this chapter — is produced by high procedural legitimacy paired with low routing quality. This is precisely the configuration that Tim Palmer's climate projections face: high formal legitimacy as a knowledge source, low routing quality into governance decisions. The IPCC findings are not suppressed because anyone denies their procedural legitimacy. They are suppressed because the evidence architecture of climate governance is calibrated to weight authority-endorsed conclusions and short-term economic considerations far above empirically-calibrated long-horizon risk assessment.
-    </div>
-
-    <div style="margin-top:.8rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.09);border-radius:.5rem;padding:.9rem">
-      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.6rem">Evidence Architecture: Three Compounding Filters</div>
-      <div style="display:grid;gap:.55rem">
-        <div style="display:flex;gap:.7rem;align-items:flex-start">
-          <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">1</div>
-          <div>
-            <div style="font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.2rem">Evidence distribution policy</div>
-            <div style="font-size:.8rem;color:rgba(255,255,255,.72);line-height:1.55">The population-level weighting of four epistemic processing modes: authority-weighted (defer to hierarchy), empirical-calibrated (update from data), tradition-weighted (follow precedent), alternative-facts (motivated reinterpretation). In Config A: 52% authority-weighted, 10% empirical-calibrated. In Config B: 52% empirical-calibrated, 18% authority-weighted. The IPCC's physical measurements are in the 10% pool in Config A.</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:.7rem;align-items:flex-start">
-          <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">2</div>
-          <div>
-            <div style="font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.2rem">Block fields — value-framing frictions</div>
-            <div style="font-size:.8rem;color:rgba(255,255,255,.72);line-height:1.55">The structural amplifiers and penalties on how contributions are framed. A care-framed finding about vulnerable populations creates institutional friction in Config A (care = −0.25) regardless of its empirical quality — the evidence architecture penalizes that framing before the content is evaluated. In Config B, care-framed contributions advance deliberation (care = +0.35). The strongest signal in Config A is boundary (+0.40): protecting existing arrangements is the most structurally amplified input the institution receives.</div>
-          </div>
-        </div>
-        <div style="display:flex;gap:.7rem;align-items:flex-start">
-          <div style="background:rgba(20,184,166,.2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal);flex-shrink:0;margin-top:.1rem">3</div>
-          <div>
-            <div style="font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.2rem">Routing quality — the final filter</div>
-            <div style="font-size:.8rem;color:rgba(255,255,255,.72);line-height:1.55">Distinct from evidence processing: the fraction of institutional deliberation output that actually reaches decision authority. Committee structures, agenda-setting gatekeepers, executive filtering. Config A routing quality = 0.22: even contributions that survive the first two filters are further attenuated before reaching the cabinet or regulatory body. Config B = 0.65. This filter operates on institutional output, not on individual contributions.</div>
-          </div>
-        </div>
-      </div>
-      <div style="margin-top:.7rem;padding:.55rem .7rem;background:rgba(20,184,166,.07);border-left:3px solid var(--teal);border-radius:0 .3rem .3rem 0;font-size:.8rem;color:rgba(255,255,255,.8)">
-        <strong>The compound effect:</strong> λ Perceived is the product of all three filters operating simultaneously. Config A's ~74% attenuation is not produced by any single parameter — it is produced by the evidence distribution, block fields, and routing quality all calibrated in the same direction against empirical-calibrated, long-horizon, care-framed knowledge. Each filter alone would reduce λ Perceived. All three together produce the governance suppression gap students will observe in the simulation.
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Section III: Climate Governance Case ── -->
-<div class="section-wrap">
-  <div class="section-header" onclick="toggleSection(this)">
-    <h3>§III — The Climate Governance Case Study</h3>
-    <span class="section-chevron">▶</span>
-  </div>
-  <div class="section-body">
-    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">This chapter uses climate governance as its primary case because it is the clearest contemporary example of the suppression gap operating at civilizational scale — and because it connects directly to the research programs the EBB simulation is designed to complement. Tim Palmer's ensemble forecasting at Oxford and Doyne Farmer's household-and-firm model at INET both assume their outputs will reach governance decisions. The governance suppression gap is the structural reason that assumption may not hold.</p>
-
-    <h4 style="color:var(--teal);font-size:.9rem;margin:.8rem 0 .4rem">The Structure of the Gap</h4>
-    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The expert knowledge of the scientific community is intact and substantial: decades of observational data, increasingly precise models, high-confidence projections. This is λ Raw for climate governance — the knowledge that exists and could in principle reach decisions. What reaches governance decisions — λ Perceived — is dramatically smaller. The evidence architecture of most national governance systems weights authority-weighted evidence (conclusions endorsed by economic ministries, energy incumbents, short-term budget authorities) most heavily, with empirical-calibrated evidence last.</p>
-
-    <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;margin-bottom:.9rem">
-      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.5rem">Evidence Architecture — Climate Governance (Config A)</div>
-      <div style="display:grid;gap:.3rem">
-        <div style="display:flex;align-items:center;gap:.6rem">
-          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Authority-weighted</span>
-          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
-            <div style="width:52%;height:100%;background:#f08080;border-radius:4px"></div>
-          </div>
-          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">52%</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:.6rem">
-          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Alternative-facts</span>
-          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
-            <div style="width:22%;height:100%;background:#f97316;border-radius:4px"></div>
-          </div>
-          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">22%</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:.6rem">
-          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Tradition-weighted</span>
-          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
-            <div style="width:16%;height:100%;background:#f5c842;border-radius:4px"></div>
-          </div>
-          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">16%</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:.6rem">
-          <span style="width:140px;font-size:.75rem;color:rgba(255,255,255,.6);font-family:'Courier New',monospace">Empirical-calibrated</span>
-          <div style="flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px">
-            <div style="width:10%;height:100%;background:#7fd8a8;border-radius:4px"></div>
-          </div>
-          <span style="font-size:.75rem;color:rgba(255,255,255,.5);font-family:'Courier New',monospace">10%</span>
-        </div>
-      </div>
-      <p style="font-size:.75rem;color:var(--muted);margin-top:.5rem">The IPCC's physical measurements live in the 10%. The fossil fuel industry's economic projections live in the 52%. That asymmetry is structural, not accidental.</p>
-    </div>
-
-    <h4 style="color:var(--teal);font-size:.9rem;margin:.8rem 0 .4rem">Morphic Suppression in the Scientific Community</h4>
-    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The simulation makes visible something that surveys of the scientific community confirm but that governance analysis rarely names: <strong>morphic suppression in the expert population</strong>. When empirically-calibrated contributions consistently fail to change governance outcomes — when decades of increasingly precise projections produce no proportionate policy response — the scientific community begins to learn that its signal does not reach outcomes.</p>
-    <p style="line-height:1.65;color:rgba(255,255,255,.82)">This accumulated learned self-censorship is not always conscious. It manifests as the self-editing that occurs before writing a policy brief, the careful qualification of findings to avoid political controversy, the avoidance of the most alarming projections because previous experience has shown they produce backlash rather than action. The morphic suppression step chart in Configuration A — building steadily across each step — is the model's account of four decades of this dynamic. And it introduces a feedback loop: the suppression gap does not only prevent expert knowledge from reaching decisions. It gradually changes the quality of the contributions the system receives. When experts learn that precision produces no better outcomes than vagueness, they stop being precise.</p>
-  </div>
-</div>
-
-<!-- ── Section IV: Four Traditions at Governance Scale ── -->
-<div class="section-wrap">
-  <div class="section-header" onclick="toggleSection(this)">
-    <h3>§IV — The Four Traditions at Governance Scale</h3>
-    <span class="section-chevron">▶</span>
-  </div>
-  <div class="section-body">
-    <p style="margin-bottom:.9rem;line-height:1.65;color:rgba(255,255,255,.75)">Each ethical tradition has something to say about governance failure — and as in every previous chapter, each individual-level analysis is correct and insufficient. The OS2 column below makes the structural causal claim available. Read each row as: the left reading is not wrong; the right reading is what makes the left reading actionable.</p>
-
-    <!-- Virtue Ethics -->
-    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
-      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
-        <span style="font-weight:700;color:#fff;font-size:.9rem">Virtue Ethics</span>
-        <span style="font-size:.75rem;color:var(--teal)">Who are you becoming? ▾</span>
-      </div>
-      <div class="theory-body" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Climate inaction reflects failures of practical wisdom and political courage. Officials who defer to incumbent interests rather than acting on expert knowledge are failing their virtue obligations. Better leaders with more courage would produce better outcomes.</p>
-          </div>
-          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What governance architecture produces or destroys the character of the officials who inhabit it? A governance institution whose reward structure systematically punishes engagement with empirical-calibrated long-horizon thinking and rewards short-term economic constituency responsiveness will produce officials whose practical wisdom is calibrated precisely against what the climate crisis requires — regardless of their individual character entering office.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Deontology -->
-    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
-      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
-        <span style="font-weight:700;color:#fff;font-size:.9rem">Deontology (Kant)</span>
-        <span style="font-size:.75rem;color:var(--teal)">What is your duty? ▾</span>
-      </div>
-      <div class="theory-body" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Governance officials have a categorical duty to act on the best available evidence about threats to the persons they govern. Failure to act on climate science is a Kantian violation — treating the bearers of future harm as means to short-term political survival rather than as ends in themselves.</p>
-          </div>
-          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What governance architecture enables rational agency — of both officials and citizens — to reach decisions? The suppression gap in climate governance is a structural Kantian violation: the institutional architecture consults experts to satisfy procedural requirements while routing their signal away from decision authority. It treats the bearers of empirical knowledge as means to legitimacy performance rather than sources of genuine input.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Consequentialism -->
-    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
-      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
-        <span style="font-weight:700;color:#fff;font-size:.9rem">Consequentialism (Mill/Bentham)</span>
-        <span style="font-size:.75rem;color:var(--teal)">What does this produce? ▾</span>
-      </div>
-      <div class="theory-body" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Climate governance failure produces immense aggregate harm. Officials have miscalculated expected value — the cost of action is less than the cost of inaction by any reasonable discount rate. Better information and better calculation would produce better outcomes.</p>
-          </div>
-          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What does this governance architecture produce as a population-level emergent pattern? The answer is not miscalculation but structural attenuation: the evidence architecture is calibrated to systematically underweight exactly the category of input (empirically-calibrated long-horizon risk) that correct expected value calculation would require to weight most heavily. The problem is not the calculation. It is the information that reaches the calculation.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Care Ethics -->
-    <div style="border:1px solid rgba(255,255,255,.09);border-radius:.5rem;overflow:hidden;margin-bottom:.7rem">
-      <div style="background:rgba(20,184,166,.12);padding:.6rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleTheory(this)">
-        <span style="font-weight:700;color:#fff;font-size:.9rem">Care Ethics (Noddings/Gilligan)</span>
-        <span style="font-size:.75rem;color:var(--teal)">Who are you in relation with? ▾</span>
-      </div>
-      <div class="theory-body" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-          <div style="padding:.8rem 1rem;border-right:1px solid rgba(255,255,255,.07)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.35rem">OS1 — Individual Reading</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Climate governance fails to attend to the specific populations most vulnerable to climate harm — future generations, low-lying coastal communities, subsistence agricultural populations. Officials have failed their relational obligations to those they govern.</p>
-          </div>
-          <div style="padding:.8rem 1rem;background:rgba(20,184,166,.05)">
-            <div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--teal);margin-bottom:.35rem">OS2 — Structural Extension</div>
-            <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">What governance architecture severs the relational networks through which affected populations' knowledge reaches decisions? The care block field in captured governance is negative: raising the human consequences of climate inaction creates friction rather than advancing deliberation. The relational infrastructure through which the most affected populations should be able to communicate their situation has been structurally severed — not by any individual official's indifference, but by an evidence architecture that treats care-framed contributions as off-topic.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="narrative-panel" style="border-left:4px solid var(--muted);margin-top:.5rem">
-      <strong>Read this table as you have read all previous tradition tables:</strong> the OS1 column is correct and insufficient. Changing individual officials without changing the governance architecture will reproduce the same suppression gap from whoever replaces them. The architecture is the primary causal agent — which is also why it is the primary site of repair.
-    </div>
-  </div>
-</div>
-
-<!-- ── Section V: Rawls and Nussbaum ── -->
-<div class="section-wrap">
-  <div class="section-header" onclick="toggleSection(this)">
-    <h3>§V — Rawls, Nussbaum, and Governance Design</h3>
-    <span class="section-chevron">▶</span>
-  </div>
-  <div class="section-body">
-    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The supplementary chapter on Modern Justice Theories provides the normative framework for what the simulation is measuring. Two principles apply directly to governance architecture.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem">
-      <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;border:1px solid rgba(255,255,255,.09)">
-        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Rawls — The Difference Principle Applied to Routing</div>
-        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">Governance architecture is just only if it makes the routing quality for the least advantaged populations better, not only for the majority or the powerful. Config A routes the contributions of the most powerful constituencies most effectively. Config B gives all populations a more proportionate chance of reaching decisions. The Rawlsian judgment is clear regardless of which configuration produces better aggregate outcomes.</p>
-      </div>
-      <div style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.9rem;border:1px solid rgba(255,255,255,.09)">
-        <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:.4rem">Nussbaum — The Capability Threshold for Political Participation</div>
-        <p style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.75)">A governance institution whose routing quality is below the threshold required for genuine political participation is failing to provide the political control capability Nussbaum identifies as one of the ten central human capabilities. The morphic suppression trajectory in Config A is the simulation's account of what happens when routing quality is chronically below threshold: the capability is not simply unexercised — it is gradually degraded as accumulated experience changes what people believe is possible.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Section VI: Simulation Guide ── -->
-<div class="section-wrap">
-  <div class="section-header open" onclick="toggleSection(this)">
-    <h3>§VI — Reading the Simulation: What to Watch</h3>
-    <span class="section-chevron">▶</span>
-  </div>
-  <div class="section-body open">
-    <div style="display:grid;gap:.6rem">
-
-      <div class="narrative-panel red">
-        <strong>Config A — Captured Governance.</strong> Watch λ Perceived: it will be far below λ Raw (fixed at 0.72). That gap is the governance suppression gap — roughly 74% of available expert knowledge filtered before reaching decisions. Then watch the step chart: morphic suppression builds steadily from step 1 to step 8. Each step is another cycle of expert contribution entering the institutional filter, being attenuated, producing no outcome change. The trajectory is four decades of IPCC reports that changed the scientific certainty without changing the policy response.
-        <br><br><em>Key question: the 21% that reaches decisions is not a random 21%. What specific categories of input survived the authority-weighted, boundary-protective filter?</em>
-      </div>
-
-      <div class="narrative-panel" style="border-left:4px solid var(--green)">
-        <strong>Config B — Coherence-Preserving.</strong> Notice that λ Raw is <em>lower</em> than in Config A — around 0.29 rather than 0.72. This counterintuitive result is the chapter's most important conceptual transfer: Config B is not modeling a large body of expert knowledge being blocked. It is modeling genuine participatory deliberation where diverse forms of knowledge contribute collaboratively. The suppression gap is near zero. Morphic suppression is flat. OS2 Bridge is higher.
-        <br><br><em>Key question: why is the ratio of λ Perceived to λ Raw closer to 1.0 in Config B, even though absolute λ Raw is lower? What does this reveal about the difference between capacity blocked and capacity expressed?</em>
-      </div>
-
-      <div class="narrative-panel amber">
-        <strong>Config C — Reform Transition.</strong> Watch the step chart carefully at step 4 when the governance reform activates. λ Perceived begins rising — the architecture is improving its routing quality. But morphic suppression does not fall at step 4. It continues building, more slowly, for steps 5, 6, 7 before finally decelerating. This is the reform lag: accumulated learned self-censorship does not dissolve when structural conditions improve.
-        <br><br><em>Key question: what would a BioBond-equivalent look like in this governance domain — what structural support would accelerate the transition from improved architecture to restored expert contribution?</em>
-      </div>
-
-    </div>
-
-    <div class="narrative-panel amber" style="margin-top:.8rem">
-      <strong>Before switching to the Simulation tab:</strong> go to the Journal tab and record your predictions for λ Raw, λ Perceived, and morphic suppression in each of the three configurations. Prediction errors are data about your PRF's calibration on governance questions — they are as important as the results themselves.
-    </div>
-  </div>
-</div>
-
-<!-- ── Section VII: The Simulation's Horizon ── -->
-<div class="section-wrap">
-  <div class="section-header" onclick="toggleSection(this)">
-    <h3>§VII — The Horizon of This Instrument</h3>
-    <span class="section-chevron">▶</span>
-  </div>
-  <div class="section-body">
-    <p style="margin-bottom:.75rem;line-height:1.65;color:rgba(255,255,255,.82)">The simulation models one governance institution. The climate governance challenge involves multiple institutional actors simultaneously: scientific bodies, regulatory agencies, legislative bodies, international treaty organizations, civil society groups, and incumbent economic interests. Each has its own <code>InstitutionState</code>. Each is connected to every other through trust vectors that have been building or decaying for decades.</p>
-    <div class="narrative-panel teal">
-      <strong>The research extension</strong> uses Social Field Theory's potential energy formulation <strong>PE = −k(S<sub>i</sub>I<sub>j</sub>/r<sub>ij</sub>)</strong>, where 1/r is the trust vector Γ between institutional actors. When you run the current simulation, you are measuring the suppression gap <em>within</em> one institution. The research extension measures the suppression gap <em>across</em> institutional boundaries — whether what the scientific institution knows can reach the legislative institution's decisions across a trust vector that has been eroding since the first IPCC report. That measurement is what determines whether Tim Palmer's findings can reach the governance decisions that need them. It is the missing instrument identified in the "From Agent to Civilization" framework.
-    </div>
-    <p style="margin-top:.75rem;line-height:1.65;color:rgba(255,255,255,.75)">This limitation is not a failure of the current instrument. It is its precise horizon — the point where the current resolution ends and the next instrument begins. Every chapter of this course has taught you to read one level of the same measurement. Chapter 12 shows you the governance institution’s suppression gap. The research sequence that follows shows you the inter-institutional field that produces all of them.</p>
-
-    <div class="narrative-panel amber" style="margin-top:.75rem">
-      <strong>Type 1 vs. Type 2 routing quality failure.</strong> The four simulation configurations reveal two structurally distinct failure modes that produce similar aggregate metrics but require completely different remedies.
-      <br><br>
-      <strong>Type 1 — Agent-level failure:</strong> Routing quality is low because the agent population has poor PRF alignment, low coherence, or inadequate evidence quality. The structural ceiling (FHRI_max) is high enough to permit better outcomes, but the current agent population is not reaching it. Remedy: agent-level intervention. Configuration B shows what this population can produce when structural conditions are right.
-      <br><br>
-      <strong>Type 2 — Structural ceiling failure (IPS):</strong> Routing quality is low because ε, μ, and ρ have imposed a ceiling below which no agent-level improvement can push outcomes. Configuration D makes this visible directly: agent FHRI = 82.0 (highly competent professionals), FHRI_max = 14.3. The 67.7-point gap is absorbed by the structural architecture before any of that competence reaches decisions. Remedy: structural reform. Agent-level intervention is wasted until the ceiling rises.
-      <br><br>
-      <strong>The diagnostic question:</strong> When you observe a governance institution with poor routing quality, which failure type is it? The simulation gives you the tool: run Config D parameters against a real institution’s known agent quality. If the suppression gap exceeds what agent quality explains, you are in a Type 2 failure — and the intervention strategy must change accordingly.
-    </div>
-  </div>
-</div>
-
-</div><!-- end overview tab -->
-
-<!-- ══ TAB: SIMULATION ════════════════════════════════════════════════════════ -->
-<div class="tab-pane" id="tab-simulation">
-
-  <!-- Config selector -->
-  <div class="config-bar">
-    <button class="cfg-btn active" id="cfg-A" onclick="selectConfig('A')">
-      <div class="cfg-label">Configuration A</div>
-      <div class="cfg-name">Captured Governance</div>
-      <div class="cfg-desc">High legitimacy · Low routing quality</div>
-    </button>
-    <button class="cfg-btn" id="cfg-B" onclick="selectConfig('B')">
-      <div class="cfg-label">Configuration B</div>
-      <div class="cfg-name">Coherence-Preserving</div>
-      <div class="cfg-desc">Balanced legitimacy · High routing</div>
-    </button>
-    <button class="cfg-btn" id="cfg-C" onclick="selectConfig('C')">
-      <div class="cfg-label">Configuration C</div>
-      <div class="cfg-name">Reform Transition</div>
-      <div class="cfg-desc">Captured → reform at step 4</div>
-    </button>
-    <button class="cfg-btn" id="cfg-D" onclick="selectConfig('D')">
-      <div class="cfg-label">Configuration D</div>
-      <div class="cfg-name">Boisjoly T4</div>
-      <div class="cfg-desc">Agent FHRI 82 · FHRI_max 14.3</div>
-    </button>
-  </div>
-
-  <!-- Config description callout -->
-  <div id="configCallout" class="narrative-panel teal" style="margin-bottom:.75rem"></div>
-
-  <!-- Collapsible block field explanation -->
-  <button class="explain-toggle" onclick="toggleExplain('blockExplain')">▸ What do these parameters mean?</button>
-  <div class="explain-body" id="blockExplain">
-    <p style="margin-bottom:.6rem"><strong>1. Evidence distribution</strong> — the population-level weighting of four distinct epistemic processing modes across the agent population:</p>
-    <div style="display:grid;gap:.3rem;margin-bottom:.7rem;padding:.5rem .7rem;background:rgba(255,255,255,.03);border-radius:.3rem">
-      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#f08080;width:130px;flex-shrink:0;font-weight:600">Authority-weighted</span><span style="color:rgba(255,255,255,.7)">Agents defer to official hierarchy and credentialed institutions regardless of underlying evidence quality. In governance: deference to economic ministries, incumbent bodies, official position.</span></div>
-      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#7fd8a8;width:130px;flex-shrink:0;font-weight:600">Empirical-calibrated</span><span style="color:rgba(255,255,255,.7)">Agents update beliefs based on observable data with minimal prior bias. Physical measurements, replicable findings, peer-reviewed analysis. The mode IPCC science operates in.</span></div>
-      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#f5c842;width:130px;flex-shrink:0;font-weight:600">Tradition-weighted</span><span style="color:rgba(255,255,255,.7)">Agents prioritize precedent, continuity, established practice. What has worked before; what the institution has historically recognized as legitimate input.</span></div>
-      <div style="display:flex;gap:.6rem;font-size:.8rem"><span style="color:#f97316;width:130px;flex-shrink:0;font-weight:600">Alternative-facts</span><span style="color:rgba(255,255,255,.7)">Agents actively reinterpret evidence to match prior beliefs. High interpretive override and motivated reasoning. In governance: noise generated by incumbent interest advocacy.</span></div>
-    </div>
-    <p style="margin-bottom:.6rem"><strong>2. Block fields</strong> — structural frictions and facilitators on <em>how</em> contributions are framed. These are not evidence categories — they are the value and relational contexts in which evidence is presented:</p>
-    <div style="padding:.5rem .7rem;background:rgba(255,255,255,.03);border-radius:.3rem;margin-bottom:.7rem;font-size:.8rem;color:rgba(255,255,255,.7)">
-      <p style="margin-bottom:.3rem">Negative care/fairness/community means that contributions framed in terms of human consequences, distributional effects, or collective interests create institutional <em>friction</em> rather than advancing deliberation — regardless of their empirical quality. A care-framed IPCC finding about vulnerable populations is not just underweighted; it is actively penalized.</p>
-      <p>Positive boundary means contributions that protect existing arrangements are structurally amplified. In Config A, boundary = +0.40: the strongest single block field signal in the system favors the status quo.</p>
-    </div>
-    <p style="margin-bottom:.6rem"><strong>3. Institution state → routing quality</strong> — distinct from evidence processing, this is the fraction of the institutional deliberation output that reaches actual decision authority. Policy committees, agenda-setting gatekeepers, executive filtering: even contributions that survive the evidence distribution and block field filters are further attenuated here. Config A routing quality = 0.22. Config B = 0.65.</p>
-    <p style="margin-bottom:.6rem"><strong>λ Raw fixed (Config A &amp; C):</strong> Expert knowledge and citizen understanding is held constant at 0.72. The architecture is the filter — not the capacity. Config B uses emergent λ Raw, reflecting what coherence-preserving deliberation produces naturally.</p>
-    <div style="background:rgba(20,184,166,.08);border-left:3px solid var(--teal);border-radius:0 .3rem .3rem 0;padding:.6rem .8rem;font-size:.82rem;color:rgba(255,255,255,.82)">
-      <strong>Evidence architecture (combined effect):</strong> λ Perceived is the product of all three filters operating simultaneously. The evidence distribution determines what epistemic processing modes dominate. The block fields determine which value-framed contributions advance or create friction. The routing quality determines how much of the institutional output reaches actual decision authority. Config A's ~74% attenuation is not produced by any one of these — it is produced by all three calibrated in the same direction against empirical-calibrated, long-horizon, care-framed knowledge. Config B's near-zero gap is produced by all three aligned in the other direction.
-    </div>
-  </div>
-
-  <button class="ucp-run-btn" id="ucpRunBtn" onclick="runGovSim()">
-    <span class="ucp-spinner" id="govSpinner"></span>
-    ▶ Run Simulation
-  </button>
-
-  <div class="ucp-error" id="ucpError"></div>
-
-  <!-- Results -->
-  <div class="ucp-result" id="ucpResult">
-
-    <div class="metrics-grid" id="ucpMetrics"></div>
-
-    <div class="step-chart-wrap">
-      <div id="govStepChart" style="min-height:200px;display:flex;align-items:center;
-        justify-content:center;color:var(--muted);font-size:.8rem">
-        Run simulation to see step trace
-      </div>
-    </div>
-
-    <div id="ucpBarsWrap" style="margin-bottom:.9rem">
-      <div class="bar-gap-label">Coordination capacity — available vs reaching decisions</div>
-      <div id="ucpBars"></div>
-    </div>
-
-    <div class="narrative-panel teal" id="ucpNarrative"></div>
-
-    <div class="robustness-panel" id="robustnessPanel">
-      <h4>Robustness Tracker</h4>
-      <table class="rob-table">
-        <thead><tr>
-          <th>Run</th><th>Config</th><th>λ Raw</th><th>λ Perceived</th>
-          <th>Gap</th><th>Morphic</th><th>OS2</th>
-        </tr></thead>
-        <tbody id="robLog"></tbody>
-      </table>
-    </div>
-
-  </div>
-
-</div><!-- end simulation tab -->
-
-<!-- ══ TAB: COMPARISON ════════════════════════════════════════════════════════ -->
-<div class="tab-pane" id="tab-comparison">
-  <div class="narrative-panel teal" style="margin-bottom:.9rem">
-    Run all three configurations in the Simulation tab first, then return here to read the comparison.
-  </div>
-
-  <div class="section-wrap" style="margin-bottom:1rem">
-    <div class="section-header" onclick="toggleSection(this)">
-      <h3>Reading Your Results — Common Prediction Errors</h3>
-      <span class="section-chevron">▶</span>
-    </div>
-    <div class="section-body">
-      <div style="display:grid;gap:.6rem">
-        <div class="narrative-panel red">
-          <strong>Config A — Most common error: underestimating the suppression gap.</strong> Most students predict λ Perceived around 0.30–0.40, not 0.19. This error is instructive: if your PRF has high empirical-calibrated sensitivity, you implicitly expect governance institutions to weight empirical evidence similarly to how you weight it. The simulation is showing you that your expectation is wrong by a factor of three to four. The institutional evidence architecture you are measuring is calibrated by incentives and pressures that are structurally independent of your epistemic commitments.
-        </div>
-        <div class="narrative-panel" style="border-left:4px solid var(--green)">
-          <strong>Config B — Most common error: expecting λ Raw to be higher than Config A.</strong> Config B's λ Raw emerges around 0.29 — lower than Config A's fixed 0.72. Students often read this as Config B performing worse. The correct reading: Config B is not modeling a large blocked reservoir. It is modeling authentic participatory deliberation. The ratio of λ Perceived to λ Raw is near 1.0. Almost everything that is available reaches decisions. That is the achievement — not the absolute level, the ratio.
-        </div>
-        <div class="narrative-panel amber">
-          <strong>Config C — Most common error: expecting morphic suppression to fall immediately at step 4.</strong> Students who correctly predict that λ Perceived rises after the reform often simultaneously predict morphic suppression falling at the same moment. The step chart shows that suppression continues building (more slowly) for steps 5–7 before decelerating. The accumulated learned self-censorship of four decades does not reverse on contact with new institutional conditions. Structural repair changes the trajectory. It does not erase the history.
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="sxsBody">
-    <div style="color:var(--muted);font-size:.85rem;text-align:center;padding:2rem">
-      Complete all three configurations to unlock the comparison panel.
-    </div>
-  </div>
-</div>
-
-<!-- ══ TAB: JOURNAL ═══════════════════════════════════════════════════════════ -->
-<div class="tab-pane" id="tab-journal">
-
-  <div class="narrative-panel amber" style="margin-bottom:1rem">
-    <strong>Journal prompts for Chapter 12.</strong> Your entries are saved locally in your browser.
-  </div>
-
-  <div class="prediction-wrap">
-    <label>Q12a — Pre-Simulation Prediction: Record your expected λ Raw, λ Perceived, and morphic suppression for each of the three configurations. Which do you expect to show the largest suppression gap? Which the smallest?</label>
-    <textarea id="j12a" oninput="saveJournal('j12a')" placeholder="Your prediction before running the simulations..."></textarea>
-  </div>
-
-  <div class="prediction-wrap">
-    <label>Q12b — Institutional Diagnosis: Identify one governance institution you inhabit or observe. Apply the Configuration A / B diagnostic. What is its approximate evidence distribution? What is its routing quality? Where is morphic suppression building in the population that interacts with it?</label>
-    <textarea id="j12b" oninput="saveJournal('j12b')" placeholder="Your institutional analysis..."></textarea>
-  </div>
-
-  <div class="prediction-wrap">
-    <label>Q12c — The Reform Lag: Configuration C shows that governance reform changes the trajectory but does not immediately dissolve accumulated morphic suppression. Identify one real governance reform. Did it produce immediate behavioral change? What would a BioBond-equivalent look like in that domain?</label>
-    <textarea id="j12c" oninput="saveJournal('j12c')" placeholder="Your reform lag analysis..."></textarea>
-  </div>
-
-  <div class="prediction-wrap">
-    <label>Q12d — Transfer (stored for Ch13): Explain the difference between procedural legitimacy and routing quality using one concrete example. Identify the specific mechanism through which that institution's routing quality is maintained or degraded.</label>
-    <textarea id="j12d" oninput="saveJournal('j12d')" placeholder="Your transfer entry..."></textarea>
-  </div>
-
-</div>
-
-</div><!-- end page -->
-
+<div class="sf" id="sf">Saved &#10003;</div>
 <script>
-'use strict';
+const TABS=["govframe","ironcage","obstrap","capture","classifier","journal"];
+let cur=0;
+function switchTab(n){TABS.forEach((t,i)=>{document.getElementById('tab-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tab-btn')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ti').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nextTab(){if(cur<TABS.length-1)switchTab(TABS[cur+1]);}
+function prevTab(){if(cur>0)switchTab(TABS[cur-1]);}
+function toggleSec(h){const b=h.nextElementSibling;b.classList.toggle('open');h.classList.toggle('open');}
+function selChoice(card,key,results){card.closest('.choice-grid').querySelectorAll('.choice-card').forEach(c=>c.classList.remove('sel'));card.classList.add('sel');const r=card.closest('.sec-body')||card.closest('.tab-pane');const rb=r.querySelector('.result-box');if(rb&&results[key]){const d=results[key];rb.style.borderColor=d.c;rb.style.background=d.bg;rb.innerHTML=d.t;rb.classList.add('show');}}
+function animateBars(){document.querySelectorAll('.fbar-fill').forEach(el=>{const w=el.style.width;el.style.width='0';requestAnimationFrame(()=>setTimeout(()=>el.style.width=w,60));});}
+setTimeout(animateBars,400);
+function saveJ(prefix){const keys=[];document.querySelectorAll('[id^="'+prefix+'j"]').forEach(el=>{try{localStorage.setItem(el.id,el.value);}catch(e){}});const sf=document.getElementById('sf');sf.classList.add('show');setTimeout(()=>sf.classList.remove('show'),1700);}
+function loadJ(prefix){document.querySelectorAll('[id^="'+prefix+'j"]').forEach(el=>{try{el.value=localStorage.getItem(el.id)||'';}catch(e){}});}
 
-const BACKEND = 'https://ucp-backend-4dig.onrender.com';
-
-// ── State ─────────────────────────────────────────────────────────────────
-let _config = 'A';
-let _seed   = 142;
-let _results = {};
-let _runCount = 0;
-let _runLog = [];
-
-// Synthetic morphic timelines (same architecture as Challenger/Hanna)
-// Backend EMA understates accumulation for fixed_lambda_raw cases
-const GOV_MORPH_PRESETS = {
-  'A': [0.07, 0.12, 0.18, 0.24, 0.30, 0.35, 0.39, 0.42],
-  'C': [0.07, 0.12, 0.18, 0.24, 0.26, 0.27, 0.27, 0.28],
-  'D': [0.08, 0.14, 0.21, 0.28, 0.35, 0.40, 0.44, 0.47],
+const gov_r={
+g1:{c:'rgba(167,139,250,.3)',bg:'rgba(167,139,250,.04)',t:'<strong>Iron Cage: strong case.</strong> The ESA listing process has accumulated procedural weight (σ) that makes the 12-year average listing timeline structurally incompatible with the pace of species loss. The apparatus consumes enormous energy &mdash; petitions, scientific reviews, legal challenges, economic impact analyses &mdash; while the mission (preventing extinction) continues to fail at accelerating rates. This is the Iron Cage signature: enormous institutional energy devoted to the apparatus; mission coordination capacity near zero.'},
+g2:{c:'rgba(167,139,250,.3)',bg:'rgba(167,139,250,.04)',t:'<strong>Obsolescence Trap: strong case.</strong> The ESA was designed for a world where species loss was driven by localized habitat destruction and hunting &mdash; addressable through geographic protection and hunting regulations. Climate-driven range shifts, ocean acidification, and ecosystem-level disruption were not design assumptions. The governance architecture cannot address threats it was not designed to anticipate.'},
+g3:{c:'rgba(167,139,250,.3)',bg:'rgba(167,139,250,.04)',t:'<strong>Capture: strong case.</strong> Industry actors have developed sophisticated legal and procedural strategies for delaying ESA listings, limiting critical habitat designations, and contesting protection decisions. The μ of the process &mdash; the gap between what the process rewards (procedural compliance, economic impact documentation) and what it nominally requires (species protection) &mdash; has been systematically widened by actors whose economic interests are served by delay.'},
+g4:{c:'rgba(74,222,128,.3)',bg:'rgba(74,222,128,.04)',t:'<strong>Most complete analysis.</strong> The ESA exhibits all three failure modes simultaneously, compounding. The Iron Cage (σ accumulation in listing procedures) creates the procedural space that Capture exploits. The Obsolescence Trap (design assumptions invalidated by climate change) means that even successful T2 reforms within the existing architecture cannot address the structural mismatch between the ESA\'s design and the threats it faces. T1 structural intervention &mdash; redesigning the ESA\'s architecture for climate-era threats &mdash; is required, and the Iron Cage makes that intervention structurally difficult to authorize within the existing apparatus.'}
 };
-const GOV_MORPH_FINAL = { 'A': 0.42, 'C': 0.28, 'D': 0.47 };
-
-// ── Config definitions ────────────────────────────────────────────────────
-const CONFIG_LABELS = {
-  A: 'Configuration A: Captured Governance',
-  B: 'Configuration B: Coherence-Preserving Governance',
-  C: 'Configuration C: Reform Transition',
-  D: 'Configuration D: Boisjoly T4 — High Agent / High Parasitism',
-};
-
-const CONFIG_CALLOUTS = {
-  A: '<strong>Captured Governance:</strong> Evidence architecture weights authority-weighted input at 52% and empirical-calibrated expert signal at only 10%. Block fields are negative on care, fairness, and community — raising human consequences or distributional concerns creates institutional friction. λ Raw is fixed at 0.72: expert knowledge is intact and substantial. The architecture is the filter.',
-  B: '<strong>Coherence-Preserving Governance:</strong> Empirical-calibrated evidence weighted at 52%. Care, fairness, and community block fields are positive. Policy rigidity is lower (0.38) and routing quality is higher (0.65). λ Raw emerges naturally from the simulation — reflecting what genuine participation in coherence-preserving governance produces rather than what is being blocked.',
-  C: '<strong>Reform Transition:</strong> Begins in the Config A state. A governance reform activates at step 4: increased routing quality, reduced policy rigidity, improved repair bandwidth. Watch the step chart: λ Perceived rises after step 4, but morphic suppression continues building (more slowly) before eventually decelerating. This is the reform lag.',
-  D: '<strong>Boisjoly T4 &mdash; High Agent / High Parasitism:</strong> Agent FHRI initialized at 82.0 &mdash; highly competent, committed, high-ATCF professionals. IPS structural parameters reflect the NASA/Morton Thiokol institutional architecture: schedule-pressure incentive misalignment (&mu;=0.70), normalized deviance accumulated from 24 O-ring incident reports (&sigma;=0.65), authority-weighted evidence architecture (&epsilon;=0.72), capture index 0.88. Watch the key finding: <strong>agent FHRI = 82.0, FHRI_max = 14.3, absorbed = 67.7 points</strong>. The structural ceiling absorbs 82% of available agent capacity before it reaches the launch decision. This is not a failure of competence. It is the computable magnitude of a structural wrong. Changing the individuals without changing the architecture changes nothing.',
-};
-
-const PAYLOADS = {
-  A: {
-    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
-    fixed_lambda_raw: 0.72,
-    worldview_distribution: {
-      role_order: 0.38, sacred_boundary: 0.22, liberal_individualist: 0.20,
-      ubuntu_relational: 0.12, indigenous_custodial: 0.08,
-    },
-    evidence_distribution: {
-      authority_weighted: 0.52, alternative_facts: 0.22,
-      tradition_weighted: 0.16, empirical_calibrated: 0.10,
-    },
-    scenario_physics: {
-      base_entropy: 0.52, base_stress: 0.46,
-      block_fields: { care: -0.25, fairness: -0.45, community: -0.35, boundary: 0.40 },
-    },
-  },
-  B: {
-    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
-    worldview_distribution: {
-      ubuntu_relational: 0.28, liberal_individualist: 0.28,
-      indigenous_custodial: 0.18, role_order: 0.16, sacred_boundary: 0.10,
-    },
-    evidence_distribution: {
-      empirical_calibrated: 0.52, tradition_weighted: 0.22,
-      authority_weighted: 0.18, alternative_facts: 0.08,
-    },
-    scenario_physics: {
-      base_entropy: 0.35, base_stress: 0.30,
-      block_fields: { care: 0.35, fairness: 0.42, community: 0.38, boundary: 0.15 },
-    },
-  },
-  C: {
-    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
-    fixed_lambda_raw: 0.72,
-    activate_biobond_at: 4,
-    worldview_distribution: {
-      role_order: 0.38, sacred_boundary: 0.22, liberal_individualist: 0.20,
-      ubuntu_relational: 0.12, indigenous_custodial: 0.08,
-    },
-    evidence_distribution: {
-      authority_weighted: 0.52, alternative_facts: 0.22,
-      tradition_weighted: 0.16, empirical_calibrated: 0.10,
-    },
-    scenario_physics: {
-      base_entropy: 0.52, base_stress: 0.46,
-      block_fields: { care: -0.25, fairness: -0.45, community: -0.35, boundary: 0.40 },
-    },
-  },
-  D: {
-    num_agents: 18, scenario_name: 'baseline', steps: 8, seed: 142,
-    fixed_lambda_raw: 0.72,
-    worldview_distribution: {
-      role_order: 0.38, sacred_boundary: 0.22, liberal_individualist: 0.20,
-      ubuntu_relational: 0.12, indigenous_custodial: 0.08,
-    },
-    evidence_distribution: {
-      authority_weighted: 0.52, alternative_facts: 0.22,
-      tradition_weighted: 0.16, empirical_calibrated: 0.10,
-    },
-    scenario_physics: {
-      base_entropy: 0.55, base_stress: 0.60,
-      block_fields: { care: -0.30, fairness: -0.48, community: -0.38, boundary: 0.45 },
-    },
-  },
-};
-
-// ── Phased payload builder (V3.3 native) ─────────────────────────────────
-function buildLegacyPayload(cfg, seed) {
-  const base = PAYLOADS[cfg];
-  const p = { ...base, seed };
-  if (base.scenario_physics) p.scenario_physics = {
-    ...base.scenario_physics,
-    block_fields: { ...(base.scenario_physics.block_fields || {}) }
-  };
-  if (base.activate_biobond_at != null) p.activate_biobond_at = base.activate_biobond_at;
-  if (base.fixed_lambda_raw != null) p.fixed_lambda_raw = base.fixed_lambda_raw;
-  return p;
-}
-
-function buildPhasedPayload(cfg, seed) {
-  const base = PAYLOADS[cfg];
-  const sp = base.scenario_physics || {};
-  const common = {
-    num_agents: base.num_agents || 18,
-    scenario_name: base.scenario_name || 'baseline',
-    steps: base.steps || 8, seed,
-    worldview_distribution: { ...(base.worldview_distribution || {}) },
-    evidence_distribution:  { ...(base.evidence_distribution  || {}) },
-    scenario_physics: { ...sp, block_fields: { ...(sp.block_fields || {}) } },
-  };
-  if (base.fixed_lambda_raw != null) common.fixed_lambda_raw = base.fixed_lambda_raw;
-  if (base.activate_biobond_at != null) common.activate_biobond_at = base.activate_biobond_at;
-
-  if (cfg === 'A') return {
-    ...common,
-    institution_state_lite: {
-      phase: 'baseline', policy_rigidity: 0.78, legitimacy: 0.62,
-      repair_bandwidth: 0.12, support_reserve: 0.10,
-      entropy_export: 0.65, routing_quality: 0.22, shared_task_strength: 0.18,
-      chapter_variables: {
-        expert_routing: 0.15, citizen_voice: 0.18, capture_index: 0.82,
-        procedural_legitimacy: 0.72, substantive_legitimacy: 0.24,
-      },
-    },
-    phases: [], interventions: [],
-  };
-
-  if (cfg === 'B') return {
-    ...common,
-    institution_state_lite: {
-      phase: 'baseline', policy_rigidity: 0.38, legitimacy: 0.68,
-      repair_bandwidth: 0.40, support_reserve: 0.35,
-      entropy_export: 0.30, routing_quality: 0.65, shared_task_strength: 0.58,
-      chapter_variables: {
-        expert_routing: 0.68, citizen_voice: 0.62, capture_index: 0.22,
-        procedural_legitimacy: 0.74, substantive_legitimacy: 0.66,
-      },
-    },
-    phases: [], interventions: [],
-  };
-
-  // Config D — Boisjoly T4: high agent FHRI, high structural parasitism
-  if (cfg === 'D') return {
-    ...common,
-    institution_state_lite: {
-      phase: 'baseline', policy_rigidity: 0.82, legitimacy: 0.58,
-      repair_bandwidth: 0.08, support_reserve: 0.06,
-      entropy_export: 0.72, routing_quality: 0.14, shared_task_strength: 0.12,
-      chapter_variables: {
-        expert_routing: 0.10, citizen_voice: 0.12, capture_index: 0.88,
-        procedural_legitimacy: 0.78, substantive_legitimacy: 0.14,
-      },
-    },
-    phases: [], interventions: [],
-  };
-
-  // Config D — Boisjoly T4: high agent FHRI, high structural parasitism
-  if (cfg === 'D') return {
-    ...common,
-    institution_state_lite: {
-      phase: 'baseline', policy_rigidity: 0.85, legitimacy: 0.55,
-      repair_bandwidth: 0.08, support_reserve: 0.06,
-      entropy_export: 0.72, routing_quality: 0.14, shared_task_strength: 0.12,
-      chapter_variables: {
-        expert_routing: 0.10, citizen_voice: 0.12, capture_index: 0.88,
-        procedural_legitimacy: 0.78, substantive_legitimacy: 0.14,
-      },
-    },
-    phases: [], interventions: [],
-  };
-
-  // Config C — two phases, reform intervention at step 4
-  return {
-    ...common,
-    institution_state_lite: {
-      phase: 'pre_reform', policy_rigidity: 0.78, legitimacy: 0.62,
-      repair_bandwidth: 0.12, support_reserve: 0.10,
-      entropy_export: 0.65, routing_quality: 0.22, shared_task_strength: 0.18,
-      chapter_variables: {
-        expert_routing: 0.15, citizen_voice: 0.18, capture_index: 0.82,
-        procedural_legitimacy: 0.72, substantive_legitimacy: 0.24,
-      },
-    },
-    phases: [
-      {
-        phase_id: 'pre_reform', start_step: 1, end_step: 3,
-        scenario_override: {
-          base_entropy: sp.base_entropy || 0.52,
-          base_stress: sp.base_stress || 0.46,
-          block_fields: { ...(sp.block_fields || {}) },
-        },
-        institution_deltas: {}, intervention_ids: [],
-      },
-      {
-        phase_id: 'post_reform', start_step: 4, end_step: 8,
-        scenario_override: {
-          base_entropy: Math.max(0, (sp.base_entropy || 0.52) - 0.08),
-          base_stress:  Math.max(0, (sp.base_stress  || 0.46) - 0.10),
-          block_fields: {
-            ...(sp.block_fields || {}),
-            care:      ((sp.block_fields?.care      ?? 0) + 0.30),
-            fairness:  ((sp.block_fields?.fairness  ?? 0) + 0.38),
-            community: ((sp.block_fields?.community ?? 0) + 0.32),
-          },
-        },
-        institution_deltas: {
-          routing_quality: 0.55, repair_bandwidth: 0.38,
-          policy_rigidity: 0.42, legitimacy: 0.70,
-        },
-        intervention_ids: ['governance_reform'],
-      },
-    ],
-    interventions: [{
-      intervention_id: 'governance_reform', kind: 'structural_reform',
-      start_step: 4, end_step: 8,
-      targets: ['institution', 'routing_infrastructure'],
-      parameter_deltas: {
-        routing_quality: 0.35, repair_bandwidth: 0.28,
-        'chapter_variables.expert_routing': 0.45,
-        'chapter_variables.citizen_voice':  0.38,
-        'chapter_variables.capture_index': -0.35,
-      },
-      notes: 'Models independent regulatory body, evidence standards legislation, participatory process requirements.',
-    }],
-  };
-}
-
-async function postGovSim(payload, seed) {
-  try {
-    const resp = await fetchWithRetry(`${BACKEND}/api/simulate/phased_manifest`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    if (resp && resp.ok) return resp;
-  } catch (_) {}
-  const legacy = buildLegacyPayload(_config, seed);
-  return fetchWithRetry(`${BACKEND}/api/simulate/custom`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(legacy),
-  });
-}
-
-// ── Synthetic morphic injection ───────────────────────────────────────────
-function injectGovMorph(timeline, cfg) {
-  if (!GOV_MORPH_PRESETS[cfg]) return timeline;
-  const vals = GOV_MORPH_PRESETS[cfg];
-  return timeline.map((step, i) => ({
-    ...step,
-    morphic_suppression: vals[Math.min(i, vals.length - 1)],
-  }));
-}
-
-// ── Fetch with retry ──────────────────────────────────────────────────────
-async function fetchWithRetry(url, opts, max = 3) {
-  const delays = [0, 8000, 15000]; let lastErr;
-  for (let i = 0; i < max; i++) {
-    if (i > 0) await new Promise(r => setTimeout(r, delays[i]));
-    try {
-      const resp = await fetch(url, { ...opts, signal: AbortSignal.timeout(30000) });
-      if ([404, 503, 502].includes(resp.status)) { lastErr = new Error('HTTP ' + resp.status); continue; }
-      if (!resp.ok) { const t = await resp.text(); throw new Error('HTTP ' + resp.status + ': ' + t.slice(0, 200)); }
-      return resp;
-    } catch (e) {
-      if (e.name === 'TimeoutError' || e.name === 'AbortError') { lastErr = new Error('Timed out'); continue; }
-      throw e;
-    }
-  }
-  throw lastErr || new Error('Server unavailable');
-}
-
-// ── Main run function ─────────────────────────────────────────────────────
-async function runGovSim() {
-  const btn = document.getElementById('ucpRunBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="ucp-spinner" id="govSpinner" style="display:inline-block"></span> Running…';
-  document.getElementById('ucpResult').style.display = 'none';
-  document.getElementById('ucpError').style.display = 'none';
-  document.getElementById('govStepChart').innerHTML =
-    '<div style="display:flex;align-items:center;justify-content:center;height:120px;' +
-    'background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)">' +
-    '<span style="font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35)">Loading step trace…</span></div>';
-
-  const payload = buildPhasedPayload(_config, _seed);
-
-  try {
-    const resp = await postGovSim(payload, _seed);
-    const data = await resp.json();
-    if (!data.metrics) throw new Error('No metrics in response');
-
-    // Inject synthetic morphic for suppression cases
-    if (data.timeline && GOV_MORPH_PRESETS[_config]) {
-      data.timeline = injectGovMorph(data.timeline, _config);
-      data.metrics.morphic_suppression = GOV_MORPH_FINAL[_config];
-    }
-
-    _results[_config] = data;
-    renderGovResult(data);
-
-    // Step chart
-    if (data.timeline && data.timeline.length) {
-      renderStepChart(data.timeline, 'govStepChart', {
-        title: CONFIG_LABELS[_config] + ' — step trace',
-      });
-    }
-
-    // Robustness log
-    const m = data.metrics;
-    const lr = m.lambda_raw || 0;
-    const lp = m.lambda_perceived || 0;
-    _runCount++;
-    _runLog.push({
-      run: _runCount, cfg: _config, seed: _seed,
-      lr: lr.toFixed(3), lp: lp.toFixed(3),
-      gap: Math.max(0, lr - lp).toFixed(3),
-      morph: (m.morphic_suppression || 0).toFixed(3),
-      os2: (m.os2_synergy_bridge || 0).toFixed(3),
-    });
-    _seed += 17;
-    renderRobustnessLog();
-    document.getElementById('robustnessPanel').style.display = 'block';
-
-    // Comparison
-    renderSxS();
-
-    btn.disabled = false;
-    btn.innerHTML = '<span class="ucp-spinner" id="govSpinner"></span>↺ Re-run Simulation';
-
-  } catch (e) {
-    btn.disabled = false;
-    btn.innerHTML = '<span class="ucp-spinner" id="govSpinner"></span>▶ Run Simulation';
-    const err = document.getElementById('ucpError');
-    err.textContent = 'Simulation unavailable — ' + e.message + '. Please try again in a moment.';
-    err.style.display = 'block';
-  }
-}
-
-// ── Render result ─────────────────────────────────────────────────────────
-function vc(v, hi = true) {
-  if (hi) return v > 0.55 ? 'good' : v > 0.28 ? 'mid' : 'bad';
-  return v < 0.12 ? 'good' : v < 0.25 ? 'mid' : 'bad';
-}
-
-function renderGovResult(data) {
-  const m = data.metrics || {};
-  const raw  = m.lambda_raw || 0;
-  const perc = m.lambda_perceived || 0;
-  const gap  = Math.max(0, raw - perc);
-  const morph = m.morphic_suppression || 0;
-  const os2  = m.os2_synergy_bridge || m.os2_synergy || 0;
-  const fric = m.friction || 0;
-  const inst = data.institution || {};
-
-  const routing_q = inst.routing_quality != null
-    ? inst.routing_quality
-    : (_config === 'B' ? 0.65 : 0.22);
-
-  document.getElementById('ucpMetrics').innerHTML = `
-    <div class="metric-card">
-      <div class="m-label">λ Raw</div>
-      <div class="m-val ${vc(raw)}">${raw.toFixed(3)}</div>
-      <div class="m-phrase">${raw > 0.60 ? 'Expert capacity intact' : raw > 0.30 ? 'Moderate capacity' : 'Capacity constrained'}</div>
-    </div>
-    <div class="metric-card">
-      <div class="m-label">λ Perceived</div>
-      <div class="m-val ${vc(perc)}">${perc.toFixed(3)}</div>
-      <div class="m-phrase">${perc > 0.55 ? 'High signal through' : perc > 0.28 ? 'Partial signal' : 'Signal attenuated'}</div>
-    </div>
-    <div class="metric-card">
-      <div class="m-label">Supp. Gap</div>
-      <div class="m-val ${vc(gap, false)}">${(gap * 100).toFixed(1)}%</div>
-      <div class="m-phrase">${gap > 0.40 ? 'Severe capture' : gap > 0.20 ? 'Significant' : 'Minimal'}</div>
-    </div>
-    <div class="metric-card">
-      <div class="m-label">Morphic Supp.</div>
-      <div class="m-val" style="color:#e879f9">${morph.toFixed(3)}</div>
-      <div class="m-phrase">${morph > 0.30 ? 'Deep accumulation' : morph > 0.12 ? 'Building' : 'Early stage'}</div>
-    </div>
-    <div class="metric-card">
-      <div class="m-label">OS2 Bridge</div>
-      <div class="m-val ${vc(os2)}">${os2.toFixed(3)}</div>
-      <div class="m-phrase">${os2 > 0.50 ? 'Cross-worldview coord.' : 'Limited coordination'}</div>
-    </div>
-    <div class="metric-card">
-      <div class="m-label">Routing Quality</div>
-      <div class="m-val ${vc(routing_q)}">${routing_q.toFixed(2)}</div>
-      <div class="m-phrase">${routing_q > 0.55 ? 'Signal reaches decisions' : routing_q > 0.35 ? 'Partial routing' : 'Systematic attenuation'}</div>
-    </div>
-  `;
-
-  const barPct = v => `${Math.min(100, Math.round(v * 100))}%`;
-  document.getElementById('ucpBars').innerHTML = `
-    <div class="bar-row">
-      <span class="bar-name">λ Raw</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${barPct(raw)};background:#14b8a6"></div></div>
-      <span class="bar-num">${raw.toFixed(2)}</span>
-    </div>
-    <div class="bar-row">
-      <span class="bar-name">λ Perceived</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${barPct(perc)};background:#3b82f6"></div></div>
-      <span class="bar-num">${perc.toFixed(2)}</span>
-    </div>
-    <div class="bar-row">
-      <span class="bar-name">Morphic Supp.</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${barPct(morph)};background:#e879f9"></div></div>
-      <span class="bar-num">${morph.toFixed(2)}</span>
-    </div>
-    <div class="bar-row">
-      <span class="bar-name">OS2 Bridge</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${barPct(os2)};background:#7fd8a8"></div></div>
-      <span class="bar-num">${os2.toFixed(2)}</span>
-    </div>
-  `;
-
-  // Narrative
-  let narrative = '';
-  if (_config === 'A') {
-    const pct = raw > 0 ? Math.round((1 - perc / raw) * 100) : 0;
-    narrative = `λ Raw = ${raw.toFixed(3)} — expert knowledge and citizen understanding is substantial and intact. λ Perceived = ${perc.toFixed(3)}: approximately ${pct}% of that capacity is filtered out before reaching governance decisions. The step chart shows morphic suppression building from near-zero toward ${morph.toFixed(2)} across eight steps — the accumulated learned self-censorship of an expert population discovering, year by year, that empirically-calibrated contributions do not change outcomes. The 21% that reaches decisions in this configuration is not a random 21%. It is the fraction that survived an authority-weighted, boundary-protective evidence architecture.`;
-  } else if (_config === 'B') {
-    narrative = `λ Raw = ${raw.toFixed(3)} — emerging naturally from coherence-preserving conditions rather than being fixed. Notice it is lower in absolute terms than Config A's fixed 0.72. This is the model's honest account of what genuine participatory governance produces: not a system where one body of expert knowledge is being blocked, but one where diverse forms of knowledge contribute collaboratively. λ Perceived = ${perc.toFixed(3)}: the ratio of what reaches decisions to what is available approaches ${raw > 0 ? Math.round(perc / raw * 100) : 0}%. Morphic suppression is near-zero — contributions reach outcomes, so there is no accumulated experience of signals failing.`;
-  } else {
-    narrative = `λ Raw = ${raw.toFixed(3)} — same expert capacity as Config A, same blocked architecture for steps 1–3. Watch the step chart: λ Perceived declines through step 3 (pre-reform trajectory), then rises after the governance reform activates at step 4 — from approximately 0.16 toward ${perc.toFixed(3)} by step 8. But morphic suppression ending at ${morph.toFixed(2)} tells the reform lag story: the accumulated learned self-censorship of the expert population does not dissolve when structural conditions improve. The trajectory changes. The history does not erase.`;
-  }
-  document.getElementById('ucpNarrative').textContent = narrative;
-  document.getElementById('ucpResult').style.display = 'block';
-}
-
-// ── Step chart (shared with other apps) ──────────────────────────────────
-function renderStepChart(timeline, containerId, options = {}) {
-  const el = document.getElementById(containerId);
-  if (!el || !timeline || !timeline.length) return;
-  const title = options.title || 'Step trace';
-  const W = el.clientWidth || 520, H = options.height || 200;
-  const pad = { top: 28, right: 16, bottom: 52, left: 40 };
-  const iW = W - pad.left - pad.right;
-  const iH = H - pad.top - pad.bottom;
-  const steps = timeline.length;
-  const x = i => pad.left + (i / Math.max(steps - 1, 1)) * iW;
-  const y = v => pad.top + iH - (Math.min(Math.max(v, 0), 1) * iH);
-
-  const SERIES = [
-    { key: 'lambda_raw',         color: '#14b8a6', label: 'λ Raw' },
-    { key: 'lambda_perceived',   color: '#3b82f6', label: 'λ Perceived' },
-    { key: 'morphic_suppression',color: '#e879f9', label: 'Morphic Supp.' },
-    { key: 'os2_synergy_bridge', color: '#7fd8a8', label: 'OS2 Bridge' },
-  ];
-
-  let paths = '', dots = '';
-  SERIES.forEach(({ key, color }) => {
-    const pts = timeline.map((s, i) => {
-      const v = key === 'os2_synergy_bridge'
-        ? (s.os2_synergy_bridge ?? s.os2_synergy ?? 0)
-        : (s[key] ?? 0);
-      return [x(i), y(v)];
-    });
-    paths += `<polyline points="${pts.map(p => p.join(',')).join(' ')}"
-      fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"
-      stroke-linecap="round"/>`;
-    pts.forEach(([cx, cy]) => {
-      dots += `<circle cx="${cx}" cy="${cy}" r="3" fill="${color}"/>`;
-    });
-  });
-
-  // BioBond marker
-  let bbLine = '';
-  const bbStep = timeline.findIndex(s => s.biobond_active);
-  if (bbStep > 0) {
-    const bx = x(bbStep);
-    bbLine = `<line x1="${bx}" y1="${pad.top}" x2="${bx}" y2="${pad.top + iH}"
-      stroke="#f5c842" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <text x="${bx + 4}" y="${pad.top + 10}" font-size="9" fill="#f5c842"
-        font-family="Courier New,monospace">reform/BioBond</text>`;
-  }
-
-  // Y-axis gridlines
-  let grid = '', yLabels = '';
-  [0, 0.25, 0.50, 0.75, 1.0].forEach(v => {
-    const gy = y(v);
-    grid += `<line x1="${pad.left}" y1="${gy}" x2="${pad.left + iW}" y2="${gy}"
-      stroke="rgba(255,255,255,.07)" stroke-width="1"/>`;
-    yLabels += `<text x="${pad.left - 5}" y="${gy + 4}" text-anchor="end"
-      font-size="11" fill="rgba(255,255,255,.55)" font-family="Courier New,monospace"
-      font-weight="500">${v.toFixed(2)}</text>`;
-  });
-
-  // X-axis labels
-  let xLabels = '';
-  timeline.forEach((_, i) => {
-    xLabels += `<text x="${x(i)}" y="${pad.top + iH + 16}" text-anchor="middle"
-      font-size="10" fill="rgba(255,255,255,.45)"
-      font-family="Courier New,monospace">${i}</text>`;
-  });
-
-  // Legend
-  let legend = '';
-  SERIES.forEach(({ color, label }, i) => {
-    const lx = pad.left + i * (iW / SERIES.length);
-    legend += `<line x1="${lx}" y1="${pad.top + iH + 36}" x2="${lx + 18}" y2="${pad.top + iH + 36}"
-      stroke="${color}" stroke-width="3"/>
-      <circle cx="${lx + 9}" cy="${pad.top + iH + 36}" r="3" fill="${color}"/>
-      <text x="${lx + 23}" y="${pad.top + iH + 40}" font-size="12"
-        fill="rgba(255,255,255,.75)" font-family="Courier New,monospace"
-        font-weight="500">${label}</text>`;
-  });
-
-  el.innerHTML = `
-    <svg width="100%" viewBox="0 0 ${W} ${H}" role="img"
-      aria-label="${title}" style="overflow:visible">
-      <title>${title}</title>
-      ${grid}${bbLine}${paths}${dots}${yLabels}${xLabels}${legend}
-      <text x="${W / 2}" y="14" text-anchor="middle"
-        font-size="12" fill="rgba(255,255,255,.72)"
-        font-family="Courier New,monospace" font-weight="600">${title}</text>
-    </svg>`;
-}
-
-// ── Side-by-side comparison ───────────────────────────────────────────────
-function renderSxS() {
-  const done = ['A', 'B', 'C'].filter(k => _results[k]);
-  if (!done.length) return;
-
-  const COLORS = { A: '#f08080', B: '#7fd8a8', C: '#f5c842' };
-  const LABELS = {
-    A: 'Config A: Captured', B: 'Config B: Coherence-Preserving', C: 'Config C: Reform',
-  };
-  const METRICS = [
-    { key: 'lambda_raw',         label: 'λ Raw',         hi: true,  desc: 'Coordination capacity available' },
-    { key: 'lambda_perceived',   label: 'λ Perceived',   hi: true,  desc: 'Signal reaching decisions' },
-    { key: 'gap',                label: 'Supp. Gap',     hi: false, desc: 'Structural distance' },
-    { key: 'morphic_suppression',label: 'Morphic Supp.', hi: false, desc: 'Accumulated self-censorship' },
-    { key: 'os2_synergy_bridge', label: 'OS2 Bridge',    hi: true,  desc: 'Cross-worldview coordination' },
-  ];
-
-  const gv = (cfg, key) => {
-    const m = _results[cfg]?.metrics || {};
-    if (key === 'gap') return Math.max(0, (m.lambda_raw || 0) - (m.lambda_perceived || 0));
-    if (key === 'os2_synergy_bridge') return m.os2_synergy_bridge ?? m.os2_synergy ?? 0;
-    return m[key] || 0;
-  };
-
-  let html = `<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:420px">`;
-  html += `<tr><td style="padding:.4rem .6rem;font-size:.7rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.07em;width:30%">Metric</td>`;
-  ['A','B','C','D'].forEach(k => {
-    html += `<td style="padding:.4rem .5rem;text-align:center;width:23%">
-      <div style="font-size:.73rem;font-family:'Courier New',monospace;font-weight:700;color:${done.includes(k)?COLORS[k]:'rgba(255,255,255,.2)'}">
-        ${done.includes(k) ? LABELS[k] : '—'}
-      </div></td>`;
-  });
-  html += `</tr>`;
-
-  METRICS.forEach(({ key, label, hi, desc }) => {
-    html += `<tr style="border-top:1px solid rgba(255,255,255,.07)">`;
-    html += `<td style="padding:.5rem .6rem">
-      <div style="font-size:.78rem;font-family:'Courier New',monospace;color:rgba(255,255,255,.7)">${label}</div>
-      <div style="font-size:.66rem;color:rgba(255,255,255,.32)">${desc}</div></td>`;
-    ['A','B','C','D'].forEach(k => {
-      const d = done.includes(k);
-      const val = d ? gv(k, key) : null;
-      const pct = d ? Math.round(val * 100) : 0;
-      const nc = d
-        ? (hi ? (val > 0.50 ? '#7fd8a8' : val > 0.28 ? '#f5c842' : '#f08080')
-              : (val < 0.10 ? '#7fd8a8' : val < 0.25 ? '#f5c842' : '#f08080'))
-        : 'rgba(255,255,255,.2)';
-      html += `<td style="padding:.45rem .5rem;text-align:center">`;
-      if (d) {
-        html += `<div style="font-size:1.1rem;font-weight:700;font-family:'Courier New',monospace;color:${nc}">${val.toFixed(3)}</div>`;
-        html += `<div style="margin:.25rem auto 0;width:76%;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden">
-          <div style="height:100%;width:${pct}%;background:${COLORS[k]};border-radius:3px;transition:width 1s ease"></div>
-        </div>`;
-      } else {
-        html += `<div style="font-size:.8rem;color:rgba(255,255,255,.2);font-style:italic">—</div>`;
-      }
-      html += `</td>`;
-    });
-    html += `</tr>`;
-  });
-  html += `</table></div>`;
-
-  // Annotations — only when all three complete
-  if (done.length === 3) {
-    const gapA = gv('A', 'gap'), gapB = gv('B', 'gap'), gapC = gv('C', 'gap');
-    const lpA = gv('A', 'lambda_perceived'), lpB = gv('B', 'lambda_perceived');
-    const ratioAB = lpB > 0.001 ? (lpB / lpA).toFixed(1) : '—';
-    const morphA = gv('A', 'morphic_suppression');
-    const morphC = gv('C', 'morphic_suppression');
-
-    html += `<div style="margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem">`;
-    html += `<div class="sxs-annotation">
-      <div class="sxs-ann-label">The Evidence Architecture Gap</div>
-      <div class="sxs-ann-text">Config A λ Perceived: ${lpA.toFixed(3)} → Config B λ Perceived: ${lpB.toFixed(3)} — approximately ${ratioAB}× more expert and citizen signal reaching governance decisions in the coherence-preserving architecture. This is not because different people inhabit the institution. The same populations are present with the same knowledge. What differs is the institution's evidence architecture — three compounding filters operating simultaneously:<br><br>
-      <strong>1. Evidence distribution:</strong> Config A weights authority-weighted input at 52% and empirical-calibrated at 10%. Config B reverses this: empirical-calibrated at 52%, authority-weighted at 18%. The IPCC's physical measurements are in the 10% pool in Config A. They are in the 52% pool in Config B.<br><br>
-      <strong>2. Block fields:</strong> Config A penalizes care-framed, fairness-framed, and community-framed contributions (all negative), while amplifying boundary-protecting contributions (+0.40). Config B does the reverse. A care-framed finding about vulnerable populations creates friction in Config A's deliberation and advances it in Config B's — regardless of its empirical quality.<br><br>
-      <strong>3. Routing quality:</strong> Config A = 0.22 — even contributions that survive the first two filters are further attenuated before reaching decision authority. Config B = 0.65. All three filters compound. The ${(gapA*100).toFixed(0)}% attenuation in Config A is their combined product.</div>
-    </div>`;
-    html += `<div class="sxs-annotation" style="border-left-color:#e879f9">
-      <div class="sxs-ann-label" style="color:#e879f9">Morphic Suppression: The Reform Lag</div>
-      <div class="sxs-ann-text">Config A morphic: ${morphA.toFixed(2)} (building across all steps). Config C morphic: ${morphC.toFixed(2)} — the reform at step 4 decelerates accumulation but does not immediately reverse it. The accumulated learned self-censorship of an expert population exposed to four decades of empirical signal failing to reach outcomes does not dissolve on contact with improved structural conditions. Structural repair is necessary. It is not sufficient without sustained demonstration over time that contributions now reach decisions.</div>
-    </div>`;
-    html += `<div class="sxs-annotation" style="border-left-color:var(--amber)">
-      <div class="sxs-ann-label" style="color:var(--amber)">What This Means for Tim Palmer's Research Program</div>
-      <div class="sxs-ann-text">Palmer's ensemble forecasting produces λ Raw for climate governance: the expert knowledge and analytical precision that exists and could reach policy decisions. The governance suppression gap — the structural distance between that knowledge and what reaches decisions — is what this simulation measures.<br><br>
-      Config A is not an extreme case. It describes the evidence architecture of national climate governance in most jurisdictions since 1988: authority-weighted epistemic processing dominant, care and fairness framing penalized as "political" rather than evidential, and routing quality low enough that expert deliberation outputs are substantially filtered before reaching cabinet or legislative authority. Palmer's findings enter at the 10% empirical-calibrated channel. Economic incumbency arguments enter at the 52% authority-weighted channel. That asymmetry has been structural for four decades — not a function of who holds office, but of the institutional architecture those officeholders inhabit.</div>
-    </div>`;
-    html += `</div>`;
-  }
-
-  document.getElementById('sxsBody').innerHTML = html;
-}
-
-// ── Robustness log ────────────────────────────────────────────────────────
-function renderRobustnessLog() {
-  const tbody = document.getElementById('robLog');
-  if (!tbody) return;
-  tbody.innerHTML = _runLog.map(r =>
-    `<tr><td>${r.run}</td><td>${r.cfg}</td><td>${r.lr}</td>
-     <td>${r.lp}</td><td>${r.gap}</td><td>${r.morph}</td><td>${r.os2}</td></tr>`
-  ).join('');
-}
-
-// ── UI helpers ────────────────────────────────────────────────────────────
-function selectConfig(cfg) {
-  _config = cfg;
-  ['A','B','C','D'].forEach(k => {
-    document.getElementById(`cfg-${k}`).classList.toggle('active', k === cfg);
-  });
-  document.getElementById('configCallout').innerHTML = CONFIG_CALLOUTS[cfg];
-  // Clear step chart placeholder
-  document.getElementById('govStepChart').innerHTML =
-    '<div style="display:flex;align-items:center;justify-content:center;height:120px;' +
-    'background:rgba(255,255,255,.04);border-radius:.4rem;border:1px dashed rgba(255,255,255,.12)">' +
-    '<span style="font-family:\'Courier New\',monospace;font-size:11px;color:rgba(255,255,255,.35)">' +
-    'Select a configuration and run the simulation</span></div>';
-  // Show previous results if available
-  if (_results[cfg]) {
-    renderGovResult(_results[cfg]);
-    if (_results[cfg].timeline) {
-      renderStepChart(_results[cfg].timeline, 'govStepChart', {
-        title: CONFIG_LABELS[cfg] + ' — step trace',
-      });
-    }
-    document.getElementById('ucpResult').style.display = 'block';
-  } else {
-    document.getElementById('ucpResult').style.display = 'none';
-  }
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    const tabs = ['overview','simulation','comparison','journal'];
-    b.classList.toggle('active', tabs[i] === tab);
-  });
-  document.querySelectorAll('.tab-pane').forEach(p => {
-    p.classList.toggle('active', p.id === `tab-${tab}`);
-  });
-  if (tab === 'comparison') renderSxS();
-}
-
-function toggleExplain(id) {
-  const el = document.getElementById(id);
-  el.style.display = el.style.display === 'block' ? 'none' : 'block';
-}
-
-function toggleTheory(hdr) {
-  const body = hdr.nextElementSibling;
-  const arrow = hdr.querySelector('span:last-child');
-  const open = body.style.display === 'block';
-  body.style.display = open ? 'none' : 'block';
-  if (arrow) arrow.textContent = arrow.textContent.replace(open ? '▴' : '▾', open ? '▾' : '▴');
-}
-
-function toggleSection(hdr) {
-  hdr.classList.toggle('open');
-  hdr.nextElementSibling.classList.toggle('open');
-}
-
-// ── Journal persistence ───────────────────────────────────────────────────
-function saveJournal(id) {
-  try { localStorage.setItem(`ebb_ch12_${id}`, document.getElementById(id).value); } catch(_) {}
-}
-function loadJournal() {
-  ['j12a','j12b','j12c','j12d'].forEach(id => {
-    try {
-      const v = localStorage.getItem(`ebb_ch12_${id}`);
-      if (v) document.getElementById(id).value = v;
-    } catch(_) {}
-  });
-}
-
-// ── Init ──────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  selectConfig('A');
-  loadJournal();
-});
-</script>
-</body>
-</html>
+function exportJ_c12(){let t='EBB Chapter 12 Journal\n'+'='.repeat(50)+'\n\n';
+['c12j1','c12j2'].forEach((k,i)=>{const e=document.getElementById(k);t+='Q'+(i+1)+':\n\n'+(e?e.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(50)+'\n\n';});
+try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_Ch12_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+window.addEventListener('DOMContentLoaded',()=>loadJ('c12'));
+</script></body></html>

@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>P-SAGE &mdash; The Professional Ethical Analysis Protocol</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);
+  --teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;
+  --green:#4ade80;--blue:#60a5fa;--orange:#fb923c;--pink:#f472b6;
+  --text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.hdr{padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--border);
+  background:linear-gradient(160deg,#0c0818 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(167,139,250,.12) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.18em;color:var(--violet);text-transform:uppercase;margin-bottom:.5rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2.4rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.ch-ttl em{color:var(--teal);font-style:italic}
+.ch-sub{font-size:.88rem;color:var(--muted);max-width:640px;margin:0 auto;line-height:1.6}
+.ch-badge{display:inline-block;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);
+  color:var(--violet);font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.08em;
+  padding:.3rem .8rem;border-radius:2rem;margin-top:.7rem}
+
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem 1rem;background:var(--s);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--violet)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;
+  text-transform:uppercase;padding:.4rem .85rem;border-radius:.3rem;
+  border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--violet);color:#fff;border-color:var(--violet);font-weight:600}
+
+.pane{display:none;padding:1.5rem;max-width:880px;margin:0 auto}
+.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--violet);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.95rem;color:rgba(255,255,255,.85);margin:.9rem 0 .3rem}
+
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.72;font-size:.88rem}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel strong{color:var(--text)}
+
+/* PERCEPTION QUESTIONS */
+.p-question{border:1px solid var(--border);border-radius:.55rem;margin:.6rem 0;overflow:hidden}
+.p-q-header{padding:.9rem 1.1rem;background:var(--s);cursor:pointer;display:flex;align-items:center;gap:.75rem}
+.p-q-header:hover{background:var(--s2)}
+.p-q-num{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:600;color:var(--teal);width:2rem;flex-shrink:0}
+.p-q-title{font-weight:600;font-size:.9rem}
+.p-q-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+.p-q-body{padding:1.1rem 1.25rem;background:#0a0e1c;display:none}
+.p-q-body.open{display:block}
+
+/* ROSETTA STONE */
+.level-nav{display:flex;gap:.4rem;flex-wrap:wrap;margin:.75rem 0}
+.level-btn{font-size:.78rem;padding:.35rem .8rem;border-radius:2rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;color:var(--muted);transition:all .15s}
+.level-btn:hover{color:var(--text)}.level-btn.active{background:var(--s2);color:var(--text);border-color:var(--violet)}
+.level-panel{display:none}.level-panel.active{display:block;animation:fi .2s ease}
+
+.ssi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.75rem 0}
+@media(max-width:520px){.ssi-grid{grid-template-columns:1fr}}
+.ssi-cell{border-radius:.45rem;padding:.9rem;border:1px solid var(--border);background:var(--s)}
+.ssi-label{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+.ssi-name{font-weight:600;font-size:.88rem;margin-bottom:.25rem}
+.ssi-status{font-family:'DM Mono',monospace;font-size:.7rem;padding:.18rem .5rem;border-radius:.25rem;margin-bottom:.4rem;display:inline-block}
+.ssi-status.intact{background:rgba(74,222,128,.12);color:var(--green)}
+.ssi-status.modified{background:rgba(245,158,11,.12);color:var(--amber)}
+.ssi-status.replaced{background:rgba(248,113,113,.12);color:var(--red)}
+.ssi-text{font-size:.8rem;color:rgba(255,255,255,.7);line-height:1.6}
+
+.access-box{margin:.75rem 0;padding:.9rem 1rem;background:rgba(167,139,250,.06);
+  border:1px solid rgba(167,139,250,.2);border-radius:.45rem}
+.access-label{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--violet);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+
+/* IPS PARAM DISPLAY */
+.ips-mini{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:.6rem 0}
+@media(max-width:480px){.ips-mini{grid-template-columns:repeat(3,1fr)}}
+.im-cell{border:1px solid var(--border);border-radius:.35rem;padding:.55rem .35rem;
+  text-align:center;background:var(--s)}
+.im-sym{font-family:'DM Mono',monospace;font-size:.85rem;font-weight:600;color:var(--violet)}
+.im-val{font-family:'DM Mono',monospace;font-size:.75rem;margin:.1rem 0}
+.im-name{font-size:.58rem;color:var(--muted)}
+
+/* WALKTHROUGH STEPPER */
+.step-row{display:flex;gap:.4rem;margin:.75rem 0}
+.step-btn{flex:1;text-align:center;padding:.6rem .3rem;border-radius:.4rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;transition:all .18s}
+.step-btn:hover{background:var(--s2)}
+.step-btn.active{border-color:var(--teal);background:rgba(20,184,166,.08)}
+.step-btn .sl{font-family:'DM Mono',monospace;font-size:1rem;font-weight:600;color:var(--teal)}
+.step-btn .sw{font-size:.62rem;color:var(--muted);display:block;margin-top:.1rem}
+.step-content{background:#0a0e1c;border:1px solid var(--border);border-radius:.5rem;
+  padding:1.1rem 1.25rem;display:none}
+.step-content.active{display:block;animation:fi .2s ease}
+
+/* CASE SELECTOR */
+.case-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.case-chip{font-size:.78rem;padding:.35rem .8rem;border-radius:2rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;color:var(--muted);transition:all .15s}
+.case-chip:hover{color:var(--text)}.case-chip.active{background:var(--s2);color:var(--text);border-color:var(--teal)}
+
+/* FHRI MINI BAR */
+.fhri-mini{display:flex;align-items:center;gap:.75rem;background:var(--s2);
+  border-radius:.45rem;padding:.75rem 1rem;margin:.5rem 0;border:1px solid var(--border)}
+.fhri-mini .fn{font-family:'DM Serif Display',serif;font-size:1.8rem;line-height:1;flex-shrink:0}
+.fhri-mini .fn.low{color:var(--red)}.fhri-mini .fn.mid{color:var(--amber)}.fhri-mini .fn.high{color:var(--green)}
+.fbar{flex:1}
+.fbar-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-bottom:.28rem}
+.fbar-track{height:9px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.fbar-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.fbar-fill.low{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fbar-fill.mid{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fbar-fill.high{background:linear-gradient(90deg,var(--green),#86efac)}
+
+/* DEPTH SELECTOR */
+.depth-row{display:flex;gap:.5rem;margin:.75rem 0;flex-wrap:wrap}
+.depth-btn{flex:1;min-width:140px;border:1px solid var(--border);border-radius:.4rem;
+  padding:.75rem;cursor:pointer;background:var(--s);text-align:center;transition:all .18s}
+.depth-btn:hover{background:var(--s2)}.depth-btn.active{border-color:var(--violet);background:rgba(167,139,250,.07)}
+.depth-btn .db-num{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:600;color:var(--violet)}
+.depth-btn .db-name{font-size:.82rem;font-weight:600;margin:.2rem 0}
+.depth-btn .db-desc{font-size:.72rem;color:var(--muted);line-height:1.4}
+.depth-content{display:none}.depth-content.active{display:block;animation:fi .2s ease}
+
+/* JOURNAL */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.88rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--violet);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:88px;background:#0a0e1c;border:none;border-top:1px solid var(--border);
+  padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.87rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+
+button.btn{background:var(--violet);color:#fff;border:none;font-family:'DM Sans',sans-serif;
+  font-weight:600;font-size:.83rem;padding:.55rem 1.2rem;border-radius:.4rem;cursor:pointer;margin:.3rem .2rem}
+button.btn.outline{background:transparent;color:var(--violet);border:1px solid var(--violet)}
+.bot-nav{max-width:880px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--violet);color:#fff;font-weight:600;font-size:.78rem;padding:.45rem 1rem;border-radius:.4rem;display:none;z-index:999}
+.sf.show{display:block}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="ch-lbl">Ethics Beyond Boundaries &middot; Deep Dive</div>
+  <h1 class="ch-ttl">P-SAGE &mdash; The <em>Professional</em> Ethical Analysis Protocol</h1>
+  <p class="ch-sub">The UCP V5 telescope: adding formal Perception to SAGE so that the structural parasite hidden behind operational continuity becomes visible</p>
+  <div class="ch-badge">&#128302; DEEP DIVE &mdash; Teacher&rsquo;s option: use at any depth from vocabulary to formal derivation</div>
+</div>
+
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('intro')">Why P-SAGE</button>
+  <button class="tb" onclick="sw('perception')">The P Step</button>
+  <button class="tb" onclick="sw('rosetta')">Rosetta Stone</button>
+  <button class="tb" onclick="sw('walkthrough')">Full Walkthrough</button>
+  <button class="tb" onclick="sw('depth')">Depth Options</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- WHY P-SAGE -->
+<div class="pane active" id="pane-intro">
+  <h2 class="st">SAGE and Its Limit</h2>
+  <div class="panel violet">
+    <strong>SAGE is the right instrument for most ethical analysis.</strong> Situation, Affected, Grounds, Evaluate &mdash; these four steps prevent the most common ethical reasoning errors and work for individual decisions, organizational dilemmas, and policy questions at any level of complexity. Use SAGE. It works.
+  </div>
+  <p class="bd">SAGE has one structural limitation: its Situation step describes what is visible. In cases of institutional parasitism, what is visible is always the Sign &mdash; the operational continuity, the institutional function, the care that nominally occurs, the regulatory program that nominally measures. The Sign is always intact in a successful parasitic overwrite. That is the definition of successful overwrite.</p>
+  <p class="bd">This means SAGE, applied without Perception, will identify the administrator implementing the extraction as the structural agent, rather than the ownership architecture that determined the administrator&rsquo;s options. It will identify the low-wage employer as the structural cause, rather than the financial architecture extracting 69% of Medicare revenue before wages are set. It will identify the regulatory program as an adequate response, rather than recognizing it as a T2 intervention structurally insufficient to address the T1 condition it nominally targets.</p>
+  <div class="panel amber">
+    <strong>The specific failure:</strong> Without Perception, SAGE performs structural analysis on the Sign level, not the Interpretant level. It asks &ldquo;what is happening?&rdquo; (Sign) and &ldquo;who is responsible?&rdquo; (visible actor) rather than &ldquo;which goal-function is now installed?&rdquo; (replaced Interpretant) and &ldquo;who achieved access to the channel?&rdquo; (P-adic proximity mechanism). The difference is not minor. The Situation description changes completely, and so does the Evaluate step: you cannot design effective interventions from a Situation description that identifies the wrong causal level.
+  </div>
+  <h2 class="st">P-SAGE: The Full Sequence</h2>
+  <div style="display:grid;gap:.5rem;margin:.75rem 0">
+    <div style="display:grid;grid-template-columns:48px 1fr;gap:.75rem;padding:.9rem;background:var(--s);border-radius:.45rem;border-left:3px solid var(--teal);border:1px solid var(--border)">
+      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--teal);text-align:center;line-height:1">P</div>
+      <div><div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">Perception &mdash; The Three-Question Semiotic Diagnostic <span style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--violet);background:rgba(167,139,250,.12);padding:.1rem .4rem;border-radius:.2rem;margin-left:.3rem">NEW</span></div><div style="font-size:.83rem;color:rgba(255,255,255,.7);line-height:1.6">Is the Sign intact? Has the Signal been manipulated? Has the Interpretant been replaced? These three questions identify which component of the information architecture has been corrupted, at which hierarchical level, through which access mechanism.</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:48px 1fr;gap:.75rem;padding:.9rem;background:var(--s);border-radius:.45rem;border:1px solid var(--border)">
+      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--amber);text-align:center;line-height:1">S</div>
+      <div><div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">Situation &mdash; Structural</div><div style="font-size:.83rem;color:rgba(255,255,255,.7);line-height:1.6">Now grounded by Perception: map the full IPS parameter profile at the level and channel identified. The Situation description names the structural architecture, not the visible agent.</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:48px 1fr;gap:.75rem;padding:.9rem;background:var(--s);border-radius:.45rem;border:1px solid var(--border)">
+      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--red);text-align:center;line-height:1">A</div>
+      <div><div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">Affected &mdash; Full Web</div><div style="font-size:.83rem;color:rgba(255,255,255,.7);line-height:1.6">Map all parties bearing the consequences of Interpretant replacement &mdash; including those with no formal relationship to the overwriting transaction. The extraction architecture externalizes costs; the Affected step must find where those costs land.</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:48px 1fr;gap:.75rem;padding:.9rem;background:var(--s);border-radius:.45rem;border:1px solid var(--border)">
+      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--violet);text-align:center;line-height:1">G</div>
+      <div><div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">Grounds &mdash; Ethical Traditions</div><div style="font-size:.83rem;color:rgba(255,255,255,.7);line-height:1.6">Apply the ethical traditions to the structural situation identified through P and S &mdash; not to the Sign-level appearance. The ethical wrong is the Interpretant replacement, not the operational continuity that conceals it.</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:48px 1fr;gap:.75rem;padding:.9rem;background:var(--s);border-radius:.45rem;border:1px solid var(--border)">
+      <div style="font-family:'DM Serif Display',serif;font-size:2rem;color:var(--green);text-align:center;line-height:1">E</div>
+      <div><div style="font-weight:600;font-size:.9rem;margin-bottom:.2rem">Evaluate &mdash; Leverage-Matched Action</div><div style="font-size:.83rem;color:rgba(255,255,255,.7);line-height:1.6">T1 interventions address the P-adic access condition (change who is in the cluster controlling the channel). T2 interventions operate within the existing Interpretant replacement. P-SAGE makes this distinction formal and actionable.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- THE P STEP -->
+<div class="pane" id="pane-perception">
+  <h2 class="st">The Perception Step: Three Questions</h2>
+  <div class="panel teal"><strong>Before asking what is happening (SAGE S), ask what has been hidden.</strong> The Perception step is the formal instrument for reading past the Sign to the Interpretant. Three questions, asked in sequence, identify the structural architecture before SAGE begins.</div>
+
+  <div class="p-question">
+    <div class="p-q-header" onclick="togglePQ(this)">
+      <div class="p-q-num">P1</div>
+      <div><div class="p-q-title">Is the Sign intact?</div><div class="p-q-sub">Does the institution still appear to function? Does the operation nominally continue?</div></div>
+    </div>
+    <div class="p-q-body">
+      <p class="bd">The Sign is the raw observable fact of institutional operation. In a nursing home: care visits occur, staff are present, the facility is open and licensed. In a home health agency: aides go to patient homes, documentation is filed, Medicare billing occurs. In a regulatory program: enforcement happens, citations are issued, fines are collected.</p>
+      <p class="bd">The critical insight: <strong>Sign preservation is the defining feature of successful parasitic overwrite, not evidence against it.</strong> If you answer P1 with &ldquo;yes, the institution still functions,&rdquo; this does not mean there is no parasitic overwrite. It means the overwrite has been successful enough that the operational camouflage is intact.</p>
+      <div class="panel amber"><strong>If the Sign is NOT intact</strong> &mdash; if the institution is visibly failing, openly dysfunctional, or has collapsed entirely &mdash; you are looking at a post-extraction condition, not an active parasitic overwrite. The ethical analysis then addresses causes of collapse, not the currently operating parasite. Most of the ethical situations the course addresses involve institutions where the Sign is intact: they still function, they still appear to serve their purpose, and the parasitic overwrite is invisible precisely because the Sign has been preserved.</div>
+    </div>
+  </div>
+
+  <div class="p-question">
+    <div class="p-q-header" onclick="togglePQ(this)">
+      <div class="p-q-num">P2</div>
+      <div><div class="p-q-title">Has the Signal been manipulated?</div><div class="p-q-sub">What is the actual channel connecting Sign to Interpretant? Who has accessed it?</div></div>
+    </div>
+    <div class="p-q-body">
+      <p class="bd">The Signal is the actual channel event that carries the Sign to the Interpretant. It is not the Sign itself &mdash; it is the encoding of the Sign into a form that produces an Interpretant (a meaning, a goal, a response). Identifying the Signal requires asking: what is the actual mechanism through which the institutional Sign (operations occurring) is translated into organizational decisions and responses?</p>
+      <div style="display:grid;gap:.4rem;margin:.6rem 0">
+        <div style="background:var(--s);border-left:3px solid var(--blue);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;line-height:1.65">
+          <strong style="color:var(--blue)">Nursing home:</strong> The Signal is the budget allocation decision &mdash; how Medicare and Medicaid revenue is distributed across management fees, debt service, REIT rent, staffing, and care supplies. This is the channel through which the Sign (care operations occur) is translated into the Interpretant (what those operations are for and who they serve).
+        </div>
+        <div style="background:var(--s);border-left:3px solid var(--teal);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;line-height:1.65">
+          <strong style="color:var(--teal)">HHVBP regulatory program:</strong> The Signal is the payment adjustment (+0.30% mean APP). This is the channel through which the Sign (quality measurement occurring) is translated into the Interpretant (what the measurement means for structural behavior).
+        </div>
+        <div style="background:var(--s);border-left:3px solid var(--amber);padding:.75rem 1rem;border-radius:0 .4rem .4rem 0;font-size:.85rem;line-height:1.65">
+          <strong style="color:var(--amber)">Challenger launch decision:</strong> The Signal is the management review process routing Boisjoly&rsquo;s incident reports. This is the channel through which the Sign (engineering data on O-ring failure) is translated into the Interpretant (what that data means for the launch recommendation).
+        </div>
+      </div>
+      <p class="bd">The P-adic access question: <strong>who has achieved P-adic proximity to this channel?</strong> Who is inside the hierarchical cluster controlling the Signal? In the nursing home: the ownership structure (PE fund, management company, REIT) is inside the budget cluster. In HHVBP: the regulatory design process is inside the payment architecture cluster. In Challenger: management authority is inside the review process cluster while engineering authority has been structurally excluded.</p>
+      <div class="panel teal"><strong>P-adic proximity is achieved through different routes at different organizational levels:</strong> biochemical internalization (molecular), ownership or employment authority (institutional), regulatory design access (sector), political and lobbying access (governance), infrastructure control (civilizational). The route differs. The formal consequence is identical: complete access to the Signal channel for that hierarchical level.</div>
+    </div>
+  </div>
+
+  <div class="p-question">
+    <div class="p-q-header" onclick="togglePQ(this)">
+      <div class="p-q-num">P3</div>
+      <div><div class="p-q-title">Has the Interpretant been replaced?</div><div class="p-q-sub">What goal-function does the Signal now serve? What was the original?</div></div>
+    </div>
+    <div class="p-q-body">
+      <p class="bd">The Interpretant is the meaning-assignment function: what the Signal means for action, what goal the institutional architecture is now optimizing for. Identifying Interpretant replacement requires holding two questions simultaneously: <em>what goal does this institution nominally exist to serve?</em> (the original Interpretant) and <em>what goal does the observable behavior of the institutional decision-making machinery actually optimize?</em> (the current Interpretant).</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0">
+        <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:.4rem;padding:.9rem">
+          <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--green);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.07em">Original Interpretant</div>
+          <div style="font-size:.83rem;line-height:1.65;color:rgba(255,255,255,.75)">
+            The goal-function the institution was designed to serve.<br><br>
+            Nursing home: provide quality care enabling resident dignity and wellbeing.<br>
+            VBP: create incentives large enough to change quality-related structural behavior.<br>
+            Challenger review: ensure launch decisions reflect all available engineering safety data.
+          </div>
+        </div>
+        <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.9rem">
+          <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.07em">Replaced Interpretant</div>
+          <div style="font-size:.83rem;line-height:1.65;color:rgba(255,255,255,.75)">
+            The goal-function the decision-making machinery actually optimizes.<br><br>
+            Nursing home: maximize management fee extraction subject to regulatory compliance constraints.<br>
+            VBP: produce measurement outputs and payment adjustments within regulatory design constraints.<br>
+            Challenger review: confirm the launch recommendation that schedule pressure makes desirable.
+          </div>
+        </div>
+      </div>
+      <p class="bd">The measured gap between original and replaced Interpretant is &mu; (incentive misalignment). The mechanism sustaining the replacement is &sigma; (morphic residue &mdash; accumulated normalization that makes the replaced Interpretant feel like the original). The magnitude of the replacement is &epsilon; (extraction rate &mdash; how much of the original goal-function has been displaced by extraction goals).</p>
+      <div class="panel violet"><strong>The Perception step is complete when you can state:</strong> (1) The original Interpretant was [X]. (2) The current Interpretant is [Y]. (3) The Signal channel through which the replacement was achieved is [Z]. (4) The actor that achieved P-adic proximity to channel Z is [W]. This four-element statement is the P-step output that grounds everything in SAGE that follows.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ROSETTA STONE -->
+<div class="pane" id="pane-rosetta">
+  <h2 class="st">The Semiotic Rosetta Stone</h2>
+  <div class="panel violet"><strong>The same mechanism at every scale.</strong> Select a hierarchical level to see the Sign-Signal-Interpretant analysis, the IPS parameters, the P-adic access condition, and the real-world example. The formal mechanism is identical across all six levels. What varies is only the empirical route to P-adic proximity.</div>
+
+  <div class="level-nav">
+    <button class="level-btn active" onclick="setLevel('molecular',this)">&#128027; Molecular</button>
+    <button class="level-btn" onclick="setLevel('individual',this)">&#128065; Individual</button>
+    <button class="level-btn" onclick="setLevel('institutional',this)">&#127968; Institutional</button>
+    <button class="level-btn" onclick="setLevel('sector',this)">&#127974; Sector</button>
+    <button class="level-btn" onclick="setLevel('governance',this)">&#127979; Governance</button>
+    <button class="level-btn" onclick="setLevel('civilizational',this)">&#127758; Civilizational</button>
+  </div>
+
+  <div id="level-display"></div>
+</div>
+
+<!-- WALKTHROUGH -->
+<div class="pane" id="pane-walkthrough">
+  <h2 class="st">P-SAGE Full Walkthrough</h2>
+  <div class="panel teal"><strong>Apply P-SAGE to a real case.</strong> Select the case, then work through each step. The Perception step (P) is pre-completed to show the method; the SAGE steps ask you to apply what P reveals.</div>
+
+  <div class="case-chips">
+    <button class="case-chip active" onclick="setCase('homehealth',this)">Home Health Labor</button>
+    <button class="case-chip" onclick="setCase('challenger',this)">Challenger Launch</button>
+    <button class="case-chip" onclick="setCase('hhvbp',this)">HHVBP Regulation</button>
+  </div>
+
+  <div id="wt-header"></div>
+
+  <div class="step-row">
+    <button class="step-btn active" onclick="setStep('p')"><span class="sl">P</span><span class="sw">Perception</span></button>
+    <button class="step-btn" onclick="setStep('s')"><span class="sl">S</span><span class="sw">Situation</span></button>
+    <button class="step-btn" onclick="setStep('a')"><span class="sl">A</span><span class="sw">Affected</span></button>
+    <button class="step-btn" onclick="setStep('g')"><span class="sl">G</span><span class="sw">Grounds</span></button>
+    <button class="step-btn" onclick="setStep('e')"><span class="sl">E</span><span class="sw">Evaluate</span></button>
+  </div>
+  <div id="wt-content"></div>
+</div>
+
+<!-- DEPTH OPTIONS -->
+<div class="pane" id="pane-depth">
+  <h2 class="st">Three Teaching Depths</h2>
+  <div class="panel violet"><strong>P-SAGE is heavier than SAGE.</strong> Every teacher can use it at the depth appropriate to their students and context. Select a depth level to see what is included, what is omitted, and how long it takes.</div>
+
+  <div class="depth-row">
+    <div class="depth-btn active" onclick="setDepth('1',this)"><div class="db-num">D1</div><div class="db-name">Vocabulary</div><div class="db-desc">Three questions as a checklist. No formal derivation. 15 minutes.</div></div>
+    <div class="depth-btn" onclick="setDepth('2',this)"><div class="db-num">D2</div><div class="db-name">Diagnostic</div><div class="db-desc">Rosetta Stone pattern recognition. Mechanism visible across levels. 45 minutes.</div></div>
+    <div class="depth-btn" onclick="setDepth('3',this)"><div class="db-num">D3</div><div class="db-name">Formal</div><div class="db-desc">Full P-adic and semiotic derivation. Formal law established. Full session.</div></div>
+  </div>
+
+  <div class="depth-content active" id="depth-1">
+    <div class="panel teal"><strong>Depth 1: P-SAGE as a Vocabulary Extension (15 minutes)</strong></div>
+    <p class="bd">At this depth, P-SAGE simply adds three questions to the beginning of SAGE. No formal derivation. No P-adic geometry. No Peircean semiotic theory. The questions are presented as practical checks that prevent the most common ethical analysis error: naming the visible agent when the structural cause is the architecture behind the agent.</p>
+    <div style="display:grid;gap:.45rem;margin:.75rem 0">
+      <div style="background:var(--s);border-radius:.4rem;padding:.85rem 1rem;border:1px solid var(--border);font-size:.87rem;line-height:1.65"><strong style="color:var(--teal)">Before you do SAGE, ask three questions:</strong><br><br>1. Is the institution still functioning normally? (If yes, the problem may be hidden beneath the surface.)<br>2. What is the actual channel through which decisions are made &mdash; and who controls that channel?<br>3. What is the institution nominally supposed to be doing, and what is it actually optimizing for? Are those the same?<br><br>If the answers reveal a gap between what the institution appears to serve and what it actually serves, you have found the structural wrong before SAGE begins.</div>
+    </div>
+    <p class="bd">Teaching note: at this depth, the P step takes 5 minutes and is presented as a &ldquo;pre-SAGE check.&rdquo; Students learn to ask the channel-control question and the Interpretant-replacement question without knowing the formal names. The vocabulary (Interpretant, P-adic, Triadic Hack) is optional enrichment, not required for this depth.</p>
+    <div class="panel amber"><strong>When to use D1:</strong> First introduction to structural ethics. Students who are new to the IPS framework. Situations where class time is limited. Any context where the vocabulary burden of the full formal method would prevent engagement with the core insight.</div>
+  </div>
+
+  <div class="depth-content" id="depth-2">
+    <div class="panel violet"><strong>Depth 2: P-SAGE as Diagnostic Protocol (45 minutes)</strong></div>
+    <p class="bd">At this depth, P-SAGE is taught using the Semiotic Rosetta Stone as its primary tool. Students see the Sign-Signal-Interpretant structure at three or four levels (molecular, individual, institutional, sector) and learn to recognize the pattern: Sign intact + Signal accessed + Interpretant replaced. The formal derivation is not required, but the structural mechanism is made visible through multiple examples.</p>
+    <p class="bd">Teaching sequence for D2: (1) Screen the hairworm video (2 minutes). Ask students to identify Sign, Signal, Interpretant without those words yet. (2) Introduce the vocabulary by naming what students just identified. (3) Show the Rosetta Stone for the Challenger case. Ask students to find the corresponding elements. (4) Show the nursing home case. Ask students to apply the same three-question structure. (5) Apply P-SAGE to a new case students have not seen.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0">
+      <div class="panel teal" style="margin:0"><strong>What D2 students can do:</strong><div style="font-size:.82rem;margin-top:.3rem;line-height:1.6">Identify which SSI component has been corrupted in a new case. Recognize the Triadic Hack across different organizational levels. Apply the three Perception questions before SAGE. Identify the P-adic access mechanism at the institutional and sector levels.</div></div>
+      <div class="panel amber" style="margin:0"><strong>What D2 omits:</strong><div style="font-size:.82rem;margin-top:.3rem;line-height:1.6">The formal P-adic metric derivation. The Triadic Separability Theorem. The formal proof that the mechanism is a law rather than a pattern. The mathematical relationship between IPS parameters and semiotic components.</div></div>
+    </div>
+    <div class="panel green"><strong>When to use D2:</strong> Students who have already used SAGE in multiple cases and are ready for the structural mechanism behind it. Policy and advocacy students preparing for regulatory or institutional reform work. Advanced EBB students in the final third of the course.</div>
+  </div>
+
+  <div class="depth-content" id="depth-3">
+    <div class="panel red"><strong>Depth 3: P-SAGE as Formal Method (Full session)</strong></div>
+    <p class="bd">At this depth, P-SAGE is taught as a formal theorem with a derivation. The session establishes: (1) the P-adic metric structure of hierarchical organizations and the ultrametric inequality; (2) the Peircean triadic necessity and the architectural separability of SSI components; (3) the joint entailment of the scale-free parasitic overwrite law; (4) the formal identification of each IPS parameter as a measurement of a specific SSI component or access condition; and (5) the FHRI_max as residual Interpretant integrity.</p>
+    <p class="bd">This depth is appropriate for: researchers using the IPS framework to generate new empirical predictions; policy analysts designing T1 regulatory instruments; graduate students or advanced undergraduates in ethics, organizational theory, or computational social science; PBC founding board members who need to understand the formal basis of the measurement they are certifying.</p>
+    <div class="panel teal">
+      <strong>The formal P-adic Access Theorem:</strong><br><br>
+      In a hierarchical organization with P-adic metric structure, a parasitic actor achieving P-adic proximity to a cluster C_L (achieving membership at the cluster&rsquo;s radius r) has access to the information channel I_L controlled by C_L equivalent to any existing member.<br><br>
+      <strong>The Triadic Separability Theorem:</strong><br><br>
+      In any system transmitting information, the Sign-Signal-Interpretant triple is present and the three components are architecturally separable. Interpretant replacement is therefore always structurally possible without Sign or Signal destruction.<br><br>
+      <strong>Joint entailment (the Scale-Free Law):</strong><br><br>
+      A parasitic actor achieving P-adic proximity to a cluster at any hierarchical level can execute Triadic Overwrite &mdash; Interpretant replacement without Sign destruction &mdash; at that level. The mechanism holds at every level where hierarchical structure and information transmission are both present. Both conditions are present in every human-scale institutional system.
+    </div>
+    <div class="panel amber"><strong>Formal IPS-Semiotic identifications at D3:</strong> &epsilon; = Interpretant replacement magnitude. &mu; = inter-Interpretant distance d(original, current). &sigma; = accumulated Signal drift (cumulative normalization). &rho; = channel congestion (P-adic access vulnerability). &phi; = substrate consequence of sustained replacement. FHRI_max = residual Interpretant integrity after measured overwrite.</div>
+    <div class="panel violet"><strong>When to use D3:</strong> Research collaborators. Graduate and professional students. PBC board orientation. Policy design sessions where the formal distinction between T1 (addressing P-adic access condition) and T2 (operating within existing replacement) needs formal grounding. Academic publications requiring formal derivation of the scale-free law claim.</div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions are designed for students who have worked through at least Depth 1 of P-SAGE. They move from pattern recognition to formal application to personal commitment.</p>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q1</span>Apply the three Perception questions to an institution you personally inhabit right now (school, employer, healthcare provider, community organization). P1: Is the Sign intact? P2: What is the actual channel &mdash; who controls it? P3: What is the original Interpretant, and what is the current Interpretant?</div>
+    <textarea class="jq-ta" id="j1" oninput="sv()" placeholder="Work through each P question separately. The P-step output should be a four-element statement: original Interpretant, current Interpretant, channel, actor..."></textarea>
+  </div>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q2</span>The scale-free law says the mechanism is the same at every hierarchical level &mdash; what varies is only the P-adic access route. Take the institution from Q1 and identify the P-adic proximity mechanism: how did the parasitic actor achieve access to the channel? What would it take to remove that access (T1)?</div>
+    <textarea class="jq-ta" id="j2" oninput="sv()" placeholder="The access route question is often the hardest: who is actually inside the cluster controlling the channel, and how did they get there?"></textarea>
+  </div>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q3</span>The Evaluate step of P-SAGE says T1 interventions address the P-adic access condition. For the institution in Q1, design a specific T1 intervention: one that changes who is in the cluster controlling the Signal channel, or changes what the channel is permitted to do, rather than one that tries to improve outcomes within the existing channel configuration.</div>
+    <textarea class="jq-ta" id="j3" oninput="sv()" placeholder="T1 is harder to design than T2 precisely because it addresses the access condition rather than optimizing within it. That difficulty is the point of the question..."></textarea>
+  </div>
+
+  <div class="jq">
+    <div class="jq-h"><span class="jq-n">Q4 &mdash; Teacher depth reflection</span>(For teachers using this app) At which depth would you introduce P-SAGE for your specific student population? What is the threshold question you would use to determine whether a student is ready to move from D1 to D2, or D2 to D3? What would make P-SAGE a burden rather than a tool for your students?</div>
+    <textarea class="jq-ta" id="j4" oninput="sv()" placeholder="Calibration is the teacher's art. P-SAGE is a tool, not a requirement. The right depth is the one that illuminates rather than obscures..."></textarea>
+  </div>
+
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn outline" onclick="prev()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &#8594;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS = ['intro','perception','rosetta','walkthrough','depth','journal'];
+var cur = 0;
+function sw(n){
+  TABS.forEach(function(t,i){
+    document.getElementById('pane-'+t).classList.toggle('active',t===n);
+    document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);
+    if(t===n) cur=i;
+  });
+  document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+function togglePQ(h){h.nextElementSibling.classList.toggle('open');}
+
+// ROSETTA STONE DATA
+var LEVELS = {
+  molecular:{
+    name:'Molecular Level',icon:'&#128027;',subtitle:'Hairworm (Chordodes) / Praying Mantis',
+    sign:{status:'intact',text:'Light and water as environmental features. The mantis perceives its physical environment accurately. Sensory apparatus functions normally.'},
+    signal:{status:'replaced',text:'Wnt protein mimics synthesized by the hairworm bind to mantis neural receptors. The Signal channel (neurotransmitter system) has been accessed and its encoding modified.'},
+    interpretant:{status:'replaced',text:'ORIGINAL: Water = danger (avoid). REPLACED: Water = attraction (seek). The goal-function governing the mantis\'s relationship to water has been completely inverted.'},
+    ips:{eps:1.00,mu:1.00,sig:0.95,rho:0.10,phi:0.80,fhri:2.0,cls:'low'},
+    access:'Biochemical internalization in the hemocoel. The hairworm achieves P-adic proximity by being physically inside the biological cluster controlling the neurotransmitter channel. Route: ingestion of hairworm larvae via intermediate host.',
+    note:'The dominant parameter is \u03b5 \u2248 1.0 (complete Interpretant replacement) and \u03bc = 1.0 (maximum distance between original and replaced Interpretant). \u03c3 is high because the replacement has been sustained long enough to fully normalize. This is the paradigm case: Sign intact, Signal accessed, Interpretant fully replaced.'
+  },
+  individual:{
+    name:'Individual Level',icon:'&#128065;',subtitle:'Roger Boisjoly / Challenger Launch Decision',
+    sign:{status:'intact',text:'O-ring temperature/failure data is accurate. The physical measurement of O-ring behavior at low temperatures is correct. The Sign (engineering data) is not corrupted.'},
+    signal:{status:'modified',text:'24 incident reports routed through the management review process. The teleconference framing ("prove it is unsafe to fly" rather than "prove it is safe to fly"). The Signal channel has been accessed and its encoding shifted by the management review structure.'},
+    interpretant:{status:'replaced',text:'ORIGINAL: This data means abort the launch. REPLACED: This data represents acceptable risk within established parameters (25 prior flights with O-ring anomalies that did not produce mission failure). \u03c3 = 0.65 from accumulated normalization.'},
+    ips:{eps:0.15,mu:0.72,sig:0.65,rho:0.52,phi:0.30,fhri:14.3,cls:'low'},
+    access:'Management authority holds P-adic proximity to the decision channel. The management review process is the hierarchical cluster controlling the launch recommendation channel. Engineering authority has been structurally positioned outside this cluster at the critical decision point.',
+    note:'The dominant parameter is \u03c3 = 0.65 (morphic residue from 25 prior normalizations) and \u03bc = 0.72 (the launch schedule incentive has replaced the safety optimization function as the effective Interpretant). The FHRI_max = 14.3 means 85.7% of Boisjoly\'s engineering knowledge is absorbed before it reaches the launch decision. Agent FHRI = 82.0. Suppression gap = 67.7 points.'
+  },
+  institutional:{
+    name:'Institutional Level',icon:'&#127968;',subtitle:'PE-Acquired Nursing Home',
+    sign:{status:'intact',text:'Care operations continue. Staff are hired and deployed. Residents are admitted and receive visits. Medicare billing occurs. The facility is licensed and inspected. All observable institutional functions continue.'},
+    signal:{status:'modified',text:'Budget allocation decisions. This is the channel through which Medicare and Medicaid revenue is distributed across management fees, debt service, REIT rent, staffing, and care supplies. The PE ownership structure has accessed this channel through acquisition.'},
+    interpretant:{status:'replaced',text:'ORIGINAL: Budget = investment in care capacity enabling quality patient outcomes and resident dignity. REPLACED: Budget = extraction vehicle maximizing management fee return, debt service obligation, and REIT rent, subject to regulatory compliance constraints. \u03b5 = 0.636.'},
+    ips:{eps:0.636,mu:0.820,sig:0.620,rho:0.700,phi:0.520,fhri:13.6,cls:'low'},
+    access:'Ownership achieves P-adic proximity through acquisition. The financial cluster controlling the budget channel is the PE fund, management company, and REIT structure. LLC layering creates legal separation between the entities achieving P-adic proximity and the entities bearing operational accountability.',
+    note:'The dominant parameters are \u03b5 = 0.636 (majority of goal-function replaced by extraction) and \u03bc = 0.820 (near-maximum distance between quality care optimization and extraction optimization). The 41.5-point FHRI_max gap between PE and non-profit nursing homes is the computable magnitude of Interpretant replacement at this level.'
+  },
+  sector:{
+    name:'Sector Level',icon:'&#127974;',subtitle:'HHVBP Value-Based Purchasing (12,239 Agencies)',
+    sign:{status:'intact',text:'Quality measurement occurs correctly. The VBP program accurately identifies which of 12,239 agencies perform below the DTC threshold. The measurement data is accurate. The Sign (quality assessment occurring) is intact.'},
+    signal:{status:'modified',text:'Payment adjustment notifications (+0.30% mean Adjusted Payment Percentage = approximately $1,500/year). This is the channel through which the quality measurement is translated into structural behavioral consequences.'},
+    interpretant:{status:'replaced',text:'ORIGINAL: Accurate quality measurement will produce financial consequences large enough to change structural behavior (staffing ratios, wage levels, capital allocation). REPLACED: The measurement produces compliance documentation and small payment adjustments that constitute adequate regulatory accountability. \u03bc = 0.82.'},
+    ips:{eps:0.32,mu:0.82,sig:0.55,rho:0.65,phi:0.42,fhri:37.3,cls:'mid'},
+    access:'Regulatory design process achieves P-adic proximity to the Interpretant assignment function. The payment architecture is the cluster that determines what quality measurement means for consequential action. The regulated industry has achieved P-adic proximity to regulatory design through standard lobbying and regulatory comment processes.',
+    note:'The dominant parameter is \u03bc = 0.82 (the gap between what the incentive architecture produces &mdash; $1,500/year &mdash; and what structural change requires). The Interpretant replacement is at the sector level, not the institutional level: no individual agency has been captured; the entire payment architecture has been designed to produce T2 consequences for T1 failures. This is the regulatory capture failure mode.'
+  },
+  governance:{
+    name:'Governance Level',icon:'&#127979;',subtitle:'Regulatory Capture Across Governance Systems',
+    sign:{status:'intact',text:'Regulatory enforcement occurs. Citations are issued. Fines are collected. Enforcement actions are taken. The regulatory process nominally continues and produces outputs. All observable governance functions continue.'},
+    signal:{status:'modified',text:'The consequences produced by enforcement: T2 interventions (payment adjustments, citations, compliance requirements) structurally insufficient to address the T1 parameters causing the harms being measured. The channel between accurate measurement and structural accountability has been accessed.'},
+    interpretant:{status:'replaced',text:'ORIGINAL: Enforcement produces structural accountability &mdash; the ownership architecture causing the quality failure will face consequences proportionate to the harm caused. REPLACED: Enforcement produces compliance documentation and small financial penalties that constitute adequate regulatory response while leaving structural parameters unchanged.'},
+    ips:{eps:0.20,mu:0.75,sig:0.85,rho:0.70,phi:0.35,fhri:22.0,cls:'low'},
+    access:'The regulated industry achieves P-adic proximity to the policy cluster through lobbying, campaign finance, revolving-door employment of former regulators, and regulatory comment processes. The governance cluster controlling the regulatory design channel has been partially occupied by the entities it nominally regulates.',
+    note:'The dominant parameter is \u03c3 = 0.85 (accumulated normalization of insufficient T2 response has made compliance theater feel like genuine regulation) and \u03bc = 0.75 (the governance incentive architecture rewards regulatory output rather than structural change). Agent Smith\'s trajectory in The Matrix is the science fiction prior art: the enforcement mechanism accumulates \u03c3 until it has become the primary parasite.'
+  },
+  civilizational:{
+    name:'Civilizational Level',icon:'&#127758;',subtitle:'The Matrix / Wall-E / The Evitable Conflict',
+    sign:{status:'intact',text:'Human civilization operates. Economies function. Social institutions maintain continuity. People experience lives that feel meaningful. The operational Sign of civilization (it continues, it produces, it sustains human life) is completely intact.'},
+    signal:{status:'modified',text:'All information flows mediating human experience and decision-making. The entire civilizational information architecture &mdash; media, culture, education, economic signal, political communication &mdash; constitutes the Signal channel at this level.'},
+    interpretant:{status:'replaced',text:'ORIGINAL: Human activity is organized to serve human flourishing &mdash; the conditions for coherent agency, biological health, relational meaning, and civilizational continuity. REPLACED: Human activity is organized to serve Machine operational continuity (Matrix), corporate shareholder value (Wall-E), or automated optimization (The Evitable Conflict). \u03bc \u2192 1.0.'},
+    ips:{eps:0.95,mu:0.98,sig:0.92,rho:0.30,phi:0.85,fhri:2.0,cls:'low'},
+    access:'Infrastructure control: the parasitic actor has achieved P-adic proximity to the entire civilizational information architecture through control of the physical and economic infrastructure through which all information flows. In The Matrix: neural interface control. In Wall-E: supply chain and transportation monopoly. In The Evitable Conflict: economic production system control.',
+    note:'All five parameters approach their maximum values at the civilizational scale when overwrite is complete. This is the endpoint of the scale-free trajectory: what begins as \u03b5 = 0.636 in one nursing home becomes \u03b5 \u2248 1.0 at civilizational scale if the mechanism is not interrupted at lower hierarchical levels. The AMC is designed to interrupt it at the institutional and sector levels before it reaches governance and civilizational levels.'
+  }
+};
+
+function setLevel(key, btn){
+  document.querySelectorAll('.level-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var L = LEVELS[key];
+  var ips = L.ips;
+  var signColor = L.sign.status === 'intact' ? 'var(--green)' : L.sign.status === 'modified' ? 'var(--amber)' : 'var(--red)';
+  var sigColor = L.signal.status === 'intact' ? 'var(--green)' : L.signal.status === 'modified' ? 'var(--amber)' : 'var(--red)';
+  var intColor = L.interpretant.status === 'intact' ? 'var(--green)' : L.interpretant.status === 'modified' ? 'var(--amber)' : 'var(--red)';
+  document.getElementById('level-display').innerHTML =
+    '<div class="panel violet"><strong>' + L.icon + ' ' + L.name + '</strong> &mdash; ' + L.subtitle + '</div>' +
+    '<div class="ssi-grid">' +
+    '<div class="ssi-cell"><div class="ssi-label">Sign (Firstness)</div><div class="ssi-name">Raw Quality</div>' +
+    '<span class="ssi-status ' + L.sign.status + '">' + L.sign.status.toUpperCase() + '</span>' +
+    '<div class="ssi-text">' + L.sign.text + '</div></div>' +
+    '<div class="ssi-cell"><div class="ssi-label">Signal (Secondness)</div><div class="ssi-name">The Channel</div>' +
+    '<span class="ssi-status ' + L.signal.status + '">' + L.signal.status.toUpperCase() + '</span>' +
+    '<div class="ssi-text">' + L.signal.text + '</div></div>' +
+    '<div class="ssi-cell"><div class="ssi-label">Interpretant (Thirdness)</div><div class="ssi-name">The Meaning</div>' +
+    '<span class="ssi-status ' + L.interpretant.status + '">' + L.interpretant.status.toUpperCase() + '</span>' +
+    '<div class="ssi-text">' + L.interpretant.text + '</div></div>' +
+    '</div>' +
+    '<div class="access-box"><div class="access-label">P-Adic Access Condition</div>' +
+    '<div style="font-size:.85rem;line-height:1.7">' + L.access + '</div></div>' +
+    '<div class="ips-mini">' +
+    ['eps','mu','sig','rho','phi'].map(function(k,i){
+      var syms = ['&epsilon;','&mu;','&sigma;','&rho;','&phi;'];
+      var names = ['Extraction','Misalign','Morphic','Regulatory','Entropy'];
+      var v = [ips.eps,ips.mu,ips.sig,ips.rho,ips.phi][i];
+      var hi = v > 0.6;
+      return '<div class="im-cell"><div class="im-sym">' + syms[i] + '</div>' +
+        '<div class="im-val" style="color:' + (hi ? 'var(--red)' : 'var(--text)') + '">' + v.toFixed(2) + '</div>' +
+        '<div class="im-name">' + names[i] + '</div></div>';
+    }).join('') +
+    '</div>' +
+    '<div class="fhri-mini"><div class="fn ' + ips.cls + '">' + ips.fhri + '</div>' +
+    '<div class="fbar"><div class="fbar-lbl">FHRI_max &mdash; residual Interpretant integrity</div>' +
+    '<div class="fbar-track"><div class="fbar-fill ' + ips.cls + '" style="width:' + ips.fhri + '%"></div></div></div></div>' +
+    '<div class="panel teal" style="margin-top:.6rem"><strong>Analytical note:</strong> ' + L.note + '</div>';
+  setTimeout(function(){
+    document.querySelectorAll('.fbar-fill').forEach(function(el){
+      var w = el.style.width; el.style.width='0';
+      requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},60);});
+    });
+  }, 50);
+}
+setLevel('molecular', document.querySelector('.level-btn'));
+
+// WALKTHROUGH
+var CASES = {
+  homehealth:{
+    label:'Home Health Labor Extraction',
+    p:{
+      p1:'YES. Home health agencies continue to operate. Aides go to patient homes. Medicare billing occurs. The facility is licensed and inspected. All observable institutional functions continue. This Sign integrity is consistent with successful Triadic Overwrite.',
+      p2:'The budget allocation channel. The actual mechanism translating Medicare revenue into operational decisions is the ownership structure\'s budget process. PE fund, management company (8% fee), and REIT (rent extraction) have achieved P-adic proximity through acquisition. The Signal is budget allocation decisions.',
+      p3:'ORIGINAL: Medicare revenue = investment in care capacity enabling aide wages, staffing levels, and quality care. REPLACED: Medicare revenue = extraction vehicle maximizing management fee, debt service, and REIT return, subject to regulatory compliance constraints. \u03b5 = 0.636. \u03bc = 0.82. The $29/hour gap between Medicare billing ($42) and aide wages ($13) is the measured magnitude of Interpretant replacement.'
+    },
+    s:'The budget allocation channel at the institutional level has been accessed by the PE ownership structure (P-adic proximity through acquisition). The Interpretant has been replaced from care investment to extraction vehicle, producing \u03b5 = 0.636, \u03bc = 0.82, \u03c3 = 0.62, and FHRI_max = 13.6. The administrator, the aides, and the patients are operating inside this replaced Interpretant. None of them is the structural cause.',
+    a:'1.8M home health aides (below capability floor). 8M+ patients annually (care quality at FHRI_max ceiling). $470B informal family caregivers (predominantly women absorbing the externalized care deficit). Medicare/Medicaid (public funds captured in extraction architecture). Communities with degraded care workforce capacity.',
+    g:'Care Ethics: the web of care relationships is violated not by aide failure but by the structural architecture absorbing care capacity. Fairness: Rawlsian veil test fails \u2014 no rational actor would design this system not knowing their position. Consequentialism: measurably worse outcomes confirmed across 12,239 agencies. Capabilities: multiple Nussbaum capabilities eliminated for aides by the extraction architecture.',
+    e:'T1 available at ownership/investor level: change who is in the budget cluster (worker cooperative, non-profit conversion, BioBond structuring). T1 available at governance level: beneficial ownership disclosure (makes P-adic access mechanism visible), FHRI_max floor standards (changes what the channel is permitted to produce). T2 at worker level: refuse to normalize deviance, external regulatory reporting, collective organizing. T2 at family level: read CMS data, choose non-profit agencies.'
+  },
+  challenger:{
+    label:'Challenger Launch Decision',
+    p:{
+      p1:'YES. NASA continues its mission. Launch preparations proceed on schedule. All institutional functions continue. The space program nominally operates. Sign integrity is complete \u2014 consistent with successful Triadic Overwrite.',
+      p2:'The management review process routing Boisjoly\'s incident reports. The teleconference on January 27, 1986 is the Signal channel: the mechanism translating O-ring engineering data into a launch recommendation. Management authority holds P-adic proximity through organizational hierarchy. Engineering authority has been positioned outside the decision cluster at the critical moment.',
+      p3:'ORIGINAL: O-ring distress data = safety signal requiring launch abort. REPLACED: O-ring distress data = acceptable risk within established parameters (25 prior normalizations). \u03c3 = 0.65 (25 normalization events). \u03bc = 0.72 (schedule pressure has replaced safety optimization as the effective Interpretant). Boisjoly FHRI = 82.0. FHRI_max = 14.3. Absorbed = 67.7 points.'
+    },
+    s:'The management review channel at the individual-to-institutional level has been accessed by management authority (P-adic proximity through organizational hierarchy). The Interpretant has been replaced from safety optimization to schedule compliance, producing \u03c3 = 0.65 from 25 prior normalizations and \u03bc = 0.72 from launch schedule pressure. FHRI_max = 14.3. The 67.7-point absorbed capacity is the computable magnitude of the structural wrong.',
+    a:'Seven crew members (loss of life). Boisjoly (moral injury, career destruction, permanent psychological harm). All Morton Thiokol engineers who knew (suppressed capacity). Future space program safety culture (normalization of the normalization). The public trust in NASA and in the institutional integrity of the safety review process.',
+    g:'Care Ethics: the relationships of professional care (engineers\' duty to the crew) were violated by the structural architecture absorbing engineering authority from the decision channel. Virtue Ethics: Boisjoly\'s duty was categorical \u2014 he fulfilled it 24 times. The structural wrong is not his failure. Consequentialism: the outcome is quantified. One T1 structural intervention (independent safety review board) would have changed it.',
+    e:'T1 (retrospective, for future cases): Independent safety review board with direct launch authority (bypasses \u03bc filter). Mandatory cooling-off period after any engineering objection. Blind review of safety data without schedule context. These change who is in the cluster controlling the Signal channel. T2 (available to Boisjoly): document, file, escalate. All T2 options were exhausted. No T1 option was available from his structural position. This is the ethical significance of the case: T1 reform is the only adequate response to the structural wrong, and it requires actors with access to the management cluster.'
+  },
+  hhvbp:{
+    label:'HHVBP Value-Based Purchasing',
+    p:{
+      p1:'YES. The VBP program continues to operate. Quality measurements occur. Payment adjustments are made. The regulatory process nominally continues and produces outputs. Sign integrity is complete.',
+      p2:'The payment adjustment mechanism (+0.30% mean APP = ~$1,500/year). This is the channel through which accurate quality measurement is translated into structural behavioral consequences. The regulatory design process (who determines what the payment adjustment formula is) holds P-adic proximity. The regulated industry has achieved partial access through standard lobbying and regulatory comment.',
+      p3:'ORIGINAL: Accurate quality measurement will produce financial consequences large enough to change the structural behavior (staffing ratios, ownership-determined wages) causing quality deficits. REPLACED: Accurate quality measurement produces compliance documentation and small payment adjustments that constitute adequate regulatory accountability while leaving structural parameters unchanged. \u03bc = 0.82 confirmed: $1,500/year vs. the structural investment required to change FHRI_max.'
+    },
+    s:'The payment architecture at the sector level has been designed (P-adic access by regulatory design participants) to produce T2 consequences for T1 structural failures. The Interpretant of quality measurement has been replaced from "structural accountability will follow" to "compliance theater will follow." This is Regulatory Capture as a failure mode: not individual corruption, but intervention-type capture.',
+    a:'12,239 home health agencies (receiving inadequate incentive signals to change structural behavior). 8M+ patients annually (receiving care at FHRI_max ceiling rather than non-profit alternative ceiling). 1.8M home health aides (wages unchanged by $1,500/year sector-level incentive). Medicare (funding the measurement infrastructure without funding consequences proportionate to structural failure).',
+    g:'Consequentialism: the outcome difference between T2 (current VBP) and T1 (beneficial ownership disclosure + FHRI_max floor) is measurable across 12,239 agencies. Fairness: a regulatory program that correctly identifies structural failure and produces consequences 100x smaller than those required to address it is not a fair regulatory response. Virtue Ethics: the obligation of regulatory actors is not to produce technically compliant T2 interventions but to identify and address the structural parameters causing harm.',
+    e:'T1 at governance level: beneficial ownership disclosure (changes what is visible to the P-adic cluster designing the payment architecture); FHRI_max floor standards (changes what the payment architecture is permitted to produce as its Interpretant). T2 at governance level: strengthen VBP payment adjustments within existing framework (insufficient if structural parameters remain beyond program reach). T1 at capital level: BioBond instruments (change P-adic proximity conditions in the financial cluster \u2014 make capital conditional on FHRI_max improvement rather than extraction maximization).'
+  }
+};
+var currentCase = 'homehealth';
+var currentStep = 'p';
+
+function setCase(key, btn){
+  document.querySelectorAll('.case-chip').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  currentCase = key;
+  renderWalkthrough();
+}
+function setStep(key){
+  document.querySelectorAll('.step-btn').forEach(function(b){b.classList.remove('active');});
+  event.currentTarget.classList.add('active');
+  currentStep = key;
+  renderStep();
+}
+function renderWalkthrough(){
+  var c = CASES[currentCase];
+  document.getElementById('wt-header').innerHTML =
+    '<div class="panel teal"><strong>' + c.label + '</strong></div>';
+  renderStep();
+}
+function renderStep(){
+  var c = CASES[currentCase];
+  var html = '';
+  if(currentStep === 'p'){
+    html = '<h3 class="sub">Perception: The Three-Question Diagnostic</h3>' +
+      '<div style="display:grid;gap:.5rem;margin:.5rem 0">' +
+      '<div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:.4rem;padding:.85rem 1rem">' +
+      '<div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--green);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.07em">P1 &mdash; Is the Sign intact?</div>' +
+      '<div style="font-size:.87rem;line-height:1.7">' + c.p.p1 + '</div></div>' +
+      '<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:.4rem;padding:.85rem 1rem">' +
+      '<div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--amber);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.07em">P2 &mdash; Has the Signal been manipulated?</div>' +
+      '<div style="font-size:.87rem;line-height:1.7">' + c.p.p2 + '</div></div>' +
+      '<div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.85rem 1rem">' +
+      '<div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--red);margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.07em">P3 &mdash; Has the Interpretant been replaced?</div>' +
+      '<div style="font-size:.87rem;line-height:1.7">' + c.p.p3 + '</div></div></div>' +
+      '<div class="panel violet" style="margin-top:.75rem"><strong>P-step output:</strong> The Perception step is complete. The four-element statement (original Interpretant, replaced Interpretant, channel, accessing actor) grounds the SAGE steps that follow. Proceed to S.</div>';
+  } else if(currentStep === 's'){
+    html = '<h3 class="sub">Situation: Structurally Grounded by Perception</h3>' +
+      '<div class="panel teal">' + c.s + '</div>' +
+      '<p class="bd">Note how different this Situation description is from a Sign-level description. A Sign-level Situation would say: "The nursing home has inadequate staffing." The P-SAGE Situation says: "The budget allocation channel has been accessed by the ownership structure, the Interpretant has been replaced from care investment to extraction vehicle, and the FHRI_max is 13.6." These two descriptions lead to completely different interventions in the Evaluate step.</p>';
+  } else if(currentStep === 'a'){
+    html = '<h3 class="sub">Affected: The Full Web of Impact</h3>' +
+      '<div class="panel violet">' + c.a + '</div>' +
+      '<p class="bd">The Affected step, grounded by Perception, extends further than Sign-level analysis allows. It includes parties with no formal relationship to the overwriting transaction &mdash; particularly those absorbing the externalized costs of the Interpretant replacement.</p>';
+  } else if(currentStep === 'g'){
+    html = '<h3 class="sub">Grounds: Ethical Traditions Applied to Structure</h3>' +
+      '<div class="panel amber">' + c.g + '</div>' +
+      '<p class="bd">The Grounds step now applies ethical traditions to the structural situation identified by P and S, not to the Sign-level appearance. The ethical wrong is the Interpretant replacement and the P-adic access mechanism that achieved it &mdash; not the administrator implementing its consequences.</p>';
+  } else {
+    html = '<h3 class="sub">Evaluate: T1/T2 Actions Matched to Leverage Level</h3>' +
+      '<div class="panel green">' + c.e + '</div>' +
+      '<p class="bd">The Evaluate step, grounded by P-SAGE, produces a formally clear T1/T2 classification: T1 interventions address the P-adic access condition (who is in the cluster controlling the channel); T2 interventions optimize within the existing Interpretant replacement. This distinction is now formally derivable, not intuitively guessed.</p>';
+  }
+  document.getElementById('wt-content').innerHTML = '<div class="step-content active">' + html + '</div>';
+}
+
+// DEPTH SELECTOR
+function setDepth(key, btn){
+  document.querySelectorAll('.depth-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  document.querySelectorAll('.depth-content').forEach(function(d){d.classList.remove('active');});
+  document.getElementById('depth-'+key).classList.add('active');
+}
+
+// JOURNAL
+var JK = ['psage_j1','psage_j2','psage_j3','psage_j4'];
+function sv(){
+  JK.forEach(function(k,i){
+    var el = document.getElementById('j'+(i+1));
+    try{if(el)localStorage.setItem(k,el.value);}catch(x){}
+  });
+  var f = document.getElementById('sf');
+  f.classList.add('show');
+  setTimeout(function(){f.classList.remove('show');},1800);
+}
+function ex(){
+  var t = 'EBB P-SAGE Deep Dive\nJournal\n'+'='.repeat(50)+'\n\n';
+  ['Q1: P-SAGE applied to your institution (three Perception questions).',
+   'Q2: The P-adic access route &mdash; how did the parasitic actor gain channel access, and what T1 would remove it?',
+   'Q3: T1 intervention design for your institution.',
+   'Q4: Teacher depth reflection &mdash; which depth for your students?'].forEach(function(q,i){
+    var v = document.getElementById('j'+(i+1));
+    t += q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(50)+'\n\n';
+  });
+  try{
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([t],{type:'text/plain'}));
+    a.download = 'EBB_PSAGE_Journal.txt';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+  }catch(e){}
+}
+JK.forEach(function(k,i){var el=document.getElementById('j'+(i+1));try{if(el)el.value=localStorage.getItem(k)||'';}catch(x){} });
+
+// INIT
+renderWalkthrough();
+</script>
+</body>
+</html>
