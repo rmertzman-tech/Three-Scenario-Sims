@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ch11 — Economics, Extraction &amp; Ethical Response (P-SAGE)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);
+  --teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;
+  --green:#4ade80;--blue:#60a5fa;--orange:#fb923c;
+  --text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--border);
+  background:linear-gradient(160deg,#0a1a0c 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(74,222,128,.09) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.66rem;letter-spacing:.18em;color:var(--green);text-transform:uppercase;margin-bottom:.5rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2.4rem;color:#fff;line-height:1.15;margin-bottom:.4rem}
+.ch-ttl em{color:var(--orange);font-style:italic}
+.ch-sub{font-size:.88rem;color:var(--muted);max-width:620px;margin:0 auto;line-height:1.6}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.65rem 1rem;background:var(--s);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--green)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.07em;
+  text-transform:uppercase;padding:.4rem .85rem;border-radius:.3rem;
+  border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--green);color:#000;border-color:var(--green);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:880px;margin:0 auto}
+.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--orange);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.95rem;color:rgba(255,255,255,.85);margin:.9rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.72;font-size:.88rem}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel.orange{background:rgba(251,146,60,.07);border-left:3px solid var(--orange)}
+.panel strong{color:var(--text)}
+.case-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin:.75rem 0}
+.case-btn{font-size:.8rem;padding:.4rem .9rem;border-radius:2rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;color:var(--muted);transition:all .15s}
+.case-btn:hover{color:var(--text)}.case-btn.active{background:var(--s2);color:var(--text);border-color:var(--orange)}
+.case-panel{display:none}.case-panel.active{display:block;animation:fi .2s ease}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.55rem;margin:.75rem 0}
+.stat-card{background:var(--s);border:1px solid var(--border);border-radius:.45rem;padding:.85rem;text-align:center}
+.stat-num{font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:600;margin-bottom:.2rem}
+.stat-lbl{font-size:.73rem;color:var(--muted);line-height:1.35}
+/* P-SAGE */
+.p-step-row{display:flex;gap:.4rem;margin:.75rem 0;flex-wrap:wrap}
+.p-step-card{flex:1;min-width:140px;border:1px solid var(--border);border-radius:.45rem;
+  padding:.85rem;cursor:pointer;background:var(--s);transition:all .18s;text-align:center}
+.p-step-card:hover{background:var(--s2)}.p-step-card.active{border-color:var(--teal);background:rgba(20,184,166,.07)}
+.p-step-card .ps-num{font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:600;color:var(--teal)}
+.p-step-card .ps-q{font-size:.78rem;color:var(--muted);margin-top:.15rem;line-height:1.35}
+.p-content{background:#0a0e1c;border:1px solid var(--border);border-radius:.5rem;padding:1.1rem 1.25rem;display:none}
+.p-content.active{display:block;animation:fi .2s ease}
+.ssi-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin:.75rem 0}
+@media(max-width:520px){.ssi-trio{grid-template-columns:1fr}}
+.ssi-cell{border-radius:.4rem;padding:.85rem;border:1px solid var(--border)}
+.ssi-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem}
+.ssi-status{font-family:'DM Mono',monospace;font-size:.68rem;padding:.15rem .45rem;border-radius:.25rem;margin-bottom:.35rem;display:inline-block}
+.ssi-intact{background:rgba(74,222,128,.12);color:var(--green)}
+.ssi-modified{background:rgba(245,158,11,.12);color:var(--amber)}
+.ssi-replaced{background:rgba(248,113,113,.12);color:var(--red)}
+/* SAGE steps */
+.sage-steps{display:flex;gap:.4rem;margin:.75rem 0}
+.ss-btn{flex:1;text-align:center;padding:.55rem .3rem;border-radius:.4rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;transition:all .18s}
+.ss-btn:hover{background:var(--s2)}.ss-btn.active{border-color:var(--orange);background:rgba(251,146,60,.08)}
+.ss-btn .sl{font-family:'DM Mono',monospace;font-size:1rem;font-weight:600;color:var(--orange)}
+.ss-btn .sw{font-size:.62rem;color:var(--muted);display:block;margin-top:.1rem}
+.ss-body{background:#0a0e1c;border:1px solid var(--border);border-radius:.5rem;padding:1.1rem 1.25rem;display:none}
+.ss-body.active{display:block;animation:fi .2s ease}
+/* perspectives */
+.persp-row{display:flex;gap:.4rem;flex-wrap:wrap;margin:.75rem 0}
+.persp-btn{font-size:.75rem;padding:.32rem .75rem;border-radius:2rem;
+  border:1px solid var(--border);background:var(--s);cursor:pointer;color:var(--muted);transition:all .15s}
+.persp-btn:hover{color:var(--text)}.persp-btn.active{border-color:var(--teal);color:var(--teal);background:rgba(20,184,166,.06)}
+.persp-panel{display:none}.persp-panel.active{display:block;animation:fi .2s ease}
+/* IPS */
+.ips-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:.75rem 0}
+@media(max-width:500px){.ips-grid{grid-template-columns:repeat(3,1fr)}}
+.ips-cell{border:1px solid var(--border);border-radius:.4rem;padding:.7rem .4rem;text-align:center;background:var(--s)}
+.ips-cell .sym{font-family:'DM Mono',monospace;font-size:.95rem;font-weight:600;color:var(--orange)}
+.ips-cell .val{font-family:'DM Mono',monospace;font-size:.8rem;margin:.15rem 0}
+.ips-cell .nm{font-size:.6rem;color:var(--muted);line-height:1.3}
+.fhri-row{display:flex;align-items:center;gap:.75rem;background:var(--s2);border-radius:.45rem;
+  padding:.85rem 1rem;margin:.5rem 0;border:1px solid var(--border)}
+.fhri-num{font-family:'DM Serif Display',serif;font-size:2rem;line-height:1;flex-shrink:0}
+.fhri-num.low{color:var(--red)}.fhri-num.mid{color:var(--amber)}.fhri-num.high{color:var(--green)}
+.fbar-wrap{flex:1}
+.fbar-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);margin-bottom:.28rem}
+.fbar{height:10px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden}
+.fbar-fill{height:100%;border-radius:5px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1)}
+.fbar-fill.low{background:linear-gradient(90deg,var(--red),#fca5a5)}
+.fbar-fill.mid{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fbar-fill.high{background:linear-gradient(90deg,var(--green),#86efac)}
+/* positions */
+.pos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:.55rem;margin:.75rem 0}
+.pos-card{border:1px solid var(--border);border-radius:.45rem;padding:.85rem .75rem;
+  cursor:pointer;background:var(--s);text-align:center;transition:all .18s}
+.pos-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.pos-card.selected{border-color:var(--orange);background:rgba(251,146,60,.07)}
+.pos-card .pc-icon{font-size:1.5rem;margin-bottom:.3rem}
+.pos-card .pc-name{font-weight:600;font-size:.82rem;margin-bottom:.15rem}
+.pos-card .pc-desc{font-size:.7rem;color:var(--muted);line-height:1.3}
+.pos-output{margin-top:.9rem;display:none}.pos-output.show{display:block;animation:fi .3s ease}
+.action-row{display:flex;gap:.6rem;margin:.5rem 0;padding:.8rem;background:var(--s);border-radius:.4rem;border:1px solid var(--border)}
+.ar-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
+.ar-body .ar-title{font-weight:600;font-size:.85rem;margin-bottom:.2rem}
+.ar-body .ar-text{font-size:.82rem;color:rgba(255,255,255,.7);line-height:1.6}
+.tag{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:.15rem .45rem;border-radius:.25rem;margin-left:.35rem;vertical-align:middle}
+.tag.t1{background:rgba(248,113,113,.15);color:var(--red)}
+.tag.t2{background:rgba(96,165,250,.15);color:var(--blue)}
+/* amc */
+.pathway-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.65rem;margin:.75rem 0}
+.pathway-card{border:1px solid var(--border);border-radius:.5rem;padding:1rem;background:var(--s);cursor:pointer;transition:all .18s}
+.pathway-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.pathway-card.active{border-color:var(--teal);background:rgba(20,184,166,.06)}
+.pathway-icon{font-size:1.5rem;margin-bottom:.4rem}
+.pathway-name{font-weight:600;font-size:.88rem;margin-bottom:.2rem}
+.pathway-tag{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted)}
+.pathway-detail{margin-top:.75rem;display:none}.pathway-detail.show{display:block;animation:fi .25s ease}
+/* journal */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.88rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.68rem;color:var(--orange);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:95px;background:#0a0e1c;border:none;
+  border-top:1px solid var(--border);padding:.9rem;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:.87rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+.jq-bar{padding:.5rem 1rem;background:var(--s);border-top:1px solid var(--border);display:flex;justify-content:flex-end}
+button.btn{background:var(--orange);color:#000;border:none;font-family:'DM Sans',sans-serif;
+  font-weight:600;font-size:.83rem;padding:.55rem 1.2rem;border-radius:.4rem;cursor:pointer;margin:.3rem .2rem}
+button.btn.outline{background:transparent;color:var(--orange);border:1px solid var(--orange)}
+.bot-nav{max-width:880px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--green);color:#000;font-weight:600;font-size:.78rem;padding:.45rem 1rem;border-radius:.4rem;display:none;z-index:999}
+.sf.show{display:block}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="ch-lbl">Ethics Beyond Boundaries &middot; Chapter 11</div>
+  <h1 class="ch-ttl">Economics, <em>Extraction</em> &amp; Ethical Response</h1>
+  <p class="ch-sub">P-SAGE applied to three real cases &mdash; the formal structural analysis that names the responsible party, grounds the moral outrage, and identifies the action pathways</p>
+</div>
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('cases')">Real Cases</button>
+  <button class="tb" onclick="sw('psage')">P-SAGE Analysis</button>
+  <button class="tb" onclick="sw('ips')">IPS Simulation</button>
+  <button class="tb" onclick="sw('amc')">AMC Pathways</button>
+  <button class="tb" onclick="sw('culture')">Cultural Resonance</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- CASES -->
+<div class="pane active" id="pane-cases">
+  <div class="panel orange">
+    <strong>Three real cases, named and current.</strong> Each one involves a specific institutional architecture making structural choices that impose measurable FHRI_max ceilings on real people. Before the ethical analysis begins, P-SAGE asks: is the Sign intact? Has the Signal been manipulated? Has the Interpretant been replaced?
+  </div>
+  <div class="case-nav">
+    <button class="case-btn active" onclick="setCase('hh',this)">&#127968; Home Health Labor</button>
+    <button class="case-btn" onclick="setCase('gig',this)">&#128661; Gig Misclassification</button>
+    <button class="case-btn" onclick="setCase('reit',this)">&#127970; Single-Family REITs</button>
+  </div>
+
+  <!-- HOME HEALTH -->
+  <div class="case-panel active" id="case-hh">
+    <h2 class="st">Home Health: The $29/Hour Extraction Gap</h2>
+    <div class="ssi-trio">
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)">
+        <div class="ssi-lbl">Sign (intact)</div>
+        <span class="ssi-status ssi-intact">INTACT</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Agencies operate. Aides go to patient homes. Medicare billing proceeds. The facility is licensed and inspected. All observable institutional functions continue.</div>
+      </div>
+      <div class="ssi-cell" style="background:rgba(245,158,11,.05)">
+        <div class="ssi-lbl">Signal (accessed)</div>
+        <span class="ssi-status ssi-modified">ACCESSED</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Budget allocation decisions. PE fund, management company (8% fee), and REIT achieve P-adic proximity through acquisition, accessing the channel that distributes Medicare revenue.</div>
+      </div>
+      <div class="ssi-cell" style="background:rgba(248,113,113,.05)">
+        <div class="ssi-lbl">Interpretant (replaced)</div>
+        <span class="ssi-status ssi-replaced">REPLACED</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>Original:</strong> revenue = care investment.<br><strong>Replaced:</strong> revenue = extraction vehicle (management fee, debt service, REIT rent). &epsilon; = 0.636.</div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">$13</div><div class="stat-lbl">Home health aide hourly wage (FL median, 2024)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">$42</div><div class="stat-lbl">Medicare reimbursement per aide hour</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">$29</div><div class="stat-lbl">Extraction gap per hour — 69% extracted before wages</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">35%</div><div class="stat-lbl">Annual aide turnover in proprietary agencies</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--violet)">1.8M</div><div class="stat-lbl">Home health aides in the US (BLS 2024)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--orange)">+$1,500</div><div class="stat-lbl">VBP mean annual incentive — structurally insufficient</div></div>
+    </div>
+    <div class="panel teal"><strong>Formally derived responsible party:</strong> The actor that achieved P-adic proximity to the budget allocation channel through the acquisition mechanism and executed Interpretant replacement from care-investment to extraction-vehicle. Not the administrator implementing its consequences. Not the aide adapting to its constraints. Not the patient bearing its costs. The structural address is the ownership architecture — and it is computable: &epsilon; = 0.636, FHRI_max = 13.6, 67.7 points of professional capacity absorbed.</div>
+  </div>
+
+  <!-- GIG -->
+  <div class="case-panel" id="case-gig">
+    <h2 class="st">Gig Misclassification: The Contractor Classification as Triadic Hack</h2>
+    <div class="ssi-trio">
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)">
+        <div class="ssi-lbl">Sign (intact)</div>
+        <span class="ssi-status ssi-intact">INTACT</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Rides still occur. Workers still work. The app still functions. The economic transaction nominally continues and appears to serve both parties.</div>
+      </div>
+      <div class="ssi-cell" style="background:rgba(245,158,11,.05)">
+        <div class="ssi-lbl">Signal (accessed)</div>
+        <span class="ssi-status ssi-modified">ACCESSED</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">The employment classification mechanism. Uber achieves P-adic proximity to the wage-setting and benefit-provision channel through the contractor classification instrument.</div>
+      </div>
+      <div class="ssi-cell" style="background:rgba(248,113,113,.05)">
+        <div class="ssi-lbl">Interpretant (replaced)</div>
+        <span class="ssi-status ssi-replaced">REPLACED</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>Original:</strong> this worker is an employee with rights (healthcare, overtime, unemployment, right to organize).<br><strong>Replaced:</strong> this worker is an independent contractor bearing their own risk. &mu; = 0.91.</div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">$10.89</div><div class="stat-lbl">Uber driver median hourly earnings after expenses (EPI 2023)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">$39.61</div><div class="stat-lbl">Uber gross revenue per driver-hour</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">72%</div><div class="stat-lbl">Revenue retained by platform before driver expenses</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">$0</div><div class="stat-lbl">Employer Social Security / Medicare / unemployment contributions per driver</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--violet)">$1.3B</div><div class="stat-lbl">Uber/Lyft spent opposing CA Prop 22 to preserve contractor classification</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--orange)">38%</div><div class="stat-lbl">Gig workers reporting food insecurity (Pew 2021)</div></div>
+    </div>
+    <div class="panel amber"><strong>The &ldquo;flexibility&rdquo; argument is the Triadic Hack applied to labor marketing.</strong> Uber tells drivers they are entrepreneurs with freedom. The Sign is intact (drivers can choose hours). The Interpretant has been replaced: &ldquo;flexibility&rdquo; substituted for &ldquo;employment security.&rdquo; The driver experiences this replacement as a feature of their own autonomous choice rather than a structural design decision that transfers all risk from the corporation to the worker. P1 confirms: the Sign (rides occur, workers earn) is intact. P3 reveals: the Interpretant of what this work relationship is has been replaced by the contractor classification instrument.</div>
+    <h3 class="sub">Nussbaum Capabilities Eliminated by Interpretant Replacement</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin:.6rem 0">
+      <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.85rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.35rem">ELIMINATED BY CONTRACTOR CLASSIFICATION</div>
+        <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+          <strong>Bodily Health:</strong> no employer health insurance<br>
+          <strong>Bodily Integrity:</strong> no workers&rsquo; compensation<br>
+          <strong>Practical Reason:</strong> income volatility prevents planning<br>
+          <strong>Affiliation:</strong> no right to collective organizing<br>
+          <strong>Control:</strong> no unemployment insurance
+        </div>
+      </div>
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:.4rem;padding:.85rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--green);margin-bottom:.35rem">PRESERVED (REQUIRE NOTHING FROM EMPLOYER)</div>
+        <div style="font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.75)">
+          Senses / Imagination<br>Emotions<br>Other Species / Play<br><br>
+          The eliminated capabilities are exactly those requiring employer investment. The preserved capabilities are those requiring nothing from the employer. This is not coincidence. It is the structural logic of the replacement.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REIT -->
+  <div class="case-panel" id="case-reit">
+    <h2 class="st">Single-Family REITs: The Maintenance Trap</h2>
+    <div class="ssi-trio">
+      <div class="ssi-cell" style="background:rgba(74,222,128,.05)">
+        <div class="ssi-lbl">Sign (intact)</div>
+        <span class="ssi-status ssi-intact">INTACT</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Homes are rented. Tenants have housing. Invitation Homes operates 80,000 rental properties. The housing function nominally continues.</div>
+      </div>
+      <div class="ssi-cell" style="background:rgba(245,158,11,.05)">
+        <div class="ssi-lbl">Signal (accessed)</div>
+        <span class="ssi-status ssi-modified">ACCESSED</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)">Capital allocation decisions. The REIT structure (90% taxable income distributed as dividends) achieves P-adic proximity to the maintenance investment channel through the REIT legal instrument.</div>
+      </div>
+      <div class="ssi-cell" style="background:rgba(248,113,113,.05)">
+        <div class="ssi-lbl">Interpretant (replaced)</div>
+        <span class="ssi-status ssi-replaced">REPLACED</span>
+        <div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.75)"><strong>Original:</strong> rental property capital = maintenance investment sustaining habitable housing and community stability.<br><strong>Replaced:</strong> capital = shareholder dividend distribution (90% required), deferred maintenance as rational profit strategy.</div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" style="color:var(--amber)">27%</div><div class="stat-lbl">Rent increase by Invitation Homes 2021&ndash;22 (ACCE)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">5x</div><div class="stat-lbl">More eviction filings than small landlords (Princeton Eviction Lab)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--violet)">2%</div><div class="stat-lbl">Neighboring property value decline when REIT rental enters block</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--orange)">$25M</div><div class="stat-lbl">FTC fine for illegal fees (2024) &mdash; 4.5% of one year&rsquo;s dividends</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">$550M</div><div class="stat-lbl">Invitation Homes annual dividends to shareholders (2023)</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--red)">80K</div><div class="stat-lbl">Single-family homes owned across 16 markets</div></div>
+    </div>
+    <div class="panel red"><strong>The $25M FTC fine demonstrates the T2 trap in real time.</strong> $25M = 4.5% of one year&rsquo;s dividends. The regulatory response addresses the Sign-level violation (illegal fees) without touching the Interpretant replacement (capital = shareholder distribution, not maintenance investment). After the fine, Invitation Homes continues with identical structural parameters. The maintenance trap is not a compliance failure. It is the rational behavioral consequence of Interpretant replacement. T2 enforcement cannot address a T1 structural condition.</div>
+  </div>
+</div>
+
+<!-- P-SAGE -->
+<div class="pane" id="pane-psage">
+  <h2 class="st">P-SAGE: Professional Structural Analysis</h2>
+  <div class="panel teal">
+    <strong>P-SAGE adds a formal Perception step before the standard SAGE sequence.</strong> The Perception step identifies which Sign-Signal-Interpretant component has been corrupted and how P-adic proximity was achieved. This grounds the Situation description in a formal structural finding rather than a descriptive observation &mdash; and changes who the responsible party is.
+  </div>
+
+  <!-- P STEP -->
+  <h3 class="sub">Step P &mdash; Perception: The Three-Question Diagnostic (Home Health)</h3>
+  <div class="p-step-row">
+    <div class="p-step-card active" onclick="setP('p1')">
+      <div class="ps-num">P1</div>
+      <div class="ps-q">Is the Sign intact?</div>
+    </div>
+    <div class="p-step-card" onclick="setP('p2')">
+      <div class="ps-num">P2</div>
+      <div class="ps-q">Has the Signal been manipulated?</div>
+    </div>
+    <div class="p-step-card" onclick="setP('p3')">
+      <div class="ps-num">P3</div>
+      <div class="ps-q">Has the Interpretant been replaced?</div>
+    </div>
+    <div class="p-step-card" onclick="setP('po')">
+      <div class="ps-num">P&#10003;</div>
+      <div class="ps-q">P-step output</div>
+    </div>
+  </div>
+  <div class="p-content active" id="p-p1">
+    <p class="bd"><strong>P1: Is the Sign intact?</strong></p>
+    <p class="bd">YES. Home health agencies continue to operate. Aides go to patient homes. Medicare billing proceeds. The facility is licensed and inspected. All observable functions continue.</p>
+    <div class="panel amber"><strong>Critical interpretation:</strong> Sign integrity is evidence of successful Triadic Overwrite, not evidence against it. If you answer P1 with &ldquo;yes, the institution still functions,&rdquo; the analysis must proceed &mdash; because Sign preservation is the defining feature of a successful parasitic overwrite. The institution &ldquo;working&rdquo; is not exculpatory. It is the structural camouflage that makes the overwrite invisible from outside.</div>
+  </div>
+  <div class="p-content" id="p-p2">
+    <p class="bd"><strong>P2: Has the Signal been manipulated?</strong></p>
+    <p class="bd">The budget allocation channel is the actual mechanism translating Medicare revenue into care decisions. This is the Signal: how resources flow from the billing function to staffing, wages, supplies, and maintenance. The PE fund, management company, and REIT have achieved P-adic proximity to this channel through acquisition &mdash; they are inside the financial cluster controlling every budget decision.</p>
+    <div class="panel teal"><strong>The P-adic access route:</strong> acquisition places the ownership structure inside the financial cluster. The LLC structure separates legal accountability from financial control &mdash; the entity bearing operational liability is not the entity controlling the budget. This separation is not an accident or a complexity. It is the structural instrument through which P-adic proximity is maintained while legal accountability is externalized.</div>
+  </div>
+  <div class="p-content" id="p-p3">
+    <p class="bd"><strong>P3: Has the Interpretant been replaced?</strong></p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin:.6rem 0">
+      <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:.4rem;padding:.85rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--green);margin-bottom:.3rem">ORIGINAL INTERPRETANT</div>
+        <div style="font-size:.85rem;line-height:1.7">Medicare revenue = investment in care capacity enabling aide wages, staffing levels, and quality patient outcomes. The goal-function: maximize care quality within available resources.</div>
+      </div>
+      <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.85rem">
+        <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.3rem">REPLACED INTERPRETANT</div>
+        <div style="font-size:.85rem;line-height:1.7">Medicare revenue = extraction vehicle maximizing management fee, debt service, and REIT return, subject to regulatory compliance constraints. The goal-function: maximize extraction within compliance bounds.</div>
+      </div>
+    </div>
+    <p class="bd">The gap between these two Interpretants is &mu; = 0.82. The mechanism sustaining the replacement is &sigma; = 0.62 (accumulated normalization of inadequate staffing). The magnitude is &epsilon; = 0.636. These are not moral judgments. They are measurements of the distance between what the institution nominally does and what the decision architecture actually optimizes.</p>
+  </div>
+  <div class="p-content" id="p-po">
+    <div class="panel violet">
+      <strong>P-step output (four-element structural finding):</strong><br><br>
+      1. <strong>Original Interpretant:</strong> Medicare revenue = investment in care capacity.<br>
+      2. <strong>Replaced Interpretant:</strong> Medicare revenue = extraction vehicle (&epsilon; = 0.636, FHRI_max = 13.6).<br>
+      3. <strong>Signal channel:</strong> budget allocation decisions at the institutional level.<br>
+      4. <strong>P-adic access mechanism:</strong> PE acquisition places ownership inside the financial cluster; LLC structure externalizes legal accountability from financial control.<br><br>
+      <strong>Formally derived responsible party:</strong> the actor achieving P-adic proximity and executing Interpretant replacement. Not the administrator. Not the aide. Not the patient. The structural address is the ownership architecture. This is not a moral assertion. It is a formal finding with a computable magnitude.
+    </div>
+  </div>
+
+  <!-- SAGE STEPS -->
+  <h3 class="sub" style="margin-top:1.2rem">S-A-G-E: Grounded by Perception</h3>
+  <div class="sage-steps">
+    <button class="ss-btn active" onclick="setSage('s')"><span class="sl">S</span><span class="sw">Situation</span></button>
+    <button class="ss-btn" onclick="setSage('a')"><span class="sl">A</span><span class="sw">Affected</span></button>
+    <button class="ss-btn" onclick="setSage('g')"><span class="sl">G</span><span class="sw">Grounds</span></button>
+    <button class="ss-btn" onclick="setSage('e')"><span class="sl">E</span><span class="sw">Evaluate</span></button>
+  </div>
+  <div class="ss-body active" id="sage-s">
+    <p class="bd"><strong>Situation — formally derived from the P-step:</strong></p>
+    <p class="bd">The budget allocation channel at the institutional level has been accessed by the PE ownership structure (P-adic proximity through acquisition). The Interpretant has been replaced from care investment to extraction vehicle, producing &epsilon; = 0.636, &mu; = 0.82, and FHRI_max = 13.6. Four structural layers follow from this single formal statement:</p>
+    <div style="display:grid;gap:.45rem;margin:.6rem 0">
+      <div style="background:var(--s);border-left:3px solid var(--red);border-radius:0 .4rem .4rem 0;padding:.8rem 1rem;font-size:.85rem;line-height:1.65"><strong style="color:var(--red)">Financial extraction (&epsilon; = 0.636):</strong> Management fees, REIT rents, PE debt service extract 69% of Medicare revenue before it reaches the worker. This is the Interpretant replacement in its financial form.</div>
+      <div style="background:var(--s);border-left:3px solid var(--amber);border-radius:0 .4rem .4rem 0;padding:.8rem 1rem;font-size:.85rem;line-height:1.65"><strong style="color:var(--amber)">Regulatory design failure (&rho; and &mu;):</strong> VBP produces +$1,500/year. The payment architecture is a T2 intervention whose Interpretant has been replaced from &ldquo;structural accountability will follow&rdquo; to &ldquo;compliance theater will follow.&rdquo;</div>
+      <div style="background:var(--s);border-left:3px solid var(--violet);border-radius:0 .4rem .4rem 0;padding:.8rem 1rem;font-size:.85rem;line-height:1.65"><strong style="color:var(--violet)">Labor market monopsony:</strong> 3-5 large chains controlling 70%+ of aide employment in many Florida counties. Monopsony is the labor market manifestation of the same P-adic access pattern: concentration in the wage-setting cluster.</div>
+      <div style="background:var(--s);border-left:3px solid var(--teal);border-radius:0 .4rem .4rem 0;padding:.8rem 1rem;font-size:.85rem;line-height:1.65"><strong style="color:var(--teal)">Externalized costs:</strong> Public Medicaid (aide poverty), informal family caregivers ($470B/year unpaid), patients (higher hospitalization), communities (degraded care workforce). These are the populations bearing the costs of Interpretant replacement with no formal relationship to the transaction that produced it.</div>
+    </div>
+    <div class="panel amber"><strong>The key improvement over Sign-level analysis:</strong> A Sign-level Situation says &ldquo;employers pay low wages.&rdquo; The P-SAGE Situation says &ldquo;the budget allocation channel has been accessed by ownership achieving P-adic proximity through acquisition, and the Interpretant has been replaced from care investment to extraction vehicle.&rdquo; These descriptions lead to completely different interventions. The first suggests wage policy (T2). The second identifies the access mechanism that must be addressed (T1).</div>
+  </div>
+  <div class="ss-body" id="sage-a">
+    <h3 class="sub">Affected: Full Web of Impact</h3>
+    <div style="display:grid;gap:.45rem">
+      <div class="action-row"><div class="ar-icon">&#128105;&#8205;&#9877;</div><div class="ar-body"><div class="ar-title">1.8M home health aides</div><div class="ar-text">Below capability floor: no employer health insurance, high injury rates, 35% annual turnover. Structural harm: relational expertise preventing hospitalizations is treated as economically worthless by the extraction architecture. Career harm: retirement insecurity, accumulated occupational health costs.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#128118;</div><div class="ar-body"><div class="ar-title">8M+ patients annually</div><div class="ar-text">Care quality constrained at FHRI_max ceiling. High aide turnover resets care relationships repeatedly &mdash; the continuity that prevents hospitalization is structurally undervalued. The 11% increased hospitalization rate in high-extraction facilities is the patient-level consequence of the 13.6 FHRI_max ceiling.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#128106;</div><div class="ar-body"><div class="ar-title">Informal family caregivers (predominantly women)</div><div class="ar-text">Fill the gap between formal care and patient need. $470B/year unpaid (AARP 2023). Reduced labor force participation, lower lifetime earnings, higher retirement poverty. The extraction architecture depends on this unpaid subsidy absorbing the consequences of its insufficiency.</div></div></div>
+      <div class="action-row"><div class="ar-icon">&#128184;</div><div class="ar-body"><div class="ar-title">Medicare / Medicaid (public, ultimately taxpayers)</div><div class="ar-text">Public funds flow through the extraction architecture and reach the care worker at 31 cents on the dollar. The public is paying for extraction. This is the Interpretant replacement at its starkest: the public pays for care; the replaced Interpretant delivers extraction.</div></div></div>
+    </div>
+  </div>
+  <div class="ss-body" id="sage-g">
+    <h3 class="sub">Grounds: Four Traditions, One Structural Finding</h3>
+    <div class="persp-row">
+      <button class="persp-btn active" onclick="setPersp('care',this)">Care Ethics</button>
+      <button class="persp-btn" onclick="setPersp('fairness',this)">Fairness</button>
+      <button class="persp-btn" onclick="setPersp('conseq',this)">Consequentialism</button>
+      <button class="persp-btn" onclick="setPersp('virtue',this)">Virtue / Duty</button>
+      <button class="persp-btn" onclick="setPersp('nuss',this)">Capabilities</button>
+    </div>
+    <div class="persp-panel active" id="persp-care"><div class="panel" style="border-left:3px solid #4A90A4;background:rgba(74,144,164,.07)"><strong style="color:#4A90A4">Care Ethics:</strong> The web of care relationships is violated not by aide failure but by the structural architecture absorbing care capacity before it reaches the patient. The extraction architecture treats relational care knowledge as having zero economic value &mdash; the billing rate reflects the hour, not the relationship. High turnover destroys the relationship at exactly the moment continuity matters most. FHRI_max = 14 is an institutional commitment to providing the appearance of care while structurally preventing its substance.</div></div>
+    <div class="persp-panel" id="persp-fairness"><div class="panel" style="border-left:3px solid #6B8E4E;background:rgba(107,142,78,.07)"><strong style="color:#6B8E4E">Fairness / Justice:</strong> Rawls behind the veil of ignorance: no rational actor would design the home health extraction architecture if they faced equal probability of being the PE investor, the aide, Mrs. Chen, or her daughter. The veil test fails decisively. Even on Nozick&rsquo;s libertarian grounds, the extraction architecture has a problem: Medicare reimbursement is a public contract for care delivery. The extraction architecture diverts public funds from care to financial return &mdash; a contractual violation of the terms under which public funds were allocated.</div></div>
+    <div class="persp-panel" id="persp-conseq"><div class="panel" style="border-left:3px solid #8B7BA8;background:rgba(139,123,168,.07)"><strong style="color:#8B7BA8">Consequentialism:</strong> Non-profit agencies (FHRI_max = 62.9): DTC 74.9%, turnover 22%, better care continuity. Proprietary (FHRI_max = 37.3): DTC 72.1%, turnover 35%, lower continuity. PE-acquired NH (FHRI_max = 13.6): 11% increased mortality, 33 fewer care minutes daily. The aggregate consequence of the extraction architecture across 12,239 agencies and 8M+ patients annually is quantified in hospitalizations, quality-adjusted life years, and preventable deaths. Consequentialism provides the strongest grounds for T1 structural reform because the outcome differences are now formally measured.</div></div>
+    <div class="persp-panel" id="persp-virtue"><div class="panel" style="border-left:3px solid #C17B7B;background:rgba(193,123,123,.07)"><strong style="color:#C17B7B">Virtue / Duty:</strong> Aristotle: the home health agency&rsquo;s telos (proper function) is quality care enabling patient independence and dignity. PE acquisition corrupts the telos by substituting external goods (financial return) for the internal goods (excellence in care) that define the practice. Kant: could the extraction architecture be universalized? If every care institution were configured as PE-acquired facilities are, care as a meaningful category would cease to exist. Universalization fails. Maria&rsquo;s duty is categorical &mdash; she fulfilled it 24 times in incident reports. The structural wrong is not her failure.</div></div>
+    <div class="persp-panel" id="persp-nuss"><div class="panel" style="border-left:3px solid var(--teal);background:rgba(20,184,166,.07)"><strong style="color:var(--teal)">Capabilities (Nussbaum):</strong> Maria has formal freedom to choose her employer. She lacks substantive freedom to choose a structurally different work relationship &mdash; because the extraction architecture defines the terms of employment across most of the sector. This is formal freedom inside structural extraction: not freedom, but the appearance of freedom with the substance removed. The contractor classification in the gig economy makes this explicit: the Interpretant of &ldquo;worker has freedom to choose their hours&rdquo; has replaced &ldquo;worker has employment security and capability floor.&rdquo; The Triadic Hack applied to the concept of freedom itself.</div></div>
+  </div>
+  <div class="ss-body" id="sage-e">
+    <h3 class="sub">Evaluate: T1 Addresses Access Condition, T2 Operates Within It</h3>
+    <p class="bd">The P-SAGE Evaluate step has a formal T1/T2 criterion: T1 interventions address the P-adic access condition (change who is in the cluster controlling the channel or what the channel is permitted to produce); T2 interventions operate within the existing Interpretant replacement.</p>
+    <div class="pos-grid">
+      <div class="pos-card" onclick="setEvalPos('student',this)"><div class="pc-icon">&#128218;</div><div class="pc-name">Student / Citizen</div><div class="pc-desc">No institutional leverage</div></div>
+      <div class="pos-card" onclick="setEvalPos('worker',this)"><div class="pc-icon">&#128105;&#8205;&#9877;</div><div class="pc-name">Care Worker</div><div class="pc-desc">Inside the architecture</div></div>
+      <div class="pos-card" onclick="setEvalPos('family',this)"><div class="pc-icon">&#128106;</div><div class="pc-name">Patient Family</div><div class="pc-desc">Consumer market access</div></div>
+      <div class="pos-card" onclick="setEvalPos('manager',this)"><div class="pc-icon">&#128193;</div><div class="pc-name">Agency Manager</div><div class="pc-desc">Institutional leverage</div></div>
+      <div class="pos-card" onclick="setEvalPos('policy',this)"><div class="pc-icon">&#127979;</div><div class="pc-name">Policy / Advocacy</div><div class="pc-desc">Regulatory reach</div></div>
+      <div class="pos-card" onclick="setEvalPos('investor',this)"><div class="pc-icon">&#128201;</div><div class="pc-name">Impact Investor</div><div class="pc-desc">Capital allocation</div></div>
+    </div>
+    <div class="pos-output" id="eval-output"></div>
+  </div>
+</div>
+
+<!-- IPS -->
+<div class="pane" id="pane-ips">
+  <h2 class="st">IPS Structural Profiles</h2>
+  <div class="panel orange"><strong>These profiles are empirically grounded.</strong> The formal P-SAGE analysis shows that FHRI_max is the residual Interpretant integrity &mdash; how much of the original goal-function remains accessible after parasitic overwrite. Select an ownership type to see the parameters, what the numbers mean for workers and patients, and what T1 reform would change.</div>
+  <div class="case-nav">
+    <button class="case-btn active" onclick="setIps('pe',this)">PE-Acquired NH</button>
+    <button class="case-btn" onclick="setIps('prop',this)">Proprietary HH</button>
+    <button class="case-btn" onclick="setIps('np',this)">Non-Profit</button>
+    <button class="case-btn" onclick="setIps('coop',this)">Worker Cooperative</button>
+  </div>
+  <div id="ips-display"></div>
+  <div class="panel teal" style="margin-top:1rem"><strong>The formal IPS-semiotic identifications:</strong> &epsilon; = Interpretant replacement magnitude. &mu; = distance between original and replaced Interpretants. &sigma; = accumulated Signal drift (normalization sustaining the replacement). &rho; = channel congestion (vulnerability condition enabling access). &phi; = substrate consequence of sustained replacement. FHRI_max = residual Interpretant integrity.</div>
+</div>
+
+<!-- AMC -->
+<div class="pane" id="pane-amc">
+  <h2 class="st">AMC Response Pathways</h2>
+  <div class="panel teal"><strong>T1 interventions address the P-adic access condition. T2 operate within the existing replacement.</strong> The AMC instruments are formally T1: they change who is in the cluster controlling the channel, or change what the channel is legally permitted to produce.</div>
+  <div class="pathway-grid">
+    <div class="pathway-card" onclick="setPathway('acp',this)"><div class="pathway-icon">&#128101;</div><div class="pathway-name">ACP: Agent Support</div><div class="pathway-tag">Bottom-Up &bull; Immediate</div></div>
+    <div class="pathway-card" onclick="setPathway('biobond',this)"><div class="pathway-icon">&#128200;</div><div class="pathway-name">BioBond Instrument</div><div class="pathway-tag">Capital &bull; T1 Structural</div></div>
+    <div class="pathway-card" onclick="setPathway('tsa',this)"><div class="pathway-icon">&#128202;</div><div class="pathway-name">True Solvency Accounting</div><div class="pathway-tag">Regulatory &bull; Long-Horizon</div></div>
+    <div class="pathway-card" onclick="setPathway('measure',this)"><div class="pathway-icon">&#128302;</div><div class="pathway-name">FHRI_max Measurement</div><div class="pathway-tag">Research &bull; Enabling</div></div>
+    <div class="pathway-card" onclick="setPathway('t1pol',this)"><div class="pathway-icon">&#127979;</div><div class="pathway-name">T1 Policy</div><div class="pathway-tag">Governance &bull; Structural</div></div>
+    <div class="pathway-card" onclick="setPathway('altinst',this)"><div class="pathway-icon">&#127795;</div><div class="pathway-name">Low-&epsilon; Alternatives</div><div class="pathway-tag">Community &bull; Structural</div></div>
+  </div>
+  <div class="pathway-detail" id="pathway-detail"></div>
+  <div class="panel amber" style="margin-top:1rem"><strong>T2 interventions attempted and confirmed insufficient:</strong> HHVBP VBP (+$1,500/year); DOL wage theft enforcement (individual violations, not structural architecture); state minimum wage increases (improve floor within unchanged extraction architecture). Each correctly identifies a problem. Each produces consequences structurally insufficient to change the P-adic access condition causing it.</div>
+</div>
+
+<!-- CULTURE -->
+<div class="pane" id="pane-culture">
+  <h2 class="st">Cultural Resonance</h2>
+  <div class="panel orange"><strong>Two texts, one tab.</strong> Science fiction occupies its proportionate role here: the entry point that makes structural dynamics emotionally accessible, not the primary content.</div>
+  <div class="case-nav">
+    <button class="case-btn active" onclick="setCulture('walle',this)">Wall-E (2008)</button>
+    <button class="case-btn" onclick="setCulture('stby',this)">Sorry to Bother You (2018)</button>
+  </div>
+  <div class="case-panel active" id="cult-walle">
+    <p class="bd"><strong>Wall-E is prior art for &epsilon; at civilizational scale with the temporal compression fiction allows.</strong> The P-SAGE reading: Sign intact (humans live on the Axiom, civilization nominally continues). Signal accessed (Buy-N-Large controls all supply chains, transportation, and information flows &mdash; P-adic proximity to the entire civilizational resource allocation channel). Interpretant replaced: human activity = corporate reproduction and shareholder return, not human flourishing. &epsilon; &rarr; 1.0. FHRI_max &rarr; 2.</p>
+    <div class="panel green"><strong>Wall-E as Maathai principle:</strong> He does not fight Buy-N-Large. He tends the plant in the boot &mdash; the low-&epsilon; alternative operating in the space the extraction architecture abandoned. The Cleveland Evergreen Cooperatives tend the plant. The non-profit home health agency with FHRI_max = 62 tends the plant. The BioBond instrument is designed to make plant-tending financially scalable.</div>
+  </div>
+  <div class="case-panel" id="cult-stby">
+    <p class="bd"><strong>Sorry to Bother You is prior art for &mu; as career trap and the Triadic Hack applied to labor marketing.</strong> The &ldquo;white voice&rdquo; is the Signal that Cassius learns to produce &mdash; the encoding of his labor that the platform rewards. The Interpretant of his work has been replaced from &ldquo;this is meaningful employment serving genuine human needs&rdquo; to &ldquo;this is a performance optimized for the metric the extraction architecture rewards.&rdquo; He experiences this as his own choice. The Triadic Hack at the career level.</p>
+    <div class="panel amber"><strong>The WorryFree endpoint.</strong> When extraction reaches its ceiling within existing biological constraints, the institution invests in changing the biological substrate of workers. This is &phi; as deliberate strategy rather than structural consequence. The film makes explicit what the home health data shows implicitly: the extraction architecture treats the worker&rsquo;s body as a cost variable in the extraction calculation, not as the substrate of agency that the ACP insists must be protected.</div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions integrate P-SAGE with personal ethical commitment, moving from formal structural analysis to action.</p>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q1</span>Apply the three P-questions to an economic relationship you personally inhabit &mdash; employer, gig platform, housing arrangement, school. P1: Is the Sign intact? P2: What is the actual channel, and who has P-adic proximity? P3: Has the Interpretant been replaced? State the four-element P-step output.</div>
+  <textarea class="jq-ta" id="j1" oninput="sv()" placeholder="P1 / P2 / P3 / four-element output. The hardest part is P3: state both the original and the replaced Interpretant precisely..."></textarea>
+  <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q2</span>The Nussbaum capabilities audit: which of the ten capabilities do you have substantive (not just formal) access to? Where is the gap? The P-SAGE version: is the gap produced by an Interpretant replacement &mdash; where the nominal capability exists but the Signal has been manipulated so the Interpretant no longer serves capability access?</div>
+  <textarea class="jq-ta" id="j2" oninput="sv()" placeholder="Formal vs. substantive freedom. The Triadic Hack on &lsquo;freedom&rsquo; itself..."></textarea>
+  <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q3</span>From the P-SAGE Evaluate step, identify the most structurally effective action available to you from your actual position. Use the T1 criterion: does this action address the P-adic access condition, or does it operate within the existing Interpretant replacement? If T2, name what the T1 equivalent would require.</div>
+  <textarea class="jq-ta" id="j3" oninput="sv()" placeholder="The T1 criterion is formal now, not intuitive. What changes who is in the cluster controlling the channel?"></textarea>
+  <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q4</span>Wall-E tends the plant. The formally grounded version: he maintains a low-&epsilon; alternative whose existence eventually cannot be ignored by the high-&epsilon; architecture surrounding it. Name one specific low-&epsilon; alternative in your economic life or community &mdash; where is the plant in the boot? What would you do in the next three months to tend it?</div>
+  <textarea class="jq-ta" id="j4" oninput="sv()" placeholder="Specific. Measurable. Low-epsilon means the goal-function serves genuine coordination, not extraction..."></textarea>
+  <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q5 &mdash; Forward</span>Design one element of a BioBond instrument for the economic case you analyzed in Q1. What FHRI_max improvement would you require? What structural change in the P-adic access condition would that require? How would you verify the replacement has been reversed?</div>
+  <textarea class="jq-ta" id="j5" oninput="sv()" placeholder="FHRI_max target / structural change required / verification method. The BioBond makes FHRI_max improvement financially rational..."></textarea>
+  <div class="jq-bar"><button class="btn outline" style="font-size:.74rem;padding:.3rem .65rem" onclick="sv()">Save</button></div></div>
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn outline" onclick="prev()">&#8592; Previous</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &#8594;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['cases','psage','ips','amc','culture','journal'];
+var cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+function setCase(k,btn){document.querySelectorAll('.case-nav .case-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');document.querySelectorAll('#pane-cases .case-panel').forEach(function(p){p.classList.remove('active');});document.getElementById('case-'+k).classList.add('active');}
+function setP(k){document.querySelectorAll('.p-step-card').forEach(function(c){c.classList.remove('active');});event.currentTarget.classList.add('active');document.querySelectorAll('.p-content').forEach(function(c){c.classList.remove('active');});document.getElementById('p-'+k).classList.add('active');}
+function setSage(k){document.querySelectorAll('.ss-btn').forEach(function(b){b.classList.remove('active');});document.querySelectorAll('.ss-body').forEach(function(b){b.classList.remove('active');});event.currentTarget.classList.add('active');document.getElementById('sage-'+k).classList.add('active');}
+function setPersp(k,btn){document.querySelectorAll('.persp-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');document.querySelectorAll('.persp-panel').forEach(function(p){p.classList.remove('active');});document.getElementById('persp-'+k).classList.add('active');}
+
+var IPS_DATA={
+  pe:{label:'PE-Acquired Nursing Home',eps:0.636,phi:0.520,rho:0.700,sig:0.620,mu:0.820,fhri:13.6,cls:'low',
+    interp:'Interpretant fully replaced: revenue = extraction vehicle. &epsilon; = 0.636 is the measured magnitude of replacement. FHRI_max = 13.6 is residual Interpretant integrity.',
+    worker:'CNAs earn $14.50/hour vs $16.20 non-profit. Turnover 48% vs 28%. The $1.70/hour wage gap = $3,536/year income difference.',
+    patient:'11% increased mortality. 33 fewer direct care minutes daily. Higher pressure ulcer rates. Higher hospitalization rates.'},
+  prop:{label:'Proprietary Home Health',eps:0.320,phi:0.420,rho:0.580,sig:0.480,mu:0.620,fhri:37.3,cls:'mid',
+    interp:'Interpretant partially replaced: extraction present but less aggressive than PE. &epsilon; = 0.320. FHRI_max = 37.3 reflects partial retention of original care-investment Interpretant.',
+    worker:'Aides earn $13-16/hour. No employer health insurance in most settings. 35% annual turnover. $29/hour extraction gap on Medicare billing.',
+    patient:'DTC 72.1% vs 74.9% non-profit. The 2.8-point difference represents thousands of additional hospitalizations annually at sector scale.'},
+  np:{label:'Non-Profit / Government',eps:0.000,phi:0.300,rho:0.580,sig:0.250,mu:0.280,fhri:62.9,cls:'high',
+    interp:'Original Interpretant substantially intact: revenue = care investment. &epsilon; = 0.000. FHRI_max = 62.9 means 62.9% of coordination capacity reaches decisions. The 25.6-point gap vs. proprietary is the computable value of Interpretant integrity.',
+    worker:'Aides earn $15.80-18.50/hour. Higher employer health insurance contribution. 22% annual turnover. The wage improvement follows directly from &epsilon; = 0.000: no extraction competes with care investment for the revenue.',
+    patient:'DTC 74.9%. Lower hospitalization rates. Lower turnover producing better care continuity. Not because non-profit employees are better people. Because the ownership architecture does not replace the Interpretant.'},
+  coop:{label:'Worker-Owned Cooperative',eps:0.000,phi:0.250,rho:0.450,sig:0.180,mu:0.100,fhri:74.2,cls:'high',
+    interp:'Interpretant aligned with both worker welfare and care quality: &mu; = 0.10 (near-zero distance between worker incentive and care mission). CHCA (Bronx) documents: aides earn $18-22/hour, turnover below 15%, care quality above proprietary sector.',
+    worker:'Worker-owners set wages collectively. CHCA aides have earned $18-22/hour with full benefits since 2015. Turnover below 15% means care relationships last years. The organizational structure aligns &mu; to near-zero by design.',
+    patient:'Care continuity structurally supported by ownership architecture. Aides have direct economic stake in quality outcomes. The BioBond target: demonstrate that the 61-point gap between PE and worker-cooperative care is a structural choice, not a natural condition.'}
+};
+function setIps(k,btn){
+  document.querySelectorAll('#pane-ips .case-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var d=IPS_DATA[k];
+  document.getElementById('ips-display').innerHTML=
+    '<div class="panel orange"><strong>'+d.label+'</strong></div>'+
+    '<div class="ips-grid">'+
+    [['&epsilon;',d.eps,'Extraction'],['&phi;',d.phi,'Entropy'],['&rho;',d.rho,'Regulatory'],['&sigma;',d.sig,'Morphic'],['&mu;',d.mu,'Misalign']].map(function(x){
+      return '<div class="ips-cell"><div class="sym">'+x[0]+'</div><div class="val" style="color:'+(x[1]>0.6?'var(--red)':x[1]>0.4?'var(--amber)':'var(--text)')+'">'+x[1].toFixed(3)+'</div><div class="nm">'+x[2]+'</div></div>';
+    }).join('')+'</div>'+
+    '<div class="fhri-row"><div class="fhri-num '+d.cls+'">'+d.fhri+'</div>'+
+    '<div class="fbar-wrap"><div class="fbar-lbl">FHRI_max &mdash; residual Interpretant integrity</div>'+
+    '<div class="fbar"><div class="fbar-fill '+d.cls+'" style="width:'+d.fhri+'%"></div></div></div></div>'+
+    '<div style="display:grid;gap:.5rem;margin-top:.75rem">'+
+    '<div class="panel violet" style="margin:0"><strong>Semiotic reading:</strong> '+d.interp+'</div>'+
+    '<div class="panel amber" style="margin:0"><strong>For workers:</strong> '+d.worker+'</div>'+
+    '<div class="panel teal" style="margin:0"><strong>For patients:</strong> '+d.patient+'</div></div>';
+  setTimeout(function(){document.querySelectorAll('.fbar-fill').forEach(function(el){var w=el.style.width;el.style.width='0';requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},60);});});},50);
+}
+setIps('pe',document.querySelector('#pane-ips .case-btn'));
+
+var EVAL_DATA={
+  student:{label:'Student / Citizen',icon:'&#128218;',lev:35,cls:'mid',actions:[
+    {icon:'&#128065;',title:'Agential life detection',tag:'t2',text:'Read CMS Care Compare before your family needs a nursing home. FHRI_max is derivable from star rating trajectory, ownership change history, staffing HPRD. The decision to choose without examining it is no longer ethically neutral.'},
+    {icon:'&#9997;',title:'Regulatory comment and political contact',tag:'t2',text:'CMS accepts public comments on proposed rules. Elected officials track constituent contact volume. Each comment is a unit of political input into the P-adic access condition at the governance level.'},
+    {icon:'&#127795;',title:'Build the alternative',tag:'t1',text:'If your trajectory touches the care economy, housing, or any of the three cases: what low-epsilon structure are you building toward? The Evergreen Cooperatives were built by people who were once students.'},
+    {icon:'&#128483;',title:'Consumer market pressure',tag:'t1',text:'Choosing non-profit care providers when quality is comparable directly reduces occupancy at high-extraction facilities. Individual choices aggregate into the market signal that changes the extraction calculation.'}
+  ]},
+  worker:{label:'Care Worker',icon:'&#128105;&#8205;&#9877;',lev:28,cls:'low',actions:[
+    {icon:'&#128737;',title:'Refuse to raise sigma',tag:'t2',text:'Every incident report filed, every protocol followed when cutting corners was easier, holds sigma from rising. You cannot change the P-adic access condition from inside the financial cluster. You can prevent normalized deviance from making it worse.'},
+    {icon:'&#128483;',title:'External regulatory reporting',tag:'t2',text:'State health departments and CMS accept frontline reports. This operates at higher leverage than internal reporting. Three unacted-on incident reports (the Boisjoly scenario) should become one regulatory complaint.'},
+    {icon:'&#127978;',title:'Union organizing',tag:'t1',text:'Collective bargaining changes the wage-setting mechanism. SEIU and NDWA have organized home health workers with documented wage improvements. This is T1: it changes the labor market P-adic access condition, not just optimizes within it.'},
+    {icon:'&#127795;',title:'Know the alternatives',tag:'t1',text:'Identify non-profit and cooperative agencies in your area. Departure to a lower-epsilon institution is itself a T1 act: it reduces the high-extraction facility\'s workforce and strengthens the low-extraction alternative.'}
+  ]},
+  family:{label:'Patient Family',icon:'&#128106;',lev:40,cls:'mid',actions:[
+    {icon:'&#128202;',title:'Read structural parameters',tag:'t2',text:'CMS Care Compare: ownership type, star rating before and after ownership change, staffing HPRD, deficiency citation history. The 25.6-point FHRI_max gap is visible in public data for every CMS-certified agency.'},
+    {icon:'&#10067;',title:'Ask the ownership question directly',tag:'t2',text:'Ask intake: who owns this agency? Is it part of a PE portfolio? The legal structure is not always disclosed. Asking forces transparency and signals that ownership structure is visible.'},
+    {icon:'&#128483;',title:'Exercise market choice as structural lever',tag:'t1',text:'Choosing a non-profit agency reduces occupancy at high-extraction agencies. Individual family choices aggregate into the market pressure that changes the extraction calculation at the sector level.'}
+  ]},
+  manager:{label:'Agency Manager',icon:'&#128193;',lev:58,cls:'mid',actions:[
+    {icon:'&#128302;',title:'Measure your agency\'s IPS profile',tag:'t1',text:'Compute FHRI_max from observable proxies. Management fee as % of revenue (&epsilon;). Staffing HPRD and turnover (&phi;). Documentation hours as % of staff time (&rho;). Know the number before you can change it.'},
+    {icon:'&#128203;',title:'Internal T1 advocacy',tag:'t1',text:'Propose changes to compensation design (&mu; reduction), staffing investment (&phi; improvement), documentation burden (&rho; reduction). The institutional response reveals whether you are in an Iron Cage.'},
+    {icon:'&#127795;',title:'Facilitate low-epsilon transition',tag:'t1',text:'Non-profit conversion, worker cooperative restructuring, mission-aligned acquisition. These T1 interventions require your structural position to be attempted. They are not available below your level.'}
+  ]},
+  policy:{label:'Policy / Advocacy',icon:'&#127979;',lev:68,cls:'high',actions:[
+    {icon:'&#128203;',title:'Beneficial ownership disclosure',tag:'t1',text:'Makes &epsilon; computable by revealing the entity holding debt obligation and determining wages. Without it, regulatory agencies cannot reach the P-adic access condition they nominally regulate.'},
+    {icon:'&#128208;',title:'FHRI_max floor standards',tag:'t1',text:'Specify minimum FHRI_max and hold agencies accountable for maintaining it. This shifts regulation from compliance-theater to outcome-accountability and creates market pressure for low-epsilon ownership.'},
+    {icon:'&#128184;',title:'BioBond enabling infrastructure',tag:'t1',text:'PBC certification, FHRI_max measurement standards, mission-driven capital access programs. These governance products create the enabling conditions for the capital market transition no private actor can substitute for.'}
+  ]},
+  investor:{label:'Impact Investor',icon:'&#128201;',lev:72,cls:'high',actions:[
+    {icon:'&#127959;',title:'Structural investment term design',tag:'t1',text:'&epsilon; is determined at origination: leverage load, management fee structure, return timeline. Constraining &epsilon; below the FHRI_max collapse threshold is T1 from your position. No downstream actor can substitute for this.'},
+    {icon:'&#128201;',title:'BioBond instrument',tag:'t1',text:'Conditions returns on FHRI_max improvement. Lower turnover costs, better quality ratings, reduced regulatory risk produce measurable financial improvement. Not philanthropy. A different risk model that accurately accounts for what extraction actually costs.'},
+    {icon:'&#128202;',title:'True Solvency Accounting in due diligence',tag:'t1',text:'Require FHRI_max degradation as a liability in acquisition analysis. An agency appearing profitable while reducing FHRI_max is extracting value that should appear on the liability side of the balance sheet.'}
+  ]}
+};
+function setEvalPos(k,card){
+  document.querySelectorAll('.pos-card').forEach(function(c){c.classList.remove('selected');});
+  card.classList.add('selected');
+  var d=EVAL_DATA[k];
+  var out=document.getElementById('eval-output');
+  out.innerHTML='<div class="panel orange" style="border-left-color:var(--teal)"><strong>'+d.icon+' '+d.label+'</strong></div>'+
+    '<div class="fhri-row"><div class="fhri-num '+d.cls+'">'+d.lev+'</div>'+
+    '<div class="fbar-wrap"><div class="fbar-lbl">Structural leverage capacity</div>'+
+    '<div class="fbar"><div class="fbar-fill '+d.cls+'" style="width:'+d.lev+'%"></div></div></div></div>'+
+    '<h3 class="sub">Actions matched to your leverage level</h3>'+
+    d.actions.map(function(a){return '<div class="action-row"><div class="ar-icon">'+a.icon+'</div><div class="ar-body"><div class="ar-title">'+a.title+' <span class="tag '+a.tag+'">'+a.tag.toUpperCase()+'</span></div><div class="ar-text">'+a.text+'</div></div></div>';}).join('');
+  out.classList.add('show');
+  setTimeout(function(){document.querySelectorAll('.fbar-fill').forEach(function(el){var w=el.style.width;el.style.width='0';requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},60);});});},50);
+}
+
+var PATHWAY_DATA={
+  acp:{name:'ACP: Agent Support',color:'var(--teal)',text:'Bottom-up agential life detection: FHRI_max lookup tool (families), navigational support (connect to non-profit alternatives), advocacy (regulatory comments, whistleblower support). P-SAGE connection: the ACP function restores the host community\'s ability to detect Interpretant replacement &mdash; to distinguish institutional Sign (operational continuity) from institutional Interpretant (what the operations serve). Visibility is the community immune response.',status:'Phase 1 PBC. CMS dataset analysis provides the measurement foundation. Public tool is the next deliverable.'},
+  biobond:{name:'BioBond Instrument',color:'var(--green)',text:'Conditions investor returns on FHRI_max improvement trajectory. P-SAGE formal T1 classification: BioBond changes the P-adic access condition in the financial cluster &mdash; it makes capital availability contingent on FHRI_max maintenance, changing who can achieve P-adic proximity to the budget channel and on what terms. The financial logic: lower turnover costs, better quality ratings, lower regulatory risk produce measurable return improvement. Not philanthropy. Accurate structural accounting.',status:'Phase 2 PBC. Cooperative Home Care Associates is the proof of concept. First term sheet requires Capital Architect board member.'},
+  tsa:{name:'True Solvency Accounting',color:'var(--violet)',text:'FHRI_max degradation as a liability on balance sheets. P-SAGE formal T1 classification: TSA changes what the financial reporting Signal means (the Interpretant of the balance sheet) &mdash; making extraction-induced FHRI_max decline appear as a liability rather than invisible externality. An agency appearing profitable while systematically reducing FHRI_max is extracting value that should appear on the liability side.',status:'Phase 4 PBC (Year 7-15). Requires FASB engagement and accounting firm piloting. The research program builds the empirical case that precedes regulatory adoption.'},
+  measure:{name:'FHRI_max Measurement',color:'var(--orange)',text:'The most immediately available PBC contribution. P-SAGE connection: measurement infrastructure is the agential life detection system at the sector level &mdash; it makes the Interpretant replacement visible to families, researchers, and regulators who otherwise see only the Sign (care operations continuing). Without measurement, Sign integrity conceals Interpretant replacement indefinitely.',status:'Phase 1-2. Platform live. Public lookup tool is next deliverable. Peterson collaboration paper establishes the measurement as academically citable.'},
+  t1pol:{name:'T1 Policy Instruments',color:'var(--blue)',text:'Three instruments with clearest current pathway: (1) Beneficial ownership disclosure &mdash; makes P-adic access mechanism visible (who is in the financial cluster); achievable through CMS rulemaking. (2) Minimum staffing mandate &mdash; the Biden 2024 nursing home rule is T1 (&phi; reduction). Its legal challenge by the industry is the Iron Cage failure mode in real time. (3) Worker classification reform &mdash; California AB5 / Prop 22 is the live T1/T2 battle over who bears the cost of the gig economy Interpretant replacement.',status:'Active policy landscape. PBC regulatory comment function is the immediate contribution.'},
+  altinst:{name:'Low-epsilon Alternatives',color:'var(--amber)',text:'Most structurally durable response: build and scale low-epsilon alternatives whose existence cannot be ignored. Cooperative Home Care Associates (CHCA, Bronx): 2,000+ clients, worker-owner aides at $18-22/hour, turnover below 15%. Evergreen Cooperatives (Cleveland): worker-owned businesses anchored by institutional purchasing commitments. BioBond makes these alternatives financially scalable &mdash; they cannot compete with PE acquisition capital on the current financing playing field. BioBond changes the playing field.',status:'Phase 1-3. Identifying the first BioBond pilot institution is a Phase 2 task.'}
+};
+function setPathway(k,card){
+  document.querySelectorAll('.pathway-card').forEach(function(c){c.classList.remove('active');});
+  card.classList.add('active');
+  var d=PATHWAY_DATA[k];
+  document.getElementById('pathway-detail').innerHTML=
+    '<div style="border:1px solid var(--border);border-radius:.5rem;overflow:hidden;margin-top:.5rem">'+
+    '<div style="padding:.85rem 1.1rem;background:var(--s);border-bottom:1px solid var(--border)">'+
+    '<div style="font-family:\'DM Serif Display\',serif;font-size:1.15rem;color:'+d.color+'">'+d.name+'</div></div>'+
+    '<div style="padding:1rem 1.2rem;background:#0a0e1c">'+
+    '<p style="font-size:.88rem;line-height:1.75;margin-bottom:.75rem">'+d.text+'</p>'+
+    '<div style="background:var(--s);border-radius:.4rem;padding:.75rem;border:1px solid var(--border)">'+
+    '<div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:'+d.color+';text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem">CURRENT STATUS</div>'+
+    '<div style="font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.7)">'+d.status+'</div></div></div></div>';
+  document.getElementById('pathway-detail').classList.add('show');
+}
+function setCulture(k,btn){document.querySelectorAll('#pane-culture .case-btn').forEach(function(b){b.classList.remove('active');});btn.classList.add('active');document.querySelectorAll('#pane-culture .case-panel').forEach(function(p){p.classList.remove('active');});document.getElementById('cult-'+k).classList.add('active');}
+
+var JK=['ch11v3_j1','ch11v3_j2','ch11v3_j3','ch11v3_j4','ch11v3_j5'];
+function sv(){JK.forEach(function(k,i){var el=document.getElementById('j'+(i+1));try{if(el)localStorage.setItem(k,el.value);}catch(x){}});var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){var t='EBB Ch11 v3 — Economics, Extraction & Ethical Response\nJournal\n'+'='.repeat(60)+'\n\n';
+['Q1: P-SAGE applied to your economic life (P1/P2/P3/output).','Q2: Nussbaum capabilities audit with Triadic Hack lens.','Q3: Most structurally effective action from your actual position (T1/T2 analysis).','Q4: The plant in the boot — what low-epsilon alternative will you tend?','Q5: BioBond design for your case.'].forEach(function(q,i){var v=document.getElementById('j'+(i+1));t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';});
+try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_Ch11v3_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+JK.forEach(function(k,i){var el=document.getElementById('j'+(i+1));try{if(el)el.value=localStorage.getItem(k)||'';}catch(x){}});
+setTimeout(function(){document.querySelectorAll('.fbar-fill').forEach(function(el){var w=el.style.width;el.style.width='0';requestAnimationFrame(function(){setTimeout(function(){el.style.width=w;},80);});});},500);
+</script>
+</body>
+</html>

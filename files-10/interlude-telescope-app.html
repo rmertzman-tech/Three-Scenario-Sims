@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Interlude: The Telescope Turned Inward</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:2rem 1.5rem 1.6rem;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(160deg,#0a0c1a 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(20,184,166,.12) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--teal);text-transform:uppercase;margin-bottom:.4rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;line-height:1.15;margin-bottom:.3rem}
+.ch-ttl em{color:var(--teal);font-style:italic}
+.ch-sub{font-size:.85rem;color:var(--muted);max-width:600px;margin:0 auto;line-height:1.55}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.6rem 1rem;background:var(--s);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--teal)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.38rem .8rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:860px;margin:0 auto}.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.8}
+p.bd strong{font-weight:600}p.bd em{font-style:italic;color:var(--teal)}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--teal);margin:1.2rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.92rem;color:rgba(255,255,255,.85);margin:.8rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.75;font-size:.88rem}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel strong{color:var(--text)}
+.pullq{border-top:2px solid var(--teal);border-bottom:2px solid var(--teal);padding:1.1rem 2rem;margin:1.5rem 0;text-align:center;font-family:'DM Serif Display',serif;font-size:1.15rem;color:var(--teal);line-height:1.55;font-style:italic}
+/* TIMELINE */
+.timeline{position:relative;padding-left:28px;margin:1rem 0}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.1)}
+.tl-item{position:relative;margin-bottom:1.4rem}
+.tl-item::before{content:'';position:absolute;left:-23px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.tl-year{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);letter-spacing:.08em;display:block;margin-bottom:.2rem}
+.tl-title{font-weight:600;font-size:.92rem;margin-bottom:.25rem}
+.tl-body{font-size:.85rem;line-height:1.68;color:rgba(255,255,255,.72)}
+/* DELTA CLASSIFIER */
+.delta-tool{background:var(--s);border:1px solid var(--border);border-radius:.5rem;padding:1.2rem;margin:1rem 0}
+.delta-tool h4{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem}
+.delta-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}
+@media(max-width:520px){.delta-row{grid-template-columns:1fr}}
+.delta-col{background:var(--s2);border-radius:.4rem;padding:.85rem}
+.delta-col h5{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.delta-col.inc h5{color:var(--amber)}.delta-col.dis h5{color:var(--teal)}
+.delta-slider-wrap{margin:.5rem 0}
+.delta-slbl{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-bottom:.2rem}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;outline:none;cursor:pointer;background:rgba(255,255,255,.1)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--teal);cursor:pointer}
+.delta-result{text-align:center;padding:1rem;border-radius:.4rem;margin-top:.5rem;transition:all .3s}
+.delta-result .verdict{font-family:'DM Serif Display',serif;font-size:1.5rem;margin-bottom:.3rem}
+.delta-result .explanation{font-size:.82rem;line-height:1.6;color:rgba(255,255,255,.72)}
+.dr-pos{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3)}
+.dr-neg{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.3)}
+.dr-neu{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3)}
+/* CASE CARDS */
+.case-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;margin:.75rem 0}
+.case-card{border:1px solid var(--border);border-radius:.45rem;padding:.9rem;background:var(--s);cursor:pointer;transition:all .18s}
+.case-card:hover{border-color:rgba(255,255,255,.25);transform:translateY(-2px)}
+.case-card.sel{border-color:var(--teal);background:rgba(20,184,166,.06)}
+.case-icon{font-size:1.4rem;margin-bottom:.35rem}
+.case-name{font-weight:600;font-size:.85rem;margin-bottom:.15rem}
+.case-period{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted)}
+.case-output{margin-top:.75rem;display:none}.case-output.show{display:block;animation:fi .3s ease}
+/* COMPARISON TABLE */
+.comp-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.84rem}
+.comp-table th{padding:.55rem .8rem;text-align:left;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.comp-table td{padding:.6rem .8rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.55}
+.comp-table tr:last-child td{border-bottom:none}
+.tag{font-family:'DM Mono',monospace;font-size:.58rem;padding:.1rem .35rem;border-radius:.2rem;display:inline-block}
+.tag-t1{background:rgba(74,222,128,.12);color:var(--green)}
+.tag-t2{background:rgba(248,113,113,.12);color:var(--red)}
+.tag-t3{background:rgba(245,158,11,.12);color:var(--amber)}
+/* JOURNAL */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.87rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--teal);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:86px;background:#0a0e1c;border:none;border-top:1px solid var(--border);padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+button.btn{background:var(--teal);color:#000;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.5rem 1.1rem;border-radius:.35rem;cursor:pointer;margin:.25rem .2rem}
+button.btn.out{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.bot-nav{max-width:860px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--teal);color:#000;font-weight:600;font-size:.76rem;padding:.4rem .9rem;border-radius:.35rem;display:none;z-index:999}
+.sf.show{display:block}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="ch-lbl">Interlude &middot; Between Ch 11 and Ch 12</div>
+  <h1 class="ch-ttl">The <em>Telescope</em> Turned Inward</h1>
+  <p class="ch-sub">From Adam Smith&rsquo;s Moral Sentiments through mathematical supply and demand to the UCP &mdash; how economics lost sight of the human being, and what it takes to find them again</p>
+</div>
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('smith')">Adam Smith&rsquo;s Two Books</button>
+  <button class="tb" onclick="sw('math')">The Mathematical Turn</button>
+  <button class="tb" onclick="sw('delta')">The &Delta;FHRI_max Classifier</button>
+  <button class="tb" onclick="sw('cases')">Cases: Good &amp; Bad</button>
+  <button class="tb" onclick="sw('phi')">The &phi; Question</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- SMITH -->
+<div class="pane active" id="pane-smith">
+  <h2 class="st">Adam Smith Had Two Books &mdash; and We Forgot the First One</h2>
+  <div class="panel teal"><strong>The founding text of economics is not The Wealth of Nations.</strong> It is The Theory of Moral Sentiments, published in 1759 &mdash; seventeen years earlier. Smith spent more of his life revising it. He considered it the more fundamental work. Understanding why he was right is the key to understanding what the UCP is actually doing.</div>
+  <p class="bd"><em>The Theory of Moral Sentiments</em> begins with an observation that sounds simple but carries enormous weight: human beings are not isolated maximizers. We are constitutively social creatures whose capacity to make judgments &mdash; including economic judgments &mdash; depends on our ability to imaginatively inhabit the perspectives of others. Smith called this faculty <strong>sympathy</strong>, and he argued that it is the foundation not only of ethics but of all stable social coordination, including markets.</p>
+  <p class="bd">The invisible hand Smith described in <em>Wealth of Nations</em> was never meant to operate in a moral vacuum. It was the mechanism by which individually pursued interests, <em>within a social fabric of sympathy and shared norms</em>, could produce collectively beneficial outcomes. The sympathy of <em>Moral Sentiments</em> was the operating condition the market mechanism presupposed. Without it, the hand is not invisible &mdash; it is absent.</p>
+  <div class="pullq">Smith&rsquo;s invisible hand only works inside a society whose members can imaginatively inhabit each other&rsquo;s situations.<br>Remove the sympathy, and you remove the hand.</div>
+  <p class="bd">This is not a minor historical footnote. It is the root of the central problem that has haunted economics ever since: the discipline formalized the market mechanism while treating the moral and social conditions that make it function as <strong>exogenous</strong> &mdash; as given background rather than as variables that markets themselves can erode or restore. The UCP makes those conditions endogenous: FHRI_max, PRF, and the IPS parameters are precisely the variables that standard economics leaves off the model.</p>
+  <div class="timeline">
+    <div class="tl-item"><span class="tl-year">1759</span><div class="tl-title">The Theory of Moral Sentiments</div><div class="tl-body">Smith establishes sympathy &mdash; the capacity to imaginatively inhabit another&rsquo;s perspective &mdash; as the foundation of social coordination. Markets are embedded in moral communities. The invisible hand presupposes this embedding.</div></div>
+    <div class="tl-item"><span class="tl-year">1776</span><div class="tl-title">The Wealth of Nations</div><div class="tl-body">Smith formalizes the market mechanism: division of labor, comparative advantage, the price system as information aggregator. Implicitly assumes the moral fabric of Moral Sentiments as background. Economics begins here for most students &mdash; but this is book two, not book one.</div></div>
+    <div class="tl-item"><span class="tl-year">1870s</span><div class="tl-title">The Marginalist Revolution</div><div class="tl-body">Jevons, Walras, Marshall convert political economy into mathematical economics. Supply and demand become curves. Agents become representative utility-maximizers. The moral fabric drops out of the model because it cannot be expressed as an equation.</div></div>
+    <div class="tl-item"><span class="tl-year">1950s&ndash;70s</span><div class="tl-title">Behavioral economics &amp; bounded rationality</div><div class="tl-body">Simon, Kahneman, Tversky demonstrate that real agents systematically violate the rationality assumptions. Heuristics, loss aversion, framing effects are not noise &mdash; they are the dominant features of actual human economic decision-making.</div></div>
+    <div class="tl-item"><span class="tl-year">1980s&ndash;present</span><div class="tl-title">Complexity economics (Farmer, Santa Fe)</div><div class="tl-body">The economy as a complex adaptive system of heterogeneous agents. Equilibrium is an occasional attractor, not the natural state. Capital allocation is itself a complex adaptive process shaped by institutional arrangements and information asymmetries.</div></div>
+    <div class="tl-item"><span class="tl-year">UCP V5.0</span><div class="tl-title">The epistemic telescope</div><div class="tl-body">The UCP makes visible what the price signal cannot carry: heterogeneous agents (PRF, Identity Kernel), substrate costs (&phi;), and the structural ceiling on coordination capacity (FHRI_max). It does not replace mathematical economics. It extends its interpretive reach into the dimensions it currently cannot see.</div></div>
+  </div>
+  </div>
+
+<!-- MATH -->
+<div class="pane" id="pane-math">
+  <h2 class="st">The Mathematical Turn: What Was Gained and What Was Lost</h2>
+  <div class="panel amber"><strong>The gains from mathematical formalization were real.</strong> Predictions could be tested. Policies could be compared. Effects could be measured with precision that moral philosophy could not match. But the formalization required a simplification that Smith never made &mdash; and the simplification cost the model its most important subject matter.</div>
+  <p class="bd">To write supply and demand as curves, you need agents whose behavior can be aggregated &mdash; agents who are <em>identical in their decision-making structure</em>, fully informed, and capable of consistent preference maximization. This is the <strong>representative agent</strong>: a single decision-maker whose behavior stands in for an entire population.</p>
+  <p class="bd">The representative agent is not merely a simplification. It is a category error. Real markets are populated by agents who are heterogeneous in their information, their cognitive capacity, their power relative to other actors, and their position in institutional hierarchies. The price signal can aggregate their behavior into an equilibrium, but it cannot represent the distribution of who captures value, who bears cost, or how the coordination mechanism shapes the agents who participate in it over time.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.75rem 0">
+    <div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--teal);margin-bottom:.4rem">Adam Smith&rsquo;s agents (1759&ndash;1776)</div>
+      <div style="font-size:.84rem;line-height:1.68;color:rgba(255,255,255,.75)">Heterogeneous in their sympathies, histories, power relations, and cognitive capacities. Markets are embedded in moral communities. Norms constrain what can be bought, sold, or extracted. The invisible hand presupposes a background of shared sentiments that no individual agent controls.</div>
+    </div>
+    <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--amber);margin-bottom:.4rem">The mathematical representative agent (1870s&ndash;present)</div>
+      <div style="font-size:.84rem;line-height:1.68;color:rgba(255,255,255,.75)">Identical to all other agents in decision structure. Markets are information aggregation mechanisms operating on price signals alone. Agent psychology is captured entirely by a utility function. Power differentials, cognitive limitations, and moral norms are exogenous noise.</div>
+    </div>
+  </div>
+  <h3 class="sub">What the price signal cannot carry</h3>
+  <div style="display:grid;gap:.4rem;margin:.75rem 0">
+    <div style="background:var(--s);border-radius:.4rem;padding:.8rem 1rem;display:grid;grid-template-columns:20px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--red);font-weight:600;font-size:.9rem">&bull;</div>
+      <div><strong>Heterogeneous agents</strong> at different positions in institutional hierarchies, with different information access, different cognitive capacities, and different power to set the terms of exchange. The supply curve treats a homeowner facing foreclosure and an investment bank structuring CDOs as equivalent nodes in the same market.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.8rem 1rem;display:grid;grid-template-columns:20px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--red);font-weight:600;font-size:.9rem">&bull;</div>
+      <div><strong>Path dependence:</strong> how the history of an agent&rsquo;s interactions shapes their PRF and consequently their market behavior in ways no utility function evaluated at a single moment can capture. The worker who has spent fifteen years in a high-extraction environment has a different PRF than the entering worker &mdash; and the difference is economically significant.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.8rem 1rem;display:grid;grid-template-columns:20px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--red);font-weight:600;font-size:.9rem">&bull;</div>
+      <div><strong>The &phi; problem:</strong> how market outcomes externalize substrate costs onto communities, workers, and public systems that do not appear in prices. The $19.2 trillion in household wealth destroyed by the 2008 financial crisis is not visible in any equilibrium price. It is &phi; that the market mechanism externalizes and cannot account for.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.8rem 1rem;display:grid;grid-template-columns:20px 1fr;gap:.6rem;font-size:.85rem;line-height:1.65">
+      <div style="color:var(--red);font-weight:600;font-size:.9rem">&bull;</div>
+      <div><strong>Institutional endogeneity:</strong> how the institutions through which markets operate change the agents who participate in them &mdash; extracting coordination capacity from some (FHRI_max falls) while concentrating it in others. The market equilibrium is determined by today&rsquo;s agents; the agents tomorrow will be shaped by today&rsquo;s market.</div>
+    </div>
+  </div>
+  <div class="pullq">The price signal correctly summarizes what agents with equal information and equal power agreed to exchange.<br>It cannot tell you who bore the cost that did not appear in the price.</div>
+  <div class="panel teal"><strong>The UCP is not a replacement for mathematical economics.</strong> It is an epistemic telescope &mdash; a tool that extends interpretive reach into the dimensions of economic life that price signals cannot carry. The telescope does not invalidate the supply and demand curves. It situates them correctly: as accurate descriptions of price-mediated coordination among agents with roughly similar information and power, producing outcomes that are efficient in the narrow sense of clearing markets, but systematically incomplete in failing to account for who bears the costs that do not appear in prices.</div>
+  </div>
+
+<!-- DELTA -->
+<div class="pane" id="pane-delta">
+  <h2 class="st">The &Delta;FHRI_max Classifier: Good Disruption from Bad</h2>
+  <div class="panel teal"><strong>The IPS framework could, if misapplied, condemn capitalism&rsquo;s most productive features along with its pathologies.</strong> If P-SAGE reads Netflix as a parasite on Blockbuster, the framework is worse than useless. We need a formal criterion that distinguishes creative destruction from extractive parasitism. The &Delta;FHRI_max classifier provides it.</div>
+  <p class="bd">The criterion is the sign of the change in the structural ceiling on coordination capacity when one institution displaces another. This single number does significant work: it means the framework is not anti-innovation or anti-market. It endorses any transition that increases FHRI_max, regardless of how disruptive it is to incumbents.</p>
+
+  <div style="display:grid;gap:.45rem;margin:.75rem 0">
+    <div style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:.4rem;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--green);margin-bottom:.3rem">&Delta;FHRI_max &gt; 0 &mdash; PRODUCTIVE DISRUPTION (Schumpeter / Serres Type 2)</div>
+      <div style="font-size:.85rem;line-height:1.68;color:rgba(255,255,255,.75)">The replacing institution has a higher coordination capacity ceiling than the institution it displaces. Netflix (&epsilon; &asymp; 0.15, FHRI_max &asymp; 65) displaced Blockbuster (&epsilon; &asymp; 0.30, FHRI_max &asymp; 44). &Delta;FHRI_max &asymp; +21. The channel was replaced by a better one. This is what the invisible hand is supposed to do. The incumbent bears &phi; &mdash; job losses are real, community disruption is real &mdash; but the overall coordination function improves.</div>
+    </div>
+    <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:.4rem;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber);margin-bottom:.3rem">&Delta;FHRI_max &asymp; 0 &mdash; COMPETITIVE DISPLACEMENT</div>
+      <div style="font-size:.85rem;line-height:1.68;color:rgba(255,255,255,.75)">Two similar institutions compete. One wins. Coordination capacity is approximately unchanged. Capital has reallocated but the system&rsquo;s structural ceiling is similar. Standard market competition without structural transformation. Morally neutral from the IPS perspective.</div>
+    </div>
+    <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--red);margin-bottom:.3rem">&Delta;FHRI_max &lt; 0 &mdash; EXTRACTIVE PARASITISM (Serres Type 1)</div>
+      <div style="font-size:.85rem;line-height:1.68;color:rgba(255,255,255,.75)">The replacing institution has a lower coordination capacity ceiling. PE firm acquires nursing home: FHRI_max falls from 62.9 to 13.6. &Delta;FHRI_max = &minus;49.3. The channel was replaced by one that appears to serve the same function while destroying 77% of its coordination capacity. Sign intact; Interpretant replaced; &phi; cascades to the populations depending on the coordination function.</div>
+    </div>
+  </div>
+
+  <h3 class="sub">Try it: estimate &Delta;FHRI_max for any transition</h3>
+  <div class="delta-tool">
+    <h4>Interactive &Delta;FHRI_max Calculator</h4>
+    <div class="delta-row">
+      <div class="delta-col inc">
+        <h5>Incumbent Institution (Being Displaced)</h5>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&epsilon; extraction</span><span id="ie-v">0.30</span></div>
+          <input type="range" id="ie" min="0" max="100" value="30" oninput="calc()">
+        </div>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&sigma; residue</span><span id="is-v">0.30</span></div>
+          <input type="range" id="is" min="0" max="100" value="30" oninput="calc()">
+        </div>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&mu; misalignment</span><span id="im-v">0.35</span></div>
+          <input type="range" id="im" min="0" max="100" value="35" oninput="calc()">
+        </div>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&phi; entropy</span><span id="ip-v">0.25</span></div>
+          <input type="range" id="ip" min="0" max="100" value="25" oninput="calc()">
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:.72rem;margin-top:.5rem">FHRI_max (incumbent): <span id="i-fhri" style="color:var(--amber)">44</span></div>
+      </div>
+      <div class="delta-col dis">
+        <h5>Disruptor Institution (Replacing)</h5>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&epsilon; extraction</span><span id="de-v">0.15</span></div>
+          <input type="range" id="de" min="0" max="100" value="15" oninput="calc()">
+        </div>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&sigma; residue</span><span id="ds-v">0.15</span></div>
+          <input type="range" id="ds" min="0" max="100" value="15" oninput="calc()">
+        </div>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&mu; misalignment</span><span id="dm-v">0.18</span></div>
+          <input type="range" id="dm" min="0" max="100" value="18" oninput="calc()">
+        </div>
+        <div class="delta-slider-wrap">
+          <div class="delta-slbl"><span>&phi; entropy</span><span id="dp-v">0.12</span></div>
+          <input type="range" id="dp" min="0" max="100" value="12" oninput="calc()">
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:.72rem;margin-top:.5rem">FHRI_max (disruptor): <span id="d-fhri" style="color:var(--teal)">65</span></div>
+      </div>
+    </div>
+    <div class="delta-result dr-pos" id="delta-result">
+      <div class="verdict" id="delta-verdict" style="color:var(--green)">+21 &mdash; Productive Disruption</div>
+      <div class="explanation" id="delta-explain">The disruptor has a significantly higher FHRI_max. This transition increases overall coordination capacity. The incumbent bears &phi; (job losses, stranded capital), but the channel is replaced by a better one. Apply &phi; distribution analysis to determine who bears the transition cost.</div>
+    </div>
+  </div>
+
+  <h3 class="sub">Serres&rsquo; three types of parasite</h3>
+  <p class="bd">Michel Serres identified the parasite as a foundational feature of all complex systems. But parasitism in Serres&rsquo; sense is not always destructive. Sometimes the parasite interrupts a stale channel and creates a higher-capacity one. The &Delta;FHRI_max criterion maps directly onto Serres&rsquo; taxonomy.</p>
+  <table class="comp-table">
+    <thead><tr><th>Type</th><th>Description</th><th>&Delta;FHRI_max</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Type 1</strong> <span class="tag tag-t1">Extractive</span></td><td>Takes coordination capacity, introduces nothing new. Sign intact; Interpretant replaced; &phi; falls on those furthest from the access mechanism.</td><td style="color:var(--red);font-family:'DM Mono',monospace">&lt; 0</td><td>PE acquires nursing home. GEO Group Florida. 2008 financial system.</td></tr>
+      <tr><td><strong>Type 2</strong> <span class="tag tag-t1" style="background:rgba(74,222,128,.12);color:var(--green)">Generative</span></td><td>Interrupts an existing coordination channel and creates a higher-capacity replacement. Creative destruction operating correctly. Incumbent bears &phi;; overall system improves.</td><td style="color:var(--green);font-family:'DM Mono',monospace">&gt; 0</td><td>Netflix/Blockbuster. iPhone/Kodak. YouTube/video rental.</td></tr>
+      <tr><td><strong>Type 3</strong> <span class="tag tag-t3">Migrating</span></td><td>Begins as generative (&Delta;FHRI_max &gt; 0). Gradually achieves P-adic proximity to host&rsquo;s information channel. Interpretant begins to be replaced. &Delta;FHRI_max trend turns negative over time.</td><td style="color:var(--amber);font-family:'DM Mono',monospace">+ then &minus;</td><td>Amazon Marketplace (2000: better distribution; 2020: Basics competing using seller data).</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+<!-- CASES -->
+<div class="pane" id="pane-cases">
+  <h2 class="st">Cases: Productive Disruption and Extractive Parasitism Side by Side</h2>
+  <div class="panel blue"><strong>The same formal framework classifies both.</strong> This is the point. The IPS framework is not a critique of innovation or markets &mdash; it is a measurement instrument. Click any case to see its &Delta;FHRI_max classification.</div>
+  <div class="case-grid">
+    <div class="case-card" onclick="setCase('netflix',this)"><div class="case-icon">&#127916;</div><div class="case-name">Netflix / Blockbuster</div><div class="case-period">1999&ndash;2013</div></div>
+    <div class="case-card" onclick="setCase('iphone',this)"><div class="case-icon">&#128247;</div><div class="case-name">iPhone / Kodak Film</div><div class="case-period">2007&ndash;2012</div></div>
+    <div class="case-card" onclick="setCase('amazon',this)"><div class="case-icon">&#128230;</div><div class="case-name">Amazon Marketplace</div><div class="case-period">2000&ndash;present</div></div>
+    <div class="case-card" onclick="setCase('uber',this)"><div class="case-icon">&#128665;</div><div class="case-name">Uber / Taxi Industry</div><div class="case-period">2010&ndash;present</div></div>
+    <div class="case-card" onclick="setCase('pe_nh',this)"><div class="case-icon">&#127973;</div><div class="case-name">PE / Nursing Home</div><div class="case-period">2000&ndash;present</div></div>
+    <div class="case-card" onclick="setCase('fin2008',this)"><div class="case-icon">&#127970;</div><div class="case-name">Originate-to-Distribute / Community Banking</div><div class="case-period">1999&ndash;2008</div></div>
+  </div>
+  <div class="case-output" id="case-output"></div>
+  </div>
+
+<!-- PHI -->
+<div class="pane" id="pane-phi">
+  <h2 class="st">The &phi; Question: Even Good Disruption Has Costs</h2>
+  <div class="panel teal"><strong>&Delta;FHRI_max &gt; 0 does not mean the transition is cost-free.</strong> It means the coordination function improves. But &phi; still lands somewhere. On whom it lands is the separate distributional question that &Delta;FHRI_max alone does not answer &mdash; and it is where Smith&rsquo;s moral sentiments return as a practical requirement, not just a philosophical aspiration.</div>
+  <p class="bd">When Netflix displaced Blockbuster, approximately 60,000 Blockbuster employees lost jobs. The coordination capacity of film delivery increased. But the workers who bore &phi; were not the shareholders who captured the FHRI_max gains. &Delta;FHRI_max = +21 at the system level. &phi; was distributed asymmetrically: workers bore it; investors captured the gain.</p>
+  <p class="bd">Standard economics tracks the system-level outcome: efficiency gains, consumer surplus, capital reallocation. The price signal carries this information accurately. What the price signal cannot carry is the distributional question: who bore &phi;, and does the entity bearing &phi; have any claim on the FHRI_max gains?</p>
+  <div class="pullq">Creative destruction is genuinely creative when &Delta;FHRI_max &gt; 0<br>and the &phi; is borne by the actors capturing the gain.<br>It becomes merely destructive when the &phi; is externalized<br>onto those with no access to the gain.</div>
+  <h3 class="sub">True Solvency Accounting</h3>
+  <p class="bd">The deepest limitation of mathematical economics is that it can only measure what appears in prices. <strong>True Solvency Accounting</strong> addresses this: &phi; imposed on communities, workers, and public systems appears as a liability on the firm&rsquo;s balance sheet, measured by the FHRI_max degradation the firm produces in the systems it affects.</p>
+  <p class="bd">A firm that appears profitable because it has externalized its costs onto communities it does not own is not actually solvent &mdash; it has borrowed against a balance sheet belonging to others. The 2008 financial system at peak extraction was, under True Solvency Accounting, deeply insolvent: it was recording profits by externalizing &phi; onto nine million households that would lose their homes.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.75rem 0">
+    <div style="background:var(--s);border-radius:.4rem;padding:.9rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.35rem">Standard accounting (what it sees)</div>
+      <div style="font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.72)">Revenue - Costs (as priced in markets) = Profit. &phi; imposed on communities, workers, future generations = zero. A nursing home that cuts staffing ratios below the threshold of genuine care appears more profitable. A financial firm that packages toxic debt and sells it to pension funds appears profitable until the cascade arrives.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.9rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--teal);margin-bottom:.35rem">True Solvency Accounting (what it reveals)</div>
+      <div style="font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.72)">Revenue - Costs (priced) - &phi; (FHRI_max degradation imposed on others) = True net position. A firm that appears profitable by externalizing &phi; is running a hidden deficit on the balance sheet of the communities it affects. This deficit will eventually be paid &mdash; either by the firm through BioBond obligations, or by the public through TARP and similar mechanisms.</div>
+    </div>
+  </div>
+  <div class="panel green"><strong>The BioBond in the context of legitimate disruption.</strong> Even when &Delta;FHRI_max &gt; 0, a BioBond instrument on the disruptor &mdash; indexed to the FHRI_max gain and dedicated to worker transition support &mdash; makes the creative destruction more complete. The workers bear &phi; in the short term, but the BioBond ensures they participate in the FHRI_max gain. This is not a subsidy to the incumbent. It is an accurate accounting of who pays for the efficiency gain &mdash; and a mechanism that routes some of the gain to the entities who bore the cost of producing it.</div>
+  </div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions bridge the economic analysis of Chapters 11 and the governance analysis of Chapter 12.</p>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q1</span>Adam Smith wrote Moral Sentiments first and Wealth of Nations second. What would economics look like today if the discipline had treated the second book as dependent on the first, rather than treating moral sentiments as exogenous to the market mechanism?</div><textarea class="jq-ta" id="j1" oninput="sv()" placeholder="What moral sentiments-grounded economics would model differently..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q2</span>Use the &Delta;FHRI_max classifier on an economic transition you have personally experienced or observed. Name the incumbent and the disruptor, estimate the five IPS parameters for each, compute approximate FHRI_max values, and classify the transition. Does your moral intuition (OS1) agree with the formal classification?</div><textarea class="jq-ta" id="j2" oninput="sv()" placeholder="Incumbent: _____. Disruptor: _____. Estimated &Delta;FHRI_max: _____. Classification: _____. OS1 agreement: _____..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q3</span>Amazon Marketplace is a Type 3 parasite: it began as generative (&Delta;FHRI_max &gt; 0 when it genuinely improved distribution) and is migrating toward extractive (&Delta;FHRI_max trend negative as it achieves P-adic proximity to seller data). Identify the specific P-adic access mechanism that enabled this migration. At what point did the Interpretant begin to be replaced?</div><textarea class="jq-ta" id="j3" oninput="sv()" placeholder="The specific access mechanism, and when the Interpretant replacement began..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q4</span>True Solvency Accounting would require that &phi; imposed on communities appear as a liability on the firm&rsquo;s balance sheet. Name a firm or industry you know whose standard accounting profitability depends on externalized &phi;. What would its balance sheet look like under True Solvency Accounting?</div><textarea class="jq-ta" id="j4" oninput="sv()" placeholder="The firm, the externalized phi, and the balance sheet impact of True Solvency Accounting..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q5 &mdash; The Bridge</span>Chapter 12 will ask: what governance arrangements would make the price signal carry the information it currently cannot carry? Based on the Smith-to-UCP arc in this interlude, what is your answer before reading Chapter 12?</div><textarea class="jq-ta" id="j5" oninput="sv()" placeholder="The governance arrangements that would extend the price signal into phi and FHRI_max..."></textarea></div>
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+  </div>
+</div>
+
+<div class="bot-nav">
+  <button class="btn out" onclick="prev()">&larr;</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &rarr;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['smith','math','delta','cases','phi','journal'],cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+
+function fhriCalc(e,s,m,ph){
+  var ep=e/100,si=s/100,mu=m/100,phi=ph/100;
+  var rq=1-(0.45*ep+0.35*Math.min(si,.7)+0.20*mu);
+  var ee=0.40*phi+0.30*si+0.25*ep;
+  return Math.max(0,Math.min(100,Math.round(100*(1-ee)*rq)));
+}
+
+function calc(){
+  ['ie','is','im','ip'].forEach(function(k){document.getElementById(k+'-v').textContent=(parseInt(document.getElementById(k).value)/100).toFixed(2);});
+  ['de','ds','dm','dp'].forEach(function(k){document.getElementById(k+'-v').textContent=(parseInt(document.getElementById(k).value)/100).toFixed(2);});
+  var iF=fhriCalc(document.getElementById('ie').value,document.getElementById('is').value,document.getElementById('im').value,document.getElementById('ip').value);
+  var dF=fhriCalc(document.getElementById('de').value,document.getElementById('ds').value,document.getElementById('dm').value,document.getElementById('dp').value);
+  document.getElementById('i-fhri').textContent=iF;
+  document.getElementById('d-fhri').textContent=dF;
+  var delta=dF-iF;
+  var res=document.getElementById('delta-result');
+  var verd=document.getElementById('delta-verdict');
+  var exp=document.getElementById('delta-explain');
+  var sign=delta>0?'+':'';
+  if(delta>8){
+    res.className='delta-result dr-pos';
+    verd.style.color='var(--green)';
+    verd.textContent=sign+delta+' \u2014 Productive Disruption (Type 2)';
+    exp.textContent='The disruptor has a significantly higher FHRI_max. This transition increases overall coordination capacity. The channel is replaced by a better one. The incumbent bears \u03c6 (job losses, stranded capital), but the system improves. Apply the \u03c6 distribution analysis to determine who bears the transition cost and whether a BioBond is warranted.';
+  } else if(delta<-8){
+    res.className='delta-result dr-neg';
+    verd.style.color='var(--red)';
+    verd.textContent=sign+delta+' \u2014 Extractive Parasitism (Type 1)';
+    exp.textContent='The disruptor has a significantly lower FHRI_max. The channel is being replaced by one that appears to serve the same function while destroying coordination capacity. This is the IPS signature: Sign intact, Interpretant replaced, \u03c6 cascading to populations depending on the coordination function. P-SAGE analysis required.';
+  } else {
+    res.className='delta-result dr-neu';
+    verd.style.color='var(--amber)';
+    verd.textContent=sign+delta+' \u2014 Competitive Displacement or Type 3 Transition';
+    exp.textContent='The FHRI_max values are similar. This may be competitive displacement without structural change, or a Type 3 transition where a formerly generative parasite is migrating toward extraction. Track the \u0394FHRI_max trajectory over time \u2014 a stable neutral may be acceptable; a trend from positive toward negative signals Interpretant replacement in progress.';
+  }
+}
+
+var CASES={
+  netflix:{name:'Netflix / Blockbuster (1999\u20132013)',type:'Type 2 \u2014 Productive Disruption',delta:'+21',
+    inc:{eps:30,sig:28,mu:32,phi:22,label:'Blockbuster Video'},
+    dis:{eps:14,sig:15,mu:17,phi:12,label:'Netflix (streaming era)'},
+    summary:'Netflix\u2019s subscription model aligns revenue with viewer satisfaction, not late fees. \u03b5 falls from 0.30 to 0.14 because the extraction mechanism (late fees as a profit center) is eliminated from the business model. \u03bc falls from 0.32 to 0.17 because churn is the revenue threat \u2014 content quality and service reliability are now the incentive architecture. The channel for film distribution was replaced by one with a significantly higher FHRI_max. \u0394FHRI_max \u2248 +21.',
+    phi_note:'60,000 Blockbuster employees bore \u03c6. They were not the actors who captured the \u0394FHRI_max gain. A BioBond on Netflix indexed to FHRI_max gain would route a portion of the efficiency gain to worker transition support \u2014 making the creative destruction more complete without preventing it.',
+    salient:'Formerly coherent, not dark. Blockbuster was genuinely serving its function. Its FHRI_max was decent (44) but the channel was becoming less efficient. Netflix interrupted it with a higher-capacity replacement. This is what the invisible hand is supposed to do.'},
+  iphone:{name:'iPhone Camera / Kodak Film (2007\u20132012)',type:'Type 2 \u2014 Productive Disruption',delta:'+26',
+    inc:{eps:28,sig:32,mu:38,phi:20,label:'Kodak film photography'},
+    dis:{eps:12,sig:18,mu:15,phi:10,label:'Smartphone camera ecosystem'},
+    summary:'Kodak\u2019s business model was structurally oriented toward film consumables, creating \u03bc between the Interpretant of photography (capturing memories) and the revenue mechanism (selling film rolls and processing). The smartphone camera eliminates consumable-dependent revenue entirely, reducing \u03bc dramatically. Information about photos is now distributed instantly rather than stored in a physical medium that requires a separate processing step. \u0394FHRI_max \u2248 +26.',
+    phi_note:'Kodak had 145,000 employees in 1988; under 17,000 at bankruptcy in 2012. The \u03c6 was enormous and largely unaddressed by the digital photography firms that captured the coordination capacity gain. No transition fund was created. The speed of the displacement relative to worker retraining capacity is a governance failure even in a \u0394FHRI_max > 0 transition.',
+    salient:'Illustrates that productive disruption can produce catastrophic \u03c6 for specific communities even when the overall coordination function improves. The \u0394FHRI_max criterion settles the system-level question; the \u03c6 distribution question requires separate analysis.'},
+  amazon:{name:'Amazon Marketplace (2000\u2013present)',type:'Type 3 \u2014 Migrating (+ \u2192 \u2212)',delta:'Trajectory negative',
+    inc:{eps:45,sig:40,mu:50,phi:35,label:'Traditional retail distribution'},
+    dis:{eps:20,sig:22,mu:28,phi:18,label:'Amazon Marketplace (early, 2000\u20132010)'},
+    summary:'Amazon Marketplace in 2000\u20132010 was genuinely Type 2: it provided third-party sellers access to a distribution platform significantly more efficient than traditional retail channels. \u0394FHRI_max \u2248 +15 in the early period. But the trajectory has shifted. By 2018\u20132020, Amazon was using aggregated seller data to identify best-performing product categories and launching Amazon Basics competitors. The P-adic access mechanism: Amazon\u2019s position as the platform operator gives it access to the Signal channel (sales data) that third-party sellers generated. The Interpretant of the marketplace is migrating from \u201cbetter distribution infrastructure\u201d toward \u201cextraction vehicle for seller market intelligence.\u201d',
+    phi_note:'The \u03c6 in the Type 3 migration is borne by the third-party sellers who built product lines, customer relationships, and brand recognition on the Amazon platform. When Amazon Basics enters their category using their own sales data as the market research, they bear the \u03c6 of the Interpretant replacement without having been party to the decision to replace it.',
+    salient:'The clearest Type 3 case. Starts as generative disruption. Achieves P-adic proximity to the host\u2019s information channel over time. The transition from + to \u2212 in \u0394FHRI_max is the formal indicator that the parasitic mutualism is migrating toward extraction. Farmer\u2019s complex adaptive systems framework predicts exactly this pattern.'},
+  uber:{name:'Uber / Taxi Industry (2010\u2013present)',type:'Type 2\u2013to\u20133 (contested)',delta:'+8 to \u22122',
+    inc:{eps:35,sig:42,mu:48,phi:30,label:'Traditional regulated taxi'},
+    dis:{eps:22,sig:25,mu:35,phi:20,label:'Uber / gig platform'},
+    summary:'The classification of Uber is genuinely contested because the two institutions being compared have different ownership architectures producing different \u03bc values for different populations. Taxis had high \u03bc for riders (regulated monopoly, opaque pricing) but low \u03bc for drivers (medallion system created stable employment). Uber has lower \u03bc for riders (transparent pricing, competition) but dramatically higher \u03bc for drivers (gig classification removes employer obligations, algorithmic management replaces human judgment about working conditions). The net \u0394FHRI_max depends on how you weight rider vs. driver coordination capacity. This is not a flaw in the framework \u2014 it is a strength: the classifier reveals that the relevant question is not \u201cis Uber better than taxis\u201d but \u201cbetter for whom?\u201d',
+    phi_note:'Driver \u03c6 is the contested parameter. Gig classification externalizes employer obligations (health insurance, overtime, minimum wage guarantees) onto drivers while capturing the productivity gain. This is \u03c6 externalization within an apparent \u0394FHRI_max > 0 transition \u2014 the coordination function for riders improves; the coordination function for drivers degrades. True Solvency Accounting would require that the driver \u03c6 appear as a liability on Uber\u2019s balance sheet.',
+    salient:'Illustrates that \u0394FHRI_max depends on which population\u2019s coordination capacity you measure. A transition can be Type 2 for one stakeholder group and Type 1 for another. This is precisely what the representative agent assumption obscures \u2014 and precisely what heterogeneous-agent modeling (the UCP\u2019s advantage) reveals.'},
+  pe_nh:{name:'PE Acquisition / Nursing Home (2000\u2013present)',type:'Type 1 \u2014 Extractive Parasitism',delta:'\u221249',
+    inc:{eps:5,sig:18,mu:8,phi:22,label:'Non-profit / public nursing home'},
+    dis:{eps:64,sig:62,mu:82,phi:52,label:'PE-acquired nursing home'},
+    summary:'The definitional case of Type 1 extraction. The non-profit nursing home had FHRI_max \u2248 63. The PE-acquired nursing home has FHRI_max = 13.6. \u0394FHRI_max = \u221249.3. The coordination function for care delivery has been replaced by an extraction vehicle. The Sign remains intact \u2014 the facility continues to operate, residents are housed, staff are employed, inspections are passed \u2014 while 77% of coordination capacity is structurally absorbed. The Interpretant has been replaced: care delivery = investment vehicle for extraction rather than care delivery = genuine coordination of patient wellbeing.',
+    phi_note:'\u03c6 falls on the populations least able to exit: residents with no alternative care options, staff with limited labor market power, families who cannot assess care quality through price signals alone. The entity bearing \u03c6 has no relationship to the PE acquisition decision and no access to the financial return it generated.',
+    salient:'The IPS framework was developed to describe exactly this case. It is the clearest Type 1 signature in the project\u2019s empirical record.'},
+  fin2008:{name:'Originate-to-Distribute / Community Banking (1999\u20132008)',type:'Type 1 \u2014 Extractive Parasitism',delta:'\u221239',
+    inc:{eps:12,sig:20,mu:15,phi:18,label:'Community banking / originate-to-hold'},
+    dis:{eps:71,sig:78,mu:84,phi:68,label:'Investment bank / originate-to-distribute (peak 2007)'},
+    summary:'Community banking (originate-to-hold) maintained P-adic distance from the credit risk assessment channel: the originating bank held the loan and bore default risk, aligning incentives with creditworthiness assessment. FHRI_max \u2248 55. The originate-to-distribute model placed investment banks inside the credit risk cluster (Glass-Steagall repeal, 1999), removed default risk from the originating entity, and replaced the Interpretant from creditworthiness-assessment to securitization-feedstock. FHRI_max fell to 11.2 at peak 2007. \u0394FHRI_max \u2248 \u221244.',
+    phi_note:'9.3 million home foreclosures. $19.2 trillion in household wealth destroyed. The \u03c6 fell on populations furthest from the P-adic access mechanism: homeowners, retirees, municipalities, communities of color disproportionately targeted by subprime origination. The actors who achieved P-adic proximity and executed the Interpretant replacement were made whole by TARP.',
+    salient:'The 2008 crisis is the scale-free law operating at financial system level. The same IPS mechanism as PE nursing homes, the same FHRI_max ceiling (11.2 vs 13.6), the same \u03c6 distribution asymmetry. Different sector, different regulatory framework, same formal structure.'}
+};
+
+function setCase(key,card){
+  document.querySelectorAll('.case-card').forEach(function(c){c.classList.remove('sel');});
+  card.classList.add('sel');
+  var d=CASES[key];
+  var iF=fhriCalc(d.inc.eps,d.inc.sig,d.inc.mu,d.inc.phi);
+  var dF=fhriCalc(d.dis.eps,d.dis.sig,d.dis.mu,d.dis.phi);
+  var delta=dF-iF;
+  var sign=delta>0?'+':'';
+  var col=delta>8?'var(--green)':delta<-8?'var(--red)':'var(--amber)';
+  document.getElementById('case-output').innerHTML=
+    '<div style="background:var(--s);border:1px solid var(--border);border-radius:.5rem;overflow:hidden;margin-top:.75rem">'+
+    '<div style="padding:.8rem 1rem;background:var(--s2);border-bottom:1px solid var(--border);display:flex;gap:.75rem;align-items:center">'+
+    '<div style="font-family:\'DM Serif Display\',serif;font-size:1.2rem">'+d.name+'</div>'+
+    '<div style="margin-left:auto;font-family:\'DM Mono\',monospace;font-size:.75rem;padding:.2rem .55rem;border-radius:.3rem;background:rgba(255,255,255,.05);color:'+col+'">\u0394FHRI_max '+d.delta+'</div></div>'+
+    '<div style="padding:1rem;display:grid;grid-template-columns:1fr 1fr;gap:.75rem">'+
+    '<div style="background:var(--s2);border-radius:.35rem;padding:.8rem"><div style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:var(--amber);margin-bottom:.35rem">'+d.inc.label.toUpperCase()+' (INCUMBENT)</div>'+
+    '<div style="font-family:\'DM Mono\',monospace;font-size:.78rem;margin-bottom:.2rem">FHRI_max = '+iF+'</div>'+
+    '<div style="font-size:.8rem;color:rgba(255,255,255,.65)">&epsilon;=0.'+String(d.inc.eps).padStart(2,'0')+' &sigma;=0.'+String(d.inc.sig).padStart(2,'0')+' &mu;=0.'+String(d.inc.mu).padStart(2,'0')+' &phi;=0.'+String(d.inc.phi).padStart(2,'0')+'</div></div>'+
+    '<div style="background:var(--s2);border-radius:.35rem;padding:.8rem"><div style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:var(--teal);margin-bottom:.35rem">'+d.dis.label.toUpperCase()+' (DISRUPTOR)</div>'+
+    '<div style="font-family:\'DM Mono\',monospace;font-size:.78rem;margin-bottom:.2rem">FHRI_max = '+dF+'</div>'+
+    '<div style="font-size:.8rem;color:rgba(255,255,255,.65)">&epsilon;=0.'+String(d.dis.eps).padStart(2,'0')+' &sigma;=0.'+String(d.dis.sig).padStart(2,'0')+' &mu;=0.'+String(d.dis.mu).padStart(2,'0')+' &phi;=0.'+String(d.dis.phi).padStart(2,'0')+'</div></div></div>'+
+    '<div style="padding:0 1rem 1rem;display:grid;gap:.5rem">'+
+    '<div style="background:var(--s2);border-radius:.35rem;padding:.8rem;font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.75)"><div style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:'+col+';margin-bottom:.3rem">CLASSIFICATION: '+d.type+'</div>'+d.summary+'</div>'+
+    '<div style="background:var(--s2);border-radius:.35rem;padding:.8rem;font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.75)"><div style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:var(--amber);margin-bottom:.3rem">\u03c6 DISTRIBUTION</div>'+d.phi_note+'</div>'+
+    '<div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.15);border-radius:.35rem;padding:.8rem;font-size:.84rem;line-height:1.65"><div style="font-family:\'DM Mono\',monospace;font-size:.6rem;color:var(--teal);margin-bottom:.3rem">KEY INSIGHT</div>'+d.salient+'</div></div></div>';
+  document.getElementById('case-output').classList.add('show');
+}
+
+var JK=['tel_j1','tel_j2','tel_j3','tel_j4','tel_j5'];
+function sv(){JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)localStorage.setItem(k,e.value);}catch(x){}});var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){var t='EBB Interlude \u2014 The Telescope Turned Inward\nJournal\n'+'='.repeat(60)+'\n\n';
+['Q1: Moral Sentiments-grounded economics.','Q2: DELTA FHRI_max classifier on a personal case.','Q3: Amazon Type 3 P-adic access mechanism.','Q4: True Solvency Accounting for a firm you know.','Q5: Governance arrangements to extend the price signal.'].forEach(function(q,i){var v=document.getElementById('j'+(i+1));t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';});
+try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_Interlude_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)e.value=localStorage.getItem(k)||'';}catch(x){}});
+calc();
+</script>
+</body>
+</html>

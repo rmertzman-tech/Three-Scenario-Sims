@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ch11 — Higher Education IPS: The Telescope on Your Own Institution</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#06090f;--s:#0d1320;--s2:#152030;--border:rgba(255,255,255,.07);--teal:#14b8a6;--amber:#f59e0b;--red:#f87171;--violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;--orange:#fb923c;--text:rgba(255,255,255,.88);--muted:rgba(255,255,255,.42)}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:1.8rem 1.5rem 1.4rem;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(160deg,#080c1a 0%,var(--bg) 70%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 45% at 50% 0%,rgba(20,184,166,.12) 0%,transparent 65%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--teal);text-transform:uppercase;margin-bottom:.4rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;line-height:1.15;margin-bottom:.3rem}
+.ch-ttl em{color:var(--teal);font-style:italic}
+.ch-sub{font-size:.85rem;color:var(--muted);max-width:620px;margin:0 auto;line-height:1.55}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.6rem 1rem;background:var(--s);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--teal)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.38rem .8rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:900px;margin:0 auto}.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.78);margin-bottom:.9rem;line-height:1.78}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.45rem;color:var(--teal);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.92rem;color:rgba(255,255,255,.85);margin:.8rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.75;font-size:.88rem}
+.panel.teal{background:rgba(20,184,166,.07);border-left:3px solid var(--teal)}
+.panel.amber{background:rgba(245,158,11,.07);border-left:3px solid var(--amber)}
+.panel.red{background:rgba(248,113,113,.07);border-left:3px solid var(--red)}
+.panel.green{background:rgba(74,222,128,.07);border-left:3px solid var(--green)}
+.panel.violet{background:rgba(167,139,250,.07);border-left:3px solid var(--violet)}
+.panel.blue{background:rgba(96,165,250,.07);border-left:3px solid var(--blue)}
+.panel strong{color:var(--text)}
+/* SPECTRUM BAR CHART */
+.spectrum{margin:.75rem 0}
+.spec-row{display:flex;align-items:center;gap:.65rem;margin:.35rem 0;cursor:pointer;padding:.3rem .4rem;border-radius:.35rem;transition:background .15s}
+.spec-row:hover{background:rgba(255,255,255,.04)}
+.spec-row.spc-row{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2)}
+.spec-label{font-size:.78rem;width:210px;flex-shrink:0;line-height:1.3}
+.spec-label .inst-type{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted);display:block}
+.spec-label .spc-tag{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--teal);font-weight:600}
+.spec-bar-wrap{flex:1;position:relative}
+.spec-bar{height:22px;border-radius:3px;transition:width 1.2s cubic-bezier(.34,1.56,.64,1);min-width:4px;display:flex;align-items:center;padding-left:.4rem;font-family:'DM Mono',monospace;font-size:.65rem;color:rgba(0,0,0,.7);font-weight:600;white-space:nowrap}
+.spec-val{font-family:'DM Mono',monospace;font-size:.72rem;width:38px;text-align:right;flex-shrink:0}
+.spec-src{font-family:'DM Mono',monospace;font-size:.55rem;color:var(--muted);width:44px;flex-shrink:0;text-align:center}
+.tier-divider{height:1px;background:rgba(255,255,255,.08);margin:.6rem 0;position:relative}
+.tier-label{position:absolute;right:0;top:-8px;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);background:var(--bg);padding:0 .4rem}
+/* DETAIL PANEL */
+.detail-panel{background:var(--s2);border:1px solid var(--border);border-radius:.45rem;padding:1rem 1.2rem;margin:.75rem 0;display:none}
+.detail-panel.show{display:block;animation:fi .2s ease}
+.detail-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:.6rem 0}
+.detail-cell{background:var(--s);border-radius:.35rem;padding:.55rem .4rem;text-align:center;border:1px solid var(--border)}
+.detail-cell .sym{font-family:'DM Mono',monospace;font-size:.85rem;font-weight:600;color:var(--amber)}
+.detail-cell .val{font-family:'DM Mono',monospace;font-size:.72rem;margin:.1rem 0}
+.detail-cell .nm{font-size:.58rem;color:var(--muted)}
+/* FHRI BAR */
+.fhri-wrap{margin:.5rem 0}
+.fhri-track{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.fhri-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.fhri-hi{background:linear-gradient(90deg,var(--green),#86efac)}
+.fhri-mi{background:linear-gradient(90deg,var(--amber),#fcd34d)}
+.fhri-lo{background:linear-gradient(90deg,var(--red),#fca5a5)}
+/* TWO-TIER DIAGRAM */
+.tier-diagram{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin:.75rem 0}
+@media(max-width:540px){.tier-diagram{grid-template-columns:1fr}}
+.tier-box{border:1px solid var(--border);border-radius:.45rem;padding:1rem}
+.tier-box h4{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+.tier-box.upper h4{color:var(--amber)}.tier-box.lower h4{color:var(--red)}
+.tier-inst{display:flex;justify-content:space-between;align-items:center;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.84rem}
+.tier-inst:last-child{border-bottom:none}
+.tier-fhri{font-family:'DM Mono',monospace;font-size:.75rem}
+/* IPS PARAM TABLE */
+.param-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.84rem}
+.param-table th{padding:.55rem .75rem;text-align:left;font-family:'DM Mono',monospace;font-size:.62rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.param-table td{padding:.6rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.55}
+.param-table tr.spc-row td{background:rgba(20,184,166,.04)}
+.param-table tr:last-child td{border-bottom:none}
+/* JOURNAL */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.87rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--teal);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:86px;background:#0a0e1c;border:none;border-top:1px solid var(--border);padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+button.btn{background:var(--teal);color:#000;border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.82rem;padding:.5rem 1.1rem;border-radius:.35rem;cursor:pointer;margin:.25rem .2rem}
+button.btn.out{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.bot-nav{max-width:900px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--teal);color:#000;font-weight:600;font-size:.76rem;padding:.4rem .9rem;border-radius:.35rem;display:none;z-index:999}
+.sf.show{display:block}
+.data-note{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.3rem}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="ch-lbl">Chapter 11 &middot; Economics &middot; Higher Education Case Study</div>
+  <h1 class="ch-ttl">The <em>Telescope</em> on Your Own Institution</h1>
+  <p class="ch-sub">IPS analysis of higher education using live College Scorecard and IPEDS data &mdash; where does Saint Petersburg College sit in the full structural spectrum, and what does the scale-free law reveal about how?</p>
+</div>
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('spectrum')">Full Spectrum</button>
+  <button class="tb" onclick="sw('spc')">SPC in Context</button>
+  <button class="tb" onclick="sw('exit')">The Exit Finding</button>
+  <button class="tb" onclick="sw('params')">IPS Parameters</button>
+  <button class="tb" onclick="sw('psage')">P-SAGE</button>
+  <button class="tb" onclick="sw('journal')">Journal</button>
+</div>
+
+<!-- SPECTRUM -->
+<div class="pane active" id="pane-spectrum">
+  <h2 class="st">The Full Structural Spectrum</h2>
+  <div class="panel teal"><strong>These are real numbers from real data.</strong> The FHRI_max values for the higher education institutions were computed from the College Scorecard API and IPEDS Finance data, run April 2026. The cross-sector values (healthcare, corrections, finance) are from prior IPS audits using the same formula. Click any institution to see its IPS parameters.</div>
+  <p class="bd">The same five-parameter formula, the same equation. Different sectors, different regulatory frameworks, different nominal missions. The structural ceiling on coordination capacity maps the same way across all of them.</p>
+
+  <div style="display:flex;gap:1.5rem;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-bottom:.5rem;padding-left:210px">
+    <span>0</span><span style="margin-left:auto">100 FHRI_max</span>
+  </div>
+
+  <div class="spectrum" id="spectrum-chart"></div>
+
+  <div class="detail-panel" id="detail-panel">
+    <div id="detail-content"></div>
+  </div>
+  <p class="data-note" style="margin-top:.75rem">Data sources: College Scorecard API (8 institutions, live April 2026) &middot; IPEDS Finance survey (2 institutions, embedded 2022-23) &middot; Prior IPS audits (cross-sector benchmarks)</p>
+</div>
+
+<!-- SPC IN CONTEXT -->
+<div class="pane" id="pane-spc">
+  <h2 class="st">Saint Petersburg College in Context</h2>
+  <div class="panel teal"><strong>SPC FHRI_max = 58.6</strong> &mdash; validated across three independent API runs. 0.4 points below the &ldquo;Functional / Mission-Aligned&rdquo; threshold of 60. This is not a rounding error. It is a structural measurement with a specific address.</div>
+
+  <h3 class="sub">Comparison 1: SPC vs. Florida flagship (UF)</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.75rem 0">
+    <div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);margin-bottom:.25rem">SAINT PETERSBURG COLLEGE</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--teal);line-height:1">58.6</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.65);margin-top:.3rem">Public community college<br>Avg net price: ~$3,154/yr<br>Open access mission</div>
+    </div>
+    <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--blue);margin-bottom:.25rem">UNIVERSITY OF FLORIDA</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--blue);line-height:1">59.0</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.65);margin-top:.3rem">Flagship research university<br>Avg net price: ~$6,381/yr<br>Selective admission</div>
+    </div>
+  </div>
+  <div class="panel teal"><strong>0.4 FHRI_max points separate SPC from Florida&rsquo;s flagship research university.</strong> The structural capacity of SPC to translate its coordination inputs into student outcomes is essentially identical to UF &mdash; at roughly half the cost to students. This is not an argument that SPC and UF are the same institution. It is an argument that SPC&rsquo;s institutional architecture is producing coordination capacity equivalent to UF&rsquo;s despite significantly different resource levels.</div>
+
+  <h3 class="sub">Comparison 2: SPC vs. Miami Dade (same mission, different result)</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.75rem 0">
+    <div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);margin-bottom:.25rem">SAINT PETERSBURG COLLEGE</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--teal);line-height:1">58.6</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.65);margin-top:.3rem">FHRI_max rank: 4 of 10<br>&epsilon; = 0.275 &nbsp; &phi; = 0.011</div>
+    </div>
+    <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber);margin-bottom:.25rem">MIAMI DADE COLLEGE</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--amber);line-height:1">50.5</div>
+      <div style="font-size:.82rem;color:rgba(255,255,255,.65);margin-top:.3rem">FHRI_max rank: 5 of 10<br>Live API, April 2026</div>
+    </div>
+  </div>
+  <div class="panel amber"><strong>8.1 FHRI_max points separate two Florida public community colleges with nearly identical missions.</strong> Miami Dade and SPC serve similar demographics, charge similar tuition, and operate under the same Florida Board of Governors oversight. The 8.1-point gap is a structural finding, not a character judgment. The IPS framework says: look at the &epsilon;, &phi;, and &mu; parameters. Something about MDC&rsquo;s specific institutional architecture is absorbing more coordination capacity before it reaches students. That is an addressable governance question.</div>
+
+  <h3 class="sub">The 1.4-Point Gap to Functional State</h3>
+  <p class="bd">SPC is 1.4 FHRI_max points below the &ldquo;Functional / Mission-Aligned&rdquo; threshold (60.0). The IPS framework does not tell you whether to close that gap. It tells you where to look: the three parameters that constitute the extraction floor (&epsilon;, &phi;, &sigma;) and the two that constitute the routing ceiling (&rho;, &mu;). A 1.4-point improvement requires a very small structural shift in one or more of those parameters &mdash; not a character transformation, not a budget miracle. A measurable, addressable governance adjustment.</p>
+
+  <div style="display:grid;gap:.45rem;margin:.75rem 0">
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem 1rem;display:grid;grid-template-columns:110px 1fr;gap:.75rem;font-size:.85rem;line-height:1.65">
+      <div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--teal)">To close the gap</div>
+      <div>Reduce &epsilon; by 0.01 (shift 1% of administrative spend to instruction), OR reduce &phi; by 0.008 (reduce median student debt relative to earnings by improving completion pathways), OR reduce &mu; by 0.01 (tighten the enrollment-growth vs. completion-rate alignment). Any one of these alone would push FHRI_max above 60.</div>
+    </div>
+    <div style="background:var(--s);border-radius:.4rem;padding:.85rem 1rem;display:grid;grid-template-columns:110px 1fr;gap:.75rem;font-size:.85rem;line-height:1.65">
+      <div style="font-family:'DM Mono',monospace;font-size:.68rem;color:var(--amber)">What it is not</div>
+      <div>A judgment that SPC faculty, staff, or administrators are not working hard enough. FHRI_max measures the structural ceiling imposed by institutional architecture &mdash; not the effort or dedication of the individuals inside it. The most dedicated SPC instructor operates within the same structural constraints as every other SPC employee. That is what makes the structural ceiling a governance question rather than a personnel question.</div>
+    </div>
+  </div>
+</div>
+
+<!-- EXIT FINDING -->
+<div class="pane" id="pane-exit">
+  <h2 class="st">The Exit Option Finding</h2>
+  <div class="panel violet"><strong>The scale-free law produces a two-tier result &mdash; and this is theoretically important.</strong> When we ran the IPS formula across higher education, healthcare, corrections, and finance, we did not find one cluster. We found two. Understanding why is the most intellectually significant result of this empirical run.</div>
+
+  <div class="tier-diagram">
+    <div class="tier-box upper" style="background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.25)">
+      <h4>Upper tier: High-extraction higher ed (FHRI_max 27&ndash;33)</h4>
+      <div class="tier-inst"><span>Full Sail University</span><span class="tier-fhri" style="color:var(--amber)">32.5</span></div>
+      <div class="tier-inst"><span>So. New Hampshire Univ.</span><span class="tier-fhri" style="color:var(--amber)">30.2</span></div>
+      <div class="tier-inst"><span>Grand Canyon University</span><span class="tier-fhri" style="color:var(--amber)">28.4</span></div>
+      <div class="tier-inst"><span>Univ. of Phoenix</span><span class="tier-fhri" style="color:var(--amber)">26.9</span></div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:.5rem;line-height:1.55">Average: 29.5 &nbsp;&middot;&nbsp; Students CAN exit (at high cost in debt)</div>
+    </div>
+    <div class="tier-box lower" style="background:rgba(248,113,113,.05);border-color:rgba(248,113,113,.25)">
+      <h4>Lower tier: Captive-population extraction (FHRI_max 11&ndash;14)</h4>
+      <div class="tier-inst"><span>PE Nursing Home (FL)</span><span class="tier-fhri" style="color:var(--red)">13.6</span></div>
+      <div class="tier-inst"><span>2008 Financial System</span><span class="tier-fhri" style="color:var(--red)">11.2</span></div>
+      <div class="tier-inst"><span>GEO Group FL Corrections</span><span class="tier-fhri" style="color:var(--red)">10.9</span></div>
+      <div style="font-size:.78rem;color:var(--muted);margin-top:.5rem;line-height:1.55">Average: 11.9 &nbsp;&middot;&nbsp; Populations CANNOT exit (prison bars, cognitive impairment, foreclosure)</div>
+    </div>
+  </div>
+
+  <h3 class="sub">What the 17.6-point gap means formally</h3>
+  <p class="bd">The scale-free law predicts that high-&epsilon; ownership architecture produces FHRI_max suppression regardless of sector. It does not predict that all suppression reaches the same floor. The exit option &mdash; the ability to leave an institution even at high personal cost &mdash; functions as a structural floor that prevents the full collapse seen in captive-population institutions.</p>
+  <p class="bd">When a student at the University of Phoenix accumulates $42,000 in debt for a credential that produces $35,200 in median earnings, they bear enormous &phi;. But they can leave. When an incarcerated person at a GEO Group facility experiences 89% of coordination capacity absorbed before it reaches programming decisions, they cannot leave. The exit option modulates how low the FHRI_max ceiling can fall, not whether it falls.</p>
+
+  <div class="panel teal"><strong>This is not a defense of the University of Phoenix.</strong> FHRI_max = 26.9 means 73.1% of coordination capacity is structurally absorbed before it reaches the student. Median debt $42,000. Median earnings $35,200. 3-year repayment rate 41%. The Interpretant replacement &mdash; from &ldquo;education as pathway to knowledge and mobility&rdquo; to &ldquo;enrollment as revenue unit&rdquo; &mdash; is real and documented. The distinction is: the harm is severe AND it is bounded by the exit option. The harm in captive-population sectors is severe AND it is unbounded.</div>
+
+  <h3 class="sub">The testable prediction</h3>
+  <div class="panel violet"><strong>If the exit-option modulator hypothesis is correct, then:</strong> within higher education, institutions where the effective exit cost is highest &mdash; credits that do not transfer, debt already incurred at enrollment, employer-sponsored tuition tied to specific institutions &mdash; should have lower FHRI_max than institutions where exit is easier. This is a falsifiable prediction derivable from the Scorecard data. The next phase of this research will test it.</div>
+</div>
+
+<!-- IPS PARAMS -->
+<div class="pane" id="pane-params">
+  <h2 class="st">IPS Parameters: How the Numbers Were Derived</h2>
+  <div class="panel blue"><strong>Each parameter is derived from a specific IPEDS or College Scorecard data field.</strong> The derivation is documented so any researcher can replicate the computation with an API key and a spreadsheet. These are not theoretical estimates &mdash; they are computed from the same public data the U.S. Department of Education uses to assess institutional performance.</div>
+
+  <div style="display:grid;gap:.45rem;margin:.75rem 0">
+    <div style="background:var(--s);border-left:3px solid var(--red);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--red);margin-bottom:.3rem">&epsilon; (EXTRACTION) &mdash; IPEDS Finance: Instructional vs. Administrative Expenditure</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">&epsilon; = 1 &minus; (instructional spend per FTE / total educational spend per FTE). For SPC: instructional spend $5,840 / total $8,050 = 72.5% reaching instruction = &epsilon; 0.275. For University of Phoenix: instructional spend $2,180 / total $8,120 = 26.8% reaching instruction = &epsilon; 0.732. The ratio of admin-to-instruction spending is the most direct IPEDS proxy for the extraction rate.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--orange);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--orange);margin-bottom:.3rem">&phi; (ENTROPY) &mdash; College Scorecard: Median Debt / Median Earnings</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">&phi; = normalized(median debt at completion / median earnings 6 years post-enrollment). SPC: $8,500 / $32,800 = 0.26 ratio = &phi; 0.011 (near zero harm). University of Phoenix: $42,000 / $35,200 = 1.19 ratio = &phi; 0.305 (significant harm). The debt-to-earnings ratio is the College Scorecard&rsquo;s own primary metric for institutional financial harm to students.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--violet);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--violet);margin-bottom:.3rem">&rho; (REGULATORY BURDEN) &mdash; IPEDS: Admin fraction + Federal loan dependency</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">&rho; = 0.70 &times; (admin spend / total spend) + 0.30 &times; (federal loan rate &minus; 0.20). This captures both the internal compliance overhead and the external Title IV dependency that drives compliance theater. Institutions that derive most of their revenue from federal student loans have strong incentives to maintain accreditation compliance regardless of educational quality &mdash; the regulatory burden generates Sign-level compliance without Interpretant alignment.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--amber);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber);margin-bottom:.3rem">&sigma; (MORPHIC RESIDUE) &mdash; IPEDS: Tuition inflation vs. CPI + repayment deficit</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">&sigma; = 0.60 &times; (tuition inflation excess over CPI) + 0.40 &times; (repayment deficit). Cumulative CPI 2010&ndash;2023 = 1.42&times;. Institutions that raised tuition significantly faster than CPI while maintaining enrollment normalized the practice. Each year of tuition inflation exceeding CPI without triggering enrollment collapse added to &sigma;. The 3-year repayment rate deficit from the 85% healthy benchmark captures whether the income normalizing the deviance was actually sustainable.</div>
+    </div>
+    <div style="background:var(--s);border-left:3px solid var(--blue);border-radius:0 .4rem .4rem 0;padding:.85rem 1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--blue);margin-bottom:.3rem">&mu; (MISALIGNMENT) &mdash; Scorecard: Enrollment growth vs. completion rate trajectory</div>
+      <div style="font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">&mu; = 0.50 &times; (enrollment growth 5yr &minus; completion rate change 5yr) + 0.50 &times; completer indifference. The first component measures whether the institution was rewarded for growing enrollment regardless of completion outcomes &mdash; the originate-to-distribute parallel in higher education. The second measures whether the institution was structurally indifferent to who completed (small gap between completer and non-completer debt = institution continues extracting revenue regardless of whether students finish).</div>
+    </div>
+  </div>
+
+  <h3 class="sub">Parameter comparison: SPC vs. University of Phoenix</h3>
+  <table class="param-table">
+    <thead><tr><th>Parameter</th><th>SPC</th><th>U. Phoenix</th><th>Gap</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr class="spc-row"><td><strong>&epsilon;</strong> Extraction</td><td style="color:var(--teal);font-family:'DM Mono',monospace">0.275</td><td style="color:var(--red);font-family:'DM Mono',monospace">0.732</td><td style="font-family:'DM Mono',monospace">0.457</td><td>Phoenix spends 46pp more on overhead relative to instruction than SPC</td></tr>
+      <tr class="spc-row"><td><strong>&phi;</strong> Entropy</td><td style="color:var(--teal);font-family:'DM Mono',monospace">0.011</td><td style="color:var(--red);font-family:'DM Mono',monospace">0.305</td><td style="font-family:'DM Mono',monospace">0.294</td><td>Phoenix students bear dramatically higher debt relative to earnings</td></tr>
+      <tr class="spc-row"><td><strong>&rho;</strong> Regulatory</td><td style="color:var(--teal);font-family:'DM Mono',monospace">0.271</td><td style="color:var(--red);font-family:'DM Mono',monospace">0.767</td><td style="font-family:'DM Mono',monospace">0.496</td><td>Phoenix has far higher compliance overhead and loan dependency</td></tr>
+      <tr class="spc-row"><td><strong>&sigma;</strong> Residue</td><td style="color:var(--teal);font-family:'DM Mono',monospace">0.104</td><td style="color:var(--red);font-family:'DM Mono',monospace">0.352</td><td style="font-family:'DM Mono',monospace">0.248</td><td>Phoenix normalized aggressive tuition growth for decades longer</td></tr>
+      <tr class="spc-row"><td><strong>&mu;</strong> Misalign.</td><td style="color:var(--teal);font-family:'DM Mono',monospace">0.412</td><td style="color:var(--red);font-family:'DM Mono',monospace">0.500</td><td style="font-family:'DM Mono',monospace">0.088</td><td>Enrollment vs. completion gap is more pronounced at Phoenix</td></tr>
+      <tr><td><strong>FHRI_max</strong></td><td style="color:var(--teal);font-family:'DM Mono',monospace;font-weight:600">58.6</td><td style="color:var(--red);font-family:'DM Mono',monospace;font-weight:600">26.9</td><td style="font-family:'DM Mono',monospace;font-weight:600">31.7</td><td>31.7 FHRI_max points of structural advantage at SPC</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- P-SAGE -->
+<div class="pane" id="pane-psage">
+  <h2 class="st">P-SAGE: The Formal Structural Analysis</h2>
+  <div class="panel teal"><strong>The IPS numbers ground the P-SAGE diagnosis.</strong> The three Perception questions applied to higher education produce a formal finding about who accessed the channel, when, and through which instrument &mdash; and where the formal responsible party sits.</div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin:.75rem 0">
+    <div style="background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:.4rem;padding:.85rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-bottom:.3rem">SIGN (Firstness)</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.65rem;background:rgba(74,222,128,.12);color:var(--green);padding:.12rem .38rem;border-radius:.2rem;display:inline-block;margin-bottom:.3rem">INTACT</span>
+      <div style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.72)">Colleges operate. Degrees are awarded. Accreditation is maintained. Students enroll. Classes meet. The ACA 100% parallel: SACSCOC accreditation scores do not measure FHRI_max. High accreditation scores are consistent with FHRI_max = 26.9.</div>
+    </div>
+    <div style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.12);border-radius:.4rem;padding:.85rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-bottom:.3rem">SIGNAL (Secondness)</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.65rem;background:rgba(245,158,11,.12);color:var(--amber);padding:.12rem .38rem;border-radius:.2rem;display:inline-block;margin-bottom:.3rem">ACCESSED &mdash; 1992</span>
+      <div style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.72)">The tuition revenue allocation channel. P-adic access achieved through the 1992 HEA amendments expanding Title IV eligibility to for-profit institutions. This placed for-profit entities inside the federal student loan cluster previously restricted to non-profit and public institutions.</div>
+    </div>
+    <div style="background:rgba(248,113,113,.04);border:1px solid rgba(248,113,113,.12);border-radius:.4rem;padding:.85rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-bottom:.3rem">INTERPRETANT (Thirdness)</div>
+      <span style="font-family:'DM Mono',monospace;font-size:.65rem;background:rgba(248,113,113,.12);color:var(--red);padding:.12rem .38rem;border-radius:.2rem;display:inline-block;margin-bottom:.3rem">REPLACED</span>
+      <div style="font-size:.83rem;line-height:1.6;color:rgba(255,255,255,.72)"><strong>Original:</strong> tuition = investment in educational capacity producing knowledge and economic mobility.<br><strong>Replaced:</strong> enrollment = revenue unit serviced by federal loan guarantees, with risk externalized onto students and taxpayers.</div>
+    </div>
+  </div>
+
+  <div class="panel teal">
+    <strong>P-step output &mdash; formally derived responsible party:</strong><br><br>
+    1. <strong>Original Interpretant:</strong> tuition = investment in educational capacity.<br>
+    2. <strong>Replaced Interpretant:</strong> enrollment = revenue extraction vehicle (&epsilon; 0.73, FHRI_max 26.9).<br>
+    3. <strong>Signal channel:</strong> tuition revenue allocation &mdash; what tuition payments are used for once received.<br>
+    4. <strong>P-adic access mechanism:</strong> 1992 Higher Education Act amendments + Bennett Hypothesis (federal loan availability removed the market constraint on tuition pricing, enabling the Interpretant replacement to be enacted without the competitive pressure that would otherwise limit it).<br><br>
+    <strong>Formally derived responsible party:</strong> not the students who borrowed, not the faculty who taught, not the administrators who enforced enrollment targets. The ownership architecture that achieved P-adic proximity to the tuition revenue channel through regulatory access and executed Interpretant replacement from educational-investment to extraction-vehicle.
+  </div>
+
+  <h3 class="sub">Where SPC sits in this analysis</h3>
+  <div class="panel green"><strong>SPC&rsquo;s low &epsilon; (0.275) means the Interpretant replacement has not propagated into SPC&rsquo;s institutional architecture.</strong> The channel that was accessed in 1992 is present in all Title IV institutions &mdash; including SPC. But the degree to which an institution uses that access to replace the Interpretant depends on ownership structure, governance, and institutional purpose. SPC&rsquo;s public mission, state funding accountability, and open-access design have maintained a lower &epsilon; than the for-profit sector that most aggressively enacted the replacement. The telescope on SPC shows an institution that has resisted the full Interpretant replacement &mdash; not perfectly, but measurably and significantly.</div>
+</div>
+
+<!-- JOURNAL -->
+<div class="pane" id="pane-journal">
+  <p class="bd">These questions apply the higher education IPS analysis to your own experience as a student inside one of these institutions.</p>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q1</span>SPC&rsquo;s FHRI_max is 58.6 &mdash; 0.4 points below the &ldquo;Functional / Mission-Aligned&rdquo; threshold. The three IPS parameters that could close the gap are &epsilon;, &phi;, and &mu;. From your experience as a student at SPC, which of these three feels most present as a structural constraint? What would a small improvement in that parameter actually look like in practice?</div><textarea class="jq-ta" id="j1" oninput="sv()" placeholder="The parameter that feels most present in your experience, and what a small structural shift would look like..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q2</span>The exit option modulator: students can leave extractive higher education institutions, albeit at high cost in debt already incurred. This creates a structural floor ~17 FHRI_max points above the captive-population sectors. From the perspective of a student who has already borrowed money to attend a high-&epsilon; institution, how &ldquo;free&rdquo; is the exit option actually? What would genuinely reducing the exit cost look like as a T1 structural intervention?</div><textarea class="jq-ta" id="j2" oninput="sv()" placeholder="The actual cost of exit for a student mid-degree with existing debt, and what T1 would look like..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q3</span>Miami Dade and SPC have essentially the same mission, similar tuition, and similar demographics &mdash; and an 8.1 FHRI_max point gap. The IPS framework says this gap has a structural address in specific parameter differences. If you were a governance consultant hired by MDC to close the gap to SPC&rsquo;s level, what data would you request first and what structural changes would you investigate?</div><textarea class="jq-ta" id="j3" oninput="sv()" placeholder="The data you would request and the structural changes you would investigate at Miami Dade..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q4</span>The 1992 HEA amendments are the P-adic access mechanism for higher education Interpretant replacement &mdash; the regulatory equivalent of Glass-Steagall repeal for the 2008 financial crisis. Design a T1 structural intervention that addresses the access condition rather than regulating what the channel produces. What would it change, and who would resist it?</div><textarea class="jq-ta" id="j4" oninput="sv()" placeholder="The T1 intervention addressing the 1992 access mechanism, and the political economy of resistance..."></textarea></div>
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q5 &mdash; Personal Forward</span>You are about to enter a sector &mdash; healthcare, law, technology, social work, education, business. Using the &Delta;FHRI_max classifier from the Interlude: which institutions in your future sector are most likely to be in the high-extraction range? What &epsilon; would signal to you that the Interpretant replacement is underway in your employer&rsquo;s institutional architecture?</div><textarea class="jq-ta" id="j5" oninput="sv()" placeholder="Your future sector, the extraction signals to watch for, and the epsilon level that would trigger your concern..."></textarea></div>
+  <button class="btn" onclick="ex()">&#11015; Download Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn out" onclick="prev()">&larr;</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &rarr;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['spectrum','spc','exit','params','psage','journal'],cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+
+var DATA=[
+  {n:'Worker Co-op (CHCA)',f:74.2,t:'Healthcare',col:'#4ade80',e:0.000,p:0.000,r:0.280,s:0.000,m:0.000,src:'prior audit',note:'Low-epsilon reference: worker ownership, zero extraction architecture'},
+  {n:'Non-profit Home Health',f:62.9,t:'Healthcare',col:'#4ade80',e:0.000,p:0.000,r:0.280,s:0.120,m:0.180,src:'prior audit',note:'Non-profit home health sector benchmark from HHVBP analysis'},
+  {n:'Hillsborough CC',f:62.7,t:'Public HE',col:'#14b8a6',e:0.279,p:0.000,r:0.263,s:0.128,m:0.398,src:'embedded',note:'Florida peer community college — embedded 2022-23 IPEDS data'},
+  {n:'Valencia College',f:60.2,t:'Public HE',col:'#14b8a6',e:0.255,p:0.002,r:0.242,s:0.085,m:0.420,src:'LIVE API',note:'Aspen Prize winner; high-performing Florida community college'},
+  {n:'University of Florida',f:59.0,t:'Public HE',col:'#14b8a6',e:0.253,p:0.000,r:0.245,s:0.000,m:0.590,src:'LIVE API',note:'Florida flagship research university'},
+  {n:'Saint Petersburg College',f:58.6,t:'Public HE',col:'#2dd4bf',e:0.275,p:0.011,r:0.271,s:0.104,m:0.412,src:'LIVE API',spc:true,note:'Our institution — validated across 3 independent API runs'},
+  {n:'Miami Dade College',f:50.5,t:'Public HE',col:'#f59e0b',e:0.312,p:0.028,r:0.298,s:0.145,m:0.480,src:'LIVE API',note:'Same mission as SPC; 8.1-point structural gap from live Scorecard data'},
+  {n:'Proprietary Home Health',f:37.3,t:'Healthcare',col:'#f59e0b',e:0.320,p:0.050,r:0.360,s:0.180,m:0.420,src:'prior audit',note:'Proprietary home health sector from HHVBP analysis'},
+  {n:'Keiser University',f:38.9,t:'Non-profit HE',col:'#f59e0b',e:0.431,p:0.168,r:0.482,s:0.242,m:0.605,src:'embedded',note:'FL non-profit (formerly for-profit); healthcare and professional focus'},
+  {n:'Full Sail University',f:32.5,t:'For-profit HE',col:'#fb923c',e:0.618,p:0.552,r:0.665,s:0.350,m:0.480,src:'LIVE API',note:'High-debt for-profit; creative arts; live Scorecard data'},
+  {n:'So. New Hampshire Univ.',f:30.2,t:'Non-profit HE',col:'#fb923c',e:0.548,p:0.107,r:0.541,s:0.246,m:1.000,src:'LIVE API',note:'Rapid-growth non-profit; admin expansion outpacing outcomes'},
+  {n:'Grand Canyon Univ.',f:28.4,t:'Non-profit HE',col:'#f87171',e:0.545,p:0.135,r:0.558,s:0.312,m:0.720,src:'LIVE API',note:'Nominally non-profit since 2018; FTC complaint 2023'},
+  {n:'Univ. of Phoenix',f:26.9,t:'For-profit HE',col:'#f87171',e:0.732,p:0.305,r:0.767,s:0.352,m:0.500,src:'LIVE API',note:'High-extraction for-profit benchmark; peak 470K enrollment 2010'},
+  {n:'PE Nursing Home (FL)',f:13.6,t:'Healthcare',col:'#ef4444',e:0.636,p:0.520,r:0.700,s:0.620,m:0.820,src:'prior audit',note:'Peterson 2025 — captive population, no exit option'},
+  {n:'2008 Financial System',f:11.2,t:'Finance',col:'#ef4444',e:0.710,p:0.680,r:0.620,s:0.780,m:0.840,src:'prior audit',note:'Peak 2007 — captive population (mortgage holders could not easily exit)'},
+  {n:'GEO Group FL Corr.',f:10.9,t:'Corrections',col:'#ef4444',e:0.650,p:0.720,r:0.550,s:0.780,m:0.840,src:'prior audit',note:'IPS audit 2026 — captive population, incarcerated cannot exit'},
+];
+DATA.sort(function(a,b){return b.f-a.f;});
+
+function buildSpectrum(){
+  var c=document.getElementById('spectrum-chart');
+  c.innerHTML='';
+  DATA.forEach(function(d,i){
+    var pct=(d.f/85)*100;
+    var row=document.createElement('div');
+    row.className='spec-row'+(d.spc?' spc-row':'');
+    row.onclick=function(){showDetail(d);};
+    var srcBadge=d.src==='LIVE API'?'<span style="color:var(--green)">●</span> LIVE':'embedded';
+    if(d.src==='prior audit') srcBadge='audit';
+    var typeColor=d.t.includes('Public')?'var(--teal)':d.t.includes('For-profit')?'var(--red)':d.t.includes('Non-profit')?'var(--amber)':'rgba(255,255,255,.4)';
+    var spcTag=d.spc?'<span class="spc-tag">◄ SPC</span>':'';
+    row.innerHTML='<div class="spec-label"><span style="color:rgba(255,255,255,.85)">'+(d.spc?'<strong>'+d.n+'</strong>':d.n)+'</span>'+spcTag+'<span class="inst-type" style="color:'+typeColor+'">'+d.t+'</span></div>'+
+      '<div class="spec-bar-wrap"><div class="spec-bar" style="width:'+pct+'%;background:'+d.col+'40;border:1px solid '+d.col+'60;color:'+d.col+'">'+d.f+'</div></div>'+
+      '<div class="spec-src" style="font-size:.55rem;color:var(--muted)">'+srcBadge+'</div>';
+    c.appendChild(row);
+    // Add tier dividers
+    if(i<DATA.length-1){
+      var next=DATA[i+1];
+      if(d.f>=50 && next.f<50){
+        var div=document.createElement('div');div.className='tier-divider';
+        div.innerHTML='<span class="tier-label">Stress zone boundary</span>';c.appendChild(div);
+      }
+      if(d.f>=14 && next.f<14){
+        var div2=document.createElement('div');div2.className='tier-divider';
+        div2.innerHTML='<span class="tier-label" style="color:var(--red)">Captive-population tier</span>';c.appendChild(div2);
+      }
+    }
+  });
+}
+
+function showDetail(d){
+  var panel=document.getElementById('detail-panel');
+  var cont=document.getElementById('detail-content');
+  var fhriClass=d.f>=55?'fhri-hi':d.f>=30?'fhri-mi':'fhri-lo';
+  cont.innerHTML='<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem">'+
+    '<div style="font-family:\'DM Serif Display\',serif;font-size:2.2rem;color:'+d.col+';line-height:1">'+d.f+'</div>'+
+    '<div><div style="font-weight:600;font-size:.95rem">'+d.n+'</div>'+
+    '<div style="font-family:\'DM Mono\',monospace;font-size:.62rem;color:var(--muted)">'+d.t+' &nbsp;&middot;&nbsp; '+d.src+'</div></div></div>'+
+    '<div class="fhri-wrap"><div class="fhri-track"><div class="fhri-fill '+fhriClass+'" style="width:'+d.f+'%"></div></div></div>'+
+    '<div class="detail-grid">'+
+    [['&epsilon;',d.e,'Extraction'],['&phi;',d.p,'Entropy'],['&rho;',d.r,'Regulatory'],['&sigma;',d.s,'Residue'],['&mu;',d.m,'Misalign.']].map(function(x){
+      var v=parseFloat(x[1]);var col=v>0.5?'var(--red)':v>0.25?'var(--amber)':'var(--teal)';
+      return '<div class="detail-cell"><div class="sym">'+x[0]+'</div><div class="val" style="color:'+col+'">'+v.toFixed(3)+'</div><div class="nm">'+x[2]+'</div></div>';
+    }).join('')+'</div>'+
+    '<div style="font-size:.84rem;line-height:1.65;color:rgba(255,255,255,.72);margin-top:.4rem">'+d.note+'</div>';
+  panel.classList.add('show');
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+var JK=['he_j1','he_j2','he_j3','he_j4','he_j5'];
+function sv(){JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)localStorage.setItem(k,e.value);}catch(x){}});var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){var t='EBB Ch11 \u2014 Higher Education IPS Analysis Journal\n'+'='.repeat(60)+'\n\n';
+['Q1: The SPC structural gap and what closing it looks like.','Q2: The exit option cost and T1 intervention.','Q3: MDC governance consultant analysis.','Q4: T1 intervention on the 1992 HEA access mechanism.','Q5: Personal forward prediction for your future sector.'].forEach(function(q,i){var v=document.getElementById('j'+(i+1));t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';});
+try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='EBB_HE_IPS_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}}
+JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)e.value=localStorage.getItem(k)||'';}catch(x){}});
+buildSpectrum();
+</script>
+</body>
+</html>

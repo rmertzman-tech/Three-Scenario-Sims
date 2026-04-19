@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Constructive Response — AMC Design Instrument</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#040d0c;--s:#081412;--s2:#0d1e1c;--border:rgba(20,184,166,.12);
+  --teal:#14b8a6;--teal2:#2dd4bf;--amber:#f59e0b;--red:#f87171;
+  --violet:#a78bfa;--green:#4ade80;--blue:#60a5fa;--orange:#fb923c;
+  --text:rgba(255,255,255,.90);--muted:rgba(255,255,255,.45);
+  --care:#4A90A4;--fair:#6B8E4E;--loyal:#D4A574;--auth:#8B7BA8;--sanct:#C17B7B}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.hdr{padding:2.2rem 1.5rem 1.8rem;text-align:center;border-bottom:1px solid var(--border);
+  background:linear-gradient(160deg,#020908 0%,var(--bg) 65%);position:relative;overflow:hidden}
+.hdr::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(20,184,166,.15) 0%,transparent 60%);pointer-events:none}
+.ch-lbl{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--teal);text-transform:uppercase;margin-bottom:.4rem}
+.ch-ttl{font-family:'DM Serif Display',serif;font-size:2.2rem;color:#fff;line-height:1.15;margin-bottom:.3rem}
+.ch-ttl em{color:var(--teal2);font-style:italic}
+.ch-sub{font-size:.85rem;color:var(--muted);max-width:580px;margin:0 auto;line-height:1.55}
+.tab-bar{display:flex;gap:.3rem;overflow-x:auto;padding:.6rem 1rem;background:var(--s);
+  border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.tab-bar::-webkit-scrollbar{height:3px}.tab-bar::-webkit-scrollbar-thumb{background:var(--teal)}
+.tb{flex-shrink:0;font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;
+  text-transform:uppercase;padding:.38rem .8rem;border-radius:.3rem;
+  border:1px solid var(--border);background:transparent;color:var(--muted);
+  cursor:pointer;transition:all .18s;white-space:nowrap}
+.tb:hover{color:var(--text)}.tb.active{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
+.pane{display:none;padding:1.5rem;max-width:920px;margin:0 auto}.pane.active{display:block;animation:fi .25s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+p.bd{font-size:.9rem;color:rgba(255,255,255,.80);margin-bottom:.9rem;line-height:1.8}
+h2.st{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--teal2);margin:1rem 0 .5rem}
+h3.sub{font-weight:600;font-size:.92rem;color:rgba(255,255,255,.85);margin:.8rem 0 .3rem}
+.panel{border-radius:.5rem;padding:1rem 1.2rem;margin:.75rem 0;line-height:1.75;font-size:.88rem}
+.panel.teal{background:rgba(20,184,166,.09);border-left:3px solid var(--teal)}
+.panel.amber{background:rgba(245,158,11,.08);border-left:3px solid var(--amber)}
+.panel.green{background:rgba(74,222,128,.08);border-left:3px solid var(--green)}
+.panel.violet{background:rgba(167,139,250,.08);border-left:3px solid var(--violet)}
+.panel.blue{background:rgba(96,165,250,.08);border-left:3px solid var(--blue)}
+.panel strong{color:var(--text)}
+.pullq{border-top:2px solid var(--teal);border-bottom:2px solid var(--teal);
+  padding:1.2rem 2.5rem;margin:1.5rem 0;text-align:center;
+  font-family:'DM Serif Display',serif;font-size:1.2rem;
+  color:var(--teal2);line-height:1.65;font-style:italic;
+  background:rgba(20,184,166,.04);border-radius:.3rem}
+/* ACP FEATURE CARDS */
+.feature-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.75rem 0}
+@media(max-width:580px){.feature-trio{grid-template-columns:1fr}}
+.feature-card{background:var(--s2);border:1px solid var(--border);border-radius:.5rem;padding:1rem}
+.feature-card .fc-num{font-family:'DM Serif Display',serif;font-size:2.5rem;color:var(--teal);line-height:1;margin-bottom:.3rem}
+.feature-card .fc-title{font-weight:600;font-size:.9rem;margin-bottom:.4rem}
+.feature-card .fc-body{font-size:.83rem;line-height:1.65;color:rgba(255,255,255,.72)}
+/* PROFESSION SELECTOR */
+.prof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.45rem;margin:.75rem 0}
+.prof-btn{padding:.7rem .5rem;border-radius:.4rem;border:2px solid var(--border);
+  cursor:pointer;background:var(--s2);text-align:center;transition:all .2s}
+.prof-btn:hover{border-color:var(--teal)}.prof-btn.active{border-color:var(--teal);background:rgba(20,184,166,.08)}
+.prof-icon{font-size:1.3rem;margin-bottom:.25rem}
+.prof-name{font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);text-transform:uppercase;letter-spacing:.05em}
+.obligation-output{background:var(--s);border:1px solid var(--border);border-radius:.5rem;
+  overflow:hidden;margin:.75rem 0;display:none;animation:fi .2s ease}
+.obligation-output.show{display:block}
+.ob-head{padding:.75rem 1rem;background:var(--s2);border-bottom:1px solid var(--border);
+  font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em}
+.ob-row{padding:.85rem 1.1rem;border-bottom:1px solid var(--border);display:grid;grid-template-columns:180px 1fr;gap:.75rem}
+.ob-row:last-child{border-bottom:none}
+.ob-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--amber);line-height:1.4;padding-top:.1rem}
+.ob-text{font-size:.87rem;line-height:1.68;color:rgba(255,255,255,.8)}
+/* AMC FEATURES */
+.amc-feature{background:var(--s2);border:1px solid var(--border);border-radius:.5rem;
+  overflow:hidden;margin:.65rem 0}
+.amc-head{padding:.75rem 1rem;cursor:pointer;display:flex;align-items:center;gap:.75rem;transition:background .15s}
+.amc-head:hover{background:rgba(20,184,166,.04)}
+.amc-num{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--teal);line-height:1;flex-shrink:0}
+.amc-title{font-weight:600;font-size:.92rem}
+.amc-body{padding:.85rem 1.1rem;font-size:.88rem;line-height:1.72;
+  color:rgba(255,255,255,.78);border-top:1px solid var(--border);display:none;animation:fi .2s ease}
+.amc-body.show{display:block}
+/* BIOBOND TABLE */
+.bb-table{width:100%;border-collapse:collapse;margin:.75rem 0;font-size:.84rem}
+.bb-table th{padding:.55rem .75rem;text-align:left;font-family:'DM Mono',monospace;
+  font-size:.62rem;color:rgba(255,255,255,.45);text-transform:uppercase;
+  letter-spacing:.06em;border-bottom:1px solid var(--border)}
+.bb-table td{padding:.6rem .75rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top;line-height:1.55}
+.bb-table tr:last-child td{border-bottom:none}
+.bb-rate{font-family:'DM Mono',monospace;font-size:.8rem;font-weight:600}
+/* PRF COMMONS */
+.prf-common-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:.75rem 0}
+@media(max-width:560px){.prf-common-grid{grid-template-columns:1fr}}
+.prf-common-card{border-radius:.5rem;padding:1rem;border:1px solid}
+.prf-common-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.prf-common-icon{font-size:1.3rem}
+.prf-common-name{font-family:'DM Mono',monospace;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.prf-endorsement{font-size:.85rem;line-height:1.65;color:rgba(255,255,255,.78)}
+.convergence-arrow{text-align:center;padding:.75rem;font-family:'DM Mono',monospace;font-size:.75rem;color:var(--teal);letter-spacing:.1em}
+/* COMMITMENT */
+.commitment-builder{background:var(--s);border:1px solid var(--border);border-radius:.5rem;overflow:hidden;margin:.75rem 0}
+.cb-section{padding:.9rem 1.1rem;border-bottom:1px solid var(--border)}
+.cb-section:last-child{border-bottom:none}
+.cb-lbl{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.5rem}
+.cb-select-row{display:flex;gap:.4rem;flex-wrap:wrap}
+.cb-chip{padding:.35rem .7rem;border-radius:2rem;border:1px solid var(--border);
+  cursor:pointer;font-size:.78rem;background:var(--s2);transition:all .18s}
+.cb-chip:hover{border-color:var(--teal);color:var(--teal)}
+.cb-chip.active{background:var(--teal);color:#000;border-color:var(--teal);font-weight:600}
+.commitment-output{background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);
+  border-radius:.45rem;padding:1.1rem 1.2rem;margin:.75rem 0;display:none;animation:fi .3s ease}
+.commitment-output.show{display:block}
+.commitment-text{font-family:'DM Serif Display',serif;font-size:1rem;
+  line-height:1.75;color:rgba(255,255,255,.85)}
+/* JOURNAL */
+.jq{border:1px solid var(--border);border-radius:.5rem;margin:.7rem 0;overflow:hidden}
+.jq-h{padding:.8rem 1.1rem;background:var(--s);font-weight:600;font-size:.87rem;display:flex;gap:.6rem;line-height:1.45}
+.jq-n{font-family:'DM Mono',monospace;font-size:.66rem;color:var(--teal);flex-shrink:0;padding-top:.15rem}
+.jq-ta{width:100%;min-height:86px;background:#020908;border:none;border-top:1px solid var(--border);
+  padding:.9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.86rem;resize:vertical;line-height:1.6}
+.jq-ta:focus{outline:none}
+button.btn{background:var(--teal);color:#000;border:none;font-family:'DM Sans',sans-serif;font-weight:600;
+  font-size:.82rem;padding:.5rem 1.1rem;border-radius:.35rem;cursor:pointer;margin:.25rem .2rem}
+button.btn.out{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.bot-nav{max-width:920px;margin:0 auto;padding:.7rem 1.5rem;display:flex;justify-content:space-between;border-top:1px solid var(--border)}
+.sf{position:fixed;bottom:1.2rem;right:1.2rem;background:var(--teal);color:#000;font-weight:600;
+  font-size:.76rem;padding:.4rem .9rem;border-radius:.35rem;display:none;z-index:999}
+.sf.show{display:block}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="ch-lbl">AMC Design Instrument &middot; App 2 of 2</div>
+  <h1 class="ch-ttl">The <em>Constructive Response</em></h1>
+  <p class="ch-sub">From structural diagnosis to institutional design &mdash; the Agency Conditions Principle, your professional obligations, and the Adaptive Moral Commonwealth</p>
+</div>
+
+<div class="tab-bar">
+  <button class="tb active" onclick="sw('acp')">The ACP</button>
+  <button class="tb" onclick="sw('oblig')">Your Obligations</button>
+  <button class="tb" onclick="sw('amc')">AMC Architecture</button>
+  <button class="tb" onclick="sw('biobond')">BioBond in Practice</button>
+  <button class="tb" onclick="sw('commons')">Cross-PRF Commons</button>
+  <button class="tb" onclick="sw('commit')">Your Commitment</button>
+</div>
+
+<!-- ACP -->
+<div class="pane active" id="pane-acp">
+  <h2 class="st">The Agency Conditions Principle</h2>
+  <p class="bd">Every ethical framework &mdash; consequentialism, duty ethics, virtue ethics, care ethics, contractarianism &mdash; implicitly assumes something it almost never states explicitly: that the agents whose actions it evaluates are <em>functioning moral agents</em>. Capable of deliberation. Able to perceive their situation accurately. Possessing the temporal horizon required to connect present action to future consequence.</p>
+  <p class="bd">These are not descriptions of ideal humans. They are <strong>enabling conditions</strong> &mdash; the structural prerequisites without which moral concepts become empty. You cannot be responsible for an action if you lacked the cognitive coherence to understand it. You cannot keep a promise if your institutional context has eroded the temporal stability that promise-keeping requires.</p>
+
+  <div class="pullq">
+    Because coherent, temporally extended, reason-responsive agency is the necessary<br>
+    enabling condition for responsibility, promise-keeping, care, and common life,<br>
+    there are strong moral reasons to preserve the conditions<br>
+    that make such agency possible.<br><br>
+    When institutions systematically destroy those conditions,<br>
+    they commit a structural injustice &mdash;<br>
+    even when no single actor intended the harm.
+  </div>
+
+  <h3 class="sub">Three features that distinguish the ACP</h3>
+  <div class="feature-trio">
+    <div class="feature-card">
+      <div class="fc-num">1</div>
+      <div class="fc-title">Enabling conditions, not outcomes</div>
+      <div class="fc-body">Standard ethical analysis asks: did this institution produce bad outcomes? The ACP asks: did it systematically degrade the conditions under which agents can function as moral actors at all? An institution can produce acceptable visible outcomes while quietly consuming the coordination capacity that would be needed to recognize and resist its extraction architecture.</div>
+    </div>
+    <div class="feature-card">
+      <div class="fc-num">2</div>
+      <div class="fc-title">Structural, not dispositional</div>
+      <div class="fc-body">The ACP locates the moral wrong in the ownership architecture that achieved P-adic proximity and executed Interpretant replacement &mdash; not in any individual actor&rsquo;s bad intentions. The nurse at FHRI_max = 13.6 is not the responsible party. The PE ownership architecture that produced FHRI_max = 13.6 is the formally derived responsible party.</div>
+    </div>
+    <div class="feature-card">
+      <div class="fc-num">3</div>
+      <div class="fc-title">Cross-PRF accessible</div>
+      <div class="fc-body">Because the ACP is grounded in enabling conditions rather than any specific moral tradition&rsquo;s account of the good, it is accessible from all OS1 frameworks simultaneously. Every PRF cluster presupposes functioning moral agency. The ACP formalizes what all of them require but none of them states.</div>
+    </div>
+  </div>
+
+  <h3 class="sub">What the ACP does to professional ethics</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.75rem 0">
+    <div style="background:rgba(248,113,113,.06);border:1px solid rgba(248,113,113,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--red);margin-bottom:.35rem">STANDARD PROFESSIONAL ETHICS</div>
+      <div style="font-size:.85rem;line-height:1.65;color:rgba(255,255,255,.75)">Individual practitioners have obligations defined by professional codes. When structural conditions make those obligations difficult, practitioners should exercise greater personal virtue, advocate more loudly, and if necessary leave the profession.</div>
+    </div>
+    <div style="background:rgba(20,184,166,.06);border:1px solid rgba(20,184,166,.2);border-radius:.4rem;padding:.9rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--teal);margin-bottom:.35rem">ACP-GROUNDED PROFESSIONAL ETHICS</div>
+      <div style="font-size:.85rem;line-height:1.65;color:rgba(255,255,255,.75)">The codes presuppose structural conditions that may not exist. When FHRI_max falls below the threshold at which the code&rsquo;s demands are achievable, moral responsibility for the gap is primarily the ownership architecture&rsquo;s. The practitioner&rsquo;s obligations shift: refuse the most serious ACP violations, document structural conditions preventing full compliance, and take T1 structural action where available.</div>
+    </div>
+  </div>
+
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q1</span>The ACP says that when FHRI_max falls below the threshold at which a professional code&rsquo;s demands are achievable, the moral responsibility for the gap is primarily the ownership architecture&rsquo;s. Does this let practitioners off the hook too easily &mdash; or does it correctly identify where responsibility belongs?</div>
+  <textarea class="jq-ta" id="j1" oninput="sv()" placeholder="Whether structural location of responsibility exonerates too much, or correctly assigns it..."></textarea></div>
+</div>
+
+<!-- OBLIGATIONS -->
+<div class="pane" id="pane-oblig">
+  <h2 class="st">Your Professional Obligations Under the ACP</h2>
+  <div class="panel teal"><strong>The ACP produces three specific professional ethics obligations</strong> that standard codes do not fully articulate. They are not demands for heroism. They are the minimum required for genuine professional ethics practice in institutions with measurable structural ceilings.</div>
+
+  <div style="display:grid;gap:.6rem;margin:.75rem 0">
+    <div style="background:var(--s2);border-left:3px solid var(--teal);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--teal);margin-bottom:.3rem">OBLIGATION 1 &mdash; PERCEPTION BEFORE COMPLIANCE</div>
+      <div style="font-size:.88rem;line-height:1.72;color:rgba(255,255,255,.82)">Before asking &ldquo;how do I comply with my professional code in this institution,&rdquo; ask &ldquo;what is this institution&rsquo;s structural capacity for the professional practice the code demands?&rdquo; A practitioner who cannot measure FHRI_max formally can still ask the five IPS questions qualitatively: What fraction of my coordination capacity reaches my clients? What is the debt-to-value ratio this institution imposes on the people I serve? How misaligned are my employer&rsquo;s incentives with the outcomes my professional code requires?</div>
+    </div>
+    <div style="background:var(--s2);border-left:3px solid var(--amber);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--amber);margin-bottom:.3rem">OBLIGATION 2 &mdash; STRUCTURAL ADDRESS OVER CHARACTER ADDRESS</div>
+      <div style="font-size:.88rem;line-height:1.72;color:rgba(255,255,255,.82)">When professional ethics failures occur, the first question the ACP requires is: what is the FHRI_max ceiling this practitioner was operating under? Character assessment is warranted only after structural assessment. The correctional officer who did not file a safety report may have failed in their professional duty, or may have been operating at FHRI_max = 10.9 where the organizational immune response to safety reports is absorbed to near-zero. These are very different ethical situations requiring very different responses.</div>
+    </div>
+    <div style="background:var(--s2);border-left:3px solid var(--green);border-radius:0 .45rem .45rem 0;padding:.9rem 1.1rem">
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--green);margin-bottom:.3rem">OBLIGATION 3 &mdash; T1 ACTION AS PROFESSIONAL OBLIGATION</div>
+      <div style="font-size:.88rem;line-height:1.72;color:rgba(255,255,255,.82)">When practitioners identify T1 structural conditions systematically preventing the code&rsquo;s demands from being achievable, they have an obligation to take T1-level structural action. This is not the same as heroism. It is the structural version of the existing professional obligation to &ldquo;report concerns through appropriate channels&rdquo; &mdash; specifying what &ldquo;appropriate channels&rdquo; means at the structural level: channels that can address the P-adic access condition, not merely report the symptom.</div>
+    </div>
+  </div>
+
+  <h3 class="sub">See how these obligations apply to your specific profession</h3>
+  <p class="bd" style="margin-bottom:.5rem">Select your future professional field:</p>
+
+  <div class="prof-grid">
+    <div class="prof-btn" onclick="setProf('nurse',this)"><div class="prof-icon">&#129657;</div><div class="prof-name">Nursing</div></div>
+    <div class="prof-btn" onclick="setProf('social',this)"><div class="prof-icon">&#129309;</div><div class="prof-name">Social Work</div></div>
+    <div class="prof-btn" onclick="setProf('teacher',this)"><div class="prof-icon">&#127979;</div><div class="prof-name">Education</div></div>
+    <div class="prof-btn" onclick="setProf('finance',this)"><div class="prof-icon">&#128200;</div><div class="prof-name">Finance</div></div>
+    <div class="prof-btn" onclick="setProf('legal',this)"><div class="prof-icon">&#9878;</div><div class="prof-name">Legal / Policy</div></div>
+    <div class="prof-btn" onclick="setProf('tech',this)"><div class="prof-icon">&#128187;</div><div class="prof-name">Technology</div></div>
+    <div class="prof-btn" onclick="setProf('business',this)"><div class="prof-icon">&#127970;</div><div class="prof-name">Business / Mgmt</div></div>
+    <div class="prof-btn" onclick="setProf('health_admin',this)"><div class="prof-icon">&#127973;</div><div class="prof-name">Health Admin</div></div>
+  </div>
+
+  <div class="obligation-output" id="oblig-output">
+    <div class="ob-head" id="oblig-prof-head"></div>
+    <div class="ob-row">
+      <div class="ob-lbl">Obligation 1<br>Perception before compliance</div>
+      <div class="ob-text" id="ob1-text"></div>
+    </div>
+    <div class="ob-row">
+      <div class="ob-lbl">Obligation 2<br>Structural address over character address</div>
+      <div class="ob-text" id="ob2-text"></div>
+    </div>
+    <div class="ob-row">
+      <div class="ob-lbl">Obligation 3<br>T1 action as professional obligation</div>
+      <div class="ob-text" id="ob3-text"></div>
+    </div>
+    <div class="ob-row" style="background:rgba(20,184,166,.04)">
+      <div class="ob-lbl">Your sector&rsquo;s<br>FHRI_max range</div>
+      <div class="ob-text" id="ob4-text"></div>
+    </div>
+  </div>
+
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q2</span>Obligation 3 says T1 structural action is a professional ethics obligation &mdash; not just an aspirational value but a minimum requirement. What specific T1 action is available to an entry-level practitioner in your field? What structural level can you actually reach?</div>
+  <textarea class="jq-ta" id="j2" oninput="sv()" placeholder="The T1 action available at your entry level, and what structural level it can reach..."></textarea></div>
+</div>
+
+<!-- AMC -->
+<div class="pane" id="pane-amc">
+  <h2 class="st">The AMC Architecture: Four Defining Features</h2>
+  <div class="panel teal"><strong>The Adaptive Moral Commonwealth is not a political program.</strong> It is a constructor-oriented political economy: an institutional architecture that redirects task-based efficiency toward preservation and repair of the conditions under which coherent moral agency can function. It is an OS2 design because it is grounded in enabling conditions rather than any specific moral tradition&rsquo;s account of the good &mdash; and therefore accessible from all OS1 frameworks simultaneously.</div>
+  <p class="bd">Click each feature to expand its full description.</p>
+
+  <div class="amc-feature">
+    <div class="amc-head" onclick="toggleAMC(this)">
+      <div class="amc-num">1</div>
+      <div><div class="amc-title">Measurement Before Prescription</div>
+      <div style="font-size:.82rem;color:var(--muted)">FHRI_max trajectory as the primary institutional evaluation criterion</div></div>
+    </div>
+    <div class="amc-body">The AMC requires that institutions be evaluated on FHRI_max trajectory &mdash; whether they are increasing or decreasing the structural coordination capacity available to the people they serve &mdash; before any specific policy intervention is prescribed. This is the OS2 foundation: agreement on what to measure before agreement on what to do. The four sector analyses are the first-pass calibration of this measurement across sectors. The measurement is not ideology-specific: a conservative institution that maintains FHRI_max above 60 and a progressive institution that does the same are both AMC-compatible regardless of their differences at the OS1 level.<br><br>
+    <strong>In practice:</strong> Every major institutional decision &mdash; acquisition, restructuring, regulatory reform, contract renewal &mdash; requires a FHRI_max impact assessment as a precondition. This is not a new bureaucratic layer. It is the institutional equivalent of environmental impact assessment: a structural measurement that makes visible what is currently invisible in standard accounting.</div>
+  </div>
+
+  <div class="amc-feature">
+    <div class="amc-head" onclick="toggleAMC(this)">
+      <div class="amc-num">2</div>
+      <div><div class="amc-title">True Solvency Accounting</div>
+      <div style="font-size:.82rem;color:var(--muted)">&phi; imposed on communities appears as a liability on the imposing institution&rsquo;s balance sheet</div></div>
+    </div>
+    <div class="amc-body">Standard accounting measures what appears in market prices. True Solvency Accounting requires that &phi; imposed on communities, workers, and public systems appear as a liability on the imposing firm&rsquo;s balance sheet, measured by the FHRI_max degradation the firm produces in the systems it affects.<br><br>
+    <strong>Why this matters:</strong> A PE-acquired nursing home that appears profitable because it has externalized $49 FHRI_max points of degradation onto residents, families, and communities is not actually solvent. It has borrowed against a balance sheet belonging to others. A for-profit university that appears profitable because it has externalized $42,000 in debt against $35,200 in earnings onto its graduates is running a hidden deficit on the balance sheet of those graduates.<br><br>
+    <strong>The mechanism:</strong> True Solvency Accounting extends existing accounting standards for environmental remediation and product liability to FHRI_max degradation. Institutions that impose FHRI_max degradation on communities carry that degradation as a balance sheet liability audited annually. Institutions that restore FHRI_max carry restoration as a verifiable asset. Capital markets can then distinguish genuinely profitable institutions from institutions that appear profitable because their accounting does not capture the full cost of their operations.</div>
+  </div>
+
+  <div class="amc-feature">
+    <div class="amc-head" onclick="toggleAMC(this)">
+      <div class="amc-num">3</div>
+      <div><div class="amc-title">BioBond Instruments</div>
+      <div style="font-size:.82rem;color:var(--muted)">Making FHRI_max improvement financially rational rather than relying on institutional virtue</div></div>
+    </div>
+    <div class="amc-body">BioBond financial instruments make FHRI_max improvement financially rational without requiring the extraction architecture&rsquo;s practitioners to adopt the values of any particular OS1 framework. The margin ratchet structure changes the financial incentives of the extraction architecture from within the market mechanism rather than imposing a regulatory override.<br><br>
+    <strong>The mechanism:</strong> BioBond instruments carry interest rates indexed to FHRI_max. At FHRI_max &lt; 15 (PE nursing home range), the institution pays base rate + 3%. At FHRI_max 60+ (mission-aligned range), the institution pays base rate &minus; 2.5%. Over a 10-year bond horizon, the cumulative financial advantage of operating at FHRI_max 60+ versus FHRI_max 13.6 is large enough to make the extraction architecture more expensive than the coordination-capacity architecture &mdash; for the first time in most of these sectors&rsquo; histories.<br><br>
+    <strong>The Maathai principle:</strong> The BioBond is not a government subsidy to good institutions. It is a mechanism that makes the good institutions&rsquo; structural advantages financially legible in capital markets that currently cannot distinguish them from extraction architectures.</div>
+  </div>
+
+  <div class="amc-feature">
+    <div class="amc-head" onclick="toggleAMC(this)">
+      <div class="amc-num">4</div>
+      <div><div class="amc-title">The Sequencing Logic: BioBond &rarr; Civic &rarr; Institutional</div>
+      <div style="font-size:.82rem;color:var(--muted)">Repair must follow biological reality, not administrative convenience</div></div>
+    </div>
+    <div class="amc-body">The AMC does not impose institutional reform on populations whose biological capacity for engaging with reform has been degraded below the threshold at which engagement is neurologically possible. The sequencing logic &mdash; BioBond first, then Civic participation, then Institutional redesign &mdash; reflects a biological constraint, not a political preference.<br><br>
+    <strong>BioBond first:</strong> Restore physical safety, metabolic security, and predictable social environment. Without this, the prefrontal cortex remains in chronic stress response and cannot perform the deliberation that civic participation and institutional redesign require.<br><br>
+    <strong>Civic second:</strong> Once biological capacity is restored above the threshold (&lambda; &gt; 0.4), genuine participation in governance becomes possible. Not before. Civic engagement attempted while populations remain biologically degraded produces conflict, not coordination.<br><br>
+    <strong>Institutional third:</strong> Only after civic capacity is established (&lambda; &gt; 0.6) can institutional redesign succeed. Institutional reform without civic legitimacy produces backlash. Institutional reform without biological foundation produces reform that the population cannot sustain.<br><br>
+    <strong>The implication:</strong> A nurse at FHRI_max = 13.6 cannot be asked to engage with institutional reform processes as their first intervention. Their first intervention is restoring enough FHRI_max that the institutional reform process is neurologically accessible.</div>
+  </div>
+
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q3</span>True Solvency Accounting would require that &phi; imposed on communities appear as a liability on the imposing institution&rsquo;s balance sheet. Name one institution you know whose accounting profitability depends on externalized &phi;. What would its balance sheet look like under True Solvency Accounting?</div>
+  <textarea class="jq-ta" id="j3" oninput="sv()" placeholder="The institution, the externalized phi, and the balance sheet impact..."></textarea></div>
+</div>
+
+<!-- BIOBOND -->
+<div class="pane" id="pane-biobond">
+  <h2 class="st">BioBond in Practice: The Four Sector Instruments</h2>
+  <div class="panel teal"><strong>Each of the four sectors analyzed in this course has a sector-specific BioBond specification.</strong> The instrument mechanics are the same across sectors; the FHRI_max trigger thresholds, structural change requirements, and verification methods are calibrated to the specific parameters driving the structural ceiling in each sector.</div>
+
+  <h3 class="sub">BioBond Rate Schedule (Universal)</h3>
+  <table class="bb-table">
+    <thead><tr><th>FHRI_max Range</th><th>Rate Adjustment</th><th>Classification</th><th>Operational Meaning</th></tr></thead>
+    <tbody>
+      <tr><td style="font-family:'DM Mono',monospace">60+</td><td class="bb-rate" style="color:var(--green)">Base &minus; 2.5%</td><td><span style="background:rgba(74,222,128,.12);color:var(--green);font-family:'DM Mono',monospace;font-size:.68rem;padding:.1rem .35rem;border-radius:.2rem">Full Reward</span></td><td>Mission-aligned / Functional. Public facility range.</td></tr>
+      <tr><td style="font-family:'DM Mono',monospace">45&ndash;59</td><td class="bb-rate" style="color:var(--teal)">Base &minus; 1.0%</td><td><span style="background:rgba(20,184,166,.12);color:var(--teal);font-family:'DM Mono',monospace;font-size:.68rem;padding:.1rem .35rem;border-radius:.2rem">Reward</span></td><td>Functional state. Coordination capacity active.</td></tr>
+      <tr><td style="font-family:'DM Mono',monospace">30&ndash;44</td><td class="bb-rate" style="color:var(--amber)">Base (Neutral)</td><td><span style="background:rgba(245,158,11,.12);color:var(--amber);font-family:'DM Mono',monospace;font-size:.68rem;padding:.1rem .35rem;border-radius:.2rem">Neutral</span></td><td>Approaching functional. Under stress.</td></tr>
+      <tr><td style="font-family:'DM Mono',monospace">15&ndash;29</td><td class="bb-rate" style="color:var(--orange)">Base + 1.5%</td><td><span style="background:rgba(251,146,60,.12);color:var(--orange);font-family:'DM Mono',monospace;font-size:.68rem;padding:.1rem .35rem;border-radius:.2rem">Penalty</span></td><td>Improving but below functional threshold.</td></tr>
+      <tr><td style="font-family:'DM Mono',monospace">&lt; 15</td><td class="bb-rate" style="color:var(--red)">Base + 3.0%</td><td><span style="background:rgba(248,113,113,.12);color:var(--red);font-family:'DM Mono',monospace;font-size:.68rem;padding:.1rem .35rem;border-radius:.2rem">High Penalty</span></td><td>Captive-population extraction range. T1 required.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Sector BioBond Specifications</h3>
+  <div style="display:grid;gap:.55rem;margin:.75rem 0">
+    <div style="background:var(--s2);border:1px solid var(--border);border-radius:.45rem;overflow:hidden">
+      <div style="padding:.7rem 1rem;background:rgba(248,113,113,.06);border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <span style="font-weight:600;font-size:.88rem">Healthcare: PE-Acquired Nursing Homes</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--red)">FHRI_max = 13.6 &rarr; target 45</span>
+      </div>
+      <div style="padding:.85rem 1rem;font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">
+        <strong>T1 structural requirements:</strong> Beneficial ownership disclosure at acquisition; PBC conversion within 5 years of purchase; FHRI_max floor at 35 as condition of CMS certification; REIT structure prohibited for institutions serving cognitively impaired captive populations.<br>
+        <strong>&phi; recovery tranche:</strong> 15% of BioBond proceeds dedicated to resident quality-of-life restoration fund, verified quarterly by independent CMS audit.<br>
+        <strong>Verification:</strong> FHRI_max computed from CMS staffing data, deficiency citations, and financial reports. Quarterly monitoring. Bond accelerates at FHRI_max &lt; 15 for more than two consecutive quarters.
+      </div>
+    </div>
+    <div style="background:var(--s2);border:1px solid var(--border);border-radius:.45rem;overflow:hidden">
+      <div style="padding:.7rem 1rem;background:rgba(248,113,113,.06);border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <span style="font-weight:600;font-size:.88rem">Corrections: Private Correctional Facilities</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--red)">FHRI_max = 10.9 &rarr; target 40</span>
+      </div>
+      <div style="padding:.85rem 1rem;font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">
+        <strong>T1 structural requirements:</strong> REIT structure prohibited for correctional operators; beneficial ownership disclosure; DOC contract renewal conditional on FHRI_max &ge; 35; mandatory programming investment floor at 12% of per-diem.<br>
+        <strong>&phi; recovery tranche:</strong> 20% of BioBond proceeds dedicated to post-release transition support for previously incarcerated individuals, reducing the &phi;-accumulation measured by elevated recidivism.<br>
+        <strong>Verification:</strong> FHRI_max computed from DOC staffing, incident rates, and programming hours. Annual independent audit. Recidivism tracking at 3 and 6 years post-release.
+      </div>
+    </div>
+    <div style="background:var(--s2);border:1px solid var(--border);border-radius:.45rem;overflow:hidden">
+      <div style="padding:.7rem 1rem;background:rgba(245,158,11,.06);border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <span style="font-weight:600;font-size:.88rem">Finance: CDFI Scaling</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--amber)">CDFI baseline 58&ndash;65 &rarr; expand reach</span>
+      </div>
+      <div style="padding:.85rem 1rem;font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">
+        <strong>Mechanism:</strong> CDFIs operate at FHRI_max = 58&ndash;65 because their ownership architecture does not permit the P-adic access mechanism that replaced the Interpretant in commercial banks. BioBond financing at base &minus; 2.5% makes CDFI lending competitive with commercial bank origination for the first time in capital-constrained markets.<br>
+        <strong>T1 structural companion:</strong> Originator retention requirements (hold 5% of originated loans) for any institution accessing BioBond financing, reducing &mu; structurally rather than through incentive bonuses alone.<br>
+        <strong>Verification:</strong> FHRI_max from HMDA data, default rates, and community reinvestment metrics. CDFI Fund reporting requirements apply.
+      </div>
+    </div>
+    <div style="background:var(--s2);border:1px solid var(--border);border-radius:.45rem;overflow:hidden">
+      <div style="padding:.7rem 1rem;background:rgba(20,184,166,.06);border-bottom:1px solid var(--border);display:flex;justify-content:space-between">
+        <span style="font-weight:600;font-size:.88rem">Higher Education: Community College &amp; Low-&epsilon; Scaling</span>
+        <span style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--teal)">SPC 58.6 &rarr; target 62+</span>
+      </div>
+      <div style="padding:.85rem 1rem;font-size:.86rem;line-height:1.68;color:rgba(255,255,255,.75)">
+        <strong>T1 structural requirement:</strong> Title IV eligibility conditional on FHRI_max &ge; 40. Removes institutions operating at Phoenix-level extraction from the federal student loan channel that serves as their P-adic access mechanism &mdash; the T1 analog of Glass-Steagall equivalent in finance.<br>
+        <strong>Community college BioBond:</strong> State-backed instruments for low-&epsilon; institutions financing the 1.4-point gap to the Functional threshold. For SPC specifically: &epsilon; reduction through instruction-to-admin rebalancing and &mu; reduction through enrollment management alignment produce the FHRI_max improvement that reduces the state&rsquo;s long-term cost of dropout debt defaults.<br>
+        <strong>Verification:</strong> FHRI_max from College Scorecard API and IPEDS Finance. Annual computation. Same methodology as the validated IPS analysis.
+      </div>
+    </div>
+  </div>
+
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q4</span>The BioBond makes FHRI_max improvement financially rational rather than relying on institutional virtue. Is this a strength or a weakness of the AMC approach? Does grounding structural repair in financial incentives rather than moral obligation make it more likely to work, less legitimate, or both?</div>
+  <textarea class="jq-ta" id="j4" oninput="sv()" placeholder="Whether financial incentive for structural repair strengthens or compromises the AMC's moral claim..."></textarea></div>
+</div>
+
+<!-- CROSS-PRF COMMONS -->
+<div class="pane" id="pane-commons">
+  <h2 class="st">Cross-PRF Commons: How Every OS1 Framework Endorses the AMC</h2>
+  <div class="panel teal"><strong>The AMC does not require that you abandon your OS1 moral commitments.</strong> It requires only that you acknowledge what your OS1 framework already presupposes: that functioning moral agency is a precondition for whatever moral goods you value. Every major OS1 framework independently endorses the AMC from within its own values &mdash; not because they all agree, but because they all depend on the same structural enabling conditions.</div>
+
+  <div class="prf-common-grid">
+    <div class="prf-common-card" style="background:rgba(74,144,164,.06);border-color:rgba(74,144,164,.3)">
+      <div class="prf-common-header">
+        <div class="prf-common-icon">&#129309;</div>
+        <div class="prf-common-name" style="color:#4A90A4">Care &amp; Fairness</div>
+      </div>
+      <div class="prf-endorsement">Justice requires that the &phi; of Interpretant replacement fall on those who executed the replacement, not on those who depended on the institution. The AMC&rsquo;s True Solvency Accounting mechanism routes &phi; back to its source through balance sheet liability. BioBond financing for CDFIs and low-&epsilon; institutions expands the structural capacity for genuine care in underserved communities. The Maathai sequencing protects against repair efforts that harm the populations they aim to serve by demanding biological restoration before civic engagement.</div>
+    </div>
+    <div class="prf-common-card" style="background:rgba(107,142,78,.06);border-color:rgba(107,142,78,.3)">
+      <div class="prf-common-header">
+        <div class="prf-common-icon">&#9878;</div>
+        <div class="prf-common-name" style="color:#6B8E4E">Liberty &amp; Markets</div>
+      </div>
+      <div class="prf-endorsement">Genuine market competition requires exit options and accurate price signals. Both are structurally unavailable when &mu; = 0.84 and the exit option costs more than the asset being defended. The AMC&rsquo;s FHRI_max measurement provides the information signal that markets need but cannot generate internally when &phi; is off the balance sheet. True Solvency Accounting levels the competitive playing field between extraction architectures that appear profitable through externalization and genuine-value-creation architectures that bear their full costs. The AMC is pro-market in the deepest sense: it makes market mechanisms work correctly by making externalized &phi; visible.</div>
+    </div>
+    <div class="prf-common-card" style="background:rgba(139,123,168,.06);border-color:rgba(139,123,168,.3)">
+      <div class="prf-common-header">
+        <div class="prf-common-icon">&#127981;</div>
+        <div class="prf-common-name" style="color:#8B7BA8">Authority &amp; Loyalty</div>
+      </div>
+      <div class="prf-endorsement">Stable institutions, reliable professional standards, and the intergenerational transmission of civic norms all require that the institutional fabric maintain FHRI_max above the threshold at which those norms can be practiced and transmitted. Institutions with FHRI_max = 10.9 (GEO Group) or 13.6 (PE nursing homes) cannot transmit professional norms because their structural ceiling prevents professional standards from being practiced. The AMC restores the institutional conditions that make norm transmission possible &mdash; which is the deepest requirement of the authority/loyalty framework.</div>
+    </div>
+    <div class="prf-common-card" style="background:rgba(193,123,123,.06);border-color:rgba(193,123,123,.3)">
+      <div class="prf-common-header">
+        <div class="prf-common-icon">&#10024;</div>
+        <div class="prf-common-name" style="color:#C17B7B">Sanctity &amp; Community</div>
+      </div>
+      <div class="prf-endorsement">The sacred duty of care &mdash; for the elderly, the incarcerated, the student, the borrower &mdash; has been made structurally inaccessible by the ownership architectures the four sector analyses document. The faith community&rsquo;s institutions (non-profit nursing homes at FHRI_max = 62.9, CDFIs at 58&ndash;65, mission-aligned community colleges at 58&ndash;64) consistently produce higher FHRI_max than their for-profit counterparts. The AMC provides the institutional architecture that makes the faith community&rsquo;s structural advantage financially competitive at scale. The sacred obligation does not change; the structural conditions for fulfilling it become accessible.</div>
+    </div>
+  </div>
+
+  <div class="convergence-arrow">&darr; &nbsp; All four endorsements rest on the same structural foundation &nbsp; &darr;</div>
+
+  <div class="pullq">
+    The Adaptive Moral Commonwealth does not ask us to agree about the good.<br>
+    It asks us to agree about the structural conditions<br>
+    required for whatever good we each believe in<br>
+    to remain achievable.
+  </div>
+
+  <div class="jq"><div class="jq-h"><span class="jq-n">Q5</span>Your own OS1 PRF framework endorses the AMC for the reasons in its panel above. But the endorsement also reveals the limit of your OS1 framework &mdash; the structural layer it reaches for but cannot fully specify. What does your OS1 framework want that it cannot fully produce without the OS2 structural analysis?</div>
+  <textarea class="jq-ta" id="j5" oninput="sv()" placeholder="What your OS1 framework wants, and what it cannot produce without OS2 structural analysis..."></textarea></div>
+</div>
+
+<!-- COMMITMENT -->
+<div class="pane" id="pane-commit">
+  <h2 class="st">Your Professional Commitment</h2>
+  <p class="bd">This is the closing exercise of the two-app sequence. You have moved from structural diagnosis (App 1) through institutional design (App 2). The telescope has been turned on four sectors, the Agency Conditions Principle has been stated, and the AMC has been specified. Now the forward-pull question: what do <em>you</em> commit to?</p>
+  <p class="bd">The commitment builder below generates a personalized statement grounded in the ACP. It is not a performance &mdash; it is a record for your future self of what you understood at this moment in your formation.</p>
+
+  <div class="commitment-builder">
+    <div class="cb-section">
+      <div class="cb-lbl">Your future sector</div>
+      <div class="cb-select-row" id="commit-sector-row">
+        <div class="cb-chip" onclick="setCommit('sector','healthcare',this)">Healthcare</div>
+        <div class="cb-chip" onclick="setCommit('sector','corrections',this)">Corrections / Criminal Justice</div>
+        <div class="cb-chip" onclick="setCommit('sector','finance',this)">Finance / Banking</div>
+        <div class="cb-chip" onclick="setCommit('sector','education',this)">Education</div>
+        <div class="cb-chip" onclick="setCommit('sector','business',this)">Business / Management</div>
+        <div class="cb-chip" onclick="setCommit('sector','nonprofit',this)">Non-profit / Community</div>
+        <div class="cb-chip" onclick="setCommit('sector','policy',this)">Government / Policy</div>
+        <div class="cb-chip" onclick="setCommit('sector','tech',this)">Technology</div>
+      </div>
+    </div>
+    <div class="cb-section">
+      <div class="cb-lbl">Your primary OS1 moral framework</div>
+      <div class="cb-select-row" id="commit-prf-row">
+        <div class="cb-chip" onclick="setCommit('prf','care',this)">Care &amp; Fairness</div>
+        <div class="cb-chip" onclick="setCommit('prf','liberty',this)">Liberty &amp; Markets</div>
+        <div class="cb-chip" onclick="setCommit('prf','auth',this)">Authority &amp; Loyalty</div>
+        <div class="cb-chip" onclick="setCommit('prf','sanct',this)">Sanctity &amp; Community</div>
+      </div>
+    </div>
+    <div class="cb-section">
+      <div class="cb-lbl">Your entry point &mdash; what you can actually do from where you start</div>
+      <div class="cb-select-row" id="commit-entry-row">
+        <div class="cb-chip" onclick="setCommit('entry','measure',this)">Learn to measure FHRI_max in my sector</div>
+        <div class="cb-chip" onclick="setCommit('entry','refuse',this)">Refuse the most serious ACP violations</div>
+        <div class="cb-chip" onclick="setCommit('entry','document',this)">Document structural conditions systematically</div>
+        <div class="cb-chip" onclick="setCommit('entry','alternative',this)">Build or join a low-&epsilon; alternative institution</div>
+        <div class="cb-chip" onclick="setCommit('entry','advocate',this)">Advocate for T1 structural change through professional channels</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="commitment-output" id="commit-output">
+    <div style="font-family:'DM Mono',monospace;font-size:.62rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem">Your ACP Professional Commitment</div>
+    <div class="commitment-text" id="commit-text"></div>
+  </div>
+
+  <div class="jq"><div class="jq-h"><span class="jq-n">Final</span>Write your own version of the commitment in your own words. Not the generated text &mdash; yours. What do you actually commit to? What do the biological constraints on ethical behavior mean for the pace and form of that commitment? What is the one structural thing you will not do, even when the institution makes it easy?</div>
+  <textarea class="jq-ta" id="j6" style="min-height:130px" oninput="sv()" placeholder="Your own commitment statement, in your own voice, grounded in what you now understand about structural conditions and ethical agency..."></textarea></div>
+  <button class="btn" onclick="ex()">&#11015; Download My Commitment + Journal</button>
+</div>
+
+<div class="bot-nav">
+  <button class="btn out" onclick="prev()">&larr;</button>
+  <span style="font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);align-self:center" id="ind">1 / 6</span>
+  <button class="btn" onclick="nxt()">Next &rarr;</button>
+</div>
+<div class="sf" id="sf">Saved &#10003;</div>
+
+<script>
+var TABS=['acp','oblig','amc','biobond','commons','commit'],cur=0;
+function sw(n){TABS.forEach(function(t,i){document.getElementById('pane-'+t).classList.toggle('active',t===n);document.querySelectorAll('.tb')[i].classList.toggle('active',t===n);if(t===n)cur=i;});document.getElementById('ind').textContent=(cur+1)+' / '+TABS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function nxt(){if(cur<TABS.length-1)sw(TABS[cur+1]);}
+function prev(){if(cur>0)sw(TABS[cur-1]);}
+function toggleAMC(head){var body=head.nextElementSibling;body.classList.toggle('show');}
+
+// PROFESSION DATA
+var PROF_DATA={
+  nurse:{label:'Nursing',fhri:'PE nursing homes: 13.6. Non-profit: 62.9. Public hospital system: ~52\u201358.',
+    ob1:'Before accepting a nursing position, ask: What is this facility\u2019s staffing ratio? Has it changed since PE acquisition? What fraction of the revenue dollar reaches patient care vs. administrative overhead? These are FHRI_max proxies you can compute from CMS data before you accept the offer.',
+    ob2:'When a nurse colleague files repeated incident reports that disappear without response, the first question is not "why isn\u2019t this nurse advocating harder?" but "what is the organizational immune response to safety reports at this facility?" The Boisjoly parallel is exact. Moral injury in nursing is produced primarily by structural ceiling, not by individual professional failure.',
+    ob3:'The T1 action available to a nurse: (1) CMS complaint filing, which creates a documented record outside the institutional immune system. (2) Professional association advocacy for mandatory staffing ratio legislation (T1 at the regulatory level). (3) Whistleblower protection invocation for documented safety violations. These are T1 actions because they address the channel (CMS oversight, regulatory floor) rather than appealing within the institution that is absorbing the appeals.'},
+  social:{label:'Social Work',fhri:'High-extraction social service agencies: ~32\u201342. Non-profit mission-aligned: ~55\u201362.',
+    ob1:'Before accepting a position at a social service agency, ask: What is the ratio of case documentation time to direct client contact? How many cases per worker? Has caseload grown while staff has not? These are &mu; and &rho; proxies indicating whether the institutional structure is oriented toward client outcomes or toward compliance theater.',
+    ob2:'When a social worker fails to follow up on a high-risk case, the first question is: how many cases was this worker carrying? What was their FHRI_max environment? Moral failure in social work is almost always an &epsilon; story: the extraction of case volume beyond what genuine professional practice can sustain.',
+    ob3:'T1 actions available: (1) National Association of Social Workers advocacy for caseload limits and minimum staffing standards (regulatory T1). (2) Documenting structural impediments to professional standards in formal supervision records, creating a T1-adjacent paper trail. (3) Joining or building worker cooperatives or ESOP-structured social service organizations (ownership architecture T1).'},
+  teacher:{label:'Education',fhri:'SPC: 58.6. High-extraction for-profit: 14\u201332. K\u201312 public schools vary widely by district funding.',
+    ob1:'Before accepting a teaching position, ask: What is the admin-to-instruction spending ratio in this district or institution? What is the student debt profile if post-secondary? Has enrollment grown while teacher:student ratios have not improved? These tell you the structural ceiling before you enter it.',
+    ob2:'When a teacher burns out in year three, the first question is not "why couldn\u2019t this teacher sustain enthusiasm?" but "what was the instructional-to-administrative spending ratio in this school, and what was the caseload?" Teacher burnout is a structural ceiling story, not a character story, in the majority of documented cases.',
+    ob3:'T1 actions: (1) Union advocacy for class size reduction and planning time protection (the structural conditions for genuine formation). (2) FHRI_max analysis presented to school boards as a governance instrument. (3) Building or joining teacher cooperatives and worker-owned school models (ownership architecture T1).'},
+  finance:{label:'Finance',fhri:'CDFI baseline: 58\u201365. Commercial bank sector: ~38\u201348. 2008 financial system peak: 11.2.',
+    ob1:'Before joining a financial institution, compute the approximate &mu; from public data: does the institution earn from origination volume or from loan performance? Is the compensation structure tied to transaction count or to long-term client outcomes? Does the institution hold loans on balance sheet (originate-to-hold) or sell them immediately (originate-to-distribute)?',
+    ob2:'When a financial advisor sells a client a product that underperforms, the first question is not "why didn\u2019t this advisor act in the client\u2019s interest?" but "what was the incentive structure? Was fiduciary duty legally required or was suitability the standard?" Professional ethics failure in finance is almost always a &mu; story at the institutional level.',
+    ob3:'T1 actions: (1) Fiduciary standard advocacy (the regulatory T1 that changes the access condition for the advice channel). (2) Joining or building CDFI or B-Corp structured financial institutions (ownership architecture T1). (3) SEC comment letter advocacy for beneficial ownership disclosure and originate-to-hold requirements (channel access T1).'},
+  legal:{label:'Legal / Policy',fhri:'Public interest law: ~58\u201365. Big Law corporate: ~42\u201352. Public defender offices vary by funding.',
+    ob1:'Before accepting a position, ask: What is the case load? What is the ratio of billable hours to genuine client service? In public defense, what is the case count per attorney versus the constitutional minimum? These are structural proxies for whether the legal architecture permits genuine professional practice.',
+    ob2:'When a public defender fails to provide adequate representation, the structural question precedes the individual one: how many cases was this attorney carrying? The Sixth Amendment violation in public defense is overwhelmingly a structural resource problem, not an individual professional failure.',
+    ob3:'T1 actions: (1) Policy advocacy for public defense funding floors (regulatory T1 that changes the channel condition). (2) Bar association formal positions on caseload limits (professional standard T1). (3) Impact litigation targeting structural conditions (ACLU model) rather than only individual case outcomes.'},
+  tech:{label:'Technology',fhri:'Technology sector FHRI_max varies enormously by business model. Advertising-dependent platforms: structural misalignment between user wellbeing and revenue. Mission-aligned enterprise software: potentially 55+.',
+    ob1:'Before joining a technology company, ask: Is the revenue model aligned or misaligned with user outcomes? An advertising-dependent platform\u2019s revenue is maximized by engagement, not wellbeing \u2014 &mu; is structurally high. A subscription model whose revenue depends on genuine user value creates structural &mu; alignment.',
+    ob2:'When a technology product causes documented harm, the first question is: what was the incentive architecture? The Facebook Documents showing internal researchers identifying harm while product decisions prioritized engagement is the paradigmatic tech-sector &mu; story. Structural misalignment, not character failure, produced the outcome.',
+    ob3:'T1 actions: (1) Algorithmic accountability legislation advocacy (changes the regulatory channel condition). (2) Joining or founding mission-aligned technology organizations with PBC structure. (3) Internal documentation of structural misalignment that creates a record outside the organizational immune system.'},
+  business:{label:'Business / Management',fhri:'Worker cooperative sector: 68\u201374. PE-acquired firms: 13\u201338 depending on sector. B-Corp certified: varies by implementation quality.',
+    ob1:'Before joining or managing an organization, ask: Is the ownership architecture PE-backed with debt service requirements that create structural &epsilon;? Is executive compensation indexed to extraction or to FHRI_max improvement? Does the governance structure permit long time horizons or does quarterly reporting pressure create &sigma; accumulation dynamics?',
+    ob2:'When employees fail to perform ethically, the first question is the structural one: what is the FHRI_max environment? A manager who cannot understand why their team is not meeting professional standards without first measuring the structural ceiling is conducting a character assessment where a structural assessment is required.',
+    ob3:'T1 actions: (1) Advocate internally for PBC conversion or B-Corp certification (ownership architecture T1). (2) Implement FHRI_max measurement as a management tool. (3) BioBond financing advocacy for capital structure reform. (4) Worker representation in governance (changes who is inside the channel controlling resource allocation).'},
+  health_admin:{label:'Health Administration',fhri:'PE-acquired: 13.6. Non-profit: 52\u201365. Public systems: 48\u201358.',
+    ob1:'Before accepting an administrative role, compute the facility\u2019s five IPS parameters from CMS public data. Ask: What is the ownership structure? Is there a REIT relationship separating real estate from operations? What is the debt service ratio? These determine the structural ceiling before you enter. Your administrative decisions will operate within it.',
+    ob2:'When clinical outcomes are poor, the administrator who asks "why aren\u2019t the nurses performing better?" before asking "what FHRI_max environment am I requiring nurses to operate in?" is making the structural/dispositional error the ACP is designed to prevent.',
+    ob3:'T1 actions available to administrators: (1) Governance advocacy for PBC conversion and beneficial ownership transparency. (2) BioBond instrument structuring for capital raises (makes FHRI_max improvement financially rational at the board level). (3) FHRI_max disclosure in annual reports. These are T1 because they address the access condition, not the outputs within the unchanged condition.'},
+};
+function setProf(key,btn){
+  document.querySelectorAll('.prof-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  var d=PROF_DATA[key];if(!d)return;
+  document.getElementById('oblig-prof-head').textContent='Your obligations as a future: '+d.label;
+  document.getElementById('ob1-text').innerHTML=d.ob1;
+  document.getElementById('ob2-text').innerHTML=d.ob2;
+  document.getElementById('ob3-text').innerHTML=d.ob3;
+  document.getElementById('ob4-text').innerHTML='<strong>Typical FHRI_max range for your sector:</strong> '+d.fhri;
+  document.getElementById('oblig-output').classList.add('show');
+}
+
+// COMMITMENT BUILDER
+var commitState={sector:null,prf:null,entry:null};
+var COMMIT_CONTENT={
+  sector:{healthcare:'in the healthcare sector',corrections:'in the corrections and criminal justice sector',finance:'in the finance and banking sector',education:'in the education sector',business:'in business and organizational management',nonprofit:'in non-profit and community service',policy:'in government and public policy',tech:'in the technology sector'},
+  prf:{care:'care and fairness as the moral foundation I return to',liberty:'the liberty and market framework as my primary moral orientation',auth:'the authority and loyalty framework as my primary moral orientation',sanct:'sanctity and community as the moral foundation I return to'},
+  entry:{measure:'learn to measure the structural conditions of every institution I enter before accepting what the institution says about its own mission',refuse:'refuse to execute the specific professional actions that constitute the most serious ACP violations, even when the institution makes refusal costly',document:'systematically document the structural conditions that prevent full professional ethics compliance, creating a record outside the organizational immune system',alternative:'find, build, or join a low-\u03b5 alternative institution that demonstrates the structural conditions for genuine professional practice',advocate:'use every professional channel available to advocate for T1 structural change, not merely better outcomes within the unchanged structural condition'},
+};
+function setCommit(type,val,btn){
+  document.querySelectorAll('#commit-'+type+'-row .cb-chip').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  commitState[type]=val;
+  buildCommitment();
+}
+function buildCommitment(){
+  if(!commitState.sector||!commitState.prf||!commitState.entry)return;
+  var sector=COMMIT_CONTENT.sector[commitState.sector];
+  var prf=COMMIT_CONTENT.prf[commitState.prf];
+  var entry=COMMIT_CONTENT.entry[commitState.entry];
+  var text='I am entering a career '+sector+'. My primary moral orientation draws on '+prf+'. The Agency Conditions Principle has clarified for me that ethical professional practice begins with a structural question before a character question: what structural conditions am I operating within, and what fraction of my coordination capacity is reaching the people I nominally serve?\n\nI commit to '+entry+'.\n\nI understand that this commitment is not heroism. It is the minimum required for genuine professional ethics practice in a world where structural ceilings are measurable and institutional ownership architectures are identifiable. The ACP does not ask me to sacrifice myself against structural physics. It asks me to know what structural conditions I am in, to refuse the most serious violations of the enabling conditions of moral agency, and to take structural action where I can reach it.\n\nThe four sector analyses I have examined \u2014 nursing homes at FHRI_max 13.6, corrections at 10.9, the 2008 financial system at 11.2, and higher education ranging from 26.9 to 64.8 \u2014 demonstrate that the enabling conditions for ethical life are measurable, their degradation is computable, and their restoration is achievable through institutional design. I am not powerless against structural conditions. I have tools that earlier generations of ethics students did not have.';
+  document.getElementById('commit-text').textContent=text;
+  document.getElementById('commit-output').classList.add('show');
+}
+
+var JK=['cr_j1','cr_j2','cr_j3','cr_j4','cr_j5','cr_j6'];
+function sv(){JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)localStorage.setItem(k,e.value);}catch(x){}});var f=document.getElementById('sf');f.classList.add('show');setTimeout(function(){f.classList.remove('show');},1800);}
+function ex(){
+  var ct=document.getElementById('commit-text');
+  var t='THE CONSTRUCTIVE RESPONSE \u2014 My Commitment + Journal\n'+'='.repeat(60)+'\n\n';
+  if(ct&&ct.textContent){t+='MY ACP COMMITMENT:\n\n'+ct.textContent+'\n\n'+'-'.repeat(60)+'\n\n';}
+  var qs=['Q1: Does structural responsibility exonerate too much?','Q2: T1 action available at my entry level.','Q3: True Solvency Accounting for an institution I know.','Q4: BioBond as financial incentive vs. moral obligation.','Q5: What my OS1 framework cannot produce without OS2.','Final: My own commitment in my own voice.'];
+  qs.forEach(function(q,i){var v=document.getElementById('j'+(i+1));t+=q+'\n\n'+(v?v.value||'(no response)':'(no response)')+'\n\n'+'-'.repeat(60)+'\n\n';});
+  try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='ACP_Commitment_Journal.txt';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}
+}
+JK.forEach(function(k,i){var e=document.getElementById('j'+(i+1));try{if(e)e.value=localStorage.getItem(k)||'';}catch(x){}});
+</script>
+</body>
+</html>
