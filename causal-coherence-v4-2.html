@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Causal Coherence Laboratory v3 — Multi-Agent Network</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#f8f6f1;--s:#eeeae1;--s2:#e4dfd4;--paper:#fff;
+  --border:rgba(60,50,30,.12);--ink:#1a1612;--teal:#0D5E57;--tl:#e8f4f2;
+  --amber:#92400e;--al:#fef3c7;--muted:rgba(26,22,18,.42);
+  --rl:#fee2e2;--vl:#EDE9FE;--violet:#5B21B6;
+  --cn:#6B7280;--cc:#B45309;--cr:#0D5E57;--cp:#7C3AED;--cf:#991B1B;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0D5E57 0%,#0b4a44 100%);color:#fff;
+  padding:1.75rem 2.5rem 1.5rem}
+.hdr-sub{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;
+  text-transform:uppercase;opacity:.6;margin-bottom:.4rem}
+.hdr h1{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;
+  letter-spacing:-.01em;margin-bottom:.2rem}
+.hdr p{font-size:.86rem;opacity:.75;max-width:680px;line-height:1.65}
+
+/* MAIN + TABS */
+.main{max-width:1160px;margin:0 auto;padding:1.5rem}
+.tabs{display:flex;gap:.25rem;margin-bottom:1rem;border-bottom:2px solid var(--border);
+  padding-bottom:.4rem;flex-wrap:wrap}
+.tab{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;
+  text-transform:uppercase;padding:.38rem .85rem;border-radius:.3rem .3rem 0 0;
+  border:1px solid transparent;cursor:pointer;color:var(--muted);
+  background:transparent;transition:all .15s}
+.tab:hover{color:var(--ink)}.tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.pane{display:none}.pane.active{display:block;animation:fi .18s ease}
+@keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* CARDS */
+.card{background:var(--paper);border:1px solid var(--border);border-radius:.5rem;
+  padding:1.2rem;margin:.6rem 0}
+.ct{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--teal);
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+
+/* GRID LAYOUTS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.65rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+@media(max-width:700px){.g2,.g3,.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* CONTROLS */
+.ctrl{border:1px solid var(--border);border-radius:.4rem;padding:.65rem .8rem;background:var(--paper)}
+.ctrl label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:.25rem}
+.ctrl input[type=range]{width:100%;height:3px;-webkit-appearance:none;
+  background:var(--s2);border-radius:2px;outline:none;cursor:pointer}
+.ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;
+  height:13px;border-radius:50%;background:var(--teal);cursor:pointer}
+.ctrl select{width:100%;border:1px solid var(--border);border-radius:.3rem;
+  padding:.4rem .5rem;font-family:'DM Mono',monospace;font-size:.78rem;
+  background:var(--paper);color:var(--ink);cursor:pointer}
+.ctrl-val{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--teal);
+  text-align:right;margin-top:.15rem}
+
+/* BUTTONS */
+.btn{background:var(--teal);color:#fff;border:none;font-family:'DM Sans',sans-serif;
+  font-weight:500;font-size:.88rem;padding:.6rem 1.4rem;border-radius:.35rem;
+  cursor:pointer;transition:all .18s}
+.btn:hover{background:#0a4d47}.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.bo{background:transparent;color:var(--teal);border:1px solid var(--teal)}
+.bo:hover{background:var(--tl)}
+.btn-sm{font-size:.8rem;padding:.4rem .9rem}
+
+/* PRESET CARDS */
+.preset-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;margin:.65rem 0}
+@media(max-width:800px){.preset-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:500px){.preset-grid{grid-template-columns:1fr 1fr}}
+.preset{border:2px solid var(--border);border-radius:.45rem;padding:.75rem .8rem;
+  cursor:pointer;transition:all .18s;background:var(--paper)}
+.preset:hover{border-color:var(--teal);background:var(--tl)}
+.preset.active{border-color:var(--teal);background:var(--tl)}
+.preset-name{font-family:'DM Mono',monospace;font-size:.6rem;text-transform:uppercase;
+  letter-spacing:.07em;color:var(--teal);margin-bottom:.3rem}
+.preset-desc{font-size:.76rem;line-height:1.5;color:var(--muted)}
+
+/* CHARTS */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.65rem 0}
+@media(max-width:600px){.chart-grid{grid-template-columns:1fr}}
+.cw{background:var(--paper);border:1px solid var(--border);border-radius:.45rem;padding:.85rem}
+.cht{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ink);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+.chd{font-size:.7rem;color:var(--muted);margin-bottom:.35rem;line-height:1.45}
+canvas{display:block;width:100%;border-radius:.2rem}
+
+/* LEGEND */
+.leg{display:flex;gap:1rem;flex-wrap:wrap;margin:.5rem 0 .75rem;align-items:center}
+.ldot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:.3rem;
+  flex-shrink:0}
+.leg span{font-size:.8rem;display:flex;align-items:center}
+
+/* NETWORK VIZ */
+.net-wrap{position:relative;background:var(--paper);border:1px solid var(--border);
+  border-radius:.5rem;overflow:hidden;margin:.65rem 0}
+#net{display:block;width:100%}
+.net-controls{position:absolute;bottom:.75rem;left:.75rem;display:flex;gap:.4rem}
+.net-stat{position:absolute;top:.75rem;right:.75rem;font-family:'DM Mono',monospace;
+  font-size:.65rem;color:var(--muted);text-align:right;line-height:1.6}
+
+/* FINDINGS */
+.fi{border-left:3px solid var(--teal);background:var(--tl);padding:.7rem .95rem;
+  margin:.45rem 0;border-radius:0 .35rem .35rem 0;font-size:.85rem;line-height:1.65}
+.fi.am{border-color:var(--amber);background:var(--al)}
+.fi.rd{border-color:#7f1d1d;background:var(--rl)}
+.fi.vi{border-color:var(--violet);background:var(--vl)}
+.fi strong{display:block;font-family:'DM Mono',monospace;font-size:.6rem;
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem;color:var(--teal)}
+.fi.am strong{color:var(--amber)}.fi.rd strong{color:#7f1d1d}.fi.vi strong{color:var(--violet)}
+
+/* LAYER BARS */
+.layer-bar{margin:.4rem 0}
+.layer-label{display:flex;justify-content:space-between;font-size:.78rem;margin-bottom:.2rem}
+.layer-label span:last-child{font-family:'DM Mono',monospace}
+.bar-track{height:10px;background:var(--s2);border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;transition:width .6s ease}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:.78rem;margin:.5rem 0}
+.tbl th{background:var(--teal);color:#fff;padding:.4rem .6rem;text-align:left;
+  font-family:'DM Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.05em}
+.tbl td{padding:.4rem .6rem;border-bottom:1px solid var(--border);line-height:1.4}
+.tbl tr:nth-child(even) td{background:var(--s)}
+.rb{display:inline-block;padding:.1rem .35rem;border-radius:.2rem;font-size:.67rem;
+  font-family:'DM Mono',monospace;font-weight:500}
+.lo{background:#dcfce7;color:#14532d}.md{background:#fef3c7;color:#92400e}
+.hi{background:#fee2e2;color:#7f1d1d}.xc{background:var(--vl);color:var(--violet)}
+
+/* COMPARE MODE TOGGLE */
+.mode-toggle{display:flex;gap:.3rem;margin:.5rem 0}
+.mtb{font-family:'DM Mono',monospace;font-size:.65rem;padding:.35rem .8rem;
+  border-radius:.3rem;border:1px solid var(--border);cursor:pointer;
+  background:transparent;color:var(--muted);transition:all .15s}
+.mtb:hover{color:var(--ink)}.mtb.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* STATUS */
+#status{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--teal);margin-left:.75rem}
+
+/* EQUATIONS */
+.eq{background:var(--s);border-radius:.4rem;padding:.7rem .95rem;margin:.45rem 0;
+  font-family:'DM Mono',monospace;font-size:.74rem;line-height:1.85;overflow-x:auto;white-space:pre}
+
+/* THEORY */
+.ts h3{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:500;
+  color:var(--teal);margin:.85rem 0 .3rem}
+.ts p{font-size:.87rem;line-height:1.75;color:rgba(26,22,18,.8);margin-bottom:.5rem}
+.pullq{border-top:2px solid var(--teal);border-bottom:2px solid var(--teal);
+  padding:1.1rem 2rem;margin:1rem 0;text-align:center;background:#f8fffe;border-radius:0 .3rem .3rem 0}
+.pullq p{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-style:italic;
+  color:#1C3A34;line-height:1.6}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-sub">UCP V5.02 &bull; Causal Coherence Laboratory &bull; Version 3 &mdash; Multi-Agent Network</div>
+  <h1>When Agreement Is Not Enough</h1>
+  <p>Version 3 extends the two-agent experiment to a social network of agents where causal frames spread, polarize, repair, or collapse across community structure. The central question: when many agents occupy different causal frames, do communication and repair produce shared coherence &mdash; or do network effects amplify polarization, false consensus, and identity drift?</p>
+</div>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="sw('setup')">Setup</button>
+    <button class="tab" onclick="sw('network')">Network</button>
+    <button class="tab" onclick="sw('trajectories')">Trajectories</button>
+    <button class="tab" onclick="sw('analysis')">Analysis</button>
+    <button class="tab" onclick="sw('theory')">Theory</button>
+  </div>
+
+  <!-- ═══ SETUP ═══ -->
+  <div class="pane active" id="pane-setup">
+    <div class="card">
+      <div class="ct">Named Presets</div>
+      <div class="preset-grid" id="preset-grid">
+        <div class="preset active" onclick="loadPreset('groupthink')" id="pre-groupthink">
+          <div class="preset-name">Institutional Groupthink</div>
+          <div class="preset-desc">High conformity, low repair access. One frame colonizes. K_drift rises silently.</div>
+        </div>
+        <div class="preset" onclick="loadPreset('polarize')" id="pre-polarize">
+          <div class="preset-name">Political Polarization</div>
+          <div class="preset-desc">High clustering, no repair. Two communities diverge and harden. Within-group coherence masks collective fragmentation.</div>
+        </div>
+        <div class="preset" onclick="loadPreset('repair')" id="pre-repair">
+          <div class="preset-name">Healthy Disagreement</div>
+          <div class="preset-desc">Genuine repair with broad access. Costly early, durable late. Kernel integrity preserved across frames.</div>
+        </div>
+        <div class="preset" onclick="loadPreset('science')" id="pre-science">
+          <div class="preset-name">Scientific Consensus</div>
+          <div class="preset-desc">Evidence-aligned world. Low clustering. Genuine repair slowly converges diverse frames toward a shared model.</div>
+        </div>
+        <div class="preset" onclick="loadPreset('narrative')" id="pre-narrative">
+          <div class="preset-name">False Narrative Collapse</div>
+          <div class="preset-desc">Collective false frame adopted under pressure. Surface coherence hides K_drift until cascading collapse.</div>
+        </div>
+        <div class="preset" onclick="loadPreset('biobond')" id="pre-biobond">
+          <div class="preset-name" style="color:#0D5E57">&#x2714; Stable Recovery</div>
+          <div class="preset-desc">BioBond conditions: r_S=0.20, r_K=0.10, high clustering, genuine repair. First configuration to achieve robust stability. Verify C&asymp;0.685 at step 50.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="preset-interp" class="card" style="display:none;border-left:4px solid var(--teal);background:var(--tl)">
+      <div class="ct" style="color:var(--teal)">What to Watch in This Scenario</div>
+      <div id="interp-body" style="font-size:.86rem;line-height:1.75"></div>
+    </div>
+
+
+    <div class="card" style="background:linear-gradient(135deg,#f0fdf4 0%,#f8f6f1 100%);border:2px solid #0D5E57">
+      <div class="ct" style="color:#0D5E57">What to Watch First &mdash; The Discovery Sequence</div>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:.65rem;line-height:1.5">Run any simulation, then open the Trajectories tab. Watch the charts in this order. Each metric gives you earlier warning than the next.</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem">
+        <div style="text-align:center;padding:.65rem .5rem;border:1px solid rgba(153,27,27,.25);border-radius:.4rem;background:rgba(254,226,226,.4)">
+          <div style="font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;color:#991B1B;margin-bottom:.15rem">1st &rarr; CL</div>
+          <div style="font-size:.72rem;color:var(--muted);line-height:1.45">Contradiction Load. Rises before K_drift or C move. The system&rsquo;s earliest warning signal.</div>
+        </div>
+        <div style="text-align:center;padding:.65rem .5rem;border:1px solid rgba(91,33,182,.2);border-radius:.4rem;background:rgba(237,233,254,.4)">
+          <div style="font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;color:#5B21B6;margin-bottom:.15rem">2nd &rarr; K_drift</div>
+          <div style="font-size:.72rem;color:var(--muted);line-height:1.45">Identity erosion. Nodes turn violet. Rises after CL. Still time to act if K &lt; 0.5.</div>
+        </div>
+        <div style="text-align:center;padding:.65rem .5rem;border:1px solid rgba(13,94,87,.2);border-radius:.4rem;background:rgba(232,244,242,.4)">
+          <div style="font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;color:#0D5E57;margin-bottom:.15rem">3rd &rarr; C</div>
+          <div style="font-size:.72rem;color:var(--muted);line-height:1.45">Coherence. Falls last. By the time C collapses, CL and K_drift have been building for many steps.</div>
+        </div>
+        <div style="text-align:center;padding:.65rem .5rem;border:1px solid rgba(153,27,27,.2);border-radius:.4rem;background:rgba(254,243,199,.4)">
+          <div style="font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:500;color:#92400e;margin-bottom:.15rem">4th &rarr; X</div>
+          <div style="font-size:.72rem;color:var(--muted);line-height:1.45">Risk index. Confirms the trajectory. Above 0.6 = irreversibility threshold crossed.</div>
+        </div>
+      </div>
+      <div style="font-size:.77rem;color:var(--muted);margin-top:.6rem;padding:.5rem .65rem;background:rgba(153,27,27,.06);border-radius:.3rem;line-height:1.5">
+        <strong style="color:#991B1B">The key diagnostic:</strong> CL rising while D is <em>falling</em> and C looks <em>stable</em> = the false-cure signature. The system is in crisis that its own surface metrics cannot detect.
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="ct">Condition</div>
+      <div class="g2" style="margin-bottom:.5rem">
+        <div>
+          <select id="condition" style="width:100%;border:1px solid var(--border);border-radius:.35rem;padding:.55rem .7rem;font-family:'DM Mono',monospace;font-size:.82rem;background:var(--paper);color:var(--ink)">
+            <option value="repair">Genuine Repair</option>
+            <option value="comm">Communication, No Repair</option>
+            <option value="none">No Communication</option>
+            <option value="preloc">Premature Consensus</option>
+            <option value="false">False Narrative</option>
+          </select>
+        </div>
+        <div id="cond-desc" style="font-size:.82rem;line-height:1.6;color:var(--muted);padding:.3rem 0"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Network &amp; Simulation Parameters</div>
+      <div class="g4">
+        <div class="ctrl"><label>Agents</label><input type="range" id="nAgents" min="12" max="80" step="4" value="40" oninput="v(this,'vAgents')"><div class="ctrl-val" id="vAgents">40</div></div>
+        <div class="ctrl"><label>Clusters</label><input type="range" id="clusters" min="2" max="8" step="1" value="4" oninput="v(this,'vClusters')"><div class="ctrl-val" id="vClusters">4</div></div>
+        <div class="ctrl"><label>Steps</label><input type="range" id="steps" min="20" max="100" step="5" value="40" oninput="v(this,'vSteps')"><div class="ctrl-val" id="vSteps">40</div></div>
+        <div class="ctrl"><label>World bias (A&rarr;B)</label><input type="range" id="worldBias" min="0.3" max="0.7" step="0.05" value="0.5" oninput="v(this,'vBias')"><div class="ctrl-val" id="vBias">0.50</div></div>
+        <div class="ctrl"><label>Clustering strength<br><span style="font-size:.58rem;color:var(--muted);font-family:'DM Mono',monospace">0=random 1=fully siloed</span></label><input type="range" id="clusterStrength" min="0.2" max="0.95" step="0.05" value="0.7" oninput="v(this,'vClust')"><div class="ctrl-val" id="vClust">0.70</div></div>
+        <div class="ctrl"><label>Repair access<br><span style="font-size:.58rem;color:var(--muted);font-family:'DM Mono',monospace">fraction of edges repair-capable</span></label><input type="range" id="repairAccess" min="0.1" max="0.9" step="0.05" value="0.5" oninput="v(this,'vRepair')"><div class="ctrl-val" id="vRepair">0.50</div></div>
+        <div class="ctrl"><label>Conformity pressure</label><input type="range" id="conformity" min="0.1" max="1.0" step="0.05" value="0.5" oninput="v(this,'vConf')"><div class="ctrl-val" id="vConf">0.50</div></div>
+        <div class="ctrl"><label>CL &rarr; K_drift rate &gamma;<sub>CL</sub></label><input type="range" id="gammaCL" min="0.02" max="0.20" step="0.01" value="0.08" oninput="v(this,'vGCL')"><div class="ctrl-val" id="vGCL">0.08</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:.75rem;margin-top:.75rem;flex-wrap:wrap">
+      <button class="btn" onclick="runGo()">Run Simulation &rarr;</button>
+      <button class="btn bo btn-sm" onclick="runCompare()">Compare All Conditions</button>
+      <span id="status"></span>
+    </div>
+  </div>
+
+  <!-- ═══ NETWORK ═══ -->
+  <div class="pane" id="pane-network">
+    <div class="card" style="padding:.8rem 1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+        <div>
+          <div class="ct" style="margin-bottom:.25rem">Network at Step <span id="net-step">—</span> / <span id="net-total">—</span></div>
+          <div class="leg" style="margin:.1rem 0">
+            <span><span class="ldot" style="background:var(--teal)"></span>Frame A&rarr;B</span>
+            <span><span class="ldot" style="background:var(--amber)"></span>Frame B&rarr;A</span>
+            <span><span class="ldot" style="background:var(--violet)"></span>High K_drift</span>
+            <span><span class="ldot" style="background:#9CA3AF;border:1px dashed #999"></span>Repair edge</span>
+          </div>
+          <div style="font-size:.75rem;color:var(--muted)">Node size = coherence C &nbsp;&bull;&nbsp; Node opacity = 1&minus;K_drift</div>
+        </div>
+        <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap">
+          <button class="btn bo btn-sm" id="btn-prev" onclick="animStep(-1)">&#9664;</button>
+          <button class="btn btn-sm" id="btn-play" onclick="togglePlay()">&#9654; Play</button>
+          <button class="btn bo btn-sm" id="btn-next" onclick="animStep(1)">&#9654;</button>
+          <button class="btn bo btn-sm" onclick="animStep('end')">&#9654;&#9654;</button>
+        </div>
+      </div>
+    </div>
+    <div class="net-wrap">
+      <canvas id="net" height="420"></canvas>
+      <div class="net-stat" id="net-stat"></div>
+    </div>
+  </div>
+
+  <!-- ═══ TRAJECTORIES ═══ -->
+  <div class="pane" id="pane-trajectories">
+    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap">
+      <div class="mode-toggle">
+        <button class="mtb active" id="mt-single" onclick="setMode('single')">Single Run</button>
+        <button class="mtb" id="mt-compare" onclick="setMode('compare')">Compare All Conditions</button>
+      </div>
+      <div id="compare-legend" style="display:none" class="leg">
+        <span><span class="ldot" style="background:var(--cn)"></span>No Comm</span>
+        <span><span class="ldot" style="background:var(--cc)"></span>No Repair</span>
+        <span><span class="ldot" style="background:var(--cr)"></span>Genuine Repair</span>
+        <span><span class="ldot" style="background:var(--cp)"></span>Premature Consensus</span>
+        <span><span class="ldot" style="background:var(--cf)"></span>False Narrative</span>
+      </div>
+    </div>
+    <div class="chart-grid">
+      <div class="cw"><div class="cht">Coherence C(t)</div><div class="chd">Avg agent coherence. Collapse threshold at 0.4. Watch Premature Consensus and False Narrative for late catastrophic drops.</div><canvas id="c-C" height="170"></canvas></div>
+      <div class="cw"><div class="cht">Narrative Divergence D(t)</div><div class="chd">Avg local divergence across network edges. Low D with high K_drift is the false-cure signature.</div><canvas id="c-D" height="170"></canvas></div>
+      <div class="cw" style="border:2px solid rgba(153,27,27,.3);background:#fffbfb"><div class="cht" style="color:#991B1B">Contradiction Load CL(t) &mdash; New</div><div class="chd">Internal structural inconsistency from holding an adopted frame that contradicts the agent&apos;s natural predictions. Distinct from scar cost. CL accumulates before K_drift and serves as the earliest warning signal.</div><canvas id="c-CL" height="170"></canvas></div>
+      <div class="cw" style="border:2px solid rgba(91,33,182,.25);background:var(--vl)"><div class="cht" style="color:var(--violet)">Identity Kernel Drift K_drift(t)</div><div class="chd">K_drift = &alpha;&middot;S + &beta;&middot;D + &gamma;&middot;U_penalty + &gamma;<sub>CL</sub>&middot;CL. Kernel instability threshold at 0.5. K_drift rises silently while C looks stable.</div><canvas id="c-K" height="170"></canvas></div>
+    </div>
+    <div class="cw" style="margin:.65rem 0">
+      <div class="cht">Existential Risk Index X(t)</div>
+      <div class="chd">X = f(1&minus;C, S, D, 1&minus;P, lock-in). K_drift is now an <em>early-warning signal</em> visualized separately, not folded into X. This preserves the diagnostic distinction: K_drift rising while X is still low = action window still open.</div>
+      <canvas id="c-X" height="145"></canvas>
+    </div>
+    <div class="cw" style="margin:.65rem 0">
+      <div class="cht">Polarization &amp; Uncertainty U(t)</div>
+      <div class="chd">Polarization = within-cluster agreement &times; between-cluster disagreement. U optimal range [0.25, 0.65] shown as shaded region. Watch U collapse below 0.25 in premature consensus and false narrative conditions.</div>
+      <canvas id="c-pol" height="130"></canvas>
+    </div>
+  </div>
+
+
+    <div style="display:flex;gap:.5rem;align-items:center;margin:.75rem 0;flex-wrap:wrap">
+      <button class="btn bo btn-sm" onclick="exportCSV()" id="btn-export" style="display:none">
+        &#11015; Download trajectory data (CSV)
+      </button>
+      <span style="font-size:.75rem;color:var(--muted)" id="export-note"></span>
+    </div>
+
+
+  <!-- ═══ ANALYSIS ═══ -->
+  <div class="pane" id="pane-analysis">
+    <div class="card">
+      <div class="ct">Three-Layer Failure Model</div>
+      <p style="font-size:.84rem;color:var(--muted);margin-bottom:.8rem;line-height:1.6">Three distinct failure modes, trackable independently. The critical insight: they can be decoupled. High K_drift with low D is the premature consensus signature. High C with rising K_drift is the false stability plateau before catastrophic collapse.</p>
+      <div id="layer-bars"></div>
+    </div>
+    <div class="card">
+      <div class="ct">Automatic Findings</div>
+      <div id="findings"><div style="color:var(--muted);font-size:.84rem;font-style:italic">Run a simulation to generate findings.</div></div>
+    </div>
+    <div class="card">
+      <div class="ct">Final State Summary</div>
+      <div id="final-tbl"><div style="color:var(--muted);font-size:.84rem;font-style:italic">Run a simulation to see final state.</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ THEORY ═══ -->
+  <div class="pane" id="pane-theory">
+    <div class="card">
+      <div class="ct">The QBox Bridge</div>
+      <div class="ts">
+        <h3>Why causal order is the right starting point</h3>
+        <p>QBox is a framework for quantum computation in which the causal order of operations is not fixed but can itself be in a superposition state. It provides a physical substrate in which causal structure is not globally primitive but emerges through local measurement. This is the conceptual stress-test environment: if causation can be genuinely indeterminate at the physical level, what happens to agents who must construct causal narratives as a precondition for coherent action?</p>
+        <p>Three claims ground this simulation&rsquo;s relationship to QBox:</p>
+        <div class="fi"><strong>QBox:</strong> Causal structure can be genuinely underdetermined. Two events may not have a globally fixed ordering. This is not epistemic uncertainty about a fixed fact &mdash; it is ontological indeterminacy in the causal structure itself.</div>
+        <div class="fi am"><strong>Agents:</strong> To act coherently, agents must construct a determinate causal ordering from indeterminate substrate. This is not a failure or a shortcut &mdash; it is the fundamental operation of any information-processing system embedded in a causally complex world.</div>
+        <div class="fi vi"><strong>UCP:</strong> Models the cost of that construction. When two agents stabilize different orderings from the same indeterminate substrate, neither is wrong. But the divergence between their constructions carries real costs &mdash; for coordination, for scar accumulation, and for the integrity of the interpretive architectures doing the construction.</div>
+        <p style="margin-top:.5rem">The simulation does not claim to implement QBox physics. It implements the agent-level consequences of causal indeterminacy &mdash; treating the quantum substrate as a source of genuine ambiguity that forces agents into frame-construction, then modeling what happens to those frames under five different social conditions.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Formal System</div>
+      <div class="eq">OBSERVATION under indeterminacy:
+  O_i = R + Omega_F + DeltaK + DeltaS_eff + DeltaCL
+
+  R    = classical record
+  Omega_F = frame-relative ordering
+  DeltaK  = kernel update
+  DeltaS_eff = irreversible scar cost
+  DeltaCL    = contradiction load (NEW in V3)
+
+CONTRADICTION LOAD (new, distinct from scar):
+  CL_i,t+1 = CL_i,t + c_CL * I(natural_frame != adopted_frame) * I(world contradicts adopted)
+  c_CL = 0.06 per event
+  CL measures: structural inconsistency, not total cost
+
+IDENTITY KERNEL DRIFT (updated):
+  K_drift_i = alpha*S_eff + beta*D_perceived + gamma*U_penalty + gamma_CL*CL
+  alpha=0.12, beta=0.06, gamma=0.18, gamma_CL=0.08 (slider)
+  U_penalty = max(0, 0.25-U) + max(0, U-0.65)
+
+COHERENCE UPDATE:
+  C_i,t+1 = C_i,t + lambda*I_i - mu*D_eff - nu(U)*U - rho*S - delta*K_drift
+  nu(U): -0.02 in [0.25,0.65], +0.10 below, +0.12 above
+
+NETWORK DIVERGENCE:
+  D_i = sum_j(w_ij * trust_ij * |F_i != F_j|) / sum_j(w_ij * trust_ij)
+  weighted by edge trust; repair edges reduce effective D by 62%
+
+POLARIZATION:
+  pol = mean(within-cluster same-frame) * mean(between-cluster diff-frame)
+
+RISK INDEX (K_drift separated as early warning):
+  X_t = 0.22*(1-G) + 0.20*S_bar + 0.18*D_bar + 0.15*(1-P_bar) + 0.12*pol + 0.13*lock-in
+  K_drift_bar = separate early-warning signal, not folded into X
+  Irreversibility threshold: X > 0.6 | K_drift > 0.5 = kernel instability warning</div>
+    </div>
+    <div class="card">
+      <div class="ct">New in Version 3: What Network Topology Changes</div>
+      <div class="ts">
+        <h3>Clustering and the acceleration of false consensus</h3>
+        <p>Version 2 showed that premature consensus produces K_drift in a two-agent system. Version 3 shows that network clustering dramatically accelerates this dynamic at scale. When agents are organized into tightly coupled clusters, conformity pressure compounds &mdash; high-influence agents within a cluster drive their neighbors toward frame adoption, and those neighbors in turn apply pressure to their neighbors. The result is that K_drift spreads through a cluster faster than the network-level divergence metrics would suggest. The cluster looks coherent from outside while experiencing rapid internal kernel erosion.</p>
+        <p>The polarization metric captures a dynamic Version 2 could not model: a network can simultaneously show high within-cluster coherence and high between-cluster divergence. This is the formal structure of political polarization. Each community is internally aligned; the communities have become incompatible as interpretive systems. The risk is not simply that they disagree &mdash; it is that their kernels have drifted far enough from each other that repair has become structurally inaccessible without first restoring the repair capacity that chronic divergence has exhausted.</p>
+        <h3>The repair access parameter</h3>
+        <p>In real networks, repair-capable connections are not uniformly distributed. Some relationships have the trust, time, and protocol for genuine reconciliation. Most do not. The repair access slider controls the fraction of network edges that are repair-capable. At low repair access, even a genuine repair condition produces K_drift accumulation because most agents cannot reach the reconciliation process. This is the institutional design implication: the structural availability of repair protocols matters as much as the will to use them.</p>
+      </div>
+      <div class="pullq">
+        <p>&ldquo;A community can be internally coherent and collectively fragmented simultaneously. The within-cluster coherence is not the same as the network-level coherence. The surface metrics of agreement mask the deeper metric of whether repair remains structurally accessible.&rdquo;</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">Version 2 &rarr; Version 3 &rarr; Next</div>
+      <div class="g2">
+        <div>
+          <p style="font-size:.82rem;font-family:'DM Mono',monospace;color:var(--teal);margin-bottom:.3rem;text-transform:uppercase;font-size:.6rem;letter-spacing:.07em">V2 showed</p>
+          <p style="font-size:.84rem;line-height:1.6">Two-agent bilateral dynamics. Four conditions. The premature consensus trap. K_drift as a new metric. The false-cure signature (low D, rising K_drift).</p>
+        </div>
+        <div>
+          <p style="font-size:.82rem;font-family:'DM Mono',monospace;color:var(--teal);margin-bottom:.3rem;text-transform:uppercase;font-size:.6rem;letter-spacing:.07em">V3 adds</p>
+          <p style="font-size:.84rem;line-height:1.6">Network topology. Trust-weighted edges. Polarization. Contradiction Load (CL) as early warning. False narrative condition. The acceleration of K_drift through clustering. Repair access as a structural variable.</p>
+        </div>
+        <div>
+          <p style="font-size:.82rem;font-family:'DM Mono',monospace;color:var(--teal);margin-bottom:.3rem;text-transform:uppercase;font-size:.6rem;letter-spacing:.07em">Case 4 (next)</p>
+          <p style="font-size:.84rem;line-height:1.6">Civilizational scale. Multiple institutions modeled as sub-networks. Inter-institutional trust vectors. Governance coherence collapse under frame conflict. Requires multi-institutional backend extension.</p>
+        </div>
+        <div>
+          <p style="font-size:.82rem;font-family:'DM Mono',monospace;color:var(--teal);margin-bottom:.3rem;text-transform:uppercase;font-size:.6rem;letter-spacing:.07em">Paper target</p>
+          <p style="font-size:.84rem;line-height:1.6">&ldquo;Agreement, Coherence, and Identity Drift: A Computational Model of Epistemic Interaction Under Causal Indeterminacy.&rdquo; Venue: <em>Entropy</em> or SFI working paper series.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end main -->
+
+<script>
+// ═══ CONSTANTS ═══
+const PC={lambda:.12,mu:.18,rho:.08,cobs:.018,creint:.10,crepair:.055,
+  cCL:.06,repairRecovery:.022,alphaKS:.012,betaKD:.06,gammaKU:.18,
+  deltaK:.032,deltaForced:.055,maxS:3,maxK:3,maxCL:2};
+const CNAMES={none:'No Communication',comm:'Communication, No Repair',
+  repair:'Genuine Repair',preloc:'Premature Consensus',false:'False Narrative'};
+const CCOLS={none:'#6B7280',comm:'#B45309',repair:'#0D5E57',preloc:'#7C3AED',false:'#991B1B'};
+const CDASH={none:[],comm:[5,3],repair:[],preloc:[3,3],false:[6,2,2,2]};
+
+// ═══ STATE ═══
+let AGENTS=[],EDGES=[],HIST=[],RES=null,COMPARE=null,
+    animFrame=0,animPlaying=false,animTimer=null,viewMode='single';
+
+// ═══ SEEDED RNG ═══
+function mkRng(seed){let s=seed|0;return()=>{s=(s*1664525+1013904223)|0;return(s>>>0)/0xFFFFFFFF;};}
+function cl(v,a,b){return Math.max(a,Math.min(b,v));}
+function mean(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;}
+
+// ═══ UTILITY UI ═══
+function $(id){return document.getElementById(id);}
+function v(el,vid){$(vid).textContent=parseFloat(el.value).toFixed(2);}
+function sw(t){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  $('pane-'+t).classList.add('active');
+  const tabs=['setup','network','trajectories','analysis','theory'];
+  const i=tabs.indexOf(t);if(i>=0)document.querySelectorAll('.tab')[i].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(t==='network'&&HIST.length)drawNet(animFrame);
+  if(t==='trajectories'&&HIST.length)drawAll();
+}
+function setMode(m){
+  viewMode=m;
+  $('mt-single').classList.toggle('active',m==='single');
+  $('mt-compare').classList.toggle('active',m==='compare');
+  $('compare-legend').style.display=m==='compare'?'flex':'none';
+  if(HIST.length||COMPARE)drawAll();
+}
+
+// ═══ CONDITION DESCRIPTIONS ═══
+const CDESC={
+  repair:'Agents share causal frames and use uncertainty-calibration repair protocols. Divergence falls over time. Kernel integrity preserved. The most costly early condition; the only stable long-term trajectory.',
+  comm:'Frames are shared but no reconciliation protocol exists. Divergence becomes visible and costly. Both scar accumulation and K_drift exceed the no-communication baseline.',
+  none:'Agents observe independently. Divergence is invisible. U drifts toward lock-in. Polarization accumulates silently until coordination is attempted.',
+  preloc:'Dominant-frame agents spread their interpretation via conformity pressure. U is suppressed below the protective range. K_drift rises rapidly while surface metrics look stable.',
+  false:'All agents adopt a shared frame under social pressure. The world gradually contradicts it. Contradiction Load accumulates. Collapse is more catastrophic than any other condition because no agent retains the uncertainty needed for revision.'
+};
+$('condition').addEventListener('change',function(){
+  $('cond-desc').textContent=CDESC[this.value]||'';
+});
+$('cond-desc').textContent=CDESC['repair'];
+
+// ═══ PRESETS ═══
+const PRESETS={
+  groupthink:{condition:'preloc',nAgents:40,clusters:4,steps:50,clusterStrength:.75,
+    repairAccess:.20,conformity:.80,worldBias:.50,gammaCL:.10,rK:0,rS:0},
+  polarize:{condition:'comm',nAgents:48,clusters:4,steps:50,clusterStrength:.90,
+    repairAccess:.15,conformity:.45,worldBias:.50,gammaCL:.08,rK:0,rS:0},
+  repair:{condition:'repair',nAgents:36,clusters:4,steps:50,clusterStrength:.60,
+    repairAccess:.70,conformity:.35,worldBias:.55,gammaCL:.06,rK:0,rS:0},
+  science:{condition:'repair',nAgents:36,clusters:3,steps:60,clusterStrength:.40,
+    repairAccess:.65,conformity:.30,worldBias:.65,gammaCL:.05,rK:0,rS:0},
+  narrative:{condition:'false',nAgents:48,clusters:4,steps:60,clusterStrength:.75,
+    repairAccess:.20,conformity:.75,worldBias:.45,gammaCL:.12,rK:0,rS:0},
+  biobond:{condition:'repair',nAgents:48,clusters:4,steps:50,clusterStrength:.85,
+    repairAccess:.60,conformity:.65,worldBias:.50,gammaCL:.08,rK:.10,rS:.20},
+};
+const PRESET_INTERP={
+  groupthink:{
+    title:'Institutional Groupthink',
+    col:'#7C3AED',bg:'#EDE9FE',
+    items:[
+      'Watch <strong>CL</strong> rise in the first 5&ndash;8 steps while D is falling and C looks stable. This is the false-cure signature building.',
+      'Watch <strong>K_drift</strong> accumulate across the network &mdash; the nodes that aligned earliest show the highest drift.',
+      'Note that <strong>C</strong> appears adequate until K_drift crosses 0.5, then falls sharply. There is no gradual warning.',
+      'The <strong>Network tab</strong> shows nodes turning violet as kernel instability spreads. The teal nodes look healthy. They are not.',
+      'Ask: which agents have the highest K_drift? They are the most conforming, not the most deviant.'
+    ]
+  },
+  polarize:{
+    title:'Political Polarization',
+    col:'#B45309',bg:'#FEF3C7',
+    items:[
+      'Watch <strong>polarization</strong> on the U/polarization chart. It rises fast and stays high regardless of what C does.',
+      'Note that <strong>D</strong> stays high because between-cluster divergence is never metabolized. Communication without repair amplifies it.',
+      'Watch <strong>repair access</strong>: even if you raise it, high clustering means repair-capable edges rarely connect the clusters that most need reconciliation.',
+      'The <strong>Network tab</strong> shows two distinct color communities that never merge. Within each cluster, nodes are teal. Between clusters, the divergence is invisible until coordination fails.',
+      'Key question: what structural change (not behavioral change) would make cross-cluster repair accessible?'
+    ]
+  },
+  repair:{
+    title:'Healthy Disagreement',
+    col:'#0D5E57',bg:'#E8F4F2',
+    items:[
+      'Watch <strong>CL</strong> stay near zero throughout. Agents are maintaining their natural frames through genuine reconciliation, not adopting foreign frames under pressure.',
+      'Watch <strong>C</strong> fall in the early steps, then stabilize. The early cost is real. The late stability is also real.',
+      'Compare with Institutional Groupthink: the early trajectories favor groupthink. The late trajectories favor genuine repair. Short-term metrics favor the wrong condition.',
+      'Watch <strong>K_drift</strong> stay bounded. Kernel integrity is preserved even as some frames converge. Agents change without losing themselves.',
+      'The <strong>Network tab</strong> shows continued frame diversity mid-simulation. Some nodes change frame. Most maintain genuine uncertainty.'
+    ]
+  },
+  science:{
+    title:'Scientific Consensus',
+    col:'#14532D',bg:'#DCFCE7',
+    items:[
+      'Watch <strong>D</strong> fall slowly over time as evidence-driven repair gradually converges frames. Compare the rate with Institutional Groupthink: slower but with near-zero CL.',
+      'Watch <strong>U</strong> remain in the optimal range [0.25, 0.65] throughout. Agents are revising without locking in. This is epistemic health.',
+      'Watch <strong>CL</strong> stay near zero. The convergence is driven by evidence, not social pressure. No agent is being forced to hold contradictions.',
+      'Note that <strong>polarization</strong> falls over time as cross-cluster frames converge. Low clustering strength makes cross-community repair structurally accessible.',
+      'Compare with False Narrative: both end with alignment. Only one ends without K_drift.'
+    ]
+  },
+  narrative:{
+    title:'False Narrative Collapse',
+    col:'#991B1B',bg:'#FEE2E2',
+    items:[
+      'Watch <strong>CL rise while D falls</strong>. This is the core false-cure signature. CL is the first metric to move &mdash; by the time K_drift is visible, CL has been building for many steps.',
+      'Watch <strong>D fall</strong> while <strong>CL rises</strong>. Surface alignment is being achieved through kernel destruction.',
+      'Note the <strong>plateau in C</strong>. Coherence stays deceptively stable until K_drift crosses threshold, then collapses catastrophically. There is no soft landing.',
+      'Watch <strong>X</strong> at the end. It crosses the irreversibility threshold (0.6) because the elimination of frame diversity has eliminated the capacity to respond to contradiction.',
+      'Ask: what would it take to reverse this? The answer involves restoring U to the optimal range and rebuilding frame diversity &mdash; both structurally inaccessible once K_drift is high.'
+    ]
+  },
+  biobond:{
+    title:'Stable Recovery (BioBond Conditions)',
+    col:'#0D5E57',bg:'#E8F4F2',
+    items:[
+      'Watch <strong>C stabilize above 0.6</strong> rather than collapse. Compare with Healthy Disagreement preset (r_S=0): same repair condition, no recovery &mdash; C collapses by step 26 at this clustering.',
+      'Watch <strong>K_drift stay below 0.25</strong>. Without r_K (set r_K to 0), K@50 rises to ~0.59 even with r_S=0.20 active. Both parameters are needed.',
+      'The <strong>stability frontier</strong> sits near r_S=0.12 in this JS engine. Values below 0.10 collapse; values at 0.15+ achieve stable trajectories. Try sweeping r_S from 0.00 to 0.25 to see the threshold.',
+      'The r_S term prevents rho&times;S from overwhelming integration gain. This is the reconciliation-exhaustion paradox reversed: the scar cost of repair is metabolized rather than allowed to accumulate to collapse.',
+      'Predicted targets (rK=0.10, rS=0.20): C&asymp;0.685, K_drift&asymp;0.212, X&asymp;0.351. Use CSV export to capture the full trajectory for the paper.'
+    ]
+  }
+};
+
+function loadPreset(k){
+  const p=PRESETS[k];if(!p)return;
+  $('condition').value=p.condition;
+  $('cond-desc').textContent=CDESC[p.condition]||'';
+  $('nAgents').value=p.nAgents; $('vAgents').textContent=p.nAgents;
+  $('clusters').value=p.clusters; $('vClusters').textContent=p.clusters;
+  $('steps').value=p.steps; $('vSteps').textContent=p.steps;
+  $('clusterStrength').value=p.clusterStrength; $('vClust').textContent=p.clusterStrength.toFixed(2);
+  $('repairAccess').value=p.repairAccess; $('vRepair').textContent=p.repairAccess.toFixed(2);
+  $('conformity').value=p.conformity; $('vConf').textContent=p.conformity.toFixed(2);
+  $('worldBias').value=p.worldBias; $('vBias').textContent=p.worldBias.toFixed(2);
+  $('gammaCL').value=p.gammaCL; $('vGCL').textContent=p.gammaCL.toFixed(2);
+  $('rK').value=p.rK||0; $('vrK').textContent=(p.rK||0).toFixed(2);
+  $('rS').value=p.rS||0; $('vrS').textContent=(p.rS||0).toFixed(2);
+  document.querySelectorAll('.preset').forEach(el=>el.classList.remove('active'));
+  $('pre-'+k).classList.add('active');
+  // Update interpretation panel
+  const ip=PRESET_INTERP[k];
+  if(ip){
+    const panel=$('preset-interp');const body=$('interp-body');
+    if(panel&&body){
+      panel.style.display='block';
+      panel.style.borderColor=ip.col;panel.style.background=ip.bg;
+      panel.querySelector('.ct').style.color=ip.col;
+      body.innerHTML=ip.items.map(item=>
+        '<div style="display:flex;gap:.5rem;margin:.3rem 0;align-items:flex-start">'+
+        '<span style="color:'+ip.col+';font-size:.9rem;flex-shrink:0;margin-top:.1rem">&#9679;</span>'+
+        '<span>'+item+'</span></div>'
+      ).join('');
+    }
+  }
+}
+
+// ═══ PARAMS ═══
+function getP(){
+  return{
+    condition:$('condition').value,n:+$('nAgents').value,
+    k:+$('clusters').value,steps:+$('steps').value,
+    clusterStrength:+$('clusterStrength').value,
+    repairAccess:+$('repairAccess').value,
+    conformity:+$('conformity').value,worldBias:+$('worldBias').value,
+    gammaCL:+$('gammaCL').value,
+    rK:+($('rK')?$('rK').value:0),
+    rS:+($('rS')?$('rS').value:0),
+  };
+}
+
+// ═══ NETWORK INIT ═══
+function nuEff(U){return U>=.25&&U<=.65?-.02:U<.25?.10:.12;}
+function uPen(U){return Math.max(0,.25-U)+Math.max(0,U-.65);}
+
+function init(p){
+  const R=mkRng(42);
+  AGENTS=[];EDGES=[];
+  const per=Math.ceil(p.n/p.k);
+  for(let i=0;i<p.n;i++){
+    const cl=Math.min(p.k-1,Math.floor(i/per));
+    const nf=(cl%2===0)?'AB':'BA';
+    AGENTS.push({id:i,cluster:cl,F:nf,natural:nf,C:1,S:0,U:.5,P:.5,
+      Kd:0,CL:0,openness:.3+R()*.5,influence:.2+R()*.8,
+      D:0,De:0,I:0,repair:false,forced:false,repairFrac:0,x:0,y:0});
+  }
+  // build edges: mostly within-cluster
+  for(let i=0;i<p.n;i++){
+    const desired=3+Math.floor(R()*3);
+    const added=new Set();
+    let attempts=0;
+    while(added.size<desired&&attempts<30){
+      attempts++;
+      const sameCl=R()<p.clusterStrength;
+      const pool=AGENTS.filter(a=>a.id!==i&&!added.has(a.id)&&
+        (sameCl?a.cluster===AGENTS[i].cluster:a.cluster!==AGENTS[i].cluster));
+      if(!pool.length)continue;
+      const tgt=pool[Math.floor(R()*pool.length)];
+      const dup=EDGES.find(e=>(e.a===i&&e.b===tgt.id)||(e.a===tgt.id&&e.b===i));
+      if(!dup){
+        // BUG FIX: initialize edge.repair here, not in step()
+        EDGES.push({a:i,b:tgt.id,w:.5+R()*.5,trust:.4+R()*.6,
+          repair:R()<p.repairAccess});
+        added.add(tgt.id);
+      }
+    }
+  }
+  positionAgents(p);
+}
+
+function positionAgents(p){
+  const W=540,H=420,cx=W/2,cy=H/2;
+  const R=mkRng(77);
+  for(let i=0;i<p.k;i++){
+    const ca=2*Math.PI*i/p.k - Math.PI/2;
+    const cr=130;
+    const ck=cx+cr*Math.cos(ca),cy2=cy+cr*Math.sin(ca);
+    const members=AGENTS.filter(a=>a.cluster===i);
+    members.forEach((a,j)=>{
+      const aa=2*Math.PI*j/members.length+ca;
+      const ar=40+R()*25;
+      a.x=ck+ar*Math.cos(aa);a.y=cy2+ar*Math.sin(aa);
+    });
+  }
+}
+
+function neighbors(id){
+  const res=[];
+  EDGES.forEach(e=>{
+    if(e.a===id)res.push({edge:e,agent:AGENTS[e.b]});
+    else if(e.b===id)res.push({edge:e,agent:AGENTS[e.a]});
+  });
+  return res;
+}
+function dominantFrame(id){
+  const ns=neighbors(id);
+  let ab=0,ba=0;
+  ns.forEach(({edge,agent})=>{
+    const w=edge.w*edge.trust*(agent.influence||0.5);
+    if(agent.F==='AB')ab+=w;else ba+=w;
+  });
+  return ab>=ba?'AB':'BA';
+}
+
+// ═══ SIMULATION STEP ═══
+function step(p,R,t){
+  const world=R()<p.worldBias?'AB':'BA';
+  const falsePhase=(p.condition==='false')&&(t>Math.floor(p.steps*.15));
+
+  // integration values
+  AGENTS.forEach(a=>{
+    a.repair=false;a.forced=false;a.repairFrac=0;
+    const match=a.F===world;
+    a.I=match?(1-a.S*.08):(-.16*(1+a.U*.3));
+  });
+
+  // local divergence (trust-weighted)
+  AGENTS.forEach(a=>{
+    const ns=neighbors(a.id);
+    let sum=0,ws=0;
+    ns.forEach(({edge,agent})=>{
+      const diff=a.F!==agent.F?1:0;
+      sum+=diff*edge.w*edge.trust;ws+=edge.w*edge.trust;
+    });
+    a.D=ws?sum/ws:0;a.De=a.D;
+  });
+
+  // condition-specific logic
+  AGENTS.forEach(a=>{
+    if(p.condition==='none'){
+      a.De=0;a.U=cl(a.U-.012,.06,.9);
+    } else if(p.condition==='comm'){
+      a.De=a.D;
+    } else if(p.condition==='repair'){
+      const ns=neighbors(a.id);
+      const repEdges=ns.filter(x=>x.edge.repair).length;
+      const access=ns.length?repEdges/ns.length:0;
+      if(access>.2&&a.P>.2){
+        a.repair=true;
+        a.repairFrac=access;
+        a.U=a.U<.25?cl(a.U+.045,0,1):a.U>.65?cl(a.U-.045,0,1):cl(a.U+.010,0,1);
+        a.De=a.D*(1-.62*access);
+        if(R()<.03*access&&a.D>.3){a.F=dominantFrame(a.id);}
+      }
+    } else if(p.condition==='preloc'){
+      const ns=neighbors(a.id);
+      const pressure=p.conformity*mean(ns.map(x=>x.agent.influence||0.5));
+      const dom=dominantFrame(a.id);
+      if(pressure>a.openness&&dom!==a.F){
+        a.F=dom;a.U=cl(a.U-.18,.05,1);a.forced=true;
+      }
+      a.De=a.D*.3;
+    } else if(p.condition==='false'){
+      if(falsePhase&&a.F!=='AB'){a.F='AB';a.forced=true;a.U=cl(a.U-.12,.05,1);}
+      a.De=a.D*.2;
+    }
+  });
+
+  // CL (Contradiction Load) — BUG FIX: separate from scar
+  // CL accumulates when agent holds an adopted frame that contradicts their natural frame
+  // AND the world contradicts the adopted frame in that same step
+  AGENTS.forEach(a=>{
+    const naturalContradicted=(world!==a.natural);
+    const adoptedContradicted=(world!==a.F);
+    const forcedFrame=(a.F!==a.natural);
+    // CL rises when: frame is adopted AND world contradicts it
+    // (world would have been fine under natural frame = structural inconsistency)
+    if(forcedFrame&&adoptedContradicted){
+      a.CL=cl(a.CL+PC.cCL,0,PC.maxCL);
+    } else {
+      // slow decay when not contradicted
+      a.CL=cl(a.CL-.005,0,PC.maxCL);
+    }
+  });
+
+  // K_drift (updated: includes CL term)
+  AGENTS.forEach(a=>{
+    const kd=PC.alphaKS*a.S+PC.betaKD*a.De+PC.gammaKU*uPen(a.U)+p.gammaCL*a.CL;
+    const kRec=p.rK*a.Kd*a.repairFrac;
+    a.Kd=cl(a.Kd+kd-kRec,0,PC.maxK);
+  });
+
+  // coherence + scar update
+  AGENTS.forEach(a=>{
+    const n=nuEff(a.U);
+    const d=a.forced?PC.deltaForced:PC.deltaK;
+    a.C=cl(a.C+PC.lambda*a.I-PC.mu*a.De-n*a.U-PC.rho*a.S-d*a.Kd,0,1.5);
+    const scar=PC.cobs+PC.creint*a.De+(a.repair?PC.crepair-PC.repairRecovery:0)+(a.forced?.07:0);
+    const sRec=p.rS*a.S*a.repairFrac;
+    a.S=cl(a.S+scar-sRec,0,PC.maxS);
+    a.P=cl(1-.25*a.S-.12*a.Kd,.05,1);
+  });
+}
+
+// ═══ METRICS ═══
+function polarization(){
+  const wi=[],bt=[];
+  EDGES.forEach(e=>{
+    const a=AGENTS[e.a],b=AGENTS[e.b];
+    const sim=a.F===b.F?1:0;
+    if(a.cluster===b.cluster)wi.push(sim);else bt.push(1-sim);
+  });
+  return cl(mean(wi)*mean(bt),0,1);
+}
+function snapshot(t){
+  const C=mean(AGENTS.map(a=>a.C));
+  const S=mean(AGENTS.map(a=>a.S));
+  const K=mean(AGENTS.map(a=>a.Kd));
+  const CL=mean(AGENTS.map(a=>a.CL));
+  const D=mean(AGENTS.map(a=>a.D));
+  const Pr=mean(AGENTS.map(a=>a.P));
+  const U=mean(AGENTS.map(a=>a.U));
+  const pol=polarization();
+  const lock=cl(1-U,0,1);
+  const X=cl(.22*(1-C)+.20*Math.min(1,S)+.18*D+.15*(1-Pr)+.12*pol+.13*lock,0,1);
+  return{t,C,S,K,CL,D,Pr,U,pol,X,
+    opFail:cl(1-C,0,1),epiFail:cl(D*.65+pol*.35,0,1),idFail:cl(K*.5,0,1)};
+}
+
+// ═══ RUN ═══
+function runSingle(p){
+  init(p);
+  const R=mkRng(1234);
+  HIST=[snapshot(0)];
+  // save agent state at each step for network animation
+  const snapshots=[JSON.parse(JSON.stringify(AGENTS))];
+  for(let t=1;t<=p.steps;t++){
+    step(p,R,t);HIST.push(snapshot(t));
+    snapshots.push(JSON.parse(JSON.stringify(AGENTS)));
+  }
+  return{p,HIST,snapshots};
+}
+function runGo(){
+  const p=getP();
+  $('status').textContent='Running...';
+  setTimeout(()=>{
+    RES=runSingle(p);HIST=RES.HIST;COMPARE=null;
+    animFrame=0;viewMode='single';
+    $('mt-single').classList.add('active');$('mt-compare').classList.remove('active');
+    $('compare-legend').style.display='none';
+    $('status').textContent='Done \u2713';
+    drawAll();renderAnalysis();showExport();
+    $('net-total').textContent=p.steps;
+    $('net-step').textContent='0';
+  },10);
+}
+function runCompare(){
+  const baseP=getP();
+  $('status').textContent='Comparing all conditions...';
+  setTimeout(()=>{
+    COMPARE={};
+    ['none','comm','repair','preloc','false'].forEach(c=>{
+      const p=Object.assign({},baseP,{condition:c});
+      COMPARE[c]=runSingle(p).HIST;
+    });
+    RES=null;viewMode='compare';
+    $('mt-single').classList.remove('active');$('mt-compare').classList.add('active');
+    $('compare-legend').style.display='flex';
+    $('status').textContent='Done \u2713';
+    drawAll();
+    // Run analysis on the current single condition too
+    const p=getP();RES=runSingle(p);HIST=RES.HIST;renderAnalysis();
+  },10);
+}
+
+// ═══ NETWORK DRAW ═══
+function drawNet(frameIdx){
+  const cv=$('net');if(!cv)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth||540,H=420;
+  cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  ctx.fillStyle='#FAFAF8';ctx.fillRect(0,0,W,H);
+
+  if(!RES||!RES.snapshots)return;
+  const fi=Math.min(frameIdx,RES.snapshots.length-1);
+  const agents=RES.snapshots[fi];
+  const scaleX=W/540,scaleY=H/420;
+
+  // edges
+  EDGES.forEach(e=>{
+    const a=agents[e.a],b=agents[e.b];
+    ctx.strokeStyle=e.repair?'rgba(13,94,87,.25)':'rgba(80,70,50,.10)';
+    ctx.lineWidth=e.repair?1.4:.7;
+    ctx.beginPath();ctx.moveTo(a.x*scaleX,a.y*scaleY);
+    ctx.lineTo(b.x*scaleX,b.y*scaleY);ctx.stroke();
+  });
+
+  // agents
+  agents.forEach(a=>{
+    let col=a.F==='AB'?'#0D5E57':'#B45309';
+    if(a.Kd>.5)col='#7C3AED'; // kernel drift warning
+    const r=3.5+6.5*cl(a.C,0,1.3)/1.3;
+    const alpha=cl(1-a.Kd*.4,.2,1);
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle=col;
+    ctx.beginPath();ctx.arc(a.x*scaleX,a.y*scaleY,r,0,Math.PI*2);ctx.fill();
+    if(a.forced||a.Kd>.4){
+      ctx.globalAlpha=alpha*.7;
+      ctx.strokeStyle='rgba(127,29,29,.6)';ctx.lineWidth=1.5;
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  });
+
+  // stats overlay
+  const snap=HIST[fi];
+  $('net-step').textContent=fi;
+  $('net-stat').innerHTML=`C: ${snap.C.toFixed(3)}<br>K_drift: ${snap.K.toFixed(3)}<br>D: ${snap.D.toFixed(3)}<br>X: ${snap.X.toFixed(3)}`;
+}
+
+// animation
+function animStep(dir){
+  if(!RES)return;
+  if(dir==='end')animFrame=RES.snapshots.length-1;
+  else animFrame=cl(animFrame+dir,0,RES.snapshots.length-1);
+  drawNet(animFrame);
+}
+function togglePlay(){
+  animPlaying=!animPlaying;
+  $('btn-play').textContent=animPlaying?'\u23F8 Pause':'\u25B6 Play';
+  if(animPlaying)playLoop();
+}
+function playLoop(){
+  if(!animPlaying)return;
+  if(!RES||animFrame>=RES.snapshots.length-1){
+    animPlaying=false;$('btn-play').textContent='\u25B6 Play';return;
+  }
+  animFrame++;drawNet(animFrame);
+  animTimer=setTimeout(playLoop,120);
+}
+
+// ═══ CHART DRAWING ═══
+function drawChart(id,data,key,ymn,ymx,thr,tlab,compare){
+  const cv=$(id);if(!cv)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.parentElement.clientWidth-28,H=parseInt(cv.getAttribute('height')||170);
+  cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  const pd={t:10,r:28,b:26,l:42},pw=W-pd.l-pd.r,ph=H-pd.t-pd.b;
+  ctx.fillStyle='#FAFAFA';ctx.fillRect(0,0,W,H);
+
+  // grid
+  for(let i=0;i<=4;i++){
+    const gy=pd.t+ph*(i/4);
+    ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.moveTo(pd.l,gy);ctx.lineTo(pd.l+pw,gy);ctx.stroke();
+    const lv=ymx-(ymx-ymn)*(i/4);
+    ctx.fillStyle='#9CA3AF';ctx.font='9px DM Mono';ctx.textAlign='right';
+    ctx.fillText(lv.toFixed(2),pd.l-4,gy+3);
+  }
+
+  // threshold
+  if(thr!==undefined){
+    const ty=pd.t+ph*(1-(thr-ymn)/(ymx-ymn));
+    ctx.strokeStyle='rgba(127,29,29,.35)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+    ctx.beginPath();ctx.moveTo(pd.l,ty);ctx.lineTo(pd.l+pw,ty);ctx.stroke();
+    ctx.setLineDash([]);
+    if(tlab){ctx.fillStyle='rgba(127,29,29,.55)';ctx.font='8px DM Mono';
+      ctx.textAlign='left';ctx.fillText(tlab,pd.l+3,ty-3);}
+  }
+
+  // lines
+  if(compare){
+    Object.entries(compare).forEach(([cond,hist])=>{
+      if(!hist)return;
+      const n=hist.length-1;
+      ctx.strokeStyle=CCOLS[cond];ctx.lineWidth=cond==='repair'?2.5:1.8;
+      ctx.setLineDash(CDASH[cond]);ctx.beginPath();
+      hist.forEach((pt,i)=>{
+        const x=pd.l+pw*(pt.t/n);
+        const y=pd.t+ph*(1-(cl(pt[key],ymn,ymx)-ymn)/(ymx-ymn));
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+      ctx.stroke();ctx.setLineDash([]);
+      const last=hist[n];
+      const fx=pd.l+pw,fy=pd.t+ph*(1-(cl(last[key],ymn,ymx)-ymn)/(ymx-ymn));
+      ctx.fillStyle=CCOLS[cond];ctx.beginPath();ctx.arc(fx,fy,3,0,Math.PI*2);ctx.fill();
+      const lbs={none:'NC',comm:'NR',repair:'GR',preloc:'PC',false:'FN'};
+      ctx.fillStyle=CCOLS[cond];ctx.font='bold 8px DM Mono';ctx.textAlign='left';
+      ctx.fillText(lbs[cond],fx+4,Math.max(pd.t+8,Math.min(H-6,fy+3)));
+    });
+  } else if(data){
+    const n=data.length-1;
+    ctx.strokeStyle=CCOLS[RES&&RES.p?RES.p.condition:'repair']||'#0D5E57';
+    ctx.lineWidth=2;ctx.beginPath();
+    data.forEach((pt,i)=>{
+      const x=pd.l+pw*(pt.t/n);
+      const y=pd.t+ph*(1-(cl(pt[key],ymn,ymx)-ymn)/(ymx-ymn));
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    // final dot
+    const last=data[n];
+    const fx=pd.l+pw,fy=pd.t+ph*(1-(cl(last[key],ymn,ymx)-ymn)/(ymx-ymn));
+    ctx.fillStyle=CCOLS[RES&&RES.p?RES.p.condition:'repair']||'#0D5E57';
+    ctx.beginPath();ctx.arc(fx,fy,4,0,Math.PI*2);ctx.fill();
+  }
+
+  // x axis
+  const n2=data?data.length-1:40;
+  ctx.fillStyle='#9CA3AF';ctx.font='8px DM Mono';ctx.textAlign='center';
+  [0,.25,.5,.75,1].forEach(f=>{ctx.fillText('t'+Math.round(n2*f),pd.l+pw*f,H-5);});
+}
+
+function drawUChart(id){
+  const cv=$(id);if(!cv)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=cv.parentElement.clientWidth-28,H=130;
+  cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  const pd={t:10,r:28,b:26,l:42},pw=W-pd.l-pd.r,ph=H-pd.t-pd.b;
+  ctx.fillStyle='#FAFAFA';ctx.fillRect(0,0,W,H);
+
+  // optimal U band
+  const u1=pd.t+ph*(1-.65),u2=pd.t+ph*(1-.25);
+  ctx.fillStyle='rgba(13,94,87,.06)';ctx.fillRect(pd.l,u1,pw,u2-u1);
+  ctx.fillStyle='rgba(13,94,87,.35)';ctx.font='8px DM Mono';ctx.textAlign='left';
+  ctx.fillText('optimal U',pd.l+3,u1+10);
+
+  // grid
+  for(let i=0;i<=4;i++){
+    const gy=pd.t+ph*(i/4);
+    ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.moveTo(pd.l,gy);ctx.lineTo(pd.l+pw,gy);ctx.stroke();
+    ctx.fillStyle='#9CA3AF';ctx.font='9px DM Mono';ctx.textAlign='right';
+    ctx.fillText((1-i/4).toFixed(2),pd.l-4,gy+3);
+  }
+
+  const src=viewMode==='compare'?null:HIST;
+  const cmp=viewMode==='compare'?COMPARE:null;
+
+  function drawLine(hist,col,dash){
+    if(!hist||!hist.length)return;
+    const n=hist.length-1;
+    ctx.strokeStyle=col;ctx.lineWidth=1.8;ctx.setLineDash(dash||[]);ctx.beginPath();
+    hist.forEach((pt,i)=>{
+      const x=pd.l+pw*(pt.t/n);
+      const y=pd.t+ph*(1-cl(pt.U,0,1));
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();ctx.setLineDash([]);
+    // polarization dashed same color
+    ctx.strokeStyle=col;ctx.lineWidth=1.2;ctx.setLineDash([3,3]);ctx.beginPath();
+    hist.forEach((pt,i)=>{
+      const x=pd.l+pw*(pt.t/n);
+      const y=pd.t+ph*(1-cl(pt.pol,0,1));
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();ctx.setLineDash([]);
+  }
+  if(cmp)Object.entries(cmp).forEach(([c,h])=>drawLine(h,CCOLS[c],CDASH[c]));
+  else if(src)drawLine(src,CCOLS[RES&&RES.p?RES.p.condition:'repair']||'#0D5E57');
+
+  // label
+  ctx.fillStyle='#374151';ctx.font='8px DM Mono';ctx.textAlign='left';
+  ctx.fillText('solid=U, dashed=polarization',pd.l,H-5);
+  const n2=src?src.length-1:40;
+  ctx.fillStyle='#9CA3AF';ctx.textAlign='center';
+  [0,.25,.5,.75,1].forEach(f=>{ctx.fillText('t'+Math.round(n2*f),pd.l+pw*f,H-5);});
+}
+
+function drawAll(){
+  const hist=HIST.length?HIST:null;
+  const cmp=viewMode==='compare'?COMPARE:null;
+
+  // determine y maxima
+  const allS=(cmp?Object.values(cmp).flat():(hist||[])).map(p=>p.S);
+  const allK=(cmp?Object.values(cmp).flat():(hist||[])).map(p=>p.K);
+  const allCL=(cmp?Object.values(cmp).flat():(hist||[])).map(p=>p.CL);
+  const sMx=Math.max(.5,Math.max(...allS)*1.1)||1;
+  const kMx=Math.min(2.5,Math.max(.5,Math.max(...allK)*1.1))||1;
+  const clMx=Math.min(2,Math.max(.3,Math.max(...allCL)*1.1))||0.5;
+
+  drawChart('c-C',hist,'C',0,1.3,.4,'Collapse',cmp);
+  drawChart('c-D',hist,'D',0,1,undefined,undefined,cmp);
+  drawChart('c-CL',hist,'CL',0,clMx,.5,'CL warning',cmp);
+  drawChart('c-K',hist,'K',0,kMx,.5,'Kernel instability',cmp);
+  drawChart('c-X',hist,'X',0,1,.6,'Irreversibility',cmp);
+  drawUChart('c-pol');
+}
+
+// ═══ ANALYSIS ═══
+function renderAnalysis(){
+  if(!HIST.length)return;
+  const l=HIST[HIST.length-1];
+  const p=RES&&RES.p?RES.p:{condition:'unknown'};
+
+  // layer bars
+  const layers=[
+    ['Operational failure',l.opFail,'#0D5E57','Cannot act effectively. C < threshold.'],
+    ['Epistemic conflict',l.epiFail,'#B45309','Cannot reach shared signal interpretation.'],
+    ['Identity erosion',l.idFail,'#7C3AED','Cannot remain self as interpretive system.'],
+    ['Composite risk X',l.X,'#991B1B','System-level collapse risk.'],
+  ];
+  $('layer-bars').innerHTML=layers.map(([name,val,col,desc])=>`
+    <div class="layer-bar">
+      <div class="layer-label">
+        <span><strong>${name}</strong> <span style="color:var(--muted);font-size:.78rem">${desc}</span></span>
+        <span style="color:${col}">${(val*100).toFixed(1)}%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(val*100).toFixed(1)}%;background:${col}"></div></div>
+    </div>`).join('');
+
+  // findings
+  let html='';
+  const cname=CNAMES[p.condition]||p.condition;
+
+  if(l.D<.25&&l.K>.5)
+    html+=`<div class="fi vi"><strong>False Coherence Warning &mdash; ${cname}</strong>Divergence is low (D=${l.D.toFixed(3)}) while K_drift is high (K=${l.K.toFixed(3)}). This is the classic surface-alignment-with-hidden-identity-erosion signature. The network has achieved the appearance of consensus at the cost of the interpretive integrity of the agents who adopted a dominant frame.</div>`;
+
+  if(l.CL>.4&&l.K>.3)
+    html+=`<div class="fi rd"><strong>Contradiction Load Accumulation &mdash; ${cname}</strong>CL=${l.CL.toFixed(3)} indicates significant internal structural inconsistency. Agents are holding adopted frames that contradict their natural predictions. This is the pre-collapse signal: CL rises before K_drift and K_drift rises before C collapses. The window for intervention is closing.</div>`;
+
+  if(l.pol>.35&&l.D>.4)
+    html+=`<div class="fi am"><strong>Network Polarization Active &mdash; ${cname}</strong>Polarization=${l.pol.toFixed(3)} with D=${l.D.toFixed(3)}. Within-cluster coherence is masking between-cluster fragmentation. The communities are internally aligned; the network is collectively broken. Repair at the network level requires cross-cluster bridge building that is structurally unavailable at current trust and repair-access levels.</div>`;
+
+  if(l.C>.6&&l.K>.4&&l.X<.5)
+    html+=`<div class="fi vi"><strong>False Stability Plateau &mdash; ${cname}</strong>Coherence appears adequate (C=${l.C.toFixed(3)}) and risk index is manageable (X=${l.X.toFixed(3)}), but K_drift=${l.K.toFixed(3)} indicates significant kernel erosion in progress. This is the premature consensus plateau before late collapse. If the simulation were extended, C would fall sharply as K_drift accumulation reaches threshold.</div>`;
+
+  if(l.C<.45)
+    html+=`<div class="fi rd"><strong>Coherence Collapse &mdash; ${cname}</strong>Mean coherence C=${l.C.toFixed(3)} is below the 0.4 collapse threshold. Agents have lost the capacity for integrated viable action under this condition. The network requires structural intervention at the repair-access and trust level before coherence recovery is possible &mdash; individual-level practice cannot overcome structural inaccessibility of repair.</div>`;
+
+  if(l.C>.6&&l.K<.25&&l.D<.5)
+    html+=`<div class="fi"><strong>Stable Genuine Coherence &mdash; ${cname}</strong>C=${l.C.toFixed(3)}, K_drift=${l.K.toFixed(3)}, D=${l.D.toFixed(3)}. The network is maintaining coherence through genuine reconciliation rather than frame suppression. Kernel integrity is preserved. This is the only trajectory where long-term collective coherence is achievable without epistemically costly restart.</div>`;
+
+  if(!html)html=`<div class="fi"><strong>Final state &mdash; ${cname}</strong>C=${l.C.toFixed(3)}, D=${l.D.toFixed(3)}, CL=${l.CL.toFixed(3)}, K_drift=${l.K.toFixed(3)}, X=${l.X.toFixed(3)}, polarization=${l.pol.toFixed(3)}.</div>`;
+
+  $('findings').innerHTML=html;
+
+  // final state table
+  const cols=['C','S','CL','K','D','Pr','U','pol','X'];
+  const colNames={C:'Coherence',S:'Scar',CL:'Contradiction Load',K:'K_drift',
+    D:'Divergence',Pr:'Repair cap.',U:'Uncertainty',pol:'Polarization',X:'Risk X'};
+  const thresholds={C:.4,K:.5,X:.6,CL:.5};
+  $('final-tbl').innerHTML=`<div style="overflow-x:auto"><table class="tbl">
+    <tr><th>Metric</th><th>Value</th><th>Status</th><th>Interpretation</th></tr>
+    ${cols.map(c=>{
+      const val=l[c];
+      const thr=thresholds[c];
+      let cls='lo',status='Normal';
+      if(c==='C'){cls=val>.6?'lo':val>.4?'md':'hi';status=val>.6?'Stable':val>.4?'Fragile':'Collapsed';}
+      else if(c==='Pr'){cls=val>.5?'lo':val>.25?'md':'hi';status=val>.5?'Adequate':val>.25?'Low':'Exhausted';}
+      else{cls=val<.25?'lo':val<.5?'md':'hi';status=val<.25?'Low':val<.5?'Moderate':'High';}
+      const interp={C:'Mean agent coherence. Below 0.4 = collapse.',
+        S:'Accumulated scar burden. Irreversible.',
+        CL:'Contradiction Load. Early warning signal.',
+        K:'Identity Kernel Drift. Kernel instability above 0.5.',
+        D:'Avg local divergence across edges.',
+        Pr:'Mean repair capacity. Falls with S and K.',
+        U:'Mean uncertainty. Optimal [0.25, 0.65].',
+        pol:'Cluster polarization index.',
+        X:'Composite risk. Irreversibility above 0.6.'};
+      return `<tr><td><strong>${colNames[c]}</strong></td><td><span class="rb ${cls}">${val.toFixed(3)}</span></td><td><span class="rb ${cls}">${status}</span></td><td style="font-size:.75rem;color:var(--muted)">${interp[c]||''}</td></tr>`;
+    }).join('')}
+  </table></div>`;
+}
+
+// ═══ INIT ON LOAD ═══
+window.addEventListener('load',()=>{
+  loadPreset('groupthink');  // also triggers interpretation panel
+  // initial brief run for illustration
+  const p=getP();RES=runSingle(p);HIST=RES.HIST;
+  animFrame=RES.snapshots.length-1;
+  drawAll();renderAnalysis();
+  $('net-total').textContent=p.steps;
+  $('net-step').textContent=p.steps;
+  drawNet(animFrame);
+  $('status').textContent='Ready';
+});
+window.addEventListener('resize',()=>{if(HIST.length)drawAll();if(RES)drawNet(animFrame);});
+// ── CSV EXPORT ──
+function exportCSV(){
+  if(!HIST.length&&!COMPARE)return;
+  var cols=['t','C','D','CL','K','X','U','pol','S','Pr'];
+  var nl='\n';
+  var csv='';
+  if(viewMode==='compare'&&COMPARE){
+    var allCols=['condition'].concat(cols);
+    csv=allCols.join(',')+nl;
+    Object.entries(COMPARE).forEach(function([cond,hist]){
+      hist.forEach(function(row){csv+=cond+','+cols.map(function(k){return row[k]!==undefined?row[k].toFixed(4):'';}).join(',')+nl;});
+    });
+  } else if(HIST.length){
+    var cond=RES&&RES.p?RES.p.condition:'unknown';
+    csv='# Causal Coherence Laboratory V3 Trajectory Export'+nl;
+    csv+='# Condition: '+CNAMES[cond]+' | Agents: '+(RES&&RES.p?RES.p.n:'?')+' | Steps: '+(RES&&RES.p?RES.p.steps:'?')+nl;
+    csv+=cols.join(',')+nl;
+    HIST.forEach(function(row){csv+=cols.map(function(k){return row[k]!==undefined?row[k].toFixed(4):'';}).join(',')+nl;});
+  }
+  if(!csv)return;
+  var ts=new Date().toISOString().slice(0,16).replace('T','-').replace(':','');
+  var fname='coherence-v3-'+ts+'.csv';
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=fname;document.body.appendChild(a);a.click();document.body.removeChild(a);
+  $('export-note').textContent='Downloaded '+fname;
+}
+function showExport(){
+  const btn=$('btn-export'),note=$('export-note');
+  if(btn)btn.style.display='inline-flex';
+  if(note)note.style.display='inline';
+}
+
+</script>
+</body>
+</html>
+      <div style="margin-top:.5rem;padding:.6rem .8rem;border:2px solid #0D5E57;border-radius:.45rem;background:#e8f4f2">
+        <div style="font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#0D5E57;margin-bottom:.45rem">Recovery Parameters (BioBond) &mdash; active only during Genuine Repair condition</div>
+        <div class="g2">
+          <div class="ctrl"><label>r<sub>K</sub> &mdash; Kernel recovery rate<br><span style="font-size:.58rem;color:var(--muted);font-family:'DM Mono',monospace">K_drift &minus;= r_K &times; K &times; repair_fraction</span></label><input type="range" id="rK" min="0.00" max="0.15" step="0.01" value="0.00" oninput="v(this,'vrK')"><div class="ctrl-val" id="vrK">0.00</div></div>
+          <div class="ctrl"><label>r<sub>S</sub> &mdash; Scar recovery rate<br><span style="font-size:.58rem;color:var(--muted);font-family:'DM Mono',monospace">S &minus;= r_S &times; S &times; repair_fraction</span></label><input type="range" id="rS" min="0.00" max="0.35" step="0.01" value="0.00" oninput="v(this,'vrS')"><div class="ctrl-val" id="vrS">0.00</div></div>
+        </div>
+      </div>
