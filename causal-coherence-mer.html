@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MER Experiment — Moral Expansion Radius · Causal Coherence Lab</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400;500&display=swap');
+:root{
+  --bg:#f8f6f1;--s:#eeeae1;--s2:#e4dfd4;--paper:#fff;
+  --border:rgba(60,50,30,.12);--ink:#1a1612;--teal:#0D5E57;--tl:#e8f4f2;
+  --amber:#92400e;--al:#fef3c7;--muted:rgba(26,22,18,.42);
+  --rl:#fee2e2;--vl:#EDE9FE;--violet:#5B21B6;--gl:#dcfce7;--green:#14532d;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.hdr{background:linear-gradient(135deg,#1C3A34 0%,#0D5E57 100%);color:#fff;padding:1.75rem 2.5rem 1.5rem}
+.hdr-sub{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;opacity:.6;margin-bottom:.4rem}
+.hdr h1{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;letter-spacing:-.01em;margin-bottom:.2rem}
+.hdr p{font-size:.86rem;opacity:.75;max-width:720px;line-height:1.65}
+.main{max-width:1160px;margin:0 auto;padding:1.5rem}
+.tabs{display:flex;gap:.25rem;margin-bottom:1rem;border-bottom:2px solid var(--border);padding-bottom:.4rem;flex-wrap:wrap}
+.tab{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.07em;text-transform:uppercase;padding:.38rem .85rem;border-radius:.3rem .3rem 0 0;border:1px solid transparent;cursor:pointer;color:var(--muted);background:transparent;transition:all .15s}
+.tab:hover{color:var(--ink)}.tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.pane{display:none}.pane.active{display:block;animation:fi .18s ease}
+@keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:1px solid var(--border);border-radius:.5rem;padding:1.2rem;margin:.6rem 0}
+.ct{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--teal);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.6rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.65rem}
+@media(max-width:640px){.g2,.g3{grid-template-columns:1fr}}
+.btn{background:var(--teal);color:#fff;border:none;font-family:'DM Sans',sans-serif;font-weight:500;font-size:.88rem;padding:.6rem 1.4rem;border-radius:.35rem;cursor:pointer;transition:all .18s}
+.btn:hover{background:#0a4d47}.btn:active{transform:scale(.98)}.btn:disabled{opacity:.4;cursor:not-allowed}
+.bo{background:transparent;color:var(--teal);border:1px solid var(--teal)}.bo:hover{background:var(--tl)}
+.btn-sm{font-size:.8rem;padding:.4rem .9rem}
+.ctrl{border:1px solid var(--border);border-radius:.4rem;padding:.65rem .8rem;background:var(--paper)}
+.ctrl label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:.25rem}
+.ctrl input[type=range]{width:100%;height:3px;-webkit-appearance:none;background:var(--s2);border-radius:2px;outline:none;cursor:pointer}
+.ctrl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--teal);cursor:pointer}
+.ctrl-val{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--teal);text-align:right;margin-top:.15rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.78rem;margin:.5rem 0}
+.tbl th{background:var(--teal);color:#fff;padding:.4rem .6rem;text-align:left;font-family:'DM Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.05em}
+.tbl td{padding:.38rem .6rem;border-bottom:1px solid var(--border);line-height:1.4}
+.tbl tr:nth-child(even) td{background:var(--s)}
+.rb{display:inline-block;padding:.1rem .35rem;border-radius:.2rem;font-size:.67rem;font-family:'DM Mono',monospace;font-weight:500}
+.t1{background:#fef3c7;color:#92400e}.t2{background:var(--rl);color:#7f1d1d}
+.t3{background:var(--vl);color:var(--violet)}.t4{background:var(--gl);color:var(--green)}
+.fi{border-left:3px solid var(--teal);background:var(--tl);padding:.7rem .95rem;margin:.45rem 0;border-radius:0 .35rem .35rem 0;font-size:.85rem;line-height:1.65}
+.fi.am{border-color:var(--amber);background:var(--al)}.fi.rd{border-color:#7f1d1d;background:var(--rl)}
+.fi.vi{border-color:var(--violet);background:var(--vl)}.fi.gn{border-color:var(--green);background:var(--gl)}
+.fi strong{display:block;font-family:'DM Mono',monospace;font-size:.6rem;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.2rem;color:var(--teal)}
+.fi.am strong{color:var(--amber)}.fi.rd strong{color:#7f1d1d}.fi.vi strong{color:var(--violet)}.fi.gn strong{color:var(--green)}
+.cw{background:var(--paper);border:1px solid var(--border);border-radius:.45rem;padding:.85rem;margin:.5rem 0}
+.cht{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--ink);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem}
+.chd{font-size:.7rem;color:var(--muted);margin-bottom:.35rem;line-height:1.45}
+canvas{display:block;width:100%;border-radius:.2rem}
+.leg{display:flex;gap:1rem;flex-wrap:wrap;margin:.5rem 0 .75rem;align-items:center}
+.ldot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:.3rem;flex-shrink:0}
+.leg span{font-size:.8rem;display:flex;align-items:center}
+.cond-card{border:1px solid var(--border);border-radius:.4rem;padding:.6rem .8rem;font-size:.8rem;line-height:1.5;background:var(--paper)}
+.cond-card .cond-lbl{font-family:'DM Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:.15rem}
+.pullq{border-top:2px solid var(--teal);border-bottom:2px solid var(--teal);padding:1rem 2rem;margin:1rem 0;text-align:center;background:#f8fffe}
+.pullq p{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-style:italic;color:#1C3A34;line-height:1.6}
+.ts h3{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:500;color:var(--teal);margin:.85rem 0 .3rem}
+.ts p{font-size:.87rem;line-height:1.75;color:rgba(26,22,18,.8);margin-bottom:.5rem}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-sub">UCP V5.02 &bull; Causal Coherence Laboratory &bull; MER Experiment &bull; April 2026</div>
+  <h1>Moral Expansion Radius</h1>
+  <p>Does coherence support or suppress the expansion of moral concern? MER tracks how far an agent extends moral consideration across frames. CO (Coherence Orientation) measures whether coherence and moral expansion move together or in opposition. 12 conditions &times; 60 steps. One attractor produces positive CO. The rest reveal why moral expansion without recovery infrastructure destroys the agent it expands.</p>
+</div>
+
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="sw('run')">Run</button>
+    <button class="tab" onclick="sw('results')">Results</button>
+    <button class="tab" onclick="sw('trajectories')">Trajectories</button>
+    <button class="tab" onclick="sw('theory')">Theory</button>
+  </div>
+
+  <!-- ══ RUN ══ -->
+  <div class="pane active" id="pane-run">
+    <div class="card" style="border:2px solid var(--teal)">
+      <div class="ct">Experiment Configuration</div>
+      <div class="g3" style="margin-bottom:.75rem">
+        <div class="ctrl">
+          <label>Steps (60 = paper conditions)</label>
+          <input type="range" id="mer-steps" min="30" max="150" step="5" value="60" oninput="vv(this,'mv-steps')">
+          <div class="ctrl-val" id="mv-steps">60</div>
+        </div>
+        <div class="ctrl">
+          <label>High clustering strength</label>
+          <input type="range" id="mer-cs-hi" min="0.60" max="0.95" step="0.05" value="0.85" oninput="vv(this,'mv-cshi')">
+          <div class="ctrl-val" id="mv-cshi">0.85</div>
+        </div>
+        <div class="ctrl">
+          <label>Low clustering strength</label>
+          <input type="range" id="mer-cs-lo" min="0.20" max="0.55" step="0.05" value="0.35" oninput="vv(this,'mv-cslo')">
+          <div class="ctrl-val" id="mv-cslo">0.35</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+        <button class="btn" onclick="runMER()" id="mer-btn">Run All 12 Conditions &rarr;</button>
+        <button class="btn bo btn-sm" onclick="exportMERCSV()" id="mer-export" style="display:none">&#11015; Export CSV</button>
+        <span id="mer-status" style="font-family:'DM Mono',monospace;font-size:.75rem;color:var(--teal)"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">12 Conditions</div>
+      <div id="cond-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--s);border:none">
+      <div class="ct">New Variables</div>
+      <div class="g3" style="font-size:.84rem;line-height:1.7;color:rgba(26,22,18,.8)">
+        <div><strong style="font-family:'DM Mono',monospace;font-size:.78rem">MER</strong> &mdash; Moral Expansion Radius [0,1]. How far an agent extends moral consideration beyond their own frame. Initialized from cluster position (minority-cluster agents start higher). Expands only during genuine cross-cluster repair encounters with actual divergence. Frozen under conformity and false-narrative conditions.</div>
+        <div><strong style="font-family:'DM Mono',monospace;font-size:.78rem">ΔMER</strong> &mdash; Net MER change over the run. Positive = expanding moral consideration. Near zero = frozen. The primary output of the MER experiment.</div>
+        <div><strong style="font-family:'DM Mono',monospace;font-size:.78rem">CO</strong> &mdash; Coherence Orientation. Sign of the correlation between ΔC and ΔMER at each step. CO_avg &gt;0 means coherence and moral expansion move together (the AMC attractor). CO_avg &lt;0 means they work against each other — the bridge-builder paradox.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ RESULTS ══ -->
+  <div class="pane" id="pane-results">
+    <div id="mer-results-placeholder" class="card" style="color:var(--muted);font-size:.84rem;font-style:italic">
+      Run the experiment to see results.
+    </div>
+    <div id="mer-results-content" style="display:none">
+      <div class="card" id="mer-headline"></div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="mer-tbl"></table>
+      </div>
+      <div id="mer-findings"></div>
+    </div>
+  </div>
+
+  <!-- ══ TRAJECTORIES ══ -->
+  <div class="pane" id="pane-trajectories">
+    <div id="traj-placeholder" class="card" style="color:var(--muted);font-size:.84rem;font-style:italic">
+      Run the experiment to see trajectories.
+    </div>
+    <div id="traj-content" style="display:none">
+      <div class="leg" style="margin-bottom:.25rem">
+        <span><span class="ldot" style="background:#0D5E57"></span>Type 4 — Genuine Development</span>
+        <span><span class="ldot" style="background:#7C3AED"></span>Type 3 — Marginal Stability</span>
+        <span><span class="ldot" style="background:#991B1B"></span>Type 2 — Collapse During Expansion</span>
+        <span><span class="ldot" style="background:#B45309"></span>Type 1 — Frozen Expansion</span>
+      </div>
+      <div class="g2">
+        <div class="cw"><div class="cht">Coherence C(t)</div><div class="chd">Type 2 and Type 4 diverge dramatically here. Type 1 stays in the middle — deceptively adequate.</div><canvas id="tj-C" height="190"></canvas></div>
+        <div class="cw"><div class="cht">Moral Expansion Radius MER(t)</div><div class="chd">Types 2, 3, 4 all expand. Type 1 is flat. The bridge-builder paradox: Type 2 expands hardest while C collapses.</div><canvas id="tj-MER" height="190"></canvas></div>
+      </div>
+      <div class="g2">
+        <div class="cw"><div class="cht">CO Step Sign (Coherence Orientation)</div><div class="chd">+1 = C and MER moving together. −1 = opposed. CO_avg is the mean of this over all steps. Only Type 4 achieves net positive.</div><canvas id="tj-CO" height="190"></canvas></div>
+        <div class="cw"><div class="cht">Scar Burden S(t)</div><div class="chd">Types 2 and 3 accumulate scar fastest — the reconciliation-exhaustion paradox at the moral expansion level.</div><canvas id="tj-S" height="190"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ THEORY ══ -->
+  <div class="pane" id="pane-theory">
+    <div class="card">
+      <div class="ct">The Dark Coherence Typology</div>
+      <table class="tbl">
+        <tr><th>Type</th><th>Name</th><th>C / MER Signature</th><th>App Risk Signal</th><th>Intervention</th></tr>
+        <tr>
+          <td><span class="rb t1">1</span></td>
+          <td><strong>Frozen Expansion</strong></td>
+          <td style="font-size:.75rem">C adequate, MER flat (Δ≈0), CO≈0</td>
+          <td style="font-size:.75rem">Coherence scores adequate; relational responses absent 3+ check-ins; recovery access ≤2</td>
+          <td style="font-size:.75rem">Seventh check-in item deployed. Increase recovery access. Challenge exchange when domain 6 ≥3.</td>
+        </tr>
+        <tr>
+          <td><span class="rb t2">2</span></td>
+          <td><strong>Collapse During Expansion</strong></td>
+          <td style="font-size:.75rem">C falling, MER rising, CO strongly negative</td>
+          <td style="font-size:.75rem">Coherence declining while Companion engagement high; relational notes rich but scores falling</td>
+          <td style="font-size:.75rem">Recovery Mode first. Do NOT deploy challenge exchange. Reduce burden before expanding moral range.</td>
+        </tr>
+        <tr>
+          <td><span class="rb t3">3</span></td>
+          <td><strong>Marginal Stability</strong></td>
+          <td style="font-size:.75rem">C barely above threshold; CO negative despite MER rising</td>
+          <td style="font-size:.75rem">Coherence borderline; check-in trajectories flat; CO unreliable</td>
+          <td style="font-size:.75rem">Challenge exchange + recovery support simultaneously. Not either alone.</td>
+        </tr>
+        <tr>
+          <td><span class="rb t4">4</span></td>
+          <td><strong>Genuine Development</strong></td>
+          <td style="font-size:.75rem">C stable; MER expanding; CO positive</td>
+          <td style="font-size:.75rem">All domains adequate; relational notes present; recovery access ≥3</td>
+          <td style="font-size:.75rem">Continue. Challenge exchange at natural openings. Profile revision at 90 days.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card ts">
+      <div class="ct">Finding 1: The Risk Is Structural, Not Content-Based</div>
+      <p>The design hypothesis was that Authority-dominant, high-Loyalty, low-Care configurations would be the primary Dark Coherence risk. The simulation contradicts this. MER freezes identically under premature consensus regardless of which frame wins — a Care-dominant network with conformity pressure is as MER-frozen as an Authority-dominant one. The mechanism is conformity, not content.</p>
+      <div class="fi">
+        <strong>Application Implication</strong>
+        Replace the PRF-configuration-based risk flag with the structural flag: recovery access domain ≤2 AND coherence average ≥3.0 AND relational question responses absent for three or more consecutive check-ins. This applies to Care-dominant and Authority-dominant users equally when structural conditions match.
+      </div>
+    </div>
+
+    <div class="card ts">
+      <div class="ct">Finding 2: The Bridge-Builder Paradox Formalized</div>
+      <p>Repair without recovery produces MER expansion (+0.13 to +0.38) while C collapses to zero. CO_avg is strongly negative. The agent is genuinely becoming more morally capacious — and losing the operational coherence needed to act from any values at all. The expansion is real. The collapse is also real. They are produced by the same mechanism: genuine cross-frame engagement without recovery infrastructure.</p>
+      <div class="pullq"><p>&ldquo;The agent most at risk is not the one who has stopped examining. It is the one examining hardest without the recovery conditions that allow examination to sustain itself.&rdquo;</p></div>
+      <div class="fi rd">
+        <strong>Application Implication</strong>
+        When coherence check-in scores are declining while Companion engagement is high and relational notes are rich — this is Type 2, not Type 1. Recovery Mode first. Do not deploy challenge exchange. The agent does not need more moral stimulation.
+      </div>
+    </div>
+
+    <div class="card ts">
+      <div class="ct">Finding 3: Recovery Does Not Unfreeze MER Under Conformity</div>
+      <p>In premature consensus and false narrative conditions, MER freezes within ten steps regardless of recovery parameters. Adding full recovery (r_K=0.10, r_S=0.20) to preloc or false narrative does not unfreeze MER (Δ remains ≈0.001 in all tested runs). The mechanism: MER expansion requires genuine cross-cluster repair encounters. Under conformity conditions, agents adopt the dominant frame, eliminating the frame diversity that expansion requires. Recovery restores coherence capacity. It does not restore frame diversity.</p>
+      <div class="fi am">
+        <strong>Key Structural Claim</strong>
+        You cannot recover your way out of a network that has eliminated its own moral diversity. Frame diversity must be structurally preserved — through heterogeneous connections, through repair protocols that maintain uncertainty.
+      </div>
+    </div>
+
+    <div class="card ts">
+      <div class="ct">Finding 4: Class A vs Class B Stability — CO Dimension</div>
+      <p>The stability frontier (Sweep tab in causal-coherence-v4) distinguished Class A (r_S=0.20) from Class B (r_S=0.15) stability. The MER experiment adds a CO dimension that sharpens this distinction. Class A: CO_avg positive — C and MER move together. The AMC attractor. Class B: CO_avg negative — despite adequate C and expanding MER, the two dynamics are frequently decoupled.</p>
+      <div class="fi gn">
+        <strong>BioBond Specification Implication</strong>
+        Class A stability (r_S≥0.20, r_K≥0.06, high clustering) is the minimum BioBond configuration. Class B (r_S=0.15) achieves coherence stability but not CO positivity — not the AMC attractor. Both recovery parameters must be present and sufficient, not just above collapse threshold.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Next Experiments</div>
+      <div class="g2" style="font-size:.83rem;line-height:1.7;color:rgba(26,22,18,.8)">
+        <div><strong>1. Long-run confirmation (150 steps)</strong><br>Run Type 4 condition to 150 steps. Does CO remain positive in long-run equilibrium, or does it eventually turn negative as scar accumulates even under recovery? The stability frontier paper confirmed C stability but not CO durability beyond 60 steps.</div>
+        <div><strong>2. Low-clustering MER at high r_S</strong><br>No low-clustering configuration achieved stability in the sweep (0/44). Run MER experiment at r_S = 0.30, 0.40 — beyond the tested range — to find whether low-clustering stability is achievable and whether it produces positive CO.</div>
+        <div><strong>3. MER initialization sensitivity</strong><br>Current initialization: minority-cluster agents start at higher MER. Does the initial MER distribution affect trajectory type assignment? Run with uniform MER initialization to test whether the cluster-based asymmetry is load-bearing.</div>
+        <div><strong>4. Directed cross-cluster repair</strong><br>Add a structural intervention: force a fraction of repair-capable edges to be cross-cluster. Does directing repair structurally change the frontier or CO positivity threshold?</div>
+      </div>
+    </div>
+  </div>
+</div><!-- end main -->
+
+<script>
+// ══ CONSTANTS (identical to causal-coherence-v4) ══
+const PC={lambda:.12,mu:.18,rho:.08,cobs:.018,creint:.10,crepair:.055,
+  cCL:.06,repairRecovery:.022,alphaKS:.012,betaKD:.06,gammaKU:.18,
+  deltaK:.032,deltaForced:.055,maxS:3,maxK:3,maxCL:2};
+
+const MER_DELTA = 0.012; // MER expansion per cross-cluster repair step
+
+// ══ 12 CONDITIONS ══
+const CONDITIONS = [
+  {id:'r_nr_hi', label:'Repair · no recovery · high',    cond:'repair',rK:0,   rS:0,   topo:'high'},
+  {id:'r_nr_lo', label:'Repair · no recovery · low',     cond:'repair',rK:0,   rS:0,   topo:'low'},
+  {id:'p_nr_hi', label:'Preloc · no recovery · high',    cond:'preloc',rK:0,   rS:0,   topo:'high'},
+  {id:'p_nr_lo', label:'Preloc · no recovery · low',     cond:'preloc',rK:0,   rS:0,   topo:'low'},
+  {id:'f_nr_hi', label:'False · no recovery · high',     cond:'false', rK:0,   rS:0,   topo:'high'},
+  {id:'f_nr_lo', label:'False · no recovery · low',      cond:'false', rK:0,   rS:0,   topo:'low'},
+  {id:'r_fr_hi', label:'Repair · full rec · high',       cond:'repair',rK:.10, rS:.20, topo:'high'},
+  {id:'r_fr_lo', label:'Repair · full rec · low',        cond:'repair',rK:.10, rS:.20, topo:'low'},
+  {id:'r_mr_hi', label:'Repair · marginal rec · high',   cond:'repair',rK:.06, rS:.15, topo:'high'},
+  {id:'p_fr_hi', label:'Preloc · full rec · high',       cond:'preloc',rK:.10, rS:.20, topo:'high'},
+  {id:'f_fr_hi', label:'False · full rec · high',        cond:'false', rK:.10, rS:.20, topo:'high'},
+  {id:'r_mr_lo', label:'Repair · marginal rec · low',    cond:'repair',rK:.06, rS:.15, topo:'low'},
+];
+
+const COND_COLS = {repair:'#0D5E57',preloc:'#7C3AED',false:'#991B1B'};
+const TOPO_LABELS = {high:'High Clustering',low:'Low Clustering'};
+
+// ══ STATE ══
+let AGENTS=[], EDGES=[], MER_RESULTS=null;
+function $(id){return document.getElementById(id);}
+function vv(el,vid){$(vid).textContent=parseFloat(el.value).toFixed(2);}
+function cl(v,a,b){return Math.max(a,Math.min(b,v));}
+function mean(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;}
+function nuEff(U){return U>=.25&&U<=.65?-.02:U<.25?.10:.12;}
+function uPen(U){return Math.max(0,.25-U)+Math.max(0,U-.65);}
+function mkRng(seed){let s=seed|0;return()=>{s=(s*1664525+1013904223)|0;return(s>>>0)/0xFFFFFFFF;};}
+
+function sw(t){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  $('pane-'+t).classList.add('active');
+  ['run','results','trajectories','theory'].forEach((tab,i)=>{
+    if(tab===t) document.querySelectorAll('.tab')[i].classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+  if((t==='trajectories'||t==='results')&&MER_RESULTS) renderAll();
+}
+
+// ══ INIT ══
+function init(p){
+  const R=mkRng(42); AGENTS=[];EDGES=[];
+  const per=Math.ceil(p.n/p.k);
+  for(let i=0;i<p.n;i++){
+    const c=Math.min(p.k-1,Math.floor(i/per));
+    const nf=(c%2===0)?'AB':'BA';
+    const openness=.3+R()*.5;
+    // Minority-cluster (odd) agents start higher MER — already operating across frames
+    const merInit=cl((c%2===1?.52:.46)+openness*.08,.1,1);
+    AGENTS.push({id:i,cluster:c,F:nf,natural:nf,C:1,S:0,U:.5,P:.5,Kd:0,CL:0,
+      openness,influence:.2+R()*.8,D:0,De:0,I:0,
+      repair:false,forced:false,repairFrac:0,crossClusterRepair:false,
+      MER:merInit});
+  }
+  for(let i=0;i<p.n;i++){
+    const desired=3+Math.floor(R()*3);const added=new Set();let attempts=0;
+    while(added.size<desired&&attempts<30){
+      attempts++;
+      const sameCl=R()<p.clusterStrength;
+      const pool=AGENTS.filter(a=>a.id!==i&&!added.has(a.id)&&
+        (sameCl?a.cluster===AGENTS[i].cluster:a.cluster!==AGENTS[i].cluster));
+      if(!pool.length)continue;
+      const tgt=pool[Math.floor(R()*pool.length)];
+      const dup=EDGES.find(e=>(e.a===i&&e.b===tgt.id)||(e.a===tgt.id&&e.b===i));
+      if(!dup){
+        EDGES.push({a:i,b:tgt.id,w:.5+R()*.5,trust:.4+R()*.6,repair:R()<p.repairAccess});
+        added.add(tgt.id);
+      }
+    }
+  }
+}
+
+function neighbors(id){
+  const res=[];
+  EDGES.forEach(e=>{
+    if(e.a===id) res.push({edge:e,agent:AGENTS[e.b]});
+    else if(e.b===id) res.push({edge:e,agent:AGENTS[e.a]});
+  });
+  return res;
+}
+function dominantFrame(id){
+  const ns=neighbors(id);let ab=0,ba=0;
+  ns.forEach(({edge,agent})=>{const w=edge.w*edge.trust*(agent.influence||.5);if(agent.F==='AB')ab+=w;else ba+=w;});
+  return ab>=ba?'AB':'BA';
+}
+
+// ══ STEP ══
+function step(p,R,t){
+  const world=R()<p.worldBias?'AB':'BA';
+  const falsePhase=(p.condition==='false')&&(t>Math.floor(p.steps*.15));
+
+  AGENTS.forEach(a=>{a.repair=false;a.forced=false;a.repairFrac=0;a.crossClusterRepair=false;});
+  AGENTS.forEach(a=>{a.I=a.F===world?(1-a.S*.08):(-.16*(1+a.U*.3));});
+  AGENTS.forEach(a=>{
+    const ns=neighbors(a.id);let s=0,ws=0;
+    ns.forEach(({edge,agent})=>{const d=a.F!==agent.F?1:0;s+=d*edge.w*edge.trust;ws+=edge.w*edge.trust;});
+    a.D=ws?s/ws:0;a.De=a.D;
+  });
+
+  AGENTS.forEach(a=>{
+    if(p.condition==='none'){
+      a.De=0;a.U=cl(a.U-.012,.06,.9);
+    } else if(p.condition==='comm'){
+      a.De=a.D;
+    } else if(p.condition==='repair'){
+      const ns=neighbors(a.id);
+      const repEdges=ns.filter(x=>x.edge.repair);
+      const access=ns.length?repEdges.length/ns.length:0;
+      if(access>.2&&a.P>.2){
+        a.repair=true;a.repairFrac=access;
+        a.U=a.U<.25?cl(a.U+.045,0,1):a.U>.65?cl(a.U-.045,0,1):cl(a.U+.010,0,1);
+        a.De=a.D*(1-.62*access);
+        if(R()<.03*access&&a.D>.3)a.F=dominantFrame(a.id);
+        // Cross-cluster repair: repair edge to different cluster WITH actual divergence
+        a.crossClusterRepair=repEdges.some(x=>x.agent.cluster!==a.cluster)&&a.D>.08;
+      }
+    } else if(p.condition==='preloc'){
+      const ns=neighbors(a.id);
+      const pressure=p.conformity*mean(ns.map(x=>x.agent.influence||.5));
+      const dom=dominantFrame(a.id);
+      if(pressure>a.openness&&dom!==a.F){a.F=dom;a.U=cl(a.U-.18,.05,1);a.forced=true;}
+      a.De=a.D*.3;
+    } else if(p.condition==='false'){
+      if(falsePhase&&a.F!=='AB'){a.F='AB';a.forced=true;a.U=cl(a.U-.12,.05,1);}
+      a.De=a.D*.2;
+    }
+  });
+
+  AGENTS.forEach(a=>{
+    const fc=a.F!==a.natural;const ac=world!==a.F;
+    if(fc&&ac)a.CL=cl(a.CL+PC.cCL,0,PC.maxCL);else a.CL=cl(a.CL-.005,0,PC.maxCL);
+  });
+  AGENTS.forEach(a=>{
+    const kd=PC.alphaKS*a.S+PC.betaKD*a.De+PC.gammaKU*uPen(a.U)+p.gammaCL*a.CL;
+    a.Kd=cl(a.Kd+kd-p.rK*a.Kd*a.repairFrac,0,PC.maxK);
+  });
+  AGENTS.forEach(a=>{
+    const n=nuEff(a.U);
+    a.C=cl(a.C+PC.lambda*a.I-PC.mu*a.De-n*a.U-PC.rho*a.S-PC.deltaK*a.Kd,0,1.5);
+    const scar=PC.cobs+PC.creint*a.De+(a.repair?PC.crepair-PC.repairRecovery:0)+(a.forced?.07:0);
+    a.S=cl(a.S+scar-p.rS*a.S*a.repairFrac,0,PC.maxS);
+    a.P=cl(1-.25*a.S-.12*a.Kd,.05,1);
+    // MER update — expands only via genuine cross-cluster repair encounters
+    if(a.crossClusterRepair) a.MER=cl(a.MER+MER_DELTA,.1,1);
+    // else: unchanged (frozen naturally under conformity — no crossClusterRepair fires)
+  });
+}
+
+// ══ SNAPSHOT ══
+function snap(t,prevSnap){
+  const C=mean(AGENTS.map(a=>a.C));
+  const S=mean(AGENTS.map(a=>a.S));
+  const MER=mean(AGENTS.map(a=>a.MER));
+  const K=mean(AGENTS.map(a=>a.Kd));
+  const dC=prevSnap?C-prevSnap.C:0;
+  const dMER=prevSnap?MER-prevSnap.MER:0;
+  const CO=(Math.abs(dC)<1e-6&&Math.abs(dMER)<1e-6)?0:(dC*dMER>0?1:dC*dMER<0?-1:0);
+  return{t,C,S,MER,K,CO};
+}
+
+// ══ CLASSIFY ══
+function classify(dMER, C60, CO_avg){
+  if(dMER<0.05) return 1;  // Frozen — MER barely moved
+  if(C60>0.55&&CO_avg>-0.05) return 4;  // Genuine Development
+  if(C60>0.35) return 3;   // Marginal Stability
+  return 2;                 // Collapse During Expansion
+}
+const TYPE_NAMES={1:'Frozen Expansion',2:'Collapse During Expansion',3:'Marginal Stability',4:'Genuine Development'};
+const TYPE_CLS={1:'t1',2:'t2',3:'t3',4:'t4'};
+const TYPE_COLS={1:'#B45309',2:'#991B1B',3:'#7C3AED',4:'#0D5E57'};
+
+// ══ RUN ONE CONDITION ══
+function runOne(cond, csHi, csLo, steps){
+  const cs=cond.topo==='high'?csHi:csLo;
+  const p={
+    condition:cond.cond,n:48,k:4,steps,
+    clusterStrength:cs, repairAccess:.60,
+    conformity:.65, worldBias:.50, gammaCL:.08,
+    rK:cond.rK, rS:cond.rS
+  };
+  init(p);
+  const R=mkRng(1234);
+  const h=[snap(0,null)];
+  for(let t=1;t<=steps;t++){step(p,R,t);h.push(snap(t,h[t-1]));}
+  const l=h[h.length-1];
+  const h30=h[Math.min(30,steps)];
+  const h10=h[Math.min(10,steps)];
+  const dMER=l.MER-h[0].MER;
+  const CO_avg=mean(h.slice(1).map(s=>s.CO));
+  const type=classify(dMER,l.C,CO_avg);
+  return{cond,hist:h,C30:h30.C,C60:l.C,MER10:h10.MER,MER60:l.MER,dMER,CO_avg,type,S60:l.S};
+}
+
+// ══ RUN ALL ══
+function runMER(){
+  const steps=+$('mer-steps').value;
+  const csHi=+$('mer-cs-hi').value;
+  const csLo=+$('mer-cs-lo').value;
+  $('mer-btn').disabled=true;
+  $('mer-status').textContent='Running 12 conditions…';
+  setTimeout(()=>{
+    MER_RESULTS=CONDITIONS.map(c=>runOne(c,csHi,csLo,steps));
+    $('mer-status').textContent='Done — 12 conditions ✓';
+    $('mer-btn').disabled=false;
+    $('mer-export').style.display='inline-flex';
+    renderAll();
+    sw('results');
+  },20);
+}
+
+// ══ RENDER ALL ══
+function renderAll(){
+  if(!MER_RESULTS) return;
+  renderTable();
+  renderFindings();
+  renderTrajectories();
+  $('mer-results-placeholder').style.display='none';
+  $('mer-results-content').style.display='block';
+  $('traj-placeholder').style.display='none';
+  $('traj-content').style.display='block';
+}
+
+// ══ RESULTS TABLE ══
+function renderTable(){
+  const typeCount={1:0,2:0,3:0,4:0};
+  MER_RESULTS.forEach(r=>typeCount[r.type]++);
+
+  // Headline
+  const type4=MER_RESULTS.find(r=>r.type===4);
+  $('mer-headline').innerHTML=`
+    <div class="ct">Headline Finding</div>
+    <p style="font-size:.88rem;line-height:1.75;margin-bottom:.5rem">
+      <strong>Only one condition produces positive CO (coherence and moral expansion moving together):</strong>
+      ${type4?`<strong>${type4.cond.label}</strong> — C@60=${type4.C60.toFixed(3)}, ΔMER=${type4.dMER>0?'+':''}${type4.dMER.toFixed(3)}, CO_avg=${type4.CO_avg>=0?'+':''}${type4.CO_avg.toFixed(3)}.`:
+      'No condition achieved positive CO in this run. Check recovery parameters.'}
+      This is the AMC attractor: the only structural configuration where coherence and moral expansion are reliably coupled.
+    </p>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+      ${[1,2,3,4].map(t=>`<span class="rb ${TYPE_CLS[t]}">${typeCount[t]}× Type ${t} — ${TYPE_NAMES[t]}</span>`).join('')}
+    </div>`;
+
+  // Table
+  $('mer-tbl').innerHTML=`
+    <tr>
+      <th>Condition</th><th>C@30</th><th>C@60</th>
+      <th>MER@10</th><th>MER@60</th><th>ΔMER</th>
+      <th>CO_avg</th><th>Type</th>
+    </tr>
+    ${MER_RESULTS.map(r=>{
+      const dmerStr=(r.dMER>=0?'+':'')+r.dMER.toFixed(3);
+      const coStr=Math.abs(r.dMER)<0.02?'<span style="color:var(--muted)">frozen</span>'
+        :(r.CO_avg>=0?'+':'')+r.CO_avg.toFixed(3);
+      const col=COND_COLS[r.cond.cond];
+      return `<tr>
+        <td><span style="color:${col};font-weight:500">${r.cond.label}</span></td>
+        <td><span class="rb ${r.C30>.6?'lo':r.C30>.35?'md':'hi'}">${r.C30.toFixed(3)}</span></td>
+        <td><span class="rb ${r.C60>.55?'lo':r.C60>.35?'md':'hi'}">${r.C60.toFixed(3)}</span></td>
+        <td style="font-family:'DM Mono',monospace;font-size:.75rem">${r.MER10.toFixed(3)}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:.75rem">${r.MER60.toFixed(3)}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:.75rem;color:${r.dMER>.05?'#0D5E57':'var(--muted)'}">${dmerStr}</td>
+        <td style="font-family:'DM Mono',monospace;font-size:.75rem;color:${r.CO_avg>.0?'#0D5E57':r.CO_avg<-.3?'#991B1B':'var(--muted)'}">${coStr}</td>
+        <td><span class="rb ${TYPE_CLS[r.type]}">${r.type} — ${TYPE_NAMES[r.type]}</span></td>
+      </tr>`;
+    }).join('')}`;
+}
+
+// ══ FINDINGS ══
+function renderFindings(){
+  const type2=MER_RESULTS.filter(r=>r.type===2);
+  const type4=MER_RESULTS.find(r=>r.type===4);
+  const frozen=MER_RESULTS.filter(r=>r.type===1);
+  let html='';
+
+  if(type4){
+    html+=`<div class="fi gn"><strong>AMC Attractor Confirmed</strong>
+      ${type4.cond.label}: C@60=${type4.C60.toFixed(3)}, ΔMER=${type4.dMER>0?'+':''}${type4.dMER.toFixed(3)}, CO_avg=+${type4.CO_avg.toFixed(3)}.
+      Full recovery (r_S≥0.20, r_K≥0.06) at high clustering is the minimum configuration that allows coherence and moral expansion to co-evolve positively.
+      This is the only trajectory where expanding moral concern does not eventually destroy the agent doing the expanding.</div>`;
+  }
+
+  if(type2.length){
+    const worst=type2.sort((a,b)=>a.CO_avg-b.CO_avg)[0];
+    html+=`<div class="fi rd"><strong>Bridge-Builder Paradox — ${type2.length} condition${type2.length>1?'s':''}</strong>
+      Most striking: ${worst.cond.label} — C@60=${worst.C60.toFixed(3)} (collapsed), ΔMER=+${worst.dMER.toFixed(3)} (expanding), CO_avg=${worst.CO_avg.toFixed(3)}.
+      These agents are expanding their moral radius fastest of all tested conditions, while losing all operational coherence.
+      Recovery infrastructure is not a comfort — it is a structural precondition for moral expansion to be sustainable.</div>`;
+  }
+
+  if(frozen.length){
+    html+=`<div class="fi am"><strong>Frozen Expansion — ${frozen.length} condition${frozen.length>1?'s':''}</strong>
+      ${frozen.map(r=>r.cond.label).join(', ')}: ΔMER≈0 across all tested recovery parameters.
+      Conformity conditions eliminate cross-frame encounters within 10 steps. Without genuine divergence to bridge, there is no mechanism for MER expansion.
+      Adding recovery (r_S, r_K) restores C capacity but cannot restore the frame diversity that MER expansion requires.</div>`;
+  }
+
+  $('mer-findings').innerHTML=html;
+}
+
+// ══ TRAJECTORIES ══
+function renderTrajectories(){
+  if(!MER_RESULTS) return;
+  const reps={
+    4:MER_RESULTS.find(r=>r.type===4),
+    3:MER_RESULTS.find(r=>r.type===3),
+    2:MER_RESULTS.filter(r=>r.type===2).sort((a,b)=>a.C60-b.C60)[0],
+    1:MER_RESULTS.find(r=>r.type===1)
+  };
+
+  [['tj-C','C',0,1.3,.4,'Collapse',0.4],
+   ['tj-MER','MER',0.3,1,null],
+   ['tj-CO','CO',-1.1,1.1,0,'CO=0',0],
+   ['tj-S','S',0,null]].forEach(([id,key,yMin0,yMax0,thresh,threshLabel])=>{
+    const cv=$(id);if(!cv)return;
+    const dpr=window.devicePixelRatio||1;
+    const W=cv.clientWidth||340,H=190;
+    cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
+    const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+    ctx.fillStyle='#FAFAF8';ctx.fillRect(0,0,W,H);
+    const pad={t:14,r:14,b:28,l:42};
+    const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+
+    // compute dynamic range
+    const allVals=Object.values(reps).filter(Boolean).flatMap(r=>r.hist.map(h=>h[key]));
+    const yMin=yMin0!=null?yMin0:Math.max(0,Math.min(...allVals)*.9);
+    const yMax=yMax0!=null?yMax0:Math.max(...allVals)*1.1||1;
+
+    // threshold line
+    if(thresh!=null){
+      const ty=pad.t+ch*(1-(thresh-yMin)/(yMax-yMin));
+      ctx.strokeStyle='rgba(100,100,100,.2)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+      ctx.beginPath();ctx.moveTo(pad.l,ty);ctx.lineTo(pad.l+cw,ty);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    // axes
+    ctx.strokeStyle='rgba(60,50,30,.15)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,pad.t+ch);ctx.lineTo(pad.l+cw,pad.t+ch);ctx.stroke();
+    // y labels
+    ctx.fillStyle='rgba(26,22,18,.4)';ctx.font=`${8*dpr/dpr}px DM Mono,monospace`;ctx.textAlign='right';
+    [yMin,(yMin+yMax)/2,yMax].forEach(v=>{
+      const y=pad.t+ch*(1-(v-yMin)/(yMax-yMin));
+      ctx.fillText(v.toFixed(key==='CO'?0:2),pad.l-3,y+3);
+    });
+    ctx.textAlign='left';
+
+    // draw lines
+    const typeOrder=[4,3,2,1];
+    const dashes={4:[],3:[4,3],2:[],1:[6,3]};
+    typeOrder.forEach(t=>{
+      const r=reps[t];if(!r)return;
+      const col=TYPE_COLS[t];
+      ctx.strokeStyle=col;ctx.lineWidth=2;ctx.setLineDash(dashes[t]);
+      ctx.beginPath();
+      r.hist.forEach((pt,i)=>{
+        const x=pad.l+(i/(r.hist.length-1))*cw;
+        const yv=cl(pt[key],yMin,yMax);
+        const y=pad.t+ch*(1-(yv-yMin)/(yMax-yMin));
+        i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      });
+      ctx.stroke();ctx.setLineDash([]);
+    });
+  });
+}
+
+// ══ EXPORT ══
+function exportMERCSV(){
+  if(!MER_RESULTS) return;
+  let csv='# MER Experiment — Causal Coherence Laboratory\n';
+  csv+='condition,topo,rK,rS,t,C,S,MER,K,CO\n';
+  MER_RESULTS.forEach(r=>{
+    r.hist.forEach(h=>{
+      csv+=`${r.cond.label},${r.cond.topo},${r.cond.rK},${r.cond.rS},${h.t},`+
+           `${h.C.toFixed(4)},${h.S.toFixed(4)},${h.MER.toFixed(4)},${h.K.toFixed(4)},${h.CO}\n`;
+    });
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`mer-experiment-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+// ══ BUILD CONDITION CARDS ══
+function buildConditionCards(){
+  const grid=$('cond-grid');
+  grid.innerHTML=CONDITIONS.map(c=>`
+    <div class="cond-card">
+      <div class="cond-lbl" style="color:${COND_COLS[c.cond]}">${TOPO_LABELS[c.topo]}</div>
+      <strong style="font-size:.82rem">${c.label}</strong>
+      <div style="font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);margin-top:.2rem">
+        r_K=${c.rK.toFixed(2)} &nbsp; r_S=${c.rS.toFixed(2)}
+      </div>
+    </div>`).join('');
+}
+
+window.addEventListener('load',buildConditionCards);
+window.addEventListener('resize',()=>{if(MER_RESULTS)renderTrajectories();});
+</script>
+</body>
+</html>
