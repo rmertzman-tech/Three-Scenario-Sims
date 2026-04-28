@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Network Rewiring — Causal Coherence Laboratory</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=JetBrains+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300&display=swap');
+:root{
+  --bg:#0a0c0f;--s1:#111318;--s2:#181b21;--paper:#1d2028;
+  --border:rgba(255,255,255,.08);--ink:#e8e4dc;--muted:rgba(232,228,220,.45);
+  --teal:#2dd4bf;--tl:rgba(45,212,191,.10);
+  --amber:#f59e0b;--al:rgba(245,158,11,.12);
+  --red:#ef4444;--rl:rgba(239,68,68,.12);
+  --violet:#a78bfa;--vl:rgba(167,139,250,.12);
+  --green:#4ade80;--gl:rgba(74,222,128,.12);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Serif 4',serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.hdr{padding:2.2rem 3rem 1.8rem;border-bottom:1px solid var(--border)}
+.hdr-badge{font-family:'JetBrains Mono',monospace;font-size:.57rem;letter-spacing:.2em;text-transform:uppercase;color:var(--violet);margin-bottom:.5rem;opacity:.8}
+.hdr h1{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:400;letter-spacing:-.02em;margin-bottom:.25rem}
+.hdr h1 em{font-style:italic;color:var(--violet)}
+.hdr p{font-size:.88rem;color:var(--muted);line-height:1.7;max-width:760px}
+.main{max-width:1200px;margin:0 auto;padding:1.75rem 2.5rem}
+.tabs{display:flex;gap:.2rem;margin-bottom:1.4rem;border-bottom:1px solid var(--border);padding-bottom:.5rem;flex-wrap:wrap}
+.tab{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;padding:.38rem .9rem;border-radius:.3rem .3rem 0 0;border:1px solid transparent;cursor:pointer;color:var(--muted);background:transparent;transition:all .15s}
+.tab:hover{color:var(--ink)}.tab.active{background:var(--violet);color:#000;border-color:var(--violet);font-weight:500}
+.pane{display:none}.pane.active{display:block;animation:fi .18s ease}
+@keyframes fi{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+.card{background:var(--paper);border:1px solid var(--border);border-radius:.55rem;padding:1.3rem;margin:.65rem 0}
+.ct{font-family:'JetBrains Mono',monospace;font-size:.57rem;color:var(--violet);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.7rem}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+@media(max-width:680px){.g2{grid-template-columns:1fr}}
+.fi{border-left:3px solid var(--violet);background:var(--vl);padding:.75rem .95rem;margin:.45rem 0;border-radius:0 .4rem .4rem 0;font-size:.86rem;line-height:1.7}
+.fi.am{border-color:var(--amber);background:var(--al)}.fi.rd{border-color:var(--red);background:var(--rl)}.fi.gn{border-color:var(--green);background:var(--gl)}.fi.tl{border-color:var(--teal);background:var(--tl)}
+.fi strong{font-family:'JetBrains Mono',monospace;font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--violet);display:block;margin-bottom:.2rem}
+.fi.am strong{color:var(--amber)}.fi.rd strong{color:var(--red)}.fi.gn strong{color:var(--green)}.fi.tl strong{color:var(--teal)}
+.pullq{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:1.1rem 2rem;margin:1rem 0;text-align:center}
+.pullq p{font-family:'Playfair Display',serif;font-size:1.08rem;font-style:italic;color:var(--violet);line-height:1.65}
+.tbl{width:100%;border-collapse:collapse;font-size:.79rem}
+.tbl th{font-family:'JetBrains Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.06em;padding:.42rem .6rem;border-bottom:1px solid var(--border);color:var(--muted);text-align:left}
+.tbl td{padding:.36rem .6rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:.78rem}
+.rb{display:inline-block;padding:.08rem .32rem;border-radius:.2rem;font-size:.63rem;font-family:'JetBrains Mono',monospace;font-weight:500}
+.rd-rb{background:var(--rl);color:var(--red)}.vi-rb{background:var(--vl);color:var(--violet)}.tl-rb{background:var(--tl);color:var(--teal)}
+.cw{background:var(--s2);border:1px solid var(--border);border-radius:.48rem;padding:.9rem;margin:.45rem 0}
+.cht{font-family:'JetBrains Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.3rem}
+.chd{font-size:.73rem;color:var(--muted);margin-bottom:.35rem;line-height:1.5}
+canvas{display:block;width:100%}
+.mechanism-diagram{background:var(--s1);border:1px solid var(--border);border-radius:.5rem;padding:1.2rem;margin:.5rem 0}
+.mechanism-row{display:flex;align-items:center;gap:.8rem;margin:.5rem 0;font-size:.84rem}
+.m-box{background:var(--s2);border:1px solid var(--border);border-radius:.35rem;padding:.45rem .75rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;min-width:120px;text-align:center}
+.m-arrow{color:var(--muted);font-size:1.1rem}
+.m-label{color:var(--muted);font-size:.78rem;line-height:1.4}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-badge">UCP V5.02 &middot; Causal Coherence Laboratory &middot; Network Rewiring Experiment &middot; April 2026</div>
+  <h1>When <em>Bridges</em> Are Not Enough</h1>
+  <p>84 runs across 7 bridge densities, 3 conditions, 4 seeds. The experiment expected to find a Bridge Density Threshold — a minimum fraction of bridge nodes that would unlock recovery. It found something more fundamental: no such threshold exists in low-clustering networks because the collapse mechanism is architectural, not relational. The constraint is topology, not connectivity.</p>
+</div>
+<div class="main">
+  <div class="tabs">
+    <button class="tab active" onclick="sw('findings')">Findings</button>
+    <button class="tab" onclick="sw('mechanism')">The Mechanism</button>
+    <button class="tab" onclick="sw('implications')">Implications</button>
+  </div>
+
+  <!-- FINDINGS -->
+  <div class="pane active" id="pane-findings">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin:.65rem 0">
+      <div style="background:var(--s1);border:1px solid var(--border);border-radius:.5rem;padding:1rem;text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.35rem">Bridge threshold found</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--red)">None</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem">0% to 50% bridge density — all collapse</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--border);border-radius:.5rem;padding:1rem;text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.35rem">Repair access at t=0</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--amber)">0.896</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem">Channels already present. Not the problem.</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--border);border-radius:.5rem;padding:1rem;text-align:center">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.57rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.35rem">Binding constraint</div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.7rem;color:var(--violet)">Topology</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem">Network architecture, not node count</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">The Negative Result That Is the Finding</div>
+      <p style="font-size:.88rem;line-height:1.75;color:rgba(232,228,220,.8);margin-bottom:.6rem">The experiment was designed to find the minimum bridge density required to unlock recovery in conformity-collapsed networks. It found no such threshold across 84 runs — 7 bridge densities from 0% to 50%, 3 conditions, 4 seeds each, tested at intervention timings from t=5 to t=25. At every bridge density and every timing, preloc-low-clustering and false-low-clustering conditions collapsed to C=0.000 at t=120.</p>
+      <div class="pullq"><p>"You cannot recover your way out of a network that has eliminated its own repair mechanism."</p></div>
+      <p style="font-size:.88rem;line-height:1.75;color:rgba(232,228,220,.8)">But the diagnostic analysis revealed something unexpected: repair access was not eliminated. At t=0, before any intervention, 89.6% of agents already had adequate repair channel access. Adding bridge nodes changed nothing because the channels were already present. The mechanism of collapse was different from what was hypothesized.</p>
+    </div>
+
+    <div class="card">
+      <div class="ct">What Actually Drives Collapse: The Diagnostic Finding</div>
+      <p style="font-size:.88rem;line-height:1.75;color:rgba(232,228,220,.8);margin-bottom:.65rem">The diagnostic trajectory at preloc-low-clustering shows the actual mechanism:</p>
+      <table class="tbl" style="margin-bottom:.75rem">
+        <tr><th>Step</th><th>C</th><th>D (divergence)</th><th>CL (contradiction load)</th><th>K_drift</th><th>Scar S</th><th>nat_frame</th></tr>
+        <tr><td class="mono">1</td><td class="mono">1.037</td><td class="mono">0.399</td><td class="mono">0.000</td><td class="mono">0.007</td><td class="mono">0.030</td><td class="mono" style="color:var(--teal)">1.000</td></tr>
+        <tr><td class="mono">10</td><td class="mono">1.238</td><td class="mono">0.399</td><td class="mono">0.000</td><td class="mono">0.088</td><td class="mono">0.300</td><td class="mono" style="color:var(--teal)">1.000</td></tr>
+        <tr><td class="mono">20</td><td class="mono">1.158</td><td class="mono">0.399</td><td class="mono">0.000</td><td class="mono">0.212</td><td class="mono">0.600</td><td class="mono" style="color:var(--teal)">1.000</td></tr>
+        <tr><td class="mono">30</td><td class="mono">0.819</td><td class="mono">0.399</td><td class="mono">0.000</td><td class="mono">0.372</td><td class="mono">0.899</td><td class="mono" style="color:var(--teal)">1.000</td></tr>
+        <tr><td class="mono">50</td><td class="mono">0.093</td><td class="mono">0.399</td><td class="mono">0.000</td><td class="mono">0.800</td><td class="mono">1.499</td><td class="mono" style="color:var(--teal)">1.000</td></tr>
+      </table>
+      <div class="fi vi"><strong>The Mechanism</strong>nat_frame = 1.000 throughout — all agents stay in their natural frames. Frame diversity is NOT eliminated. The collapse is driven purely by K_drift accumulating from alphaKS × S (scar-driven kernel erosion). The conformity pressure never reaches the forcing threshold (pressure ≈ 0.39 vs openness ≈ 0.55). What kills coherence is monotonic scar accumulation at low clustering, where repair encounters produce insufficient integration gain to offset baseline scar cost. Bridge nodes add channels. They cannot add integration quality.</div>
+    </div>
+
+    <div class="card">
+      <div class="ct">The Architectural Conclusion</div>
+      <div class="fi rd"><strong>No Bridge Density Threshold Exists</strong>For low-clustering collapse, no amount of cross-cluster bridge nodes can unlock recovery because: (1) repair channels are already present at 89.6% before any intervention; (2) the collapse mechanism is scar-driven K_drift, not repair access deficit; (3) at low clustering, even abundant repair channels produce low integration gain because encounters are intra-cluster (same frame, low divergence). The regime change test confirmed this: even switching to full repair condition at t=5 with r_S=0.25 and r_K=0.10 produces C=0.066 at t=120. The topology is the constraint.</div>
+      <div class="fi tl"><strong>What This Means for Policy</strong>Addressing conformity-collapse and false-narrative-collapse requires network-level restructuring — changing the clustering architecture itself — not adding repair nodes within the existing topology. This is a policy-level intervention requiring zoning, school district design, organizational structure, and public investment. It cannot be accomplished by any single organization or program operating within the existing network.</div>
+    </div>
+  </div>
+
+  <!-- MECHANISM -->
+  <div class="pane" id="pane-mechanism">
+    <div class="card">
+      <div class="ct">Two Hypotheses — One Correct</div>
+      <div class="g2">
+        <div>
+          <div class="fi rd"><strong>Hypothesis A — What We Expected</strong>Conformity collapse eliminates frame diversity → no divergence to bridge → repair encounters impossible → adding bridge nodes restores cross-frame encounters → recovery unlocked above minimum bridge density</div>
+        </div>
+        <div>
+          <div class="fi gn"><strong>Hypothesis B — What Actually Happens</strong>Conformity pressure never reaches forcing threshold at low clustering → agents keep natural frames → D=0.399 maintained → repair channels already abundant (89.6%) → collapse is scar-driven K_drift → bridges add nothing because channels are not the missing variable</div>
+        </div>
+      </div>
+      <div style="margin-top:.75rem">
+        <p style="font-size:.87rem;line-height:1.75;color:rgba(232,228,220,.8)">Hypothesis A was falsified by the diagnostic data. The expected mechanism — conformity eliminating frame diversity — does not operate in the simulated low-clustering environment because the conformity forcing threshold (0.65 × mean_influence ≈ 0.39) is below the mean agent openness (≈ 0.55). Agents resist forced frame adoption. But they still collapse — through a completely different mechanism than hypothesized.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">The Actual Collapse Pathway at Low Clustering</div>
+      <div class="mechanism-diagram">
+        <div class="mechanism-row">
+          <div class="m-box" style="border-color:var(--red);color:var(--red)">Low clustering</div>
+          <div class="m-arrow">→</div>
+          <div class="m-label">Cross-cluster repair encounters produce low integration gain (same-frame, low divergence encounters dominate)</div>
+        </div>
+        <div class="mechanism-row">
+          <div class="m-box" style="border-color:var(--amber);color:var(--amber)">Low integration gain</div>
+          <div class="m-arrow">→</div>
+          <div class="m-label">Scar accumulates faster than integration gain. rho×S term grows each step</div>
+        </div>
+        <div class="mechanism-row">
+          <div class="m-box" style="border-color:var(--amber);color:var(--amber)">Scar compounding</div>
+          <div class="m-arrow">→</div>
+          <div class="m-label">K_drift rises via alphaKS × S. K_drift term drains C faster each step</div>
+        </div>
+        <div class="mechanism-row">
+          <div class="m-box" style="border-color:var(--red);color:var(--red)">C → 0</div>
+          <div class="m-arrow">→</div>
+          <div class="m-label">Collapse. r_S and r_K recovery cannot activate fast enough to outpace K_drift at current topology</div>
+        </div>
+        <div class="mechanism-row">
+          <div class="m-box" style="border-color:var(--violet);color:var(--violet)">Bridge nodes added</div>
+          <div class="m-arrow">→</div>
+          <div class="m-label">Channels added. But channels were already present (89.6%). What was missing was integration gain — which requires genuine cross-cluster divergence at sufficient density. Bridge nodes alone cannot create that density.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">What Would Actually Help — The Minimum Intervention</div>
+      <p style="font-size:.87rem;line-height:1.75;color:rgba(232,228,220,.8);margin-bottom:.6rem">The diagnostic shows that the repair channel quality, not quantity, is insufficient. The minimum effective intervention is not a higher bridge density but a change to the network's cluster architecture — specifically, increasing the clusterStrength parameter from 0.35 (low) toward 0.60+ (medium). This creates denser local communities with enough cross-cluster contrast to produce genuine divergence in repair encounters, which generates the integration gain needed to offset scar accumulation.</p>
+      <p style="font-size:.87rem;line-height:1.75;color:rgba(232,228,220,.8)">In real institutional terms: you cannot build a bridge-building program within an already fragmented network and expect it to work. The communities that practitioners bridge must themselves be sufficiently dense and differentiated for bridge encounters to carry real scar-worth information exchange. A bridge between two nearly identical communities does almost nothing. A bridge between two genuinely different but internally coherent communities carries maximum integration value.</p>
+      <div class="fi am"><strong>The Political Implication</strong>This is why residential integration, school design, and organizational structure matter more than any programmatic diversity initiative. You are not creating encounters between people — you are creating the structural conditions under which encounters carry enough difference to generate the integration gain that offsets their cost. Without the topology, the program is asking people to pay the cost of bridge-building without providing the conditions that make it worthwhile.</div>
+    </div>
+  </div>
+
+  <!-- IMPLICATIONS -->
+  <div class="pane" id="pane-implications">
+    <div class="card">
+      <div class="ct">The Architectural vs. Programmatic Distinction</div>
+      <p style="font-size:.87rem;line-height:1.75;color:rgba(232,228,220,.8);margin-bottom:.6rem">The Network Rewiring experiment produces the clearest statement the research program has yet made about the limits of programmatic intervention. Bridge nodes are a programmatic intervention — an action one organization takes within an existing network. The experiment shows that programmatic interventions cannot substitute for architectural conditions that were never present.</p>
+      <table class="tbl">
+        <tr><th>Intervention Type</th><th>What It Addresses</th><th>What It Cannot Address</th><th>Example</th></tr>
+        <tr><td style="font-size:.78rem">BioBond (r_S, r_K)</td><td style="font-size:.78rem">Scar accumulation, kernel drift</td><td style="font-size:.78rem">Low integration gain from low-quality encounters</td><td style="font-size:.78rem">Clinical supervision, paid recovery time</td></tr>
+        <tr><td style="font-size:.78rem">Bridge nodes</td><td style="font-size:.78rem">Cross-cluster channel density</td><td style="font-size:.78rem">Integration gain when topology is already flat</td><td style="font-size:.78rem">DEI programs, community dialogue</td></tr>
+        <tr><td style="font-size:.78rem;color:var(--teal)">Topology redesign</td><td style="font-size:.78rem;color:var(--teal)">Clustering architecture, encounter quality</td><td style="font-size:.78rem;color:var(--teal)">—</td><td style="font-size:.78rem;color:var(--teal)">Zoning, school district design, housing policy</td></tr>
+      </table>
+      <div class="fi tl" style="margin-top:.75rem"><strong>The Hierarchy of Interventions</strong>Topology design is the foundational layer. BioBond recovery enables survival within a given topology. Bridge nodes add connection within a given topology. No amount of connection or recovery can substitute for the topology itself. The research program now has quantitative evidence for what political economists have argued qualitatively: structural reform precedes programmatic effectiveness.</div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Connection to the Broader Research Program</div>
+      <p style="font-size:.87rem;line-height:1.75;color:rgba(232,228,220,.8);margin-bottom:.6rem">This finding connects three strands of the project:</p>
+      <div class="fi vi"><strong>For the BioBond Financial Instrument</strong>The Hysteresis Recovery Tranche cannot rescue conformity-collapsed networks through recovery parameters alone. The Amendment No. 1 correctly identifies that preloc and false-narrative collapse requires a qualitatively different intervention. This experiment confirms: the required intervention is architectural (topology change), which maps to the Civic and Institutional phases of the Constructor Loop — specifically the Institutional phase (reducing conformity pressure) as a prerequisite for the Civic phase to be effective.</div>
+      <div class="fi am"><strong>For the Structural Support Essay</strong>The essay's Section 4.4 (Network Topology in Practice) correctly identifies mixed-income neighborhoods, genuinely heterogeneous schools, and union halls as topology-level structures. This experiment provides the quantitative grounding for that claim: topology is not a supplementary condition but the architectural prerequisite without which all other structural support provisions are insufficient.</div>
+      <div class="fi gn"><strong>For the Dark Coherence Simulation</strong>The Dark Coherence experiment shows that societal-scale collapse follows a similar architectural constraint: low-resilience societies (theta_crit=45) close the Sapolsky Gate even at baseline because their topology is already insufficient to generate the integration gain that offsets entropic load. This experiment provides the individual-scale mechanism for that population-scale finding.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(t){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+t).classList.add('active');
+  ['findings','mechanism','implications'].forEach((tab,i)=>{
+    if(tab===t) document.querySelectorAll('.tab')[i].classList.add('active');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
