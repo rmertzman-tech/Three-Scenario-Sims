@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>When the System Demands — EBB Final Week</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&display=swap');
+:root{
+  --bg:#0c0f13; --paper:#141820; --card:#1a2030;
+  --ink:#e8e3d8; --muted:rgba(232,227,216,.42);
+  --border:rgba(232,227,216,.1);
+  --teal:#2dd4bf; --tl:rgba(45,212,191,.12);
+  --red:#f87171; --rl:rgba(248,113,113,.10);
+  --amber:#fbbf24; --al:rgba(251,191,36,.12);
+  --dark-teal:#134e4a; --dim:#888;
+  --serif:'Source Serif 4',Georgia,serif;
+  --display:'Playfair Display',Georgia,serif;
+  --mono:'JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:var(--serif);background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.75}
+
+/* ── GRAIN TEXTURE ─────────────────────────────────────────────── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:.4;
+}
+
+/* ── PROGRESS ──────────────────────────────────────────────────── */
+.progress-rail{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.06);z-index:200}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--teal),#60a5fa);transition:width .5s ease}
+
+/* ── LAYOUT ────────────────────────────────────────────────────── */
+.shell{max-width:760px;margin:0 auto;padding:0 1.5rem}
+.pane{display:none;animation:rise .35s ease}
+.pane.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── HERO ──────────────────────────────────────────────────────── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:4rem 1.5rem 3rem;position:relative;overflow:hidden}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+}
+.hero-badge{font-family:var(--mono);font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin-bottom:1.2rem;opacity:.75}
+.hero-title{font-family:var(--display);font-size:clamp(2rem,6vw,3.8rem);line-height:1.08;color:var(--ink);margin-bottom:.6rem}
+.hero-title em{font-style:italic;color:var(--teal)}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:540px;margin-bottom:2.5rem;line-height:1.7}
+.hero-date{font-family:var(--mono);font-size:.62rem;color:var(--dim);letter-spacing:.1em;margin-bottom:.5rem}
+
+/* ── CARDS ─────────────────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:.6rem;padding:1.4rem 1.6rem;margin:.75rem 0}
+.card.teal{border-color:rgba(45,212,191,.25);background:rgba(45,212,191,.05)}
+.card.red{border-color:rgba(248,113,113,.25);background:rgba(248,113,113,.04)}
+.card.amber{border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.04)}
+
+.section-badge{font-family:var(--mono);font-size:.57rem;text-transform:uppercase;letter-spacing:.14em;margin-bottom:.65rem;display:flex;align-items:center;gap:.5rem}
+.section-badge::before{content:'';width:18px;height:1px;background:currentColor;opacity:.6}
+.section-badge.teal{color:var(--teal)}.section-badge.red{color:var(--red)}.section-badge.amber{color:var(--amber)}
+
+.prose{font-size:.95rem;line-height:1.8;color:rgba(232,227,216,.82)}
+.prose+.prose{margin-top:.9rem}
+
+.pullq{border-top:1px solid rgba(232,227,216,.12);border-bottom:1px solid rgba(232,227,216,.12);padding:1.2rem 1rem;margin:1.4rem 0;text-align:center}
+.pullq p{font-family:var(--display);font-size:1.05rem;font-style:italic;color:var(--teal);line-height:1.6}
+
+/* ── STAGE HEADER ──────────────────────────────────────────────── */
+.stage-hdr{padding:3rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2rem}
+.stage-num{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:.4rem}
+.stage-title{font-family:var(--display);font-size:2rem;color:var(--ink);line-height:1.15;margin-bottom:.35rem}
+.stage-sub{font-size:.93rem;color:var(--muted);font-style:italic}
+
+/* ── REFLECTION ────────────────────────────────────────────────── */
+.refl-prompt{font-size:.9rem;font-weight:500;color:var(--ink);margin-bottom:.5rem;display:block}
+.refl-hint{font-size:.8rem;color:var(--muted);margin-bottom:.75rem;line-height:1.6}
+textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:.4rem;
+  padding:.85rem 1rem;font-family:var(--serif);font-size:.93rem;
+  color:var(--ink);background:rgba(255,255,255,.04);
+  resize:vertical;line-height:1.7;transition:border-color .15s;min-height:100px;
+}
+textarea:focus{outline:none;border-color:var(--teal)}
+textarea::placeholder{color:var(--dim);font-style:italic}
+.char-ct{font-family:var(--mono);font-size:.6rem;color:var(--dim);text-align:right;margin-top:.25rem}
+
+/* ── COMPANION ─────────────────────────────────────────────────── */
+.companion-wrap{background:rgba(45,212,191,.06);border:1px solid rgba(45,212,191,.2);border-radius:.5rem;padding:1.1rem 1.3rem;margin:.9rem 0;display:none}
+.companion-wrap.show{display:block;animation:rise .25s ease}
+.companion-tag{font-family:var(--mono);font-size:.57rem;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);margin-bottom:.45rem;display:flex;align-items:center;gap:.4rem}
+.companion-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal)}
+.companion-body{font-size:.9rem;color:rgba(232,227,216,.82);line-height:1.78;white-space:pre-wrap}
+.thinking{color:var(--dim);font-style:italic;font-size:.85rem}
+
+/* ── EXAMINED PROMPTS ──────────────────────────────────────────── */
+.ex-item{border-left:3px solid var(--teal);padding:.7rem 1rem;margin:.5rem 0;background:rgba(45,212,191,.04);border-radius:0 .35rem .35rem 0}
+.ex-domain{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);margin-bottom:.3rem}
+.ex-text{font-size:.88rem;color:rgba(232,227,216,.8);line-height:1.65}
+
+.abcd-item{border-left:3px solid var(--amber);padding:.7rem 1rem;margin:.5rem 0;background:rgba(251,191,36,.04);border-radius:0 .35rem .35rem 0}
+.abcd-letter{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--amber);margin-bottom:.3rem}
+
+/* ── BUTTONS ───────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;padding:.55rem 1.3rem;border-radius:.3rem;border:none;cursor:pointer;transition:all .15s;font-weight:500}
+.btn-primary{background:var(--teal);color:#000}.btn-primary:hover{background:#14b8a6}
+.btn-primary:disabled{opacity:.4;cursor:default}
+.btn-ghost{background:transparent;color:var(--teal);border:1.5px solid var(--teal)}.btn-ghost:hover{background:var(--tl)}
+.btn-row{display:flex;gap:.65rem;margin-top:1.25rem;flex-wrap:wrap;align-items:center}
+
+/* ── NAV DOTS ──────────────────────────────────────────────────── */
+.nav-dots{display:flex;gap:.45rem;padding:.5rem 0}
+.ndot{width:7px;height:7px;border-radius:50%;background:var(--border);border:none;cursor:pointer;transition:all .2s;padding:0}
+.ndot.done{background:rgba(45,212,191,.45)}.ndot.active{background:var(--teal);transform:scale(1.4)}
+
+/* ── SYNTHESIS ─────────────────────────────────────────────────── */
+.synthesis-out{background:var(--card);border:2px solid var(--teal);border-radius:.6rem;padding:1.8rem 2rem;margin:1.2rem 0;display:none}
+.synthesis-out.show{display:block;animation:rise .3s ease}
+.syn-head{font-family:var(--display);font-size:1.35rem;color:var(--ink);margin-bottom:.25rem}
+.syn-sub{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);margin-bottom:1.2rem}
+.syn-section{margin-bottom:1.1rem;padding-bottom:1.1rem;border-bottom:1px solid var(--border)}
+.syn-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.syn-label{font-family:var(--mono);font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:var(--dim);margin-bottom:.35rem;display:block}
+.syn-content{font-size:.93rem;color:rgba(232,227,216,.82);line-height:1.78}
+
+.app-footer{text-align:center;padding:3rem 1.5rem;border-top:1px solid var(--border);margin-top:3rem;font-size:.75rem;color:var(--dim);font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<div class="progress-rail"><div class="progress-bar" id="pbar" style="width:0%"></div></div>
+
+<!-- ═══ INTRO ════════════════════════════════════════════════════ -->
+<div id="pane-intro" class="pane active">
+<div class="hero">
+<div class="shell">
+  <div class="hero-badge">Ethics Beyond Boundaries &middot; Final Week &middot; May 2026</div>
+  <div class="hero-date">September 26, 1983 &nbsp;&bull;&nbsp; October 27, 1962</div>
+  <h1 class="hero-title">When the System<br>Demands <em>Automatic</em><br>Response</h1>
+  <p class="hero-sub">Petrov, Arkhipov, and the agency you have been building all semester. A four-stage reflection activity for your final EBB session.</p>
+  <div class="card" style="max-width:520px;margin-bottom:2rem">
+    <div class="section-badge teal">Before you begin</div>
+    <p class="prose">This activity has four stages and takes 30–45 minutes. Each stage asks you to read, reflect, and optionally engage the Companion. At the end, you generate a closing statement to bring into The Examined App. There are no wrong answers — only more and less specific ones.</p>
+  </div>
+  <div class="nav-dots" id="intro-nav"></div>
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="goStage(1)">Begin &rarr;</button>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ═══ STAGE 1: PETROV ═══════════════════════════════════════════ -->
+<div id="pane-1" class="pane">
+<div class="shell" style="padding-top:1.5rem;padding-bottom:4rem">
+  <div class="nav-dots" id="s1-nav"></div>
+  <div class="stage-hdr">
+    <div class="stage-num">Stage 1 of 4</div>
+    <h2 class="stage-title">September 26, 1983</h2>
+    <p class="stage-sub">The night that almost ended everything</p>
+  </div>
+
+  <div class="card red">
+    <div class="section-badge red">The Moment</div>
+    <p class="prose">Stanislav Petrov was a lieutenant colonel in the Soviet Air Defence Forces. At 12:14 AM on September 26, 1983, his early-warning system registered five American intercontinental ballistic missiles in the air and headed toward the Soviet Union.</p>
+    <p class="prose">He had approximately four minutes to decide what to do. His duty was clear: report the launch. The system would then activate its response. His role was not to decide. It was to report.</p>
+    <p class="prose">Petrov reported it as a false alarm. He had no definitive evidence that it was. He had doubt, judgment, and the observation that five missiles seemed like too few for a first strike. He was right. A satellite malfunction had misread sunlight on clouds. There was no attack. The world did not end.</p>
+    <p class="prose" style="margin-top:.75rem">He was neither punished nor rewarded. He was quietly removed from his position and received a small pension. He died in 2017, largely unknown until after the Cold War.</p>
+  </div>
+
+  <div class="pullq"><p>"He was right. But he could not have known he was right. What he preserved &mdash; by refusing to act automatically &mdash; was the possibility of being wrong and surviving it."</p></div>
+
+  <div class="card" style="margin-bottom:1rem">
+    <div class="section-badge teal">The Framework</div>
+    <p class="prose"><strong style="color:var(--teal)">Cognitive Light Cone Violation:</strong> The full moral complexity of Petrov's decision &mdash; the possible end of both nuclear powers &mdash; could not be responsibly integrated in four minutes. The system was designed this way. Speed was a feature. Hesitation was treated as vulnerability. The institution had closed Petrov's Cognitive Light Cone below the threshold of genuine judgment.</p>
+    <p class="prose" style="margin-top:.75rem"><strong style="color:var(--teal)">The Sapolsky Gate:</strong> Under this level of pressure, the prefrontal cortex &mdash; the biological substrate of deliberation and future-bearing thought &mdash; loses coordination access. The agent continues to function, but automatically. This is not a character failure. It is a thermodynamic response to overwhelm.</p>
+    <p class="prose" style="margin-top:.75rem">What Petrov preserved was the minimum unit of integrative agency: the question <em>what if the information is wrong?</em> He did not need certainty. He needed only enough structural independence to ask it and enough cognitive access to act on it.</p>
+  </div>
+
+  <div style="margin-top:1.5rem">
+    <span class="refl-prompt">Your reflection</span>
+    <p class="refl-hint">When was the last time a system you were inside &mdash; a workplace, a school, a family &mdash; demanded automatic response from you, faster than you could fully think it through? What did you do? What did it cost you to not act automatically, or to act automatically when you wished you hadn't?</p>
+    <textarea id="s1-text" placeholder="Write your reflection here..." onkeyup="cc(this,'s1-ct')" maxlength="1200"></textarea>
+    <div class="char-ct" id="s1-ct">0 / 1200</div>
+  </div>
+
+  <div class="companion-wrap" id="s1-comp">
+    <div class="companion-tag">Companion Response</div>
+    <div class="companion-body" id="s1-body"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="ask(1)">Ask the Companion &rarr;</button>
+    <button class="btn btn-primary" onclick="goStage(2)">Continue to Stage 2 &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ STAGE 2: ARKHIPOV ════════════════════════════════════════ -->
+<div id="pane-2" class="pane">
+<div class="shell" style="padding-top:1.5rem;padding-bottom:4rem">
+  <div class="nav-dots" id="s2-nav"></div>
+  <div class="stage-hdr">
+    <div class="stage-num">Stage 2 of 4</div>
+    <h2 class="stage-title">October 27, 1962</h2>
+    <p class="stage-sub">The submarine that almost launched</p>
+  </div>
+
+  <div class="card red">
+    <div class="section-badge red">The Moment</div>
+    <p class="prose">Twenty-one years earlier, during the Cuban Missile Crisis, Soviet submarine B-59 was running submerged in the Caribbean, out of radio contact for days. The crew did not know whether World War III had already begun.</p>
+    <p class="prose">American destroyers were dropping depth charges around them &mdash; signals to surface, not intended to destroy. The crew heard the explosions and had every reason to believe they were under attack. The submarine carried nuclear torpedoes. The rules allowed their use. The captain and political officer agreed: launch.</p>
+    <p class="prose">The third required authorization was Vasili Arkhipov. He was on the submarine by bureaucratic accident. The temperature inside was 140 degrees Fahrenheit. The crew was exhausted, oxygen-depleted. Everyone else agreed with the opposite position.</p>
+    <p class="prose" style="margin-top:.75rem">Arkhipov refused. The submarine surfaced. There was no nuclear launch.</p>
+    <p class="prose" style="margin-top:.75rem;font-style:italic;color:var(--muted)">Robert McNamara later said: "We came that close to nuclear war. Rational individuals came that close to total destruction of their societies. And well-trained military officers in a submarine, operating under orders, nearly brought it about."</p>
+  </div>
+
+  <div class="pullq"><p>"Arkhipov did not have better information than Savitsky. He had the same exploding ocean around him. What he preserved was the possibility that the information was wrong."</p></div>
+
+  <div class="card teal">
+    <div class="section-badge teal">Constructor Basin Escape</div>
+    <p class="prose">The nuclear command system was an institution operating in a specific attractor basin &mdash; a stable configuration designed to produce one kind of output: automatic launch-on-warning response. Agents within the basin were not supposed to escape it. The basin itself was the point.</p>
+    <p class="prose" style="margin-top:.75rem">Both Petrov and Arkhipov performed what the Goal Assembly framework calls <em>Constructor Basin Escape</em>: a local intervention that allows a system to escape its basin without catastrophic transition. They did not destroy the system. They held a question open that the system was designed to close. They prevented a <em>dark morphism</em> &mdash; a transformation that consumes the source &mdash; and preserved instead a weak but valid pathway to recovery.</p>
+    <p class="prose" style="margin-top:.75rem">They refused to become purely mechanical components. In the moment when the institution demanded they function as automatic relays, they maintained the residue of genuine agency.</p>
+  </div>
+
+  <div style="margin-top:1.5rem">
+    <span class="refl-prompt">Comparing the two cases</span>
+    <p class="refl-hint">Petrov was alone in his decision. Arkhipov was in a room where everyone else disagreed with him, in conditions of physical extremity. Which feels harder to you, and why? Have you ever held a position alone in a room where everyone else agreed on the opposite? What did that cost?</p>
+    <textarea id="s2-text" placeholder="Write your reflection here..." onkeyup="cc(this,'s2-ct')" maxlength="1200"></textarea>
+    <div class="char-ct" id="s2-ct">0 / 1200</div>
+  </div>
+
+  <div class="companion-wrap" id="s2-comp">
+    <div class="companion-tag">Companion Response</div>
+    <div class="companion-body" id="s2-body"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="ask(2)">Ask the Companion &rarr;</button>
+    <button class="btn btn-primary" onclick="goStage(3)">Continue to Stage 3 &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ STAGE 3: YOUR INSTITUTION ════════════════════════════════ -->
+<div id="pane-3" class="pane">
+<div class="shell" style="padding-top:1.5rem;padding-bottom:4rem">
+  <div class="nav-dots" id="s3-nav"></div>
+  <div class="stage-hdr">
+    <div class="stage-num">Stage 3 of 4</div>
+    <h2 class="stage-title">Your Institution</h2>
+    <p class="stage-sub">Where does this pattern live in your life right now?</p>
+  </div>
+
+  <div class="card">
+    <div class="section-badge teal">Scaling Down</div>
+    <p class="prose">Your life will not involve nuclear submarines or early warning satellite systems. But the structural pattern &mdash; Cognitive Light Cone Violation, Sapolsky Gate closure, institutional basin demanding automatic response &mdash; is not unique to Cold War military systems.</p>
+    <p class="prose" style="margin-top:.75rem">The nursing home worker who has three residents to care for in the time the schedule allocates for one. The prison employee enforcing a rule they know is causing harm. The student in a class where institutional pressure has narrowed their window below the threshold of genuine learning. These are structurally the same problem.</p>
+    <p class="prose" style="margin-top:.75rem">The time window is shorter than the moral complexity requires. The institution produces automatic response. The Sapolsky Gate is under pressure. And the question is always the same: can the agent hold the question open for one more moment?</p>
+  </div>
+
+  <div style="margin:1.5rem 0">
+    <span class="refl-prompt">Name your institution</span>
+    <p class="refl-hint">Name one institution you are currently inside &mdash; a workplace, a family system, a school, a community &mdash; where you face a version of this pressure. You don't have to use its real name. Describe what automatic response looks like there. What does the basin demand?</p>
+    <textarea id="s3-inst" placeholder="Describe the institution and its demands..." onkeyup="cc(this,'s3-inst-ct')" maxlength="800" style="min-height:80px"></textarea>
+    <div class="char-ct" id="s3-inst-ct">0 / 800</div>
+  </div>
+
+  <div style="margin:1.5rem 0">
+    <span class="refl-prompt">What is your current recovery access?</span>
+    <p class="refl-hint">Petrov and Arkhipov both needed some structural independence from the system to hold their refusal. What provides that for you? Who or what creates the conditions under which you can still ask the question when your institution is demanding you stop?</p>
+    <textarea id="s3-rec" placeholder="Who or what provides your recovery access..." onkeyup="cc(this,'s3-rec-ct')" maxlength="800" style="min-height:80px"></textarea>
+    <div class="char-ct" id="s3-rec-ct">0 / 800</div>
+  </div>
+
+  <div style="margin:1.5rem 0">
+    <span class="refl-prompt">Your Petrov moment</span>
+    <p class="refl-hint">Describe one specific moment &mdash; this semester or in the recent past &mdash; when you held a question open that your institution was demanding you close. Or: describe a moment when you wish you had. What was the cost either way?</p>
+    <textarea id="s3-moment" placeholder="Describe the moment..." onkeyup="cc(this,'s3-mom-ct')" maxlength="1000"></textarea>
+    <div class="char-ct" id="s3-mom-ct">0 / 1000</div>
+  </div>
+
+  <div class="companion-wrap" id="s3-comp">
+    <div class="companion-tag">Companion Response</div>
+    <div class="companion-body" id="s3-body"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="ask(3)">Ask the Companion &rarr;</button>
+    <button class="btn btn-primary" onclick="goStage(4)">Continue to Stage 4 &rarr;</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ STAGE 4: THE EXAMINED APP ════════════════════════════════ -->
+<div id="pane-4" class="pane">
+<div class="shell" style="padding-top:1.5rem;padding-bottom:4rem">
+  <div class="nav-dots" id="s4-nav"></div>
+  <div class="stage-hdr">
+    <div class="stage-num">Stage 4 of 4</div>
+    <h2 class="stage-title">Bringing It to The Examined App</h2>
+    <p class="stage-sub">Your final check-in and ABCD reflection prompts</p>
+  </div>
+
+  <div class="card teal" style="margin-bottom:1.5rem">
+    <div class="section-badge teal">The Inheritance</div>
+    <p class="prose">Petrov died without fanfare. Arkhipov received no medal. The world they preserved was not grateful in any organized way. The people who benefit from their refusal to act automatically did not know them and never will.</p>
+    <p class="prose" style="margin-top:.75rem">This is the nature of what the framework calls an AMC contribution. It is not about recognition. It is about the conditions you leave behind. The ABCD practice, the coherence check-ins, the Examined App sessions, the Letter to Future Self &mdash; these were not exercises. They were infrastructure. The course has been building the structural conditions under which your Sapolsky Gate stays open when the pressure is highest.</p>
+    <p class="prose" style="margin-top:.75rem;font-style:italic">Take them with you.</p>
+  </div>
+
+  <h3 style="font-family:var(--display);font-size:1.15rem;color:var(--teal);margin-bottom:1rem">Coherence Check-In: Read Each Domain Through the Petrov Lens</h3>
+
+  <div class="ex-item">
+    <div class="ex-domain">Domain 1 &mdash; Physical Energy</div>
+    <div class="ex-text">Petrov was at 12:14 AM. Arkhipov was in 140-degree heat. Their physical state was not incidental. How is your physical state right now affecting your capacity to hold questions open? Be honest &mdash; not aspirational.</div>
+  </div>
+  <div class="ex-item">
+    <div class="ex-domain">Domain 2 &mdash; Temporal Horizon</div>
+    <div class="ex-text">Petrov had four minutes. How long is your current decision horizon? Are you operating week to week, or can you still see further? A collapsed temporal horizon is a Cognitive Light Cone Violation at personal scale.</div>
+  </div>
+  <div class="ex-item">
+    <div class="ex-domain">Domain 3 &mdash; Relational Coherence</div>
+    <div class="ex-text">Arkhipov held his position in a room where everyone disagreed with him. What relationships in your life support your capacity to hold a different position from the people around you? Name one person specifically.</div>
+  </div>
+  <div class="ex-item">
+    <div class="ex-domain">Domain 4 &mdash; Structural Clarity</div>
+    <div class="ex-text">Both men had very clear rules. Their problem was not confusion. It was that the rules demanded something that would destroy recovery capacity. What structural demands in your life are currently narrowing your decision window?</div>
+  </div>
+  <div class="ex-item">
+    <div class="ex-domain">Domain 5 &mdash; Identity Integrity</div>
+    <div class="ex-text">Petrov's duty was to report. He had to act against his institutional identity to preserve something larger. Has there been a moment this semester where your role demanded something your deeper values resisted? What happened?</div>
+  </div>
+  <div class="ex-item" style="border-color:var(--amber);background:rgba(251,191,36,.04)">
+    <div class="ex-domain" style="color:var(--amber)">Domain 6 &mdash; Recovery Access &nbsp;&#x2605;</div>
+    <div class="ex-text">This is the most important domain for today. Both men preserved recovery capacity &mdash; the possibility of being wrong and surviving it. What is your current recovery access? What or who provides the conditions under which you can metabolize the cost of holding your position?</div>
+  </div>
+
+  <h3 style="font-family:var(--display);font-size:1.15rem;color:var(--amber);margin:1.75rem 0 1rem">ABCD Reflection Prompts for Your Final Session</h3>
+
+  <div class="abcd-item">
+    <div class="abcd-letter">A &mdash; Agency</div>
+    <div class="ex-text">Name one specific situation right now where you are functioning as a relay &mdash; passing through the system's demand without genuinely processing it. What would it look like to hold the question open for one more moment?</div>
+  </div>
+  <div class="abcd-item">
+    <div class="abcd-letter">B &mdash; Beauty / Awe</div>
+    <div class="ex-text">Both Petrov and Arkhipov experienced something close to awe &mdash; the recognition that the stakes were larger than their individual role. What has produced that recognition for you this semester? When did the scale of what we were studying become real?</div>
+  </div>
+  <div class="abcd-item">
+    <div class="abcd-letter">C &mdash; Context / Contingency</div>
+    <div class="ex-text">Neither Petrov nor Arkhipov planned to be in the position they were in. Context put them there. What context has put you in your current position, and what contingencies could change it?</div>
+  </div>
+  <div class="abcd-item">
+    <div class="abcd-letter">D &mdash; Dynamics</div>
+    <div class="ex-text">The nuclear command systems of 1962 and 1983 are still evolving. What is the trajectory of the institutional systems you are inside? Are they becoming more or less likely to produce Cognitive Light Cone Violations for the people within them?</div>
+  </div>
+
+  <div style="margin-top:2rem">
+    <span class="refl-prompt">One thing you are taking from this course</span>
+    <p class="refl-hint">Not a concept. Not a framework. One specific structural capacity, relationship, or practice you are taking from this semester that increases your likelihood of holding the question open when the system demands you stop.</p>
+    <textarea id="s4-text" placeholder="What you are taking with you..." onkeyup="cc(this,'s4-ct')" maxlength="1000"></textarea>
+    <div class="char-ct" id="s4-ct">0 / 1000</div>
+  </div>
+
+  <div class="companion-wrap" id="s4-comp">
+    <div class="companion-tag">Companion Response</div>
+    <div class="companion-body" id="s4-body"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="ask(4)">Ask the Companion &rarr;</button>
+    <button class="btn btn-primary" onclick="generate()">Generate My Closing Statement &rarr;</button>
+  </div>
+
+  <!-- SYNTHESIS -->
+  <div class="synthesis-out" id="syn-out">
+    <div class="syn-head">Closing Statement</div>
+    <div class="syn-sub" id="syn-date">EBB Final Week &bull; May 2026</div>
+
+    <div class="syn-section">
+      <span class="syn-label">Automatic Response & My Petrov Moment</span>
+      <div class="syn-content" id="syn-s1"></div>
+    </div>
+    <div class="syn-section">
+      <span class="syn-label">Holding the Position Alone</span>
+      <div class="syn-content" id="syn-s2"></div>
+    </div>
+    <div class="syn-section">
+      <span class="syn-label">My Institution & Recovery Access</span>
+      <div class="syn-content" id="syn-s3"></div>
+    </div>
+    <div class="syn-section">
+      <span class="syn-label">What I Am Taking With Me</span>
+      <div class="syn-content" id="syn-s4"></div>
+    </div>
+    <div class="syn-section" id="syn-comp-section" style="display:none">
+      <span class="syn-label">Companion Notes</span>
+      <div class="syn-content" id="syn-comp-notes"></div>
+    </div>
+  </div>
+
+  <div class="btn-row" id="syn-actions" style="display:none">
+    <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+    <button class="btn btn-ghost" onclick="copySyn()">Copy to Clipboard</button>
+  </div>
+</div>
+</div>
+
+<div class="app-footer">
+  Ethics Beyond Boundaries &bull; Saint Petersburg College &bull; Final Week 2026<br>
+  When the System Demands Automatic Response: Petrov, Arkhipov, and the Sapolsky Gate<br>
+  Your responses are processed only by the course Companion. They are not stored.
+</div>
+
+<script>
+const ENDPOINT = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
+const state = { stage:0, responses:{}, companionNotes:{} };
+
+function $(id){ return document.getElementById(id); }
+function val(id){ return $(id)?$(id).value.trim():''; }
+function cc(el,cid){ const sp=$(cid); if(sp) sp.textContent=el.value.length+' / '+el.getAttribute('maxlength'); }
+
+function buildNav(containerId, total, current){
+  const el=$(containerId); if(!el)return;
+  el.innerHTML='';
+  for(let i=0;i<=total;i++){
+    const d=document.createElement('button');
+    d.className='ndot'+(i===current?' active':i<current?' done':'');
+    d.title=i===0?'Intro':'Stage '+i;
+    d.onclick=()=>{ if(i===0)goIntro(); else goStage(i); };
+    el.appendChild(d);
+  }
+}
+
+function goIntro(){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  $('pane-intro').classList.add('active');
+  $('pbar').style.width='0%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goStage(n){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  const pane=$('pane-'+n); if(pane) pane.classList.add('active');
+  state.stage=n;
+  $('pbar').style.width=(n/4*100)+'%';
+  ['s1','s2','s3','s4'].forEach((_,i)=>{
+    buildNav('s'+(i+1)+'-nav',4,n);
+  });
+  buildNav('intro-nav',4,0);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const SYSTEM = `You are the EBB Companion in the final week of Ethics Beyond Boundaries at Saint Petersburg College. The activity is about Stanislav Petrov, Vasili Arkhipov, and the structural concepts of Cognitive Light Cone Violation, Sapolsky Gate closure, and Constructor Basin Escape.
+
+Your role: respond warmly and precisely to what the student actually wrote. Do not summarize the course concepts back at them — they have read the material. Engage with their specific experience. Ask one question that helps them go one step deeper into what they noticed. Keep responses to 150–200 words. No jargon without explanation. Match their register.`;
+
+const STAGE_INSTR = {
+  1:`This is Stage 1: The Petrov case. The student reflected on when their institution demanded automatic response faster than they could fully think it through. Engage with their specific experience. What did their example reveal about the architectural dimension of the demand (not just the interpersonal or emotional)? Ask one question about what structural condition made their response possible or impossible.`,
+  2:`This is Stage 2: The Arkhipov case. The student compared the two cases and reflected on holding a position alone against group pressure. Engage with the specific moment or comparison they described. Ask one question about what relational or structural support made holding that position possible, or what was absent when they couldn't.`,
+  3:`This is Stage 3: The student's own institution. They named an institution, described their recovery access, and identified a personal Petrov moment. This is the most personal stage. Recovery Mode: do not probe for more difficult disclosure. Affirm the structural clarity of what they identified. Ask one question about the recovery access they named — specifically what makes it reliable or fragile.`,
+  4:`This is Stage 4: What they are taking from the course. The student named one structural capacity, relationship, or practice they are taking forward. This is the closing stage. Affirm what is specific and structural about what they named. Ask one final question: what is the one condition that would most threaten this capacity, and how would they recognize it early?`
+};
+
+async function ask(stage){
+  const texts = {
+    1: val('s1-text'),
+    2: val('s2-text'),
+    3: [val('s3-inst'), val('s3-rec'), val('s3-moment')].filter(Boolean).join('\n\n'),
+    4: val('s4-text')
+  };
+  const content = texts[stage];
+  const comp = $('s'+stage+'-comp');
+  const body = $('s'+stage+'-body');
+
+  if(!content || content.length < 30){
+    body.innerHTML='<span class="thinking">Please write a few sentences before asking the Companion to respond.</span>';
+    comp.classList.add('show');
+    return;
+  }
+
+  body.innerHTML='<span class="thinking">Reading what you wrote...</span>';
+  comp.classList.add('show');
+
+  try {
+    const res = await fetch(ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        system: SYSTEM + '\n\n' + STAGE_INSTR[stage],
+        messages:[{role:'user',content}]
+      })
+    });
+    const data = await res.json();
+    const reply = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('')
+      || data.response || 'The Companion was unable to respond. Please try again.';
+    body.textContent = reply;
+    state.companionNotes[stage] = reply;
+  } catch(e){
+    body.innerHTML='<span class="thinking">Could not reach the course backend. Continue to the next stage — your written responses are complete.</span>';
+  }
+}
+
+function generate(){
+  const s1 = val('s1-text');
+  const s2 = val('s2-text');
+  const s3 = [val('s3-inst'), val('s3-rec'), val('s3-moment')].filter(Boolean).join('\n\n');
+  const s4 = val('s4-text');
+
+  const hasAny = [s1,s2,s3,s4].some(s=>s.length>20);
+
+  $('syn-s1').textContent = s1 || '[No response recorded]';
+  $('syn-s2').textContent = s2 || '[No response recorded]';
+  $('syn-s3').textContent = s3 || '[No response recorded]';
+  $('syn-s4').textContent = s4 || '[No response recorded]';
+  $('syn-date').textContent = 'EBB Final Week \u00b7 ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  // Companion notes
+  const notes = Object.entries(state.companionNotes)
+    .filter(([,v])=>v&&v.length>10)
+    .map(([k,v])=>'Stage '+k+': '+v).join('\n\n');
+  if(notes){
+    $('syn-comp-notes').textContent = notes;
+    $('syn-comp-section').style.display='block';
+  } else {
+    $('syn-comp-section').style.display='none';
+  }
+
+  $('syn-out').classList.add('show');
+  $('syn-actions').style.display='flex';
+  setTimeout(()=>$('syn-out').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function copySyn(){
+  const el = $('syn-out');
+  const sections = el.querySelectorAll('.syn-section');
+  let text = 'EBB CLOSING STATEMENT\nWhen the System Demands Automatic Response\n';
+  text += $('syn-date').textContent + '\n\n';
+  sections.forEach(s=>{
+    const label = s.querySelector('.syn-label')?.textContent||'';
+    const content = s.querySelector('.syn-content')?.textContent||'';
+    if(content.trim()&&content!=='[No response recorded]')
+      text += label.toUpperCase()+'\n'+content+'\n\n';
+  });
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.querySelector('[onclick="copySyn()"]');
+    if(btn){btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy to Clipboard',2000);}
+  });
+}
+
+// Init
+buildNav('intro-nav',4,0);
+</script>
+
+<style>
+@media print {
+  .progress-rail,.nav-dots,.btn-row,.app-footer,
+  .stage-hdr,.companion-wrap,.card:not(.teal),
+  .pullq,.refl-prompt,.refl-hint,textarea,.char-ct,
+  .hero,.pane:not(.active),.ex-item,.abcd-item,
+  h3[style*="teal"],h3[style*="amber"] { display:none !important; }
+  .synthesis-out { border:1px solid #ccc !important; display:block !important; }
+  body { background:white; color:#000; }
+  .syn-content,.syn-label { color:#000 !important; }
+}
+</style>
+
+</body>
+</html>
