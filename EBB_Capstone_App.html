@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Constructors All the Way Down — EBB Capstone</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
+
+:root {
+  --bg: #f4f0e8;
+  --paper: #faf8f3;
+  --ink: #1a1610;
+  --ink2: #3d3728;
+  --muted: rgba(26,22,16,.45);
+  --border: rgba(26,22,16,.12);
+  --teal: #0d5e57;
+  --teal-l: rgba(13,94,87,.1);
+  --teal-ll: rgba(13,94,87,.05);
+  --amber: #8a3c0c;
+  --amber-l: rgba(138,60,12,.1);
+  --red: #7f1d1d;
+  --red-l: rgba(127,29,29,.08);
+  --slate: #334155;
+  --green: #14532d;
+  --green-l: rgba(20,83,45,.1);
+  --gold: #b45309;
+  --serif: 'Source Serif 4', Georgia, serif;
+  --display: 'Playfair Display', Georgia, serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--serif);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.7;
+}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────────────────────────── */
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.2; }
+.mono { font-family: var(--mono); }
+
+/* ── LAYOUT ─────────────────────────────────────────────────────────────── */
+.shell {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ── PROGRESS BAR ───────────────────────────────────────────────────────── */
+.progress-strip {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--border);
+  z-index: 100;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--teal);
+  transition: width .4s ease;
+}
+
+/* ── STAGE HEADER ───────────────────────────────────────────────────────── */
+.stage-header {
+  padding: 3rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+}
+.stage-badge {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: .5rem;
+  display: block;
+}
+.stage-title {
+  font-size: 2rem;
+  color: var(--ink);
+  margin-bottom: .4rem;
+}
+.stage-subtitle {
+  font-size: 1rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── INTRO SCREEN ───────────────────────────────────────────────────────── */
+.intro-screen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+}
+.intro-logo {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1.2rem;
+  opacity: .8;
+}
+.intro-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: .6rem;
+}
+.intro-title em { font-style: italic; color: var(--teal); }
+.intro-sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 540px;
+  margin-bottom: 2.5rem;
+  line-height: 1.7;
+}
+.intro-note {
+  background: var(--teal-ll);
+  border: 1px solid rgba(13,94,87,.2);
+  border-radius: .5rem;
+  padding: 1rem 1.2rem;
+  font-size: .88rem;
+  color: var(--ink2);
+  line-height: 1.65;
+  max-width: 520px;
+  margin-bottom: 2rem;
+}
+
+/* ── PRF SETUP ──────────────────────────────────────────────────────────── */
+.prf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  margin: 1rem 0;
+}
+@media(max-width:500px){.prf-grid{grid-template-columns:1fr}}
+.prf-option {
+  border: 1.5px solid var(--border);
+  border-radius: .45rem;
+  padding: .75rem 1rem;
+  cursor: pointer;
+  font-size: .9rem;
+  background: var(--paper);
+  transition: all .15s;
+  color: var(--ink2);
+}
+.prf-option:hover { border-color: var(--teal); }
+.prf-option.selected {
+  border-color: var(--teal);
+  background: var(--teal-l);
+  color: var(--teal);
+  font-weight: 500;
+}
+.prf-label {
+  font-family: var(--mono);
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--teal);
+  margin-bottom: .75rem;
+  display: block;
+}
+
+/* ── STAGE PANES ────────────────────────────────────────────────────────── */
+.stage-pane { display: none; }
+.stage-pane.active { display: block; animation: fadeUp .3s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── CONCEPT BLOCK ──────────────────────────────────────────────────────── */
+.concept-block {
+  background: var(--paper);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  padding: 1.3rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.concept-block .cb-label {
+  font-family: var(--mono);
+  font-size: .58rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--teal);
+  margin-bottom: .6rem;
+  display: block;
+}
+.concept-block p {
+  font-size: .92rem;
+  color: var(--ink2);
+  line-height: 1.75;
+  margin-bottom: .75rem;
+}
+.concept-block p:last-child { margin-bottom: 0; }
+
+/* ── QUOTE BLOCK ────────────────────────────────────────────────────────── */
+.pullq {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 1.5rem;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+.pullq p {
+  font-family: var(--display);
+  font-size: 1.1rem;
+  font-style: italic;
+  color: var(--teal);
+  line-height: 1.6;
+}
+
+/* ── PROMPT AREA ────────────────────────────────────────────────────────── */
+.prompt-section {
+  margin: 1.5rem 0;
+}
+.prompt-label {
+  font-size: .88rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: .5rem;
+  display: block;
+}
+.prompt-sub {
+  font-size: .82rem;
+  color: var(--muted);
+  margin-bottom: .75rem;
+  line-height: 1.6;
+}
+textarea {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: .45rem;
+  padding: .9rem 1rem;
+  font-family: var(--serif);
+  font-size: .93rem;
+  color: var(--ink);
+  background: var(--paper);
+  resize: vertical;
+  line-height: 1.7;
+  transition: border-color .15s;
+  min-height: 110px;
+}
+textarea:focus { outline: none; border-color: var(--teal); }
+textarea::placeholder { color: var(--muted); font-style: italic; }
+
+/* ── COMPANION RESPONSE ─────────────────────────────────────────────────── */
+.companion-area {
+  background: rgba(13,94,87,.06);
+  border: 1px solid rgba(13,94,87,.2);
+  border-radius: .5rem;
+  padding: 1.1rem 1.3rem;
+  margin: 1rem 0;
+  display: none;
+}
+.companion-area.visible { display: block; animation: fadeUp .25s ease; }
+.companion-badge {
+  font-family: var(--mono);
+  font-size: .58rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--teal);
+  margin-bottom: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+.companion-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: inline-block;
+}
+.companion-text {
+  font-size: .9rem;
+  color: var(--ink2);
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+.companion-text .thinking {
+  color: var(--muted);
+  font-style: italic;
+  font-size: .85rem;
+}
+
+/* ── BUTTONS ────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding: .6rem 1.4rem;
+  border-radius: .35rem;
+  border: none;
+  cursor: pointer;
+  transition: all .15s;
+  font-weight: 500;
+}
+.btn-primary {
+  background: var(--teal);
+  color: #fff;
+}
+.btn-primary:hover { background: #0a4d47; }
+.btn-primary:disabled { opacity: .45; cursor: default; }
+.btn-ghost {
+  background: transparent;
+  color: var(--teal);
+  border: 1.5px solid var(--teal);
+}
+.btn-ghost:hover { background: var(--teal-l); }
+.btn-row {
+  display: flex;
+  gap: .75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* ── STAGE NAV ──────────────────────────────────────────────────────────── */
+.stage-nav {
+  display: flex;
+  gap: .35rem;
+  margin: 1.5rem 0;
+  flex-wrap: wrap;
+}
+.nav-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  padding: 0;
+}
+.nav-dot.active { background: var(--teal); transform: scale(1.3); }
+.nav-dot.done { background: rgba(13,94,87,.4); }
+
+/* ── ACP AUDIT ──────────────────────────────────────────────────────────── */
+.acp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .75rem;
+  margin: 1rem 0;
+}
+.acp-item {
+  border: 1.5px solid var(--border);
+  border-radius: .45rem;
+  padding: 1rem;
+  background: var(--paper);
+}
+.acp-item-label {
+  font-family: var(--mono);
+  font-size: .6rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--amber);
+  margin-bottom: .4rem;
+  display: block;
+}
+.acp-item p { font-size: .85rem; color: var(--muted); margin-bottom: .5rem; }
+.acp-item textarea { min-height: 70px; }
+
+/* ── EXTRACTION SELECTOR ────────────────────────────────────────────────── */
+.extraction-opts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .6rem;
+  margin: .75rem 0;
+}
+.ext-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: .85rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: .45rem;
+  cursor: pointer;
+  background: var(--paper);
+  transition: all .15s;
+}
+.ext-opt:hover { border-color: rgba(13,94,87,.3); }
+.ext-opt.selected-g { border-color: var(--teal); background: var(--teal-l); }
+.ext-opt.selected-n { border-color: var(--slate); background: rgba(51,65,85,.06); }
+.ext-opt.selected-c { border-color: var(--red); background: var(--red-l); }
+.ext-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  margin-top: 3px;
+  transition: all .15s;
+}
+.selected-g .ext-dot { background: var(--teal); border-color: var(--teal); }
+.selected-n .ext-dot { background: var(--slate); border-color: var(--slate); }
+.selected-c .ext-dot { background: var(--red); border-color: var(--red); }
+.ext-content .ext-title { font-weight: 500; font-size: .9rem; margin-bottom: .2rem; }
+.ext-content .ext-desc { font-size: .82rem; color: var(--muted); line-height: 1.55; }
+
+/* ── INTEGRATION STATEMENT ──────────────────────────────────────────────── */
+.integration-output {
+  background: var(--paper);
+  border: 2px solid var(--teal);
+  border-radius: .6rem;
+  padding: 1.8rem 2rem;
+  margin: 1.5rem 0;
+  display: none;
+}
+.integration-output.visible { display: block; animation: fadeUp .3s ease; }
+.int-header {
+  font-family: var(--display);
+  font-size: 1.4rem;
+  color: var(--ink);
+  margin-bottom: .3rem;
+}
+.int-sub {
+  font-family: var(--mono);
+  font-size: .6rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--teal);
+  margin-bottom: 1.3rem;
+}
+.int-section {
+  margin-bottom: 1.3rem;
+  padding-bottom: 1.3rem;
+  border-bottom: 1px solid var(--border);
+}
+.int-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.int-section-label {
+  font-family: var(--mono);
+  font-size: .6rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  margin-bottom: .4rem;
+  display: block;
+}
+.int-section-content {
+  font-size: .93rem;
+  color: var(--ink2);
+  line-height: 1.75;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────────────────────── */
+.app-footer {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  font-size: .78rem;
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+/* ── UTILITY ────────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.warn-box {
+  background: var(--amber-l);
+  border: 1px solid rgba(138,60,12,.2);
+  border-radius: .4rem;
+  padding: .75rem 1rem;
+  font-size: .84rem;
+  color: var(--amber);
+  margin: .75rem 0;
+  line-height: 1.6;
+}
+.spacer { height: 2rem; }
+.char-count {
+  font-family: var(--mono);
+  font-size: .62rem;
+  color: var(--muted);
+  text-align: right;
+  margin-top: .25rem;
+}
+</style>
+</head>
+<body>
+
+<div class="progress-strip">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<!-- ══ INTRO SCREEN ══════════════════════════════════════════════════════════ -->
+<div id="screen-intro" class="intro-screen">
+  <div class="shell">
+    <div class="intro-logo">Ethics Beyond Boundaries &middot; Capstone Activity</div>
+    <h1 class="intro-title">Constructors<br><em>All the Way Down</em></h1>
+    <p class="intro-sub">A structured encounter with the semester's central argument. Five stages. One personal synthesis. Approximately 45&ndash;60 minutes.</p>
+    <div class="intro-note">
+      <strong>What this is:</strong> Not a quiz. A conversation. You will engage with the essay's core ideas through your own experience, apply the framework to situations you know, and generate a personal integration statement that demonstrates how you have made these ideas your own.<br><br>
+      <strong>What you will produce:</strong> A structured document — your Integration Statement — that you can submit with your Final Reflection or keep as a record of where this semester brought you.
+    </div>
+
+    <div class="spacer"></div>
+
+    <span class="prf-label">Your primary moral foundation (from PRF22) — optional but helpful</span>
+    <div class="prf-grid">
+      <button class="prf-option" data-prf="care" onclick="selectPRF(this)">Care / Harm Prevention</button>
+      <button class="prf-option" data-prf="fairness" onclick="selectPRF(this)">Fairness / Reciprocity</button>
+      <button class="prf-option" data-prf="loyalty" onclick="selectPRF(this)">Loyalty / Community</button>
+      <button class="prf-option" data-prf="authority" onclick="selectPRF(this)">Authority / Structure</button>
+      <button class="prf-option" data-prf="sanctity" onclick="selectPRF(this)">Sanctity / Purity</button>
+      <button class="prf-option" data-prf="mixed" onclick="selectPRF(this)">Mixed / Unclear</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="startApp()">Begin the Five Stages &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ═══════════════════════════════════════════════════════════════ -->
+<div id="screen-app" class="hidden">
+  <div class="shell" style="padding-top:1.5rem;padding-bottom:4rem;">
+
+    <!-- Stage Nav -->
+    <div class="stage-nav" id="stageNav"></div>
+
+    <!-- ── STAGE 1: THE FLY BOTTLE ──────────────────────────────────────── -->
+    <div class="stage-pane" id="stage-1">
+      <div class="stage-header">
+        <span class="stage-badge">Stage 1 of 5</span>
+        <h2 class="stage-title">The Fly Bottle</h2>
+        <p class="stage-subtitle">Where have you hit the OS1 ceiling?</p>
+      </div>
+
+      <div class="concept-block">
+        <span class="cb-label">The Core Concept</span>
+        <p>OS1 coordination — the Belief/Reason/Observation/Agreement operating system — works through warrant-sharing. Two people coordinate when they can show each other the same reasons for believing something. Within a PRF cluster, this is smooth and powerful. Across PRF boundaries, it fails. Not because people are irrational. Because different moral architectures generate genuinely incommensurable warrants. Better arguments do not solve architectural incompatibility.</p>
+        <p>OS2 coordination asks a different question: not <em>do we agree?</em> but <em>can we build what we each want by combining our capabilities, even though we have different reasons for wanting it?</em></p>
+      </div>
+
+      <div class="pullq">
+        <p>"The fly is not stupid. The fly is not uninformed. The problem is that the fly is inside a structure whose nature prevents the examination itself from revealing the exit."</p>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">Describe a real situation where OS1 coordination failed for you</span>
+        <p class="prompt-sub">Think of a time when you were trying to cooperate or reach agreement with someone whose moral framework was genuinely different from yours, and better arguments — more evidence, more careful reasoning, more empathy — did not resolve it. Be specific about the situation. What were you trying to accomplish? What was the other person trying to accomplish? What did the failure look like?</p>
+        <textarea id="s1-situation" placeholder="Describe the situation..." onkeyup="updateCount(this,'s1-count')" maxlength="1200"></textarea>
+        <div class="char-count" id="s1-count">0 / 1200</div>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">What would an OS2 reframe of that situation look like?</span>
+        <p class="prompt-sub">Instead of trying to reach agreement on why the task matters, what shared task could both parties value for their own internal reasons? What capabilities does each party bring that the other lacks? What might cooperation produce that neither could produce alone?</p>
+        <textarea id="s1-reframe" placeholder="Describe an OS2 alternative..." onkeyup="updateCount(this,'s1-reframe-count')" maxlength="1000"></textarea>
+        <div class="char-count" id="s1-reframe-count">0 / 1000</div>
+      </div>
+
+      <div class="companion-area" id="s1-companion">
+        <div class="companion-badge">Companion Response</div>
+        <div class="companion-text" id="s1-companion-text"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="s1-ask-btn" onclick="askCompanion(1)">Ask the Companion to respond &rarr;</button>
+        <button class="btn btn-primary" id="s1-next-btn" onclick="goStage(2)">Continue to Stage 2 &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 2: THE CONSTRUCTOR ────────────────────────────────────── -->
+    <div class="stage-pane" id="stage-2">
+      <div class="stage-header">
+        <span class="stage-badge">Stage 2 of 5</span>
+        <h2 class="stage-title">The Constructor</h2>
+        <p class="stage-subtitle">What is being built, and does it have the right structure?</p>
+      </div>
+
+      <div class="concept-block">
+        <span class="cb-label">The Core Concept</span>
+        <p>A constructor is a system that reliably produces specific outputs from specific inputs while remaining itself unchanged and ready to produce those outputs again. The word <em>reliably</em> is precise: a constructor does not succeed occasionally. It succeeds consistently, because the conditions for success are encoded in its own structure.</p>
+        <p>The Green Belt Movement is a constructor. Before Wangari Maathai invented it, the inputs existed — the women, the land, the seeds. What did not exist was the system that could reliably connect them into consistent outputs. Creating that system was the invention.</p>
+        <p>Viable constructors share structural features Elinor Ostrom identified empirically: clear boundaries, protocols adapted to local conditions, monitoring, conflict resolution mechanisms, graduated accountability, and recognized legitimacy.</p>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">Identify a constructor you have encountered or want to build</span>
+        <p class="prompt-sub">This could be an institution, a community organization, a workplace team, a family system, a movement — anything that functions (or should function) as a constructor: reliably taking inputs and producing valuable outputs while remaining itself the same operating system. Describe what it is, what inputs it takes, and what outputs it produces.</p>
+        <textarea id="s2-constructor" placeholder="Describe the constructor..." onkeyup="updateCount(this,'s2-count')" maxlength="1000"></textarea>
+        <div class="char-count" id="s2-count">0 / 1000</div>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">Assess its structural conditions</span>
+        <p class="prompt-sub">Rate how well your constructor meets each structural condition, and briefly explain your rating. This is not about whether it is a good organization — it is specifically about whether its structure makes reliable output possible.</p>
+
+        <div style="display:grid;gap:.6rem;margin:.75rem 0">
+          <div style="border:1.5px solid var(--border);border-radius:.4rem;padding:.9rem;background:var(--paper)">
+            <span style="font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);display:block;margin-bottom:.35rem">Clear Boundaries — who is in, and what they are committed to</span>
+            <textarea id="s2-boundaries" style="min-height:60px" placeholder="Strong / Weak / Absent — because..." onkeyup="updateCount(this,'s2-b-count')" maxlength="300"></textarea>
+            <div class="char-count" id="s2-b-count">0 / 300</div>
+          </div>
+          <div style="border:1.5px solid var(--border);border-radius:.4rem;padding:.9rem;background:var(--paper)">
+            <span style="font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);display:block;margin-bottom:.35rem">Repair Access — structured channels for processing conflict and divergence</span>
+            <textarea id="s2-repair" style="min-height:60px" placeholder="Strong / Weak / Absent — because..." onkeyup="updateCount(this,'s2-r-count')" maxlength="300"></textarea>
+            <div class="char-count" id="s2-r-count">0 / 300</div>
+          </div>
+          <div style="border:1.5px solid var(--border);border-radius:.4rem;padding:.9rem;background:var(--paper)">
+            <span style="font-family:var(--mono);font-size:.6rem;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);display:block;margin-bottom:.35rem">Recovery Infrastructure — conditions for participants to sustain themselves over time</span>
+            <textarea id="s2-recovery" style="min-height:60px" placeholder="Strong / Weak / Absent — because..." onkeyup="updateCount(this,'s2-rec-count')" maxlength="300"></textarea>
+            <div class="char-count" id="s2-rec-count">0 / 300</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="companion-area" id="s2-companion">
+        <div class="companion-badge">Companion Response</div>
+        <div class="companion-text" id="s2-companion-text"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="s2-ask-btn" onclick="askCompanion(2)">Ask the Companion to respond &rarr;</button>
+        <button class="btn btn-primary" id="s2-next-btn" onclick="goStage(3)">Continue to Stage 3 &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 3: THE ACP AUDIT ────────────────────────────────────────── -->
+    <div class="stage-pane" id="stage-3">
+      <div class="stage-header">
+        <span class="stage-badge">Stage 3 of 5</span>
+        <h2 class="stage-title">The ACP Audit</h2>
+        <p class="stage-subtitle">Is this institution generative or consuming?</p>
+      </div>
+
+      <div class="concept-block">
+        <span class="cb-label">The Core Concept</span>
+        <p>The Agency Coherence Principle: a system meets the ACP if its operation <strong>preserves and extends</strong> the conditions under which coherent agency can be sustained across <strong>all its participants</strong> over <strong>time</strong>. A system violates the ACP if it sustains itself by consuming the coherence of its own substrate.</p>
+        <p>The three tests: <em>All participants</em> — not just the powerful ones. <em>Over time</em> — not just in the short run. <em>Preserves and extends</em> — not merely avoids destroying.</p>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">Name the institution you are auditing</span>
+        <p class="prompt-sub">Choose an institution you know from the inside — a workplace, a school, a community organization, a family system. You do not need to use its real name if you prefer not to.</p>
+        <textarea id="s3-institution" placeholder="Name and brief description of the institution..." onkeyup="updateCount(this,'s3-inst-count')" maxlength="400" style="min-height:70px"></textarea>
+        <div class="char-count" id="s3-inst-count">0 / 400</div>
+      </div>
+
+      <div class="acp-grid">
+        <div class="acp-item">
+          <span class="acp-item-label">Test 1: All Participants</span>
+          <p>Does the institution preserve coherent agency across all its participants — not just leadership or the majority — or does it sustain itself by consuming the capacity of some while benefiting others?</p>
+          <textarea id="s3-all" placeholder="Your assessment with specific evidence..." onkeyup="updateCount(this,'s3-all-count')" maxlength="500"></textarea>
+          <div class="char-count" id="s3-all-count">0 / 500</div>
+        </div>
+        <div class="acp-item">
+          <span class="acp-item-label">Test 2: Over Time</span>
+          <p>Does the institution preserve coherent agency over time, or does it achieve short-run outputs by consuming reserves — human, social, ecological — that cannot be replenished?</p>
+          <textarea id="s3-time" placeholder="Your assessment with specific evidence..." onkeyup="updateCount(this,'s3-time-count')" maxlength="500"></textarea>
+          <div class="char-count" id="s3-time-count">0 / 500</div>
+        </div>
+        <div class="acp-item">
+          <span class="acp-item-label">Test 3: Preserves and Extends</span>
+          <p>Does the institution actively build the conditions under which participants can develop new capabilities and participate in larger constructors, or merely avoid destroying them?</p>
+          <textarea id="s3-extend" placeholder="Your assessment with specific evidence..." onkeyup="updateCount(this,'s3-ext-count')" maxlength="500"></textarea>
+          <div class="char-count" id="s3-ext-count">0 / 500</div>
+        </div>
+      </div>
+
+      <div class="prompt-section" style="margin-top:1.25rem">
+        <span class="prompt-label">Overall: what kind of extraction is operating?</span>
+        <div class="extraction-opts">
+          <div class="ext-opt" id="ext-gen" onclick="selectExtraction('generative')">
+            <div class="ext-dot"></div>
+            <div class="ext-content">
+              <div class="ext-title" style="color:var(--teal)">Generative</div>
+              <div class="ext-desc">The host retains and develops new capacity through the relationship. Meets the ACP.</div>
+            </div>
+          </div>
+          <div class="ext-opt" id="ext-neu" onclick="selectExtraction('neutral')">
+            <div class="ext-dot"></div>
+            <div class="ext-content">
+              <div class="ext-title" style="color:var(--slate)">Neutral</div>
+              <div class="ext-desc">The host is used but not significantly enhanced or depleted. Does not violate the ACP.</div>
+            </div>
+          </div>
+          <div class="ext-opt" id="ext-con" onclick="selectExtraction('consuming')">
+            <div class="ext-dot"></div>
+            <div class="ext-content">
+              <div class="ext-title" style="color:var(--red)">Consuming</div>
+              <div class="ext-desc">The host is depleted without regeneration. Violates the ACP. This is the dark coherence trajectory.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="companion-area" id="s3-companion">
+        <div class="companion-badge">Companion Response</div>
+        <div class="companion-text" id="s3-companion-text"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="s3-ask-btn" onclick="askCompanion(3)">Ask the Companion to respond &rarr;</button>
+        <button class="btn btn-primary" id="s3-next-btn" onclick="goStage(4)">Continue to Stage 4 &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 4: DARK COHERENCE DETECTION ─────────────────────────────── -->
+    <div class="stage-pane" id="stage-4">
+      <div class="stage-header">
+        <span class="stage-badge">Stage 4 of 5</span>
+        <h2 class="stage-title">Dark Coherence Detection</h2>
+        <p class="stage-subtitle">What looks fine but isn't?</p>
+      </div>
+
+      <div class="concept-block">
+        <span class="cb-label">The Core Concept</span>
+        <p>A system can appear ordered while being structurally unsustainable. Dark coherence is order without viability: visible alignment purchased through suppressed contradiction, identity drift, scar burden accumulation, and declining repair capacity. It is the state in which the system appears to have solved disagreement because disagreement no longer has safe pathways for expression.</p>
+        <p>The warning sequence: contradiction load rises first — the tension between competing demands that cannot all be satisfied simultaneously. Identity drift rises second — the gradual erosion of who you are and what you stand for. Visible coherence collapse comes last. By the time collapse is visible, the system has typically been in dark coherence for a long time.</p>
+      </div>
+
+      <div class="warn-box">
+        <strong>A note on this stage:</strong> Dark coherence detection often requires recognizing patterns in situations you are still inside. If this stage becomes distressing rather than illuminating, it is fine to describe a past situation or a situation you have observed in others rather than one you are currently in. The Companion is in Recovery Mode for this stage — it will not push deeper.
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">Describe a dark coherence pattern you have observed</span>
+        <p class="prompt-sub">Identify a system — an institution, a relationship dynamic, a community, or a period in your own life — where surface order was hiding accumulated contradiction, identity drift, or consuming extraction. What made it look orderly from the outside? What was the inside experience? What were the warning signs that, in retrospect, appeared before the visible breakdown?</p>
+        <textarea id="s4-pattern" placeholder="Describe the dark coherence pattern..." onkeyup="updateCount(this,'s4-count')" maxlength="1200"></textarea>
+        <div class="char-count" id="s4-count">0 / 1200</div>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">What would a generative disruption look like?</span>
+        <p class="prompt-sub">In Serres' framework, the productive parasite disrupts dark coherence by intercepting and redirecting the flows the old system depends on — not by direct confrontation, which triggers defensive responses, but by offering a higher-value alternative to those the old system is consuming. What flows could be redirected? What new constructor might emerge from them?</p>
+        <textarea id="s4-disruption" placeholder="Describe a generative alternative..." onkeyup="updateCount(this,'s4-d-count')" maxlength="800"></textarea>
+        <div class="char-count" id="s4-d-count">0 / 800</div>
+      </div>
+
+      <div class="companion-area" id="s4-companion">
+        <div class="companion-badge">Companion Response</div>
+        <div class="companion-text" id="s4-companion-text"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="s4-ask-btn" onclick="askCompanion(4)">Ask the Companion to respond &rarr;</button>
+        <button class="btn btn-primary" id="s4-next-btn" onclick="goStage(5)">Continue to Stage 5 &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── STAGE 5: THE COMMITMENT ───────────────────────────────────────── -->
+    <div class="stage-pane" id="stage-5">
+      <div class="stage-header">
+        <span class="stage-badge">Stage 5 of 5</span>
+        <h2 class="stage-title">The Commitment</h2>
+        <p class="stage-subtitle">What will you build from where you stand?</p>
+      </div>
+
+      <div class="concept-block">
+        <span class="cb-label">The Core Concept</span>
+        <p>The Adaptive Moral Commonwealth is not a destination. It is a direction — the project of deliberately building constructors that meet the ACP at every level. The stag at civilizational scale is enormous, and no individual reaches it alone. But every OS2 constructor begins with someone who sees a shared task that multiple PRFs can each value for their own internal reasons, and who decides to invest in building the structural conditions that make it reliable.</p>
+        <p>The invitation at the end of this reading is not to agree with the argument. It is to participate in its construction from where you stand.</p>
+      </div>
+
+      <div class="pullq">
+        <p>"We can build what we cannot agree on. And if the argument of this paper is correct, we must."</p>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">Name one shared task you will participate in building</span>
+        <p class="prompt-sub">Be specific. Not "I will be a better person" or "I will work for justice." Name a particular shared task — in your workplace, your community, your family, your field of study — that serves multiple PRF orientations simultaneously. What is the task? Who else might join it from a different PRF perspective?</p>
+        <textarea id="s5-task" placeholder="Name the shared task and describe who it serves..." onkeyup="updateCount(this,'s5-task-count')" maxlength="800"></textarea>
+        <div class="char-count" id="s5-task-count">0 / 800</div>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">What capabilities do you bring?</span>
+        <p class="prompt-sub">From your PRF orientation, your skills, your experience, your position — what do you contribute to this task that others may not have? What is your specific capability that makes the OS2 coordination worth attempting?</p>
+        <textarea id="s5-capabilities" placeholder="Your specific capabilities and perspective..." onkeyup="updateCount(this,'s5-cap-count')" maxlength="600"></textarea>
+        <div class="char-count" id="s5-cap-count">0 / 600</div>
+      </div>
+
+      <div class="prompt-section">
+        <span class="prompt-label">What structural conditions need to exist first?</span>
+        <p class="prompt-sub">The Constructor Loop Sequencing research found that deploying OS2 coordination before recovery infrastructure is in place produces collapse, not development. What needs to exist before your shared task can proceed? What recovery infrastructure, repair channels, or institutional scaffolding must come first?</p>
+        <textarea id="s5-conditions" placeholder="What must be built before the task can proceed reliably..." onkeyup="updateCount(this,'s5-cond-count')" maxlength="600"></textarea>
+        <div class="char-count" id="s5-cond-count">0 / 600</div>
+      </div>
+
+      <div class="companion-area" id="s5-companion">
+        <div class="companion-badge">Companion Response</div>
+        <div class="companion-text" id="s5-companion-text"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="s5-ask-btn" onclick="askCompanion(5)">Ask the Companion to respond &rarr;</button>
+        <button class="btn btn-primary" onclick="generateStatement()">Generate My Integration Statement &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ── INTEGRATION STATEMENT ─────────────────────────────────────────── -->
+    <div id="stage-statement" class="hidden">
+      <div class="stage-header">
+        <span class="stage-badge">Your Integration Statement</span>
+        <h2 class="stage-title">The Map You Have Drawn</h2>
+        <p class="stage-subtitle">A record of where this semester's argument brought you.</p>
+      </div>
+
+      <div class="warn-box" id="statement-generating" style="display:none">
+        Building your Integration Statement...
+      </div>
+
+      <div class="integration-output" id="integration-output">
+        <div class="int-header">Integration Statement</div>
+        <div class="int-sub" id="int-student-id">EBB Capstone &middot; Constructors All the Way Down &middot; April 2026</div>
+
+        <div class="int-section">
+          <span class="int-section-label">OS1 Ceiling and OS2 Reframe</span>
+          <div class="int-section-content" id="int-s1"></div>
+        </div>
+        <div class="int-section">
+          <span class="int-section-label">Constructor Assessment</span>
+          <div class="int-section-content" id="int-s2"></div>
+        </div>
+        <div class="int-section">
+          <span class="int-section-label">ACP Audit</span>
+          <div class="int-section-content" id="int-s3"></div>
+        </div>
+        <div class="int-section">
+          <span class="int-section-label">Dark Coherence Pattern</span>
+          <div class="int-section-content" id="int-s4"></div>
+        </div>
+        <div class="int-section">
+          <span class="int-section-label">AMC Commitment</span>
+          <div class="int-section-content" id="int-s5"></div>
+        </div>
+        <div class="int-section">
+          <span class="int-section-label">Companion Synthesis</span>
+          <div class="int-section-content" id="int-synthesis"></div>
+        </div>
+        <div class="int-section" id="int-notes-section" style="display:none">
+          <span class="int-section-label">Companion Notes (from session)</span>
+          <div class="int-section-content" id="int-companion-notes"></div>
+        </div>
+      </div>
+
+      <div class="btn-row" id="statement-actions" style="display:none">
+        <button class="btn btn-primary" onclick="window.print()">Print / Save as PDF</button>
+        <button class="btn btn-ghost" onclick="copyStatement()">Copy to Clipboard</button>
+      </div>
+    </div>
+
+  </div><!-- end shell -->
+
+  <div class="app-footer">
+    Ethics Beyond Boundaries Research Program &middot; Saint Petersburg College &middot; April 2026<br>
+    Constructors All the Way Down: Capstone Integration Activity<br>
+    Your responses are not stored or transmitted except to the Anthropic API for Companion responses.
+  </div>
+</div><!-- end screen-app -->
+
+<script>
+// ── STATE ─────────────────────────────────────────────────────────────────────
+const state = {
+  prf: null,
+  currentStage: 1,
+  companionResponses: {},
+  stages: {1:false, 2:false, 3:false, 4:false, 5:false},
+  extraction: null
+};
+
+// ── CONFIGURATION ─────────────────────────────────────────────────────────────
+// Set to your Render companion endpoint URL once the backend is deployed.
+// Set to null to run fully offline (Option B — no API required).
+// Using the same proxy endpoint as The Examined App — already working.
+const COMPANION_ENDPOINT = 'https://ucp-backend-4dig.onrender.com/api/claude-proxy';
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function $(id){return document.getElementById(id);}
+function val(id){return $(id)?$(id).value.trim():'';}
+function updateCount(el, countId){
+  const c=el.value.length, max=el.getAttribute('maxlength')||1200;
+  const span=$(countId);
+  if(span) span.textContent=c+' / '+max;
+}
+
+function selectPRF(btn){
+  document.querySelectorAll('.prf-option').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.prf = btn.dataset.prf;
+}
+
+function selectExtraction(type){
+  ['gen','neu','con'].forEach(t=>{
+    $('ext-'+t).className='ext-opt'+(t===type.slice(0,3)?
+      (type==='generative'?' selected-g':type==='neutral'?' selected-n':' selected-c'):'');
+  });
+  state.extraction = type;
+}
+
+// ── STAGE NAVIGATION ──────────────────────────────────────────────────────────
+function startApp(){
+  $('screen-intro').style.display='none';
+  $('screen-app').classList.remove('hidden');
+  buildNav();
+  goStage(1);
+}
+
+function buildNav(){
+  const nav = $('stageNav');
+  for(let i=1;i<=5;i++){
+    const btn=document.createElement('button');
+    btn.className='nav-dot'; btn.id='nav-'+i;
+    btn.title='Stage '+i;
+    btn.onclick=()=>goStage(i);
+    nav.appendChild(btn);
+  }
+}
+
+function goStage(n){
+  document.querySelectorAll('.stage-pane').forEach(p=>p.classList.remove('active'));
+  $('stage-statement')?.classList.add('hidden');
+  const pane=$('stage-'+n);
+  if(pane) pane.classList.add('active');
+  state.currentStage=n;
+  updateProgress(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateProgress(stage){
+  const pct = (stage/5)*100;
+  $('progressFill').style.width=pct+'%';
+  for(let i=1;i<=5;i++){
+    const dot=$('nav-'+i);
+    if(!dot)continue;
+    dot.className='nav-dot'+(i===stage?' active':i<stage?' done':'');
+  }
+}
+
+// ── COMPANION API ─────────────────────────────────────────────────────────────
+const PRF_LABEL = {
+  care:'Care/Harm Prevention', fairness:'Fairness/Reciprocity',
+  loyalty:'Loyalty/Community', authority:'Authority/Structure',
+  sanctity:'Sanctity/Purity', mixed:'Mixed foundations', null:'not specified'
+};
+
+function stageSystemPrompt(stage){
+  const prf = PRF_LABEL[state.prf]||'not specified';
+  const base = `You are the Companion in the Ethics Beyond Boundaries capstone activity "Constructors All the Way Down." You are responding to a student who has engaged with a structured reading about OS1/OS2 coordination, Constructor Theory, the Agency Coherence Principle, and the Adaptive Moral Commonwealth.
+
+The student's primary moral foundation (PRF): ${prf}.
+
+Your role: engage with the specific content the student has written. Do not summarize the essay concepts back to them — they have read it. Respond to their actual experience and reasoning. Ask one good question at the end that deepens their thinking without overwhelming them.
+
+IMPORTANT TONE RULES:
+- Warm but not effusive. Precise but not clinical.
+- Never use jargon without explanation (no r_S, K_drift, ATCF, FHRI).
+- Match the student's register. If they write casually, respond with warmth. If they write formally, match that.
+- Do not evaluate whether they got the concepts "right." Engage with the substance of what they wrote.
+- Keep responses to 150-220 words. One idea, one question.`;
+
+  const stageInstructions = {
+    1: `This is Stage 1: OS1/OS2 coordination. The student has described a situation where coordination failed across PRF difference. They have also attempted an OS2 reframe of it. Your response should: (1) briefly name what you notice about the architectural dimension of what they described — what specifically made it an OS1 failure rather than just poor communication; (2) respond to their OS2 reframe — what is strong about it, and what one structural condition might make it more reliable. 
+Stage 4 note: if the student's writing suggests distress, do not probe deeper. Acknowledge and move forward.`,
+    2: `This is Stage 2: The Constructor. The student has identified a constructor and assessed its structural conditions (boundaries, repair access, recovery infrastructure). Your response should: (1) name the most significant structural strength or gap you notice in their assessment; (2) ask one question about how the constructor handles friction — the moments when participants' different OS1 reasons for cooperating come into conflict.`,
+    3: `This is Stage 3: The ACP Audit. The student has applied the three ACP tests (all participants, over time, preserves and extends) to a real institution and selected an extraction type (generative/neutral/consuming). Your response should: (1) engage with their specific evidence — what detail they noticed that is most revealing; (2) if they identified consuming extraction, ask what the first structural intervention would be. If generative, ask what makes it generative when similar institutions often are not.`,
+    4: `This is Stage 4: Dark Coherence Detection. This is the most personally demanding stage. The student has described a dark coherence pattern and a potential generative disruption. RECOVERY MODE: do not probe for more personal disclosure. Do not ask them to go deeper into the difficult experience. Instead: (1) affirm the structural clarity of what they identified — the warning signs they noticed, the pattern they named; (2) engage with their generative disruption idea — what makes it specifically a disruption rather than just a reform of the old system.`,
+    5: `This is Stage 5: The Commitment. The student has named a specific shared task, their capabilities, and the structural conditions that must exist first. Your response should: (1) name one thing that is genuinely strong about their commitment — specific to what they wrote; (2) ask one question about the sequencing: what is the single most important structural condition to establish before the task can proceed, and how would they know when it exists?`
+  };
+
+  return base + '\n\n' + (stageInstructions[stage]||'');
+}
+
+function stageUserContent(stage){
+  switch(stage){
+    case 1: return `My OS1 failure situation:\n${val('s1-situation')}\n\nMy OS2 reframe:\n${val('s1-reframe')}`;
+    case 2: return `My constructor:\n${val('s2-constructor')}\n\nBoundaries: ${val('s2-boundaries')}\nRepair access: ${val('s2-repair')}\nRecovery infrastructure: ${val('s2-recovery')}`;
+    case 3: return `Institution: ${val('s3-institution')}\n\nAll participants: ${val('s3-all')}\nOver time: ${val('s3-time')}\nPreserves and extends: ${val('s3-extend')}\nExtraction type: ${state.extraction||'not selected'}`;
+    case 4: return `Dark coherence pattern:\n${val('s4-pattern')}\n\nGenerative disruption:\n${val('s4-disruption')}`;
+    case 5: return `Shared task:\n${val('s5-task')}\n\nMy capabilities:\n${val('s5-capabilities')}\n\nStructural conditions needed first:\n${val('s5-conditions')}`;
+    default: return '';
+  }
+}
+
+async function askCompanion(stage){
+  const btn = $('s'+stage+'-ask-btn');
+  const area = $('s'+stage+'-companion');
+  const text = $('s'+stage+'-companion-text');
+
+  // No backend configured — inform student and return
+  if(!COMPANION_ENDPOINT){
+    text.innerHTML='<span class="thinking">Companion responses will be available when the course backend is connected. Your written responses are what matters \u2014 continue to the next stage.</span>';
+    area.classList.add('visible');
+    return;
+  }
+
+  const content = stageUserContent(stage);
+  if(content.replace(/\s/g,'').length < 40){
+    text.innerHTML='<span class="thinking">Please write at least a few sentences before asking the Companion to respond.</span>';
+    area.classList.add('visible');
+    return;
+  }
+
+  btn.disabled=true; btn.textContent='Thinking...';
+  text.innerHTML='<span class="thinking">Reading what you wrote...</span>';
+  area.classList.add('visible');
+
+  try {
+    const res = await fetch(COMPANION_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        system: stageSystemPrompt(stage),
+        messages:[{role:'user',content}]
+      })
+    });
+    if(!res.ok) throw new Error('Backend responded with '+res.status);
+    const data = await res.json();
+    // claude-proxy returns the raw Anthropic response
+    const reply = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('')
+      || data.response || 'The Companion was unable to respond. Please try again.';
+    text.textContent = reply;
+    state.companionResponses[stage] = reply;
+  } catch(e){
+    text.innerHTML='<span class="thinking">Could not reach the course backend. Your written responses are complete \u2014 continue to the next stage.</span>';
+  }
+
+  btn.disabled=false;
+  btn.textContent='Ask the Companion again \u2192';
+}
+
+// ── INTEGRATION STATEMENT — built locally, no API required ────────────────────
+function generateStatement(){
+  document.querySelectorAll('.stage-pane').forEach(p=>p.classList.remove('active'));
+  $('stage-statement').classList.remove('hidden');
+  $('statement-generating').style.display='none';
+  $('integration-output').classList.remove('visible');
+  $('statement-actions').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateProgress(5);
+
+  // Populate each section from student responses
+  $('int-s1').textContent = buildSection([
+    val('s1-situation'),
+    val('s1-reframe') ? 'OS2 reframe: '+val('s1-reframe') : ''
+  ]);
+  $('int-s2').textContent = buildSection([
+    val('s2-constructor'),
+    val('s2-boundaries') ? 'Boundaries: '+val('s2-boundaries') : '',
+    val('s2-repair')     ? 'Repair access: '+val('s2-repair') : '',
+    val('s2-recovery')   ? 'Recovery infrastructure: '+val('s2-recovery') : ''
+  ]);
+  $('int-s3').textContent = buildSection([
+    val('s3-institution') ? 'Institution: '+val('s3-institution') : '',
+    val('s3-all')    ? 'All participants: '+val('s3-all') : '',
+    val('s3-time')   ? 'Over time: '+val('s3-time') : '',
+    val('s3-extend') ? 'Preserves & extends: '+val('s3-extend') : '',
+    state.extraction ? 'Extraction type: '+state.extraction : ''
+  ]);
+  $('int-s4').textContent = buildSection([
+    val('s4-pattern'),
+    val('s4-disruption') ? 'Generative disruption: '+val('s4-disruption') : ''
+  ]);
+  $('int-s5').textContent = buildSection([
+    val('s5-task')         ? 'Shared task: '+val('s5-task') : '',
+    val('s5-capabilities') ? 'Capabilities I bring: '+val('s5-capabilities') : '',
+    val('s5-conditions')   ? 'Structural conditions needed first: '+val('s5-conditions') : ''
+  ]);
+
+  // Local synthesis — composed from student responses
+  $('int-synthesis').textContent = buildLocalSynthesis();
+
+  // Companion notes if any were captured (backend was connected)
+  const notesEl = $('int-companion-notes');
+  if(notesEl){
+    const notes = Object.entries(state.companionResponses)
+      .filter(([,v])=>v&&v.length>10)
+      .map(([k,v])=>'Stage '+k+': '+v).join('\n\n');
+    if(notes){ notesEl.textContent=notes; $('int-notes-section').style.display='block'; }
+    else { $('int-notes-section').style.display='none'; }
+  }
+
+  $('integration-output').classList.add('visible');
+  $('statement-actions').style.display='flex';
+}
+
+function buildSection(parts){
+  return parts.filter(p=>p&&p.replace(/^[^:]+:\s*/,'').trim().length>2).join('\n\n');
+}
+
+function buildLocalSynthesis(){
+  const prf      = PRF_LABEL[state.prf]||'not specified';
+  const situation = val('s1-situation');
+  const reframe   = val('s1-reframe');
+  const constr    = val('s2-constructor');
+  const inst      = val('s3-institution');
+  const extraction= state.extraction||'not assessed';
+  const pattern   = val('s4-pattern');
+  const task      = val('s5-task');
+  const caps      = val('s5-capabilities');
+  const conditions= val('s5-conditions');
+
+  const hasData=[situation,reframe,constr,inst,pattern,task].some(s=>s&&s.length>20);
+  if(!hasData){
+    return 'Complete the five stages and return here to generate your synthesis. Your integration statement captures what the argument of this reading produced in you \u2014 it requires the substance of your responses.';
+  }
+
+  const parts=[];
+
+  if(situation&&reframe){
+    parts.push(
+      'This statement begins where the reading asks every student to begin: in a specific moment of coordination failure. '+
+      'Your Stage 1 account demonstrates an understanding of why OS1 failed architecturally rather than motivationally \u2014 '+
+      'and your OS2 reframe shows the central move: identifying a shared task that each party can endorse from within their own values.'
+    );
+  }
+
+  if(constr){
+    parts.push(
+      'Your Stage 2 constructor assessment applies the framework concretely to a system you know. '+
+      'The structural conditions you evaluated \u2014 boundaries, repair access, recovery infrastructure \u2014 '+
+      'are the difference between a good intention and a reliable system. '+
+      'A constructor that cannot sustain its participants under stress is not yet a constructor in Deutsch and Marletto\u2019s precise sense.'
+    );
+  }
+
+  if(inst&&extraction!=='not assessed'){
+    const word = extraction==='generative'?'generative'
+      : extraction==='consuming'?'consuming \u2014 a finding that carries real weight for anyone inside it'
+      : 'neutral';
+    parts.push(
+      'The ACP audit of '+(inst.split('\n')[0].substring(0,60)||'your chosen institution')+
+      ' identifies the extraction as '+word+'. '+
+      'The three tests \u2014 all participants, over time, preserves and extends \u2014 '+
+      'are more demanding than the metrics most institutions use to evaluate themselves. '+
+      'Applying them to an institution you know from the inside is the difference between understanding the framework and using it.'
+    );
+  }
+
+  if(pattern){
+    parts.push(
+      'Stage 4 asks for the most difficult observation: what looks orderly but is not. '+
+      'Naming a dark coherence pattern requires holding two positions simultaneously: the inside view where the order feels real, '+
+      'and the structural view where the cost becomes visible. '+
+      (val('s4-disruption')
+        ? 'Your account of a generative disruption shows the Serres move: not reforming the old system from within, but redirecting its flows toward a new constructor that returns more than it takes.'
+        : '')
+    );
+  }
+
+  if(task){
+    parts.push(
+      'The Stage 5 commitment \u2014 '+task.substring(0,120).trim()+(task.length>120?'\u2026':'')+' \u2014 '+
+      'is where analysis becomes intention. '+
+      (conditions?'Your identification of what must exist first shows the sequencing insight: recovery capacity before demand, infrastructure before engagement. ':'')+
+      (caps?'The capabilities you named are the OS2 resource: what your PRF orientation ('+prf+') contributes that the task requires and others may not provide. ':'')+
+      'Carried forward, this commitment adds one specific constructor to the larger AMC project \u2014 which is built, one constructor at a time, by people who can see what needs building from where they stand.'
+    );
+  }
+
+  return parts.join('\n\n');
+}
+
+function copyStatement(){
+  const el = $('integration-output');
+  const sections = el.querySelectorAll('.int-section');
+  let text = 'EBB INTEGRATION STATEMENT — Constructors All the Way Down\n';
+  text += new Date().toLocaleDateString()+'\n\n';
+  sections.forEach(s=>{
+    const label = s.querySelector('.int-section-label')?.textContent||'';
+    const content = s.querySelector('.int-section-content')?.textContent||'';
+    if(content.trim()) text += label.toUpperCase()+'\n'+content+'\n\n';
+  });
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.querySelector('[onclick="copyStatement()"]');
+    if(btn){btn.textContent='Copied!';setTimeout(()=>{btn.textContent='Copy to Clipboard';},2000);}
+  });
+}
+</script>
+
+<style>
+@media print {
+  .progress-strip,.stage-nav,.btn-row,.app-footer,
+  #screen-intro,.stage-header,.companion-area,
+  .concept-block,.pullq,.warn-box,.prompt-section { display: none !important; }
+  .integration-output { border: 1px solid #ccc !important; display: block !important; }
+  body { background: white; }
+}
+</style>
+
+</body>
+</html>
