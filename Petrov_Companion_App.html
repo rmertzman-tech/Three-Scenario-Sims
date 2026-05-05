@@ -484,24 +484,35 @@ async function ask(stage){
   body.innerHTML='<span class="thinking">Reading what you wrote...</span>';
   comp.classList.add('show');
 
+  // 25s timeout fires before Render's 30s inbound limit
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
   try {
     const res = await fetch(ENDPOINT, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
+      signal: controller.signal,
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:600,
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:400,
         system: SYSTEM + '\n\n' + STAGE_INSTR[stage],
         messages:[{role:'user',content}]
       })
     });
+    clearTimeout(timeoutId);
+    if(!res.ok) throw new Error('http:'+res.status);
     const data = await res.json();
     const reply = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('')
-      || data.response || 'The Companion was unable to respond. Please try again.';
+      || data.response || '';
+    if(!reply) throw new Error('empty');
     body.textContent = reply;
     state.companionNotes[stage] = reply;
   } catch(e){
-    body.innerHTML='<span class="thinking">Could not reach the course backend. Continue to the next stage — your written responses are complete.</span>';
+    clearTimeout(timeoutId);
+    body.innerHTML = (e.name === 'AbortError')
+      ? '<span class="thinking">The server took too long. Please try again \u2014 it usually works on the second attempt.</span>'
+      : '<span class="thinking">The Companion could not respond right now. Try again or continue \u2014 your written responses are what matters.</span>';
   }
 }
 
