@@ -907,6 +907,11 @@ function startApp(){
   $('screen-app').classList.remove('hidden');
   buildNav();
   goStage(1);
+  // Warm the Render server silently — fire-and-forget
+  if(COMPANION_ENDPOINT){
+    fetch(COMPANION_ENDPOINT.replace('/api/claude-proxy','/api/claude-proxy/health'),
+      {method:'GET'}).catch(()=>{});
+  }
 }
 
 function buildNav(){
@@ -990,15 +995,16 @@ async function askCompanion(stage){
   const area = $('s'+stage+'-companion');
   const text = $('s'+stage+'-companion-text');
 
-  // No backend configured — inform student and return
+  // No backend configured
   if(!COMPANION_ENDPOINT){
     text.innerHTML='<span class="thinking">Companion responses will be available when the course backend is connected. Your written responses are what matters \u2014 continue to the next stage.</span>';
     area.classList.add('visible');
     return;
   }
 
-  const content = stageUserContent(stage);
-  if(content.replace(/\s/g,'').length < 40){
+  // Check that the user has actually written something, not just template labels
+  const userText = stageUserText(stage);
+  if(userText.length < 40){
     text.innerHTML='<span class="thinking">Please write at least a few sentences before asking the Companion to respond.</span>';
     area.classList.add('visible');
     return;
@@ -1008,30 +1014,65 @@ async function askCompanion(stage){
   text.innerHTML='<span class="thinking">Reading what you wrote...</span>';
   area.classList.add('visible');
 
+  // Abort at 25 seconds — just before Render's 30-second inbound limit,
+  // so we get a clean AbortError rather than a messy network failure.
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
+
   try {
     const res = await fetch(COMPANION_ENDPOINT, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
+      signal: controller.signal,
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:600,
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:400,
         system: stageSystemPrompt(stage),
-        messages:[{role:'user',content}]
+        messages:[{role:'user', content: stageUserContent(stage)}]
       })
     });
-    if(!res.ok) throw new Error('Backend responded with '+res.status);
+    clearTimeout(timeoutId);
+
+    if(!res.ok){
+      const errText = await res.text().catch(()=>'');
+      throw new Error('http:'+res.status+' '+errText.slice(0,120));
+    }
+
     const data = await res.json();
-    // claude-proxy returns the raw Anthropic response
     const reply = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('')
-      || data.response || 'The Companion was unable to respond. Please try again.';
+      || data.response || '';
+
+    if(!reply) throw new Error('empty');
+
     text.textContent = reply;
     state.companionResponses[stage] = reply;
-  } catch(e){
-    text.innerHTML='<span class="thinking">Could not reach the course backend. Your written responses are complete \u2014 continue to the next stage.</span>';
-  }
+    btn.disabled=false;
+    btn.textContent='Ask the Companion again \u2192';
 
-  btn.disabled=false;
-  btn.textContent='Ask the Companion again \u2192';
+  } catch(e){
+    clearTimeout(timeoutId);
+    btn.disabled=false;
+    btn.textContent='Try again \u2192';
+
+    if(e.name === 'AbortError'){
+      text.innerHTML='<span class="thinking">The server took too long to respond. Please try again \u2014 it usually works on the second attempt.</span>';
+    } else {
+      text.innerHTML='<span class="thinking">The Companion could not respond right now. Try again or continue \u2014 your written responses are what matters.</span>';
+      console.warn('Companion error:', e.message);
+    }
+  }
+}
+
+// Returns only user-typed text (no template labels) to check minimum length
+function stageUserText(stage){
+  switch(stage){
+    case 1: return val('s1-situation') + val('s1-reframe');
+    case 2: return val('s2-constructor') + val('s2-boundaries') + val('s2-repair') + val('s2-recovery');
+    case 3: return val('s3-institution') + val('s3-all') + val('s3-time') + val('s3-extend');
+    case 4: return val('s4-pattern') + val('s4-disruption');
+    case 5: return val('s5-task') + val('s5-capabilities') + val('s5-conditions');
+    default: return '';
+  }
 }
 
 // ── INTEGRATION STATEMENT — built locally, no API required ────────────────────
